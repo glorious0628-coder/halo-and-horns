@@ -398,15 +398,18 @@ check(action(v, "Equip").Text == "Equipped" and not action(v, "Equip").Enabled, 
 check(lineWith(v, "Power 100") and not lineWith(v, "→"), "the equipped weapon: its power only", v.Lines[2] and v.Lines[2].Text)
 check(lineWith(v, "Attack ") ~= nil, "weapons: the attack at my level with the +N")
 -- A23-127 (최종 검수 10/13 review ①): where a weapon comes from follows Config.WeaponShop.Buy (Config.WeaponSource): the
--- shop line while the Forge sells, the drop line only once it sells none - never the drop promise on a selling server
+-- shop line while the Forge sells, the drop line only once it sells none - never the drop promise on a selling server.
+-- Both cases are set here (게임성 개발 2's Config ships Buy = false since fix/test-prep-server), then put back
+local realBuy = Config.WeaponShop.Buy
+Config.WeaponShop.Buy = true
+v = detail(byKey["W:2"])
 check(lineWith(v, "Sold at the Forge") ~= nil and lineWith(v, "Slime Prince drop") == nil,
-	"the Forge still sells (no Buy switch): tier 2 says 'Sold at the Forge'", lineWith(v, "Slime") and lineWith(v, "Slime").Text)
+	"the Forge still sells (Buy = true): tier 2 says 'Sold at the Forge'", lineWith(v, "Slime") and lineWith(v, "Slime").Text)
 Config.WeaponShop.Buy = false
 v = detail(byKey["W:2"])
 check(lineWith(v, "Slime Prince drop") ~= nil and lineWith(v, "Sold at the Forge") == nil,
 	"the Forge sells none (Buy = false): tier 2 says 'Slime Prince drop'", lineWith(v, "Sold") and lineWith(v, "Sold").Text)
-Config.WeaponShop.Buy = nil
-v = detail(byKey["W:2"])
+Config.WeaponShop.Buy = realBuy
 v = detail(byKey["W:1"])
 check(action(v, "Equip").Text == "Equip" and action(v, "Equip").Enabled, "another usable weapon: Equip")
 check(lineWith(v, "Power +10") ~= nil and v.Lines[2].Color == "Good", "Equip shows the power change first (최종 검수 10/13: 'Power +10' in green)", v.Lines[2] and v.Lines[2].Text)
