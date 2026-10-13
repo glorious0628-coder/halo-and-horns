@@ -15331,6 +15331,18 @@
    "project": "87f66ae2 (texture 57277ed1 -> PBR 68dd377e)",
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_SM_tex4k_mv_pbr_src.fbx (disk only)",
    "final": "art/models/tripo/touchup/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_TU.glb (old front-1 판 → _TU_front1_old.glb)",
+   "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3",
+   "status": "SPARE (87f66ae2 multiview: flowers mostly mint) → files renamed _src_87f66ae2.fbx / _TU_87f66ae2_mv.glb"
+  },
+  {
+   "event": "redo #2: other white model 19fef167 (디자인 검수 checked in Tripo), MULTIVIEW tab 2D 4 views, 4K, 조명 제거 -> PBR",
+   "at": "2026-10-13",
+   "account": "계정 1",
+   "by": "Blender 손보기",
+   "points": 25,
+   "project": "19fef167 (texture e73c3518 -> PBR d6954bc5)",
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_D_SM_tex4k_mv_pbr_src.fbx (disk only)",
+   "final": "art/models/tripo/touchup/HaloVar4_PotFlowers_D/HaloVar4_PotFlowers_D_TU.glb",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3"
   }
  ],
