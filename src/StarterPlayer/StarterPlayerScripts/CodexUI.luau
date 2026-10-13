@@ -14,8 +14,10 @@
 --   popup. With the codex window open the card there is redrawn and the line is a toast. Config.Codex.ServerToast is
 --   false: the lines come only from here.
 --   Data: c<-s "Codex" { Cards, Glow } at join and on c->s "CodexOpen" (sent when the window opens, rate-limited).
--- The monster on a card: ReplicatedStorage.CodexModels.<kind> (the server's copies, when it sends them), else a live
--- monster of that kind in workspace.Monsters (copied once), else the approved IconMon<kind> picture, else "?".
+-- The monster on a card: ReplicatedStorage[Config.Codex.ModelFolder].<kind> (the server's copies of the custom models,
+-- contract §6-1; a borrowed model is drawn as it is in the game, never repainted), else a live monster of that kind in
+-- workspace.Monsters (a procedural one: copied once, scripts / physics / effects stripped, anchored), else the approved
+-- IconMon<kind> picture, else "???".
 -- Game text: English only (Config.Codex.Text = the server's words, Config.Codex.Screen.Text = this screen's).
 -- Public API: CodexUI.Init(C), CodexUI.Start(), CodexUI.IsReady(), CodexUI.Open(arg?), CodexUI.OnCodex(payload),
 -- CodexUI.OnUp(payload); pure: CodexUI.View(kind, card, faction, foil), CodexUI.Page(cards, i), CodexUI.Count(cards),
@@ -269,7 +271,7 @@ end
 function MODEL.Get(kind)
 	local tpl = MODEL.Cache[kind]
 	if not tpl then
-		local folder = ReplicatedStorage:FindFirstChild("CodexModels")
+		local folder = ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))
 		local src = folder and folder:FindFirstChild(kind) or nil
 		if not src then src = MODEL.Live(kind) end
 		tpl = src and MODEL.Clean(src) or nil

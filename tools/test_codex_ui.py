@@ -102,6 +102,10 @@ def static(src: dict) -> list[tuple[str, bool]]:
          "c.ViewFrame.ImageColor3 = v.Known and L.Lit or L.Silhouette" in cx and "Silhouette = Color3.new(0, 0, 0)" in cx),
         ("the window and the moments work on approved parts (PanelCard, SlotEmpty / SlotCommon, Chip, BtnSecondary)",
          all(f'"{p}"' in cx for p in ("PanelCard", "SlotEmpty", "SlotCommon", "Chip", "BtnSecondary", "IconGoldenMon"))),
+        ("the models come from the server's folder (Config.Codex.ModelFolder, contract §6-1) before a live copy",
+         'ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))' in cx
+         and 'ModelFolder = "CodexModels"' in cfg
+         and cx.index("codex().ModelFolder") < cx.index("if not src then src = MODEL.Live(kind) end")),
     ]
 
 
@@ -158,6 +162,8 @@ MUTATIONS = [
     ("CONFIG", "the server's toast back on", "\tServerToast = false,", "\tServerToast = true,"),
     ("HUD", "no Codex tile", '\t\t{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },\n', ""),
     ("MAIN", "CodexUI never loaded", '"KingDiary", "CodexUI", ', '"KingDiary", '),
+    ("CODEX", "the server's model folder ignored", 'ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))',
+     'ReplicatedStorage:FindFirstChild("Models")'),
 ]
 
 
