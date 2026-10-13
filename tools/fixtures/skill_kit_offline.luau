@@ -71,7 +71,7 @@ local WANT = {
 local NAMES = {
 	Warrior = { Q = { Halo = "Halo Slam", Horns = "Crater Smash" }, Z = { Halo = "Glow Lasso", Horns = "Fire Rake" },
 		X = { Halo = "Guardian Roar", Horns = "Rage Roar" } },
-	Mage = { Q = { Halo = "Star Fall", Horns = "Purple Pop" }, Z = { Halo = "Birdie Bounce", Horns = "Flappy Zigzag" },
+	Mage = { Q = { Halo = "Star Fall", Horns = "Purple Pop" }, Z = { Halo = "Birdie Bounce", Horns = "Bat Zigzag" },
 		X = { Halo = "Sun Circle", Horns = "Hex Circle" } },
 	Archer = { Q = { Halo = "Feather Rain", Horns = "Spark Shower" }, Z = { Halo = "Comet Arrow", Horns = "Moon Shot" },
 		X = { Halo = "Light Step", Horns = "Shadow Step" } },
@@ -139,8 +139,9 @@ check(Config.SkillDef("Warrior", "Halo", "W") == nil, "an unknown slot -> nil")
 do
 	local CLASSES, SIDES, SLOTS = { "Warrior", "Mage", "Archer" }, { "Halo", "Horns" }, { "Q", "Z", "X" }
 	local OLD_NAMES = { "Shockwave", "Earth Cleave", "Meteor", "Chain Bolt", "Arrow Rain", "Pierce Shot" }
-	-- words that may also sit in a shop / monster name: the faction words and the common 'Star' (attendance looks, not for sale)
-	local TOLERATED = { star = true, halo = true, horns = true }
+	-- words that may also sit in a shop / monster name: the faction words and the common 'Star' (attendance looks, not for sale);
+	-- 'bat' = the user's own pick for the Dark Mage's Z (A23-138: Flappy Zigzag -> "Bat Zigzag", beside the Bat Goblin)
+	local TOLERATED = { star = true, halo = true, horns = true, bat = true }
 	local NUMBER_KEYS = { "Shape", "Mult", "MP", "CD", "Push", "Pull", "Radius", "Range", "Len", "Width", "AimCone", "Jump", "Hits",
 		"Hop", "HopTime", "Duration", "Tick", "TickMult", "Slow", "TauntRadius", "TauntSec", "SelfGuard" }
 	local function plain(v)
