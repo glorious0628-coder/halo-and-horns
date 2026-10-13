@@ -56,7 +56,9 @@ local L = {
 	Ambient = Color3.fromRGB(185, 185, 200), Light = Color3.fromRGB(255, 248, 235), LightDir = Vector3.new(-0.6, -1, -0.8),
 	Silhouette = Color3.new(0, 0, 0), Lit = Color3.new(1, 1, 1),
 	Card = Color3.fromRGB(16, 20, 40), -- the PanelCard fallback colour
-	Moment = { W = 220, H = 300, Y = 0.42, In = 0.3, Evolve = 0.7, Out = 0.25, Retry = 0.5, Z = 60 },
+	-- 최종 검수 10/13 (main2: the card over the event line, the words on the hero's head): the card + its line centred
+	-- on the screen, at most Room of its height (a short screen shrinks them: the event line above, the HUD bars below)
+	Moment = { W = 220, H = 300, Line = 70, Y = 0.5, Room = 0.5, In = 0.3, Evolve = 0.7, Out = 0.25, Retry = 0.5, Z = 60 },
 	Sparkles = { { 0.18, 0.22 }, { 0.82, 0.18 }, { 0.12, 0.62 }, { 0.88, 0.58 }, { 0.5, 0.08 }, { 0.32, 0.78 } },
 	-- what a copied monster loses (scripts, sounds, effects, its name tag / HP bar, movers, its rig's brain)
 	Strip = { "LuaSourceContainer", "Sound", "ParticleEmitter", "Trail", "Beam", "BillboardGui", "SurfaceGui", "Highlight",
@@ -218,6 +220,26 @@ function CodexUI.Push(queue, payload)
 	local max = int(type(screen().Moment) == "table" and screen().Moment.Max or 8)
 	while #queue > math.max(1, max) do table.remove(queue, 1) end
 	return #queue
+end
+
+-- (pure) the card a CodexUp moment shows when it is over: the payload's card (else mine) at least at the stage its
+-- event says (최종 검수 10/13: a Studio "show:Slime:Holo" came with the card's own stage 1 and drew "Card" under "Gold
+-- Holo"); a Golden moment owns its foil
+function CodexUI.MomentCard(payload, current)
+	payload = type(payload) == "table" and payload or {}
+	local src = type(payload.Card) == "table" and payload.Card or (type(current) == "table" and current or {})
+	local card = { Kills = int(src.Kills), Golden = int(src.Golden), Stage = int(src.Stage), First = int(src.First) }
+	local stage = math.max(int(payload.Stage), ({ Card = 1, Golden = 1, Silver = 2, Holo = 3 })[payload.Event] or 0)
+	card.Stage = math.clamp(math.max(card.Stage, stage), 0, 3)
+	if payload.Event == "Golden" then card.Golden = math.max(1, card.Golden) end
+	return card
+end
+
+-- (pure) the moment's scale on a screen sh logical px high: its card and line take at most Moment.Room of it
+function CodexUI.MomentFit(sh)
+	sh = tonumber(sh) or 0
+	if sh <= 0 then return 1 end
+	return math.clamp(sh * L.Moment.Room / (L.Moment.H + L.Moment.Line), 0.5, 1)
 end
 
 -- the camera's distance that fits a sphere of this radius in a view of fov degrees (pure)
@@ -677,7 +699,7 @@ local function newSlot(parent, kind, order)
 	rim.Name = "Rim"
 	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	rim.Parent = btn
-	local mini = CARD.New(btn, UDim2.new(1, -10, 1, -40), btn.ZIndex + 1)
+	local mini = CARD.New(btn, UDim2.new(1, -10, 1, -48), btn.ZIndex + 1)
 	mini.Holder.Position = UDim2.fromOffset(5, 5)
 	mini.Holder.Active = false
 	for _, n in { "StageChip", "Stage", "MonsterName", "Kills", "Next" } do
@@ -685,9 +707,11 @@ local function newSlot(parent, kind, order)
 		if p then p.Visible = false end
 	end
 	mini.ViewFrame.Position, mini.ViewFrame.Size = UDim2.fromScale(0.5, 0.05), UDim2.fromScale(0.9, 0.9)
-	local name = text({ Name = "SlotName", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -6),
-		Size = UDim2.new(1, -10, 0, 28), TextScaled = false, TextSize = 15, TextTruncate = Enum.TextTruncate.AtEnd,
-		ZIndex = btn.ZIndex + 2, Parent = btn }, true)
+	-- 최종 검수 10/13 (main2 "Shard..."): the card's own name on up to two lines (a third would end in ...)
+	local name = text({ Name = "SlotName", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -4),
+		Size = UDim2.new(1, -8, 0, 38), TextScaled = false, TextSize = 14, TextWrapped = true,
+		TextTruncate = Enum.TextTruncate.AtEnd, TextYAlignment = Enum.TextYAlignment.Center, ZIndex = btn.ZIndex + 2,
+		Parent = btn }, true)
 	local s = { Button = btn, Rim = rim, Mini = mini, Name = name, Known = v.Known }
 	setSlot(s, v)
 	return s
@@ -965,21 +989,24 @@ function MOMENT.Card(payload, done)
 	frame.BackgroundTransparency = 1
 	frame.AnchorPoint = Vector2.new(0.5, 0.5)
 	frame.Position = UDim2.fromScale(0.5, L.Moment.Y)
-	frame.Size = UDim2.fromOffset(L.Moment.W, L.Moment.H + 70)
+	frame.Size = UDim2.fromOffset(L.Moment.W, L.Moment.H + L.Moment.Line)
 	frame.ZIndex = L.Moment.Z
 	frame.Parent = gui
+	local _, sh = logical(gui)
+	local fit = CodexUI.MomentFit(sh)
 	local pop = Instance.new("UIScale")
-	pop.Scale = reduced and 1 or 0.6
+	pop.Scale = reduced and fit or 0.6 * fit
 	pop.Parent = frame
 	local c = CARD.New(frame, UDim2.fromOffset(L.Moment.W, L.Moment.H), L.Moment.Z)
-	local after = CodexUI.View(kind, payload.Card or cardOf(S.Cards, kind), faction(), payload.Event == "Golden")
+	local card = CodexUI.MomentCard(payload, cardOf(S.Cards, kind))
+	local after = CodexUI.View(kind, card, faction(), payload.Event == "Golden")
 	local before = table.clone(after)
 	if payload.Event == "Card" then
 		before = CodexUI.View(kind, nil, faction(), false)
 	elseif payload.Event == "Golden" then
-		before = CodexUI.View(kind, payload.Card or cardOf(S.Cards, kind), faction(), false)
+		before = CodexUI.View(kind, card, faction(), false)
 	elseif payload.Event == "Silver" or payload.Event == "Holo" then
-		local prev = table.clone(type(payload.Card) == "table" and payload.Card or (cardOf(S.Cards, kind) or {}))
+		local prev = table.clone(card)
 		prev.Stage = math.max(1, int(after.Stage) - 1)
 		prev.Kills = math.min(int(prev.Kills), (Config.CodexSteps(kind)[after.Stage] or 1) - 1)
 		before = CodexUI.View(kind, prev, faction(), false)
@@ -998,7 +1025,7 @@ function MOMENT.Card(payload, done)
 			done()
 			return
 		end
-		local tw = TweenService:Create(pop, TweenInfo.new(L.Moment.Out), { Scale = 0.6 })
+		local tw = TweenService:Create(pop, TweenInfo.new(L.Moment.Out), { Scale = 0.6 * fit })
 		TweenService:Create(line, TweenInfo.new(L.Moment.Out), { TextTransparency = 1 }):Play()
 		tw.Completed:Connect(function()
 			frame:Destroy()
@@ -1013,7 +1040,7 @@ function MOMENT.Card(payload, done)
 	MOMENT.Frame = frame
 	local t0, swapped = os.clock(), false
 	if not reduced then
-		TweenService:Create(pop, TweenInfo.new(L.Moment.In, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		TweenService:Create(pop, TweenInfo.new(L.Moment.In, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = fit }):Play()
 		MOMENT.Conn = RunService.RenderStepped:Connect(function(dt)
 			local t = os.clock() - t0 - L.Moment.In
 			if t >= 0 and t <= L.Moment.Evolve then -- the sway: right, then back through the middle

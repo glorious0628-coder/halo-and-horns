@@ -396,6 +396,17 @@ CodexUI.Push(q, { Event = "Nope" })
 CodexUI.Push(q, "bad")
 check(#q == Config.Codex.Screen.Moment.Max and q[1].N == 5, "the queue keeps the newest " .. Config.Codex.Screen.Moment.Max, #q)
 check(CodexUI.Fit(2, 30) > CodexUI.Fit(1, 30) and CodexUI.Fit(1, 30) > 0, "a bigger monster stands further from the camera")
+-- the moment's card follows its event (a Studio show with the card's own lower stage)
+local mcard = CodexUI.MomentCard({ Event = "Holo", Kind = "Slime", Card = { Kills = 12, Golden = 0, Stage = 1, First = t0 } })
+check(mcard.Stage == 3 and mcard.Kills == 12, "a Holo moment draws Gold Holo even when its card says 1", mcard.Stage)
+check(CodexUI.MomentCard({ Event = "Silver", Stage = 2 }, { Kills = 3, Stage = 1 }).Stage == 2, "a Silver moment: at least Silver")
+check(CodexUI.MomentCard({ Event = "Golden", Card = { Kills = 4, Stage = 1 } }).Golden == 1, "a Golden moment owns its foil")
+check(CodexUI.MomentCard({ Event = "Card", Card = { Kills = 1, Stage = 3 } }).Stage == 3, "never lowers a stage")
+-- the moment's size: a big screen keeps it whole, a short one shrinks it to half its height
+check(CodexUI.MomentFit(1053) == 1 and CodexUI.MomentFit(0) == 1, "a 1316 px screen (1053 du): the moment at full size")
+local f520 = CodexUI.MomentFit(520)
+check(f520 < 1 and (T.L.Moment.H + T.L.Moment.Line) * f520 <= 520 * T.L.Moment.Room + 1e-6, "a phone (520 du): the moment shrinks to half the height",
+	f520)
 -- every series-1 kind reads (name, zone, a story line per side)
 local bad = {}
 for _, kind in Config.Codex.Order do
@@ -550,6 +561,8 @@ root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
 -- ⓑ one name: the slot says the card's own name
 check(VIEW.Slots.Slime.Name.Text == "Shard Slime" and VIEW.Big.NameText.Text == "Shard Slime",
 	"the slot and the big card say the same name", VIEW.Slots.Slime.Name.Text)
+check(VIEW.Slots.Slime.Name.TextWrapped == true and VIEW.Slots.Slime.Name.TextScaled == false,
+	"the slot's name wraps onto a second line (no 'Shard...')")
 -- ⓐ a hidden window (its frame not shown) is closed for the moments: the card moment comes, not a toast
 root.Visible = false
 local toastsBefore = #toasts
@@ -579,6 +592,7 @@ hold = false
 runDelays()
 local m = gui:FindFirstChild("CodexMoment")
 check(m ~= nil and #T.S.Queue == 0 and T.S.Busy == true, "a quiet screen: the card moment shows")
+check(m and m.Position.Args[2] == 0.5 and m.AnchorPoint.Y == 0.5, "the moment is centred on the screen (below the event line)")
 local mc = m and m:FindFirstChild("CodexCard")
 local line = m and m:FindFirstChild("Line")
 check(line ~= nil and line.Text == "New card: Goblin! +48 gold · +84 XP", "the server's line under the card", line and line.Text)
@@ -612,8 +626,8 @@ runDelays()
 runDefers()
 check(T.S.Busy == false and #T.S.Queue == 0, "the popup closed: the queue is free")
 -- an Evolve moment starts at the old stage
-remotes.CodexUp.OnClientEvent:Fire({ Event = "Holo", Kind = "Slime", Stage = 3, Card = { Kills = 1000, Golden = 0, Stage = 3, First = t0 },
-	Text = "Slime card is now Gold Holo!" })
+remotes.CodexUp.OnClientEvent:Fire({ Event = "Holo", Kind = "Slime", Card = { Kills = 12, Golden = 0, Stage = 1, First = t0 },
+	Text = "Slime card is now Gold Holo!", Debug = true })
 m = gui:FindFirstChild("CodexMoment")
 local stageText = m and m:FindFirstChild("CodexCard"):FindFirstChild("Face"):FindFirstChild("Front"):FindFirstChild("Stage")
 check(stageText ~= nil and stageText.Text == "Silver", "Gold Holo: the card shows Silver first", stageText and stageText.Text)
