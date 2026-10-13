@@ -8,7 +8,8 @@
    - 고른 흰 모델: Planter_D 105124b0 · FlowerCart_Bouquet 82912694 · Bal_E 781e6f4e · Bal_F 934efdb9 · Bal_A bcaca51e · Bal_B add2a937 · Bal_C 531c8172 · Bal_D 71359ce0 · NEW_FlowerBush 6e6bd726 · NEW_WallLamp 8ec1b5e1 · NEW_Hedge 67f8ae44
    - ⑤ 메모: Bouquet 4개 다 꽃 뒤 빈 껍데기 → 꽃 DoubleSided, 뒤를 수레 안/벽 쪽. Bal_C ㄱ 안쪽에 받침 높이 세모 바닥판 → 땅에 살짝 묻기. FlowerBush는 꽃 원판 자리 = 앞면 2D 꽃 자리라 고름.
    - 흰 모델 FBX `art/models/tripo/wm2_1013/<이름>/<id8>.fbx`, 시트 `art/review/blender2/wm_1013/<이름>.jpg`.
-3. **이미지 생성 2 큰 지도 그림** 판정.
+3. 큰 지도 V3 a·b = 통과, b 추천으로 최종 검수에 보냄(10/13).
+4. **이미지 생성 2 빛 마을 소품 남은 11종 4면**(HaloFlagpole_1·2·3, HaloReasonHQ_GuardPost·PhotoDisc·Clothesline·PotionCrate·RackShieldSword·Scarecrow·VegGarden·Woodpile) → 내 판정 → 통과분 Blender 손보기 2 큐(점수 승인 나, 4K 125/개).
 
 ## 2D 4면 판정 끝(10/13)
 - 통과 → Blender 손보기 1: GatherBush·CandleCrate·Easel·NoticeBoard·ArmoryBarrels·WaterBuckets(디자인 검수 1 먼저 판정 따름).
