@@ -141,6 +141,12 @@ end
 function METHODS.SetAttribute(self, k, v) rawget(self, "__p").Attrs[k] = v end
 function METHODS.GetAttribute(self, k) return rawget(self, "__p").Attrs[k] end
 function METHODS.WaitForChild(self, name) return self:FindFirstChild(name) end
+function METHODS.GetPropertyChangedSignal(self, prop)
+	local p = rawget(self, "__p")
+	p.Changed = p.Changed or {}
+	p.Changed[prop] = p.Changed[prop] or signal("Changed")
+	return p.Changed[prop]
+end
 omt.__index = function(o, k)
 	if METHODS[k] then return METHODS[k] end
 	local p = rawget(o, "__p")
@@ -242,6 +248,8 @@ local reduced, hold = false, false
 local toasts, popups = {}, {}
 local ARTIDS = { IconMonSlime = "rbxassetid://1", IconMonGoblin = "rbxassetid://2" }
 local gui = newObj("ScreenGui", { Name = "MainGui", IgnoreGuiInset = true })
+local uiScale = newObj("UIScale", { Name = "UIScale", Scale = 1, Parent = gui })
+local bodyAbs = v2(684, 480) -- the body's AbsoluteSize (real px) Panels gives the window
 local function apply(o, props, skip)
 	for k, v in props or {} do
 		if not (skip and skip[k]) then o[k] = v end
@@ -282,6 +290,7 @@ local KIT = {
 	Theme = { Gold = "gold", Text = "text", SubText = "sub" }, Palette = { Button = "btn", DarkText = "dark" }, Font = "font",
 }
 local Panels = {
+	CurrentId = function() return opened and opened.Id or nil end,
 	Register = function(id, opts)
 		REG[id] = opts
 		return true
@@ -290,7 +299,7 @@ local Panels = {
 		local opts = REG[id]
 		if not opts then return false end
 		if opened then Panels.Close() end
-		local root = newObj("Frame", { Name = "Content", Parent = gui })
+		local root = newObj("Frame", { Name = "Content", Parent = gui, AbsoluteSize = bodyAbs })
 		opened = { Id = id, Root = root }
 		opts.Build(root, KIT, arg)
 		return true
@@ -326,12 +335,13 @@ local codexFn = assert(loadstring(CODEX_SOURCE, "=CodexUI"))
 setfenv(codexFn, env)
 local CodexUI = codexFn()
 local T = CodexUI._T
-local C = { UIKit = UIKit, Panels = Panels }
+local plays = {}
+local C = { UIKit = UIKit, Panels = Panels, Audio = { Play = function(e) table.insert(plays, e) end } }
 CodexUI.Init(C)
 check(REG.Codex ~= nil and REG.Codex.FixedBody == true and REG.Codex.Width == T.L.Width and type(REG.Codex.Cleanup) == "function",
 	"Init: the Panels window 'Codex' (fixed body, its width, a cleanup)")
-check(type(REG.Codex.Title) == "function" and REG.Codex.Title() == "Monster Codex", "the window title = Config.Codex.Text.Name",
-	REG.Codex.Title and REG.Codex.Title())
+check(type(REG.Codex.Title) == "function" and REG.Codex.Title() == "Monster Codex · 0/11 cards",
+	"the window title = Config.Codex.Text.Name + my count", REG.Codex.Title and REG.Codex.Title())
 CodexUI.Start()
 check(remotes.Codex ~= nil and remotes.CodexUp ~= nil, "Start listens to 'Codex' and 'CodexUp'")
 check(Config.Codex.ServerToast == false, "Config.Codex.ServerToast is off (the lines come from the screen)")
@@ -396,6 +406,32 @@ for _, kind in Config.Codex.Order do
 end
 check(#bad == 0, "all 11 kinds: a name, a zone, a story line for each side", table.concat(bad, ","))
 
+------------------------------------------------------------------ the layout (최종 검수 10/13 review)
+local lay = CodexUI.Layout(604, 440)
+check(lay.CardH > 310 and lay.SlotH > 168 and lay.TabW == 197, "a 604 x 440 body: the card and slots bigger than before, 197 tabs",
+	lay.CardW .. "x" .. lay.CardH .. " " .. lay.SlotH .. " " .. lay.TabW)
+local full = CodexUI.Layout(684, 480)
+check(full.Top + full.RowY + T.L.ButtonH >= 480 - 2 and full.Top + 2 * full.SlotH + T.L.Gap >= 480 - 2 and full.TabW == 220,
+	"the full window (684 x 480): the card row and the two slot rows reach the bottom (no empty half)",
+	full.CardH .. "/" .. full.SlotH)
+for _, ww in { 684, 604 } do
+	for _, hh in { 560, 480, 404, 360, 330, 300 } do
+		local l = CodexUI.Layout(ww, hh)
+		local fits = l.Top + l.RowY + T.L.ButtonH <= hh and l.Top + 2 * l.SlotH + T.L.Gap <= hh
+		check(fits and 3 * l.TabW + 2 * T.L.TabGap <= ww and l.LeftW + T.L.ColGap + l.RightW <= ww and l.CardW <= l.RightW
+			and 3 * T.L.ButtonW + 12 <= l.RightW, "a body " .. ww .. " x " .. hh .. ": everything inside (buttons, both slot rows, columns)",
+			l.CardW .. "x" .. l.CardH .. "/" .. l.SlotH)
+		check(math.abs(l.CardW / l.CardH - 230 / 310) < 0.01, "a body " .. ww .. " x " .. hh .. ": the card keeps its shape")
+	end
+end
+local ll = CodexUI.Layout(0, 0)
+check(ll.CardH == CodexUI.Layout(684, 470).CardH, "a body not laid out yet: the PC size")
+-- the zone names fit a tab at a 720p PC floor (18 real px / UIScale 0.8 = 22.5 du, ~0.58 em a letter in GothamBold - the
+-- 720p main photo is the real check)
+local longest = 0
+for _, page in Config.Codex.Pages do longest = math.max(longest, #Config.Zones[page.Id].Name) end
+check(longest * 0.65 * 22.5 <= CodexUI.Layout(684, 480).TabW - 8, "the longest zone name fits its tab at a 720p floor", longest)
+
 ------------------------------------------------------------------ data + the window
 remotes.Codex.OnClientEvent:Fire({ V = 1, Cards = { Slime = { Kills = 12, Golden = 0, Stage = 1, First = t0 }, Bogus = { Kills = 5 } },
 	Glow = false })
@@ -413,7 +449,7 @@ local VIEW = T.VIEW
 local slots = 0
 for _, ch in VIEW.Grid:GetChildren() do if string.sub(ch.Name, 1, 4) == "Slot" then slots += 1 end end
 check(slots == 4, "page 1 shows its 4 cards", slots)
-check(VIEW.Count.Text == "1/11 cards", "the count", VIEW.Count.Text)
+check(REG.Codex.Title() == "Monster Codex · 1/11 cards", "the title counts my cards", REG.Codex.Title())
 check(#VIEW.Tabs == 3 and VIEW.Tabs[1].Text == "Squishy Meadow" and VIEW.Tabs[1].Painted == "gold", "3 zone tabs, the open one gold")
 local big = VIEW.Big
 check(T.S.Kind == "Slime" and big.NameText.Text == "Shard Slime" and big.KillsText.Text == "Kills: 12", "the big card = Slime",
@@ -467,10 +503,68 @@ check(#T.S.Queue == 0 and #toasts == 1 and toasts[1].Kind == "reward" and string
 	"window open: no moment, the line as a reward toast", #toasts)
 check(T.S.Cards.Slime.Stage == 2 and VIEW.Big.StageText.Text == "Silver" and VIEW.Big.Sheen.Visible == true,
 	"window open: the card redrawn at Silver (sheen on)")
+-- slots are kept: a flip, the foil, a choice and a fresh snapshot never build them again (최종 검수 10/13 review)
+local function slotsNow()
+	local out = {}
+	for _, ch in VIEW.Grid:GetChildren() do if string.sub(ch.Name, 1, 4) == "Slot" then out[ch.Name] = ch end end
+	return out
+end
+local before = slotsNow()
+local function same(a, b)
+	for k, v in a do if b[k] ~= v then return false end end
+	for k, v in b do if a[k] ~= v then return false end end
+	return true
+end
+VIEW.Buttons.Flip.Activated:Fire()
+VIEW.Buttons.Flip.Activated:Fire()
+check(same(before, slotsNow()), "a flip keeps the slots (no new 3D views)")
+VIEW.Grid:FindFirstChild("SlotBigSlime").Activated:Fire()
+check(same(before, slotsNow()) and T.S.Kind == "BigSlime" and VIEW.Slots.BigSlime.Rim.Thickness == 4
+	and VIEW.Slots.Slime.Rim.Thickness == 2, "choosing a card keeps the slots, moves the gold rim")
+VIEW.Grid:FindFirstChild("SlotSlime").Activated:Fire()
+remotes.Codex.OnClientEvent:Fire({ V = 1, Cards = { Slime = { Kills = 13, Golden = 0, Stage = 1, First = t0 } }, Glow = false })
+check(same(before, slotsNow()) and VIEW.Big.KillsText.Text == "Kills: 13", "a fresh snapshot redraws in place", VIEW.Big.KillsText.Text)
+remotes.Codex.OnClientEvent:Fire({ V = 1, Cards = { Slime = { Kills = 13, Golden = 0, Stage = 1, First = t0 },
+	FlowerSlime = { Kills = 1, Golden = 0, Stage = 1, First = t0 } }, Glow = false })
+local after = slotsNow()
+check(after.SlotFlowerSlime ~= before.SlotFlowerSlime and after.SlotFlowerSlime.Part == "SlotCommon" and after.SlotSlime == before.SlotSlime,
+	"a card just met: only its slot is made again (SlotCommon)")
+-- the window in a 720p PC body (UIScale 0.8) and a phone held sideways, and when the body changes
+uiScale.Scale = 0.8
+local root = VIEW.Root
+root.AbsoluteSize = v2(684 * 0.8, 404 * 0.8)
+root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+local want = CodexUI.Layout(684, 404)
+local hs = VIEW.Big.Holder.Size
+check(hs.Args[1] == want.CardW and hs.Args[2] == want.CardH and VIEW.Row.Position.Args[2] == want.RowY
+	and VIEW.Tabs[1].Size.Args[2] == want.TabW, "a 720p body (UIScale 0.8): the card and its buttons sized to fit", tostring(hs.Args[2]))
+uiScale.Scale = 0.75
+root.AbsoluteSize = v2(684 * 0.75, 330 * 0.75)
+root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+want = CodexUI.Layout(684, 330)
+check(VIEW.Big.Holder.Size.Args[2] == want.CardH and VIEW.GridLayout.CellSize.Args[2] == want.SlotH
+	and want.Top + want.RowY + T.L.ButtonH <= 330, "a phone sideways (330 high): the buttons stay inside", want.CardH)
+uiScale.Scale = 1
+root.AbsoluteSize = v2(684, 480)
+root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+-- ⓑ one name: the slot says the card's own name
+check(VIEW.Slots.Slime.Name.Text == "Shard Slime" and VIEW.Big.NameText.Text == "Shard Slime",
+	"the slot and the big card say the same name", VIEW.Slots.Slime.Name.Text)
+-- ⓐ a hidden window (its frame not shown) is closed for the moments: the card moment comes, not a toast
+root.Visible = false
+local toastsBefore = #toasts
+remotes.CodexUp.OnClientEvent:Fire({ Event = "Silver", Kind = "BigSlime", Stage = 2, Card = { Kills = 100, Golden = 0, Stage = 2, First = t0 },
+	Text = "Slime Prince card is now Silver!", Debug = true })
+check(#toasts == toastsBefore and #T.S.Queue == 1, "a hidden window: the moment waits its turn (no toast)", #T.S.Queue)
+table.clear(T.S.Queue)
+root.Visible = true
+-- the chime: the open window's toast rang it
+check(#plays == 1 and plays[1] == "QuestDone", "the open window's reward toast rings QuestDone", #plays)
 -- closing lets go of everything
 Panels.Close()
-check((live.RenderStepped or 0) == 0 and (live.InputEnded or 0) == 0 and T.VIEW.Root == nil, "closing disconnects the motion and input",
-	tostring(live.RenderStepped) .. "/" .. tostring(live.InputEnded))
+check((live.RenderStepped or 0) == 0 and (live.InputEnded or 0) == 0 and (live.Changed or 0) == 0 and T.VIEW.Root == nil,
+	"closing disconnects the motion, input and size watch", tostring(live.RenderStepped) .. "/" .. tostring(live.InputEnded) .. "/"
+	.. tostring(live.Changed))
 
 ------------------------------------------------------------------ moments
 -- not loaded yet: waits
@@ -488,6 +582,7 @@ check(m ~= nil and #T.S.Queue == 0 and T.S.Busy == true, "a quiet screen: the ca
 local mc = m and m:FindFirstChild("CodexCard")
 local line = m and m:FindFirstChild("Line")
 check(line ~= nil and line.Text == "New card: Goblin! +48 gold · +84 XP", "the server's line under the card", line and line.Text)
+check(#plays == 2 and plays[2] == "QuestDone", "a card moment rings QuestDone", #plays)
 local front = mc and mc:FindFirstChild("Face"):FindFirstChild("Front")
 local view = front and front:FindFirstChild("Monster3D")
 check(view ~= nil and view.ImageColor3.X == 0, "a new card starts as its silhouette")
@@ -506,6 +601,7 @@ check(gui:FindFirstChild("CodexMoment") == nil, "the card goes when its time is 
 runDefers()
 check(#popups == 1 and popups[1].Lines[1] == "Goblin Woods page done! New title: Goblin Scholar" and popups[1].Button == "Yay!"
 	and popups[1].Title == "Monster Codex", "a page done: the reward popup with the line", #popups)
+check(#plays == 3, "the reward popup rings QuestDone", #plays)
 local pf = gui:FindFirstChild("RewardPopup")
 check(T.S.Busy == true and pf ~= nil, "the queue waits while the popup is open")
 runWaits()

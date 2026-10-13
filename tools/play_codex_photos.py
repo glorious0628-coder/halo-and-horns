@@ -7,6 +7,8 @@ log says which). Shots: 01 the window (page 1, Slime big), 02 the card tilted (S
 edge), 03 [Auto tilt], 04 the back (a click on the card), 05 King Slime (Gold Holo), 06 page 2 (silhouettes), then the
 moments with the window closed (DebugCommand "show:<kind>:<Event>"): 07/08 a new card (Goblin: silhouette -> card), 09/10
 Silver -> Gold Holo (Slime), 11 a page done (the reward popup). Studio's own user_mouse_input only (no desktop mouse).
+The window is "closed" for the moments by hiding its PanelsModal (CodexUI counts a hidden window as closed); the
+tutorial's first claim is marked done (TutorialStep 99) so the moments are not held (최종 검수 10/13: 07-10 had no card).
 Usage: py tools/play_codex_photos.py [outdir-name]   (HH_MAIN_STUDIO=1 for the main Studio)
 Out: docs/art/verification_2026-10-13/codex/<outdir>/ (default sandbox / main): NN_<name>.png, log.txt"""
 import base64
@@ -207,6 +209,9 @@ def main():
         note("chosen: " + wait_state(c, lambda x: "ClassChosen=true" in x, 20))
         note(lua(c, FIRE % ("AcceptTutorial", "", "AcceptTutorial"), "Client"))
         time.sleep(3)
+        # the first [Claim] done (UIKit.ShouldHoldBanners holds the card moments until then, as in a real first play)
+        note(lua(c, 'local p = game:GetService("Players"):GetPlayers()[1] p:SetAttribute("TutorialStep", 99) '
+                    'return "TutorialStep " .. tostring(p:GetAttribute("TutorialStep"))', "Server"))
         note(lua(c, MODELS, "Server"))
         note("cards: " + lua(c, DEBUG % '{ "Codex", "Slime:12" }, { "Codex", "BigSlime:150" }, { "Codex", "SlimeKing:31" }, '
                                        '{ "Codex", "Goblin:5" }', "Server"))

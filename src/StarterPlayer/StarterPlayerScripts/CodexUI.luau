@@ -42,10 +42,12 @@ local TAG = "CodexUI"
 
 -- layout (du) and motion
 local L = {
-	Window = "Codex", Width = 640, -- Panels FRAME.Pad 18 each side -> 604 du of content
-	TabH = 40, Gap = 10, ButtonH = 34, ButtonW = 96,
-	SlotW = 136, SlotH = 168, Columns = 2, -- the page's cards (four at most)
-	RightW = 300, CardW = 230, CardH = 310, -- the big card's column and the card (fits a 440 du tall window)
+	-- 최종 검수 10/13 (main photos: the window's lower half empty): wider, and the cards / slots grow to fill the body
+	Window = "Codex", Width = 720, -- Panels FRAME.Pad 18 each side -> 684 du of content
+	TabH = 40, TabW = 220, TabGap = 6, Gap = 10, ColGap = 16, ButtonH = 34, ButtonW = 96, -- (TabW: "Squishy Meadow")
+	SlotW = 136, MinSlotH = 96, MaxSlotH = 240, Columns = 2, -- the page's cards (four at most), as tall as the body allows
+	CardW = 230, CardH = 310, MinCardH = 150, MaxCardH = 480, -- the big card's shape (W / H) and its height's bounds
+	Sound = "QuestDone", -- the reward chime (Audio) of a card moment / the reward popup / the open window's toast
 	View = { Top = 0.11, H = 0.56 }, -- the 3D window on the card face (share of its height)
 	Tilt = { Yaw = 28, Pitch = 14, Roll = 3, Ease = 10, Auto = 0.35, Sheen = 0.55 }, -- degrees, 1/s, turns/s, offset
 	Flip = 0.12, -- s each half of a flip
@@ -65,7 +67,8 @@ local L = {
 }
 local S = { Ready = false, Cards = {}, Glow = false, Got = false, Page = 1, Kind = nil, Back = false, Foil = false,
 	Auto = false, OpenAt = -math.huge, Queue = {}, Busy = false }
-local VIEW = { Root = nil, Kit = nil, Tabs = nil, Grid = nil, Big = nil, Buttons = nil, Count = nil, Conns = {} }
+local VIEW = { Root = nil, Kit = nil, Tabs = nil, Grid = nil, GridLayout = nil, Right = nil, Row = nil, Big = nil,
+	Buttons = nil, Slots = {}, SlotsPage = nil, Layout = nil, Conns = {} }
 local MODEL = { Cache = {} }
 local CARD = {}
 local MOMENT = { Card = nil, Frame = nil, Conn = nil }
@@ -425,16 +428,25 @@ function CARD.New(parent, size, z)
 		TextScaled = true, MaxTextSize = 17, ZIndex = z + 2, Parent = c.FrontPlate }, true)
 	c.NextText = text({ Name = "Next", Text = "", Position = UDim2.fromScale(0.06, 0.87), Size = UDim2.fromScale(0.88, 0.065),
 		TextScaled = true, MaxTextSize = 15, ZIndex = z + 2, Parent = c.FrontPlate }, true)
-	-- the back
+	-- the back: whole lines one under another, each as tall as its wrapped words (최종 검수 10/13: "Found in: Squishy",
+	-- "First met: Oct 13," were cut in fixed boxes)
 	local lines = {}
-	local y = 0.05
-	for _, spec in { { "BackName", 0.09, 22, true }, { "Lore", 0.3, 17 }, { "Where", 0.1, 15 }, { "Drops", 0.14, 15 },
-		{ "BackKills", 0.08, 15 }, { "First", 0.08, 15 } } do
-		local l = text({ Name = spec[1], Text = "", Position = UDim2.fromScale(0.07, y), Size = UDim2.fromScale(0.86, spec[2]),
-			TextScaled = true, TextWrapped = true, MaxTextSize = spec[3], Title = spec[4] == true, ZIndex = z + 2,
-			Parent = c.BackPlate }, true)
-		lines[spec[1]] = l
-		y += spec[2] + 0.02
+	local col = Instance.new("Frame")
+	col.Name = "BackText"
+	col.BackgroundTransparency = 1
+	col.Position = UDim2.fromScale(0.07, 0.05)
+	col.Size = UDim2.fromScale(0.86, 0.9)
+	col.ZIndex = z + 2
+	col.Parent = c.BackPlate
+	local ll = Instance.new("UIListLayout")
+	ll.SortOrder = Enum.SortOrder.LayoutOrder
+	ll.Padding = UDim.new(0, 6)
+	ll.Parent = col
+	for i, spec in { { "BackName", 21, true }, { "Lore", 17 }, { "Where", 15 }, { "Drops", 15 }, { "BackKills", 15 },
+		{ "First", 15 } } do
+		lines[spec[1]] = text({ Name = spec[1], Text = "", LayoutOrder = i, Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true, TextSize = spec[2],
+			Title = spec[3] == true, ZIndex = z + 2, Parent = col }, true)
 	end
 	c.Lines = lines
 	c.Holder, c.FaceFrame = holder, face
@@ -570,32 +582,99 @@ local function viewOf(kind)
 	return CodexUI.View(kind, cardOf(S.Cards, kind), faction(), S.Foil)
 end
 
-local drawWindow -- forward
+-- 최종 검수 10/13 review: the reward chime the server's toast brought (Audio: a "reward" Notify = QuestDone) - the
+-- server toast is off, so a card moment, the reward popup and the open window's toast ring it here
+local function chime()
+	local a = C and C.Audio
+	if type(a) == "table" and type(a.Play) == "function" then pcall(a.Play, L.Sound) end
+end
+
+-- the window's layout for a body of w x h logical px (pure; 최종 검수 10/13 review: 720p / 768p PCs, phones held
+-- sideways): the zone tabs as wide as their names need (the card count sits in the title), the big card as tall as
+-- the body allows above its button row, the slots as tall as two rows allow. A body not laid out yet = the PC size
+function CodexUI.Layout(w, h)
+	w, h = tonumber(w) or 0, tonumber(h) or 0
+	if w <= 0 or h <= 0 then w, h = L.Width - 36, 470 end
+	local top = L.TabH + L.Gap
+	local room = math.max(0, h - top)
+	local leftW = L.SlotW * L.Columns + L.Gap * (L.Columns - 1)
+	local rightW = math.max(L.ButtonW * 3 + 12, w - leftW - L.ColGap) -- (the three buttons in a row at least)
+	local byWidth = math.floor(rightW * L.CardH / L.CardW)
+	local cardH = math.clamp(math.min(math.floor(room - L.Gap - L.ButtonH), byWidth), L.MinCardH, L.MaxCardH)
+	local cardW = math.floor(cardH * L.CardW / L.CardH + 0.5)
+	return { TabW = math.max(80, math.min(L.TabW, math.floor((w - 2 * L.TabGap) / 3))), Top = top, SlotW = L.SlotW,
+		SlotH = math.clamp(math.floor((room - L.Gap) / 2), L.MinSlotH, L.MaxSlotH), LeftW = leftW, RightW = rightW,
+		CardW = cardW, CardH = cardH, RowY = cardH + L.Gap }
+end
+
+-- a GUI's size in logical px (its AbsoluteSize over every UIScale on it and above it, up to its ScreenGui)
+local function logical(gui)
+	local s, p = 1, gui
+	while p and p:IsA("GuiBase2d") do
+		local u = p:FindFirstChildOfClass("UIScale")
+		if u and u.Scale > 0 then s *= u.Scale end
+		if p:IsA("LayerCollector") then break end
+		p = p.Parent
+	end
+	local abs = gui.AbsoluteSize
+	return abs.X / s, abs.Y / s
+end
+
+-- the sizes for this body (tabs, slots, the big card, its buttons)
+local function relayout()
+	local root = VIEW.Root
+	if not (root and root.Parent and VIEW.Big) then return end
+	local lay = CodexUI.Layout(logical(root))
+	VIEW.Layout = lay
+	for _, b in VIEW.Tabs or {} do b.Size = UDim2.new(0, lay.TabW, 1, 0) end
+	VIEW.Grid.Position = UDim2.fromOffset(0, lay.Top)
+	VIEW.Grid.Size = UDim2.new(0, lay.LeftW, 1, -lay.Top)
+	VIEW.GridLayout.CellSize = UDim2.fromOffset(lay.SlotW, lay.SlotH)
+	VIEW.Right.Position = UDim2.new(1, -lay.RightW, 0, lay.Top)
+	VIEW.Right.Size = UDim2.new(0, lay.RightW, 1, -lay.Top)
+	VIEW.Big.Holder.Size = UDim2.fromOffset(lay.CardW, lay.CardH)
+	VIEW.Row.Position = UDim2.fromOffset(0, lay.RowY)
+end
+
+local drawWindow, drawBig -- forward
+
+-- a slot's rim: the chosen card gold and thick, the others their stage's
+local function slotRim(kind, s)
+	s.Rim.Thickness = kind == S.Kind and 4 or 2
+	s.Rim.Color = kind == S.Kind and rimOf("Holo") or rimOf(s.View and s.View.Look or "None")
+end
 
 local function pick(kind)
 	if S.Kind ~= kind then S.Back, S.Foil = false, false end
 	S.Kind = kind
-	drawWindow()
+	for k, s in VIEW.Slots or {} do slotRim(k, s) end
+	drawBig()
 end
 
-local function slot(parent, kind, order)
+-- a slot's card (redrawn in place: 최종 검수 10/13 review - a flip, the foil or a choice never builds the slots again)
+local function setSlot(s, v)
+	s.View = v
+	CARD.Set(s.Mini, v)
+	s.Name.Text = v.Name
+end
+
+local function newSlot(parent, kind, order)
 	local v = CodexUI.View(kind, cardOf(S.Cards, kind), faction(), false)
+	local size = UDim2.fromOffset(L.SlotW, L.SlotH)
 	local btn, _ = call("ArtButton", v.Known and "SlotCommon" or "SlotEmpty", { Name = "Slot" .. kind, LayoutOrder = order,
-		Size = UDim2.fromOffset(L.SlotW, L.SlotH) }, function() pick(kind) end)
+		Size = size }, function() pick(kind) end)
 	if not btn then
 		btn = Instance.new("TextButton")
 		btn.Name = "Slot" .. kind
 		btn.Text = ""
 		btn.LayoutOrder = order
-		btn.Size = UDim2.fromOffset(L.SlotW, L.SlotH)
+		btn.Size = size
 		btn.BackgroundColor3 = L.Card
 		btn.Activated:Connect(function() pick(kind) end)
 	end
 	btn.Parent = parent
 	local rim = Instance.new("UIStroke")
 	rim.Name = "Rim"
-	rim.Thickness = kind == S.Kind and 4 or 2
-	rim.Color = kind == S.Kind and rimOf("Holo") or rimOf(v.Look)
 	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	rim.Parent = btn
 	local mini = CARD.New(btn, UDim2.new(1, -10, 1, -40), btn.ZIndex + 1)
@@ -606,10 +685,55 @@ local function slot(parent, kind, order)
 		if p then p.Visible = false end
 	end
 	mini.ViewFrame.Position, mini.ViewFrame.Size = UDim2.fromScale(0.5, 0.05), UDim2.fromScale(0.9, 0.9)
-	CARD.Set(mini, v)
-	text({ Name = "SlotName", Text = v.Short, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -6),
-		Size = UDim2.new(1, -10, 0, 28), TextScaled = true, MaxTextSize = 15, ZIndex = btn.ZIndex + 2, Parent = btn }, true)
-	return btn
+	local name = text({ Name = "SlotName", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -6),
+		Size = UDim2.new(1, -10, 0, 28), TextScaled = false, TextSize = 15, TextTruncate = Enum.TextTruncate.AtEnd,
+		ZIndex = btn.ZIndex + 2, Parent = btn }, true)
+	local s = { Button = btn, Rim = rim, Mini = mini, Name = name, Known = v.Known }
+	setSlot(s, v)
+	return s
+end
+
+-- the page's slots: built when the page changes, else redrawn in place (a slot whose card was just met is made again:
+-- its art goes from SlotEmpty to SlotCommon)
+local function drawSlots(page)
+	local slots = VIEW.Slots or {}
+	if VIEW.SlotsPage ~= page.Index then
+		for _, s in slots do pcall(function() s.Button:Destroy() end) end
+		slots = {}
+		for i, kind in page.Kinds do slots[kind] = newSlot(VIEW.Grid, kind, i) end
+		VIEW.SlotsPage = page.Index
+	else
+		for i, kind in page.Kinds do
+			local s = slots[kind]
+			local v = CodexUI.View(kind, cardOf(S.Cards, kind), faction(), false)
+			if not s or s.Known ~= v.Known then
+				if s then pcall(function() s.Button:Destroy() end) end
+				slots[kind] = newSlot(VIEW.Grid, kind, i)
+			else
+				setSlot(s, v)
+			end
+		end
+	end
+	VIEW.Slots = slots
+	for kind, s in slots do slotRim(kind, s) end
+end
+
+-- the big card and its buttons
+drawBig = function()
+	if not (VIEW.Big and VIEW.Big.Holder.Parent and S.Kind) then return end
+	local v = viewOf(S.Kind)
+	if S.Foil and not v.HasFoil then
+		S.Foil = false
+		v = viewOf(S.Kind)
+	end
+	CARD.Set(VIEW.Big, v)
+	CARD.Flip(VIEW.Big, S.Back and v.Known, false)
+	local b = VIEW.Buttons or {}
+	if b.Flip then b.Flip.Visible = v.Known end
+	if b.FlipText then b.FlipText.Text = S.Back and tx("Front") or tx("Flip") end
+	if b.Foil then b.Foil.Visible = v.HasFoil end
+	if b.FoilText then b.FoilText.Text = S.Foil and tx("ShowCard") or tx("ShowFoil") end
+	if b.TiltText then b.TiltText.Text = tx("Tilt") end
 end
 
 drawWindow = function()
@@ -620,29 +744,19 @@ drawWindow = function()
 	local page = CodexUI.Page(S.Cards, S.Page)
 	if not page then return end
 	if not S.Kind or codex().PageOf[S.Kind] ~= S.Page then S.Kind = page.Kinds[1] end
-	-- tabs + count
 	for i, b in VIEW.Tabs or {} do
 		local on = i == S.Page
 		pcall(k.Paint, b, on and k.Theme.Gold or k.Palette.Button, on and k.Palette.DarkText or k.Theme.Text)
 	end
+	drawSlots(page)
+	drawBig()
+end
+
+-- the window's title: the codex's name and my count ("Monster Codex · 3/11 cards")
+local function title()
+	local name = type(codex().Text) == "table" and codex().Text.Name or nil
 	local owned, total = CodexUI.Count(S.Cards)
-	if VIEW.Count then VIEW.Count.Text = tx("Count", owned, total) end
-	-- the slots
-	for _, ch in VIEW.Grid:GetChildren() do
-		if not ch:IsA("UIGridLayout") then ch:Destroy() end
-	end
-	for i, kind in page.Kinds do slot(VIEW.Grid, kind, i) end
-	-- the big card
-	local v = viewOf(S.Kind)
-	if not v.HasFoil then S.Foil = false; v = viewOf(S.Kind) end
-	CARD.Set(VIEW.Big, v)
-	CARD.Flip(VIEW.Big, S.Back and v.Known, false)
-	local b = VIEW.Buttons or {}
-	if b.Flip then b.Flip.Visible = v.Known end
-	if b.FlipText then b.FlipText.Text = S.Back and tx("Front") or tx("Flip") end
-	if b.Foil then b.Foil.Visible = v.HasFoil end
-	if b.FoilText then b.FoilText.Text = S.Foil and tx("ShowCard") or tx("ShowFoil") end
-	if b.TiltText then b.TiltText.Text = tx("Tilt") end
+	return string.format("%s · %s", type(name) == "string" and name or "", tx("Count", owned, total))
 end
 
 local function button(parent, name, order, onClick)
@@ -659,6 +773,14 @@ local function button(parent, name, order, onClick)
 	end
 	b.Parent = parent
 	return b, label or b
+end
+
+-- the big card turned over (animated) and its buttons redrawn - nothing else
+local function flipBig()
+	if not (VIEW.Big.View and VIEW.Big.View.Known) then return end
+	S.Back = not S.Back
+	CARD.Flip(VIEW.Big, S.Back, true)
+	drawBig()
 end
 
 -- the mouse / a finger over the big card -> its tilt goal; a short click / tap flips it
@@ -702,23 +824,19 @@ local function wireBig(c)
 			local quick = os.clock() - press.At < 0.35 and moved < 12
 			press = nil
 			if t == Enum.UserInputType.Touch and not S.Auto then c.Want = Vector2.zero end
-			if quick and c.View and c.View.Known then
-				S.Back = not S.Back
-				CARD.Flip(c, S.Back, true)
-				drawWindow()
-			end
+			if quick then flipBig() end -- (flipBig turns only a card I have)
 		end
 	end))
 end
 
 local function build(parent, k, arg)
 	disconnect()
-	VIEW.Root, VIEW.Kit = parent, k
+	VIEW.Root, VIEW.Kit, VIEW.Slots, VIEW.SlotsPage = parent, k, {}, nil
 	if type(arg) == "table" and type(arg.Kind) == "string" and codex().PageOf and codex().PageOf[arg.Kind] then
 		S.Kind, S.Page, S.Back, S.Foil = arg.Kind, codex().PageOf[arg.Kind], false, false
 	end
 	fireOpen()
-	-- tabs + count
+	-- the zone tabs
 	local bar = Instance.new("Frame")
 	bar.Name = "Tabs"
 	bar.BackgroundTransparency = 1
@@ -728,42 +846,35 @@ local function build(parent, k, arg)
 	list.FillDirection = Enum.FillDirection.Horizontal
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.VerticalAlignment = Enum.VerticalAlignment.Center
-	list.Padding = UDim.new(0, 6)
+	list.Padding = UDim.new(0, L.TabGap)
 	list.Parent = bar
 	VIEW.Tabs = {}
 	local pages = type(codex().Pages) == "table" and codex().Pages or {}
 	for i in pages do
 		local p = CodexUI.Page(S.Cards, i)
-		local b = k.Button(bar, p and p.Name or "", k.Palette.Button, UDim2.new(0, 132, 1, 0), function()
+		local b = k.Button(bar, p and p.Name or "", k.Palette.Button, UDim2.new(0, L.TabW, 1, 0), function()
 			S.Page, S.Kind, S.Back, S.Foil = i, nil, false, false
 			drawWindow()
 		end)
 		b.LayoutOrder = i
 		VIEW.Tabs[i] = b
 	end
-	VIEW.Count = text({ Name = "Count", Text = "", LayoutOrder = 99, Size = UDim2.new(0, 160, 1, 0), TextScaled = true,
-		MaxTextSize = 18, TextXAlignment = Enum.TextXAlignment.Right, Parent = bar }, true)
 	-- the slots
-	local top = L.TabH + L.Gap
 	local grid = Instance.new("Frame")
 	grid.Name = "Cards"
 	grid.BackgroundTransparency = 1
-	grid.Position = UDim2.fromOffset(0, top)
-	grid.Size = UDim2.new(0, L.SlotW * L.Columns + L.Gap * (L.Columns - 1), 1, -top)
 	grid.Parent = parent
 	local gl = Instance.new("UIGridLayout")
-	gl.CellSize = UDim2.fromOffset(L.SlotW, L.SlotH)
 	gl.CellPadding = UDim2.fromOffset(L.Gap, L.Gap)
 	gl.SortOrder = Enum.SortOrder.LayoutOrder
 	gl.Parent = grid
-	VIEW.Grid = grid
+	VIEW.Grid, VIEW.GridLayout = grid, gl
 	-- the big card + its buttons
 	local right = Instance.new("Frame")
 	right.Name = "Big"
 	right.BackgroundTransparency = 1
-	right.Position = UDim2.new(1, -L.RightW, 0, top)
-	right.Size = UDim2.new(0, L.RightW, 1, -top)
 	right.Parent = parent
+	VIEW.Right = right
 	VIEW.Big = CARD.New(right, UDim2.fromOffset(L.CardW, L.CardH), 5)
 	VIEW.Big.Holder.AnchorPoint = Vector2.new(0.5, 0)
 	VIEW.Big.Holder.Position = UDim2.fromScale(0.5, 0)
@@ -771,9 +882,9 @@ local function build(parent, k, arg)
 	local row = Instance.new("Frame")
 	row.Name = "Buttons"
 	row.BackgroundTransparency = 1
-	row.Position = UDim2.fromOffset(0, L.CardH + L.Gap)
 	row.Size = UDim2.new(1, 0, 0, L.ButtonH)
 	row.Parent = right
+	VIEW.Row = row
 	local rl = Instance.new("UIListLayout")
 	rl.FillDirection = Enum.FillDirection.Horizontal
 	rl.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -781,21 +892,19 @@ local function build(parent, k, arg)
 	rl.SortOrder = Enum.SortOrder.LayoutOrder
 	rl.Parent = row
 	local b = {}
-	b.Flip, b.FlipText = button(row, "Flip", 1, function()
-		if not (VIEW.Big.View and VIEW.Big.View.Known) then return end
-		S.Back = not S.Back
-		CARD.Flip(VIEW.Big, S.Back, true)
-		drawWindow()
-	end)
+	b.Flip, b.FlipText = button(row, "Flip", 1, flipBig)
 	b.Tilt, b.TiltText = button(row, "AutoTilt", 2, function()
 		S.Auto = not S.Auto
 		if not S.Auto then VIEW.Big.Want = Vector2.zero end
 	end)
 	b.Foil, b.FoilText = button(row, "Foil", 3, function()
 		S.Foil = not S.Foil
-		drawWindow()
+		drawBig()
 	end)
 	VIEW.Buttons = b
+	-- sized for this body, again when it changes (a window resized, a phone turned)
+	relayout()
+	table.insert(VIEW.Conns, parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(relayout))
 	-- motion while open
 	local t0 = os.clock()
 	table.insert(VIEW.Conns, RunService.RenderStepped:Connect(function(dt)
@@ -813,12 +922,27 @@ end
 
 local function cleanup()
 	disconnect()
-	VIEW.Root, VIEW.Kit, VIEW.Tabs, VIEW.Grid, VIEW.Big, VIEW.Buttons, VIEW.Count = nil, nil, nil, nil, nil, nil, nil
+	VIEW.Root, VIEW.Kit, VIEW.Tabs, VIEW.Grid, VIEW.GridLayout, VIEW.Right, VIEW.Row, VIEW.Big, VIEW.Buttons = nil, nil, nil,
+		nil, nil, nil, nil, nil, nil
+	VIEW.Slots, VIEW.SlotsPage, VIEW.Layout = {}, nil, nil
 	S.Auto = false
 end
 
 local function windowOpen()
-	return VIEW.Root ~= nil and VIEW.Root.Parent ~= nil
+	local root = VIEW.Root
+	if not (root and root.Parent) then return false end
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.CurrentId) == "function" then
+		local ok, id = pcall(panels.CurrentId)
+		if ok and id ~= L.Window then return false end
+	end
+	-- 최종 검수 10/13 (main photos: a hidden window still took the moments as toasts): every frame above it shown
+	local p = root
+	while p and p:IsA("GuiObject") do
+		if not p.Visible then return false end
+		p = p.Parent
+	end
+	return true
 end
 
 ---------------------------------------------------------------------------------------------------- moments
@@ -906,6 +1030,7 @@ function MOMENT.Card(payload, done)
 	else
 		CARD.Set(c, after)
 	end
+	chime()
 	local hold = tonumber(type(screen().Moment) == "table" and screen().Moment.Hold) or 2.6
 	task.delay(L.Moment.In + L.Moment.Evolve + hold, finish)
 end
@@ -919,6 +1044,7 @@ function MOMENT.Popup(payload, done)
 		Faction = faction(),
 	})
 	local frame = type(popup) == "table" and popup.Frame or nil
+	chime()
 	if not frame then
 		call("Toast", tostring(payload.Text or ""), "reward")
 		done()
@@ -974,6 +1100,7 @@ function CodexUI.OnUp(payload)
 		end
 		pcall(drawWindow)
 		call("Toast", tostring(payload.Text or ""), "reward")
+		chime()
 		return
 	end
 	CodexUI.Push(S.Queue, payload)
@@ -1002,10 +1129,7 @@ function CodexUI.Init(registry)
 		return
 	end
 	S.Ready = panels.Register(L.Window, {
-		Title = function()
-			local t = type(codex().Text) == "table" and codex().Text.Name or nil
-			return type(t) == "string" and t or ""
-		end,
+		Title = title,
 		FixedBody = true,
 		Width = L.Width,
 		Rebuild = { Faction = true },
