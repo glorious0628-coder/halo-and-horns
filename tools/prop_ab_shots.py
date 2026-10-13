@@ -79,6 +79,7 @@ local function cam(dir)
 end
 local L = pv.LookVector
 local f, fd = cam(L)
+if fd < D * 0.7 then for _, a in {35, -35, 70, -70} do local r = CFrame.Angles(0, math.rad(a), 0):VectorToWorldSpace(L); local p2, d2 = cam(r); if d2 > fd then f, fd = p2, d2 end end end
 local b, bd = cam(-L)
 if bd < h * 1.2 then for _, a in {60, -60, 120, -120} do local r = CFrame.Angles(0, math.rad(a), 0):VectorToWorldSpace(-L); local p2, d2 = cam(r); if d2 > bd then b, bd = p2, d2 end end end
 return string.format("%%.3f,%%.3f,%%.3f,%%.3f,%%.3f,%%.3f,%%.3f,%%.3f,%%.3f", f.X, f.Y, f.Z, b.X, b.Y, b.Z, look.X, look.Y, look.Z)'''
