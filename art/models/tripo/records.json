@@ -14979,10 +14979,12 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_Woodpile_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_Woodpile_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 77825279",
    "pbr": "94001794 (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_Woodpile_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_Woodpile_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_Woodpile/HaloReasonHQ_Woodpile_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.5386x0.9419, 5707 faces)"
   }
  ],
  "HaloReasonHQ_VegGarden_web2_sm_tex8k_pbr": [
@@ -15006,11 +15008,13 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_VegGarden_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_VegGarden_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 2752675c",
    "pbr": "1e7ba9f1 (5)",
    "file": "art/models/tripo/web/HaloReasonHQ_VegGarden_SM_tex4k_pbr_src.fbx",
-   "note": "no soil surface in any white model -> ⑤ soil as Studio part (디자인 검수 2 memo to 최종 검수)"
+   "note": "no soil surface in any white model -> ⑤ soil as Studio part (디자인 검수 2 memo to 최종 검수)",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_VegGarden/HaloReasonHQ_VegGarden_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.7065x0.729, 5932 faces)"
   }
  ],
  "HaloReasonHQ_Scarecrow_web2_sm_tex8k_pbr": [
@@ -15034,10 +15038,12 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_Scarecrow_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_Scarecrow_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task ae03a77a",
    "pbr": "f279aa96 (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_Scarecrow_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_Scarecrow/HaloReasonHQ_Scarecrow_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.6841x0.4058x0.9995, 5384 faces)"
   }
  ],
  "HaloReasonHQ_RackShieldSword_web2_sm_tex8k_pbr": [
@@ -15061,10 +15067,12 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_RackShieldSword_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_RackShieldSword_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 1ab524aa",
    "pbr": "004bb12a (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_RackShieldSword_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_RackShieldSword_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_RackShieldSword/HaloReasonHQ_RackShieldSword_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.1831x0.8833, 5397 faces)"
   }
  ],
  "HaloReasonHQ_Clothesline_web2_sm_tex8k_pbr": [
@@ -15088,10 +15096,12 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_Clothesline_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_Clothesline_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task dd1c3b7c",
    "pbr": "fa38cd59 (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_Clothesline_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_Clothesline_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_Clothesline/HaloReasonHQ_Clothesline_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.2495x0.6577, 4953 faces)"
   }
  ],
  "HaloFlagpole_3_web2_sm_tex8k_pbr": [
@@ -15115,10 +15125,12 @@
     "right_slot": "art/out/s2/noshadow/HaloFlagpole_3_left_ns.png",
     "back": "art/out/s2/noshadow/HaloFlagpole_3_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 633110dd",
    "pbr": "68511d88 (5)",
-   "file": "art/models/tripo/web/HaloFlagpole_3_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloFlagpole_3_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloFlagpole_3/HaloFlagpole_3_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9399x0.2544x0.9995, 4903 faces)"
   }
  ],
  "HaloFlagpole_2_web2_sm_tex8k_pbr": [
@@ -15142,10 +15154,12 @@
     "right_slot": "art/out/s2/noshadow/HaloFlagpole_2_left_ns.png",
     "back": "art/out/s2/noshadow/HaloFlagpole_2_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 29d476dc",
    "pbr": "0cf1bf80 (5)",
-   "file": "art/models/tripo/web/HaloFlagpole_2_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloFlagpole_2_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloFlagpole_2/HaloFlagpole_2_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.272x0.272x0.9995, 4322 faces)"
   }
  ],
  "HaloFlagpole_1_web2_sm_tex8k_pbr": [
@@ -15169,10 +15183,12 @@
     "right_slot": "art/out/s2/noshadow/HaloFlagpole_1_left_ns.png",
     "back": "art/out/s2/noshadow/HaloFlagpole_1_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 214aafb2",
    "pbr": "867ebe6e (5)",
-   "file": "art/models/tripo/web/HaloFlagpole_1_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloFlagpole_1_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloFlagpole_1/HaloFlagpole_1_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.354x0.1802x0.9995, 5991 faces)"
   }
  ],
  "NEW_BellFrame_web2_sm_tex8k_pbr": [
@@ -15196,10 +15212,12 @@
     "right_slot": "art/out/s2/noshadow/NEW_BellFrame_left_ns.png",
     "back": "art/out/s2/noshadow/NEW_BellFrame_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender size/pivot/orientation -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task d6c71002",
    "pbr": "08d3df6a (5)",
-   "file": "art/models/tripo/web/NEW_BellFrame_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/NEW_BellFrame_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/NEW_BellFrame/NEW_BellFrame_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.3335x0.9575, 5758 faces)"
   }
  ],
  "HaloReasonHQ_GuardPost_web2_sm_tex8k_pbr": [
@@ -15223,10 +15241,12 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_GuardPost_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_GuardPost_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task b58daf4f",
    "pbr": "a78c2e3c (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_GuardPost_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_GuardPost_SM_tex4k_pbr_src.fbx",
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.8911x0.6147x0.9995, 5105 faces)"
   }
  ],
  "HaloReasonHQ_PotionCrate_web2_sm_tex8k_pbr": [
@@ -15250,12 +15270,13 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_back_ns.png"
    },
-   "next": "Blender TU -> 이미지 생성 3",
+   "next": "이미지 생성 3: WorldKit + Roblox material",
    "note": "최종 검수 final 10/13: PotionCrate = account 2 fab0907c (account 1 version = _acc1_spare, disk only)",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 6e3a57c1",
    "pbr": "843f4dd2 (5)",
    "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx (fab0907c)",
-   "approval": "디자인 검수 2 PBR gate -> 최종 검수 PBR final pass 10/13"
+   "approval": "디자인 검수 2 PBR gate pass -> 최종 검수 PBR final pass 10/13 (⑤ memo docs/review/pbr_final_2026-10-13.md 묶음 e)",
+   "final": "art/models/tripo/touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU.glb (disk only; Blender = front -Y + bottom-centre pivot only, Tripo size kept, mesh/maps untouched; size 0.9995x0.4624x0.7769, 5618 faces)"
   }
  ],
  "HaloReasonHQ_GuardPost_web_sm_tex4k_pbr": [
