@@ -214,7 +214,7 @@ local TXT = {
 	TileCharacter = "Hero",
 	TileSkills = "Skills",
 	TileRanking = "Ranking",
-	TileCodex = "Codex", -- A23-153
+	TileCodex = "Monsters", -- A23-153 (user 10/13 first look "코덱스 뭐야": the plain word)
 	TileSettings = "Settings",
 	TileNews = "News",
 	TileDiary = "Diary",
@@ -2839,7 +2839,7 @@ function L.LayoutMenu(R)
 	L.Place(ui.menu, m)
 	local pad = L.FoldPad
 	local g = { X = f.X, Y = f.Y - pad, W = m.X - f.X, H = f.H + pad * 2, Size = f.Size, Gap = f.Gap, Lines = f.Lines,
-		Right = m.X - f.Gap }
+		Right = m.X - f.Gap, BaseSize = f.Size, BaseLines = f.Lines } -- Base*: L.PlaceFold may shrink to one line
 	ui.foldGeom = g
 	ui.fold.Position = UDim2.fromOffset(g.X, g.Y)
 	ui.fold.Size = UDim2.fromOffset(g.W, g.H)
@@ -2865,8 +2865,30 @@ end
 
 -- the shown squares on their slots: animate = slide out of [메뉴] one after another (A23-38 좌르륵), else jump there
 -- (a re-layout while open)
+-- user 10/13 first look (PC: the 9th square, the row's overflow tile, fell to a second line alone): when the squares
+-- need more than the first line, they shrink to fit that one line down to L.FoldMinFrac of [메뉴]'s size, centred on the
+-- same line; still too many = the lines as before. Pure: lines = Rects.fold.Lines, size / gap / right (du), n squares;
+-- returns the new size and one line, or nil (tools/test_first_look.py)
+L.FoldMinFrac = 0.85
+function L.FitFold(lines, size, gap, right, n)
+	local first = type(lines) == "table" and lines[1] or nil
+	if not first or type(n) ~= "number" or n <= first.Cols or first.Cols < 1 then return nil end
+	local width = first.Cols * (size + gap) - gap
+	local s = (width + gap) / n - gap
+	if s < size * L.FoldMinFrac then return nil end
+	return s, { { X = right - n * (s + gap) + gap, Y = first.Y + (size - s) / 2, Cols = n } }
+end
+
 function L.PlaceFold(animate)
 	local list = L.FoldEntries()
+	local g = ui.foldGeom
+	if g then
+		g.Size, g.Lines = g.BaseSize or g.Size, g.BaseLines or g.Lines
+		if not IS_TOUCH then
+			local s, lines = L.FitFold(g.Lines, g.Size, g.Gap, g.Right, #list)
+			if s then g.Size, g.Lines = s, lines end
+		end
+	end
 	local shown = {}
 	for i, f in list do
 		local target, start = L.FoldSlot(i)
@@ -2900,6 +2922,7 @@ function L.SetFold(open)
 	open = open == true and ui.fold ~= nil and ui.foldGeom ~= nil
 	if open == (ui.foldOpen == true) then return end
 	ui.foldOpen = open
+	if L.RefreshMenuGlow then pcall(L.RefreshMenuGlow) end -- open: the square inside glows, not [Menu] too
 	ui.foldToken = (ui.foldToken or 0) + 1
 	local token = ui.foldToken
 	-- 'Screen shake' off / Roblox reduced motion: the squares appear and go at once (no slide)
@@ -3570,6 +3593,16 @@ function HUD.ChipsFolded()
 	return L.ChipFold.Folded
 end
 
+-- the status chip row shows at least one chip (user 10/13 first look: out of town the row is empty and EventHUD's
+-- next-event line floated a whole row under the war meter; EventHUD lifts it into the empty row)
+function HUD.ChipsShown()
+	if not (ui.chips and ui.chips.Visible) then return false end
+	for _, c in ui.chips:GetChildren() do
+		if c:IsA("GuiObject") and c.Visible then return true end
+	end
+	return false
+end
+
 -- the fold chip's press (nil = just unfold)
 function HUD.OnChipsFoldTap(fn)
 	L.ChipFold.OnTap = type(fn) == "function" and fn or nil
@@ -4028,13 +4061,16 @@ local function refreshMenuGlow()
 	local settings = num("Level", 1) >= Config.RebirthLevel(num("Rebirths", 0)) or num("VacationDays", 0) > 0
 	local travel = HUD.TravelPulse(num("TutorialStep", 99), L.TravelSeen, (Config.Nudges or {}).TravelPulse)
 	local attend = L.AttendGlow()
-	L.SetGlow("menu", ui.menuGlow, settings or travel or attend)
+	-- user 10/13 first look (Gifts and [Menu] both ringed): [Menu] glows only while its fold is shut (it says "something
+	-- inside"); once open, the square inside (Gifts / Travel / Settings) glows alone
+	L.SetGlow("menu", ui.menuGlow, (settings or travel or attend) and ui.foldOpen ~= true)
 	L.SetGlow("travel", ui.travelGlow, travel)
 	L.SetGlow("attend", ui.attendGlow, attend)
 	L.SetGlow("settings", ui.settingsGlow, settings)
 	L.SetGlow("bag", ui.bagGlow, L.ItemsHint() or L.BagGuide())
 	L.RefreshBetterDots()
 end
+L.RefreshMenuGlow = refreshMenuGlow -- L.SetFold (built earlier) redraws it on open / close
 
 ----------------------------------------------------------------- refresh: travel
 local function refreshTravel()

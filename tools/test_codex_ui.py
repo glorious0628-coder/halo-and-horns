@@ -91,7 +91,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
                                                                                         block(screen, "Text = {"))),
         ("the HUD tile Codex opens the window 'Codex' (named TXT.TileCodex)",
          '{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },' in hud
-         and 'TileCodex = "Codex"' in hud and "Codex = TXT.TileCodex" in hud),
+         and 'TileCodex = "Monsters"' in hud and "Codex = TXT.TileCodex" in hud),
         ("ClientMain loads CodexUI once, after Panels", names.count("CodexUI") == 1 and "Panels" in names
          and names.index("Panels") < names.index("CodexUI")),
         ("the remotes are Net names (CodexOpen / Codex / CodexUp)", all(f'"{n}"' in net for n in ("CodexOpen", "Codex", "CodexUp"))

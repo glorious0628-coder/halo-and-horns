@@ -1627,6 +1627,27 @@ function V2.rects()
 	return nil
 end
 
+-- the next-event line's top (du): its own row (Rects.event), or the status chip row's when that row is empty (user
+-- 10/13 first look: out of town the goose pill floated a whole empty row under the war meter). chipsShown = HUD's answer
+-- (nil = unknown -> its own row). Pure (tools/test_event_lift.py)
+function V2.eventY(rects, chipsShown)
+	local ev = type(rects) == "table" and rects.event or nil
+	if type(ev) ~= "table" then return nil end
+	local chips = rects.chips
+	if chipsShown == false and type(chips) == "table" and type(chips.Y) == "number" and chips.Y < num(ev.Y) then
+		return chips.Y
+	end
+	return num(ev.Y)
+end
+
+function V2.chipsShown()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.ChipsShown) ~= "function" then return nil end
+	local ok, shown = pcall(hud.ChipsShown)
+	if not ok then return nil end
+	return shown == true
+end
+
 function V2.put(inst, anchor, pos, size)
 	if inst.AnchorPoint ~= anchor then inst.AnchorPoint = anchor end
 	if inst.Position ~= pos then inst.Position = pos end
@@ -1734,7 +1755,8 @@ function V2.stack()
 		local natural = eventInst == ui.KingChip
 			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or GOOSE_CHIP_W
 		if eventInst then
-			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(ev.Y - top + 0.5)),
+			local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y
+			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(evY - top + 0.5)),
 				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))
 		end
 		setVisible(ui.KingChip, eventInst == ui.KingChip)
