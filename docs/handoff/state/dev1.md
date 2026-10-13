@@ -1,6 +1,15 @@
 # 게임성 개발 1 — 인계 상태
 
-## 지금 (10/13 저녁) — 다시 시작하면 여기부터
+## 10/13 밤 (A23-160, Opus 5.5 high) — 다시 시작하면 여기부터
+- 1-A 화면 몫(#5 출석·#6 상점·#2 첫 무기 화면·#8 Bat Zigzag/Final Boss)은 아래 ae655ccf로 이미 main. Smokey→Rose = 개발 2(wt_prep, 아직 커밋 전). 남은 내 몫 = **폰 첫 10분 읽힘**.
+- 가지 `fix/test-prep-client`(../wt_codexui, main 569565aa로 빨리 감기) **99da2abd** push, 최종 검수에 보고:
+  - f0a0b7bf: HUD Power 줄 고장 — OpenCharacter 누름 칸이 PowerLine의 UIListLayout 안 첫 칸이 되어 글자가 줄 밖으로 밀림(PC 막대 오른쪽 밖, 폰 물약 고리 위). 누름 칸을 형제로, 폰은 XP 막대까지·44px(L.PowerTap).
+  - 99da2abd: UIKit.TapPad(wirePress, 폰만) — 44px 미만 버튼 바깥에 보이지 않는 누름 띠(옆 버튼 틈의 절반까지), 순수 UIKit.TapExtents.
+  - 새 시험 tools/test_phone_first10.py(18·12/12). 관련 시험 15개 + test_audio(혼자) 통과.
+  - 사진: `HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py first10` → docs/art/verification_2026-10-14/phone_first10/(오프닝·진영·직업·환영·첫 미션·HUD·대장간·물약 가게·Gifts·가방·Lv5, 두 폰). 병합 뒤 메인 반영 1. 'small'은 누름 띠 포함 크기로 셈.
+- 다음: 사진 오면 cut/small/overlap 고장급만 고침. 그다음 10/21 목록(Hero 칭호 단추 잘림 등, docs/review/phone_round_prep_2026-10-13.md).
+
+## 10/13 저녁
 - **`fix/test-prep-client` ae655ccf = main 10fa20b9 병합됨**(최종 검수 10/13, 검수 고침 ①가방 얻는 곳 ②출석 목표 진짜 보상만 ③Rose 되돌림 — Rose·TownReact는 개발 2 가지로). 메인 sync·사진(play_test_prep_photos.py)은 개발 2 fix/test-prep-server 병합 뒤 한 번에. worktree `../wt_codexui` 다시 써도 됨. 넣은 것: 출석 창(AttendanceUI.luau, 메뉴 칸 Gifts), 상점 정리(6칸·Config.PassInfo.Screen·SwitchPassSales·Focus·개인 서버 HUD 칩), 첫 무기 화면(Panels WSHOP.Sells·WeaponInfo Source/ShopSource·Tutorial.Text.NextIronDrop·QuestTarget.IronGold·IronDrop→초원·Guide "Bag"), 이름(Bat Zigzag·TownReact Rose), ClientMain `Config.ApplyTestServer()`, 도감 "Defeated: %s". 새 시험 test_attendance_ui·test_shop_ui·test_first_weapon_client(+test_shop_layout·quest_target·slime_prince·skill_kit·town_quests 대명사 고침). 사진 `tools/play_test_prep_photos.py`(병합 뒤 메인 반영 1).
 - **개발 2 약속(fix/test-prep-server)**: WeaponShop.Buy=false + 사기 거절(Text.WeaponDropOnly), 첫 King T3(Loot.FirstKingDrop, Loot.Text.FirstKingWeapon/Equip), QuestService GoalKind "IronDrop", Return.GoalZones.IronDrop, Net GameState PrivateServer, Config.TestServer + ApplyTestServer, M1_1 둘째 단계 Guide "Bag"(Otto가 Enh70 줌). **test_skill_kit·test_slime_prince·town_quests 2281줄 = 내 가지 몫**(개발 2와 합의).
 - **기다림**: 패스 id 9개(사용자 10/15) → Config.GamePasses Id·Looks PassId. 최종 검수 시험·병합.
