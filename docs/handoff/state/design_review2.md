@@ -18,6 +18,9 @@
 
 - 최종 검수 PBR 최종 판정(10/13): 계정 2 14종 중 13 통과, **Bal_C 다시 → cd1fd3e2(열린 ㄱ, 45° 돌아 있음)로 텍스처·PBR 시험** — 어긋나면 스마트 메시 다시(125). ⑤ 메모 `docs/review/pbr_final_2026-10-13.md` '묶음 c'. GuardPost PBR 통과 보냄, PotionCrate fab0907c 텍스처·PBR 중.
 
+- **A23-158(10/13 오후): 텍스처 = 왼쪽 '텍스처' 기본 탭 그대로(앞면 사진 탭 X), 조명 없이·4K·곧바로 PBR.** 새 텍스처부터 → PBR 판정 때 뒤·옆이 예전(앞 한 장)보다 나은지 같이 봄. PotionCrate(fab0907c)는 옛 방식으로 이미 만듦·통과 보냄(뒤 V천 → ⑤ 뒤를 벽 쪽).
+- **JuiceParasol 다시(A23-158):** 이미지 생성 2가 줄무늬 없는 하늘색 차양 + 흰 물결 테 4면 → 내 판정(빛살·X자 퍼짐 없는지 위에서도) → Blender 손보기 2.
+
 ## 계정 2 몫(최종 검수 10/13)
 Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 다 4면 통과, 2×125 OK) · BellFrame(옆면 다시 그린 뒤) · 이미지 생성 2 소품 11종. **앞으로 새 스마트 메시는 계정 2.** Blender 손보기 2는 Chrome 창이 보여야 Tripo가 돎(창 차례 = 최종 검수).
 
