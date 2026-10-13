@@ -2,7 +2,7 @@
 ## 지금 상태 한 줄 (10/12 오전 9:50)
 ## ★ 10/14 낮 — 다시 켬 (A23-174·175: HD 모델 + ⑤ Roblox 재질 전부 필수)
 - 할 일: 통과 HD 모델(art/models/tripo/web/<이름>_HD_pbr_src.*, Blender 크기·피벗 끝난 판; 난간 등 부품 = tools/assemble_parts.py 합본 GLB) → WorldKit(STUDIO_NAME=WorldKit)에 가져오기(사용자 3D 가져오기, 최종 검수 경유) → SA 보정 → 2D 옆 낮·밤(C2c) → 디자인 검수 → 최종 검수. 재질 표 초안 = docs/design/roblox_material_hd_2026-10-14.md.
-- WorldKit Studio = **닫혀 있음**(list_roblox_studios 빈 목록, PC 밤에 꺼짐). 열기 화면 신청 보냄(최종 검수, 대기). build/WorldKit.rbxlx = 10/13 23:42 저장본(안에 HaloV2·HaloTripoKits·Parked_* 있는지 열고 확인; 없으면 wk_backup 최신 20261013_154502 → `wk_backup.py load <id> --replace`). WorldKit.rbxlx.lock 남아 있음(열 때 문제면 알림).
+- WorldKit Studio = **열림(10/14 낮, 최소화, MCP 이름 "Game"·studio_id는 list_roblox_studios로 확인; STUDIO_NAME=WorldKit 안 맞으면 STUDIO_ID)**. 저장본(10/13 23:42)에 HaloV2·HaloTripoKits 58·Parked_PreTripo*·_TU 109 다 있음 → 백업 불러오기 불필요. 저장(Ctrl+S)은 최종 검수에게 먼저.
 - SA 올리기 남은 것(asset_ids 대조, 10/14): b·c·e = 전부 기록됨. **d 14종**(SignFlower·SignPotion·PotFlowers_E/F·Planter_A(Var4)·PotFlowers_A/C(Var4)·CandleCrate·Easel·GatherBush·NoticeBoard·SteppingStone·WaterBuckets·WateringCan) 안 올라감(sa_d 올리다 Empty 오류로 멈춤), **g 4종**(Topiary_E·Balustrade_C·PotFlowers_D·Beehive) 안 올라감, **JuiceParasol은 아직 옛 줄무늬 id**(--replace 남음). **NEW_ArmoryBarrels(sa_g) 올리지 말 것**(구멍, 사용자 취소; HD 통 새로 옴). e_hold(GuardPost·PotionCrate) 보류 그대로. 올릴 때: `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_d --tags CNMR` (d·g는 새 모델이라 CNMR), g는 `--names Topiary_E…`로 ArmoryBarrels 빼고, JuiceParasol만 `--replace`; 올리는 동안 push 금지.
 - asset_ids.json 214키 push 완료(fabdd81). 순서: d → g → JuiceParasol --replace → Statue --replace → 키트 생성(tripo_kits_gen.py) → 놓기.
 
