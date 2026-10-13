@@ -3,11 +3,13 @@
 세션 local_2137d284. 보고처: 이미지 생성 2(local_aeaed629)·이미지 생성 3(local_d54578c7)·Blender 손보기 1(local_1bcb35c4) → 나 → 최종 검수(local_8166f268). **Blender 손보기 2(local_d85ba88a) 몫 12종의 흰 모델·PBR 첫 검수 = 디자인 검수 2(local_11c9d705)**; 빛 마을 전체 놓기 사진 판정은 나(최종 검수 10/13 짝 정리).
 
 ## 다시 시작하면 바로 할 일 (기다리는 것)
-1. **이미지 생성 3 ⑤ 고친 사진 3개** → 보고 통과면 ⑤ 묶음 1을 최종 검수에 보고:
-   - CastleRose: 파란 원판을 메시 뒤로 빼고 테 안지름으로 → 바깥 금 테·살이 보여야 함
-   - BenchC: 4곳 땅속 묻힘/물 위 → 레이캐스트로 바닥에, BenchA 6·화분 7도 검사
-   - Sunflower 회색: 내가 GLB 정상 확인함 → Roblox ColorMap/MeshId 문제, 다시 가져오기
-   - Lavender 뒤 사진 다시
+1. **이미지 생성 3 ⑤ 고친 사진 2차**(12:30 판정, 메시지 d280b30a) → 통과면 ⑤ 묶음 1을 최종 검수에 보고:
+   - 통과: Tulip 3곳, Lavender P083, BenchA P056·065·068·105, BenchC P064·121, 해바라기 색 맵, 날개
+   - CastleRose: 파란 판 지름 5.93 → 약 6.65(금 테 안쪽 바깥 칸이 크림 벽으로 보였음)
+   - Sunflower: 얼굴이 집 쪽 → 세 곳 Y 180°
+   - Lavender P022: 카메라가 다른 보라 꽃 속 → 무엇인지 + 다시 찍기
+   - BenchA P015: 줄무늬 물체가 가림 → 다시
+   - P026·048·049 땅: 보이는 땅이 물리 땅보다 높음 → 3~5초 기다려 다시 찍기 → CanQuery 꺼진 땅 메시 검사 → 그래도면 Studio 다시 열기(최종 검수 먼저)
 2. **이미지 생성 2 4면** — 빛 마을 소품 NEW_ 11종이 한 종씩 옴:
    - 소품: GatherBush·Hedge·WallLamp·WateringCan·ArmoryBarrels·Beehive·CandleCrate·Easel·NoticeBoard·SteppingStones·WaterBuckets
    - 그다음 가게 간판 4종
