@@ -1,6 +1,6 @@
 # 디자인 검수 — 상태 (2026-10-13 낮 12시 반, 스스로 클리어 전 정리)
 
-세션 local_2137d284. 보고처: 이미지 생성 2(local_aeaed629)·이미지 생성 3(local_d54578c7)·Blender 손보기 1(local_1bcb35c4) → 나 → 최종 검수(local_8166f268). **Blender 손보기 2(local_d85ba88a) 몫 12종의 흰 모델·PBR 첫 검수 = 디자인 검수 2(local_11c9d705)**; 빛 마을 전체 놓기 사진 판정은 나(최종 검수 10/13 짝 정리).
+세션 local_2137d284. 보고처: 이미지 생성 2(local_aeaed629)·이미지 생성 3(local_d54578c7)·Blender 손보기 1(local_1bcb35c4) → 나 → 최종 검수(local_8166f268). **10/13 오후 바뀜: 디자인 검수 2는 사용자가 지움. 새 Blender 손보기 2(local_9a2805c9, 사용자 Chrome + Tripo 계정 2)가 빛 마을 소품(Planter_D·Bouquet·난간 6·NEW_WallLamp·Hedge·FlowerBush)을 만듦 → 흰 모델 고르기·PBR 첫 검수도 나.** 계정 2 모델은 Chrome에서만 보임 → Claude Chrome 확장으로 내 탭 하나(Blender 손보기 2 탭 안 건드림) 또는 FBX 받아 tools/design_review/ 렌더. Chrome 새 탭·창 = 매번 최종 검수에 먼저 신청. 지금은 빛 마을만.
 
 ## 다시 시작하면 바로 할 일 (기다리는 것)
 1. **이미지 생성 3 ⑤ 고친 사진 2차**(12:30 판정, 메시지 d280b30a) → 통과면 ⑤ 묶음 1을 최종 검수에 보고:
