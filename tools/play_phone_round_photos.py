@@ -161,11 +161,22 @@ for _, d in pg:GetDescendants() do
 			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextFits == false then
 				table.insert(out.cut, { d:GetFullName():gsub("^.-PlayerGui%.", ""), d.Text, b })
 			end
-			if d:IsA("GuiButton") and d.Active ~= false then
+			if d:IsA("GuiButton") and d.Active ~= false and string.sub(d.Name, 1, 6) ~= "TapPad" then
 				table.insert(buttons, { d, b })
-				if math.min(b[3], b[4]) < 40 then table.insert(out.small, { d:GetFullName():gsub("^.-PlayerGui%.", ""), b }) end
+				-- the pressable size = the button + its UIKit.TapPad strips (A23-160: touch-only invisible strips)
+				local x0, y0, x1, y1 = b[1], b[2], b[1] + b[3], b[2] + b[4]
+				for _, ch in d:GetChildren() do
+					if ch:IsA("GuiButton") and ch.Visible and string.sub(ch.Name, 1, 6) == "TapPad" then
+						local cb = box(ch)
+						x0, y0 = math.min(x0, cb[1]), math.min(y0, cb[2])
+						x1, y1 = math.max(x1, cb[1] + cb[3]), math.max(y1, cb[2] + cb[4])
+					end
+				end
+				if math.min(x1 - x0, y1 - y0) < 40 then
+					table.insert(out.small, { d:GetFullName():gsub("^.-PlayerGui%.", ""), b, { x0, y0, x1 - x0, y1 - y0 } })
+				end
 			end
-			if (d:IsA("GuiButton") or d:IsA("TextLabel")) and (b[1] < 0 or b[2] < 0 or b[1] + b[3] > vw + 1 or b[2] + b[4] > vh + 1) then
+			if (d:IsA("GuiButton") or d:IsA("TextLabel")) and string.sub(d.Name, 1, 6) ~= "TapPad" and (b[1] < 0 or b[2] < 0 or b[1] + b[3] > vw + 1 or b[2] + b[4] > vh + 1) then
 				table.insert(out.off, { d:GetFullName():gsub("^.-PlayerGui%.", ""), b })
 			end
 		end
