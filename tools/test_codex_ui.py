@@ -19,6 +19,12 @@ Runs, in the official Luau CLI, the CURRENT Config.luau and CodexUI.luau (tools/
 - moments (window closed): none before my data or while the tutorial holds banners, then the card in the middle with
   the server's line, a new card from its silhouette into colour, a page done = the reward popup (the queue waits for it),
   Gold Holo starts at Silver and sways into Gold Holo, a click ends it early, reduced motion shows the new look at once.
+최종 검수 10/13 review: the QuestDone chime rings on a card moment, the reward popup and the open window's toast
+(the server toast is off); the layout follows the body (CodexUI.Layout: a full window 230 x 310 card / 168 slots / 197
+tabs; at 404 / 360 / 330 / 300 du high the buttons and both slot rows stay inside, the card keeps its shape) and the
+body's changes (a 720p body at UIScale 0.8, a phone sideways at 0.75); the zone names fit a 197 tab at a 720p floor;
+a flip, the foil, a choice and a fresh snapshot keep the slots (no new 3D views), a card just met remakes only its
+slot; the window title carries my count.
 Static: Config.Codex.ServerToast false and Config.Codex.Screen's words ASCII English; the HUD tile Codex (Window "Codex",
 its name TXT.TileCodex); ClientMain loads CodexUI once, after Panels; the remotes are Net names; no ray words and the
 round RewardSparkle only; no hard-coded player words in CodexUI (Text = only from Config / the server); the copy of a
@@ -144,7 +150,20 @@ MUTATIONS = [
     ("CODEX", "the queue never trimmed", "while #queue > math.max(1, max) do table.remove(queue, 1) end", ""),
     ("CODEX", "the tilt leaves the circle", "if m > 1 then x, y = x / m, y / m end", ""),
     ("CODEX", "CodexOpen on every open", "if os.clock() - S.OpenAt < L.OpenGap then return end", ""),
-    ("CODEX", "an unknown card turns over", "if quick and c.View and c.View.Known then", "if quick and c.View then"),
+    ("CODEX", "an unknown card turns over", "\tif not (VIEW.Big.View and VIEW.Big.View.Known) then return end\n", ""),
+    # 최종 검수 10/13 review: the chime, the layout for the body, slots kept, the count in the title
+    ("CODEX", "a card moment without its chime", "\tchime()\n\tlocal hold = ", "\tlocal hold = "),
+    ("CODEX", "the open window's toast without its chime", "\t\tcall(\"Toast\", tostring(payload.Text or \"\"), \"reward\")\n\t\tchime()\n",
+     "\t\tcall(\"Toast\", tostring(payload.Text or \"\"), \"reward\")\n"),
+    ("CODEX", "the card never shorter than 310 (buttons cut on a phone)",
+     "local cardH = math.clamp(math.floor(room - L.Gap - L.ButtonH), L.MinCardH, L.CardH)", "local cardH = L.CardH"),
+    ("CODEX", "the old narrow tabs", "TabH = 40, TabW = 197,", "TabH = 40, TabW = 132,"),
+    ("CODEX", "the body's changes not followed", "\ttable.insert(VIEW.Conns, parent:GetPropertyChangedSignal(\"AbsoluteSize\"):Connect(relayout))\n", ""),
+    ("CODEX", "the UIScale ignored", "\t\tif u and u.Scale > 0 then s *= u.Scale end\n", ""),
+    ("CODEX", "slots built again on every draw", "\tif VIEW.SlotsPage ~= page.Index then", "\tif true then"),
+    ("CODEX", "a card just met keeps its empty slot", "\t\t\tif not s or s.Known ~= v.Known then", "\t\t\tif not s then"),
+    ("CODEX", "the title without my count", "\treturn string.format(\"%s · %s\", type(name) == \"string\" and name or \"\", tx(\"Count\", owned, total))",
+     "\treturn type(name) == \"string\" and name or \"\""),
     ("CODEX", "the top bar inset ignored", "if ok and typeof(inset) == \"Vector2\" then pos += inset end", ""),
     ("CODEX", "the motion left running after closing", "local function cleanup()\n\tdisconnect()\n", "local function cleanup()\n"),
     ("CODEX", "moments over the tutorial", "\treturn hold ~= true\n", "\treturn true\n"),
