@@ -198,6 +198,14 @@ runGroup("pvp", function()
 	local got = k2:GetAttribute("WarPoints") - 2
 	check(got == math.floor(got) and (got == 2 or got == 3) and w.Added[#w.Added].N == got, "a 1-star KO: 2 or 3, never 2.5",
 		show(plain({ w.Added[#w.Added] })))
+	-- API review 10/14: a KO that scores nothing (Neutral, the war off) uses up no slot of the cap
+	local n = hero(w, 3, "Neutral", 20)
+	for _ = 1, 4 do KO:Fire(n, v, { Rewarded = true, VictimStars = 0 }) end
+	check((n:GetAttribute("WarPoints") or 0) == 0, "a Neutral KO: no points", n:GetAttribute("WarPoints"))
+	n:SetAttribute("Faction", "Halo")
+	KO:Fire(n, v, { Rewarded = true, VictimStars = 0 })
+	check(n:GetAttribute("WarPoints") == 2, "4 Neutral KOs used up no slot: the first Halo KO scores", n:GetAttribute("WarPoints"))
+	check(w.War.AddPoints(n, 1, nil, "Other") == true and w.War.AddPoints(v, -1) == false, "AddPoints answers whether it added", "")
 end)
 
 ------------------------------------------------------------------ the round: chests, one side, events
