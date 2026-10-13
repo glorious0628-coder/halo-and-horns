@@ -7,7 +7,8 @@ Halo Warrior, the tutorial's first claim done, then:
   03_today       Fx TomorrowGift { Tomorrow = 3, Today = 2 }: + "Today's gift is waiting too!", [Open] + [OK]
   04_back_news   Fx WelcomeBack { Next, Zone, News }: the "while you were away" line under the goal
   05_back_line   attribute Returned = true (this Play only): the first town person who speaks says a back line
-                 (waits up to 20 s for a TownReactBubble near me; the log has its words or "no bubble")
+                 (waits up to 45 s for a TownReactBubble near me - one town person speaks once per Config.TownReact.Every
+                 30 s and the welcome bubble may have just used it; the log has its words, or "no bubble" + who is near)
 Each card's title / body / buttons go to the log; the card is taken away before the next Fx.
 Usage: HH_MAIN_STUDIO=1 py tools/play_comeback_photos.py [phone]
 Out: docs/art/verification_2026-10-14/comeback/<dev>_<name>.png, log_<dev>.txt"""
@@ -75,6 +76,24 @@ for _, d in workspace:GetDescendants() do
 end
 return "no bubble"
 '''
+NEAR = r'''
+local CS = game:GetService("CollectionService")
+local p = game:GetService("Players").LocalPlayer
+local root = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
+if not root then return "no root" end
+local out, seen = {}, {}
+local function add(m)
+	if seen[m] or not m:IsA("Model") or not m:IsDescendantOf(workspace) then return end
+	if not (CS:HasTag(m, "TownFolk") or m:GetAttribute("HHC_TownNpc")) then return end
+	seen[m] = true
+	local ok, pos = pcall(function() return m:GetPivot().Position end)
+	local d = ok and (pos - root.Position).Magnitude or -1
+	if d >= 0 and d <= 60 then table.insert(out, string.format("%s %.0f", m.Name, d)) end
+end
+for _, m in CS:GetTagged("TownFolk") do add(m) end
+for _, m in CS:GetTagged("NPC") do add(m) end
+return "near (<=60 studs, speaks <=30): " .. (#out > 0 and table.concat(out, ", ") or "nobody")
+'''
 
 
 def fx(c, kind, data):
@@ -116,12 +135,14 @@ def run(c, dev):
     card_shot(c, dev, "04_back_news")
     note(lua(c, RETURNED, "Server"))
     seen = "no bubble"
-    for _ in range(20):
+    for _ in range(45):
         time.sleep(1.0)
         seen = lua(c, BUBBLE, "Client")
         if seen.startswith("bubble"):
             break
     note("back line: " + seen)
+    if not seen.startswith("bubble"):
+        note(lua(c, NEAR, "Client"))
     save(c, f"{dev}_05_back_line")
 
 
