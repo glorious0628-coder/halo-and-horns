@@ -601,7 +601,7 @@ def main() -> int:
                     "the zone (reviewer B2 table, transfer ~1/3), potions halved; legendary damage 76 = 2 x tier 3; PowerOf "
                     "includes enhancement (Justice/PvP read the WeaponEnhance attribute); owner-only Inventory remote "
                     "{ Items = known ids, Enhance = 8 tiers } replaces ItemsJson/EnhanceJson; unknown saved ids kept but hidden; "
-                    "full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (6 s guide, Fx First); "
+                    "full notices once per item id per 5 min (info); FirstScroll flag only on a real grant (no hint line, A23-130; Fx First); "
                     "LootRoll debug is count-only; rebirth resets only Level/XP (gold, weapons, enhancement, items kept); "
                     "first BigSlime = one Enh70 once; Slime jackpot tier 8 at 1/20000 (x3 golden); duplicate weapons -> gold; "
                     "materials sold only at the anvil, removed before payment. A23-15: a new non-jackpot weapon drop of grade rank >= "

@@ -83,7 +83,7 @@ runGroup("config", function()
 	end
 	for _, pair in {
 		{ C.Text, "BareHands" }, { C.Text, "WeaponFromQuest" }, { C.Loot.Text, "JackpotEquip" },
-		{ C.Loot.Text, "FirstScrollBare" }, { C.Loot.Text, "FirstWeapon" }, { C.Loot.Text, "FirstWeaponBag" },
+		{ C.Loot.Text, "FirstWeapon" }, { C.Loot.Text, "FirstWeaponBag" },
 		{ C.Loot.Text, "BareEquip" }, { C.Tutorial.Text, "VisitBlacksmith" }, { C.Tutorial.Text, "VisitBlacksmithArmed" },
 	} do
 		check(same(pair[1][pair[2]], pair[1][pair[2] .. "En"]), "text " .. pair[2] .. " has KO + EN with the same placeholders")
@@ -557,13 +557,20 @@ runGroup("drops", function()
 	local s = w4:Join(604, { Level = 1, Tutorial = 0 })
 	local k0 = #w4.Notices
 	w4:Drop(s, "BigSlime", nil)
-	check(indexOf(notices(w4, s, k0), C0.Loot.Text.FirstScrollBare) ~= nil, "first scroll bare-handed: the first-weapon hint",
-		show(notices(w4, s, k0)))
+	local function scrollHint(list)
+		for _, line in list do
+			if type(line) == "string" and string.find(line, "You got a scroll", 1, true) then return true end
+		end
+		return false
+	end
+	check(not scrollHint(notices(w4, s, k0)) and C0.Loot.Text.FirstScrollBare == nil,
+		"first scroll bare-handed: no hint line (A23-130, user 10/13 night)", show(notices(w4, s, k0)))
 	local w5 = bareWorld()
 	local t = w5:Join(605, { Level = 1, Tier = 1, Mask = 1, Tutorial = 0 })
 	local j0 = #w5.Notices
 	w5:Drop(t, "BigSlime", nil)
-	check(indexOf(notices(w5, t, j0), C0.Loot.Text.FirstScroll) ~= nil, "first scroll with a weapon: the enhance hint")
+	check(not scrollHint(notices(w5, t, j0)) and C0.Loot.Text.FirstScroll == nil, "first scroll with a weapon: no hint line (A23-130)",
+		show(notices(w5, t, j0)))
 	-- the level fit: only T3 owned (bought, the M1_1 gift never came), level back to 1 -> never bare hands again
 	-- (A23-34: a rebirth / class change does not send a weapon owner back to bare hands): the free tier 1, equipped
 	local w6 = bareWorld()

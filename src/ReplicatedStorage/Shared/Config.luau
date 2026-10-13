@@ -5618,9 +5618,10 @@ Config.Loot = {
 	-- slimes are level-1 slimes of the PumpkinPatch (A23-30, on top of the meadow's), so they carry the same jackpot;
 	-- the chance per kill is unchanged.
 	Jackpot = { Monsters = { Slime = true, PumpkinSlime = true }, Chance = 1 / 20000, Tier = 8 },
-	-- the first Slime Prince (BigSlime) a player defeats always drops one 70% scroll, plus a one-time hint (Text.FirstScroll shown
-	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
-	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
+	-- the first Slime Prince (BigSlime) a player defeats always drops one 70% scroll. No hint line (A23-130, user 10/13 night
+	-- "이거 아예 안 뜨게"): that kill's Loot Fx carries First = true, so the client shows only the "+Enhance Scroll" pop and
+	-- skips its own "where to use it" toast; the Bag's red dot and the M1_1 step say the rest
+	FirstScroll = { Monster = "BigSlime", Item = "Enh70" },
 	-- C2 (crafting_market §3 / §8): the first Slime Prince a player defeats always drops the tier-2 weapon (once, a paid
 	-- kill; LootFlags.FirstWeapon), equipped at once when it beats the weapon in hand. A weapon owned already: the chance
 	-- is used and nothing drops (no Spare, no gold)
@@ -5652,10 +5653,6 @@ Config.Loot = {
 		-- A23-34: the same jackpot found bare-handed is equipped at once
 		JackpotEquip = "Legendary weapon [%s]!",
 		JackpotEquipEn = "Legendary weapon [%s]!",
-		FirstScroll = "You got a scroll! Enhance your weapon from your Bag. (Your weapon is safe even if it fails)",
-		-- A23-34: the same one-time hint while still bare-handed (no weapon to enhance yet)
-		FirstScrollBare = "You got a scroll! The Blacksmith gives you your first weapon. Then enhance it from your Bag.",
-		FirstScrollBareEn = "You got a scroll! The Blacksmith gives you your first weapon. Then enhance it from your Bag.",
 		-- A23-34: the M1_1 gift (LootService.GrantFirstWeapon). Bare-handed: equipped at once with the power change;
 		-- a player who already bought a weapon gets it in the bag (no equip, no power change).
 		FirstWeapon = "First weapon: [%s]!",

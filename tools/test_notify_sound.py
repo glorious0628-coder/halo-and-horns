@@ -69,7 +69,6 @@ ROUTES = [
     ("LootService.luau", "TXT.DuplicateWeapon, weaponName(player, tier)", "GoldPickup"),
     ("LootService.luau", "TXT.FirstWeapon, name", "None"),
     ("LootService.luau", "TXT.FirstWeaponBag, name", "Equip"),
-    ("LootService.luau", "pcall(Net.Notify, player, line, \"reward\", num(first.NoticeSeconds, 6)", "None"),
     ("PetService.luau", "notify(player, text, \"reward\"", "None"),
     ("PetService.luau", "TXT.BecameFree or TXT.Became", "None"),
     ("PvPService.luau", "fmt(\"GraduateStart\")", "None"),

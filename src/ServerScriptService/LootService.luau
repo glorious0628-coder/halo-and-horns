@@ -433,11 +433,8 @@ function LootService.RollKill(player, info)
 		if giveItem(first.Item, 1) > 0 then
 			data.LootFlags.FirstScroll = true
 			firstNow = true
-			-- the one-time guide (A23-12). The Loot Fx below carries First = true so the client skips its own
-			-- "where to use it" toast for this scroll (one toast, not two)
-			-- A23-34: no weapon owned yet (the M1_1 gift comes later) -> the hint says where the first weapon comes from
-			local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll
-			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6), "None") -- the drop has its own sound
+			-- A23-130 (user 10/13 night): no hint line any more. The Loot Fx below carries First = true so the client skips
+			-- its own "where to use it" toast too: only the "+Enhance Scroll" pop shows
 		end
 	end
 

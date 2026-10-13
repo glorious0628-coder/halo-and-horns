@@ -218,8 +218,6 @@
 | +%s gold | +%s 골드 | [4단계] [Claim]을 누르면 뜨는 보상 알림 (첫 임무 = 150골드) · `Tutorial.Text.Claimed` · %s = 골드 |
 | Get your first weapon · Crossroads Forge | 첫 무기 받기 · Crossroads Forge | [4단계 뒤] 아직 맨손이면 나오는 줄 · `Tutorial.Text.VisitBlacksmith` |
 | Check the weapons · Crossroads Forge | 무기 살펴보기 · Crossroads Forge | [4단계 뒤] 첫 무기가 있는 저장 파일에 나오는 줄 · `Tutorial.Text.VisitBlacksmithArmed` |
-| You got a scroll! Enhance your weapon from your Bag. (Your weapon is safe even if it fails) | 주문서를 얻었어요! 가방(Bag)에서 무기를 강화하세요. (실패해도 무기는 안전해요) | 슬라임이 처음 주문서를 떨어뜨릴 때 · `Loot.Text.FirstScroll` |
-| You got a scroll! The Blacksmith gives you your first weapon. Then enhance it from your Bag. | 주문서를 얻었어요! 대장장이가 첫 무기를 줄 거예요. 그다음 가방에서 강화하세요. | 첫 주문서인데 아직 맨손일 때 · `Loot.Text.FirstScrollBare` |
 
 ### 2-3 처음 10분에 만나는 알림·힌트
 
