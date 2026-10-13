@@ -1,6 +1,19 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
-## ★ 10/13 오후 끝 — 묶음 b·c 넣기 준비 (이 절이 최신)
+## ★ 10/14 낮 — 다시 켬 (A23-174·175: HD 모델 + ⑤ Roblox 재질 전부 필수)
+- 할 일: 통과 HD 모델(art/models/tripo/web/<이름>_HD_pbr_src.*, Blender 크기·피벗 끝난 판; 난간 등 부품 = tools/assemble_parts.py 합본 GLB) → WorldKit(STUDIO_NAME=WorldKit)에 가져오기(사용자 3D 가져오기, 최종 검수 경유) → SA 보정 → 2D 옆 낮·밤(C2c) → 디자인 검수 → 최종 검수. 재질 표 초안 = docs/design/roblox_material_hd_2026-10-14.md.
+- WorldKit Studio = **닫혀 있음**(list_roblox_studios 빈 목록, PC 밤에 꺼짐). 열기 화면 신청 보냄(최종 검수, 대기). build/WorldKit.rbxlx = 10/13 23:42 저장본(안에 HaloV2·HaloTripoKits·Parked_* 있는지 열고 확인; 없으면 wk_backup 최신 20261013_154502 → `wk_backup.py load <id> --replace`). WorldKit.rbxlx.lock 남아 있음(열 때 문제면 알림).
+- SA 올리기 남은 것(asset_ids 대조, 10/14): b·c·e = 전부 기록됨. **d 14종**(SignFlower·SignPotion·PotFlowers_E/F·Planter_A(Var4)·PotFlowers_A/C(Var4)·CandleCrate·Easel·GatherBush·NoticeBoard·SteppingStone·WaterBuckets·WateringCan) 안 올라감(sa_d 올리다 Empty 오류로 멈춤), **g 4종**(Topiary_E·Balustrade_C·PotFlowers_D·Beehive) 안 올라감, **JuiceParasol은 아직 옛 줄무늬 id**(--replace 남음). **NEW_ArmoryBarrels(sa_g) 올리지 말 것**(구멍, 사용자 취소; HD 통 새로 옴). e_hold(GuardPost·PotionCrate) 보류 그대로. 올릴 때: `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_d --tags CNMR` (d·g는 새 모델이라 CNMR), g는 `--names Topiary_E…`로 ArmoryBarrels 빼고, JuiceParasol만 `--replace`; 올리는 동안 push 금지.
+- asset_ids.json 214키 push 완료(fabdd81). 순서: d → g → JuiceParasol --replace → Statue --replace → 키트 생성(tripo_kits_gen.py) → 놓기.
+
+## ★ 10/13 15:40 — 묶음 b 1차 넣기 (이 절이 최신)
+- 가져오기 끝: import3d_b 56 + import3d_c 40 = WorldKit Workspace.<이름>_TU (지우지 말 것). ArmoryBarrels v2 = **키트·놓기 금지**(사용자: 구멍, 통과 취소).
+- 키트 22(SA 있는 것, build/wk/tripo_kits_build_r1.luau) + 금 SA 따뜻하게(255,222,180)·ConeTree 225,240,215. **Halo_Statue 키트는 옛 SA** → 새 맵 `--names Halo_Statue --replace` 올린 뒤 다시.
+- 놓기: tools/worldkit/tripo_props_swap.luau(소품 10), tripo_deco_fit.luau(돔·간판·진열장·온실 16), tripo_pots_fit.luau(원뿔 20·꽃덤불 화분 2), tripo_ivy_fit.luau(담쟁이 12), 성문 GateLeaf 2(같은 비율 폭 3.83, 늘이기 금지). 옛 것 = ServerStorage.Parked_PreTripoDeco/Props. 백업 20261013_153710(성문 고치기 전).
+- 사진 art/review/img3/tripo_b/v1/(25). 문제: 09 공 돔 회색, 문 옆 하늘색 상자(내 것 아님), 01 정자 돔 큼.
+- SA 올리기: b 끝(Statue 제외), c 첫 10장 id 저장 실패(push와 겹침) → **업로드 중엔 push 금지**, c는 다시. 순서: e(진행) → c → d → g(JuiceParasol만 --replace) → Statue --replace.
+
+## ★ 10/13 오후 끝 — 묶음 b·c 넣기 준비 
 - PhotoDisc 4곳 전부 통과(디자인 검수). P058 '떠 보임' = 화면 지형 ≠ 데이터(추측), 화면 보고 내리지 말 것 → 6단계.
 - **10/13 저녁:** 사용자가 직접 3D 가져오기 중 = build/import3d_b 56개(b 34 + c 13 + e 9; GuardPost·PotionCrate 보류 → build/import3d_hold, 맵 build/sa_e_hold). 묶음 d 34 = build/import3d_c(다음 가져오기). 그동안 WorldKit MCP 금지 → SA 올리기 멈춤(b 22종 올라감). '넣음' 알림 뒤: 남은 SA 올리기(b 나머지 → c → d → e, `STUDIO_NAME=WorldKit py tools/upload_sa_maps.py build/sa_X --tags CNMR`) → `py tools/worldkit/tripo_kits_gen.py <tag> <이름들>` → build/wk/tripo_kits_build_<tag>.luau 실행 → 놓기.
 - 다음 가져오기 build/import3d_c = 38개(d 34 + g 4: Beehive·Topiary_E·Balustrade_C·JuiceParasol v2). SA 맵 build/sa_d·sa_g. **JuiceParasol은 옛 줄무늬 SA 키가 이미 올라가 있음 → sa_g 올릴 때 `--replace`** (옛 맵 build/sa_old). 
