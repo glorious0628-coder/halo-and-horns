@@ -263,3 +263,4 @@
 - **내일 아침 순서:** ① 세 세션 state 확인 → 개발 1 fix/comeback-client(XP×2 칩·TomorrowGift 카드·Returned 말풍선·News 줄) / 개발 2 dev2-early-xp-2(거위 Pending·닫힐 때 flush·주석) 오면 시험·병합 ② 메인 반영 1 Studio 열기(🟠 아님: 열기·sync는 A23-17 허용) → sync 최신 main → play_phone_round_photos first10 + play_first_look_photos → 사진 판정 ③ 10/15 사용자 패스 9개 ID → 개발 2 set_pass_ids ④ 수요일 사용량(지금 전체 17%·Fable 27%) ⑤ 10/16 저녁 사용자 Save to File As·Alt+P(체크리스트).
 - 빛 마을 사람 2D 14명 + MailBoy 전부 통과(approved.json). 이미지 생성 2는 clear(10/20 뿔 마을).
 - 종료 절차: 세 세션 "정리 끝" 받은 뒤 `shutdown /s /t 60 /f`(Studio 2개·blender-mcp 강제 닫힘).
+- (끝 직전) **병합 main = dev2-early-xp-2 20569434**(빈 거위 판 안 셈·BindToClose flush 대기·KO 상한 칸(체리픽, main과 같음)·주석; 시험 return 244·crown_points 78·attendance 99·field_boss 238·a23_14 통과). 개발 2·메인 반영 1 "정리 끝". 개발 1은 fix/comeback-client 진행 중이던 것 push 지시(답 오면 그대로, 안 오면 내일 state/dev1.md 확인). 메인 반영 1 내일: sync 최신 main + 사진 2종(상태 f5b2b02).
