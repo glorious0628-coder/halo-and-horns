@@ -1,29 +1,20 @@
 # 디자인 검수 — 상태 (2026-10-13 낮 12시 반, 스스로 클리어 전 정리)
 
-세션 local_2137d284. 보고처: 이미지 생성 2(local_aeaed629)·이미지 생성 3(local_d54578c7)·Blender 손보기 1(local_1bcb35c4) → 나 → 최종 검수(local_8166f268). **10/13 오후 바뀜: 디자인 검수 2는 사용자가 지움. 새 Blender 손보기 2(local_9a2805c9, 사용자 Chrome + Tripo 계정 2)가 빛 마을 소품(Planter_D·Bouquet·난간 6·NEW_WallLamp·Hedge·FlowerBush)을 만듦 → 흰 모델 고르기·PBR 첫 검수도 나.** 계정 2 모델은 Chrome에서만 보임 → Claude Chrome 확장으로 내 탭 하나(Blender 손보기 2 탭 안 건드림) 또는 FBX 받아 tools/design_review/ 렌더. Chrome 새 탭·창 = 매번 최종 검수에 먼저 신청. 지금은 빛 마을만.
+세션 local_2137d284. **나눔(최종 검수 10/13 오후): 나 = Blender 손보기 1(local_1bcb35c4) 흰 모델·PBR + 이미지 생성 3(local_d54578c7) WorldKit 놓기 사진. 새 디자인 검수 2(local_b0cabbea) = Blender 손보기 2(local_9a2805c9, Chrome·Tripo 계정 2) 것 + 이미지 생성 2(local_aeaed629) 2D 4면 판정.** 위로 = 최종 검수(local_8166f268). 지금은 빛 마을만.
 
 ## 다시 시작하면 바로 할 일 (기다리는 것)
-1. **이미지 생성 3 ⑤ 고친 사진 2차**(12:30 판정, 메시지 d280b30a) → 통과면 ⑤ 묶음 1을 최종 검수에 보고:
-   - 통과: Tulip 3곳, Lavender P083, BenchA P056·065·068·105, BenchC P064·121, 해바라기 색 맵, 날개
-   - CastleRose: 파란 판 지름 5.93 → 약 6.65(금 테 안쪽 바깥 칸이 크림 벽으로 보였음)
-   - Sunflower: 얼굴이 집 쪽 → 세 곳 Y 180°
-   - Lavender P022: 카메라가 다른 보라 꽃 속 → 무엇인지 + 다시 찍기
-   - BenchA P015: 줄무늬 물체가 가림 → 다시
-   - P026·048·049 땅: 보이는 땅이 물리 땅보다 높음 → 3~5초 기다려 다시 찍기 → CanQuery 꺼진 땅 메시 검사 → 그래도면 Studio 다시 열기(최종 검수 먼저)
-2. **이미지 생성 2 4면** — NEW_ 11종 판정 끝(56f6fe4, 메시지 f0f5f56c):
-   - 통과 → Blender 손보기 1 큐 맨 뒤(810점): GatherBush·ArmoryBarrels·CandleCrate(초 뭉침 주의)·Easel·NoticeBoard·WaterBuckets
-   - 통과 → Blender 손보기 2: Hedge
-   - 다시 기다림: WallLamp(왼·오른 맞바꾸기 → 끝나면 Blender 손보기 2에 알림), WateringCan _right(꼭지가 공보다 위), Beehive 옆 2면(박공·구멍 → 지붕 경사면), SteppingStones(돌 하나만 4면, 같은 시점)
-   - 그다음 가게 간판 4종
+1. **이미지 생성 3 ⑤ 고친 사진 3차**(12:50 판정, 메시지 dc973182) → 통과면 ⑤ 묶음 1을 최종 검수에 보고:
+   - 통과: Tulip 3곳, Lavender P083·P022, BenchA P056·065·068·105·P015(diag), BenchC P064·121, Sunflower P032·P077(180° 돌림, 색 맵 새 자산), 날개
+   - CastleRose: 판 6.65로 파랑 됨. 그런데 v2 꽃잎 흐리고 금 어두움(v1 = git 95ad3ddc) → 텍스처 다 올라온 뒤 다시 찍기 / SA 붙었는지
+   - P026·048·049: Studio 다시 열어도 같음. P026 = 금 공만 잔디 위 → 벤치가 보이는 지형 속 ~3칸(추측: 땅 속에서 쏜 레이). Y+60 위에서 레이로 확인 → 올리기/지형 맞추기는 최종 검수 답
+   - 하늘색 표시 상자(P022 옆) = 건물 표시 파트, 게임 전 숨김
+2. **이미지 생성 2 NEW_ 11종 4면** = 판정 끝(f0f5f56c), 남은 다시 보기 4종·가게 간판은 디자인 검수 2로 넘김(f36a8d3d). 통과 6종(GatherBush·ArmoryBarrels·CandleCrate·Easel·NoticeBoard·WaterBuckets) → Blender 손보기 1 큐 맨 뒤(d069455c, 810점 내 OK) → **흰 모델은 내가 고름**. Hedge → Blender 손보기 2(디자인 검수 2 몫). Blender 손보기 2 흰 모델 9종 id도 디자인 검수 2에 넘김(ebffd5e1).
 3. **Blender 손보기 1 PBR 결과** → PBR 관문(아래 방법). 통과만 최종 검수에 보냄(이름 + 파일 경로 + ⑤ 메모).
    - 대기 중: 동상 B 1a0812be, 분수 C cd70436c, Daisy, Rose
    - GateLeaf, DomeOnion, ConeTree, DomeOctagon, DomeBall, BenchB, FlowerCart(수레 몸)
    - JuiceParasol, DomeOnionSlim, BreadStand, FruitStall, DomeBrick
    - 흰 모델 20종(아래)의 PBR
-4. **Blender 손보기 1 흰 모델 새 묶음** → 내가 고름. 지금 큐 순서:
-   - 식물: Topiary_E·PotFlowers E/F·Var4 PotFlowers A/C/D·Planter_A·PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond·StarFinial·CastleHedge
-   - 집 덩어리: WeatherVane·ChimneyCap·ChimneyLantern·RoundTree·MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope
-   - Blender 손보기 2로 간 것은 빠짐
+4. **Blender 손보기 1 흰 모델 새 묶음** → 내가 고름. 큐(Blender state 기준): HaloChunk_* 18종 — PotionDisplay·JuiceStand·RoseTrellis·RoseArch·SunflowerBed·Pond, StarFinial·CastleHedge·WeatherVane·ChimneyCap·ChimneyLantern·RoundTree, MedalBell·Cauldron·FlowerBuckets·WindowBoxB·CornerFinial·Telescope → 그 뒤 NEW_ 6종. (Topiary_E·PotFlowers·Planter_A 흰 모델은 생성 끝 — id 오면 고름.)
 
 ## 판정 규칙
 - **3D = SPEC A23-154 다섯 단계뿐:** ① 그림자 없는 2D 4면 → 스마트 메시 ② **내가 흰 모델 4개 중 고름** ③ 텍스처(앞 1장·조명 없이·8K) ④ PBR(텍스처 끝나면 바로) ⑤ Roblox 재질(2D 옆 낮·밤) **내가 사진 판정**. 매직 브러시·붓 칠·Blender 색 고치기·다시 올리기 없음. 얼룩은 ⑤에서 좋게 하거나 그대로, 모양이 망가졌으면 ②에서 다른 흰 모델. Blender = 크기·피벗·방향(대칭 짝 뒤집기)만.
