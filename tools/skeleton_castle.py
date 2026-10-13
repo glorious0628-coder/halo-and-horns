@@ -349,10 +349,11 @@ for sg in (-1, 1):
 orn.append({"type": "star_finials", "name": NAME + "_Stars", "note": "gold star tops on the spires (2D), Tripo parts"})
 
 # ---------------------------------------------------------------- outputs (same Luau writer as tools/skeleton_house.py)
-MARBLE = 'p.Material = Enum.Material.Marble; p.MaterialVariant = "HH_HaloMarbleBlock_Cream"; p.Color = Color3.fromRGB'
+# 10/13 디자인 검수 (castle_marble_test v2 'B'): smooth cream marble MV + white, no brick lines; floor / base warmer white
+MARBLE = 'p.Material = Enum.Material.Marble; p.MaterialVariant = "HH_HaloMarbleSmooth_Cream"; p.Color = Color3.fromRGB'
 MAT = {
-    "marble": MARBLE + "(255, 244, 222)",
-    "floor": MARBLE + '(238, 226, 205); game:GetService("CollectionService"):AddTag(p, "WalkGround")',
+    "marble": MARBLE + "(255, 255, 255)",
+    "floor": MARBLE + '(248, 244, 236); game:GetService("CollectionService"):AddTag(p, "WalkGround")',
     "gold": 'p.Material = Enum.Material.Metal; p.MaterialVariant = "HH_HaloGoldTrim"; p.Color = Color3.fromRGB(255, 168, 36)',
     "wglass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(255, 222, 150); p.Transparency = 0.25; p.Reflectance = 0.1',
     "glass": 'p.Material = Enum.Material.Glass; p.Color = Color3.fromRGB(150, 205, 245); p.Transparency = 0.3; p.Reflectance = 0.15',
