@@ -38,19 +38,20 @@ local function cardsOwned(codex)
 	return n
 end
 
--- every series-1 card at Stage 3
+-- every series-1 card that can appear now (Config.CodexCounts) at Stage 3
 local function allHolo(codex)
 	for _, kind in X.Order do
 		local e = codex[kind]
-		if type(e) ~= "table" or (tonumber(e.Stage) or 0) < 3 then return false end
+		if Config.CodexCounts(kind) and (type(e) ~= "table" or (tonumber(e.Stage) or 0) < 3) then return false end
 	end
 	return true
 end
 
+-- every kind of the page that can appear now has a card
 local function pageDone(codex, page)
 	for _, kind in page.Kinds do
 		local e = codex[kind]
-		if type(e) ~= "table" or (tonumber(e.Stage) or 0) < 1 then return false end
+		if Config.CodexCounts(kind) and (type(e) ~= "table" or (tonumber(e.Stage) or 0) < 1) then return false end
 	end
 	return true
 end

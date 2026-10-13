@@ -93,6 +93,16 @@ MUTATIONS = [
     ("shop: the window opens at the gift", SH, "\t\tif ok and handled == true then return end\n", ""),
     ("shop: never asks for the gift", SH, "if type(quest) == \"table\" and type(quest.ForgeGift) == \"function\" then",
      "if false then"),
+    # --- gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon sold; M1_1 step 2 teaches enhancing
+    ("1-A #2: the Forge sells new weapons again", SH, "if not alreadyOwned and shop.Buy == false then", "if false then"),
+    ("1-A #2: Config sells weapons again", C, "MaxSoldTier = 3, Buy = false,", "MaxSoldTier = 3, Buy = true,"),
+    ("1-A #2: Otto gives no scroll", C, "GiveItem = { Item = \"Enh70\", N = 1 }, ", ""),
+    # (no mutation for the once-per-step guard of the step gift: a step opens once in a normal run, so removing the guard
+    # changes nothing a test can see; it stays as a cheap safety like topUpGold's)
+    ("1-A #2: the step gift never sent", "STORY_SOURCE", "\t\tgiveStepItem(player, data, id, track)\n\t\tdirty(player)", "\t\tdirty(player)"),
+    ("1-A #2: a used scroll is not heard", "LOOT_SOURCE", "pcall(story.Event, player, \"ScrollUsed\", { Tier = tier, Success = success })",
+     "pcall(story.Event, player, \"ScrollUse\", { Tier = tier, Success = success })"),
+    ("1-A #2: no ScrollUsed event in Config", C, "Config.StoryQuests.Events.ScrollUsed = true", "Config.StoryQuests.Events.ScrollUsed = false"),
     # --- the claim: the visit cleared, the next-weapon line
     ("claim: keeps the forge visit", Q, "\tS.PlayerService.SetStat(player, \"BlacksmithVisited\", false)\n\tsetStep(player, TUT_DONE)",
      "\tsetStep(player, TUT_DONE)"),
@@ -170,7 +180,7 @@ SUITE = Suite(
              "LootService.GrantFirstWeapon (tier 1 equipped, 'Power 0 -> N'), step 1 'Travel to Squishy Meadow - step on the "
              "glowing travel pad (or Map -> Travel)' (ShortName 'To the meadow'), no weapon window, no automatic trip; any "
              "arrival in the meadow (the pad, Map -> Travel, a walk) starts the hunt (step 2). The claim always clears "
-             "BlacksmithVisited (M1_1 = a new visit: Otto's lines, Gold 1, then the shop where the 150 gold buy tier 2) "
+             "BlacksmithVisited (M1_1 = a new visit; gameplay plan 1-A #2: step 2 opens with Otto's one Enhance Scroll, the Forge refuses buying a weapon not owned (WeaponShop.Buy = false, Text.WeaponDropOnly), a scroll used on the weapon finishes M1_1 with Gold 1) "
              "and says only the reward (A23-130 Claimed '+%s gold', no line at the hunt start or 5/5). Old saves at steps 1 / 2 / "
              "99, class chosen, bare-handed without tier 1 get the gift at the join (once a session; never at steps 0 / "
              "3, never when armed). No anvil: the gift at once. The Forge step survives a save / load.",

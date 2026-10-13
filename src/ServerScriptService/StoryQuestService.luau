@@ -347,6 +347,16 @@ local function grantItem(player, id, n)
 	return given > 1 and string.format(Config.Loot.Text.GotN, name, given) or string.format(Config.Loot.Text.Got, name)
 end
 
+-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its own
+-- "전투력 X → Y" line. Gameplay plan 2026-10-13 1-A #2: paid when the first step ends (the visit), so a bare-handed save can
+-- use Otto's scroll on it in step 2, and again at the finish (a no-op once owned)
+local function giveWeapon(player, def)
+	if def.GiveWeapon and S.LootService and type(S.LootService.GrantFirstWeapon) == "function" then
+		local ok, err = pcall(S.LootService.GrantFirstWeapon, player, def.GiveWeapon)
+		if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
+	end
+end
+
 local function payReward(player, def)
 	local r = def.Reward
 	if type(r) ~= "table" then return nil end
@@ -395,12 +405,8 @@ local function complete(player, data, id)
 		if not ok then Util.Warn(TAG, "TitleService.Grant: " .. tostring(new)) end
 		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward", "RankUp") end
 	end
-	-- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its
-	-- own "전투력 X → Y" line after the story lines
-	if def.GiveWeapon and S.LootService and type(S.LootService.GrantFirstWeapon) == "function" then
-		local ok, err = pcall(S.LootService.GrantFirstWeapon, player, def.GiveWeapon)
-		if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
-	end
+	-- A23-34: the blacksmith's free first weapon after the story lines (1-A #2: normally paid at the visit already)
+	giveWeapon(player, def)
 	dirty(player)
 	StoryQuestService.QuestDone:Fire(player, id)
 end
@@ -439,6 +445,20 @@ local function topUpGold(player, data, id, track)
 	if have < want then S.ProgressionService.AddCarriedGold(player, want - have, "Choice") end
 end
 
+-- gameplay plan 2026-10-13 1-A #2 GiveItem = { Item, N }: a step that opens hands this over once per step (M1_1: Otto's
+-- Enhance Scroll) with one "+item" line. Nothing for a step that already passes (Past)
+local function giveStepItem(player, data, id, track)
+	local step = stepOf(player, DEFS[id], track.St)
+	local gift = step and step.GiveItem
+	if type(gift) ~= "table" or eventPast(data, step.Obj) then return end
+	local first = story(data).First
+	local key = "Give" .. id .. tostring(track.St)
+	if first[key] == true then return end
+	first[key] = true -- saved before the item, so it can never be given twice
+	local given = grantItem(player, gift.Item, gift.N)
+	if given then notify(player, given, "reward", "None") end -- the scroll's own sound comes with the Bag (none here)
+end
+
 -- manual = the player asked (StoryAction "Open"); a step talked through a town NPC (Npc) never pops up by itself
 local function openStep(player, id, track, manual)
 	local def = DEFS[id]
@@ -458,9 +478,11 @@ local function advance(player, data, id, track)
 	track.P, track.T = 0, {}
 	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
 	if track.St < #def.Steps then
+		if track.St == 1 then giveWeapon(player, def) end -- 1-A #2: M1_1's weapon comes with the visit (before Otto's scroll)
 		track.St += 1
 		-- A23-130: no step Start line (the row switches to the new step text)
 		topUpGold(player, data, id, track)
+		giveStepItem(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
 		return
@@ -782,6 +804,7 @@ function StoryQuestService.DebugSub(player, id, step)
 	local track = { St = n, P = 0, T = {}, Claim = false }
 	st.Subs[id] = track
 	topUpGold(player, data, id, track)
+	giveStepItem(player, data, id, track)
 	dirty(player)
 	local ok, err = pcall(refresh, player)
 	if not ok then Util.Warn(TAG, "DebugSub refresh: " .. tostring(err)) end

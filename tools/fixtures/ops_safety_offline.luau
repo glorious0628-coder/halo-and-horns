@@ -69,7 +69,7 @@ runGroup("environments", function()
 	check(C.EnvName() == "Live", "the place id decides", C.EnvName())
 	w.Game.PlaceId = "x"
 	check(C.EnvName() == "Dev", "a broken place id: Dev", C.EnvName())
-	check(C.BuildLabel == "beta-prep 2026.10.09", "the build label is current", C.BuildLabel)
+	check(C.BuildLabel == "private-test 2026.10.16", "the build label is current (gameplay plan 1-A #11)", C.BuildLabel)
 	check(C.ServerErrors.MaxPerMinute == 5 and C.ServerErrors.Keep == 50, "5 a minute, the last 50", show(C.ServerErrors))
 	local keys = {}
 	for k in C.Switches.Defs do table.insert(keys, k) end

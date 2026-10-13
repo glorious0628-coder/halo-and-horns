@@ -271,20 +271,37 @@ runGroup("weapon first", function()
 		show({ step(p), d.BankGold, d.BlacksmithVisited }))
 	check(count(w:NoticesFor(p, n2), string.format(T.Text.Claimed, "150")) == 1, "the claim line: +150 gold (A23-130)",
 		show(w:NoticesFor(p, n2)))
-	-- M1_1: the jelly to Otto (a new visit), his lines, then the shop where the 150 gold buy tier 2
+	-- M1_1: the jelly to Otto (a new visit). Gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon is sold any more, so the
+	-- visit opens step 2 with Otto's one Enhance Scroll, and a scroll used on the weapon finishes M1_1
 	w.Story.Refresh(p)
 	local st = d.Story
 	check(st.Main.Id == "M1_1" and not st.Done.M1_1, "M1_1 waits for a new visit (the first one was before the claim)", show(st.Main))
+	local LT = w.Config.Loot
+	local scrollName = LT.Items.Enh70.Name
+	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
+	local had = scrolls()
 	local n3, f3 = #w.Notices, #w.Fired
 	w:Press(p)
-	check(st.Done.M1_1 == true and w:Panels(p, "WeaponShop", f3) == 1, "the visit finishes M1_1, then the shop opens",
-		show({ st.Done.M1_1, w:Panels(p, "WeaponShop", f3) }))
-	local lines = w:NoticesFor(p, n3)
-	check(lines[1] ~= nil and string.find(lines[1], " done!", 1, true) ~= nil and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
+	check(not st.Done.M1_1 and st.Main.Id == "M1_1" and st.Main.St == 2 and w:Panels(p, "WeaponShop", f3) == 1,
+		"the visit passes step 1: step 2 'Use the Enhance Scroll' opens, the Forge window opens", show({ st.Main, st.Done.M1_1 }))
+	check(scrolls() == had + 1 and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 1,
+		"Otto hands over one Enhance Scroll with one '+item' line", show({ had, scrolls(), w:NoticesFor(p, n3) }))
+	local n4 = #w.Notices
+	w:Buy(p, 2)
+	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BankGold >= 150
+		and count(w:NoticesFor(p, n4), w.Config.Text.WeaponDropOnly) == 1,
+		"WeaponShop.Buy = false: buying the tier-2 weapon is refused with one line, no gold spent", show({ d.WeaponTier, d.BankGold, w:NoticesFor(p, n4) }))
+	w:Press(p)
+	check(scrolls() == had + 1 and st.Main.St == 2, "a second visit gives no second scroll", show({ scrolls(), st.Main }))
+	local n5 = #w.Notices
+	w:Remote(p, "UseItem", "Enh70", 1)
+	check(st.Done.M1_1 == true and scrolls() == had, "the scroll used on the weapon (success or not) finishes M1_1", show({ st.Done.M1_1, scrolls() }))
+	local lines = w:NoticesFor(p, n5)
+	local done = false
+	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
+	check(done and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
 		"M1_1's reward line (A23-130: no Otto lines); no second weapon (the gift is only the safety net)", show(lines))
 	check(d.BankGold > 150, "M1_1 pays a little gold (Reward Gold 1)", d.BankGold)
-	w:Buy(p, 2)
-	check(d.WeaponTier == 2 and d.WeaponOwnedMask == 3, "the 150 gold buy the tier-2 weapon right there", show({ d.WeaponTier, d.WeaponOwnedMask }))
 end)
 
 ------------------------------------------------------------------ 3. the forge walk (A23-88): nothing moves, the arrival is a metric

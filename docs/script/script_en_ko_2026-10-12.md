@@ -1,6 +1,6 @@
 # 게임 대본 (영어 원문 + 한국어 뜻)
 
-2026-10-12에 main 기준으로 만듦. 글이 바뀌면 다시 만들어야 함 (영어 목록은 `py tools/l10n_export.py --out build/script_tmp/strings_server_en.json`으로 뽑을 수 있음).
+2026-10-12에 main 기준으로 만듦. 2026-10-13: 보이는 이름 바꿈(A23-138: Smokey → Rose, Flappy Zigzag → Bat Zigzag, Legendary Villain → Final Boss; 설정 키·퀘스트 id는 그대로)과 첫 무기 새 흐름 글(맨 아래 '10/13 새 글')을 손으로 넣음. 글이 바뀌면 다시 만들어야 함 (영어 목록은 `py tools/l10n_export.py --out build/script_tmp/strings_server_en.json`으로 뽑을 수 있음).
 
 게임 화면은 영어뿐입니다(SPEC A23-146). 이 문서는 **소유자만 읽는 용도**이고 게임에는 들어가지 않습니다.
 
@@ -40,7 +40,7 @@
 | Honor / Infamy | 명예 / 악명 | Halo 점수 / Horns 점수 |
 | Hallie / Magpie / Kit | 할리 / 맥파이 / 킷 | 안내자(Guide): Halo / Horns / 길드 |
 | Otto / Fizzby | 오토 / 피즈비 | 대장장이(Forge) / 물약 상인(Potion Seller) |
-| Bright / Smokey / Tiny | 브라이트 / 스모키 / 타이니 | 마을 아이들: 빛의 성채 경비 / 뿔 소굴 / 교차로 길드 꼬마 |
+| Bright / Rose / Tiny | 브라이트 / 로즈 / 타이니 | 마을 아이들: 빛의 성채 경비 / 뿔 소굴 / 교차로 길드 꼬마 |
 | Sir Gleam / Rascal Rex | 글림 경 / 래스칼 렉스 | 빛의 기사 / 뿔 소굴 장난꾼 |
 | Pip / Dibs / Grabbo | 핍 / 딥스 / 그래보 | 고블린 (작은 고블린 / 장사꾼 / Grab Club 대장) |
 | Crossroads | 교차로 마을 | 가운데 마을. 분수·대장간·운명의 제단이 있음 |
@@ -325,7 +325,7 @@
 | %s · Skills come at Lv%d | %s · 스킬은 Lv%d에 나와요 | 첫 스킬을 배우기 전에 스킬 목표 줄에 붙는 말 · `StoryQuests.Text.SkillLater` · 앞 %s = 목표 글, %d = 레벨 |
 | Terms of Fate | 운명의 약관 | 이스터에그 말하는 이름: 두루마리 · `StoryQuests.Speakers.Scroll` |
 | Notice | 안내문 | 이스터에그 말하는 이름: 안내문 · `StoryQuests.Speakers.Notice` |
-| Bright & Smokey | Bright(브라이트)와 Smokey(스모키) | **[숨김]** 두 아이를 함께 부르는 이름 (Bright + Smokey) · `StoryQuests.Speakers.Kids` |
+| Bright & Rose | Bright(브라이트)와 Rose(로즈) | **[숨김]** 두 아이를 함께 부르는 이름 (Bright + Rose) · `StoryQuests.Speakers.Kids` |
 
 ### 3-0b 퀘스트 창(Q)에 보이는 글자
 
@@ -343,7 +343,7 @@
 | First mission | 첫 임무 | 첫 임무 줄 이름 · T.Text.FirstMission |
 | Daily quests today: %d/%d | 오늘의 일일 퀘스트: %d/%d | 일일 탭 위 오늘 진행 · T.Text.DailyToday · %d/%d = 지금 숫자/목표 숫자 |
 
-말하는 사람 이름표(화자) 목록: Shard = Crown Shard, Fountain = Fountain Shard, Smith = Otto, Guild = Kit, Potion = Fizzby, Bright, Smokey, Tiny, Pip, Dibs, Grabbo, Gleam = Sir Gleam, Rex = Rascal Rex, Goose = Golden Goose. 말하는 사람이 없는 퀘스트는 **내 진영 안내자**(Hallie / Magpie / Kit)가 말합니다.
+말하는 사람 이름표(화자) 목록: Shard = Crown Shard, Fountain = Fountain Shard, Smith = Otto, Guild = Kit, Potion = Fizzby, Bright, Rose, Tiny, Pip, Dibs, Grabbo, Gleam = Sir Gleam, Rex = Rascal Rex, Goose = Golden Goose. 말하는 사람이 없는 퀘스트는 **내 진영 안내자**(Hallie / Magpie / Kit)가 말합니다.
 
 ### 3-1 1장 — 슬라임 가루
 
@@ -358,6 +358,8 @@
 | Sparkly Jelly | 반짝이는 젤리 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
 | Slime jelly | 슬라임 젤리 | 폰 화면용 짧은 줄 이름 · `ShortName` |
 | Show the jelly to the Blacksmith | 대장장이에게 젤리를 보여 주세요 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
+| Use the Enhance Scroll on your weapon | 무기에 강화 주문서를 써 보세요 | 목표 2 (10/13 새로) — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴; 이 단계가 열릴 때 Otto가 Enhance Scroll 70% 1장을 줌 · `Steps.2.Text` |
+| Enhance | 강화 | 목표 2 폰 화면용 짧은 이름 · `Steps.2.ShortName` |
 | Otto: Clang, clang… done. Cocoa time.<br>Otto: That's Crown Shard dust! The Slime Princes ate the most of it.<br>Otto: Big brothers always grab the biggest bite! | Otto: 땅땅, 다 됐다… 코코아 마실 시간이야.<br>Otto: 이건 Crown Shard 가루야! 대부분은 Slime Prince(슬라임 왕자)들이 먹어 버렸지.<br>Otto: 형들은 늘 제일 큰 걸 먼저 집어 가거든! | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
 
 #### M1_2 · The Prince Who Ate the Dust (가루를 먹은 왕자)
@@ -900,7 +902,7 @@
 | A sack fell open… and Slime Princes gobbled what was inside! | 자루가 터졌다… 그리고 Slime Prince들이 안에 든 걸 게걸스럽게 먹었다! | **[숨김]** 목표 3 시작 알림 · `Steps.3.Start` |
 | Tell Bright what you found | 알아낸 것을 Bright에게 알려 주기 | 목표 4 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.4.Text` |
 | Sticky… sweet… is this jelly? | 끈적… 달콤… 이거 젤리인가? | 목표 4 대화창 1쪽 — 모두에게 · `Steps.4.Lines.All.1` |
-| Their secret sacks… are full of birthday jelly? For Smokey? | 비밀 자루가… 생일 젤리로 가득이라고? Smokey를 위해? | 목표 4 대화창 2쪽 — 모두에게 · `Steps.4.Lines.All.2` |
+| Their secret sacks… are full of birthday jelly? For Rose? | 비밀 자루가… 생일 젤리로 가득이라고? Rose를 위해? | 목표 4 대화창 2쪽 — 모두에게 · `Steps.4.Lines.All.2` |
 | One jar says: 'Happy birthday, S. From the bench.'<br>Bright: Not my writing! I mean… whose writing? | 한 병에 이렇게 적혀 있다: '생일 축하해, S. 벤치에서.'<br>Bright: 내 글씨 아냐! 그러니까… 누구 글씨지? | 목표 4 대화창 3쪽 — 모두에게 · `Steps.4.Lines.All.3` |
 | So what do we tell everyone? | 그래서 다들 뭐라고 말해 줄까요? | 목표 4 대화창 4쪽 — 모두에게 · `Steps.4.Lines.All.4` |
 | Tell everyone the truth | 모두에게 사실대로 말하기 | 목표 4 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.4.Obj.Good.Label` |
@@ -910,7 +912,7 @@
 
 #### R1 · The Halos Are Up to Something (빛 쪽이 뭔가 꾸미고 있어요)
 - 종류: 마을 사이드 (Horns 전용)
-- 주는 사람: Smokey (뿔 소굴 꼬마)
+- 주는 사람: Rose (뿔 소굴 꼬마)
 - 열리는 때: M2_3 뒤
 - 보상: 골드 120 + 경험치(현재 레벨 막대의 절반) — 완료하면 "<이름> done! +골드 · +XP" 알림
 - 선택 보상: 왼쪽(착한 쪽) = 강화 주문서 70% 1장 · 오른쪽(장난 쪽) = HP 물약 3개 + 골드 220. 점수 1점 (자기 진영 점수는 오르고, 반대쪽 고르면 자기 점수가 깎임, A23-58)
@@ -919,23 +921,23 @@
 |---|---|---|
 | The Halos Are Up to Something | 빛 쪽이 뭔가 꾸미고 있어요 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
 | Spy on Halos | Halo 염탐 | 폰 화면용 짧은 줄 이름 · `ShortName` |
-| Psst! Smokey in Horns Den has a secret job for you. | 쉿! Horns Den(뿔 소굴)의 Smokey가 비밀 일을 맡길래요. | **[숨김]** 퀘스트 시작 알림 · `Start` |
-| Talk to Smokey in Horns Den | Horns Den의 Smokey와 이야기하기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
+| Psst! Rose in Horns Den has a secret job for you. | 쉿! Horns Den(뿔 소굴)의 Rose가 비밀 일을 맡길래요. | **[숨김]** 퀘스트 시작 알림 · `Start` |
+| Talk to Rose in Horns Den | Horns Den의 Rose와 이야기하기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
 | Psst! A Halo broke the Crown! My uncle's friend's cousin saw it! | 쉿! Halo가 Crown을 깼어! 우리 삼촌 친구의 사촌이 봤대! | 목표 1 대화창 1쪽 — 모두에게 · `Steps.1.Lines.All.1` |
 | This gold spyglass? Found it. Gold is fine. For spying.<br>Plan A: we spy. Plan B: same as Plan A, but sneakier! | 이 금빛 망원경? 주웠어. 금이면 괜찮지. 염탐용으로.<br>계획 A: 염탐하기. 계획 B: 계획 A와 같은데 더 몰래! | 목표 1 대화창 2쪽 — 모두에게 · `Steps.1.Lines.All.2` |
 | The Halos whisper at the fountain. A secret plan!<br>Go listen there. Look natural! | Halo들이 분수에서 속닥거려. 비밀 계획이야!<br>가서 들어 봐. 자연스럽게! | 목표 1 대화창 3쪽 — 모두에게 · `Steps.1.Lines.All.3` |
 | Listen at the fountain %d/%d s | 분수에서 엿듣기 %d/%d초 | 목표 2 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.2.Text` · %d/%d = 지금 숫자/목표 숫자 |
 | Slimes in the meadow %d/%d | 초원 슬라임 잡기 %d/%d | 목표 3 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.3.Text` · %d/%d = 지금 숫자/목표 숫자 |
 | You heard: "Slimes… sparkles… BOOM at sunset!" Check the meadow! | 들은 말: "슬라임… 반짝… 해 질 녘에 쾅!" 초원을 살펴보세요! | **[숨김]** 목표 3 시작 알림 · `Steps.3.Start` |
-| Tell Smokey what you heard | 들은 것을 Smokey에게 알려 주기 | 목표 4 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.4.Text` |
+| Tell Rose what you heard | 들은 것을 Rose에게 알려 주기 | 목표 4 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.4.Text` |
 | The slimes were full of sparkle dust. For a show? | 슬라임은 반짝 가루로 가득했다. 공연용인가? | 목표 4 대화창 1쪽 — 모두에게 · `Steps.4.Lines.All.1` |
 | Their big secret… is a fireworks show? For everyone? | 그들의 큰 비밀이… 불꽃놀이라고? 모두를 위한? | 목표 4 대화창 2쪽 — 모두에게 · `Steps.4.Lines.All.2` |
 | One purple firework? In a Halo show?<br>The plan is signed 'B.' …Never heard of a B. | 보라색 불꽃 하나? Halo 쇼에?<br>계획서에는 'B.'라고 서명돼 있다. …B라는 사람은 처음 들어 봐. | 목표 4 대화창 3쪽 — 모두에게 · `Steps.4.Lines.All.3` |
 | So what do we tell everyone? | 그래서 다들 뭐라고 말해 줄까요? | 목표 4 대화창 4쪽 — 모두에게 · `Steps.4.Lines.All.4` |
 | Tell everyone the truth | 모두에게 사실대로 말하기 | 목표 4 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.4.Obj.Good.Label` |
 | Keep the rumor going. It's more fun! | 소문을 계속 퍼뜨리기. 그게 더 재밌어! | 목표 4 선택 버튼 — 오른쪽(장난·악 쪽, 뿔 그림) · `Steps.4.Obj.Evil.Label` |
-| Smokey: So who started the rumor? …Does anyone remember? | Smokey: 그래서 누가 소문을 낸 거야? …기억하는 사람 있어? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
-| Smokey's wristband: gold and purple. Where have you seen one? | Smokey의 손목밴드: 금색과 보라색. 어디서 본 적 있지? | **[숨김]** 단서 알림 (A23-130부터 안 보냄) · `Clue` |
+| Rose: So who started the rumor? …Does anyone remember? | Rose: 그래서 누가 소문을 낸 거야? …기억하는 사람 있어? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
+| Rose's wristband: gold and purple. Where have you seen one? | Rose의 손목밴드: 금색과 보라색. 어디서 본 적 있지? | **[숨김]** 단서 알림 (A23-130부터 안 보냄) · `Clue` |
 
 #### N3 · Both Sides Are Suspicious (양쪽 다 수상해요)
 - 종류: 마을 사이드 (모두)
@@ -989,26 +991,26 @@
 | Hang it in my house | 내 집에 걸어 두기 | 목표 4 선택 버튼 — 오른쪽(장난·악 쪽, 뿔 그림) · `Steps.4.Obj.Evil.Label` |
 | Bright: Who was the first to carry it, I wonder? | Bright: 맨 처음 이걸 든 사람이 누구였을까요? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
 
-#### R5 · Smokey's Hat Problem (Smokey의 모자 문제)
+#### R5 · Rose's Hat Problem (Rose의 모자 문제)
 - 종류: 마을 사이드 (Horns 전용)
-- 주는 사람: Smokey
+- 주는 사람: Rose
 - 열리는 때: M1_4 뒤, Lv8부터
 - 보상: 골드 120 + 경험치(현재 레벨 막대의 절반) — 완료하면 "<이름> done! +골드 · +XP" 알림
 - 선택 보상: 왼쪽(착한 쪽) = 강화 주문서 70% 1장 · 오른쪽(장난 쪽) = HP 물약 3개 + 골드 220. 점수 1점 (자기 진영 점수는 오르고, 반대쪽 고르면 자기 점수가 깎임, A23-58)
 
 | 영어 | 한국어 뜻 | 메모 |
 |---|---|---|
-| Smokey's Hat Problem | Smokey의 모자 문제 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
-| Smokey's hat | Smokey의 모자 | 폰 화면용 짧은 줄 이름 · `ShortName` |
-| Smokey: A Slime Prince is wearing my sack as a crown! | Smokey: Slime Prince가 내 자루를 왕관처럼 쓰고 있어! | **[숨김]** 퀘스트 시작 알림 · `Start` |
+| Rose's Hat Problem | Rose의 모자 문제 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
+| Rose's hat | Rose의 모자 | 폰 화면용 짧은 줄 이름 · `ShortName` |
+| Rose: A Slime Prince is wearing my sack as a crown! | Rose: Slime Prince가 내 자루를 왕관처럼 쓰고 있어! | **[숨김]** 퀘스트 시작 알림 · `Start` |
 | Find the slime by the pond | 연못 옆 슬라임 찾기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
 | Slime Prince %d/%d | Slime Prince 잡기 %d/%d | 목표 2 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.2.Text` · %d/%d = 지금 숫자/목표 숫자 |
 | The sack is free! | 자루가 풀려났다! | 목표 3 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.3.Text` |
-| A sack! A bit slimy. Smokey's name is on it. | 자루다! 좀 끈적해. Smokey의 이름이 적혀 있다. | 목표 3 대화창 1쪽 — 모두에게 · `Steps.3.Lines.All.1` |
+| A sack! A bit slimy. Rose's name is on it. | 자루다! 좀 끈적해. Rose의 이름이 적혀 있다. | 목표 3 대화창 1쪽 — 모두에게 · `Steps.3.Lines.All.1` |
 | So whose sack is it now? | 그럼 이 자루는 이제 누구 거지? | 목표 3 대화창 2쪽 — 모두에게 · `Steps.3.Lines.All.2` |
-| Give it back to Smokey | Smokey에게 돌려주기 | 목표 3 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.3.Obj.Good.Label` |
+| Give it back to Rose | Rose에게 돌려주기 | 목표 3 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.3.Obj.Good.Label` |
 | Finders keepers! | 줍는 놈이 임자! | 목표 3 선택 버튼 — 오른쪽(장난·악 쪽, 뿔 그림) · `Steps.3.Obj.Evil.Label` |
-| Smokey: Did the slime look good in it, at least? | Smokey: 그래서 그 슬라임, 쓰니까 멋있긴 했어? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
+| Rose: Did the slime look good in it, at least? | Rose: 그래서 그 슬라임, 쓰니까 멋있긴 했어? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
 
 #### H3 · Day 40: Cat in Tree (40일째: 나무 위의 고양이)
 - 종류: 마을 사이드 (Halo 전용)
@@ -1081,7 +1083,7 @@
 
 #### R6 · Plan B, Again (계획 B, 또)
 - 종류: 마을 사이드 (Horns 전용)
-- 주는 사람: Smokey
+- 주는 사람: Rose
 - 열리는 때: M2_7 뒤, Lv15부터
 - 보상: 골드·경험치 각각 사냥 2분어치 — 완료 알림 "<이름> done! +골드 · +XP"
 - 선택 보상: 왼쪽(착한 쪽) = 강화 주문서 70% 1장 · 오른쪽(장난 쪽) = HP 물약 3개 + 골드 220. 점수 1점 (자기 진영 점수는 오르고, 반대쪽 고르면 자기 점수가 깎임, A23-58)
@@ -1090,16 +1092,16 @@
 |---|---|---|
 | Plan B, Again | 계획 B, 또 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
 | Plan B | 계획 B | 폰 화면용 짧은 줄 이름 · `ShortName` |
-| Talk to Smokey | Smokey와 이야기하기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
-| Smokey: Plan B failed. Time for… Plan B? | Smokey: 계획 B가 실패했어. 이제… 계획 B? | 목표 1 대화창 1쪽 — 모두에게 · `Steps.1.Lines.All.1` |
-| Smokey: Plans cost gold. Lots of it. | Smokey: 계획에는 골드가 들어. 아주 많이. | 목표 1 대화창 2쪽 — 모두에게 · `Steps.1.Lines.All.2` |
+| Talk to Rose | Rose와 이야기하기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
+| Rose: Plan B failed. Time for… Plan B? | Rose: 계획 B가 실패했어. 이제… 계획 B? | 목표 1 대화창 1쪽 — 모두에게 · `Steps.1.Lines.All.1` |
+| Rose: Plans cost gold. Lots of it. | Rose: 계획에는 골드가 들어. 아주 많이. | 목표 1 대화창 2쪽 — 모두에게 · `Steps.1.Lines.All.2` |
 | Hunting gold %d/%d | 사냥 골드 %d/%d | 목표 2 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.2.Text` · %d/%d = 지금 숫자/목표 숫자 |
-| Back to Smokey | Smokey에게 돌아가기 | 목표 3 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.3.Text` |
-| Smokey: Gold! Now, the plan… | Smokey: 골드다! 자, 계획은… | 목표 3 대화창 1쪽 — 모두에게 · `Steps.3.Lines.All.1` |
-| Smokey: Which plan? | Smokey: 어떤 계획? | 목표 3 대화창 2쪽 — 모두에게 · `Steps.3.Lines.All.2` |
+| Back to Rose | Rose에게 돌아가기 | 목표 3 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.3.Text` |
+| Rose: Gold! Now, the plan… | Rose: 골드다! 자, 계획은… | 목표 3 대화창 1쪽 — 모두에게 · `Steps.3.Lines.All.1` |
+| Rose: Which plan? | Rose: 어떤 계획? | 목표 3 대화창 2쪽 — 모두에게 · `Steps.3.Lines.All.2` |
 | Try a brand-new plan | 완전히 새로운 계획 세우기 | 목표 3 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.3.Obj.Good.Label` |
 | Plan B again, but LOUDER | 계획 B를 또, 이번엔 더 시끄럽게 | 목표 3 선택 버튼 — 오른쪽(장난·악 쪽, 뿔 그림) · `Steps.3.Obj.Evil.Label` |
-| Smokey: What if a plan needs two people? | Smokey: 계획이 두 사람이 필요하면 어쩌지? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
+| Rose: What if a plan needs two people? | Rose: 계획이 두 사람이 필요하면 어쩌지? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
 
 #### H6 · Dusty Heroes (먼지 쌓인 영웅들)
 - 종류: 마을 사이드 (Halo 전용)
@@ -1125,7 +1127,7 @@
 
 #### R7 · Lava Party (용암 파티)
 - 종류: 마을 사이드 (Horns 전용)
-- 주는 사람: Smokey
+- 주는 사람: Rose
 - 열리는 때: M2_7 뒤, Lv22부터
 - 보상: 골드·경험치 각각 사냥 2분어치 — 완료 알림 "<이름> done! +골드 · +XP"
 - 선택 보상: 왼쪽(착한 쪽) = 강화 주문서 70% 1장 · 오른쪽(장난 쪽) = HP 물약 3개 + 골드 220. 점수 1점 (자기 진영 점수는 오르고, 반대쪽 고르면 자기 점수가 깎임, A23-58)
@@ -1134,15 +1136,15 @@
 |---|---|---|
 | Lava Party | 용암 파티 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
 | Lava party | 용암 파티 | 폰 화면용 짧은 줄 이름 · `ShortName` |
-| Smokey: Party at the lava cracks! Bring snacks… or gold. | Smokey: 용암 갈라진 틈에서 파티야! 간식을 가져와… 아니면 골드. | **[숨김]** 퀘스트 시작 알림 · `Start` |
+| Rose: Party at the lava cracks! Bring snacks… or gold. | Rose: 용암 갈라진 틈에서 파티야! 간식을 가져와… 아니면 골드. | **[숨김]** 퀘스트 시작 알림 · `Start` |
 | Warm up at the lava %d/%d s | 용암 옆에서 몸 녹이기 %d/%d초 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` · %d/%d = 지금 숫자/목표 숫자 |
 | Hunting gold %d/%d | 사냥 골드 %d/%d | 목표 2 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.2.Text` · %d/%d = 지금 숫자/목표 숫자 |
 | Party time | 파티 시간 | 목표 3 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.3.Text` |
-| Smokey: Snacks! Gold! Music! | Smokey: 간식! 골드! 음악! | 목표 3 대화창 1쪽 — 모두에게 · `Steps.3.Lines.All.1` |
-| Smokey: Who gets in? | Smokey: 누가 들어올 수 있게 할까? | 목표 3 대화창 2쪽 — 모두에게 · `Steps.3.Lines.All.2` |
+| Rose: Snacks! Gold! Music! | Rose: 간식! 골드! 음악! | 목표 3 대화창 1쪽 — 모두에게 · `Steps.3.Lines.All.1` |
+| Rose: Who gets in? | Rose: 누가 들어올 수 있게 할까? | 목표 3 대화창 2쪽 — 모두에게 · `Steps.3.Lines.All.2` |
 | Invite the whole den | 소굴 모두를 초대하기 | 목표 3 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.3.Obj.Good.Label` |
 | VIP only. Just us! | VIP만. 우리끼리만! | 목표 3 선택 버튼 — 오른쪽(장난·악 쪽, 뿔 그림) · `Steps.3.Obj.Evil.Label` |
-| Smokey: Is a party better big, or just right? | Smokey: 파티는 큰 게 좋을까, 딱 맞는 게 좋을까? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
+| Rose: Is a party better big, or just right? | Rose: 파티는 큰 게 좋을까, 딱 맞는 게 좋을까? | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
 
 ### 4-4 고블린 숲과 졸업 사이드 (Lv10~25)
 
@@ -1300,7 +1302,7 @@
 
 #### OathR · The Sprout Promise (새싹의 약속)
 - 종류: 마을 사이드 (Horns 전용, 새싹 약속)
-- 주는 사람: Smokey
+- 주는 사람: Rose
 - 열리는 때: M3_4 뒤, Lv15부터
 - 보상: 골드·경험치 각각 사냥 2분어치 — 완료 알림 "<이름> done! +골드 · +XP" + 칭호(착한 쪽 = Guardian Cadet, 장난 쪽 = Rascal Cadet). 선택 점수 2점
 
@@ -1308,16 +1310,16 @@
 |---|---|---|
 | The Sprout Promise | 새싹의 약속 | 퀘스트 이름 — 퀘스트 창, 완료 알림에 나옴 · `Title` |
 | Sprout promise | 새싹 약속 | 폰 화면용 짧은 줄 이름 · `ShortName` |
-| Smokey has one more lesson for you. | Smokey가 알려 줄 게 하나 더 있어. | **[숨김]** 퀘스트 시작 알림 · `Start` |
-| Talk to Smokey in Horns Den | Horns Den의 Smokey와 이야기하기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
-| Smokey: A real Horn raids knights in the woods! | Smokey: 진짜 Horn은 숲에서 기사들을 털어! | 목표 1 대화창 1쪽 — 모두에게 · `Steps.1.Lines.All.1` |
-| Smokey: Hold the sack for 45 seconds and it's yours! | Smokey: 자루를 45초 동안 쥐고 있으면 네 거야! | 목표 1 대화창 2쪽 — 모두에게 · `Steps.1.Lines.All.2` |
-| Smokey: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only! | Smokey: 먼저 몸풀기. 고블린 야영지 두 곳, 그다음 Goblin Brute를 한 대 쳐. 기본 공격만! | 목표 1 대화창 3쪽 — 모두에게 · `Steps.1.Lines.All.3` |
+| Rose has one more lesson for you. | Rose가 알려 줄 게 하나 더 있어. | **[숨김]** 퀘스트 시작 알림 · `Start` |
+| Talk to Rose in Horns Den | Horns Den의 Rose와 이야기하기 | 목표 1 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.1.Text` |
+| Rose: A real Horn raids knights in the woods! | Rose: 진짜 Horn은 숲에서 기사들을 털어! | 목표 1 대화창 1쪽 — 모두에게 · `Steps.1.Lines.All.1` |
+| Rose: Hold the sack for 45 seconds and it's yours! | Rose: 자루를 45초 동안 쥐고 있으면 네 거야! | 목표 1 대화창 2쪽 — 모두에게 · `Steps.1.Lines.All.2` |
+| Rose: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only! | Rose: 먼저 몸풀기. 고블린 야영지 두 곳, 그다음 Goblin Brute를 한 대 쳐. 기본 공격만! | 목표 1 대화창 3쪽 — 모두에게 · `Steps.1.Lines.All.3` |
 | Find the first goblin camp | 첫 번째 고블린 야영지 찾기 | 목표 2 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.2.Text` |
 | Find the second goblin camp | 두 번째 고블린 야영지 찾기 | 목표 3 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.3.Text` |
 | Basic hits on a Goblin Brute %d/%d | Goblin Brute에게 기본 공격만 %d/%d | 목표 4 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.4.Text` · %d/%d = 지금 숫자/목표 숫자 |
-| Make your promise to Smokey | Smokey에게 약속하기 | 목표 5 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.5.Text` |
-| Smokey: Not bad, rascal! Make your promise. What kind of Horn are you? | Smokey: 나쁘지 않네, 말썽꾸러기! 약속을 해 봐. 너는 어떤 Horn이야? | 목표 5 대화창 1쪽 — 모두에게 · `Steps.5.Lines.All.1` |
+| Make your promise to Rose | Rose에게 약속하기 | 목표 5 — 퀘스트 창·화면 왼쪽 퀘스트 줄에 나옴 · `Steps.5.Text` |
+| Rose: Not bad, rascal! Make your promise. What kind of Horn are you? | Rose: 나쁘지 않네, 말썽꾸러기! 약속을 해 봐. 너는 어떤 Horn이야? | 목표 5 대화창 1쪽 — 모두에게 · `Steps.5.Lines.All.1` |
 | I'll guard the small ones | 작은 아이들을 지킬래요 | 목표 5 선택 버튼 — 왼쪽(착한 쪽, 날개 그림) · `Steps.5.Obj.Good.Label` |
 | Rascals bow to no one! | 말썽꾸러기는 아무에게도 안 숙여! | 목표 5 선택 버튼 — 오른쪽(장난·악 쪽, 뿔 그림) · `Steps.5.Obj.Evil.Label` |
 | Promise made! Keep it close, wherever you go. | 약속했어요! 어디를 가든 마음에 간직하세요. | **[숨김]** 퀘스트 마무리 대사 (A23-130부터 서버가 안 보냄) · `Finish` |
@@ -1819,7 +1821,7 @@ Horns가 Wanted(현상수배) 별 5개를 모으면 10초 뒤 **괴수(Kaiju)**�
 | Kaiju %s is here! | Kaiju %s이(가) 나타났다! | 변신했을 때 · `Story.KaijuStart` · %s = 이름이나 숫자가 들어감 |
 | The Knights defeated the Kaiju %s! They share a %s gold reward. | 기사들이 Kaiju %s을(를) 쓰러뜨렸다! 보상 %s 골드를 나눠 가진다. | Knights가 괴수를 쓰러뜨림 · `Story.KaijuDefeated` · 이름, 골드 · %s = 이름이나 숫자가 들어감 |
 | The Kaiju %s was defeated. | Kaiju %s이(가) 쓰러졌다. | 보상을 받은 사람이 없을 때 · `Story.KaijuDefeatedNoReward` · %s = 이름이나 숫자가 들어감 |
-| The Kaiju %s survived to the end! A Legendary Villain is born! | Kaiju %s이(가) 끝까지 살아남았다! 전설의 악당이 태어났다! | 괴수가 끝까지 살아남음 · `Story.KaijuSurvived` · %s = 이름이나 숫자가 들어감 |
+| The Kaiju %s survived to the end! A Final Boss is born! | Kaiju %s이(가) 끝까지 살아남았다! 최종 보스가 태어났다! | 괴수가 끝까지 살아남음 · `Story.KaijuSurvived` · %s = 이름이나 숫자가 들어감 |
 | You're the Kaiju! Last %s | 네가 Kaiju다! 남은 시간 %s | 내가 괴수일 때 위쪽 글 · EventHUD TXT.KaijuSelf · %s = 남은 시간 |
 | Another Kaiju is out. You'll transform when it's over! | 다른 Kaiju가 이미 나왔어요. 끝나면 변신해요! | 괴수가 이미 있어서 대기 중 · `Text.KaijuQueued` |
 | Kaiju hunt reward +%s gold! | Kaiju 사냥 보상 +%s 골드! | 괴수 사냥 보상 · `Text.KaijuReward` · %s = 이름이나 숫자가 들어감 |
@@ -1952,3 +1954,13 @@ Horns가 Wanted(현상수배) 별 5개를 모으면 10초 뒤 **괴수(Kaiju)**�
 - 일자리 게시판의 카드별 착한/장난 설명 줄, 분실물 센터 상세, 대장간 주문(Commission), 채집·제작·약·연구·장비 기능 글: 스위치가 꺼져 있고 아직 게임에 안 나옴.
 - 설정·키 바꾸기·가방·상점 UI 글자, 랭킹/가챠/상품 글, Help 창의 PvP 규칙 긴 설명, 몬스터 이름표 전체 목록, 무기 이름 전체 목록은 UI 글자 위주라 뺐음.
 - `[숨김]`으로 적은 글은 코드에서 쓰는 곳을 찾아보고 정한 것입니다. 이름이 동적으로 불러지는 글은 놓쳤을 수 있습니다.
+
+## 10/13 새 글 (첫 무기 새 흐름, 서버)
+
+| 영어 | 한국어 뜻 | 메모 |
+|---|---|---|
+| New weapons drop from monsters! | 새 무기는 몬스터가 떨어뜨려요! | 대장간에서 안 가진 무기를 사려고 할 때 · `Text.WeaponDropOnly` |
+| The King Slime dropped [%s]! | King Slime이 [%s]을(를) 떨어뜨렸다! | 처음 잡은 King Slime의 철 무기 · `Loot.Text.FirstKingWeapon` · %s = 무기 이름 |
+| The King Slime dropped [%s]! Equipped. | King Slime이 [%s]을(를) 떨어뜨렸다! 손에 들었어요. | 위와 같고, 손에 든 무기보다 세서 바로 낌 · `Loot.Text.FirstKingEquip` |
+
+대장간이 무기를 안 팔 때(`WeaponShop.Buy = false`)의 다음 목표 줄(`Tutorial.Text.NextIronDrop`)·짧은 이름(`ShortNames.IronDrop`)과 화면 쪽 이름 바꾸기(스킬 Bat Zigzag, 마을 반응 줄의 Rose)는 게임성 개발 1 가지(fix/test-prep-client)에서 들어옴.

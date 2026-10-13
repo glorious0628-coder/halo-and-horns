@@ -260,7 +260,9 @@ Config.Levels = {
 	XPBase = 30,
 	XPExponent = 1.4,
 	EarlyUntil = 10, -- addendum A7-2: levels below this need only EarlyMult of the normal XP...
-	EarlyMult = 0.5, -- ...(target: Lv 10 in about 10-12 minutes of slime hunting)
+	-- ...(target: Lv 10 in about 10-12 minutes of slime hunting; gameplay plan 2026-10-13 1-A #4: 0.5 -> 0.35, the sum to Lv10
+	-- 1,381 -> 962 XP, measured in the 10/17 test)
+	EarlyMult = 0.35,
 }
 
 function Config.XPToNext(level)
@@ -273,7 +275,10 @@ end
 
 ----------------------------------------------------------------- weapons (7 tiers shared by every class)
 -- Damage = normal per-target swing damage at Lv 1 for class Damage multiplier 1.0, BEFORE the 50% immediate rule.
-Config.WeaponShop = { MaxSoldTier = 3, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+-- Gameplay plan 2026-10-13 1-A #2 (A23-127: weapons come from drops and trades): Buy = false refuses only buying a weapon
+-- not owned yet (ShopService, Text.WeaponDropOnly; the Forge hides its buy button). Equip, enhance and sell stay, and
+-- MaxSoldTier still bounds the Forge rows (never 0: that closes enhance and sell too)
+Config.WeaponShop = { MaxSoldTier = 3, Buy = false, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
 
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
@@ -2921,7 +2926,7 @@ Config.StoryQuests = {
 	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
 	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
-		Bright = "Bright", Smokey = "Smokey", Tiny = "Tiny", Kids = "Bright & Smokey", -- A23-46 town NPCs, A23-55 kids
+		Bright = "Bright", Smokey = "Rose", Tiny = "Tiny", Kids = "Bright & Rose", -- A23-46 town NPCs, A23-55 kids
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
 		Gleam = "Sir Gleam", Rex = "Rascal Rex", -- story_depth §4 (beta: names only)
 		Scroll = "Terms of Fate", Notice = "Notice", Goose = "Golden Goose" }, -- the Easter eggs' speakers (no portrait: the card shows no face)
@@ -3070,11 +3075,16 @@ Config.StoryQuests = {
 		},
 		-- A23-34: GiveWeapon = the blacksmith gives the class basic weapon (tier 1) once (LootService.GrantFirstWeapon)
 		-- A23-74: the first weapon now comes before the hunt (Tutorial.Steps.Forge), so GiveWeapon is only the safety net
-		-- (owning tier 1 is the record: a no-op then). The visit is the next-weapon moment (the shop opens after the
-		-- lines; the first mission's 150 gold buy tier 2), and the quest pays like its chapter-1 siblings
+		-- (owning tier 1 is the record: a no-op then). The quest pays like its chapter-1 siblings.
+		-- Gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon is sold any more, so the visit teaches enhancing: step 2
+		-- opens with Otto's one Enhance Scroll (GiveItem, once per step) and passes when a scroll is used on a weapon
+		-- (Event ScrollUsed, success or not; Past: a save that used one before passes at once). The first mission's 150 gold
+		-- goes to potions
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
-			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } } },
+			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } },
+				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
+					GiveItem = { Item = "Enh70", N = 1 }, Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
 			Reward = { Gold = 1 },
 		},
@@ -3317,7 +3327,8 @@ Config.StoryQuests = {
 		S1 = {
 			Kind = "Sub", Title = "The Golden Goose With a Shard", ShortName = "Golden Goose", Factions = { Halo = true, Horns = true },
 			Requires = { Tutorial = true }, Show = "GooseSoon",
-			Steps = { { Text = "Bring 2 golden eggs", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } } },
+			-- gameplay plan 1-A #3: one egg hunt joined (the step counts hunts, GooseFinished; a hunt every 4 hours)
+			Steps = { { Text = "Join a Golden Egg hunt", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } } },
 			-- Tug mode only: the first rescue / poach +1. Eggs mode: GooseService gives +5 once an hour (A23-134)
 			FirstPoints = 1,
 		},
@@ -3383,7 +3394,7 @@ Config.StoryQuests = {
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } },
 				{ Text = "Tell Bright what you found", Guide = "HaloTown", Npc = "Bright", Panel = true,
 					Lines = { All = { "Sticky… sweet… is this jelly?",
-						"Their secret sacks… are full of birthday jelly? For Smokey?",
+						"Their secret sacks… are full of birthday jelly? For Rose?",
 						"One jar says: 'Happy birthday, S. From the bench.'\nBright: Not my writing! I mean… whose writing?",
 						"So what do we tell everyone?" } },
 					Obj = { Type = "Choice",
@@ -3397,9 +3408,9 @@ Config.StoryQuests = {
 		R1 = {
 			Kind = "Sub", Title = "The Halos Are Up to Something", ShortName = "Spy on Halos", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M2_3" } },
-			Start = "Psst! Smokey in Horns Den has a secret job for you.",
+			Start = "Psst! Rose in Horns Den has a secret job for you.",
 			Steps = {
-				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+				{ Text = "Talk to Rose in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Psst! A Halo broke the Crown! My uncle's friend's cousin saw it!",
 						"This gold spyglass? Found it. Gold is fine. For spying.\nPlan A: we spy. Plan B: same as Plan A, but sneakier!",
 						"The Halos whisper at the fountain. A secret plan!\nGo listen there. Look natural!" } } },
@@ -3408,7 +3419,7 @@ Config.StoryQuests = {
 				{ Text = "Slimes in the meadow %d/%d", Guide = "SlimeMeadow",
 					Start = "You heard: \"Slimes… sparkles… BOOM at sunset!\" Check the meadow!",
 					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
-				{ Text = "Tell Smokey what you heard", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+				{ Text = "Tell Rose what you heard", Guide = "HornsTown", Npc = "Smokey", Panel = true,
 					Lines = { All = { "The slimes were full of sparkle dust. For a show?",
 						"Their big secret… is a fireworks show? For everyone?",
 						"One purple firework? In a Halo show?\nThe plan is signed 'B.' …Never heard of a B.",
@@ -3418,8 +3429,8 @@ Config.StoryQuests = {
 						Evil = { Label = "Keep the rumor going. It's more fun!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
-			Finish = "Smokey: So who started the rumor? …Does anyone remember?",
-			Clue = "Smokey's wristband: gold and purple. Where have you seen one?",
+			Finish = "Rose: So who started the rumor? …Does anyone remember?",
+			Clue = "Rose's wristband: gold and purple. Where have you seen one?",
 		},
 		N3 = {
 			Kind = "Sub", Title = "Both Sides Are Suspicious", ShortName = "Spy on both", Speaker = "Tiny", -- everyone (A23-57: no Factions)
@@ -3482,17 +3493,17 @@ Config.StoryQuests = {
 		OathR = {
 			Kind = "Sub", Title = "The Sprout Promise", ShortName = "Sprout promise", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M3_4" }, Level = 15 },
-			Start = "Smokey has one more lesson for you.",
+			Start = "Rose has one more lesson for you.",
 			Steps = {
-				{ Text = "Talk to Smokey in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Smokey: A real Horn raids knights in the woods!",
-						"Smokey: Hold the sack for 45 seconds and it's yours!",
-						"Smokey: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only!" } } },
+				{ Text = "Talk to Rose in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Rose: A real Horn raids knights in the woods!",
+						"Rose: Hold the sack for 45 seconds and it's yours!",
+						"Rose: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only!" } } },
 				{ Text = "Find the first goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
 				{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },
 				{ Text = "Basic hits on a Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
-				{ Text = "Make your promise to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
-					Lines = { All = { "Smokey: Not bad, rascal! Make your promise. What kind of Horn are you?" } },
+				{ Text = "Make your promise to Rose", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "Rose: Not bad, rascal! Make your promise. What kind of Horn are you?" } },
 					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
 						Evil = { Label = "Rascals bow to no one!", Points = 2 } } },
 			},
@@ -3580,19 +3591,19 @@ Config.StoryQuests = {
 			Finish = "Bright: Who was the first to carry it, I wonder?",
 		},
 		R5 = {
-			Kind = "Sub", Title = "Smokey's Hat Problem", ShortName = "Smokey's hat", Speaker = "Smokey", Factions = { Horns = true },
+			Kind = "Sub", Title = "Rose's Hat Problem", ShortName = "Rose's hat", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M1_4" }, Level = 8 },
-			Start = "Smokey: A Slime Prince is wearing my sack as a crown!",
+			Start = "Rose: A Slime Prince is wearing my sack as a crown!",
 			Steps = {
 				{ Text = "Find the slime by the pond", Guide = "SlimePond", Obj = { Type = "Near", Spot = "SlimePond", Radius = 30 } },
 				{ Text = "Slime Prince %d/%d", Guide = "SlimePond", Obj = { Type = "Kill", Kind = "BigSlime", Count = 1 } },
 				{ Text = "The sack is free!", Panel = true,
-					Lines = { All = { "A sack! A bit slimy. Smokey's name is on it.", "So whose sack is it now?" } },
-					Obj = { Type = "Choice", Good = { Label = "Give it back to Smokey", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+					Lines = { All = { "A sack! A bit slimy. Rose's name is on it.", "So whose sack is it now?" } },
+					Obj = { Type = "Choice", Good = { Label = "Give it back to Rose", Points = 1, Reward = { Item = "Enh70", N = 1 } },
 						Evil = { Label = "Finders keepers!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
-			Finish = "Smokey: Did the slime look good in it, at least?",
+			Finish = "Rose: Did the slime look good in it, at least?",
 		},
 		GW1 = {
 			Kind = "Sub", Title = "Grab Club Meeting", ShortName = "Grab Club", Speaker = "Grabbo",
@@ -3701,16 +3712,16 @@ Config.StoryQuests = {
 			Kind = "Sub", Title = "Plan B, Again", ShortName = "Plan B", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 15 },
 			Steps = {
-				{ Text = "Talk to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Smokey: Plan B failed. Time for… Plan B?", "Smokey: Plans cost gold. Lots of it." } } },
+				{ Text = "Talk to Rose", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Rose: Plan B failed. Time for… Plan B?", "Rose: Plans cost gold. Lots of it." } } },
 				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 200 } },
-				{ Text = "Back to Smokey", Guide = "HornsTown", Npc = "Smokey", Panel = true,
-					Lines = { All = { "Smokey: Gold! Now, the plan…", "Smokey: Which plan?" } },
+				{ Text = "Back to Rose", Guide = "HornsTown", Npc = "Smokey", Panel = true,
+					Lines = { All = { "Rose: Gold! Now, the plan…", "Rose: Which plan?" } },
 					Obj = { Type = "Choice", Good = { Label = "Try a brand-new plan", Points = 1, Reward = { Item = "Enh70", N = 1 } },
 						Evil = { Label = "Plan B again, but LOUDER", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
-			Finish = "Smokey: What if a plan needs two people?",
+			Finish = "Rose: What if a plan needs two people?",
 		},
 		GW4 = {
 			Kind = "Sub", Title = "The Crown War Is Close", ShortName = "Crown War", Factions = { Halo = true, Horns = true },
@@ -3731,7 +3742,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 17 },
 			Start = "Fountain Shard: The Golden Goose looks so tired…",
 			Steps = {
-				{ Text = "Bring golden eggs %d/%d", Guide = "Goose", Obj = { Type = "Goose", Count = 2 } },
+				{ Text = "Join a Golden Egg hunt", Guide = "Goose", Obj = { Type = "Goose", Count = 1 } }, -- 1-A #3: was 2 (8 hours)
 				{ Text = "Talk with the Fountain Shard", Guide = "Crossroads", Panel = true,
 					Lines = { All = { "Fountain Shard: She runs every day. Pulled this way, then that way.", "Fountain Shard: What now?" } },
 					Obj = { Type = "Choice", Good = { Label = "Let her rest a day", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -3797,18 +3808,18 @@ Config.StoryQuests = {
 		R7 = {
 			Kind = "Sub", Title = "Lava Party", ShortName = "Lava party", Speaker = "Smokey", Factions = { Horns = true },
 			Requires = { Done = { "M2_7" }, Level = 22 },
-			Start = "Smokey: Party at the lava cracks! Bring snacks… or gold.",
+			Start = "Rose: Party at the lava cracks! Bring snacks… or gold.",
 			Steps = {
 				{ Text = "Warm up at the lava %d/%d s", Guide = "LavaCrack",
 					Obj = { Type = "Near", Spot = "LavaCrack", Radius = 16, Stay = 10 } },
 				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 300 } },
 				{ Text = "Party time", Guide = "HornsTown", Panel = true,
-					Lines = { All = { "Smokey: Snacks! Gold! Music!", "Smokey: Who gets in?" } },
+					Lines = { All = { "Rose: Snacks! Gold! Music!", "Rose: Who gets in?" } },
 					Obj = { Type = "Choice", Good = { Label = "Invite the whole den", Points = 1, Reward = { Item = "Enh70", N = 1 } },
 						Evil = { Label = "VIP only. Just us!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
-			Finish = "Smokey: Is a party better big, or just right?",
+			Finish = "Rose: Is a party better big, or just right?",
 		},
 		GW8 = {
 			Kind = "Sub", Title = "A Very Full Vault", ShortName = "Full vault",
@@ -3995,6 +4006,8 @@ for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id
 -- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
+-- gameplay plan 2026-10-13 1-A #2: an Enhance scroll used on a weapon, success or not (LootService useEnhance; M1_1 step 2)
+Config.StoryQuests.Events.ScrollUsed = true
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
 	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },
@@ -4058,6 +4071,16 @@ Config.TownNpcs = {
 			Colors = { Head = Color3.fromRGB(220, 170, 130), Torso = Color3.fromRGB(95, 95, 105), Legs = Color3.fromRGB(60, 50, 45) } },
 	},
 }
+-- gameplay plan 2026-10-13 1-A #9: temporary default bodies for the two quest people who had none (a Talk step whose NPC has
+-- no body passes silently, StoryQuestService npcNear): Tiny (every side's N3, at the Crossroads by the kids' bench) and Rose
+-- (the Horns kid, beside the Horns Den spawn like Bright in Halo; her quest id stays "Smokey", A23-138 renamed what is shown).
+-- Kept out of the table above (the Halo stage-6 branch edits its rows).
+table.insert(Config.TownNpcs.List, { Id = "Tiny", Name = "Npc_Tiny", Story = "Tiny", Label = "Tiny", At = Vector3.new(24, 0, 12),
+	Look = Vector3.new(18, 0, 18),
+	Colors = { Head = Color3.fromRGB(230, 185, 150), Torso = Color3.fromRGB(240, 170, 90), Legs = Color3.fromRGB(120, 100, 80) } })
+table.insert(Config.TownNpcs.List, { Id = "Rose", Name = "Npc_Rose", Story = "Smokey", Label = "Rose", At = Vector3.new(-18, 0, 424),
+	Look = Vector3.new(-18, 0, 380),
+	Colors = { Head = Color3.fromRGB(205, 150, 115), Torso = Color3.fromRGB(150, 60, 80), Legs = Color3.fromRGB(70, 50, 60) } })
 
 -- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
 -- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that
@@ -4193,11 +4216,14 @@ Config.Quests = {
 	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
 	-- fits: unchanged). Lv1-9 (the meadow set of 3) is not touched.
 	NonHuntFrom = 10,
-	-- 검수 2026-10-10: the goose is a 60 s event every 10 minutes: a daily that waits for it must not become homework, so it is
-	-- never a daily two days running (Config.Data.Defaults.GooseDay = the KST day index of the last goose daily made). The rule
-	-- is "one non-hunting daily if one fits": a day with none that fits (the goose rested, no choice source, a guild member)
-	-- keeps its three hunting dailies. The PvP kinds (Hunt / Plunder) are drawn rarely (low weights above).
+	-- 검수 2026-10-10: a daily that waits for the goose must not become homework, so it is never a daily two days running
+	-- (Config.Data.Defaults.GooseDay = the KST day index of the last goose daily made). The rule is "one non-hunting daily if one
+	-- fits": a day with none that fits (the goose rested or far, no choice source, a guild member) keeps its three hunting
+	-- dailies. Gameplay plan 2026-10-13 1-A #3: the egg hunt comes every 4 hours (A23-137: 00/04/08/12/16/20 KST), so a goose
+	-- daily is made only while the next hunt starts within GooseWindow s (or one is on); the PvP kinds (Hunt / Plunder) are
+	-- never the forced non-hunting slot (A23-113: no PvP pushed on a child) - they stay a rare plain draw
 	GooseRestDays = 1,
+	GooseWindow = 3600,
 	-- A23-14 (user 2026-10-05 "짧고 다양하게"): DAILIES generated at Lv1..Newbie.MaxLevel (meadow levels; Goblin Woods
 	-- opens at Lv10) come from Newbie.Dailies instead of Templates[].DailyUnits. The "different template" rule picks one
 	-- row per Id, so the 3 slots are always 3 different goals (kill / skill / gold). Extras and Lv10+ dailies unchanged.
@@ -4255,6 +4281,10 @@ Config.Daily = {
 	-- per missed whole day: 70% of a full day (3 dailies + chest, Config.DailyDayMinutes) at the CURRENT level
 	VacationRate = 0.7,
 	VacationMaxDays = 3,
+	-- 최종 검수 10/13 (A23-14 "no Lv10 from vacation alone", EarlyMult 0.5 -> 0.35): a missed day below Levels.EarlyUntil pays
+	-- its XP x EarlyMult / VacationEarlyBase (the EarlyMult the early days were tuned for); QuestService also stops a
+	-- vacation claim's XP at the end of Lv(EarlyUntil - 1), which is what keeps the rule
+	VacationEarlyBase = 0.5,
 	CheckInterval = 30, -- seconds between day-rollover checks for online players
 	-- A23-104 (user 2026-10-10): a new player is told about the daily jobs by a short quest (the sub IntroQuest, after the
 	-- first chapter) before any is made; until then QuestService makes, shows and counts none and says DailyLocked. A save that
@@ -4303,6 +4333,9 @@ end
 function Config.VacationReward(level, days) -- gold, xp for `days` missed days (clamped)
 	local d = math.clamp(days or 0, 0, Config.Daily.VacationMaxDays)
 	local g, x = Config.HuntValue(level, Config.DailyDayMinutes(level))
+	if (tonumber(level) or 1) < Config.Levels.EarlyUntil and (tonumber(Config.Daily.VacationEarlyBase) or 0) > 0 then
+		x = x * Config.Levels.EarlyMult / Config.Daily.VacationEarlyBase -- 최종 검수 10/13 (see Config.Daily)
+	end
 	-- + 1e-6: 360 * 0.7 is 251.99999999999997 in floating point; the documented day pays 252
 	return math.floor(g * Config.Daily.VacationRate * d + 1e-6), math.floor(x * Config.Daily.VacationRate * d + 1e-6)
 end
@@ -4734,8 +4767,9 @@ Config.RateLimits = {
 -- network, server only) = no gift, no points. Points: my own side's score +Points (inside Config.Deeds.PerDay) or -Points
 -- off side (A23-58, never below 0); Neutral / no side: the gift only. One open card a player at a time.
 Config.Finisher = {
-	-- the field bosses only (검수 2026-10-08: the Slime Prince has no card; J 2026-10-09: Captain Clatter)
-	Kinds = { SlimeKing = true, CaptainClatter = true },
+	-- the field bosses only (검수 2026-10-08: the Slime Prince has no card; J 2026-10-09: Captain Clatter). Gameplay plan
+	-- 2026-10-13 1-A #10: empty (no card) until the card's window exists (2-A #3: { SlimeKing = true, CaptainClatter = true })
+	Kinds = {},
 	Seconds = 10,
 	Grace = 1,
 	Points = 1,
@@ -5100,7 +5134,7 @@ Config.Settings = {
 
 -- A23-48 (user 2026-10-06 evening): the game shows English only (UIKit.Lang decides for the modules with KO / EN twins);
 -- new window texts are written in English only
-Config.BuildLabel = "beta-prep 2026.10.09" -- shown in the settings footer (bump with a release)
+Config.BuildLabel = "private-test 2026.10.16" -- shown in the settings footer (bump with a release)
 
 ----------------------------------------------------------------- environments + ops safety (시스템 점검 1회차, 2026-10-09)
 -- Env: which copy of the game this server is. Names[<place id>] = "Beta" | "Live" is filled when those places are published
@@ -5588,9 +5622,12 @@ Config.Loot = {
 	-- NoticeSeconds; that kill's Loot Fx carries First = true so the client skips its own "where to use it" toast)
 	FirstScroll = { Monster = "BigSlime", Item = "Enh70", NoticeSeconds = 6 },
 	-- C2 (crafting_market §3 / §8): the first Slime Prince a player defeats always drops the tier-2 weapon (once, a paid
-	-- kill; LootFlags.FirstWeapon), equipped at once when it beats the weapon in hand. A weapon owned already drops as a
-	-- Spare (+0, LootService.AddSpare); DuplicateWeaponGold below is paid only when the Spares are full
+	-- kill; LootFlags.FirstWeapon), equipped at once when it beats the weapon in hand. A weapon owned already: the chance
+	-- is used and nothing drops (no Spare, no gold)
 	FirstWeaponDrop = { Monster = "BigSlime", Tier = 2 },
+	-- gameplay plan 2026-10-13 1-A #2: the same for the first King Slime a player defeats (a paid kill, not a practice
+	-- King; LootFlags.FirstKingWeapon): the tier-3 iron weapon (Text.FirstKingWeapon / FirstKingEquip)
+	FirstKingDrop = { Monster = "SlimeKing", Tier = 3 },
 	-- a weapon drop the player already owns turns into gold
 	DuplicateWeaponGold = { [2] = 15, [3] = 80, [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 }, -- C2: 2 / 3 = 10% of the old price
 	Text = {
@@ -5609,6 +5646,8 @@ Config.Loot = {
 		SpareWeapon = "Spare [%s] in your Bag.", -- C2: a weapon owned already (weapon)
 		FirstDropWeapon = "The Slime Prince dropped [%s]!", -- C2: the first Prince's weapon (weapon)
 		FirstDropEquip = "The Slime Prince dropped [%s]! Equipped.", -- C2: ... and it beat the weapon in hand
+		FirstKingWeapon = "The King Slime dropped [%s]!", -- 1-A #2: the first King's weapon (weapon)
+		FirstKingEquip = "The King Slime dropped [%s]! Equipped.", -- ... and it beat the weapon in hand
 		JackpotSelf = "Legendary weapon [%s]!",
 		-- A23-34: the same jackpot found bare-handed is equipped at once
 		JackpotEquip = "Legendary weapon [%s]!",
@@ -7061,8 +7100,8 @@ Config.Story = {
 	KaijuStart = "Kaiju %s is here!",
 	KaijuDefeated = "The Knights defeated the Kaiju %s! They share a %s gold reward.", -- (name, gold actually paid: CR-L19)
 	KaijuDefeatedNoReward = "The Kaiju %s was defeated.", -- CR-L19: (name) nobody was paid
-	KaijuSurvived = "The Kaiju %s survived to the end! A Legendary Villain is born!",
-	SurviveTitle = "Legendary Villain",
+	KaijuSurvived = "The Kaiju %s survived to the end! A Final Boss is born!",
+	SurviveTitle = "Final Boss",
 	GrayLegendTitle = "Gray Legend",
 	RebirthIntro = "Rebirth lets you pick your Crown Shard again. Which side will you be reborn on?",
 	Fall = "Fall: Gold +5%% · black cape",
@@ -7115,6 +7154,7 @@ Config.Text = {
 	-- ShopService (blacksmith / potion merchant)
 	WeaponShopFar = "Too far from the Forge.",
 	WeaponNotSold = "The Forge doesn't sell this weapon.",
+	WeaponDropOnly = "New weapons drop from monsters!", -- 1-A #2: Config.WeaponShop.Buy == false (a weapon not owned)
 	WeaponSellFar = "Too far from the Forge.",
 	WeaponSold = "Sold %s! Gold +%s", -- (weaponName, gold)
 	BlacksmithPromptAction = "See weapons",
@@ -7889,7 +7929,7 @@ Config.Return = {
 	GuideZones = { Blacksmith = "Crossroads", HaloBridge = "Crossroads", HornsBridge = "Crossroads", OwnTown = "Home" },
 	-- A23-86 F: the zone a next-goal ladder row (QuestService GoalKind) leads to; other kinds use the level's hunting zone
 	GoalZones = { Rebirth = "Crossroads", RebirthReady = "Crossroads", Commission = "Crossroads", Commission4 = "Crossroads",
-		Commission5 = "Crossroads", Commission6 = "Crossroads", Crystal = "Crossroads" },
+		Commission5 = "Crossroads", Commission6 = "Crossroads", Crystal = "Crossroads", IronDrop = "SlimeMeadow" },
 	Text = {
 		NextHunt = "Hunt and get stronger!", -- nothing pinned
 		TomorrowDaily = "New dailies", -- the daily card's tomorrow line (the King Diary's page while one waits)
@@ -7970,12 +8010,12 @@ Config.TownReact = {
 			H1 = "You told the truth! It was just birthday jelly!",
 			R1 = "A fireworks show? Thanks for telling us!",
 			H2 = "You brought the lantern back! The plaza glows again!",
-			R5 = "You gave Smokey her sack back? How nice…",
+			R5 = "You gave Rose her sack back? How nice…",
 			H3 = "You helped someone new! Sir Gleam is proud.",
 			R3 = "A surprise party? You are full of surprises!",
 			M3_4 = "Pip's lamp glows in the woods. That was you!",
 			H5 = "No forms, just help! Bright says thanks!",
-			R6 = "A brand-new plan? Smokey can't stop talking about it!",
+			R6 = "A brand-new plan? Rose can't stop talking about it!",
 			OathH = "You guard the small ones. We feel safe!",
 			OathR = "A Horn who guards little ones? Huh. Nice!",
 			H6 = "A sprout statue! Small heroes count too!",
@@ -7987,7 +8027,7 @@ Config.TownReact = {
 			H1 = "Did you hear? The Horns are up to something!",
 			R1 = "The Halos have a secret plan! Everyone says so!",
 			H2 = "Is that our town lantern in your window?",
-			R5 = "Finders keepers! Smokey is still looking, you know.",
+			R5 = "Finders keepers! Rose is still looking, you know.",
 			H3 = "The cat is up the tree again. Was that you?",
 			R3 = "Prank 201! Same as 200! Classic!",
 			M3_4 = "Our vault shines! The goblins look a bit sad.",
@@ -9472,6 +9512,14 @@ function Config.CodexStage(kind, kills)
 	return stage
 end
 
+-- a kind a page / the glow waits for: one that can appear now (a field boss, or a kind with a spawn count). Gameplay plan
+-- 2026-10-13 1-A #7: the Slingshot Goblin and the Skeleton Archer spawn 0 while Config.Mobs3Ranged is off, so the woods /
+-- ruins pages and the glow could never finish; they count again the moment they spawn
+function Config.CodexCounts(kind)
+	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
+	return type(def) == "table" and (def.Boss == true or (tonumber(def.Count) or 0) > 0)
+end
+
 -- a kind that can have a Gold Foil card (bosses are never golden)
 function Config.CodexCanGold(kind)
 	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
@@ -9521,6 +9569,35 @@ function Config.CodexFromKillLog(killLog, codex)
 		end
 	end
 	return out
+end
+
+-- A23-156 (user 10/13): the private test server (10/17-20) plays with three settings on: the Z skill (Lv15; Z on players stays
+-- off, PvPZX), a golden goose every 10 minutes (the real rule stays every 4 hours) and the pass sales. Applied by
+-- Config.ApplyTestServer(), which Main.server.luau and ClientMain.client.luau call first thing (so both sides read the same
+-- values, and the offline tests keep the real defaults). After the test: Enabled = false.
+Config.TestServer = {
+	Enabled = true,
+	Skills = { ZEnabled = true },
+	GooseEvery = 600,
+	PassSales = true,
+}
+
+function Config.ApplyTestServer()
+	local T = Config.TestServer
+	if type(T) ~= "table" or T.Enabled ~= true or T.Applied == true then return false end
+	T.Applied = true
+	if type(T.Skills) == "table" and type(Config.Skills) == "table" then
+		for k, v in T.Skills do Config.Skills[k] = v end
+	end
+	local every = tonumber(T.GooseEvery)
+	if every and every > 0 and type(Config.Goose) == "table" and type(Config.Goose.Schedule) == "table" then
+		Config.Goose.Schedule.Every = math.floor(every)
+	end
+	local defs = type(Config.Switches) == "table" and Config.Switches.Defs or nil
+	if T.PassSales ~= nil and type(defs) == "table" and type(defs.PassSales) == "table" then
+		defs.PassSales.Default = T.PassSales == true
+	end
+	return true
 end
 
 return Config

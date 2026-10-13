@@ -508,7 +508,7 @@ end)
 ------------------------------------------------------------------ 5c. story_depth §2-1 clue lines (beta)
 runGroup("clues", function()
 	local C, SQ = C0, SQ0
-	check(SQ.Speakers.Kids == "Bright & Smokey" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
+	check(SQ.Speakers.Kids == "Bright & Rose" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
 		and SQ.Landmarks.KidsBench.Z == 18, "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)", show(SQ.Landmarks.KidsBench))
 	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[1], "They say", 1, true) == 1
 		and #C.Story.Premise == 3 and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 rumor lines, 3 premise lines, the ask",

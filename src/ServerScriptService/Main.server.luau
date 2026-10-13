@@ -4,6 +4,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Net = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Net"))
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
+Config.ApplyTestServer() -- A23-156: the private test server's settings (Config.TestServer), before any service reads them
 Net.CreateAll() -- remotes + GameState folder exist before anything else runs
 
 local INIT_ORDER = {

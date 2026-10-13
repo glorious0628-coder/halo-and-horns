@@ -159,10 +159,9 @@ MUTATIONS = [
     ("20 s to pick", C, "\tSeconds = 10,\n\tGrace = 1,\n", "\tSeconds = 20,\n\tGrace = 1,\n"),
     ("2 points a pick", C, "\tGrace = 1,\n\tPoints = 1,\n", "\tGrace = 1,\n\tPoints = 2,\n"),
     ("3 Jelly (not the same size)", C, "Help = { Item = \"Jelly\", N = 2 }, Tickle = { Gold = 4 } },", "Help = { Item = \"Jelly\", N = 3 }, Tickle = { Gold = 4 } },"),
-    ("the Slime Prince gives a card too", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
-     "\tKinds = { SlimeKing = true, CaptainClatter = true, BigSlime = true },"),
-    ("the card on the Slime Prince instead", C, "\tKinds = { SlimeKing = true, CaptainClatter = true },",
-     "\tKinds = { BigSlime = true, CaptainClatter = true },"),
+    # gameplay plan 2026-10-13 1-A #10: shipped with no card until its window
+    ("the Slime Prince gives a card", C, "\tKinds = {},", "\tKinds = { BigSlime = true },"),
+    ("the card back on before its window", C, "\tKinds = {},", "\tKinds = { SlimeKing = true, CaptainClatter = true },"),
     ("cap 50", C, "Config.Deeds = {\n\tPerDay = 6,", "Config.Deeds = {\n\tPerDay = 50,"),
 ]
 
