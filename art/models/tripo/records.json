@@ -15249,11 +15249,11 @@
     "right_slot": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_left_ns.png",
     "back": "art/out/s2/noshadow/HaloReasonHQ_PotionCrate_back_ns.png"
    },
-   "next": "디자인 검수 2 PBR gate -> 최종 검수 -> Blender -> 이미지 생성 3",
-   "note": "최종 검수 10/13 정정: PotionCrate = Blender 손보기 2 (account 2 white models)",
+   "next": "none (spare)",
+   "note": "디자인 검수 10/13 compared both PBRs (art/review/design/pbr_gate_1013d/): PotionCrate = account 1 version; account 2 fab0907c kept as spare",
    "texture": "FIRST tab front 2D, 조명 제거, 4K task 6e3a57c1",
    "pbr": "843f4dd2 (5)",
-   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx"
+   "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src_acc2_spare.fbx (spare)"
   }
  ],
  "HaloReasonHQ_GuardPost_web_sm_tex4k_pbr": [
