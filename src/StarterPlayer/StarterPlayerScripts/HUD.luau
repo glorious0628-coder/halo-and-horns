@@ -620,6 +620,7 @@ end
 -- number up (not when the level changed in the same moment: the level-up banner already celebrates). Drops are silent.
 -- Changes within 0.4 s merge; while the opening / a picker is open one pending popup waits. Tap -> "Character" window.
 L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6 }
+L.PowerTap = 44 -- touch: the power line's tap area is at least this many real px tall (a finger)
 -- A23-68 #3 (user 2026-10-07: "슬라임 5대 > 2대 이런 거는 됐고 그냥 전투력이 올라야지"): the first weapon (WeaponTier
 -- 0 -> 1+, the M1_1 blacksmith's gift) gets one big moment: gold sparkles on me, the PowerUp sound, a big "Stronger!"
 -- banner and a slow count-up of the Power number. Seen live only (a save loading with a weapon shows nothing).
@@ -706,7 +707,13 @@ function L.PowerBuild(parent)
 		UIKit.StyleText(ui.pouch, "Number")
 		ui.power.TextColor3 = ac("GoldText", Theme.Gold)
 	end
-	L.PowerHit(ui.powerRow)
+	-- A23-160 ③ (phone first 10 minutes, 10/13): the tap area is the row's SIBLING, not its child - inside the row the
+	-- UIListLayout laid the full-size button out as the first word and pushed 'Lv 1 · Power 0' past the row's right end
+	-- (PC: right of the bars; phones: into the potion ring). L.LayoutPlate places it over the row (touch: down to the XP
+	-- bar and >= L.PowerTap real px tall)
+	ui.powerHit = L.PowerHit(parent)
+	ui.powerHit.ZIndex = ui.powerRow.ZIndex + 2
+	ui.powerHit.Size = UDim2.new() -- (API review 10/13) never the whole screen before the first L.LayoutPlate
 	ui.power:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
 	ui.pouch:GetPropertyChangedSignal("AbsoluteSize"):Connect(L.CheckPouch)
 end
@@ -1062,6 +1069,16 @@ function L.LayoutPlate(R)
 	local xp = R.xp_bar
 	ui.xpFrame.Position = UDim2.fromOffset(xp.X, xp.Y)
 	ui.xpFrame.Size = UDim2.fromOffset(xp.W, xp.H)
+	if ui.powerHit then
+		-- touch: from the power line down over the (not pressable) HP / MP / XP bars, grown upwards to a finger's height
+		local top, bottom = pl.Y, pl.Y + pl.H
+		if IS_TOUCH then
+			bottom = math.max(bottom, xp.Y + xp.H)
+			top = math.min(top, bottom - L.PowerTap / currentScale())
+		end
+		ui.powerHit.Position = UDim2.fromOffset(pl.X, top)
+		ui.powerHit.Size = UDim2.fromOffset(pl.W, bottom - top)
+	end
 	L.CheckPouch()
 end
 
@@ -6182,7 +6199,7 @@ function L.RefreshWindows()
 	local panels = C and C.Panels
 	local has = type(panels) == "table" and type(panels.Has) == "function" and panels.Has or nil
 	local character = has and has("Character") == true or false
-	for _, hit in { ui.portraitHit, ui.powerRow and ui.powerRow:FindFirstChild("OpenCharacter") } do
+	for _, hit in { ui.portraitHit, ui.powerHit } do
 		if hit then hit.Visible = character end
 	end
 	-- A23-40: a window registered later (BB7 bag, BB8 character, BB13 …) brings its tile in

@@ -8695,5 +8695,14 @@
   },
   "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo. left 면 튤립 한 송이가 상자 밖으로 살짝 나옴(꽃다발 기울기, 통과).",
   "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Tulip.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "UIP_WorldMapV3_HaloNew": {
+  "status": "approved",
+  "file": "art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_b.png",
+  "picked": "b (최종 검수 직접 봄 2026-10-13 밤; a = 성 위 금고리 튐·빽빽)",
+  "use": "Config.UIArt world map, dev1-halo-stage6 only (10/20 주 교체)",
+  "rejected": [
+   "art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_a.png"
+  ]
  }
 }
