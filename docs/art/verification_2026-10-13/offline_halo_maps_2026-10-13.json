@@ -1,0 +1,126 @@
+{
+  "checks": 16,
+  "failed": 0,
+  "static": [
+    {
+      "check": "MiniMap reads RoadPaths (season off = none)",
+      "ok": true
+    },
+    {
+      "check": "MiniMap draws each piece turned, round, opaque",
+      "ok": true
+    },
+    {
+      "check": "... with its rotation",
+      "ok": true
+    },
+    {
+      "check": "WorldMap reads RoadPaths",
+      "ok": true
+    },
+    {
+      "check": "WorldMap draws the pieces",
+      "ok": true
+    },
+    {
+      "check": "over the picture: shapes only on its bare lands",
+      "ok": true
+    },
+    {
+      "check": "... shown = no picture, or on a bare land",
+      "ok": true
+    },
+    {
+      "check": "... lands",
+      "ok": true
+    },
+    {
+      "check": "... zones",
+      "ok": true
+    },
+    {
+      "check": "... roads",
+      "ok": true
+    },
+    {
+      "check": "... paths",
+      "ok": true
+    },
+    {
+      "check": "bridges stay picture-only",
+      "ok": true
+    }
+  ],
+  "compile": [
+    {
+      "check": "compiles: Util.luau",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "check": "compiles: WorldMap.luau",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "check": "compiles: MiniMap.luau",
+      "ok": true,
+      "error": ""
+    },
+    {
+      "check": "compiles: Config.luau",
+      "ok": true,
+      "error": ""
+    }
+  ],
+  "mutations": [
+    {
+      "name": "pieces without the round-end overlap",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "pieces turned the other way",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "zero-length parts kept",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the picture's x start without its X0 offset",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "every land is bare",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "no picture = nothing bare",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the main road from the old straight strip",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "MiniMap draws no path",
+      "applied": true,
+      "caught": true
+    },
+    {
+      "name": "the picture hides the bare island",
+      "applied": true,
+      "caught": true
+    }
+  ],
+  "status": "passed",
+  "contract": "Halo v2 island on the 2D maps (A23-121 stage 6, 게임성 개발 1, 최종 검수 10/13), offline.\n\nRuns, in the official Luau CLI, the CURRENT Util.PathSegments and WorldMap.PaintCover (cut out of their sources) with\nthe CURRENT Config.luau:\n1. Config.Map.RoadPaths RoadHaloMain = docs/design/halo_plan_v2_2026-10-11.json roads main (the x / z of every point,\n   Y 0, width w): the first 10 minutes' spine (gate -> spawn -> market -> fountain plaza -> cathedral stairs); it lies on\n   the island (the v2 box x -310..305, z -863..-330) and Config.Map.Roads has no straight RoadNorthIsland strip.\n2. Util.PathSegments: one piece per straight part (centre, length + width so the round ends overlap at the bends,\n   Rotation = atan2(dz, dx) in degrees: the maps draw +X right, +Z down), zero-length parts skipped, bad input = none.\n3. WorldMap.PaintCover: the lands the painted big map does not cover, from its Map transform (as drawWorld places it):\n   today's lands are all covered; the v2 Halo island box (dev2-halo-stage6) is not (only it); no picture = every land.\nStatic: MiniMap reads RoadPaths and draws each piece turned (Rotation, round, opaque); WorldMap reads RoadPaths, draws\nthe pieces, and over the picture draws the code shapes (lands / zones / roads / paths) only on a land it does not cover;\nMiniMap / WorldMap / Util / Config still compile (luau-compile --null). Mutations: each must be caught.",
+  "studioCalls": 0
+}

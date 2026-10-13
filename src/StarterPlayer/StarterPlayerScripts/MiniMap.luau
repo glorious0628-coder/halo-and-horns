@@ -259,6 +259,12 @@ local function prepareData()
 	local map = type(Config.Map) == "table" and Config.Map or {}
 	W.Lands = readRects(map.Lands)
 	W.Roads = readRects(map.Roads) -- the strips preview_map builds as Decor.Roads (CR-L46)
+	W.Paths = {} -- A23-121 stage 6: polyline roads (Config.Map.RoadPaths, the Halo v2 island's curving main road)
+	for _, p in (type(map.RoadPaths) == "table" and map.RoadPaths or {}) do
+		if type(p) == "table" and type(p.Points) == "table" and not seasonOff(p) then
+			table.insert(W.Paths, { Name = tostring(p.Name or ""), Width = math.max(2, num(p.Width) or 10), Points = p.Points })
+		end
+	end
 	W.PassX = num(map.PassX)
 	W.Bridges = {}
 	for _, br in (type(map.Bridges) == "table" and map.Bridges or {}) do
@@ -406,6 +412,23 @@ local function drawWorld()
 			BackgroundTransparency = 0.15,
 			ZIndex = 4,
 		}, { corner(0.5, 0) })
+	end
+	-- A23-121 stage 6: a polyline road = one round-ended piece per straight part, turned (the canvas is the same px per
+	-- stud both ways, so Scale sizes keep the shape); opaque, so the overlaps at the bends do not darken
+	for _, p in W.Paths do
+		for j, s in Util.PathSegments(p.Points, p.Width) do
+			UIKit.Create("Frame", {
+				Name = "Path_" .. p.Name .. "_" .. j,
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale((s.X - W.MinX) / W.Wd, (s.Z - W.MinZ) / W.Ht),
+				Size = UDim2.fromScale(s.Length / W.Wd, s.Width / W.Ht),
+				Rotation = s.Rotation,
+				BackgroundColor3 = COL.Road,
+				ZIndex = 4,
+				Active = false,
+				Parent = ui.canvas,
+			}, { corner(0.5, 0) })
+		end
 	end
 	-- mountain pass ridges (north and south of the road corridor)
 	local px = W.PassX

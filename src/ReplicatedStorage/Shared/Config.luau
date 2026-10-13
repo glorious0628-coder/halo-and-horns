@@ -2025,9 +2025,8 @@ Config.Map = {
 		-- ends at the crown altar ruin (kit_ruins R_CrownAltar (1700, 0), 30 wide): the crown road leads up to it
 		{ Name = "RoadRuins", MinX = 1260, MaxX = 1684, MinZ = -9, MaxZ = 9 },
 		{ Name = "RoadNorth", MinX = -8, MaxX = 8, MinZ = -150, MaxZ = -10 },
-		-- A23-121 stage 6: no straight strip on the Halo v2 island - its main road curves (gate -> spawn -> market ->
-		-- fountain plaza -> cathedral stairs, docs/design/halo_plan_v2_2026-10-11.json roads main) and is built as
-		-- WalkGround parts; the minimap's new tile shot shows it
+		-- A23-121 stage 6: no straight strip on the Halo v2 island - its main road curves (RoadPaths below) and is built
+		-- as WalkGround parts
 		{ Name = "RoadSouth", MinX = -8, MaxX = 8, MinZ = 10, MaxZ = 150 },
 		{ Name = "RoadSouthIsland", MinX = -8, MaxX = 8, MinZ = 330, MaxZ = 600 },
 		-- the layout's z -170 would cross the King Slime Hill (kit_meadow M_KingHill (430, -170), 60 wide): south of it
@@ -2036,6 +2035,15 @@ Config.Map = {
 		{ Name = "RoadRuinsSouth", MinX = 1300, MaxX = 1700, MinZ = 145, MaxZ = 155 },
 		{ Name = "RoadPumpkin", MinX = 529, MaxX = 541, MinZ = 9, MaxZ = 330, Season = "Halloween" },
 		{ Name = "RoadHollow", MinX = 330, MaxX = 535, MinZ = 335, MaxZ = 345, Season = "Halloween" },
+	},
+	-- A23-121 stage 6: polyline roads for the 2D maps only (MiniMap / WorldMap draw one round-ended piece per straight
+	-- part, Util.PathSegments; the world builds them itself): the Halo v2 island's main road = the first 10 minutes'
+	-- spine, gate -> spawn -> market lane -> fountain plaza -> the cathedral stairs (docs/design/halo_plan_v2_2026-10-11.json
+	-- roads main, x / z of its points, w 20; tools/test_halo_maps.py checks them against the plan)
+	RoadPaths = {
+		{ Name = "RoadHaloMain", Width = 20, Points = { Vector3.new(0, 0, -336), Vector3.new(0, 0, -362), Vector3.new(2, 0, -400),
+			Vector3.new(6, 0, -426), Vector3.new(34, 0, -452), Vector3.new(70, 0, -485), Vector3.new(88, 0, -524),
+			Vector3.new(60, 0, -562), Vector3.new(54, 0, -604), Vector3.new(40, 0, -647) } },
 	},
 	-- 검수 10/09 (main photo: a dark red-brown band in front of the Crossroads fountain): the town road parts
 	-- (Decor.Roads, CanCollide off) are not drawn inside the plaza (PlazaRadius around the fountain: MapBuilder cuts the

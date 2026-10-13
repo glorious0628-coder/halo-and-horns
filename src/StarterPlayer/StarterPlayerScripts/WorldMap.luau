@@ -199,7 +199,7 @@ local inputConnected = false
 
 local W = { MinX = 0, MaxX = 1, MinZ = 0, MaxZ = 1 } -- drawn world rect (studs)
 local worldW, worldH = 1, 1
-local landsData, bridgesData, zonesData, roadsData = {}, {}, {}, {}
+local landsData, bridgesData, zonesData, roadsData, pathsData = {}, {}, {}, {}, {}
 local passX = nil
 
 local fontFace = Enum.Font.GothamBold
@@ -563,6 +563,13 @@ local function prepareData()
 
 	-- roads: Config.Map.Roads (the strips preview_map builds as Decor.Roads; CR-L46)
 	roadsData = legacy and {} or readLands(map.Roads)
+	-- A23-121 stage 6: polyline roads (Config.Map.RoadPaths, the Halo v2 island's curving main road)
+	pathsData = {}
+	for _, p in (type(map.RoadPaths) == "table" and map.RoadPaths or {}) do
+		if type(p) == "table" and type(p.Points) == "table" and (p.Season == nil or Config.SeasonOn(p.Season)) then
+			table.insert(pathsData, { Name = tostring(p.Name or ""), Width = math.max(2, num(p.Width) or 10), Points = p.Points })
+		end
+	end
 	if #roadsData == 0 then
 		-- fallback (Config without Roads): east-west from the Crossroads center to the far end of the hunting zones,
 		-- north-south between the towns
@@ -742,6 +749,26 @@ local function makeMarker(name, glyph, color, size)
 	return { Frame = f, Text = text }
 end
 
+-- (pure) A23-121 stage 6: the lands the painted map does not cover ({ [name] = true }): its world rect from the Map
+-- transform (x from -OffX - X0 / K, z from -OffZ, Size / K studs - as drawWorld places it); every land without a usable
+-- picture. Those lands get the code shapes over the picture until the big map is redrawn (the v2 Halo island is bigger
+-- than the painted one)
+function WorldMap.PaintCover(pic, lands)
+	local bare = {}
+	local m = type(pic) == "table" and type(pic.Map) == "table" and pic.Map or nil
+	local K = m and num(m.K, 0) or 0
+	if not m or K <= 0 or typeof(pic.Size) ~= "Vector2" then
+		for _, l in lands do bare[l.Name] = true end
+		return bare
+	end
+	local x0, z0 = -num(m.OffX, 0) - num(m.X0, 0) / K, -num(m.OffZ, 0)
+	local x1, z1 = x0 + pic.Size.X / K, z0 + pic.Size.Y / K
+	for _, l in lands do
+		if l.MinX < x0 - 0.5 or l.MaxX > x1 + 0.5 or l.MinZ < z0 - 0.5 or l.MaxZ > z1 + 0.5 then bare[l.Name] = true end
+	end
+	return bare
+end
+
 local function drawWorld()
 	-- 그림체 #29 (검수 2026-10-08): the approved painted map (Config.UIArt.Parts.WorldMapV2) lies under everything, placed
 	-- in world studs by its Map transform (image px = X0 + (x + OffX) * K, (z + OffZ) * K). It already shows the sea, the
@@ -766,9 +793,19 @@ local function drawWorld()
 		})
 		painted = ok and typeof(img) == "Instance"
 	end
+	-- A23-121 stage 6: over the picture, the code shapes still draw on a land it does not cover (bare)
+	local bare = painted and WorldMap.PaintCover(pic, landsData) or {}
+	local function onBare(x, z)
+		for _, l in landsData do
+			if bare[l.Name] and x >= l.MinX and x <= l.MaxX and z >= l.MinZ and z <= l.MaxZ then return true end
+		end
+		return false
+	end
+	local function shown(x, z) return not painted or onBare(x, z) end
 
 	-- shallow water rings, then lands (rivers and sea are the gaps between them)
-	for _, l in (painted and {} or landsData) do
+	for _, l in landsData do
+		if not shown((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2) then continue end
 		rect(l.MinX - SHALLOW, l.MaxX + SHALLOW, l.MinZ - SHALLOW, l.MaxZ + SHALLOW, {
 			Name = "Shallow_" .. l.Name,
 			BackgroundColor3 = COL.Shallow,
@@ -776,7 +813,8 @@ local function drawWorld()
 			ZIndex = 1,
 		}, { corner(0.14, 0) })
 	end
-	for _, l in (painted and {} or landsData) do
+	for _, l in landsData do
+		if not shown((l.MinX + l.MaxX) / 2, (l.MinZ + l.MaxZ) / 2) then continue end
 		local dark = string.find(l.Name, "Horns", 1, true) ~= nil
 		rect(l.MinX, l.MaxX, l.MinZ, l.MaxZ, {
 			Name = "Land_" .. l.Name,
@@ -786,7 +824,8 @@ local function drawWorld()
 	end
 
 	-- zones: floor colour fill + danger-colour border (ART_DIRECTION 2.4)
-	for _, z in (painted and {} or zonesData) do
+	for _, z in zonesData do
+		if not shown(z.Center.X, z.Center.Z) then continue end
 		local col = danger(z)
 		rect(z.Center.X - z.Size.X / 2, z.Center.X + z.Size.X / 2, z.Center.Z - z.Size.Z / 2, z.Center.Z + z.Size.Z / 2, {
 			Name = "Zone_" .. z.Id,
@@ -797,13 +836,31 @@ local function drawWorld()
 	end
 
 	-- roads, mountain pass, bridges (the pass label stays on the picture)
-	for i, r in (painted and {} or roadsData) do
+	for i, r in roadsData do
+		if not shown((r.MinX + r.MaxX) / 2, (r.MinZ + r.MaxZ) / 2) then continue end
 		rect(r.MinX, r.MaxX, r.MinZ, r.MaxZ, {
 			Name = "Road" .. i,
 			BackgroundColor3 = COL.Road,
 			BackgroundTransparency = 0.15,
 			ZIndex = 4,
 		}, { corner(0.5, 0) })
+	end
+	-- A23-121 stage 6: a polyline road = one round-ended piece per straight part, turned (equal px per stud both ways)
+	for _, p in pathsData do
+		local first = p.Points[1]
+		if typeof(first) ~= "Vector3" or not shown(first.X, first.Z) then continue end
+		for j, s in Util.PathSegments(p.Points, p.Width) do
+			new("Frame", {
+				Name = "Path_" .. p.Name .. "_" .. j,
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.fromScale((s.X - W.MinX) / worldW, (s.Z - W.MinZ) / worldH),
+				Size = UDim2.fromScale(s.Length / worldW, s.Width / worldH),
+				Rotation = s.Rotation,
+				BackgroundColor3 = COL.Road,
+				ZIndex = 4,
+				Parent = canvas,
+			}, { corner(0.5, 0) })
+		end
 	end
 	if passX then
 		for _, l in landsData do

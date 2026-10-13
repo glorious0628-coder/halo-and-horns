@@ -481,7 +481,7 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "06c6a3688afc6c54478eb079567b23426de0ebd03cc4e604f5843d52d5b6bcf5",
+    "src/ReplicatedStorage/Shared/Config.luau": "96a8461fc88454f684e67839b3b82dacd944e87292a505d55f37b0c578437aad",
     "src/ServerScriptService/MapBuilder.luau": "4a85c1b32eadc9475d7297d7de71a4efea83baef8523b1da5a8db84c861de3ea",
     "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "5b873ea8b7540b7d1e997df085177a2d46f2491590e45267bd1bbcfcb79ca9f9",
     "src/StarterPlayer/StarterPlayerScripts/HUD.luau": "0db29b5e673d2d70871af49bf7f758c627d650a067e7945e99ce907dbac0674f",

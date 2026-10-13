@@ -300,6 +300,27 @@ function Util.Tagged(tag)
 	return (ok and type(list) == "table") and list or {}
 end
 
+-- (pure) A23-121 stage 6: a polyline road (Config.Map.RoadPaths) as straight pieces for the 2D maps: each piece's
+-- centre (X, Z), its Length (+ the width, so the round ends overlap at the bends), Width and its turn in degrees (the
+-- maps: +X right, +Z down, so atan2(dz, dx) = GuiObject.Rotation, clockwise); zero-length pieces are skipped
+function Util.PathSegments(points, width)
+	local out = {}
+	if type(points) ~= "table" then return out end
+	width = math.max(0, tonumber(width) or 0)
+	for i = 1, #points - 1 do
+		local a, b = points[i], points[i + 1]
+		if typeof(a) == "Vector3" and typeof(b) == "Vector3" then
+			local dx, dz = b.X - a.X, b.Z - a.Z
+			local len = math.sqrt(dx * dx + dz * dz)
+			if len > 1e-3 then
+				table.insert(out, { X = (a.X + b.X) / 2, Z = (a.Z + b.Z) / 2, Length = len + width, Width = width,
+					Rotation = math.deg(math.atan2(dz, dx)) })
+			end
+		end
+	end
+	return out
+end
+
 function Util.PlayersExcept(player)
 	local out = {}
 	for _, p in Players:GetPlayers() do
