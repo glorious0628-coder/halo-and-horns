@@ -118,7 +118,8 @@ local T = {
 	Choose = "Pick this class!",
 	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
 	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
-	Tag = { Warrior = "Smash all around!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
+	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
+	Tag = { Warrior = "Smash up close!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
 	FooterShort = "Change class later: Menu > Change Class", -- short screens (검수 2026-10-06: the menu square is Change Class)
 	Wait = "One moment...",
 	Recommend = "Best for beginners",

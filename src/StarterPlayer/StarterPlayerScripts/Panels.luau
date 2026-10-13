@@ -280,7 +280,9 @@ local WSHOP = { Distance = 12, PromptName = "HHC_BlacksmithPrompt",
 	-- ConfirmSeconds (the first press turns the button into "Tap again to buy"); cheaper ones and equips stay one press
 	ConfirmAt = 100, ConfirmSeconds = 3,
 	AgainTouch = "Tap again to buy", AgainMouse = "Click again to buy" }
-local WELCOME = { PendingOpen = false }
+-- AcceptW (user 10/13 first look: "I'm In!" ran the whole card wide; final review: like the other card buttons): the
+-- accept button's share of the card's width, centred with the small ▶ beside it
+local WELCOME = { PendingOpen = false, AcceptW = 0.45 }
 
 -- quality 2 (UIKit.Typewriter, image dev adc7311; 검수 2026-10-07): a dialogue line types in at Speed letters / s with the
 -- speaker's blips (C.Audio.Talk; silent until the sound ids exist); a tap on the line, or [Next] / an answer button
@@ -1003,12 +1005,17 @@ function FRAME.BuildTitle()
 		AutomaticSize = Enum.AutomaticSize.X,
 		TextSize = FRAME.TitleSize,
 		TextTruncate = Enum.TextTruncate.AtEnd,
+		TextXAlignment = Enum.TextXAlignment.Center,
 		LayoutOrder = 2,
 		ZIndex = 5,
 		Parent = ribbon,
 	}, "Title")
-	FRAME.TitleCap = UIKit.Create("UISizeConstraint", { MaxSize = Vector2.new(400, th), Parent = titleLabel })
-	UIKit.Create("Frame", { Name = "End", Size = UDim2.new(0, math.floor(th * 0.45), 1, 0), BackgroundTransparency = 1,
+	-- user 10/13 ("글씨 가운데 있음 좋겠오"): the words sit in the middle of the WHOLE ribbon - the right end is as wide as
+	-- the icon disc on the left and the words fill at least the rest of the ribbon's least width, centred (the disc stays left)
+	local disc0 = math.floor(th * FRAME.Disc)
+	FRAME.TitleCap = UIKit.Create("UISizeConstraint", { MinSize = Vector2.new(math.max(0, FRAME.TitleMinW - 2 * disc0), 0),
+		MaxSize = Vector2.new(400, th), Parent = titleLabel })
+	UIKit.Create("Frame", { Name = "End", Size = UDim2.new(0, disc0, 1, 0), BackgroundTransparency = 1,
 		LayoutOrder = 3, Active = false, Parent = ribbon })
 end
 
@@ -1067,7 +1074,9 @@ local function layoutChrome(s)
 		local maxW = math.max(FRAME.TitleMinW, window.Size.X.Offset - 2 * (d * 0.8 + 6))
 		if cap then cap.MaxSize = Vector2.new(maxW, th) end
 		if FRAME.TitleCap then
-			FRAME.TitleCap.MaxSize = Vector2.new(math.max(40, maxW - math.floor(th * FRAME.Disc) - math.floor(th * 0.45)), th)
+			local capW = math.max(40, maxW - 2 * math.floor(th * FRAME.Disc)) -- the disc + the equally wide right end
+			FRAME.TitleCap.MinSize = Vector2.new(math.min(capW, math.max(0, FRAME.TitleMinW - 2 * math.floor(th * FRAME.Disc))), 0)
+			FRAME.TitleCap.MaxSize = Vector2.new(capW, th)
 		end
 	end
 	local contentTop = FRAME.TitleH / 2 + 8
@@ -1547,7 +1556,7 @@ BUILDERS.Welcome = function(parent)
 	end)
 	readMore.Name = "WelcomeReadMore"
 	readMore.LayoutOrder = 2
-	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(1, -74, 0, 60), function()
+	nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(WELCOME.AcceptW, 0, 0, 60), function()
 		if pending or currentId ~= "Welcome" or faction ~= myFaction() then return end
 		if WELCOME.Ready() then
 			pending, sentAt = true, os.clock()

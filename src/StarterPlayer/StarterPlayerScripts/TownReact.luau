@@ -20,7 +20,11 @@ local LocalPlayer = Players.LocalPlayer
 local C = nil
 local R = type(Config.TownReact) == "table" and Config.TownReact or {}
 -- Tick = s between checks; Size = bubble px for a sentence (3 short lines); Lift = studs above the head
-local T = { Tick = 1, Size = { 196, 86 }, Lift = 0.6 }
+local T = { Tick = 1, Size = { 196, 86 }, Lift = 0.6,
+	-- final review 10/14 (phone first-10 photos: Bright's "Welcome, Squire!" bubble sat under the minimap and the quest
+	-- card): a person speaks only while the whole bubble (its tail at the head, Size px up and right) lands in the open
+	-- middle of the screen - fractions of the view; touch keeps clear of the thumbstick / thumb ring sides too
+	Clear = { Touch = { L = 0.3, R = 0.85, T = 0.15, B = 0.72 }, PC = { L = 0.26, R = 0.86, T = 0.12, B = 0.78 } } }
 -- NextAt[model] = os.clock() when it may speak again; Last[model] = its last line; Pick = { Value, At } the TownPick seen
 local S = { NextAt = setmetatable({}, { __mode = "k" }), Last = setmetatable({}, { __mode = "k" }),
 	Pick = { Init = false }, BusyUntil = 0, Started = false }
@@ -103,6 +107,27 @@ local function windowOpen()
 	return false
 end
 
+-- pure (tools/test_town_react.py): does a bubble with its tail at view point (x, y) - in front of the camera - fit the
+-- open middle of a W x H view? w, h = the bubble's px; touch = the phone zone
+function TownReact.Clear(x, y, front, W, H, w, h, touch)
+	if not front or type(x) ~= "number" or type(y) ~= "number" or not (W and W > 0 and H and H > 0) then return false end
+	local z = touch and T.Clear.Touch or T.Clear.PC
+	return x >= W * z.L and x + w <= W * z.R and y - h >= H * z.T and y <= H * z.B
+end
+
+-- the person's head on screen now leaves room for the bubble (TownReact.Clear)
+local function inView(npc)
+	local cam = workspace.CurrentCamera
+	if not cam then return true end
+	local head = npc:FindFirstChild("Head") or npc.PrimaryPart
+	local ok, pos = pcall(function() return head and head.Position or npc:GetPivot().Position end)
+	if not ok or pos == nil then return false end
+	local p, front = cam:WorldToViewportPoint(pos + Vector3.new(0, T.Lift + 1, 0))
+	local vp = cam.ViewportSize
+	return TownReact.Clear(p.X, p.Y, front and p.Z > 0, vp.X, vp.Y, T.Size[1], T.Size[2],
+		game:GetService("UserInputService").TouchEnabled)
+end
+
 -- one check: the nearest town person in range that may speak, says its line
 function TownReact.Step(now)
 	now = now or os.clock()
@@ -121,7 +146,7 @@ function TownReact.Step(now)
 		if npc:IsA("Model") and npc:IsDescendantOf(workspace) and now >= (S.NextAt[npc] or 0) then
 			local ok, pos = pcall(function() return npc:GetPivot().Position end)
 			local d = ok and (pos - root.Position).Magnitude or math.huge
-			if d <= bestD then best, bestD = npc, d end
+			if d <= bestD and inView(npc) then best, bestD = npc, d end
 		end
 	end
 	if not best then return nil end
