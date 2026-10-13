@@ -195,6 +195,10 @@ for sg in (-1, 1):
         add("ButtressBand%d_%d" % (k_, b_), (1.6, 0.3, 1.6), (px, yb, AISLE_TOP), mat="gold")
         add("ButtressCap%d_%d" % (k_, b_), (1.7, 0.35, 1.7), (px, yb, AISLE_TOP + 3.15), mat="gold")
         spire("ButtressSp%d_%d" % (k_, b_), px, yb, AISLE_TOP + 3.35, 1.3, 5.0, 0.4)    # 최종 검수 10/12: a row on every buttress
+    for b_, yb in enumerate(BAYS[2:]):   # v4 (10/13, 2D side views): a smaller pinnacle on the aisle wall top over every window
+        px = sg * (AX + 0.1)
+        add("AislePin%d_%d" % (k_, b_), (0.9, 1.6, 0.9), (px, yb, AISLE_TOP + 0.8))
+        spire("AislePinSp%d_%d" % (k_, b_), px, yb, AISLE_TOP + 1.6, 0.9, 3.2, 0.3)
     lean_roof("Aisle%d" % k_, sg, sg * AX, sg * NX, YB, YF - 1.0, AISLE_TOP, AISLE_TOP + 4.2)
 
 # front chapels (the low wide front either side, under the outer towers): x 20..30, the front 12 studs
@@ -317,6 +321,12 @@ gable_roof_x("TranseptRoof", -TX, TX, TY0, TY1, TT, TT + 6.0)
 CY, CW = 0.0, 9.0                             # the crossing tower (the tallest spire, the halo ring over it)
 tower("CentreTower", 0.0, CY, CW, NAVE_TOP - 1.0, 40.0, 13.0, spire_w=0.62, bands=(29.0, 34.0),
       win_faces=((0.0, 1.0), (1.0, 0.0), (-1.0, 0.0), (0.0, -1.0)), win=(1.3, 4.2))
+for c_, (sx, sy) in enumerate(((1, 1), (1, -1), (-1, 1), (-1, -1))):   # v4 (10/13): 4 corner turrets round the crossing tower foot
+    px, py = sx * (CW / 2 + 0.7), CY + sy * (CW / 2 + 0.7)
+    box("CrossTurret%d" % c_, px - 0.8, px + 0.8, py - 0.8, py + 0.8, NAVE_TOP, 31.0)
+    add("CrossTurretBand%d" % c_, (1.9, 0.35, 1.9), (px, py, 25.5), mat="gold")
+    add("CrossTurretCap%d" % c_, (1.9, 0.35, 1.9), (px, py, 31.1), mat="gold")
+    spire("CrossTurretSp%d" % c_, px, py, 31.3, 1.4, 5.5, 0.4)
 tower("FacadeTower", 0.0, YF - 4.2, 5.0, Z0, 32.0, 7.0, spire_w=0.7, bands=(29.5,), win_faces=((0.0, 1.0),), win=(1.0, 2.6), turrets=False)
 orn.append({"type": "halo_ring", "name": NAME + "_HaloRing", "pos": [0.0, CY, 46.5], "R": 7.3,
             "note": "exact circle ring (Blender), 디자인 검수 10/12; 2D ring 180 px = 14.5 studs across"})
