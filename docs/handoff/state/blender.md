@@ -1,5 +1,9 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 오후 — 텍스처 방식 바뀜 (사용자)
+- **새 텍스처는 '앞면 사진' 탭을 누르지 말고 앞면 2D도 안 올림.** 왼쪽 '텍스처'를 누르면 열리는 기본 탭 그대로 → 조명 없이 + 4K → 텍스처 생성 → 바로 PBR. hhTexFn/hhTexUp(앞면 올리기)는 새 텍스처에 쓰지 말 것 — 기본 탭용 함수 새로 만들어야 함. 이미 만든 것은 그대로.
+- 지금 내 큐 없음, 계정 1 잔액 1,455. GuardPost·PotionCrate 계정 1 판(PBR 끝): GuardPost는 계정 2 판 확정 → 예비, PotionCrate 134dc742는 내 것 확정. GateLeafR 거울판 만듦(노멀맵 빛 차이 주의, 이미지 생성 3에 알림).
+
 ## 10/13 밤 늦게 — 큐 끝 (잔액 1,730)
 - 끝·디자인 검수에 보냄: 8K PBR 36종 + 4K PBR 37종(집 덩어리 18·묶음10 7·NEW_ 9·간판 Potion/Bakery/Flower) → art/models/tripo/touchup/<이름>/<이름>_TU.glb, 원본 web/<이름>_SM_tex{8k,4k}_pbr_src.fbx(디스크만), records.json push.
 - 끝: Daisy 다시(c2e4b5db, 4K) → touchup/HaloFlowerPotHQ_Daisy_TU.glb 덮어씀. (옛 줄) Daisy 다시(디자인 검수가 형제 7b4845eb·245a153c·c2e4b5db 중 고르면 텍스처 4K → PBR; FBX build/tripo_wm1/HaloFlowerPotHQ_Daisy_wm_*). SignJuice = 계정 2(cb0ab903) 것 씀, 계정 1 Juice는 안 씀. 지금 Daisy_TU 쓰지 않음.
