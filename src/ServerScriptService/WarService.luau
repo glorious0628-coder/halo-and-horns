@@ -16,6 +16,9 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local WarService = {}
 -- A23-79 (게임성 개발 3): a round ended: (winner, mode, { [Player] = round points }) - ReturnService's pause card
 WarService.RoundEnded = Util.Signal.new()
+-- A23-135: (player, n, source) whole personal crown points were added ("Hunt" | "PvP" | "Other"); the story's crown-point
+-- steps count these (StoryQuestService), never the kill units
+WarService.PersonalAdded = Util.Signal.new()
 
 local TAG = "WarService"
 local WAR_FACTIONS = { Halo = true, Horns = true }
@@ -52,6 +55,9 @@ local SKY_EXTRAS = {
 local S = nil
 local points = { Halo = 0, Horns = 0 } -- faction pools of the current round
 local personal = {} -- [Player] = personal points of the current round
+-- A23-135 / A23-137: [Player] = kill units toward the next whole personal point (carried over rounds), and the rewarded PvP
+-- KOs of this round
+local hunt = { Units = {}, KOs = {} }
 local blessing = "None" -- faction holding the crown (decided at each round end, lasts one round)
 local roundEndsAt = 0
 local warTint = nil
@@ -385,6 +391,7 @@ local function endRound(mode, haloScore, hornsScore, halo, horns, curHalo, curHo
 	for player in snapshot do
 		setPersonal(player, 0)
 	end
+	table.clear(hunt.KOs) -- A23-137: the PvP KO cap counts per round (the kill units carry over)
 
 	local winner = decideWinner(mode, haloScore, hornsScore, halo, horns)
 	blessing = winner
@@ -431,16 +438,41 @@ local function tick()
 end
 
 ------------------------------------------------------------------ public API
--- personal + faction pool (monster kills, rewarded PvP KOs). poolN (optional, CR-M18) = this player's share of the
--- pool: one monster killed by k same-faction contributors adds WarPoints / k each (WarShare), so the pool gets
--- WarPoints once while every contributor still gets n personal points. Invalid / missing poolN -> n (capped at n).
-function WarService.AddPoints(player, n, poolN)
+-- personal + faction pool (rewarded PvP KOs, a field boss's War). poolN (optional, CR-M18) = this player's share of the
+-- pool: one kill by k same-faction contributors adds n / k each, so the pool gets n once while every contributor still
+-- gets n personal points. Invalid / missing poolN -> n (capped at n). source = PersonalAdded's ("PvP" | "Other")
+function WarService.AddPoints(player, n, poolN, source)
 	if not isPlayer(player) or not isValidAmount(n) or warOff() then return end
 	if not (S and S.PlayerService.IsReady(player)) then return end
 	local f = getFaction(player)
 	if not WAR_FACTIONS[f] then return end -- None / Neutral never earn war points
 	points[f] += isValidAmount(poolN) and math.min(poolN, n) or n
 	setPersonal(player, (personal[player] or 0) + n)
+	WarService.PersonalAdded:Fire(player, n, type(source) == "string" and source or "Other")
+end
+
+-- A23-135: a monster kill = `u` kill units (Config.War.MonsterPoints / GoldenPoints, MonsterKilled info.WarPoints); poolU =
+-- this player's share (CR-M18 WarShare). The pool takes poolU / KillsPerPoint at once (a fraction); the player's units carry
+-- on until KillsPerPoint of them make one WHOLE personal point (no "+1" per monster, no decimals in "My pts")
+function WarService.AddKill(player, u, poolU)
+	if not isPlayer(player) or not isValidAmount(u) or warOff() then return end
+	if not (S and S.PlayerService.IsReady(player)) then return end
+	local f = getFaction(player)
+	if not WAR_FACTIONS[f] then return end
+	local per = math.max(1, tonumber(Config.War.KillsPerPoint) or 100)
+	points[f] += (isValidAmount(poolU) and math.min(poolU, u) or u) / per
+	local have = (hunt.Units[player] or 0) + u
+	local whole = math.floor(have / per)
+	hunt.Units[player] = have - whole * per
+	if whole > 0 then
+		setPersonal(player, (personal[player] or 0) + whole)
+		WarService.PersonalAdded:Fire(player, whole, "Hunt")
+	end
+end
+
+-- the kill units a player carries toward the next whole point
+function WarService.GetKillUnits(player)
+	return hunt.Units[player] or 0
 end
 
 -- faction pool only (events: goose, kaiju)
@@ -480,7 +512,7 @@ function WarService.Init(registry)
 	if S.MonsterService and S.MonsterService.MonsterKilled then
 		S.MonsterService.MonsterKilled:Connect(function(player, info)
 			if type(info) == "table" then
-				WarService.AddPoints(player, info.WarPoints, info.WarShare) -- CR-M18: pool share per contributor
+				WarService.AddKill(player, info.WarPoints, info.WarShare) -- kill units; CR-M18: pool share per contributor
 			end
 		end)
 	else
@@ -489,14 +521,18 @@ function WarService.Init(registry)
 
 	if S.PvPService and S.PvPService.PlayerKO then
 		S.PvPService.PlayerKO:Connect(function(killer, _victim, info)
-			if type(info) == "table" and info.Rewarded == true then
+			if type(info) == "table" and info.Rewarded == true and isPlayer(killer) then
+				-- A23-137: a killer scores at most PvPKOMaxPerRound rewarded KOs a round
+				local kos = hunt.KOs[killer] or 0
+				if kos >= (tonumber(Config.War.PvPKOMaxPerRound) or 3) then return end
+				hunt.KOs[killer] = kos + 1
 				local stars = tonumber(info.VictimStars) or 0
 				local points = Config.War.PvPKOPoints + Config.War.PvPKOPerStar * stars
 				local bold = tonumber(info.BoldMult) -- A23-18 boldness (x2 strong victim / x0.5 weak victim)
 				if bold and bold > 0 and bold ~= 1 and S.PvPService.ScalePoints then
 					points = S.PvPService.ScalePoints(points, bold)
 				end
-				if points > 0 then WarService.AddPoints(killer, points) end
+				if points > 0 then WarService.AddPoints(killer, points, nil, "PvP") end
 			end
 		end)
 	else
@@ -505,7 +541,10 @@ function WarService.Init(registry)
 
 	if S.FactionService and S.FactionService.FactionChanged then
 		S.FactionService.FactionChanged:Connect(function(player)
-			if isPlayer(player) then setPersonal(player, 0) end
+			if isPlayer(player) then
+				setPersonal(player, 0)
+				hunt.Units[player] = nil -- the units belong to the side they were hunted for
+			end
 		end)
 	end
 
@@ -514,6 +553,8 @@ function WarService.Init(registry)
 	end)
 	S.PlayerService.PlayerLeaving:Connect(function(player)
 		personal[player] = nil
+		hunt.Units[player] = nil
+		hunt.KOs[player] = nil
 	end)
 end
 

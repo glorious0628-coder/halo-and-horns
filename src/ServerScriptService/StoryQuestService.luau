@@ -276,11 +276,15 @@ end
 -- how much one event moves an objective (0 = not this objective)
 local function eventAmount(player, obj, ev)
 	local t = obj.Type
+	-- A23-135: crown points = the WHOLE personal points WarService adds (WarService.PersonalAdded: 100 kills, a PvP KO, a
+	-- field boss), never a kill's units
+	if ev.Kind == "War" then
+		return t == "WarPoints" and math.max(0, num(ev.N)) or 0
+	end
 	if ev.Kind == "Kill" then
 		local info = ev.Info
 		-- a personal monster never counts, except for a step that asks for exactly that (KO1's rematch Personal = true)
 		if (info.Personal == true) ~= (obj.Personal == true) then return 0 end
-		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
 		if t ~= "Kill" and t ~= "BasicKill" and t ~= "SafeKill" and t ~= "AutoKill" then return 0 end
 		-- A23-86 Call of the Woods: obj.Alt = { MinLevel, Pairs = { { Kind, Zone } } } lets another kind in its own zone
 		-- fill the same step from that level on
@@ -1289,6 +1293,15 @@ function StoryQuestService.Start()
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
 	connect("GooseService", "GooseFinished", onGooseFinished)
+	-- A23-135: whole personal crown points (looked up softly: a world without WarService connects nothing, with no warning)
+	local war = S.WarService
+	if type(war) == "table" and type(war.PersonalAdded) == "table" then
+		war.PersonalAdded:Connect(function(player, n)
+			if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
+			local ok, err = pcall(feed, player, { Kind = "War", N = n })
+			if not ok then Util.Warn(TAG, "PersonalAdded: " .. tostring(err)) end
+		end)
+	end
 	-- A23-113: a PvP KO that took gold into a Grudge Sack is the first meeting with the sack, for the thief and for the victim
 	-- (looked up softly like the card hooks below: a world without PvPService connects nothing, with no warning)
 	local pvp = S.PvPService
