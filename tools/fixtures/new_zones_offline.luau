@@ -161,8 +161,10 @@ runGroup("off", function()
 	local zoneDiff, kindDiff, lootDiff, itemDiff, barkDiff, lvDiff, famDiff, orderDiff = {}, {}, {}, {}, {}, {}, {}, {}
 	for id, bz in base.Zones do if not same(bz, C.Zones[id]) then table.insert(zoneDiff, id) end end
 	for k, bd in base.MonsterTypes do if not same(bd, C.MonsterTypes[k]) then table.insert(kindDiff, k) end end
-	-- rows of a later round's own items (Source Boss = C1's boss materials, Gather / Craft / Goose) are not this round's
+	-- rows of a later round's own items (Source Boss = C1's boss materials, Gather / Craft / Goose) are not this round's, nor
+	-- the weapon rows (게임성 개발 2's C2 retuned them on purpose, crafting_market §3; tools/test_loot.py checks them)
 	local function laterRow(row)
+		if type(row) == "table" and row.Weapon ~= nil then return true end
 		local it = type(row) == "table" and row.Item and C.Loot.Items[row.Item]
 		local src = type(it) == "table" and it.Source
 		return src == "Boss" or src == "Gather" or src == "Craft" or src == "Goose"
@@ -173,7 +175,7 @@ runGroup("off", function()
 		for _, r in t do if not laterRow(r) then table.insert(out, r) end end
 		return out
 	end
-	for k, t in base.Loot.Tables do if not same(t, ownRows(C.Loot.Tables[k])) then table.insert(lootDiff, k) end end
+	for k, t in base.Loot.Tables do if not same(ownRows(t), ownRows(C.Loot.Tables[k])) then table.insert(lootDiff, k) end end
 	for k, t in base.Loot.Items do if not same(t, C.Loot.Items[k]) then table.insert(itemDiff, k) end end
 	for k, t in base.Barks.Lines do if not same(t, C.Barks.Lines[k]) then table.insert(barkDiff, k) end end
 	for k, v in base.MonsterLevels do if C.MonsterLevels[k] ~= v then table.insert(lvDiff, k) end end
