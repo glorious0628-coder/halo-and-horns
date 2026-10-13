@@ -9,7 +9,7 @@ Tripo 계정 2 · 사용자 Chrome(Claude Chrome 확장) · 역할 파일 `role_
   - 메시지 엇갈림: 디자인 검수가 나중에 고름을 6a4879ed로 바꿈(a7a73124 열린 모서리 376·조각 5 = 비침 위험). 그땐 a7a73124 텍스처·PBR이 이미 끝남 → 최종 검수 10/14: a7a73124 그대로 PBR 판정(갓 밑 100% 크롭), 비침이 보이면 그때 6a4879ed 텍스처·PBR(25) 승인. **6a4879ed는 안 누름.**
 
 ## 기다리는 것
-- (10/14) 디자인 검수 PBR 첫 판정 **통과**(시트 art/review/design/pbr_gate_1014_dr/, 갓 밑·받침 고리 비침 0, 금 진함은 ⑤). 6a4879ed 다시 안 함. 최종 검수 판정 대기.
+- (10/14) 디자인 검수 PBR 첫 판정 **통과**(시트 art/review/design/pbr_gate_1014_dr/, 갓 밑·받침 고리 비침 0, 금 진함은 ⑤). 6a4879ed 다시 안 함. **최종 검수도 통과(최종 통과).** 비교용이라 Blender 크기·피벗·방향은 보류 — 엔진 나눔 결정 뒤 최종 검수가 지시. 오늘 할 일 없음.
 1. Baluster PBR 판정: 디자인 검수 → 최종 검수(최종 검수가 Meshy 판 옆 시트로 사용자에게). 둘 다 통과 → Blender **크기·피벗·방향만**: `blender --background --factory-startup --python art/models/tripo/touchup/Halo_Statue/build_glb.py -- <fbx> art/models/tripo/touchup/HaloVar4_Baluster_p/HaloVar4_Baluster_p_TU.glb`(`--basecolor` 없음) → 앞 렌더로 확인 → records에 final 줄. 떨어지면 ②: 다른 흰 모델(db407464가 다음 후보) → 텍스처 → PBR(25, 최종 검수 OK 뒤).
 2. 다음 물건은 최종 검수가 개수·점수를 사용자에게 보인 뒤 줌.
 
