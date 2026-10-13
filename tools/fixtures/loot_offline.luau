@@ -702,6 +702,23 @@ runGroup("config", function()
 			check(a and b and c and a < b and b < c, "B2 scroll chance rises meadow < woods < ruins", id .. " " .. show({ a, b, c }))
 		end
 	end
+	-- C2 (crafting_market §3, 게임성 개발 2 10/13): the beta monsters' weapon rows; never a BelowLevel on a plain monster (it pays
+	-- its item on every kill below the weapon's level, without a draw: the boss rows only)
+	local C2W = { Slime = { [2] = 0.002, [3] = 0.001 }, BigSlime = { [2] = 0.02, [3] = 0.015 }, SlimeKing = { [3] = 0.10 },
+		Goblin = { [4] = 0.002 }, SlingshotGoblin = { [4] = 0.002 }, GoblinBrute = { [4] = 0.005, [5] = 0.0008 },
+		Skeleton = { [5] = 0.001 }, SkeletonArcher = { [5] = 0.001 }, SkeletonKnight = { [5] = 0.004, [6] = 0.001 },
+		CaptainClatter = { [5] = 0.03, [6] = 0.01 }, FlowerSlime = {} }
+	for kind, want in C2W do
+		local got, below = {}, false
+		for _, row in L.Tables[kind] or {} do
+			if row.Weapon then
+				got[row.Weapon] = row.P
+				if row.BelowLevel ~= nil and C.MonsterTypes[kind].Boss ~= true then below = true end
+			end
+		end
+		check(deepEqual(got, want) and not below, "C2 weapon rows of the beta monsters, no BelowLevel on a plain monster",
+			kind .. " " .. show(got))
+	end
 	-- review B13: potions about half of the first values, the same for HP and MP
 	local POTION = { Slime = 0.01, BigSlime = 0.03, Goblin = 0.02, GoblinBrute = 0.04, Skeleton = 0.025, SkeletonKnight = 0.05 }
 	for kind, p in POTION do
@@ -962,8 +979,7 @@ runGroup("sanitize", function()
 	n.Data.Items, n.Data.WeaponEnhance = nil, nil
 	n.ScriptConst = 0
 	local g = n:Roll("Slime")
-	-- (Lv1: the C2 tier-3 row pays its BelowLevel jelly too)
-	check(type(n.Data.Items) == "table" and #n.Data.WeaponEnhance == 9 and n.Data.Items.Jelly == 2 and #g > 0,
+	check(type(n.Data.Items) == "table" and #n.Data.WeaponEnhance == 9 and n.Data.Items.Jelly == 1 and #g > 0,
 		"RollKill sanitizes missing tables before granting", show(n.Data.Items))
 	n.ScriptConst = nil
 	local had = n.Data.Items.Jelly
@@ -1014,7 +1030,6 @@ runGroup("rollkill", function()
 	f:Kill("Slime")
 	f:Kill("Slime", nil, p2)
 	check(f.Draws == 2 * n and #f.Script == 0, "two contributors = two independent rolls", f.Draws)
-	-- (below Lv5 each also gets the C2 tier-3 row's BelowLevel jelly, without a draw)
 	local bl = belowLevelRows(f, "Slime", math.floor(tonumber(f.Data.Level) or 1)) > 0 and 1 or 0
 	check(f:Count("Jelly") - jellyBefore == 1 + bl and (d2.Items.Jelly or 0) == bl, "contributor rolls are independent (own result each)",
 		show({ f:Count("Jelly") - jellyBefore, d2.Items.Jelly }))

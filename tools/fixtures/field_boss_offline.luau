@@ -425,8 +425,8 @@ runGroup("clatter config", function()
 	local row = {}
 	for _, r in T or {} do row[r.Item or (r.Weapon and ("W" .. r.Weapon)) or r.Potion] = r end
 	check(row.KnightCrest and row.KnightCrest.P == 1 and row.KnightCrest.N == 3 and row.Enh30 and row.Enh30.P == 0.2
-		and row.Enh10 and row.Enh10.P == 0.05 and row.W5 and row.W5.P == 0.03 and row.W6 and row.W6.P == 0.005
-		and row.W5.BelowLevel.Item == "KnightCrest" and row.W5.BelowLevel.N == 2, "drops: 3 crests, Enh30 20%, Enh10 5%, T5 3%, T6 0.5%")
+		and row.Enh10 and row.Enh10.P == 0.05 and row.W5 and row.W5.P == 0.03 and row.W6 and row.W6.P == 0.01
+		and row.W5.BelowLevel.Item == "KnightCrest" and row.W5.BelowLevel.N == 2, "drops: 3 crests, Enh30 20%, Enh10 5%, T5 3%, T6 1% (C2)")
 	check(C.Loot.Items.CaptainBadge and C.Loot.Items.CaptainBadge.Kind == "Material"
 		and table.find(C.Loot.Order, "CaptainBadge") ~= nil, "Captain's Badge is a listed material")
 	for _, s in { "Appear", "Defeat", "Leave" } do
