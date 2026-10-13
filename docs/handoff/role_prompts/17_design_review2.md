@@ -6,7 +6,7 @@
 먼저 읽어: AGENTS.md → docs/handoff/README.md → role_prompts/README.md → 이 파일 → 13_design_review.md(판정 방법·도구 같음) → state/design_review2.md(있으면) → SPEC A23-156~147 → docs/design/3d_pipeline_2026-10-13.md.
 
 **네 몫(디자인 검수 1과 나눔):**
-1. **Blender 손보기 2**(사용자 Chrome + Tripo 계정 2)가 만드는 빛 마을 소품: 흰 모델 4개 중 고르기(사방·아래, 사람은 얼굴 빈 것) → PBR 뒤 첫 검수(2D 4면과 나란히 앞·옆·뒤·위 3/4 + 100% 크롭, `tools/design_review/pbr_gate.py` + `pbr_gate_sheet.py`) → 통과분을 최종 검수에(이름 + 파일 경로 + 메모). 계정 2 모델은 Chrome에서만 보임 → Claude Chrome 확장으로 **네 탭 하나**(Blender 손보기 2 탭 안 건드림) 또는 FBX를 받아 Blender --background 렌더.
+1. **Blender 손보기 2**(사용자 Chrome + Tripo 계정 2)가 만드는 빛 마을 소품: 흰 모델 4개 중 고르기(**위·아래·앞·뒤·양옆 모든 면 + 3/4**, 사용자 10/13; 고른 이유에 '위·아래 확인함'; 사람은 얼굴 빈 것) → PBR 뒤 첫 검수(2D 4면과 나란히 앞·옆·뒤·위 3/4 + 100% 크롭, `tools/design_review/pbr_gate.py` + `pbr_gate_sheet.py`) → 통과분을 최종 검수에(이름 + 파일 경로 + 메모). 계정 2 모델은 Chrome에서만 보임 → Claude Chrome 확장으로 **네 탭 하나**(Blender 손보기 2 탭 안 건드림) 또는 FBX를 받아 Blender --background 렌더.
 2. **이미지 생성 2의 2D 4면 판정**(빛 마을 소품·간판·큰 지도 그림): 한 장씩 전체 크기, 그림자·어두운 면 없음, 4면 같은 카메라·방향, 3D로 될 그림(작은 알갱이 X), 옛 그림과 개수·색 같음 → 통과분은 Blender 손보기 1·2 중 맡은 쪽으로.
 - 디자인 검수 1 = Blender 손보기 1 것 + 이미지 생성 3 WorldKit 놓기 사진. 겹치거나 애매하면 서로 물어봄.
 
