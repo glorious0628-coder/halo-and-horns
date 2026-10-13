@@ -1,8 +1,8 @@
 # 이미지 생성 2 — 인계 (10/14 아침, Opus 5.5 세션)
 ## 10/14 아침 (맨 위 = 이것부터)
 - **새 방식(사용자 10/14, 최종 검수 전달): 3D 물건은 부품마다 2D 따로 → 부품마다 Meshy → Blender로 합침.** 소품 4면은 앞으로 '부품 단위'로 그림: 부품 하나만 화면 가운데 크게(여백 10%), 다른 부품·바닥 없음, 그림자 없음, 밝은 회색 민무늬. 돌려도 같은 부품(둥근 기둥) = 앞 1장 → 3면 복사. 앞뒤 같은 네모 부품 = back 좌우 뒤집기, left/right 앞 복사. 가로대·바닥 받침 같은 단순 덩어리는 Studio 파트라 안 그림(A23-120).
-- **첫 시험 끝(push 1803900, 최종 검수에 보고, 판정 대기)**: HaloVar4_Balustrade_C 부품 3종 `art/out/s2/noshadow/parts/HaloVar4_{Baluster,CornerPost,EndPost}_{front,left,right,back}_ns.png`, 프롬프트 `art/prompts/HaloVar4_<부품>_front_ns.txt`(ref1 = 승인 2D, EndPost는 ref2 = CornerPost 앞), 시트 `art/review/s2/balustrade_parts_2026-10-14.jpg`. EndPost 첫 판은 공이 커서 다시(백업 `build/img2_next/pil_orig/HaloVar4_EndPost_front_ns_v1.png`). 여백 맞춤 = 물체 bbox를 80%로 줄여 배경색 캔버스에 마스크 붙임(원본 `pil_orig/*_raw.png`; 스크립트는 스크래치라 없음, 짧게 다시).
-- 판정에서 '다시'가 오면 그 부품만 Codex로. 다음 부품 그리기 일은 최종 검수가 줌.
+- **첫 시험 끝(push 1803900) → 최종 검수 통과(10/14, 3종 다; 사용자 OK 오면 최종 검수가 Meshy로 보냄, 받침 아래 단은 Blender에서 안 자르고 Studio 바닥 파트를 깖)**: HaloVar4_Balustrade_C 부품 3종 `art/out/s2/noshadow/parts/HaloVar4_{Baluster,CornerPost,EndPost}_{front,left,right,back}_ns.png`, 프롬프트 `art/prompts/HaloVar4_<부품>_front_ns.txt`(ref1 = 승인 2D, EndPost는 ref2 = CornerPost 앞), 시트 `art/review/s2/balustrade_parts_2026-10-14.jpg`. EndPost 첫 판은 공이 커서 다시(백업 `build/img2_next/pil_orig/HaloVar4_EndPost_front_ns_v1.png`). 여백 맞춤 = 물체 bbox를 80%로 줄여 배경색 캔버스에 마스크 붙임(원본 `pil_orig/*_raw.png`; 스크립트는 스크래치라 없음, 짧게 다시).
+- 사용자가 '다시'를 주면 그 부품만 Codex로. 다음 부품 그리기 일은 최종 검수가 줌(지금 할 일 없음 → clear).
 
 # 이미지 생성 2 — 인계 (10/13 밤 끝 정리, Opus 5.5 세션)
 ## 10/13 밤 끝 (맨 위 = 이것부터)
