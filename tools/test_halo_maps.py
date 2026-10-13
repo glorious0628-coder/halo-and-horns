@@ -114,19 +114,24 @@ for _, l in lands do table.insert(stage6, l.Name == "IslandHalo" and v2Island or
 local bare6 = WorldMap.PaintCover(pic, stage6)
 local n6 = 0
 for _ in bare6 do n6 += 1 end
-local isNew = true
-for _, l in lands do if l.Name == "IslandHalo" and l.MinZ == -863 then isNew = true elseif l.Name == "IslandHalo" then isNew = false end end
-check(isNew and nBare == 1 and bareNow.IslandHalo or (not isNew and nBare == 0),
-	"the painted map covers every land of this Config but the v2 island (if it is in)", nBare)
-check(n6 == 1 and bare6.IslandHalo == true, "the v2 Halo island box is bare on the old picture (only it)", n6)
+-- final review 10/13: the stage-6 picture V3 b (1041 x 760: the old one at (17, 77) + the new Halo island) covers every
+-- land, the v2 island box too
+check(pic.Size.X == 1041 and pic.Size.Y == 760 and pic.Map.X0 == 47.815 and pic.Map.OffZ == 883,
+	"WorldMapV2 = the V3 b frame (1041 x 760, X0 47.815, OffZ 883)", tostring(pic.Size))
+check(nBare == 0, "the painted map covers every land of this Config", nBare)
+check(n6 == 0, "the v2 Halo island box is covered too", n6)
 local all = WorldMap.PaintCover(nil, lands)
 local nAll = 0
 for _ in all do nAll += 1 end
 check(nAll == #lands, "no picture: every land is bare", nAll)
-local edge = WorldMap.PaintCover(pic, { { Name = "Edge", MinX = -295, MaxX = 0, MinZ = -720, MaxZ = 0 } })
-check(edge.Edge == nil, "a land on the picture's own edge is covered (x -295, z -720)", "")
-local out = WorldMap.PaintCover(pic, { { Name = "Out", MinX = -300, MaxX = 0, MinZ = -700, MaxZ = 0 } })
+-- the picture's own west / north edge in studs (px 0 = X0 + (x + OffX) * K; py 0 = (z + OffZ) * K)
+local west, north = -pic.Map.OffX - pic.Map.X0 / pic.Map.K, -pic.Map.OffZ
+local edge = WorldMap.PaintCover(pic, { { Name = "Edge", MinX = west + 0.5, MaxX = 0, MinZ = north, MaxZ = 0 } })
+check(edge.Edge == nil, "a land on the picture's own edge is covered (x " .. math.floor(west) .. ", z " .. north .. ")", "")
+local out = WorldMap.PaintCover(pic, { { Name = "Out", MinX = west - 5, MaxX = 0, MinZ = north + 20, MaxZ = 0 } })
 check(out.Out == true, "a land 5 studs past the picture's west edge is bare", "")
+local past = WorldMap.PaintCover(pic, { { Name = "North", MinX = 0, MaxX = 10, MinZ = north - 5, MaxZ = 0 } })
+check(past.North == true, "a land 5 studs past the picture's north edge is bare", "")
 print(("HALO_MAPS_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
