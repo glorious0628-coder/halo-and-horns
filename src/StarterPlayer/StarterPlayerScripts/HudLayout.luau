@@ -51,10 +51,10 @@ local ITEMS = {
 	-- the tile row right above it, and the quick slots 1 · 2 · 3 (keys, 개발 1) right of the bars' end (PC_FLOOR / QUICK)
 	-- user 10/14 (최종 검수: the [Menu] fold was two lines): the PC row holds 7 tiles (Monsters too, was in the fold); on
 	-- 1280x720 the group steps 26 px left of the centre for the ghost (the rects below are that result)
-	portrait = { "BC", { 366, 578, 50, 50 }, { 225, 248, 45, 45 } },
-	power_line = { "BC", { 424, 570, 438, 16 }, { 275, 250, 140, 14 } },
-	hp_bar = { "BC", { 424, 590, 215, 20 }, { 275, 267, 68, 12 } },
-	mp_bar = { "BC", { 646, 590, 215, 20 }, { 347, 267, 68, 12 } },
+	portrait = { "BC", { 366, 578, 50, 50 }, { 225, 245, 45, 45 } },
+	power_line = { "BC", { 424, 570, 438, 16 }, { 275, 247, 140, 14 } },
+	hp_bar = { "BC", { 424, 590, 215, 20 }, { 275, 264, 68, 15 } },
+	mp_bar = { "BC", { 646, 590, 215, 20 }, { 347, 264, 68, 15 } },
 	xp_bar = { "BC", { 424, 614, 438, 8 }, { 275, 282, 140, 5 } },
 	tiles = { "BC", { 424, 634, 438, 60 }, { 225, 296, 190, 45 } },
 	-- PC only (phones keep the potion ring until the phone round, A23-98): three squares, one row with the tiles
@@ -137,6 +137,9 @@ local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide wh
 -- Tile / Quick (A23-109): real px floors of a PC tile (its name always fits under the icon: the 10/08 small-window rule
 -- hid the names under 40 px, user 10/10 "왜 네모 안에 글씨 사라졌냐") and of a quick slot; a taller row grows upwards
 local PC_FLOOR = { QuestW = 250, Bar = 14, NotifyW = 288, Tile = 46, Quick = 40, Squeeze = 40 }
+-- final review 10/14 (phone first-10 photos: '156/156' read ~9 px in the 12 px phone bars): phone HP / MP bars are
+-- at least TOUCH_BAR real px, grown upwards with the power line and the face (like PC_FLOOR.Bar)
+local TOUCH_BAR = 15
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
 -- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
@@ -269,6 +272,14 @@ function HudLayout.Compute(env)
 	end
 
 	if touch then
+		local hb, mb = out.hp_bar, out.mp_bar
+		local d = TOUCH_BAR / s - hb.H
+		if d > 0 then
+			hb.Y, hb.H = hb.Y - d, hb.H + d
+			mb.Y, mb.H = mb.Y - d, mb.H + d
+			out.power_line.Y -= d
+			out.portrait.Y -= d
+		end
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
 		if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end
 		for _, id in ROUND_TAPS do

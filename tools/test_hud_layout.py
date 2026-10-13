@@ -165,6 +165,7 @@ MUTATIONS = [
      "local qw = q.W"),
     ("PC quest lines widen into their neighbours", "qw = math.min(qw, o.X - GAP - q.X)", "qw = qw"),
     ("PC bars keep the sheet height on small windows", "local d = PC_FLOOR.Bar / s - hb.H", "local d = 0"),
+    ("phone bars keep the sheet height on small phones", "local d = TOUCH_BAR / s - hb.H", "local d = 0"),
     ("PC notify column keeps the top bar's room on small windows", "local want = PC_FLOOR.NotifyW / s",
      "local want = 0"),
     ("PC notify column widens into its row's neighbours", "local half = math.min(want / 2, cx - l, r - cx)",
