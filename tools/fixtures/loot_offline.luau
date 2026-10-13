@@ -2485,6 +2485,7 @@ runGroup("levelrule", function()
 		local saved = deepCopy(DEFAULT_ROW)
 		saved.Level, saved.WeaponTier, saved.WeaponOwnedMask = level, tier, owned
 		saved.WeaponEnhance = enh or { 1, 2, 3, 4, 5, 6, 7, 8 }
+		saved.PlaytimeSeconds = 3600 -- past A23-167's first-minutes 2x XP (these checks count exact level-ups)
 		local x = fixture({ Saved = saved })
 		x.Data.LootFlags.FirstScroll = true
 		-- the real Config has the "You can now use ..." line off (Nudges.WeaponUsableNow, 검수 10/09): these checks look at the rule, so turn it on
