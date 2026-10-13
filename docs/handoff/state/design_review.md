@@ -8,7 +8,7 @@
    - CastleRose: 판 6.65로 파랑 됨. 그런데 v2 꽃잎 흐리고 금 어두움(v1 = git 95ad3ddc) → 텍스처 다 올라온 뒤 다시 찍기 / SA 붙었는지
    - P026·048·049: Studio 다시 열어도 같음. P026 = 금 공만 잔디 위 → 벤치가 보이는 지형 속 ~3칸(추측: 땅 속에서 쏜 레이). Y+60 위에서 레이로 확인 → 올리기/지형 맞추기는 최종 검수 답
    - 하늘색 표시 상자(P022 옆) = 건물 표시 파트, 게임 전 숨김
-2. **이미지 생성 2 NEW_ 11종 4면** = 판정 끝(f0f5f56c), 남은 다시 보기 4종·가게 간판은 디자인 검수 2로 넘김(f36a8d3d). 통과 6종(GatherBush·ArmoryBarrels·CandleCrate·Easel·NoticeBoard·WaterBuckets) → Blender 손보기 1 큐 맨 뒤(d069455c, 810점 내 OK) → **흰 모델은 내가 고름**. Hedge → Blender 손보기 2(디자인 검수 2 몫). Blender 손보기 2 흰 모델 9종 id도 디자인 검수 2에 넘김(ebffd5e1).
+2. **NEW_ 6종 → Blender 손보기 1 큐 맨 뒤(최종 3aa188d7, 810점 내 OK)**: GatherBush·ArmoryBarrels(오른면 천 봄)·CandleCrate(초 뭉침)·Easel·NoticeBoard·WaterBuckets(뒤 갈퀴 이빨) → **흰 모델은 내가 고름.** 나머지 2D 4면(WallLamp·WateringCan·Beehive·SteppingStones·간판)과 Blender 손보기 2 것은 디자인 검수 2.
 3. **Blender 손보기 1 PBR 결과** → PBR 관문(아래 방법). 통과만 최종 검수에 보냄(이름 + 파일 경로 + ⑤ 메모).
    - 대기 중: 동상 B 1a0812be, 분수 C cd70436c, Daisy, Rose
    - GateLeaf, DomeOnion, ConeTree, DomeOctagon, DomeBall, BenchB, FlowerCart(수레 몸)
