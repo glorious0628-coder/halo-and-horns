@@ -76,3 +76,7 @@ Meshy 웹에서 멀티뷰와 Smart Topology(저폴리 직접 생성)는 **같이
 - R2 Roblox 텍스처 사양(1024) https://create.roblox.com/docs/art/modeling/texture-specifications
 - R3 Roblox 메시 폴리곤·충돌 참고(Meshy M7와 같은 수치) — 위 M7
 - Y1 YouTube "Turn Any Image into a Realistic 3D Model in Minutes with Tripo 3.1"(2026-03, 단일 이미지 위주, 채널 미확인, 자막 못 읽음) https://www.youtube.com/watch?v=7o-ZqlsfnhA — Meshy/Tripo 멀티뷰 전용 영상은 검색에서 못 찾음.
+
+## 10/13 밤 추가 규칙 (사용자 지적, 꽃 양동이 앞/뒤)
+- **앞·뒤가 거의 같은 물건(덤불·화분·양동이·대칭 소품)은 뒤·옆을 AI로 새로 그리지 않는다.** 뒤 = 앞 그림 좌우 뒤집기(PIL), 옆 = 앞의 끝 부분 기준으로 폭만 맞춤. 세부(꽃 수·배치)가 앞과 같아야 Tripo/Meshy/투영 모두 정확해진다. 앞뒤가 다른 것(사람·간판·문·수레)만 4면을 따로 그린다.
+- **구조 위에 우리 그림 투영(`tools/view_project.py`, 0원, AI 없음)**: 면의 법선이 향하는 쪽 그림을 직교 투영해 UV에 굽는다. 구조의 높이·폭 비율이 2D와 같아야 함(인자 8 = 높이/폭 비율로 눌러 맞춤). 45° 이음새는 보임; 돔·대칭 소품에 적합.
