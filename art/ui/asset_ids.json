@@ -1566,5 +1566,13 @@
   "SA_HaloSign_SignBakery_C": "rbxassetid://128229681985713",
   "SA_HaloSign_SignBakery_N": "rbxassetid://110979743665801",
   "SA_HaloSign_SignBakery_M": "rbxassetid://136494871723966",
-  "SA_HaloSign_SignBakery_R": "rbxassetid://140418403940369"
+  "SA_HaloSign_SignBakery_R": "rbxassetid://140418403940369",
+  "SA_NPC_HaloBakerGranny_C": "rbxassetid://76162798431469",
+  "SA_NPC_HaloBakerGranny_N": "rbxassetid://97784888585774",
+  "SA_NPC_HaloBakerGranny_M": "rbxassetid://138160427790831",
+  "SA_NPC_HaloBakerGranny_R": "rbxassetid://90365588083568",
+  "SA_NPC_HaloBellElder_C": "rbxassetid://87114508249904",
+  "SA_NPC_HaloBellElder_N": "rbxassetid://120993807011227",
+  "SA_NPC_HaloBellElder_M": "rbxassetid://131260653500960",
+  "SA_NPC_HaloBellElder_R": "rbxassetid://115891570079755"
 }
