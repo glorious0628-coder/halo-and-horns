@@ -62,9 +62,17 @@ def main():
          is not None),
         ("ProgressUnit follows the target: '5/10 s'", 'if e.ProgressUnit then t = t .. " " .. e.ProgressUnit end' in nums),
         ("#2 / 검수 10/09: [I'm In!] is the one big button, first in the row (user 10/13: no longer the whole card wide -"
-         " WELCOME.AcceptW du)",
-         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(0, WELCOME.AcceptW, 0, 60)" in welcome
+         " WELCOME.AcceptW of the card, 0.45)",
+         "nextButton = makeButton(actions, T.WelcomeAccept, PALETTE.Free, UDim2.new(WELCOME.AcceptW, 0, 0, 60)" in welcome
          and "nextButton.LayoutOrder = 1" in welcome),
+        ("user 10/13: [I'm In!] is under half the card wide", re.search(r"AcceptW = 0\.(\d+) \}", panels) is not None
+         and float("0." + re.search(r"AcceptW = 0\.(\d+) \}", panels)[1]) <= 0.5),
+        ("user 10/13 ('글씨 가운데'): a window title sits in the middle of the whole ribbon (centred words, the right end as"
+         " wide as the icon disc, a least width for the words)",
+         "TextXAlignment = Enum.TextXAlignment.Center,\n\t\tLayoutOrder = 2," in panels
+         and 'UIKit.Create("Frame", { Name = "End", Size = UDim2.new(0, disc0, 1, 0)' in panels
+         and "MinSize = Vector2.new(math.max(0, FRAME.TitleMinW - 2 * disc0), 0)" in panels
+         and "local capW = math.max(40, maxW - 2 * math.floor(th * FRAME.Disc))" in panels),
         ("검수 10/09: a small ▶ (64 du) for the next page, no 'Later' (the window's X closes)",
          "readMore = makeButton(actions, T.WelcomeMore, PALETTE.Button, UDim2.new(0, 64, 0, 60)" in welcome
          and "readMore.LayoutOrder = 2" in welcome and 'WelcomeMore = "▶",' in panels
