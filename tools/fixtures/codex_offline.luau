@@ -85,7 +85,13 @@ end
 
 local function codexWorld(o)
 	o = o or {}
-	local w = dev3World({ EditConfig = o.EditConfig })
+	-- 게임성 개발 1 10/13: the shipped Config.Codex.ServerToast is off (CodexUI.luau shows every line); these worlds test the
+	-- server's toast path with it on (a world's own EditConfig still runs after, e.g. turning it off again)
+	local edit = o.EditConfig
+	local w = dev3World({ EditConfig = function(c)
+		c.Codex.ServerToast = true
+		if edit then edit(c) end
+	end })
 	-- the card models: ServerStorage (o.Custom = the CustomModels folder's children, or nil = no folder) and a ReplicatedStorage
 	-- that holds children
 	w.ServerStorage = fake("ServerStorage", "ServerStorage")
@@ -183,8 +189,8 @@ runGroup("config", function()
 	check(C.TitleDefs.SlimeScholar.Name == "Slime Scholar" and C.TitleDefs.GoblinScholar.Name == "Goblin Scholar"
 		and C.TitleDefs.SkeletonScholar.Name == "Skeleton Scholar", "the page titles", "")
 	check(sameTable(X.Reward, { Stage = { 3, 20, 100 }, BossStage = { 1, 3, 10 }, Golden = 5 }), "rewards in kills' worth", show(X.Reward))
-	check(C.PassBoost.GoldSources.Codex == true and C.RateLimits.CodexOpen == 1 and X.ServerToast == true,
-		"codex gold is earned gold (2x pass), CodexOpen 1 s, the server toast is on", "")
+	check(C.PassBoost.GoldSources.Codex == true and C.RateLimits.CodexOpen == 1 and X.ServerToast == false,
+		"codex gold is earned gold (2x pass), CodexOpen 1 s, the server toast is off (CodexUI shows the lines)", "")
 	check(C.CodexCanGold("Slime") and not C.CodexCanGold("SlimeKing") and not C.CodexCanGold("CaptainClatter"),
 		"bosses have no Gold Foil card (never golden)", "")
 	check(C.CodexStage("Slime", 0) == 0 and C.CodexStage("Slime", 1) == 1 and C.CodexStage("Slime", 99) == 1
