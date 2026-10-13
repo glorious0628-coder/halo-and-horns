@@ -1,5 +1,11 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 아침 (Studio 열기·sync·사진 3종)
+- **Studio**: build/GoodEvil.rbxlx(10/13 23:28:22 판)로 열림(id 73c64908…, list_roblox_studios), Edit, Play 없음, 창 최소화, StudioFreshSave=true, **저장 안 함**(Save As = 10/16 저녁 사용자). 코드 = main 89255e8b sync(스크립트 12 새로 씀·161 그대로).
+- **사진**(docs/art/verification_2026-10-14/): comeback/(PC+phone 5장씩), phone_first10/(844·phone 11장씩), first_look_1014/(pc_01~03; menu_one_line/ 덮어쓴 것의 복사). 콘솔 오류 0.
+- 눈에 띈 것: 두 comeback 모두 `back line: no bubble`(Returned 말풍선 안 뜸, 최종 검수가 사진 보고 판정). phone first10 로그에 cut 2 / overlap 1~4 숫자 있음(판정은 최종 검수).
+- 다음: 최종 검수 요청대로. 10/16 저녁 Save As는 사용자.
+
 ## 10/14 새벽 정리 (사용자: 컴퓨터 끔 — 최종 검수 전달)
 - **저장 기준:** build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/13 23:28:22, 44,601,218 B, SHA256 63f4aa56941e…daf5, push 956e521, 소스 = main 75890afd(src 173개 전부 일치). 그 뒤 병합(4baa63e6 메뉴 한 줄 2 등)은 저장 안 된 sync. Studio는 Edit·Play 없음·저장 안 함, 컴퓨터 꺼지면 사라짐.
 - **다음 일(내일 아침, 3줄):** ① Studio가 다시 열리면 로그인 확인(PC 재시작 때 로그인이 풀려 사용자가 눌러야 했음), 열기는 build/GoodEvil.rbxlx 인자 실행 뒤 list_roblox_studios로 id(창 제목이 "헤일로 & 혼스 (placeId: 81671223175574)"로 바뀔 수 있음, studio_mcp MAIN_NAMES에 이미 포함). ② `py tools/push_paths.py --sync` → 0 0 확인 → `HH_MAIN_STUDIO=1 STUDIO_ID=<id> py tools/sync_to_studio.py` → `py tools/play_phone_round_photos.py first10` + `py tools/play_first_look_photos.py`(결과는 menu_one_line/에 덮어쓰므로 끝나면 새 폴더로 복사) + build/mainapply_2026-10-09b/play_first10_1013.py(PC 첫 10분, git 무시). ③ 저장은 컴퓨터 제어 권한이 계속 거부(user_denied)라 사용자가 직접 File → Save to File As → build/GoodEvil.rbxlx(rbxlx, 44MB XML)로 저장(Ctrl+S는 build/헤일로 & 혼스.rbxl 바이너리로 감 = 우리 형식 아님) → '사용자 저장함' 오면 시간·해시·소스 173개 대조(py로 CDATA Source 비교) → place/ 복사 → push_paths.
