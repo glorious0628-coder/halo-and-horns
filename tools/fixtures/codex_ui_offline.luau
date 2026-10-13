@@ -249,7 +249,7 @@ local toasts, popups = {}, {}
 local ARTIDS = { IconMonSlime = "rbxassetid://1", IconMonGoblin = "rbxassetid://2" }
 local gui = newObj("ScreenGui", { Name = "MainGui", IgnoreGuiInset = true })
 local uiScale = newObj("UIScale", { Name = "UIScale", Scale = 1, Parent = gui })
-local bodyAbs = v2(604, 440) -- the body's AbsoluteSize (real px) Panels gives the window
+local bodyAbs = v2(684, 480) -- the body's AbsoluteSize (real px) Panels gives the window
 local function apply(o, props, skip)
 	for k, v in props or {} do
 		if not (skip and skip[k]) then o[k] = v end
@@ -290,6 +290,7 @@ local KIT = {
 	Theme = { Gold = "gold", Text = "text", SubText = "sub" }, Palette = { Button = "btn", DarkText = "dark" }, Font = "font",
 }
 local Panels = {
+	CurrentId = function() return opened and opened.Id or nil end,
 	Register = function(id, opts)
 		REG[id] = opts
 		return true
@@ -407,23 +408,29 @@ check(#bad == 0, "all 11 kinds: a name, a zone, a story line for each side", tab
 
 ------------------------------------------------------------------ the layout (최종 검수 10/13 review)
 local lay = CodexUI.Layout(604, 440)
-check(lay.CardW == 230 and lay.CardH == 310 and lay.SlotH == 168 and lay.TabW == 197, "a full window: the 230 x 310 card, 168 slots, 197 tabs",
+check(lay.CardH > 310 and lay.SlotH > 168 and lay.TabW == 197, "a 604 x 440 body: the card and slots bigger than before, 197 tabs",
 	lay.CardW .. "x" .. lay.CardH .. " " .. lay.SlotH .. " " .. lay.TabW)
-for _, hh in { 440, 404, 360, 330, 300 } do
-	local l = CodexUI.Layout(604, hh)
-	local fits = l.Top + l.RowY + T.L.ButtonH <= hh and l.Top + 2 * l.SlotH + T.L.Gap <= hh
-	check(fits and 3 * l.TabW + 2 * T.L.TabGap <= 604 and l.RightW + l.SlotW * 2 + T.L.Gap * 2 <= 604,
-		"a body " .. hh .. " high: the buttons and both slot rows inside, tabs and columns in the width",
-		l.CardH .. "/" .. l.SlotH)
-	check(math.abs(l.CardW / l.CardH - 230 / 310) < 0.01, "a body " .. hh .. " high: the card keeps its shape")
+local full = CodexUI.Layout(684, 480)
+check(full.Top + full.RowY + T.L.ButtonH >= 480 - 2 and full.Top + 2 * full.SlotH + T.L.Gap >= 480 - 2 and full.TabW == 220,
+	"the full window (684 x 480): the card row and the two slot rows reach the bottom (no empty half)",
+	full.CardH .. "/" .. full.SlotH)
+for _, ww in { 684, 604 } do
+	for _, hh in { 560, 480, 404, 360, 330, 300 } do
+		local l = CodexUI.Layout(ww, hh)
+		local fits = l.Top + l.RowY + T.L.ButtonH <= hh and l.Top + 2 * l.SlotH + T.L.Gap <= hh
+		check(fits and 3 * l.TabW + 2 * T.L.TabGap <= ww and l.LeftW + T.L.ColGap + l.RightW <= ww and l.CardW <= l.RightW
+			and 3 * T.L.ButtonW + 12 <= l.RightW, "a body " .. ww .. " x " .. hh .. ": everything inside (buttons, both slot rows, columns)",
+			l.CardW .. "x" .. l.CardH .. "/" .. l.SlotH)
+		check(math.abs(l.CardW / l.CardH - 230 / 310) < 0.01, "a body " .. ww .. " x " .. hh .. ": the card keeps its shape")
+	end
 end
 local ll = CodexUI.Layout(0, 0)
-check(ll.CardH == 310, "a body not laid out yet: the PC size")
+check(ll.CardH == CodexUI.Layout(684, 470).CardH, "a body not laid out yet: the PC size")
 -- the zone names fit a tab at a 720p PC floor (18 real px / UIScale 0.8 = 22.5 du, ~0.58 em a letter in GothamBold - the
 -- 720p main photo is the real check)
 local longest = 0
 for _, page in Config.Codex.Pages do longest = math.max(longest, #Config.Zones[page.Id].Name) end
-check(longest * 0.58 * 22.5 <= CodexUI.Layout(604, 440).TabW - 8, "the longest zone name fits its tab at a 720p floor", longest)
+check(longest * 0.65 * 22.5 <= CodexUI.Layout(684, 480).TabW - 8, "the longest zone name fits its tab at a 720p floor", longest)
 
 ------------------------------------------------------------------ data + the window
 remotes.Codex.OnClientEvent:Fire({ V = 1, Cards = { Slime = { Kills = 12, Golden = 0, Stage = 1, First = t0 }, Bogus = { Kills = 5 } },
@@ -525,21 +532,32 @@ check(after.SlotFlowerSlime ~= before.SlotFlowerSlime and after.SlotFlowerSlime.
 -- the window in a 720p PC body (UIScale 0.8) and a phone held sideways, and when the body changes
 uiScale.Scale = 0.8
 local root = VIEW.Root
-root.AbsoluteSize = v2(604 * 0.8, 404 * 0.8)
+root.AbsoluteSize = v2(684 * 0.8, 404 * 0.8)
 root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
-local want = CodexUI.Layout(604, 404)
+local want = CodexUI.Layout(684, 404)
 local hs = VIEW.Big.Holder.Size
 check(hs.Args[1] == want.CardW and hs.Args[2] == want.CardH and VIEW.Row.Position.Args[2] == want.RowY
 	and VIEW.Tabs[1].Size.Args[2] == want.TabW, "a 720p body (UIScale 0.8): the card and its buttons sized to fit", tostring(hs.Args[2]))
 uiScale.Scale = 0.75
-root.AbsoluteSize = v2(604 * 0.75, 330 * 0.75)
+root.AbsoluteSize = v2(684 * 0.75, 330 * 0.75)
 root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
-want = CodexUI.Layout(604, 330)
+want = CodexUI.Layout(684, 330)
 check(VIEW.Big.Holder.Size.Args[2] == want.CardH and VIEW.GridLayout.CellSize.Args[2] == want.SlotH
 	and want.Top + want.RowY + T.L.ButtonH <= 330, "a phone sideways (330 high): the buttons stay inside", want.CardH)
 uiScale.Scale = 1
-root.AbsoluteSize = v2(604, 440)
+root.AbsoluteSize = v2(684, 480)
 root:GetPropertyChangedSignal("AbsoluteSize"):Fire()
+-- ⓑ one name: the slot says the card's own name
+check(VIEW.Slots.Slime.Name.Text == "Shard Slime" and VIEW.Big.NameText.Text == "Shard Slime",
+	"the slot and the big card say the same name", VIEW.Slots.Slime.Name.Text)
+-- ⓐ a hidden window (its frame not shown) is closed for the moments: the card moment comes, not a toast
+root.Visible = false
+local toastsBefore = #toasts
+remotes.CodexUp.OnClientEvent:Fire({ Event = "Silver", Kind = "BigSlime", Stage = 2, Card = { Kills = 100, Golden = 0, Stage = 2, First = t0 },
+	Text = "Slime Prince card is now Silver!", Debug = true })
+check(#toasts == toastsBefore and #T.S.Queue == 1, "a hidden window: the moment waits its turn (no toast)", #T.S.Queue)
+table.clear(T.S.Queue)
+root.Visible = true
 -- the chime: the open window's toast rang it
 check(#plays == 1 and plays[1] == "QuestDone", "the open window's reward toast rings QuestDone", #plays)
 -- closing lets go of everything

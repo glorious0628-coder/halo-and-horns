@@ -112,6 +112,9 @@ def static(src: dict) -> list[tuple[str, bool]]:
          'ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))' in cx
          and 'ModelFolder = "CodexModels"' in cfg
          and cx.index("codex().ModelFolder") < cx.index("if not src then src = MODEL.Live(kind) end")),
+        ("the back's lines are whole (each as tall as its wrapped words, never a fixed box) and a long slot name ends in ...",
+         "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true," in cx
+         and "TextTruncate = Enum.TextTruncate.AtEnd" in cx),
     ]
 
 
@@ -155,9 +158,20 @@ MUTATIONS = [
     ("CODEX", "a card moment without its chime", "\tchime()\n\tlocal hold = ", "\tlocal hold = "),
     ("CODEX", "the open window's toast without its chime", "\t\tcall(\"Toast\", tostring(payload.Text or \"\"), \"reward\")\n\t\tchime()\n",
      "\t\tcall(\"Toast\", tostring(payload.Text or \"\"), \"reward\")\n"),
-    ("CODEX", "the card never shorter than 310 (buttons cut on a phone)",
-     "local cardH = math.clamp(math.floor(room - L.Gap - L.ButtonH), L.MinCardH, L.CardH)", "local cardH = L.CardH"),
-    ("CODEX", "the old narrow tabs", "TabH = 40, TabW = 197,", "TabH = 40, TabW = 132,"),
+    ("CODEX", "the card not fitted to the body (buttons cut on a phone)",
+     "local cardH = math.clamp(math.min(math.floor(room - L.Gap - L.ButtonH), byWidth), L.MinCardH, L.MaxCardH)",
+     "local cardH = L.CardH"),
+    ("CODEX", "the card never grows (the window's lower half empty)",
+     "local cardH = math.clamp(math.min(math.floor(room - L.Gap - L.ButtonH), byWidth), L.MinCardH, L.MaxCardH)",
+     "local cardH = math.clamp(math.min(math.floor(room - L.Gap - L.ButtonH), byWidth), L.MinCardH, L.CardH)"),
+    ("CODEX", "the slots never grow", "math.clamp(math.floor((room - L.Gap) / 2), L.MinSlotH, L.MaxSlotH)",
+     "math.clamp(math.floor((room - L.Gap) / 2), L.MinSlotH, 168)"),
+    ("CODEX", "the card wider than its column", "local byWidth = math.floor(rightW * L.CardH / L.CardW)", "local byWidth = 9999"),
+    ("CODEX", "the old narrow tabs", "TabH = 40, TabW = 220,", "TabH = 40, TabW = 132,"),
+    ("CODEX", "the slot says the short name", "\ts.Name.Text = v.Name\n", "\ts.Name.Text = v.Short\n"),
+    ("CODEX", "a hidden window takes the moments as toasts", "\t\tif not p.Visible then return false end\n", ""),
+    ("CODEX", "the back's lines in fixed boxes (cut)", "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true,",
+     "AutomaticSize = Enum.AutomaticSize.None, TextScaled = true, TextWrapped = true,"),
     ("CODEX", "the body's changes not followed", "\ttable.insert(VIEW.Conns, parent:GetPropertyChangedSignal(\"AbsoluteSize\"):Connect(relayout))\n", ""),
     ("CODEX", "the UIScale ignored", "\t\tif u and u.Scale > 0 then s *= u.Scale end\n", ""),
     ("CODEX", "slots built again on every draw", "\tif VIEW.SlotsPage ~= page.Index then", "\tif true then"),

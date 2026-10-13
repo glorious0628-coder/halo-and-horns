@@ -42,10 +42,11 @@ local TAG = "CodexUI"
 
 -- layout (du) and motion
 local L = {
-	Window = "Codex", Width = 640, -- Panels FRAME.Pad 18 each side -> 604 du of content
-	TabH = 40, TabW = 197, TabGap = 6, Gap = 10, ButtonH = 34, ButtonW = 96, -- (TabW: "Squishy Meadow" at a 720p floor)
-	SlotW = 136, SlotH = 168, MinSlotH = 96, Columns = 2, -- the page's cards (four at most); shorter in a low window
-	RightW = 300, CardW = 230, CardH = 310, MinCardH = 150, -- the big card's column and the card at most / at least
+	-- 최종 검수 10/13 (main photos: the window's lower half empty): wider, and the cards / slots grow to fill the body
+	Window = "Codex", Width = 720, -- Panels FRAME.Pad 18 each side -> 684 du of content
+	TabH = 40, TabW = 220, TabGap = 6, Gap = 10, ColGap = 16, ButtonH = 34, ButtonW = 96, -- (TabW: "Squishy Meadow")
+	SlotW = 136, MinSlotH = 96, MaxSlotH = 240, Columns = 2, -- the page's cards (four at most), as tall as the body allows
+	CardW = 230, CardH = 310, MinCardH = 150, MaxCardH = 480, -- the big card's shape (W / H) and its height's bounds
 	Sound = "QuestDone", -- the reward chime (Audio) of a card moment / the reward popup / the open window's toast
 	View = { Top = 0.11, H = 0.56 }, -- the 3D window on the card face (share of its height)
 	Tilt = { Yaw = 28, Pitch = 14, Roll = 3, Ease = 10, Auto = 0.35, Sheen = 0.55 }, -- degrees, 1/s, turns/s, offset
@@ -427,16 +428,25 @@ function CARD.New(parent, size, z)
 		TextScaled = true, MaxTextSize = 17, ZIndex = z + 2, Parent = c.FrontPlate }, true)
 	c.NextText = text({ Name = "Next", Text = "", Position = UDim2.fromScale(0.06, 0.87), Size = UDim2.fromScale(0.88, 0.065),
 		TextScaled = true, MaxTextSize = 15, ZIndex = z + 2, Parent = c.FrontPlate }, true)
-	-- the back
+	-- the back: whole lines one under another, each as tall as its wrapped words (최종 검수 10/13: "Found in: Squishy",
+	-- "First met: Oct 13," were cut in fixed boxes)
 	local lines = {}
-	local y = 0.05
-	for _, spec in { { "BackName", 0.09, 22, true }, { "Lore", 0.3, 17 }, { "Where", 0.1, 15 }, { "Drops", 0.14, 15 },
-		{ "BackKills", 0.08, 15 }, { "First", 0.08, 15 } } do
-		local l = text({ Name = spec[1], Text = "", Position = UDim2.fromScale(0.07, y), Size = UDim2.fromScale(0.86, spec[2]),
-			TextScaled = true, TextWrapped = true, MaxTextSize = spec[3], Title = spec[4] == true, ZIndex = z + 2,
-			Parent = c.BackPlate }, true)
-		lines[spec[1]] = l
-		y += spec[2] + 0.02
+	local col = Instance.new("Frame")
+	col.Name = "BackText"
+	col.BackgroundTransparency = 1
+	col.Position = UDim2.fromScale(0.07, 0.05)
+	col.Size = UDim2.fromScale(0.86, 0.9)
+	col.ZIndex = z + 2
+	col.Parent = c.BackPlate
+	local ll = Instance.new("UIListLayout")
+	ll.SortOrder = Enum.SortOrder.LayoutOrder
+	ll.Padding = UDim.new(0, 6)
+	ll.Parent = col
+	for i, spec in { { "BackName", 21, true }, { "Lore", 17 }, { "Where", 15 }, { "Drops", 15 }, { "BackKills", 15 },
+		{ "First", 15 } } do
+		lines[spec[1]] = text({ Name = spec[1], Text = "", LayoutOrder = i, Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true, TextSize = spec[2],
+			Title = spec[3] == true, ZIndex = z + 2, Parent = col }, true)
 	end
 	c.Lines = lines
 	c.Holder, c.FaceFrame = holder, face
@@ -584,13 +594,16 @@ end
 -- the body allows above its button row, the slots as tall as two rows allow. A body not laid out yet = the PC size
 function CodexUI.Layout(w, h)
 	w, h = tonumber(w) or 0, tonumber(h) or 0
-	if w <= 0 or h <= 0 then w, h = L.Width - 36, 440 end
+	if w <= 0 or h <= 0 then w, h = L.Width - 36, 470 end
 	local top = L.TabH + L.Gap
 	local room = math.max(0, h - top)
-	local cardH = math.clamp(math.floor(room - L.Gap - L.ButtonH), L.MinCardH, L.CardH)
+	local leftW = L.SlotW * L.Columns + L.Gap * (L.Columns - 1)
+	local rightW = math.max(L.ButtonW * 3 + 12, w - leftW - L.ColGap) -- (the three buttons in a row at least)
+	local byWidth = math.floor(rightW * L.CardH / L.CardW)
+	local cardH = math.clamp(math.min(math.floor(room - L.Gap - L.ButtonH), byWidth), L.MinCardH, L.MaxCardH)
 	local cardW = math.floor(cardH * L.CardW / L.CardH + 0.5)
 	return { TabW = math.max(80, math.min(L.TabW, math.floor((w - 2 * L.TabGap) / 3))), Top = top, SlotW = L.SlotW,
-		SlotH = math.clamp(math.floor((room - L.Gap) / 2), L.MinSlotH, L.SlotH), RightW = math.max(L.RightW, cardW),
+		SlotH = math.clamp(math.floor((room - L.Gap) / 2), L.MinSlotH, L.MaxSlotH), LeftW = leftW, RightW = rightW,
 		CardW = cardW, CardH = cardH, RowY = cardH + L.Gap }
 end
 
@@ -615,7 +628,7 @@ local function relayout()
 	VIEW.Layout = lay
 	for _, b in VIEW.Tabs or {} do b.Size = UDim2.new(0, lay.TabW, 1, 0) end
 	VIEW.Grid.Position = UDim2.fromOffset(0, lay.Top)
-	VIEW.Grid.Size = UDim2.new(0, lay.SlotW * L.Columns + L.Gap * (L.Columns - 1), 1, -lay.Top)
+	VIEW.Grid.Size = UDim2.new(0, lay.LeftW, 1, -lay.Top)
 	VIEW.GridLayout.CellSize = UDim2.fromOffset(lay.SlotW, lay.SlotH)
 	VIEW.Right.Position = UDim2.new(1, -lay.RightW, 0, lay.Top)
 	VIEW.Right.Size = UDim2.new(0, lay.RightW, 1, -lay.Top)
@@ -642,7 +655,7 @@ end
 local function setSlot(s, v)
 	s.View = v
 	CARD.Set(s.Mini, v)
-	s.Name.Text = v.Short
+	s.Name.Text = v.Name
 end
 
 local function newSlot(parent, kind, order)
@@ -673,7 +686,8 @@ local function newSlot(parent, kind, order)
 	end
 	mini.ViewFrame.Position, mini.ViewFrame.Size = UDim2.fromScale(0.5, 0.05), UDim2.fromScale(0.9, 0.9)
 	local name = text({ Name = "SlotName", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -6),
-		Size = UDim2.new(1, -10, 0, 28), TextScaled = true, MaxTextSize = 15, ZIndex = btn.ZIndex + 2, Parent = btn }, true)
+		Size = UDim2.new(1, -10, 0, 28), TextScaled = false, TextSize = 15, TextTruncate = Enum.TextTruncate.AtEnd,
+		ZIndex = btn.ZIndex + 2, Parent = btn }, true)
 	local s = { Button = btn, Rim = rim, Mini = mini, Name = name, Known = v.Known }
 	setSlot(s, v)
 	return s
@@ -915,7 +929,20 @@ local function cleanup()
 end
 
 local function windowOpen()
-	return VIEW.Root ~= nil and VIEW.Root.Parent ~= nil
+	local root = VIEW.Root
+	if not (root and root.Parent) then return false end
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.CurrentId) == "function" then
+		local ok, id = pcall(panels.CurrentId)
+		if ok and id ~= L.Window then return false end
+	end
+	-- 최종 검수 10/13 (main photos: a hidden window still took the moments as toasts): every frame above it shown
+	local p = root
+	while p and p:IsA("GuiObject") do
+		if not p.Visible then return false end
+		p = p.Parent
+	end
+	return true
 end
 
 ---------------------------------------------------------------------------------------------------- moments
