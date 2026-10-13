@@ -15267,7 +15267,7 @@
    "file": "art/models/tripo/web/HaloReasonHQ_GuardPost_SM_tex4k_pbr_src.fbx (disk only)",
    "final": "art/models/tripo/touchup/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_TU.glb (disk only; front -Y, bottom-centre pivot)",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3",
-   "status": "SPARE ONLY - 최종 검수 chose account 2 7c300016 (10/13); do not place"
+   "status": "SPARE (account 1, 3c1ff311). Main = account 2 판 (Blender 손보기 2). Files renamed: web/HaloReasonHQ_GuardPost_SM_tex4k_pbr_src_acc1_spare.fbx, touchup/HaloReasonHQ_GuardPost/HaloReasonHQ_GuardPost_TU_acc1_spare.glb (disk only)"
   }
  ],
  "HaloReasonHQ_PotionCrate_web_sm_tex4k_pbr": [
@@ -15281,7 +15281,7 @@
    "file": "art/models/tripo/web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src.fbx (disk only)",
    "final": "art/models/tripo/touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU.glb (disk only; front -Y, bottom-centre pivot)",
    "next": "디자인 검수 -> 최종 검수 -> 이미지 생성 3",
-   "status": "SPARE ONLY - 최종 검수 chose account 2 fab0907c (10/13); do not place"
+   "status": "PENDING: 디자인 검수 10/13 picked account 1 (134dc742) after side-by-side PBR; 최종 검수 earlier said account 2 fab0907c final. Account 1 files: web/HaloReasonHQ_PotionCrate_SM_tex4k_pbr_src_acc1.fbx, touchup/HaloReasonHQ_PotionCrate/HaloReasonHQ_PotionCrate_TU_acc1.glb (disk only); web main-name FBX = account 2 (origin)"
   }
  ],
  "HaloChunk_GateLeafR_mirror": [
