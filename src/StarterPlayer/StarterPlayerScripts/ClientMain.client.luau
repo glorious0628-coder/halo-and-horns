@@ -1,4 +1,14 @@
 -- ClientMain.client.luau : the ONLY client entry point.
+-- A23-156 (user 10/13, 게임성 개발 2's Config.TestServer): the private test's switch (Z skill on, the goose every 10 min,
+-- pass sales on) changes Config here FIRST, before any module reads it - the server calls it in Main.server.luau the same
+-- way, so both sides see the same values (no call = the client would keep Z off)
+do
+	local Config = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("Config"))
+	if type(Config.ApplyTestServer) == "function" then
+		local ok, err = pcall(Config.ApplyTestServer)
+		if not ok then warn("[ClientMain] ApplyTestServer failed: " .. tostring(err)) end
+	end
+end
 -- A23-48 English only (검수 2026-10-07): Roblox's automatic translation would show our English text in the player's
 -- Roblox language (a Korean account sees Korean). Every GUI object under PlayerGui and in the world gets
 -- AutoLocalize = false as it appears (server-made signs and name tags too: translation happens on this client).

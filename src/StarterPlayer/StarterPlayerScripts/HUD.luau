@@ -3659,6 +3659,16 @@ function L.ItemsHint()
 	return ok and hint == true
 end
 
+-- A23-127 (게임성 개발 2, M1_1's scroll step): a quest row whose story step says Guide = "Bag" -> the Bag tile glows
+-- until the step is done; its row tap opens the bag on L.BagGuideScroll (the scroll Otto gives at that step)
+L.BagGuideScroll = "Enh70"
+function L.BagGuide()
+	for _, e in type(questState.Data) == "table" and questState.Data or {} do
+		if type(e) == "table" and type(e.Story) == "table" and e.Story.Guide == "Bag" then return true end
+	end
+	return false
+end
+
 -- a pulsing gold rim (makeGlow stroke) on / off; key = which one (L.Glows keeps its state and tween)
 L.Glows = {}
 function L.SetGlow(key, stroke, on)
@@ -4005,7 +4015,7 @@ local function refreshMenuGlow()
 	L.SetGlow("travel", ui.travelGlow, travel)
 	L.SetGlow("attend", ui.attendGlow, attend)
 	L.SetGlow("settings", ui.settingsGlow, settings)
-	L.SetGlow("bag", ui.bagGlow, L.ItemsHint())
+	L.SetGlow("bag", ui.bagGlow, L.ItemsHint() or L.BagGuide())
 	L.RefreshBetterDots()
 end
 
@@ -5393,9 +5403,15 @@ function L.StoryTap(st, zone, panels)
 		return
 	end
 	-- A23-110 (dev3 KO1): "Buy a potion" -> the way to the potion seller; the quick slot steps -> the bag (its Quick slots)
-	if g == "PotionShop" or g == "QuickSlot" then
+	-- A23-127 (게임성 개발 2, M1_1 "Use the Enhance Scroll on your weapon"): Guide "Bag" -> the bag straight on the scroll's
+	-- step for the weapon in my hand (BagUI drops back to the list when I hold no such scroll)
+	if g == "PotionShop" or g == "QuickSlot" or g == "Bag" then
 		local vitals = C and C.VitalsUI
-		if g == "QuickSlot" then
+		if g == "Bag" then
+			if panels and panels.Open then
+				panels.Open("Bag", { Use = L.BagGuideScroll, Tier = math.floor(num("WeaponTier", 1)) })
+			end
+		elseif g == "QuickSlot" then
 			-- H-1: the bag on its Use tab (the potion picked, its quick slot buttons right there); the old list until then
 			local bag = panels and type(panels.Has) == "function" and panels.Has("Bag")
 			if panels and panels.Open then panels.Open(bag and "Bag" or "Items", bag and { Tab = "Use" } or nil) end

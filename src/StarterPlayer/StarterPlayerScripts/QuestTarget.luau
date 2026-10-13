@@ -427,7 +427,7 @@ end
 -- HeroStatue, GoblinCamp1-3, LavaCrack, HaloBridge, ...; never a zone id; not one of the special guides) -> its spot
 local function landmarkSpot(guide)
 	if guide == "SlimePond" or guide == "Fountain" or guide == "Goose" or guide == "Blacksmith" or guide == "OwnTown"
-		or guide == "PotionShop" or guide == "QuickSlot" then
+		or guide == "PotionShop" or guide == "QuickSlot" or guide == "Bag" then
 		return nil
 	end
 	return QuestTarget.StorySpot(guide)
@@ -482,8 +482,9 @@ function QuestTarget.Story(guide, fromZone, pos, faction)
 	if type(fromZone) ~= "string" then fromZone = attr("ZoneId", "") end
 	if guide == "Blacksmith" then return smithFrom(fromZone, pos) end
 	-- A23-110 (dev3 KO1): "Buy a potion" -> the potion seller in the Crossroads (a trip there from elsewhere); the quick
-	-- slot steps (Guide QuickSlot) have no place in the world (the row opens the bag)
-	if guide == "QuickSlot" then return nil end
+	-- slot steps (Guide QuickSlot) have no place in the world (the row opens the bag); A23-127 (게임성 개발 2, M1_1's scroll
+	-- step): Guide "Bag" neither (the row opens the bag on the scroll, the HUD's Bag tile glows)
+	if guide == "QuickSlot" or guide == "Bag" then return nil end
 	if guide == "PotionShop" then
 		if fromZone ~= K.Town then return QuestTarget.Travel(K.Town, fromZone, pos) end
 		local tune = type(Config.Vitals) == "table" and Config.Vitals or {}
@@ -629,8 +630,10 @@ local function placeFor(entry, myZone, faction, pos)
 		if entry.NextGoal ~= true and attr("BlacksmithVisited", false) == true then return nil end
 		return pack(smithFrom(myZone, pos), "blacksmith", TXT.Blacksmith, K.Town, not smithWalk(myZone))
 	end
-	-- level goals: the zone I level up in (QuestZoneForLevel = the meadow below Lv10, like L.PinnedTap)
+	-- level goals: the zone I level up in (QuestZoneForLevel = the meadow below Lv10, like L.PinnedTap); A23-127: the
+	-- "IronDrop" goal = the King Slime's meadow whatever my level (게임성 개발 2: Return.GoalZones.IronDrop the same)
 	local zone = type(Config.QuestZoneForLevel) == "function" and Config.QuestZoneForLevel(level) or K.GuideZone
+	if entry.GoalKind == "IronDrop" then zone = K.GuideZone end
 	if myZone == zone then return nil end
 	return pack(QuestTarget.Travel(zone, myZone, pos), "zone:" .. tostring(zone), zoneName(zone), zone, true)
 end

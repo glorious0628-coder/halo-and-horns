@@ -417,9 +417,19 @@ do
 		check(g, "no weapon sold: " .. tostring(row.GoalKind) .. " row is no gold goal", QT.IronGold({ NextGoal = true,
 			GoalKind = row.GoalKind, Text = row.Text }, iron.MinLevel) == false)
 	end
+	-- the drop goal leads to the King Slime's meadow whatever my level (Lv12 hunts in the woods)
+	ATTR.Level = 12
+	e = QT.ForEntry({ Pinned = true, TutorialStep = 99, NextGoal = true, GoalKind = "IronDrop",
+		Text = Config.Tutorial.Text.NextIronDrop, Progress = 0, Target = 1, CanClaim = true }, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "the drop goal at Lv12 -> the meadow pad (the King Slime), not the woods", type(e) == "table"
+		and isNamed(e.Part, "Pad_SlimeMeadow") and e.Zone == "SlimeMeadow", e and encode({ Tag = e.Tag, Zone = e.Zone }) or "nil")
+	ATTR.Level = iron.MinLevel
 	Config.WeaponShop.Buy = nil
 	check(g, "selling again: the IronGold row is the gold goal", QT.IronGold({ NextGoal = true, GoalKind = "IronGold",
 		Text = "x" }, iron.MinLevel) == true)
+	-- M1_1's scroll step (게임성 개발 2): Guide "Bag" has no place in the world (the row opens the bag)
+	check(g, "Guide Bag -> no world target", QT.Story("Bag", "Crossroads", vec(0, 3, 0), "Halo") == nil
+		and QT.ForEntry({ Story = { Id = "M1_1", St = 2, Guide = "Bag" } }, "SlimeMeadow", "Halo", vec(330, 3, 0)) == nil)
 	ATTR.BlacksmithVisited, ATTR.Level = nil, nil
 	-- daily rows have no place; a story pond step labels in English
 	check(g, "daily row -> nil", QT.ForEntry({ Kind = "Daily", Progress = 0, Target = 3, CanClaim = true }, "Crossroads", "Halo",

@@ -6,7 +6,10 @@ tier 2, the first King Slime tier 3). The screen's part, checked here:
   - the drop goal's words (Tutorial.Text.NextIronDrop, ShortNames.IronDrop)
   - static: Panels' Forge window hides [Buy] for a weapon I do not own while the Forge sells none (WSHOP.Sells), shows
     "Get it: <source>", keeps [Equip] / [Sell] for owned ones, guards send(); HUD keeps the server's GoalKind and asks
-    QuestTarget.IronGold (its behaviour is tools/test_quest_target.py).
+    QuestTarget.IronGold (its behaviour is tools/test_quest_target.py); M1_1's scroll step (Guide "Bag", 게임성 개발 2)
+    opens the bag on the scroll and makes the Bag tile glow.
+  - static (A23-156, same branch): ClientMain applies 게임성 개발 2's test-server switch (Config.ApplyTestServer) before any
+    module is required.
 Mutations: in-memory copies of Config with one rule broken each; each must make a fixture check fail.
 Report: docs/art/verification_2026-10-13/offline_first_weapon_client_2026-10-13.json
 """
@@ -21,6 +24,7 @@ CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 PANELS = ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau"
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 QT = ROOT / "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau"
+MAIN = ROOT / "src/StarterPlayer/StarterPlayerScripts/ClientMain.client.luau"
 FIXTURE = ROOT / "tools/fixtures/first_weapon_client_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-13/offline_first_weapon_client_2026-10-13.json"
@@ -74,6 +78,7 @@ def main():
     panels = PANELS.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     hud = HUD.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     qt = QT.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    main = MAIN.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     static = [
         ("Panels: WSHOP.Sells() = Config.WeaponShop.Buy ~= false",
          "function WSHOP.Sells()\n\tlocal shop = Config.WeaponShop\n\treturn not (type(shop) == \"table\" and shop.Buy == false)\nend" in panels),
@@ -95,6 +100,14 @@ def main():
         ("HUD keeps the server's GoalKind and asks QuestTarget.IronGold for the anvil trip",
          'GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil' in hud
          and "qt.IronGold(e, level) == true" in hud and "if not e.NextGoal or ironGold then" in hud),
+        ("HUD: Guide 'Bag' opens the bag on the scroll for the weapon in hand; the Bag tile glows during that step",
+         'panels.Open("Bag", { Use = L.BagGuideScroll, Tier = math.floor(num("WeaponTier", 1)) })' in hud
+         and 'L.BagGuideScroll = "Enh70"' in hud and 'e.Story.Guide == "Bag" then return true end' in hud
+         and 'L.SetGlow("bag", ui.bagGlow, L.ItemsHint() or L.BagGuide())' in hud
+         and 'if g == "PotionShop" or g == "QuickSlot" or g == "Bag" then' in hud),
+        ("ClientMain: Config.ApplyTestServer() (A23-156) runs before the first module require, guarded",
+         0 <= main.find("pcall(Config.ApplyTestServer)") < main.find("C[name] = require(script.Parent:WaitForChild(name))")
+         and 'if type(Config.ApplyTestServer) == "function" then' in main),
         ("QuestTarget.IronGold: never while the Forge sells none; GoalKind before the text search",
          "function QuestTarget.IronGold(entry, level)" in qt and "Config.WeaponShop.Buy == false then return false end" in qt
          and 'if type(entry.GoalKind) == "string" then return entry.GoalKind == "IronGold" end' in qt),
@@ -107,7 +120,7 @@ def main():
               "mutations": {"total": len(rows), "applied": sum(r["applied"] for r in rows),
                             "caught": sum(r["caught"] for r in rows), "results": rows},
               "sourceSHA256": {p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
-                               for p in (CONFIG, PANELS, HUD, QT)},
+                               for p in (CONFIG, PANELS, HUD, QT, MAIN)},
               "fixtureSHA256": hashlib.sha256(FIXTURE.read_bytes()).hexdigest(), "studioCalls": 0,
               "limitations": "The Forge window itself is checked statically here; how it looks with Buy = false is a Studio "
                              "photo (메인 반영 1, after the merge together with 게임성 개발 2's switch and first King T3)."}
