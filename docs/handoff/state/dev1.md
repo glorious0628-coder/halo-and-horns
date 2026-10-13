@@ -1,5 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 낮 (최신, Opus 5.5 high 다시 켬)
+- **dev1-halo-stage6 c65738e8** push(리베이스 없음): d88711cb = main 89255e8b 병합(충돌 0) + c65738e8 큰 지도 주석만 고침(Id 들어감). 6단계 5항목(오프닝 HALO_SHOT·큰 지도 V3 b·굽은 길 띠·FountainFx 새 분수·ZoneLook 낮 OutAmb) main 위에서 그대로. 카메라 주석 Follow는 이미 맞음.
+- 합친 판(c65738e8 + dev2-halo-stage6 bd903c79, 임시 3c13c2b6 push 안 함) 시험: halo_maps 18·9/9, map_v2 102·37/37(그림 검사 통과), zone_look, fountain_fx 18·12/12, intro_halo_shot 7·8/8, return 244, spawn_look 49, town_npcs 147, water_rescue 149, town_quests 1036, first_look, phone_first10, comeback_client, audio 362 = 모두 0 failing·MISSED 0. quest_target만 82/2 = main도 같음 →
+- **fix/quest-target-buy-test 82f2b585**(origin/main 8c040fcb 위, 시험만): main Config WeaponShop.Buy=false라 '사러 가기' 확인 2개가 떨어지던 것 → 시험 안에서 Buy=true 켜고 되돌림. 84/0·35/35. 최종 검수 병합 대기.
+- worktree: **../wt_dev1halo6b** = 지금 6단계(성긴, 지금 분리 HEAD 3c13c2b6 임시 합친 판; 가지 이름 dev1-halo-stage6-local = c65738e8), ../wt_dev1main = fix/quest-target-buy-test, ../wt_halo6combo = 펼치다 멈춘 빈 것(지워도 됨, 최종 검수에 먼저). 옛 ../wt_dev1halo6은 4fb64a0b + 시험 출력 더러움(지우기 막힘) — 안 씀.
+- 성긴 worktree 만들 때 Git Bash는 `MSYS_NO_PATHCONV=1 git sparse-checkout set --no-cone '/src/' …` (안 하면 경로가 C:/Program Files/Git/src/로 바뀌어 아무것도 안 펼침), --no-checkout 뒤엔 `git read-tree -mu HEAD`.
+- 다음: 메인 사진 고장급 오면 그것 먼저(origin/main 위 fix/…). 6단계 병합은 10/21 주 최종 검수.
+
 ## 10/15 아침 (최신)
 - comeback-client main dd121979 병합됨. 칩 글 '2x XP' 그대로·Returned 마을 사람 BackLines = 최종 검수 OK.
 - 내일: 메인 반영 1 사진(comeback/, phone_first10) 판정 → 고칠 것은 최종 검수가 보냄. 그다음 02_dev1.md(dev1-halo-stage6 마무리).
