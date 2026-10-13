@@ -21,7 +21,7 @@
 - **A23-158 정정(사용자가 Blender 손보기 2에 직접): 텍스처 = 가운데 '멀티뷰' 탭에 2D 4면 · 4K · 조명 제거 → PBR.** 새 텍스처부터 → PBR 판정 때 뒤·옆이 예전(앞 한 장)보다 나은지 같이 봄. PotionCrate(fab0907c)는 옛 방식으로 이미 만듦·통과 보냄(뒤 V천 → ⑤ 뒤를 벽 쪽).
 - **JuiceParasol 다시(A23-158):** 이미지 생성 2가 줄무늬 없는 하늘색 차양 + 흰 물결 테 4면 → 내 판정(빛살·X자 퍼짐 없는지 위에서도) → Blender 손보기 2.
 
-- 대기(10/13 저녁): JuiceParasol v2 = 96030f1d 고름 → 멀티뷰 텍스처·PBR 중 · **NEW_ArmoryBarrels 다시**(PIL판 918e35d 통과 → 계정 2 스마트 메시 125 → Chrome 흰 모델(캔버스 끌기) → 멀티뷰 텍스처) · 멀티뷰 다시 목록(최종 검수가 ~95개 가르는 중).
+- 대기(10/13 저녁): JuiceParasol v2 = 96030f1d 고름 → 멀티뷰 텍스처·PBR 중 · **NEW_ArmoryBarrels 다시**: 흰 모델 e1d1ab53 고름(wm_six, 위·아래 확인함) → 멀티뷰 텍스처·PBR 중 · 멀티뷰 다시 목록(최종 검수가 ~95개 가르는 중).
 
 ## 계정 2 몫(최종 검수 10/13)
 Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 다 4면 통과, 2×125 OK) · BellFrame(옆면 다시 그린 뒤) · 이미지 생성 2 소품 11종. **앞으로 새 스마트 메시는 계정 2.** Blender 손보기 2는 Chrome 창이 보여야 Tripo가 돎(창 차례 = 최종 검수).
@@ -32,7 +32,7 @@ Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 
 - 통과 → Blender 손보기 2: NEW_Hedge, NEW_WallLamp(_left/_right 이름 맞바꿈 6bfc4ff 뒤).
 
 ## 교훈
-- **Chrome Tripo 3D 돌리기: JS 가짜 pointer/mouse 이벤트로는 안 돎(10/13 시도). 최종 검수 OK: Chrome 확장 computer `left_click_drag`로 3D 캔버스 빈 곳만 끌기**(버튼·점수 버튼·좌표 클릭 금지). 신청: "디자인 검수 2 / Chrome 흰 모델 보기 / N분 / 캔버스 끌기 씀". 창이 좁으면(638px) 캔버스를 JS로 position:fixed 화면 꽉 채우면 보기 쉬움.
+- **Chrome Tripo 3D 돌리기: JS 가짜 pointer/mouse 이벤트로는 안 돎(10/13 시도). 최종 검수 OK: Chrome 확장 computer `left_click_drag`로 3D 캔버스 빈 곳만 끌기**(버튼·점수 버튼·좌표 클릭 금지). 신청: "디자인 검수 2 / Chrome 흰 모델 보기 / N분 / 캔버스 끌기 씀". **10/13 두 번째 시도: 내 Tripo 탭이 멈춤(캡처 시간 초과 3번)** — 캔버스를 창 크기로 늘린 것 또는 Blender 손보기 2 탭과 겹친 것이 원인 추측. 다음엔 Blender 손보기 2의 '쉼' 답을 받은 뒤 열고, 캔버스 크기는 건드리지 않음. 2~3번 실패하면 탭 닫고 wm_six로.
 - **PBR 렌더 전에 파일 md5·`git status`를 확인**(두 Blender 세션이 같은 이름을 디스크에서 덮어쓸 수 있음 — PotionCrate 14:52~14:57 계정 1로 덮였던 사이에 렌더함). 시트 메시지에 md5 앞 8자리 적기.
 - **사용자(10/13 저녁, "왜 검수하는 애는 크롬 안 봐?"): 계정 2 흰 모델은 Chrome의 Tripo에서 직접 돌려 보고 고름**(점토·wm_six = 보조). 순서: Blender 손보기 2가 '고르기 대기'일 때만 → 최종 검수에 "디자인 검수 2 / Chrome 흰 모델 보기 / N분" → '전달함, 시작' → Blender 손보기 2에 '지금 내가 봄' → 내 탭 하나(tabs_create_mcp, studio.tripo3d.ai/ko/workspace/generate/<id>)에서 위·아래·앞·뒤·양옆·3/4(Tripo 화면 버튼/JS 회전, 좌표 클릭·점수 버튼 금지) → 내 탭 닫기 → Blender 손보기 2에 '끝', 최종 검수에 '끝'. Chrome은 앞 탭만 그려져 둘이 겹치면 Blender 손보기 2가 멈춤. PBR도 가능하면 Tripo에서 한 번 돌려 봄.
 - **사용자 지시(10/13): 흰 모델은 4개 각각 위·아래·앞·뒤·양옆 + 3/4를 다 보고 고름, 이유에 '위·아래 확인함'.** 도구 `tools/design_review/wm_six.py`(README 8).
