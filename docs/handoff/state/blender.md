@@ -1,7 +1,15 @@
 # Blender 손보기 — 상태 (2026-10-12)
 
+## 10/13 오후 — A23-154 방식 (다섯 단계만)
+- 스마트 메시 → 디자인 검수가 4개 중 고름 → 텍스처(앞면 한 장·조명 없이·8K) → **바로 PBR** → 내려받아 크기·피벗·방향만 → **디자인 검수에 이름+경로**(그다음 최종 검수 → 이미지 생성 3). 매직 브러시·붓·Blender 색 고침·사이 관문 없음.
+- 데스크톱에 뜨는 일(창·다운로드 창·마우스·키보드) 하지 않음 — Blender --background·curl·앱 브라우저 JS만. 사용자 부탁은 최종 검수에게만.
+- 앱 브라우저 창이 숨겨지면 Tripo 페이지가 안 뜸(fetch도 멈춤) → 최종 검수에 창 보이게 부탁하고 기다림.
+- PBR 남음: JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick(텍스처 끝) + ConeTree(PBR 결과 안 옴, 다시) + 동상 B·분수 C·Daisy·Rose. PBR 끝·내려받기 남음: GateLeaf·DomeOnion·DomeBall·BenchB·DomeOctagon·FlowerCart.
+- 디자인 검수 고른 흰 모델 20종(텍스처 30 → 바로 PBR): Greenhouse d148d3bd, ShopSign e96efdb6, Lantern_A 3b8c167c, Lantern_B 4b6f9db9, Lantern_C 096e84f2, Lantern_D 1eed23ce, Lantern_E c102246e, IvyWall 18598e34, IvyBalcony 0352e909, FlowerBushPot 5a5af84d(뒤 구멍 → ⑤에서 초록 공 파트), DomePorchHalf e549329c, DomePavilion bc5097f2, DomeTowerSmall 6d925d8a, BreadDisplay e5467c5f, RoundTree_E 077f2fae, RoundTree_F cc3f527f, RoundTree_G a9395b47, Topiary_C 3e2847ad, Topiary_D 7c673fb4, Planter_E 1021df70. 텍스처 앞면 = bundle8/9 `<이름>_front`.
+- 흰 모델 큐 남음: Planter_D·FlowerCart_Bouquet(bundle10), bundle11 12종, bundle12 7종, WeatherVane·ChimneyCap(새, 아직 묶음 안 함).
+
 ## 10/13 낮 — 로그인 뒤 진행 (잔액 6,505)
-- 매직 브러시 = 막힘(붓 끌기 칠 안 됨, 양동이는 전체 채움) → 사용자 일. PBR 7 누름(ConeTree 결과 늦게 옴, 확인 필요). 텍스처 5 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick).
+- 매직 브러시 = 버림(A23-154). PBR 7 누름(ConeTree 결과 늦게 옴, 확인 필요). 텍스처 5 누름(JuiceParasol·DomeOnionSlim·BreadStand·FruitStall·DomeBrick).
 - 흰 모델 생성 끝 26종: 묶음8 10종 + 묶음9 10종(id 목록 디자인 검수에 보냄) + 묶음10 Topiary_E 48713e59·PotFlowers_E de342b72·PotFlowers_F a35f95c9·PotFlowers_A 20715701·PotFlowers_C 79825b6e·PotFlowers_D de8064f2·Planter_A e72c4f22 (URL id; 형제 3개는 에셋 목록에서 이웃 4개 묶음, project_name으로 확인).
 - 남음: 묶음10 Planter_D·FlowerCart_Bouquet, 묶음11 12종, 묶음12 7종(올리기 전). 창이 숨겨지면 페이지가 멈춤(타이머) → 창 보이게 하고 이어서. 함수: hhPrepFn(넣기+빈 칸 다시) → hhGoFn(누르기) 두 번에 나눠 호출(45초 제한), 매 호출 앞에 eval(localStorage.hhSleepDef).
 
@@ -19,7 +27,7 @@
 - **텍스처 누르기(30) — OK 받음, 아직 안 누름:** DomeOnionSlim 40dad418-dbd3-4840-a282-ff632a7a9acf, BreadStand 00dac363-0f24-4b60-acff-44c9dce79e52, FruitStall 568b5b8e-f20d-4c23-b79e-332bda8067be, DomeBrick 46f0bb09-49cb-4426-a380-60ae02ae07ea (앞면 슬라이스 /hh-bundle6, hhIdx6; 키 `<이름>_front`). **텍스처 전에 내가 흰 모델 직접 확인**(아직 못 봄).
 - **JuiceParasol 흰 모델 4개(100 씀):** 6ec4d75d / 52b68046 / 46c0419e / 89bac495 → 디자인 검수가 다음 세션에 고름(내 의견 6ec4d75d). 텍스처 누르지 말 것.
 - **스마트 메시(100) 대기 — 4면 통과:** HaloChunk_Greenhouse(chunks/), HaloChunk_ShopSign(chunks/), HaloVar4_Lantern_A, HaloVar4_Lantern_C, HaloVar4_Lantern_D, HaloVar3_Lantern_E (art/out/s2/noshadow/…_{front,left,right,back}_ns.png). 관문: 금 틀·가는 팔·사슬 끊김, 유리 막힘/뚫림, 꼭대기 공, ShopSign 판 가운데 평평. Lantern_B는 받침 손질 뒤. IvyWall은 안 함(다시 그림).
-- **매직 브러시 보류 5곳(창 보여야 함, 그 뒤 PBR):** 동상 B 1a0812be — ①뒤 파란 앞치마 → 흰 대리석 ②발 사이 검은 점; 분수 C cd70436c — ③2단 물의 크림/주황 얼룩 → 물 파랑(어두운 고리 선택); ④Daisy c9df2ff9 주황 꽃 → 빨강/흰; ⑤Rose 9e0487cc 위 갈색 얼룩 → 분홍.
+- 매직 브러시 5곳(동상 B·분수 C·Daisy·Rose) = **버림**(SPEC A23-154: 붓 칠하기 없음). 동상 B 1a0812be·분수 C cd70436c·Daisy c9df2ff9·Rose 9e0487cc는 텍스처 그대로 바로 PBR.
 - MailBoy(사람) = 맨 마지막.
 
 ## 10/13 새벽 — 진행판 (보고처 = 디자인 검수 local_2137d284…, 점수 승인도)
