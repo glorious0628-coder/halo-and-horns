@@ -36,6 +36,7 @@ MUTATIONS = [
     ("applied twice", "CONFIG", "if type(T) ~= \"table\" or T.Enabled ~= true or T.Applied == true then return false end",
      "if type(T) ~= \"table\" or T.Enabled ~= true then return false end"),
     ("the sales value ignored", "CONFIG", "defs.PassSales.Default = T.PassSales == true", "defs.PassSales.Default = true"),
+    ("on the Live game too", "CONFIG", '\tif type(Config.EnvName) == "function" and Config.EnvName() == "Live" then return false end\n', ""),
     ("applied by Config itself", "CONFIG", "\treturn true\nend\n\nreturn Config\n", "\treturn true\nend\nConfig.ApplyTestServer()\n\nreturn Config\n"),
     ("Main never applies", "MAIN", APPLY_LINE, "-- A23-156"),
     ("Main applies after Net.CreateAll", "MAIN",
@@ -94,7 +95,8 @@ def main():
     for line in sfails:
         print(line)
     client = CLIENT.read_text(encoding="utf-8-sig") if CLIENT.exists() else ""
-    finding = ("ClientMain calls Config.ApplyTestServer()" if "Config.ApplyTestServer()" in client
+    calls = re.search(r"\bConfig\.ApplyTestServer\b", client) is not None  # Config.ApplyTestServer() or pcall(Config.ApplyTestServer)
+    finding = ("ClientMain calls Config.ApplyTestServer" if calls
                else "ClientMain does not call Config.ApplyTestServer() yet (게임성 개발 1's line): the client reads Z off")
     print("FINDING " + finding)
     rows = []
