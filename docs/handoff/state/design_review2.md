@@ -14,7 +14,7 @@
 ## 계정 2 진행(10/13 오후 늦게)
 - PBR 최종 검수로 보낸 것(11): Bouquet·Bal_E·F·A·B·C·D·WallLamp·Hedge·Planter_D·FlowerBush(7cafd99b)·BreadBasket(a154d1da)·CafeTable(6f9f2ecd). 시트 `art/review/design2/pbr_gate_1013/`.
 - 흰 모델 고름 → 텍스처·PBR 중: BellFrame 3adb21ff · Flagpole_1 99be186b · Flagpole_2 80eb3e39 · Flagpole_3 67b42ee8 · Clothesline c69458ae · RackShieldSword f31333d8 · Scarecrow 24fde989 · VegGarden a4222fbc(⑤ 흙 Studio 파트) · Woodpile 8274ab45.
-- 스마트 메시 대기/진행: GuardPost(7c300016…), PotionCrate(a49a750판 통과). PhotoDisc = Studio 파트(이미지 생성 3, 최종 검수 결정).
+- GuardPost = 계정 2 계속(흰 모델 7c300016 고름 → 텍스처·PBR). PotionCrate = 계정 1(Blender 손보기 1·디자인 검수 1, 최종 검수 결정). 최종 검수가 앞으로 records.json 확인 후 물건 배분. PhotoDisc = Studio 파트(이미지 생성 3, 최종 검수 결정).
 
 ## 계정 2 몫(최종 검수 10/13)
 Planter_D 4K PBR · FlowerBush 다시(7cafd99b) · BreadBasket · CafeTable(둘 다 4면 통과, 2×125 OK) · BellFrame(옆면 다시 그린 뒤) · 이미지 생성 2 소품 11종. **앞으로 새 스마트 메시는 계정 2.** Blender 손보기 2는 Chrome 창이 보여야 Tripo가 돎(창 차례 = 최종 검수).
