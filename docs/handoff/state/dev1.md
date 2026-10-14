@@ -1,5 +1,14 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 12 — fix/settings-apply 7ab6e07e (다 됨·push, 최신)
+- 병합됨: skill-press-reject(0783dbbd), auto-translate-on(bcde9e91), 마을 기금(e35d32b9).
+- fix/settings-apply = fe85439a(연결) + be336a32(설정 창 두 줄) + 1d04f52c(NameTagPrefs 강한 표 + ApplyAll 때 각 플레이어 Head Nametag 다시 찾기) + main 병합 9345953f + 8c60718e 자동 번역 후속 + main 병합 7ab6e07e(ClientMain ORDER: ChatTags, NameTagPrefs … VillageFundUI 둘 다).
+- 8c60718e: UIKit artText Number = 글꼴만(번역 끄기 규칙 삭제) → 숫자만 라벨에 AutoLocalize=false 명시(HUD 버튼 개수·레벨·두 점수·타이머, 출석 개수·원판, 물약 개수, Tab 숫자 칸); Power·보상·바 글 등 글자 섞인 줄은 번역. 이름표 Line1 = 이름만(끔) + 자식 TextLabel "Title"(번역, 클라 ShopUI CROWN.Fit이 왕관 왼쪽에 놓고 VipPad로 칭호+왕관+이름 한 덩어리 가운데; VipPad는 이제 늘 있음). 캐릭터 창 닉네임 끔. 시장 입력칸 끄기 되돌림(TextBox 입력 글은 Roblox가 번역 안 한다고 알고 있음 — 확인 못 함; placeholder는 번역).
+- 시험: test_settings_apply 26·16/16, test_auto_translate 21·13/13, village_fund_ui 74·29/29, village_fund, ranking, character_ui 175·94/94, market_window 165·60/60, attendance_ui 30/30, shop_ui 11/11, hud_layout, english, l10n, beta_basics, phone_first10, supporter_board, place_english 통과; rank_marks 117/117(glb 거짓 10).
+- ⑤ 확인만: PvPService 924 수배 판·EventHUD 1438처럼 이름 낀 format 문장은 통째로 한 문자열이라 Roblox 자동 번역이 이름까지 바꿀 수 있음(자리표시 보존은 Translator:FormatByKey + 표 키를 쓸 때만이라고 알고 있음 — 실제 확인 못 함).
+- **X 켜기 전에 고칠 Hop MINOR 2(최종 검수 반박 검토):** ① SkillBar 844 Hop 땅 레이가 머리 위 차양(지붕)에 맞을 수 있음 → 아래로만 쏘거나 위 시작점 낮추기 ② 861 호가 서버가 확인한 출발점이 아니라 지금 위치에서 시작·벽 통과 가능 → 서버 From(없으면 Fx "Skill" From)에서 시작.
+- 다음: fix/skill-press-gate(A23-180: 거절 글·흔들기 빼기, 화면이 먼저 막기).
+
 ## 10/14 밤 11 — 마을 기금 검토 고침 + 자동 번역 추가분 (다 됨·push, 최신)
 - **dev1-village-fund 23660dc6** = 1e68b071(검토 고침) + origin/main 병합(merge-tree가 Config 충돌로 봐서; 실제 merge는 자동). 고침: FIX 1 S.Prompts 강한 표 + 진영 바뀔 때 월드 FundPrompt 다시 consider; MINOR ① cardCtx(KO → Closed, Radius 밖 → 새 Screen.Far "Walk up to the fountain.") [Give] 흐림, 폴마다 다시 그림; ② Lead 'Halo Citadel'/'Horns Den'; 개발 2 07ca5b92 따라 분수 자리 = Workspace.VillageFund.FundSpot_<진영> 위치 − Lift(없으면 Config Pos), 자리가 움직이면 등불 다시 지음. 시험 village_fund_ui 74·29/29.
 - **개발 2 dev2-village-fund 07ca5b92는 main과 Config 충돌**(Switches PioneerTitle Unread 줄 옆 VillageFund 스위치) → 개발 2에 main 병합 부탁함(풀이: main 줄 그대로 + VillageFund 2줄). 임시판으로 풀어 돌림: village_fund 114/114, village_fund_ui 74·29/29(진짜 Config), english 통과.
