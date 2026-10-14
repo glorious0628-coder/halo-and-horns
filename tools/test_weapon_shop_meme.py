@@ -116,7 +116,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          and "or (selectedTier > cap and not table.find(WSHOP.CatalogTiers(), selectedTier)) then" in p),
         ("WeaponPose: a joke weapon gets the code look and the sword hold (rest + pose)",
          "\t\t\tpcall(WeaponPose.MemeLook, tool, meme)\n" in w and "\t\t\tif meme then kind = T.MemeKind end\n" in w
-         and 'MemeKind = "Sword"' in w and "and T.MemeKind or tool:GetAttribute(\"Kind\")" in w),
+         and 'MemeKind = "Sword"' in w and "and T.MemeKind\n\t\t\tor tool:GetAttribute(\"Kind\")" in w),
         ("Fx Swing plays a joke hit (sound once, particle per hit; empty ids = nothing)",
          "\tif data.Meme ~= nil then pcall(Feel.memeHits, data.Meme, hits) end" in fx
          and 'if n == 1 and type(def.SoundId) == "string" and def.SoundId ~= "" then' in fx
