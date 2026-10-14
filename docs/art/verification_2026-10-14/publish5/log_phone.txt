@@ -1,0 +1,52 @@
+device: samsung_galaxy_s22_ultra
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+TutorialStep 99
+saved phone_01_hud_lv1
+S1: ok
+GooseNextAt +7200 active=false
+far: Text='Goose 1:59:56'
+saved phone_02_goose_line_far
+GooseNextAt +600 active=false
+near: Text='Goose 9:55'
+saved phone_03_goose_line_near
+gear: ok,ok,5
+anvil 39, 1.5, 45
+pos: 41.21583938598633, 6.132708549499512, 51.176551818847656
+open WeaponShop
+forge texts: Forge | Otto: Clang, clang… done. Cocoa time. | Crossroads → Artisan Guild anvil · interact up close | Show me the way | Show me the way | Pick a basic weapon to buy. Weapons you own can be equipped again for free. | Current weapon: Bare hands | You have 5,000 gold (Vault 5,000 + Pouch 0) | No materials to sell | No materials to sell | ★ Twig · Not owned | First weapon · free to re-equip · can't be sold | Slime in 4 basic hits → 2 hits | Not sold. Quest reward. | From the Blacksmith | From the Blacksmith | The first weapon can't be sold | The first weapon can't be sold | ★ Wooden Sword · Not owned | Price 150 gold · Needs Lv 1 · Now Lv 30 | Slime in 4 basic hits → 1 hit | Sells for 15 gold (1/10 of the price) | Buy · 150 gold | Buy · 150 gold | Sell · 15 gold | Sell · 15 gold | ★★ Iron Sword · Not owned | Price 800 gold · Needs Lv 5 · Now Lv 30 | Slime in 4 basic hits → 1 hit | Sells for 80 gold (1/10 of the price) | Buy · 800 gold | Buy · 800 gold | Sell · 80 gold | Sell · 80 gold
+saved phone_04_forge
+buy 10
+buy 11
+WeaponTier=11 Mask=1536 weapon=Tool parts=Handle,Guard,Blade
+open Bag
+bag at anvil: Bag | Gear | Gear | Use | Use | Scrolls | Scrolls | Materials | Materials | 1 | Weapon | Armor | Ring | Pet | Rubber Chicken | ★ Common | Attack 23 | Power 961 | A joke weapon from the Forge | Equipped | Equipped | 4,400 | 1 / 12 | Newest
+saved phone_05_bag_anvil
+modal hidden
+plaza
+pos: 34.548828125, 23.74609375, -552
+open Bag
+bag away: Bag | Gear | Gear | Use | Use | Scrolls | Scrolls | Materials | Materials | 1 | Weapon | Armor | Ring | Pet | Rubber Chicken | ★ Common | Attack 23 | Power 961 | A joke weapon from the Forge | Equipped | Equipped | 4,400 | 1 / 12 | Newest
+saved phone_06_bag_away
+modal hidden
+fund fired step=200 goals 30000
+fund texts: Village Fund | Share gold with Halo Citadel. Honor +1 each time. | Today 0/3 | Your gold: 5,000 | Share 200 gold | Share 200 gold | Close | Close | Town this week: 0 gold | Lanterns 30,000 · Fireworks 100,000
+saved phone_07_fund
+modal hidden
+eq 10
+WeaponTier=10 Mask=1536 weapon=Tool parts=Handle,Guard,Blade
+saved phone_08_pan_hold
+swing
+saved phone_09_pan_swing
+eq 11
+WeaponTier=11 Mask=1536 weapon=Tool parts=Handle,Guard,Blade
+saved phone_08_chicken_hold
+swing
+saved phone_09_chicken_swing
+console errors: [ServerErrorService] started
+play stopped
+device: default
