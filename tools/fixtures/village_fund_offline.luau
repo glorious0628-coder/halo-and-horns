@@ -81,6 +81,8 @@ local function fundWorld(o)
 		local d = data or {}
 		d.Faction = side
 		d.CarriedGold = gold or 0
+		-- 최종 검수 10/14 ②: a child past the ladder (200 + 500 given) unless the test says otherwise: every gift 1,000
+		if d.FundGiven == nil then d.FundGiven = 700 end
 		local p = self:Arrive(id, { Data = d })
 		self:Place(p, dist or 4, 3)
 		return p, self.Data[p]
@@ -129,6 +131,13 @@ runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local V = C.VillageFund
 	check(V.Enabled == true and V.Step == 1000 and V.PerDay == 3 and V.Points == 1, "on, 1,000 a gift, 3 a day, +1 a gift", show(V))
+	check(type(V.Ladder) == "table" and #V.Ladder == 2 and V.Ladder[1] == 200 and V.Ladder[2] == 500,
+		"the ladder (최종 검수 10/14 ②): the 1st gift 200, the 2nd 500, then 1,000", show(V.Ladder))
+	local steps = {}
+	for _, g in { 0, 199, 200, 699, 700, 1700, 99999 } do table.insert(steps, C.VillageFundStep(g)) end
+	check(table.concat(steps, ",") == "200,200,500,500,1000,1000,1000", "VillageFundStep by gold given before", table.concat(steps, ","))
+	check(C.VillageFundStep(nil) == 200 and C.VillageFundStep(-5) == 200 and C.VillageFundStep(0 / 0) == 200 and C.VillageFundStep("x") == 200,
+		"a missing / bad FundGiven starts at the bottom", "")
 	check(V.Spots.Halo ~= nil and V.Spots.Halo.Model == "Town_Halo_Fountain3" and V.Spots.Halo.Pos.X == 34.55 and V.Spots.Halo.Pos.Y == 20
 		and V.Spots.Halo.Pos.Z == -566 and V.Spots.Halo.Lift == 3 and V.Spots.Halo.Radius == 16 and V.Spots.Halo.Zone == "HaloTown",
 		"the Halo spot: the model Town_Halo_Fountain3 (fallback = today's pivot (34.55, 20, -566)), lift 3, radius 16, HaloTown", show(V.Spots.Halo))
@@ -215,6 +224,36 @@ runGroup("both sides", function()
 		and w.GameState:GetAttribute("FundHalo") == 0, "the Horns sum, apart from Halo's", "")
 end)
 
+------------------------------------------------------------------ the ladder (최종 검수 10/14 ②)
+runGroup("ladder", function()
+	local w = fundWorld()
+	local p, d = w:Kid(11, "Halo", 160, 4, { FundGiven = 0 })
+	local o = nil
+	w.VF.OnPrompt(p, "Halo")
+	o = w:Opens(p)
+	check(o[#o].Step == 200 and o[#o].Can == false and o[#o].Why == "Poor", "a new child with 160 gold: the card asks 200 (Poor)", show(o[#o]))
+	d.CarriedGold = 210
+	w:Give(p)
+	check(gold(d) == 10 and d.FundGiven == 200 and d.Honor == 1 and w.Spent[#w.Spent].N == 200, "the 1st gift: 200, Honor +1", show({ gold(d), d.FundGiven }))
+	local n = w:NoticesFor(p)
+	check(n[#n] == "You shared 200 gold! Honor +1", "the line says 200", show(n))
+	o = w:Opens(p)
+	check(o[#o].Step == 500, "the card now asks 500", show(o[#o]))
+	d.CarriedGold = 600
+	w:Give(p)
+	check(gold(d) == 100 and d.FundGiven == 700 and d.Honor == 2, "the 2nd gift: 500", show({ gold(d), d.FundGiven }))
+	d.CarriedGold = 1000
+	w:Give(p)
+	check(gold(d) == 0 and d.FundGiven == 1700 and d.Honor == 3 and d.FundToday == 3, "the 3rd: 1,000 (and 3 today)", show({ gold(d), d.FundGiven }))
+	local pend = w.VF.Pending()[w:Week()]
+	check(pend and pend.Halo == 1700, "the week's sum counts what was given (200 + 500 + 1,000)", show(pend))
+	-- the ladder is over the save, not the day: tomorrow it stays 1,000
+	w:Advance(86400)
+	d.CarriedGold = 999
+	w:Give(p)
+	check(gold(d) == 999 and d.FundGiven == 1700, "the next day: 1,000 still (999 is not enough)", show({ gold(d), d.FundGiven }))
+end)
+
 ------------------------------------------------------------------ a gift
 runGroup("gift", function()
 	local w = fundWorld()
@@ -225,7 +264,7 @@ runGroup("gift", function()
 	check(#w.Fame == 1 and w.Fame[1].Stat == "Honor" and w.Fame[1].N == 1 and w.Fame[1].Ctx.Fund == true
 		and w.Fame[1].Ctx.PvP == nil and w.Fame[1].Ctx.RankPoints == nil and d.Honor == 1,
 		"Honor +1 through GrantFame ctx Fund (never the weekly boards)", show(fameRows(w)))
-	check(d.FundDay == w.Config.DayIndex(w.Time) and d.FundToday == 1 and d.FundGiven == 1000, "saved: today, 1 gift, 1,000 given",
+	check(d.FundDay == w.Config.DayIndex(w.Time) and d.FundToday == 1 and d.FundGiven == 1700, "saved: today, 1 gift, 700 + 1,000 given",
 		show({ d.FundDay, d.FundToday, d.FundGiven }))
 	local n = w:NoticesFor(p)
 	check(n[#n] == "You shared 1,000 gold! Honor +1" and w:SoundsFor(p)[#w:SoundsFor(p)] == "RankUp", "the line: shared, Honor +1", show(n))
@@ -302,7 +341,7 @@ runGroup("limits", function()
 	check(o[#o].Why == "Full" and o[#o].Can == false, "the card says Full", show(o[#o]))
 	w:ToDay(1)
 	w:Give(p)
-	check(gold(d) == 6000 and d.FundToday == 1 and d.FundDay == w.Config.DayIndex(w.Time) and d.FundGiven == 4000,
+	check(gold(d) == 6000 and d.FundToday == 1 and d.FundDay == w.Config.DayIndex(w.Time) and d.FundGiven == 4700,
 		"the next KST day: counting from 1 again (FundGiven adds up)", show({ d.FundToday, d.FundGiven }))
 	-- one a second
 	w.Gap = 0.4

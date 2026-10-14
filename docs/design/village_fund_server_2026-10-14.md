@@ -6,7 +6,7 @@
 > **10/14 최종 검수 OK + 코드:** 가지 `dev2-village-fund`(origin/main + dev2-launch-dates 합침: 같은 스위치 목록). 결정: 목표 30,000/100,000 그대로(10/20 숫자 보고 조정), 뿔 = `Spots.Horns` 없음(오류·안내 없음), 날짜 = `Config.DayIndex`(출석과 같음), 단계 글 Lanterns·Fireworks = `Text` 표. 숫자는 '1,000'(`Util.FormatInt`). 시험 `tools/test_village_fund.py`.
 
 ## 1. 무엇
-- 빛(Halo) 아이는 빛 마을 분수에, 뿔(Horns) 아이는 뿔 마을 분수에 골드를 **1,000씩** 넣어요.
+- 빛(Halo) 아이는 빛 마을 분수에, 뿔(Horns) 아이는 뿔 마을 분수에 골드를 넣어요. **10/14 ② 사다리:** 저장 전체로 첫 번째 200, 두 번째 500, 그 뒤 **1,000씩**(`Config.VillageFund.Ladder` + `Step`, 금액 = `Config.VillageFundStep(data.FundGiven)`; 카드 `Step` = 다음 금액).
 - 넣을 때마다 자기 점수 +1: 빛 = Honor, 뿔 = Mischief(속 이름 `Infamy`). **하루 3번까지**(KST 날짜, `Config.DayIndex`).
 - 진영 **주간 합계**(모든 서버 합)가 단계에 닿으면 그 마을에 등불 → 불꽃(꾸미기만, 힘 0). 월요일 00:00 KST에 새 주(`Config.WeekIndex`).
 - 장인(Neutral)·진영 없음: 분수 기금 없음(안내 없이 그냥 안 보임). 남의 마을 분수: 안 됨.
@@ -14,7 +14,7 @@
 
 ## 2. 설정 `Config.VillageFund` (새 표, 숫자는 시작값)
 ```
-Enabled = true, Step = 1000, PerDay = 3, Points = 1,
+Enabled = true, Ladder = { 200, 500 }, Step = 1000, PerDay = 3, Points = 1,
 Spots = { Halo = { Pos = Vector3.new(22, 10, -590), Radius = 16, Zone = "HaloTown" } },  -- Horns = nil (아래)
 Goals = { Lanterns = 30000, Fireworks = 100000 },   -- 진영 주간 합계(골드)
 Store = "HaloHorns_VillageFund_v1", FlushSeconds = 60, ReadSeconds = 60, Rate = 1.0,
