@@ -1,6 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 23 — 작은 화면 묶음 fix/small-ui-batch b5b2def2 (2-C #9, push, 최신)
+## 10/15 새벽 — 사용자 지적 3건 + 번역 키 (push, 최신)
+- **fix/war-bar-no-text 7ac4589b**: 왕관전 막대 아래 줄 전부 삭제(A23-130), 시간 숫자만 막대 안 가운데(ui.warTime, 번역 끔), 판 = 막대만, HUD.TopBottom = 판·막대·방패. 거위 칩 아이콘 안쪽(L.GooseChip Left 10/Right 12/Gap 6/IconK 0.75/PlusH 4, SQ.FitGoose·SQ.GooseNeed). test_hud_top_overlap 14·21/21, crown_points·auto_translate 갱신. 사진 때 숫자와 왕관 끝 겹침 확인.
+- **fix/goal-chip-two-lines b0e8081b**: 목표 칩 2·3층 줄바꿈(최대 2줄, L.FitTierHeight = TextBounds/scale), 자리 계산 1+2줄, Config.GoalChips.Text.Halo/Horns = "Win the Crown", 3층 색 = 진영 색. test_goal_chips 52·25/25.
+- **fix/ui-tr 965d5f28**: UIKit.Tr(key, ...)·TrArgs·TrForm·TrStart, Tx(인자 있음) → Tr. tools/l10n_format_keys.py → Game/build/l10n/format_keys.json/.csv(338). test_ui_tr 26·9/9, test_l10n 정적 갱신.
+- 남은 큐: 화면 모듈 하드코딩 글 394개 → 중앙 표(+ string.format 직접 쓰는 곳 Tr로), 장인 ⑤(개발 2 기다림). a23_14 확인 못 함(느림).
+
+## 10/14 밤 23 — 작은 화면 묶음 fix/small-ui-batch b5b2def2 (2-C #9, push)
 - ① 연출 건너뛰기: 할 것 없음(Intro Skip+Enter, 제작 [Skip], 강화 즉시, 진영 변신 연출 없음). ② HUD 칩 Outlaw(Config.Ranking.Text.OutlawChip). ③ NameTagPrefs.BorderOf/FitBorder: RibbonDays28을 이름 오른쪽에(테두리 그림 없음). ④ Invite.GooseWin/WarWin/WinCard(PanelCard+BtnSecondary, Config.WinCard, 8초); 왕관전은 WarRoundEndsAt 휴리스틱. ⑤ MiniMap.PitOf/PitPosts, 두 지도에 PvPArea 극한 빨강, 월드에 내 화면만 빨간 기둥(PitEdgeLocal).
 - test_small_ui 22·23/23; settings_apply·halloween_hidden 고친 뒤 통과. place_english = worktree에 place 없음. a23_14 결과 확인 남음.
 - 목록: 왕관전 라운드 끝 신호(개발 2), 28일 테두리 그림(디자인).
