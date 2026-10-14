@@ -5276,8 +5276,10 @@ Config.Switches = {
 		Goose = { Type = "Bool", Default = true }, -- no new goose
 		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
 		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
-		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay)
-		PioneerTitle = { Type = "Bool", Default = true },
+		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay). Unread = the
+		-- value until this server's first good read of the board (review 10/14: a new server after the launch, or a
+		-- DataStore outage, must never hand out the title on the Default)
+		PioneerTitle = { Type = "Bool", Default = true, Unread = false },
 	},
 }
 
