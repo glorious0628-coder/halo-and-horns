@@ -7,6 +7,7 @@
 - 시험: 새 test_skill_press 26·15/15 + 정적 2, skill_learn 38·27/27, skills 151, skills_x 167, skill_kit, skill_fx 109·18/18, skill_book 67·32/32, skill_signals 142, english, l10n, story_text, hud_layout, phone_first10 = 0 failing·MISSED 0. main·dev1-village-fund와 merge-tree 깨끗.
 
 ## 10/14 밤 6 — dev1-village-fund 864cf867 (다 됨·push, 최신)
+- 합친 판(864cf867 + dev2-village-fund 04ef28c7 + main) 시험 통과: village_fund_ui 61·23/23(진짜 Config), village_fund 99/99, english, l10n, story_text, choice_card_ui, place_english → 최종 검수에 같이 병합 요청함.
 - 개발 2 메시지(실제 서버 모양)에 맞춘 위 커밋 864cf867(f9afc184 위): Net.luau 뺌(개발 2가 FundGive/FundOpen + GameStateDefaults 넣음), 속성 = GameState 폴더, state Why("Poor"/"Full"/"Closed")·Can·Sum(막대; Week = 주 번호), 서버 글 Text.Title/Today/[side].Give/Poor(%s Step)/Full(%d PerDay)/Closed 사용, Config.VillageFundScreen은 Lead·Gold·Close·Week·Marks·Lanterns·Fireworks만, 프롬프트 ActionKey/ObjectKey Config 경로 → ActionText/ObjectText.
 - 시험 test_village_fund_ui 61·23/23 + 정적 8(Net 이름은 '많아야 1번'), english, l10n, story_text, place_english 통과. 개발 2 dev2-village-fund push 기다림 → 합친 판 시험 → 최종 검수 같이 병합.
 
