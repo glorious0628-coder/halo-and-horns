@@ -1631,6 +1631,15 @@ function UIKit.MeasureText(text, size, fontOrFontFace, width)
 	return height, widest, false
 end
 
+-- the words a label really draws: Roblox's automatic translation (A23-179) keeps .Text in English and draws
+-- .LocalizedText. 개발 1 10/14 (Korean client: numbers / words cut): fitting measured the English, the wider Korean was
+-- drawn and the label's clip cut it. Empty / unreadable = .Text
+function UIKit.ShownText(label)
+	local ok, s = pcall(function() return label.LocalizedText end)
+	if ok and type(s) == "string" and s ~= "" then return s end
+	return label.Text
+end
+
 -- TextSize is a canvas size. The rendered picker never goes below the observed physical 11px floor.
 -- Measure the complete text in those physical pixels before comparing it with AbsoluteSize / TextBounds.
 -- floorPx: a label's own physical floor (UIKit.FitText, attribute FitMinPx) instead of the 11px one
@@ -1702,11 +1711,11 @@ function UIKit.FitText(label, minSize, maxSize)
 					end
 					local bounds = label.TextBounds
 					if label:GetAttribute("PickerMeasureWhole") == true then
-						local text, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
-						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(text, size, face,
-							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000, fit.FloorPx)
+						local src, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
+						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(UIKit.ShownText(label), size,
+							face, inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000, fit.FloorPx)
 						-- Loading a font yields. Never apply an earlier text/layout/font measurement after a reset.
-						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= text
+						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= src
 							or label.FontFace.Family ~= face.Family or label.FontFace.Weight ~= face.Weight
 							or label.FontFace.Style ~= face.Style or label.TextWrapped ~= wrapped
 							or label.TextSize ~= size or label.AbsoluteSize ~= box then return end
@@ -1733,8 +1742,10 @@ function UIKit.FitText(label, minSize, maxSize)
 				if not fit.Dead and (fit.Pending or fit.Reset) then fit.Pending = false; fit.Request(false) end
 			end)
 		end
-		for _, property in { "Text", "AbsoluteSize", "TextWrapped", "FontFace" } do
-			table.insert(fit.Connections, label:GetPropertyChangedSignal(property):Connect(function() fit.Request(true) end))
+		for _, property in { "Text", "AbsoluteSize", "TextWrapped", "FontFace", "LocalizedText" } do
+			pcall(function() -- LocalizedText: the translation arrives after the English text (pcall: an older engine)
+				table.insert(fit.Connections, label:GetPropertyChangedSignal(property):Connect(function() fit.Request(true) end))
+			end)
 		end
 		table.insert(fit.Connections, label:GetPropertyChangedSignal("TextBounds"):Connect(function() fit.Request(false) end))
 		table.insert(fit.Connections, label.Destroying:Connect(function()
@@ -2534,7 +2545,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			if width <= 1 or not label.Parent then return end
 			local px = math.max(1, math.floor(label.TextSize * s + 0.5))
 			local params = Instance.new("GetTextBoundsParams")
-			params.Text = label.Text
+			params.Text = UIKit.ShownText(label) -- the drawn (translated) words
 			params.Font = label.FontFace
 			params.Size = px
 			-- a few px narrower than the box: the engine wraps a little earlier than TextService (991x451: TextService said
@@ -2559,8 +2570,8 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			if onSized then onSized(h) end
 		end)
 	end
-	for _, property in { "Text", "TextSize", "FontFace" } do
-		label:GetPropertyChangedSignal(property):Connect(fit)
+	for _, property in { "Text", "TextSize", "FontFace", "LocalizedText" } do
+		pcall(function() label:GetPropertyChangedSignal(property):Connect(fit) end)
 	end
 	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 		local w = math.floor(label.AbsoluteSize.X + 0.5)
@@ -3592,6 +3603,17 @@ function UIKit.TrForm(fmt)
 	return s, i
 end
 
+-- one English word / name from our tables in the player's language, by its English text (the localization table's
+-- Source: "Enhance" -> "강화", "Flower Slime" -> "꽃 슬라임"); an English player, no translator, no letters or no entry =
+-- the text as it is. 개발 1 10/14 (Korean client: '다음: Enhance', '출처: Flower Slime'): a format's arguments are
+-- inside the translated sentence, where Roblox's automatic translation never reaches them
+function UIKit.TrWord(s)
+	local tr = UIKit.TR.Translator
+	if not tr or UIKit.TR.English or type(s) ~= "string" or not string.find(s, "%a%a") then return s end
+	local ok, out = pcall(tr.Translate, tr, game, s)
+	return (ok and type(out) == "string" and out ~= "") and out or s
+end
+
 function UIKit.Tr(key, ...)
 	local n = select("#", ...)
 	local tr = UIKit.TR.Translator
@@ -3601,8 +3623,17 @@ function UIKit.Tr(key, ...)
 	if tr and not UIKit.TR.English and type(key) == "string" then
 		local fmt = UIKit.L10n.Get(key, "en")
 		if type(fmt) == "string" and fmt ~= key then
-			local ok, out = pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})
+			local args = n > 0 and UIKit.TrArgs(fmt, ...) or {}
+			for i, a in args do args[i] = UIKit.TrWord(a) end -- the words inside: "Enhance", a monster's name
+			local ok, out = pcall(tr.FormatByKey, tr, key, args)
 			if ok and type(out) == "string" and out ~= "" then return out end
+		end
+		-- not in the table (a format with no words of its own, "· %s %s" = '· Pouch 0'): the English format with the
+		-- words inside translated
+		if n > 0 then
+			local vals = table.pack(...)
+			for i = 1, vals.n do vals[i] = UIKit.TrWord(vals[i]) end
+			return UIKit.L10n.T(key, vals, UIKit.Lang())
 		end
 	end
 	return UIKit.L10n.T(key, n > 0 and { ... } or nil, UIKit.Lang())
@@ -3616,6 +3647,8 @@ function UIKit.TrStart()
 	if ok and tr then
 		UIKit.TR.Translator = tr
 		UIKit.TR.English = string.sub(string.lower(tostring(tr.LocaleId)), 1, 2) == "en"
+		-- 개발 1 10/14: lines drawn before the translator came (the HUD's power / pouch line) draw again
+		if not UIKit.TR.English then UIKit.LangChanged:Fire(UIKit.Lang()) end
 	end
 	return ok
 end

@@ -2145,8 +2145,8 @@ ITEMS = {
 		EquipCombat = "In a fight",
 		EquipLevelF = "From Lv %d", -- A23-28: owned but below the weapon's MinLevel (the server refuses the equip)
 		EquipCombatLong = "You can't change weapons during a fight.", -- fallback for Config.Loot.Text.EquipCombat
-		FailDownF = "On a fail there's a %d%% chance it drops one step. Weapons never break!", -- Config.Loot.FailDropChance
-		FailKeep = "Nothing changes on a fail. Weapons never break!",
+		FailDownF = "On a fail there's a %d%% chance it drops one step.", -- Config.Loot.FailDropChance
+		FailKeep = "Nothing changes on a fail.",
 		OverflowF = "Max is +%d, so it only goes up +%d", -- (MaxEnhance = 10 → "+10이라")
 		MoveOverflowF = "The extra +%d stays on the sending weapon (no enhancement is ever lost)",
 		MoveSafe = "No enhancement is ever lost",
@@ -2176,7 +2176,7 @@ ITEMS = {
 		PickTo = "Pick the weapon to get +%d.",
 		Enhance = "Enhance", Max = "Max", From = "Send", To = "Receive",
 		ConfirmEnh = "%s +%d → +%d on success (attack %d%%)\nChance %d%% · %s",
-		FailZero = "Stays at +0 on a fail. Weapons never break!",
+		FailZero = "Stays at +0 on a fail.",
 		-- B9: no particle after the number ("+%d이" was wrong for +2/+4/+5/+9)
 		ConfirmMove = "%s +%d → %s +%d\nChance %d%% · on success the receiving weapon becomes +%d · on a fail nothing changes",
 		Go = "Enhance", GoMove = "Move",

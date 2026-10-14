@@ -609,6 +609,10 @@ function L.PowerBuild(parent)
 	ui.power = line("Power", 1, ac("GoldText", Theme.Gold), true, ui.powerRow)
 	ui.power.Text = L.PowerText(L.PowerValue())
 	ui.pouch = line("Pouch", 2, ac("LightSub", Theme.SubText), false, ui.powerRow)
+	-- 개발 1 10/14 (Korean client: '· Pouch 0' cut, words English): both lines come translated from L.Tx (UIKit.Tr, the
+	-- words inside too); Roblox's own pass stays off so the box measures exactly what is drawn
+	UIKit.NoTranslate(ui.power)
+	UIKit.NoTranslate(ui.pouch)
 	-- A23-35 / A23-40: no plate under the line (PC: over the ground) -> the dark text style's navy rim; gold stays gold
 	-- (the white -> cream gradient multiplies the colour)
 	if type(UIKit.StyleText) == "function" then
@@ -6731,6 +6735,8 @@ function HUD.Start()
 	end)
 	UIKit.OnAttr({ "Level", "XP", "Faction", "Class", "Honor", "Infamy", "FallMarks", "RedeemMarks", "SessionTitle", "TitleSel",
 		"BankGold", "CarriedGold", "WantedStars", "Bounty" }, refreshStats)
+	-- 개발 1 10/14: the translator comes a moment after the HUD - the power / pouch line (words drawn by UIKit.Tr) again
+	if UIKit.LangChanged then UIKit.LangChanged:Connect(function() pcall(refreshStats) end) end
 	UIKit.OnAttr({ "Faction", "Class", "ClassChosen", "CharacterGender", "SizeMult" }, L.RefreshPortrait)
 	UIKit.OnAttr({ "Level" }, function() L.Pow.LevelAt = os.clock() end) -- BB5: no "+N" next to a level-up banner
 	UIKit.OnAttr({ "CombatPower", "DataLoaded", "ClassChosen" }, L.PowerChanged)

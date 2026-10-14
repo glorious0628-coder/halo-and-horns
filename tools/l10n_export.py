@@ -131,6 +131,10 @@ def run_walker(roots: list[str]) -> list[tuple[str, str]]:
 def looks_like_words(key: str, value: str) -> bool:
     leaf = key.rsplit(".", 1)[-1]
     parent = key.rsplit(".", 2)[-2] if key.count(".") >= 2 else ""
+    # an "...En" leaf is the English twin of a word key (Skills Halo NameEn "Halo Slam", DescEn): judged as its base key
+    # (개발 1 10/14: 'Halo Slam' was never exported -> Roblox's machine translation drew '빛 Slam')
+    if len(leaf) > 2 and leaf.endswith("En") and leaf[:-2] in TEXT_KEYS:
+        leaf = leaf[:-2]
     if not re.search(r"[A-Za-z]{2}", FORMAT.sub("", value)):
         return False
     if value.startswith(("rbxasset", "http", "Enum.", "KeyCode.", "Key.")) or re.fullmatch(r"[\w./:\-]+\.(png|jpg|wav|mp3|ogg|luau|json)", value):
@@ -141,6 +145,10 @@ def looks_like_words(key: str, value: str) -> bool:
     if re.fullmatch(r"[A-Za-z0-9_]+", value) and re.search(r"[a-z][A-Z]|[A-Za-z][0-9]|_", value):
         return False
     if leaf in TEXT_KEYS or parent in TEXT_KEYS:
+        return True
+    # Config.ClientText = the client screens' own words: a lone word there is a button / tab ("Go", "OK", "Gear")
+    # (개발 1 10/14: the Korean client kept 'Go' / 'OK' in English - they were never in the table)
+    if key.startswith("Config.ClientText."):
         return True
     if " " in value.strip() and not re.fullmatch(r"[A-Z][A-Za-z]+( [A-Z][A-Za-z]+)+", value) or re.search(r"[.!?:…]$", value):
         return True

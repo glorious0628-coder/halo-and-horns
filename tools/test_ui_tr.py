@@ -125,6 +125,33 @@ fg()
 local nextLine, big = L.GoalTiers(1, 0, 0, "Halo", nil)
 check(nextLine == "KO[Config.GoalChips.Text.Next]KO[Config.GoalChips.Text.FirstSkill]5", "goal chip tier 2: the step inside is translated too", nextLine)
 check(big == "KO[Config.GoalChips.Text.Big]KO[Config.GoalChips.Text.Halo]", "goal chip tier 3: the side word inside is translated too", big)
+-- 6. 개발 1 10/14 (Korean client: '다음: Enhance', '출처: Flower Slime', '· Pouch 0'): the arguments' words are
+-- translated by their English text (Translator:Translate); numbers never go there
+local words = { Woods = "숲", Pouch = "주머니" }
+local tcount = 0
+function Translator:Translate(ctx, text)
+	tcount += 1
+	assert(not string.find(text, "^%d+$"), "a number asked: " .. text)
+	return words[text] or text
+end
+UIKit.TR.English = false
+out = UIKit.Tr("Config.GoalChips.Text.Zone", 5, "Woods")
+check(out == "KO[Config.GoalChips.Text.Zone]5|숲", "the words inside the sentence are translated too", out)
+TEMPLATES["Config.ClientText.HUD.Pouch"] = "· %s %s"
+out = UIKit.Tr("Config.ClientText.HUD.Pouch", "Pouch", "0")
+check(out == "KO[Config.ClientText.HUD.Pouch]주머니|0", "a wordless format: its words translated, the number as it is", out)
+out = UIKit.Tr("Unknown.Key", "Pouch")
+check(out == "EN:Unknown.Key:주머니", "not in the table: the English format with the words translated", out)
+out = UIKit.Tr("Unknown.Key", "Grabbo")
+check(out == "EN:Unknown.Key:Grabbo", "a word with no entry stays as it is", out)
+UIKit.TR.English = true
+tcount = 0
+out = UIKit.Tr("Config.GoalChips.Text.Zone", 5, "Woods")
+check(tcount == 0 and out:sub(1, 3) == "EN:" and out:find("Woods", 1, true), "an English player: nothing translated", out)
+check(UIKit.TrWord("Woods") == "Woods" and tcount == 0, "TrWord: an English player keeps the word, translator not asked")
+UIKit.TR.English = false
+check(UIKit.TrWord("1.2K") == "1.2K" and UIKit.TrWord("100/100") == "100/100" and tcount == 0, "TrWord: numbers never asked")
+check(UIKit.TrWord("Pouch") == "주머니" and tcount == 1, "TrWord: a word by its English text")
 print(("UI_TR_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -135,9 +162,13 @@ MUTATIONS = [
     ("A: '70% gives' read as a slot again (the space flag)", 'Spec = "%%[-+#0]*', 'Spec = "%%[-+ #0]*'),
     ("an English player asks the translator", "if tr and not UIKit.TR.English and type(key)", "if tr and type(key)"),
     ("an unknown key asks the translator", 'if type(fmt) == "string" and fmt ~= key then', 'if type(fmt) == "string" then'),
-    ("a translator error not caught", "local ok, out = pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})",
-     "local ok, out = true, tr:FormatByKey(key, n > 0 and UIKit.TrArgs(fmt, ...) or {})"),
-    ("raw arguments to the table", "pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})", "pcall(tr.FormatByKey, tr, key, { ... })"),
+    ("a translator error not caught", "local ok, out = pcall(tr.FormatByKey, tr, key, args)",
+     "local ok, out = true, tr:FormatByKey(key, args)"),
+    ("raw arguments to the table", "local args = n > 0 and UIKit.TrArgs(fmt, ...) or {}", "local args = { ... }"),
+    ("the words inside stay English (dev 1 10/14: '다음: Enhance')", "for i, a in args do args[i] = UIKit.TrWord(a) end", ""),
+    ("not-in-table formats keep English words ('· Pouch 0')", "vals[i] = UIKit.TrWord(vals[i])", "vals[i] = vals[i]"),
+    ("an English player's words go to the translator", "if not tr or UIKit.TR.English or type(s)", "if not tr or type(s)"),
+    ("numbers go to the translator", 'type(s) ~= "string" or not string.find(s, "%a%a")', 'type(s) ~= "string"'),
     ("Tx skips Tr", '\t\t\treturn UIKit.Tr(path .. "." .. key, ...) -- 10/14', '\t\t\treturn UIKit.L10n.T(path .. "." .. key, nil, UIKit.Lang()) -- 10/14'),
     ("a piece without arguments stays English (publish5)", "if tr and not UIKit.TR.English and type(key)", "if tr and n > 0 and not UIKit.TR.English and type(key)"),
     ("no translator asked at start", "\ttask.spawn(UIKit.TrStart) -- 10/14", "\t-- task.spawn(UIKit.TrStart) -- 10/14"),
