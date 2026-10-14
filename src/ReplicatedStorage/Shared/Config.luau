@@ -6389,6 +6389,16 @@ Config.Audio.Ambient = {
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
 
+-- 최종 검수 10/14 (gameplay plan 3, bag slot upgrade as a quest reward): ONE number for the whole bag = how many kinds
+-- it holds. A slot = one kind in the grid of a Counts kind (a material / scroll / tonic / treat id, a spare weapon "T:P");
+-- owned weapons, gear and potions never count. The owner's attribute BagSlots (game dev 2: saved data.BagSlots, only
+-- grows 12 -> 16 -> 20 by two quest rewards Reward.BagSlots = Step); no attribute = Default. Full: the server takes no
+-- NEW kind (a kind I have keeps stacking) and says Text.Full; Text.Gained = the quest reward line. The bag (game dev 1)
+-- shows "used / slots" on its bottom line (red when full) and shows every thing it has.
+Config.BagSlots = { Default = 12, Step = 4, Max = 20,
+	Counts = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true, Spare = true },
+	Text = { Gained = "+%d bag slots", Full = "Your bag is full! Sell or use something to make room." } }
+
 -- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
 -- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
 -- attribute Attr = "HP,MP," (three entries, "" = empty), c->s Remote(slot 1..3, item key or ""): known keys only, the same
