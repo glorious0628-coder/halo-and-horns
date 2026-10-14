@@ -7,12 +7,13 @@ Config.Game = {
 	MaxPlayers = 20, -- documentation only; set in Studio Game Settings
 }
 
--- feature switches. A23-57 (user 2026-10-06): NeutralFaction = the artisan guild as a faction a player can newly pick;
--- off for the beta (the artisan update brings it back). Off: no new Neutral pick at the faction picker, the altar or a
+-- feature switches. A23-57 (user 2026-10-06): NeutralFaction = the artisan guild as a faction a player can newly pick.
+-- A23-162 (10/13): the Artisan Guild is IN the 12/15 beta; the switch stays off until the artisan minimum (gameplay_plan
+-- 2-B, decided with the market on 11/06) is ready. Off: no new Neutral pick at the faction picker, the altar or a
 -- rebirth (Config.Pickable), its own sub quests are not offered; saves that are Neutral already stay as they are.
 -- Code and data stay; game dev 1's faction picker reads the switch for its cards.
--- Market = the trading market (RELEASE_PLAN: after the full launch). 검수 2026-10-07: no "coming soon" signs for things
--- the beta does not have (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
+-- Market = the trading market (gameplay_plan 2-B: comes with the artisans, decided 11/06; A23-127 their goods reach the
+-- fighters through it). 검수 2026-10-07: no "coming soon" signs for things the game does not have yet (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
 -- the world map calls the Crossroads anvil spot "Forge" (the weapon shop) instead of "Artisan Guild".
 -- StatPoints (A23-69, user 2026-10-07 "베타에 넣는다, 끌 수 있게"): the stat points (Config.Stats). Off = every number is
 -- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
@@ -58,8 +59,9 @@ function Config.Plural(text)
 	return text
 end
 
--- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-1): words of the shared L10n module. Join = the
--- separator of a list message { Join = { msg, ... } } (reward lists), key "Config.L10n.Join"
+-- the shared L10n words (contract docs/design/l10n_contract_2026-10-11.md §5-1; its Korean mode was cancelled, A23-146:
+-- the game writes English, Roblox auto-translates, A23-179). Join = the separator of a list message { Join = { msg, ... } }
+-- (reward lists), key "Config.L10n.Join"
 Config.L10n = { Join = " · ", JoinEn = " · " }
 
 ----------------------------------------------------------------- player / data
@@ -342,7 +344,7 @@ Config.WeaponInfo = {
 	{ Grade = "Rare", Source = "Rare drop in the Goblin Woods (your first Goblin Brute always drops it), or a Forge commission" },
 	{ Grade = "Epic", Source = "Rare drop in the Skeleton Ruins (your first Knight or Captain Clatter always drops it), or a Forge commission" },
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
-	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
+	{ Grade = "Legend", Source = "Crafted by artisans" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
 	{ Grade = "Mythic", Source = "Crafted by artisans" },
 }
@@ -895,10 +897,10 @@ Config.Factions = {
 			"No PvP: you never attack or get attacked",
 			"No worries about loot, Wanted or Grudge Sacks",
 			"The Crossroads is your home",
-			"Crafting expert (coming soon)",
+			"Crafting expert",
 		},
 		Pitch = "Don't grab it. Shape it and craft it!",
-		Note = "No fight buffs · No PvP · Crafting (coming soon)", -- picker card note (A6); plain text
+		Note = "No fight buffs · No PvP · Crafting", -- picker card note (A6); plain text (the card is open only with NeutralFaction on)
 	},
 	None = {
 		Id = "None", Name = "No Side", Short = "No Side", Emblem = "?",
@@ -5232,8 +5234,9 @@ Config.Settings = {
 	},
 }
 
--- A23-48 (user 2026-10-06 evening): the game shows English only (UIKit.Lang decides for the modules with KO / EN twins);
--- new window texts are written in English only
+-- A23-48 (user 2026-10-06 evening) / A23-146: we write the game's text in easy English only (no Korean mode, no hand
+-- translation); A23-179 (10/14): Roblox auto-translation is ON for it (AutoLocalize off only for names, number-only labels
+-- and player chat). New window texts are written in English only
 Config.BuildLabel = "private-test 2026.10.16" -- shown in the settings footer (bump with a release)
 
 ----------------------------------------------------------------- environments + ops safety (시스템 점검 1회차, 2026-10-09)
@@ -5482,7 +5485,7 @@ Config.Loot = {
 	ItemCap = 999, -- per item id
 	FullNoticeSeconds = 300, -- review B7: a "가득 찼어요" notice repeats at most once per item id per 5 minutes
 	GoldenMult = 3, -- golden monsters: every drop chance x3 (capped at 100%)
-	-- Kind: Material (sold at the blacksmith; crafting comes with the full launch), Enhance (+Plus to one owned weapon
+	-- Kind: Material (sold at the blacksmith; the artisans craft with them, A23-162 / 2-B), Enhance (+Plus to one owned weapon
 	-- with Chance), Transfer (with Chance ADDS all of one weapon's +N onto another owned weapon up to MaxEnhance, the
 	-- rest stays on the source; failure keeps both — no enhancement is ever lost)
 	Items = {
@@ -7070,7 +7073,8 @@ Config.UIArt = {
 		KeyHintBg = Color3.fromRGB(60, 44, 34),
 		KeyHintText = Color3.fromRGB(255, 255, 255),
 	},
-	-- ART_DIRECTION: Korean labels in Gotham (Korean renders in the fallback font), numbers / Lv / timers in FredokaOne
+	-- ART_DIRECTION: labels in Gotham (Roblox's auto-translated Korean renders in its fallback font, A23-179), numbers / Lv /
+-- timers in FredokaOne
 	Fonts = {
 		Title = Enum.Font.GothamBlack,
 		Body = Enum.Font.GothamBold,
@@ -7164,12 +7168,12 @@ Config.UIArt.FactionPerks = {
 		{ Icon = "IconNoBuff", Text = "No fight buffs" },
 		{ Icon = "IconShieldBlue", Text = "No PvP (safe)" },
 		{ Icon = "IconNoLoot", Text = "No loot or Wanted worries", Short = "No loot or Wanted" },
-		{ Icon = "IconHammer", Text = "Crafting (coming soon)", Short = "Crafting (soon)" },
+		{ Icon = "IconHammer", Text = "Crafting", Short = "Crafting" },
 	},
 }
 
--- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
--- English/localized sprites are a separate release item; live fallbacks stay available.
+-- E approval: 2026-10-04 (history). A23-146 / A23-35: no lettering in images any more - every word is a TextLabel from
+-- the text tables, so Roblox auto-translation (A23-179) reads it; live fallbacks stay available.
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
 Config.CustomModels = {
 	FolderName = "CustomModels",

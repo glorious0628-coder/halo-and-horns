@@ -436,8 +436,8 @@ function M.TryRebirth(player, factionId)
 	if type(factionId) ~= "string" or not REBIRTH_TARGETS[factionId] then
 		return false, nil
 	end
-	if not Config.Pickable(factionId) then -- A23-57: the artisan guild is off for the beta (refused + one log line)
-		Util.Warn(TAG, ("%s asked to be reborn into the artisan guild, off for the beta (A23-57)"):format(player.Name))
+	if not Config.Pickable(factionId) then -- A23-57: the artisan guild is off until the artisan update (refused + one log line)
+		Util.Warn(TAG, ("%s asked to be reborn into the artisan guild, off until the artisan update (A23-57; in the beta, A23-162)"):format(player.Name))
 		return false, nil
 	end
 	local data = getData(player)
