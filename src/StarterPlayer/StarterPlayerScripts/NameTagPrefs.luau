@@ -20,7 +20,9 @@ local NameTagPrefs = {}
 local C = nil
 local TAG = "NameTagPrefs"
 local L = { Name = "Nametag", Far = 120, Near = 40 }
-local S = { Tags = setmetatable({}, { __mode = "k" }), Started = false }
+-- 최종 검수 10/14 FIX 1: Tags is a STRONG table (with weak keys a tag already on screen could drop out, and the server
+-- fixes a tag in place without making a new one, so a later Settings change missed it); gone tags are dropped in ApplyAll
+local S = { Tags = {}, Started = false }
 
 local function visuals() return type(Config.Visuals) == "table" and Config.Visuals or {} end
 
@@ -59,8 +61,15 @@ function NameTagPrefs.Apply(bb)
 	return changed
 end
 
--- every known tag again (a Settings change); gone tags are dropped
+-- every tag again (a Settings change): each other player's Head "Nametag" is looked up afresh too (one missing from the
+-- table is found); gone tags are dropped
 function NameTagPrefs.ApplyAll()
+	for _, p in Players:GetPlayers() do
+		local char = p ~= LocalPlayer and p.Character
+		local head = char and char:FindFirstChild("Head")
+		local bb = head and head:FindFirstChild(L.Name)
+		if bb and bb:IsA("BillboardGui") then S.Tags[bb] = true end
+	end
 	local n = 0
 	for bb in S.Tags do
 		if bb.Parent then
@@ -95,5 +104,7 @@ function NameTagPrefs.Start()
 		end)
 	end
 end
+
+NameTagPrefs._T = { S = S } -- tools/test_settings_apply.py
 
 return NameTagPrefs

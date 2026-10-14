@@ -95,6 +95,7 @@ imt.__index = function(self, k)
 	return nil
 end
 imt.methods = {
+	FindFirstChild = function(self, n) for _, c in self.Children do if c.Name == n then return c end end return nil end,
 	IsA = function(self, cl) return self.ClassName == cl end,
 	GetDescendants = function(self)
 		local out = {}
@@ -130,12 +131,15 @@ local function tag(owner, parent, name)
 	return bb
 end
 local headMe, headBo = inst("Part", "Head"), inst("Part", "Head")
-headMe.Parent, headBo.Parent = WS, WS
+local charMe, charBo = inst("Model", "Me"), inst("Model", "Bo")
+charMe.Parent, charBo.Parent = WS, WS
+headMe.Parent, headBo.Parent = charMe, charBo
+ME.Character, BO.Character = charMe, charBo
 local mine, bos = tag(ME, headMe), tag(BO, headBo)
 local other = tag(BO, headBo, "GhostLabel")
 local tenv = setmetatable(table.clone(base), { __index = getfenv() })
 tenv.game = { GetService = function(_, n)
-	if n == "Players" then return { LocalPlayer = ME } end
+	if n == "Players" then return { LocalPlayer = ME, GetPlayers = function() return { ME, BO } end } end
 	if n == "ReplicatedStorage" then return { WaitForChild = function() return { WaitForChild = function(_, m) return m end } end } end
 	return {}
 end }
@@ -164,6 +168,9 @@ check(bos.Enabled == false, "Off at start: Bo's tag hidden", tostring(bos.Enable
 check(mine.Enabled == true and mine.MaxDistance == far, "my own tag untouched", "")
 check(other.Enabled == true, "other billboards (ghost label) untouched", "")
 check(NT.Apply(other) == false and other.Enabled == true, "Apply itself leaves other billboards alone", tostring(other.Enabled))
+-- FIX 1 (최종 검수 10/14): a tag that fell out of the table (weak keys / GC) is found again on the next Settings change
+NT._T.S.Tags[bos] = nil
+check(getmetatable(NT._T.S.Tags) == nil, "the tag table holds its tags (not weak)", "")
 set("Tags", "Near")
 check(bos.Enabled == true and bos.MaxDistance == near, "a Settings change to Near applies at once", bos.MaxDistance)
 set("Tags", "All")
@@ -199,6 +206,8 @@ MUTATIONS = [
     ("TAGS", "a Settings change ignored", "\t\tst.Changed:Connect(function()\n", "\t\t(function()\n"),
     ("SUI", "no damage numbers row", "local _, hd = row(kit, frame, ST.DmgNumEn or ST.DmgNum)", "local _, hd = nil, frame"),
     ("SUI", "the tags row skips Nearby only", 'cur == "All" and "Near" or cur == "Near" and "Off" or "All"', 'cur == "All" and "Off" or "All"'),
+    ("TAGS", "a weak tag table", "local S = { Tags = {}, Started = false }", 'local S = { Tags = setmetatable({}, { __mode = "k" }), Started = false }'),
+    ("TAGS", "no fresh look-up of the players' tags", 'if bb and bb:IsA("BillboardGui") then S.Tags[bb] = true end', ""),
     ("MAIN", "never loaded", '"ChatTags", "NameTagPrefs", ', '"ChatTags", '),
 ]
 
