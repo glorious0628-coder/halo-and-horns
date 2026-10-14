@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 7 — fix/skill-press-reject 81e1d003 (다 됨·push, 최신)
+## 10/14 밤 8 — fix/skill-press-reject 3468b49c (다 됨·push, 최신)
+- 81e1d003 위 3468b49c = 최종 검수 MINOR 2개(목표 칩): ① HUD L.GoalTiers Big 줄은 Halo/Horns 글이 있을 때만(Neutral/None/nil 명시로 없음) ② 칩 2·3층 TextWrapped=false + TextTruncate AtEnd(작은 PC 방 계산이 한 줄씩이라 두 줄로 밀리지 않음, 긴 줄은 "...").
+- 시험: goal_chips 52·21/21(새 검사 1 + 돌연변이 2: format 에러 기대기, 두 줄 감기), hud_layout, hud_reveal, quest_lines, phone_first10, phone_text, first_look, comeback_client, fit_text, english, l10n, skill_press, skill_learn 통과.
+
+## 10/14 밤 7 — fix/skill-press-reject 81e1d003
 - 계획 2-C #8. 확인: 서버 SkillService.press가 Fx "SkillPress" { Slot, Result }를 이미 보내는데 클라에 받는 곳이 없었음 → 서버만 아는 거절(NoTarget·CantHop·TooHeavy·서버 쪽 Cooldown/NoMP·Locked)은 화면에 아무 표시 없었음. 서버 필드 바꿀 것 없음.
 - 고침(SkillBar): Fx 받기 → 버튼 흔들기 + 짧은 말(Config.Skills.Text: NoTarget, CantHop, TooHeavy, 새 NotReady "Not ready", NoMP + No 소리, 새 NotNow "Not now" / 레벨 아래면 "Unlocks at Lv N"), Queued·모르는 값 = 없음, 거절된 칸의 줄 선 누름 지움. 클라 자기 거절 글(옛 TXT "Not yet"/"Not enough MP")도 Config.Skills.Text로.
 - Hop 준비(X 켜기 아님): Fx "Hop" { To, T } → 내 캐릭터를 낮은 호로 To까지(T초, 0.1~0.6), 땅 높이 맞춤(레이캐스트, 오르막), 방향 유지, 끝나면 멈춤; 16스터드 넘음·깨진 값·KO·새 캐릭터 = 안 움직임.
