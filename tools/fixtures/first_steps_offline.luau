@@ -134,10 +134,6 @@ local env = setmetatable({
 local cfn = assert(loadstring(CONFIG_SOURCE, "=Config"))
 setfenv(cfn, env)
 Config = cfn()
--- A23-130: the real Config has the attack hint off (Config.Nudges.AttackHint = false); its logic is checked switched on,
--- the off switch at the end of the hint part
-local REAL_ATTACK_HINT = Config.Nudges and Config.Nudges.AttackHint
-Config.Nudges.AttackHint = true
 local sfn = assert(loadstring(STEPS_SOURCE, "=FirstSteps"))
 setfenv(sfn, env)
 local FS = sfn()
@@ -243,15 +239,12 @@ step(7)
 check(#W.Hints == 0 and #W.Focus == 0, "the Forge step (on the way to the first weapon): no hints, no marker", #W.Hints .. "/" .. #W.Focus)
 player.Attrs.TutorialStep = 1
 step(4)
-check(#W.Hints == 0, "no attack hint before Idle s", #W.Hints)
 fx("Swing", { UserId = 77 })
 step(4.5)
-check(#W.Hints == 0, "a swing of mine restarts the wait", #W.Hints)
 fx("Swing", { UserId = 5 })
 step(1)
-check(#W.Hints == 1 and W.Hints[1][1] == "Attack", "Idle s near a monster without my swing -> the attack hint", W.Hints[1] and W.Hints[1][1])
 step(10)
-check(#W.Hints == 1, "the attack hint shows once", #W.Hints)
+check(#W.Hints == 0, "A23-191: idle near a monster in the first mission - no attack hint", #W.Hints)
 -- 검수 10/09: the marker only after 45 s in the meadow without a kill (19.5 s so far)
 check(#W.Focus == 0, "no marker in the first 45 s in the meadow", #W.Focus)
 step(24)
@@ -281,77 +274,15 @@ check(W.Focus[#W.Focus] == near, "back in the meadow: marked again", "")
 fx("Reward", { Gold = 3, XP = 5 })
 check(W.Focus[#W.Focus] == false, "my first kill clears the marker", tostring(W.Focus[#W.Focus]))
 advance(1)
-check(#W.Hints == 1, "no Q hint after the kill (A23-71: it comes with learning Q at Lv5)", W.Hints[2] and W.Hints[2][1])
+check(#W.Hints == 0, "no hint after the kill", W.Hints[1] and W.Hints[1][1])
 fx("Reward", { Gold = 3, XP = 5 })
 step(2)
-check(#W.Hints == 1 and W.Focus[#W.Focus] == false, "no marker after the kill", #W.Hints)
+check(#W.Hints == 0 and W.Focus[#W.Focus] == false, "no marker after the kill", #W.Hints)
 -- after the first mission everything stays quiet
 player.Attrs.TutorialStep = 99
 step(6)
-check(#W.Hints == 1, "after the first mission: no hints", #W.Hints)
--- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): switched off, the attack hint never shows
-check(REAL_ATTACK_HINT == false, "A23-130: the real Config has the attack hint off (Config.Nudges.AttackHint)",
-	tostring(REAL_ATTACK_HINT))
-do
-	Config.Nudges.AttackHint = false
-	HINT.AttackShown, HINT.NearSince = false, nil
-	player.Attrs.TutorialStep = 1
-	local had = #W.Hints
-	step(12)
-	check(#W.Hints == had, "A23-130: AttackHint = false - idle near a monster in the first mission, no attack hint",
-		#W.Hints - had)
-	player.Attrs.TutorialStep = 99
-	Config.Nudges.AttackHint = true
-end
-
--- 검수 10/09 (system review ②): the first PvP zone - a calm card, then the saved flag; 검수 10/11 (A23-130): one card
--- (the danger line + one short line), not three
-do
-	local P = FS.PvP
-	local shown, saved = {}, {}
-	local seen = false
-	registry.PauseCard = { Show = function(kind, data) table.insert(shown, { kind, data }) return true end }
-	registry.Settings = { Loaded = function() return true end, Get = function(k) return k == "PvPCards" and seen or nil end,
-		Set = function(k, v) table.insert(saved, { k, v }) if k == "PvPCards" then seen = v end return true end }
-	setAttrs({ Faction = "Halo", ZonePvP = false })
-	P.Check()
-	check(#shown == 0, "a safe zone: no PvP card", #shown)
-	-- 게임성 검수 10/12 (A23-130): the server's "PvP zone!" line (Config.Text.EnteredPvP) never comes with the first card
-	local L = Config.Text.EnteredPvP
-	check(P.SkipToast({ Text = L, Kind = "bad" }, L) == true,
-		"10/12: the 'PvP zone!' line of the entry that opens the first card is held back (it may come before ZonePvP)")
-	check(P.SkipToast({ Text = "Something else" }, "Something else") == false, "10/12: other lines show")
-	player.Attrs.ZonePvP = true
-	P.Check()
-	check(#shown == 1 and shown[1][1] == "Tip" and shown[1][2].Text == P.Text and shown[1][2].Why == "PvPIntro",
-		"first PvP zone: the card as a calm Tip card", shown[1] and shown[1][2].Text)
-	check(P.SkipToast({ Text = L }, L) == true and P.SkipToast({ Key = "EnteredPvP" }, "Zone de PvP !") == true,
-		"10/12: while the first card waits / is open: no 'PvP zone!' line (keyed lines too)")
-	P.Check()
-	check(#shown == 1, "no second start while the card waits", #shown)
-	P.OnShown("Tip", "OK", "Other")
-	check(#shown == 1 and #saved == 0, "another card's close does nothing", #saved)
-	P.OnShown("Tip", "Backdrop", "PvPIntro")
-	check(#shown == 1, "the card closed -> no second card", #shown)
-	check(#saved == 1 and saved[1][1] == "PvPCards" and saved[1][2] == true, "the card closed -> PvPCards saved", #saved)
-	check(P.SkipToast({ Text = L }, L) == false, "10/12: the card closed - the next entry's line shows")
-	P.OnShown("Tip", "OK", "PvPIntro")
-	check(#shown == 1 and #saved == 1, "done: nothing more", #saved)
-	P.Step = 0
-	P.Check()
-	check(#shown == 1, "a later visit (saved flag): no card", #shown)
-	check(P.SkipToast({ Text = L }, L) == false, "10/12: a later visit (saved flag): the line shows")
-	seen = false
-	player.Attrs.Faction = "Neutral"
-	P.Check()
-	check(#shown == 1, "the Artisan Guild (can't be attacked): no card", #shown)
-	check(P.SkipToast({ Text = L }, L) == false, "10/12: the Artisan Guild gets no card, so nothing is held back")
-	local lines = {}
-	for line in string.gmatch(P.Text, "[^\n]+") do table.insert(lines, line) end
-	check(P.Cards == nil and #lines == 2 and string.find(lines[1], "fight", 1, true) ~= nil
-		and string.find(lines[2], "pocket gold", 1, true) ~= nil and #lines[2] <= 60,
-		"one card: the danger line first + one short line (pocket gold)", P.Text)
-	check(not string.find(P.Text, "[\128-\255]"), "plain English", P.Text)
-end
+check(#W.Hints == 0, "after the first mission: no hints", #W.Hints)
+-- A23-191 (user 10/14): the first-PvP-zone card is gone - no PvP part left, nothing held back
+check(FS.PvP == nil, "A23-191: no first-PvP card part", tostring(FS.PvP))
 
 print(string.format("FIRST_STEPS_SUMMARY checks=%d failed=%d", checks, failed))

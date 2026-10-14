@@ -25,6 +25,8 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-08/offline_pause_card_2026-10-08.json"
 
 MUTATIONS = [
+    ("the server's card Fx opens a card again (A23-191)", "function PauseCard.OnFx(_kind, _data)",
+     "function PauseCard.OnFx(_kind, _data) if _kind == T.Fx.Pause then PauseCard.Show('Pause', _data) end"),
     ("a card over an open window", "\tif isOpen(C and C.Panels) then return true end\n", ""),
     ("a card on the KO screen", "\tif not hum or hum.Health <= 0 then return true end\n", "\tif not hum then return true end\n"),
     ("a card in the middle of a fight", "\tif os.clock() - S.HurtAt < T.HurtCalm then return true end\n", ""),
@@ -36,7 +38,6 @@ MUTATIONS = [
     ("two cards at once", "\tif not card or PauseCard.IsOpen() then return end\n", "\tif not card then return end\n"),
     ("the waiting card never comes", "\t\ttask.defer(PauseCard.Tick) -- a card that waited for this one\n", ""),
     ("[Go] goes nowhere", "\t\tif id == \"Go\" and card.Zone then travel(card.Zone) end\n", ""),
-    ("another player's card shows", "\tif type(data) == \"table\" and data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return end\n", ""),
     ("the two buttons look different", "\t\tkit.ArtTextButton(\"BtnConfirm\", {\n",
      "\t\tkit.ArtTextButton(i == 1 and \"BtnConfirm\" or \"BtnSecondary\", {\n"),
     ("no metrics signal", "\t\tPauseCard.Shown:Fire(card.Kind, id, card.Why)\n", ""),
@@ -68,7 +69,6 @@ MUTATIONS = [
     ("a tip keeps every line", "\t\tif #out >= lines then break end\n", ""),
     ("a tip on one line", "local text = cleanLines(data.Text, T.TipMax, T.TipLines)", "local text = clean(data.Text, T.TipMax)"),
     # A23-167 ② the tomorrow card (Fx TomorrowGift) and the welcome-back News line
-    ("the tomorrow card never shows", "\telseif kind == T.Fx.Tomorrow then\n\t\tPauseCard.Show(\"Tomorrow\", data)\n", ""),
     ("[Open] opens nothing", "\t\tif id == \"Go\" and card.Attend then openAttendance() end\n", ""),
     ("no slot art", "\t\tcard.Icon = slotIcon(slot)\n", ""),
     ("the card's art never reaches the plate", "Icon = card.Kind == \"Pause\" and \"IconSaved\" or card.Icon,",

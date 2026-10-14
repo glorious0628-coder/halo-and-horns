@@ -22,17 +22,13 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-07/offline_skill_learn_2026-10-07.json"
 
 MUTATIONS = [
+    ("the banner back (A23-191)", "\t-- A23-191: no \"New skill!\" banner (the button pops in)\n",
+     "\tpcall(UIKit.Announce, \"New skill! x\", 3)\n"),
     # 검수 10/09: the learn line only when the new skill is still unused 45 s later
-    ("the learn line at once (5 s)", "\tHintAfter = 45, HintWait = {} }\n", "\tHintAfter = 5, HintWait = {} }\n"),
-    ("a press does not cancel the learn line", "\tLEARN.HintWait[slot] = nil -- used before the learn line came: it never comes\n", ""),
-    ("the learn line never waits", "\tif not line then return end\n\tLEARN.HintWait[slot] = nil\n", "\tLEARN.HintWait[slot] = nil\n"),
     ("locked slots show again", "\tlocal visible = st.On and not st.Locked -- A23-71", "\tlocal visible = st.On --"),
     ("a save load shows the moment", "\tif visible and b.Live and b.WasLocked == true then LEARN.Show(b, st) end\n",
      "\tif visible and b.WasLocked == true then LEARN.Show(b, st) end\n"),
     ("the moment repeats", "\tb.WasLocked = st.Locked\n", ""),
-    ("no banner", "\tif type(UIKit.Announce) == \"function\" then pcall(UIKit.Announce, trx(TXT, \"NewSkill\", st.Def.Name), LEARN.Banner) end\n", ""),
-    ("no line on the button", "\tif type(hud) == \"table\" and type(hud.Hint) == \"function\" then pcall(hud.Hint, slot, line) end\n", ""),
-    ("phones read 'Press Q'", "\tif not IS_TOUCH then\n\t\tlocal kb = C and C.Keybinds", "\tif true then\n\t\tlocal kb = C and C.Keybinds"),
     ("no PowerUp fallback", "\t\tif not (ok and played) then pcall(audio.Play, \"PowerUp\") end\n", ""),
     ("no pop", "\t\tscale.Scale = 0.2\n", "\t\tscale.Scale = 1\n\t\tscale:Destroy()\n"),
     ("pops with reduced motion", "\tif not reduced then\n\t\tlocal scale", "\tif true then\n\t\tlocal scale"),
@@ -40,13 +36,6 @@ MUTATIONS = [
     ("the toast is spammed", "\tif os.clock() - LEARN.TellAt < LEARN.TellGap then return end\n", ""),
     ("SkillSlots ignored (a rebirth at Lv1 looks locked)",
      "\tif type(slots) == \"number\" then locked = slots < (T.SlotIndex[slot] or 99) end\n", ""),
-    ("no tip after the first press", "\tif LEARN.TipPending and slot == LEARN.TipSlot then task.delay(LEARN.TipAfterPress, LEARN.Tip) end -- A23-81\n", ""),
-    ("no late tip", "\t\ttask.delay(LEARN.TipLate, LEARN.Tip)\n", ""),
-    ("the tip more than once", "\tif not LEARN.TipPending then return end\n\tLEARN.TipPending = false\n", ""),
-    ("phones get the keys tip", "\tif slot == LEARN.TipSlot and not IS_TOUCH then\n", "\tif slot == LEARN.TipSlot then\n"),
-    ("every new skill brings the tip", "\tif slot == LEARN.TipSlot and not IS_TOUCH then\n", "\tif not IS_TOUCH then\n"),
-    ("the tip's button forgets the Keys tab", "Go = { Text = TXT.KeysTipGo, Window = \"Settings\", Arg = { Tab = \"Keys\" } }",
-     "Go = { Text = TXT.KeysTipGo, Window = \"Settings\" }"),
     ("key badges ignore Key hints", "\t\tb.Key.Visible = badges and text ~= \"\"\n", "\t\tb.Key.Visible = text ~= \"\"\n"),
     ("the badges never follow a settings change", "\t\t\tsrc.Changed:Connect(refreshAll)\n", ""),
     ("SkillSlots changes not watched", '"SkillBarPreview", "SkillSlots", "SkillTaskSlot", "SkillTaskN" }',
