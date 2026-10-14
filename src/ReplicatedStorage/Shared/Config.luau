@@ -5747,7 +5747,7 @@ Config.Help = {
 		{ Id = "Scrolls", Title = "Scrolls", Lines = {
 			"Enhance Scroll: 70% gives +1, 30% gives +3, 10% gives +5.",
 			"On a fail it stays or drops one step (50/50), never below +0.",
-			"Weapons never break! Max +10, and each +1 adds 10% attack.",
+			"Max +10, and each +1 adds 10% attack.",
 			"Transfer Scroll: moves your + to another weapon. A fail changes nothing.",
 		} },
 		{ Id = "Chat", Title = "Team Chat", Lines = {
@@ -6137,7 +6137,7 @@ Config.Loot = {
 		BareEquip = "[%s] equipped! Power %s → %s",
 		BareEquipEn = "[%s] equipped! Power %s → %s",
 		-- 게임성 검수 10/12 (bag photo: "Enhance success! Wooden Sword +0 → +1 (attack…" cut at the column; A23-130 the
-		-- result only - the sound and the colour tell success / failure, the confirm already says weapons never break).
+		-- result only - the sound and the colour tell success / failure, the confirm already says what a fail does).
 		-- The callers' arguments stay (LootService, Panels: name, before, after, attack % before, after - the extra ones
 		-- unused). MoveOk gets (from name, its level left, to name, its new level): only the weapon that took the
 		-- enhance shows (%.0s prints nothing) - two long names did not fit one line
@@ -11223,7 +11223,7 @@ Config.ClientText.BagUI = {
 	PickTo = "Pick the weapon to get +%d.",
 	ConfirmEnh = "%s\n+%d → +%d · %d%% chance", -- UiSandbox 10/12: "+0 → +1" no longer breaks in the 200 du column
 	ConfirmMove = "%s +%d →\n%s +%d · %d%% chance",
-	FailDown = "A fail may drop it 1 step. Weapons never break!",
+	FailDown = "A fail may drop it 1 step.",
 	FailKeep = "Nothing changes on a fail.",
 	SellsFor = "Sells for %s each",
 	SellOne = "Sell 1", -- artisan contract ②: a gathered material at the anvil

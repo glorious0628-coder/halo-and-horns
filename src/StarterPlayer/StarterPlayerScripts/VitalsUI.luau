@@ -18,7 +18,7 @@ local ui = { Potions = {}, CharacterConnections = {}, HumanoidConnections = {}, 
 local COL = { HP = Color3.fromRGB(239, 45, 51), MP = Color3.fromRGB(30, 171, 245), Dim = Color3.fromRGB(150, 150, 160) }
 local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of each potion button
 -- the potion count on the BtnPotion socket (real px: box W x H at least, text Min..Max, outline thickness)
-local COUNT_PX = { W = 24, H = 18, Min = 14, Max = 18, Outline = 1.5 }
+local COUNT_PX = { W = 24, H = 18, Min = 14, Max = 18, Outline = 1.5, BarOutline = 1.2 }
 -- UI round 2 #3 (검수 2026-10-07): with no potions the [Buy] press shows the way to the merchant (HUD.ShowGuide)
 local WAY = { Label = Config.ClientText.VitalsUI.PotionShop, Gap = 1, At = -math.huge }
 
@@ -110,7 +110,15 @@ function VitalsUI.BuildStats(parent, touch)
 		text.TextWrapped = false
 		-- 2026-10-08: real 11 px on small PC windows too (HudLayout's bar floor); final review 10/14 (phone first-10 photos:
 		-- '156/156' thin and ~9 px): phones get bold numbers up to 13 px in their taller bars (HudLayout TOUCH_BAR)
-		C.HUD.FitText(text, touch and 13 or 11, touch == true, nil, true)
+		-- user 10/14 evening (PC '100/100' blurry: thin white on the light bar, FitText's faint 0.4 px rim): bold on PCs too
+		-- and a full dark rim like the potion count; numbers only, never translated (A23-179)
+		C.HUD.FitText(text, touch and 13 or 12, true, nil, true)
+		local rim = text:FindFirstChild("Outline")
+		if rim and rim:IsA("UIStroke") then
+			text:SetAttribute("PickerOutlineThickness", COUNT_PX.BarOutline)
+			rim.Thickness, rim.Transparency = COUNT_PX.BarOutline, 0
+		end
+		UIKit.NoTranslate(text)
 		ui[kind] = { Frame = frame, Set = set, Text = text }
 	end
 end

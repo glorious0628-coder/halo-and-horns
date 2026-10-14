@@ -468,7 +468,8 @@ check(lineWith(v, "Pick a weapon.") and action(v, "Cancel") and not action(v, "E
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 } })
 check(lineWith(v, "\n+3 → +4 · 70% chance") and action(v, "Enhance").Enabled, "enhance confirm: before → after + the chance before sending",
 	v.Lines[1] and v.Lines[1].Text)
-check(lineWith(v, "Weapons never break") ~= nil, "a +1 or more weapon: a fail may drop it one step (safe)")
+check(lineWith(v, "A fail may drop it 1 step.") ~= nil and lineWith(v, "never break") == nil,
+	"a +1 or more weapon: a fail may drop it one step (no 'never break' line, user 10/14)")
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 1 } })
 check(lineWith(v, TXT.FailKeep) ~= nil, "a +0 weapon: nothing changes on a fail")
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 }, Pending = { Kind = "Use", Answered = false } })

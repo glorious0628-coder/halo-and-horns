@@ -41,6 +41,7 @@ ALLOWED = [
     (SPS + "VitalsUI.luau", "Number = true, AutoLocalize = false,"),
     (SPS + "PlayerListUI.luau", "Number = true, AutoLocalize = false,"),
     (SPS + "CharacterUI.luau", "nickLabel.AutoLocalize = false"),
+    (SPS + "BagUI.luau", 'AutoLocalize = false, ZIndex = z, Style = "Number" })'),  # a cell's count / +N (개발 1 10/14)
     (SPS + "UIKit.luau", "pcall(function() inst.AutoLocalize = false end)"),
 ]
 REQUIRED = [

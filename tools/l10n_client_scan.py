@@ -6,7 +6,7 @@ sent to the cloud localization table (and later moved into central tables, AGENT
 Heuristic: string literals on lines like `Text = "..."` / `Label = "..."` / `Title = ...` / `ActionText` / `Placeholder...`,
 plus every literal inside a table opened as `TXT = {`, `local TXT = {`, `TEXT = {`, `WORDS = {` ... until the closing `}`.
 Skips ids (rbxasset, CamelCase without spaces, ALL_CAPS, snake_case), format strings (%s %d { ), empty / no-letter strings.
-Output CSV: Key,Context,Example,Source (Key = client.<file>.<line>). Review the list before uploading.
+Output CSV: Key,Context,Example,Source (Key = client.<file>.<line>, the 2nd, 3rd ... string on one line .2, .3). Review the list before uploading.
 """
 import argparse
 import csv
@@ -26,7 +26,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="build/l10n/client_strings.csv")
     a = ap.parse_args()
-    out = {}
+    out, per_line = {}, {}
     for f in sorted(glob.glob(str(ROOT / "src/StarterPlayer/**/*.luau"), recursive=True)):
         lines = open(f, encoding="utf-8").read().split("\n")
         depth = 0
@@ -48,7 +48,15 @@ def main():
                     continue
                 if " " not in c and not (c[0].isupper() and len(c) >= 3):
                     continue
-                out.setdefault(c, f"client.{os.path.basename(f)[:-5]}.{i}")
+                if c in out:
+                    continue
+                # one key per string: two words on one line ("Gear", "Use", "Scrolls", "Materials" = BagUI line 41)
+                # shared client.BagUI.41 and the table kept only the last one (개발 1 10/14: Gear / Use / Full / Newest
+                # stayed English). The 2nd, 3rd ... on a line get .2, .3 ...
+                base = f"client.{os.path.basename(f)[:-5]}.{i}"
+                n = per_line.get(base, 0) + 1
+                per_line[base] = n
+                out[c] = base if n == 1 else f"{base}.{n}"
     os.makedirs(ROOT / "build/l10n", exist_ok=True)
     with open(ROOT / a.out, "w", encoding="utf-8-sig", newline="") as fh:
         w = csv.writer(fh)
