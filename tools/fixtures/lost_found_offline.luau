@@ -355,6 +355,11 @@ runGroup("the walk's end: the bench", function()
 	for _, g in w.Grants do grants[g.Id] = (grants[g.Id] or 0) + g.N end
 	check(grants.HP == 2 and grants.MP == 2 and grants.Enh70 == 1 and d[hp] == 2 and d[mp] == 2 and d.Items.Enh70 == 1,
 		"a good turn-in: 2 HP + 2 MP potions + the day's first scroll", show({ grants, d.Items }))
+	do -- 최종 검수 10/14: everything a player is GIVEN goes in as a reward (a full bag too; only pick-ups check the slots)
+		local bad = 0
+		for _, g in w.Grants do if g.Src ~= "Reward" then bad += 1 end end
+		check(#w.Grants > 0 and bad == 0, "the Lost & Found pay goes in as a reward (GrantItem source Reward)", bad .. " of " .. #w.Grants)
+	end
 	check(#w.XPs == 1 and w.XPs[1].N == xp and #w.Gold == 0, "XP = 2 minutes of hunting at Lv5 (" .. xp .. "), no gold", show({ plain(w.XPs), #w.Gold }))
 	local line = notices(w, p)
 	-- A23-130 (server text verdicts 2026-10-11): the reward parts only, no NPC thank-you lead

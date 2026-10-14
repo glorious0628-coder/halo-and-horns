@@ -29,6 +29,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("bag 10/14: a reward refused when the bag is full", "ATTEND_SOURCE", "pcall(loot.GrantItem, player, id, n, \"Reward\")", "pcall(loot.GrantItem, player, id, n)"),
     # --- one claim a KST day, nothing resets
     ("a claim every call (no day check)", A, "and data.ClassChosen == true and a.LastDay < day", "and data.ClassChosen == true"),
     ("the day is not recorded", A, "\ta.LastDay = day\n\ta.Days += 1\n", "\ta.Days += 1\n"),

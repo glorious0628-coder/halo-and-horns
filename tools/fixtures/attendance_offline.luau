@@ -113,6 +113,11 @@ runGroup("a week, day by day", function()
 	w:ToDay(1)
 	claim(w, p)
 	check(d.Items.Enh70 == 1, "day 3: one 70% enhance scroll", show(d.Items))
+	do -- 최종 검수 10/14: everything a player is GIVEN goes in as a reward (a full bag too; only pick-ups check the slots)
+		local bad = 0
+		for _, g in w.Grants do if g.Src ~= "Reward" then bad += 1 end end
+		check(#w.Grants > 0 and bad == 0, "attendance items / potions go in as rewards (GrantItem source Reward)", bad .. " of " .. #w.Grants)
+	end
 	w:ToDay(1)
 	claim(w, p)
 	check(goldFor(w, p, "Attendance") == 2 * g3, "day 4: 3 more minutes of gold", goldFor(w, p, "Attendance"))

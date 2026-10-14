@@ -254,6 +254,7 @@ Config.Data = {
 		"IntroSeen", -- A23-9
 		"AutoCombatUnlocked", "AutoCombatEnabled", -- A23-1
 		"SkillSlots", -- SKL-2: the SkillBar shows these slots
+		"BagSlots", -- bag slots (game dev 2, 10/14): the bag draws this many open slots
 	},
 }
 
@@ -3145,6 +3146,7 @@ Config.StoryQuests = {
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
+			Reward = { BagSlots = 4 }, -- bag slots 10/14: the first upgrade (12 -> 16), whichever pick
 		},
 		-- SKL-3 (skill_kit §2): practice a new skill right after learning it. Requires.Skill = that skill is learned (its
 		-- switch on and the slot open: Z at Skills.Unlock.Z, X at Unlock.X). SkillHit Slot = only that skill's casts count
@@ -3307,7 +3309,7 @@ Config.StoryQuests = {
 				} },
 				{ Text = "Go to the Goblin Woods", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
 			},
-			Reward = { Gold = 2, XP = 2 },
+			Reward = { Gold = 2, XP = 2, BagSlots = 4 }, -- bag slots 10/14: the Lv10 upgrade (16 -> 20)
 		},
 		-- 3장 "Grab Club" (story_depth §2 3장 + §5 ③④, quest_chain 3장; A23-56: the whole chapter in the beta). Rewards:
 		-- G1 = { Gold = 1 }, the chapter ends M3_4 / M3_8 = { Gold = 2, XP = 2 } with [Claim]. Echoes of M3_4: Good / A ->
@@ -6400,6 +6402,44 @@ Config.Audio.Ambient = {
 		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
+
+-- 최종 검수 10/14 (gameplay plan 3, bag slot upgrade as a quest reward): ONE number for the whole bag = how many kinds
+-- it holds. A slot = one kind in the grid of a Counts kind (a material / scroll / tonic / treat id, a spare weapon "T:P");
+-- owned weapons, gear and potions never count. The owner's attribute BagSlots (game dev 2: saved data.BagSlots, only
+-- grows 12 -> 16 -> 20 by two quest rewards Reward.BagSlots = Step); no attribute = Default. Full: the server takes no
+-- NEW kind (a kind I have keeps stacking) and says Text.Full; Text.Gained = the quest reward line. The bag (game dev 1)
+-- shows "used / slots" on its bottom line (red when full) and shows every thing it has.
+Config.BagSlots = { Default = 12, Step = 4, Max = 20,
+	Counts = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true, Spare = true },
+	Text = { Gained = "+%d bag slots", Full = "Your bag is full! Sell or use something to make room." } }
+-- (game dev 2, 10/14) the save's slots: data.BagSlots (only grows, by quest rewards Reward.BagSlots), Default..Max
+Config.Data.Defaults.BagSlots = Config.BagSlots.Default
+function Config.BagSlotsOf(data)
+	local B = Config.BagSlots
+	local n = type(data) == "table" and tonumber(data.BagSlots) or nil
+	if n == nil or n ~= n then n = B.Default end
+	return math.clamp(math.floor(n), B.Default, B.Max)
+end
+-- the slots a save uses: every Config.Loot.Items id of a Counts kind it holds (>= 1) and every spare key "T:P" (>= 1)
+-- = one slot each (owned weapons, gear and potions are not in the grid). The bag (BagUI.Used) counts the same way.
+function Config.BagUsed(data)
+	if type(data) ~= "table" then return 0 end
+	local counts, n = Config.BagSlots.Counts, 0
+	for id, c in type(data.Items) == "table" and data.Items or {} do
+		local def = Config.Loot.Items[id]
+		if def and counts[def.Kind] and (tonumber(c) or 0) >= 1 then n += 1 end
+	end
+	if counts.Spare then
+		for _, c in type(data.Spares) == "table" and data.Spares or {} do
+			if (tonumber(c) or 0) >= 1 then n += 1 end
+		end
+	end
+	return n
+end
+-- true when one more KIND fits (a kind already held always stacks)
+function Config.BagHasRoom(data)
+	return Config.BagUsed(data) < Config.BagSlotsOf(data)
+end
 
 -- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
 -- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's

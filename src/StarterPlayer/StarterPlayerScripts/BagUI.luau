@@ -50,6 +50,7 @@ local TXT = {
 	Attack = "Attack %s",
 	Power = "Power %s → %s",
 	PowerNow = "Power %s",
+	SlotsF = "%d / %d", -- 최종 검수 10/14: kinds in the bag / its slots (Config.BagSlots)
 	Spare = "Spare",
 	Count = "×%d",
 	TonicLeft = "%s left",
@@ -85,6 +86,8 @@ local L = {
 	Narrow = 4, Wide = 8, -- columns (A23-32: 4 <-> 8 or more)
 	TabH = 40, BarH = 40, RowGap = 8, Round = 38, CoinW = 26,
 	WornCap = 18, -- the worn row's word under each slot
+	Shine = { Time = 0.3, Times = 3 }, -- new bag slots: a gold ring blinks 3 times around "used / slots"
+	SlotsX = 140, SlotsW = 74, -- the bottom line's "used / slots" (du from the left; after the gold)
 	WornInset = 6, -- du: the worn row starts this far in, each word reaches this far past its slot (UiSandbox: "Weapo")
 	Big = 84, -- the detail's slot
 	BtnH = 40, QuickW = 46,
@@ -121,6 +124,8 @@ local S = {
 	Pending = nil, -- { Kind = "Use" | "Equip", SentAt, ReadyAt, Item?, Count?, Tier?, WeaponTier?, Answered? }
 	ReadyAt = {}, -- [remote] = os.clock() when the next send is allowed
 	Note = nil, -- one status line (a timeout)
+	SlotsLast = nil, -- the last BagSlots seen (Start); Flash = true: slots came since, the count shines at the next draw
+	Flash = nil,
 	Result = nil, ResultAt = -math.huge, -- the last scroll result Panels got (Panels.LastEnhance)
 	Shown = {}, -- [tab] = true: shown since the window opened (its new things count as seen when it is left)
 	NearAnvil = false, -- artisan contract ②: the Forge anvil's prompt shows to me (ProximityPromptService)
@@ -985,6 +990,55 @@ local function drawWorn(parent, all, cols)
 	return L.Cell + L.WornCap + L.RowGap
 end
 
+-- 최종 검수 10/14 bag slots (pure): the owner's BagSlots attribute -> the bag's slots (no / odd value = Config default)
+function BagUI.Slots(value)
+	local n = tonumber(value)
+	n = n and n == n and math.floor(n) or nil
+	if n and n >= 1 then return math.min(n, 999) end
+	local cfg = type(Config.BagSlots) == "table" and Config.BagSlots or {}
+	return math.max(1, math.floor(num(cfg.Default, 12)))
+end
+
+-- (pure) the slots in use: one per cell of a Config.BagSlots.Counts kind with at least one (the server's count)
+function BagUI.Used(all)
+	local cfg = type(Config.BagSlots) == "table" and Config.BagSlots or {}
+	local counts = type(cfg.Counts) == "table" and cfg.Counts or {}
+	local n = 0
+	for _, cell in type(all) == "table" and all or {} do
+		if type(cell) == "table" and counts[cell.Kind] == true and num(cell.Count, 0) >= 1 then n += 1 end
+	end
+	return n
+end
+
+-- new slots (a quest reward) shine: a gold ring blinking a few times (no tween service = it just shows)
+local function shine(box)
+	local f = Instance.new("Frame")
+	f.Name = "NewSlot"
+	f.BackgroundTransparency = 1
+	f.Position = UDim2.fromOffset(2, 2)
+	f.Size = UDim2.new(1, -4, 1, -4)
+	f.ZIndex = (tonumber(box.ZIndex) or 1) + 5
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0.14, 0)
+	c.Parent = f
+	local st = Instance.new("UIStroke")
+	st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	st.Color = colorOf("Gold")
+	st.Thickness = 3
+	st.Parent = f
+	f.Parent = box
+	local ok, tweens = pcall(function() return game:GetService("TweenService") end)
+	if ok and tweens then
+		pcall(function()
+			local info = TweenInfo.new(L.Shine.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, L.Shine.Times * 2 - 1, true)
+			tweens:Create(st, info, { Transparency = 1 }):Play()
+		end)
+		task.delay(L.Shine.Time * L.Shine.Times * 2 + 0.1, function()
+			if f.Parent then f:Destroy() end
+		end)
+	end
+end
+
 local function drawGrid(area, all, list, cols)
 	local top = 0
 	if S.Tab == "Gear" then top = drawWorn(area, all, cols) end
@@ -1033,7 +1087,7 @@ local function drawGrid(area, all, list, cols)
 			selectStroke(box)
 		end
 	end
-	-- empty dark slots fill the rows on screen and the last row (no slot limit, A23-32)
+	-- empty dark slots fill the rows on screen and the last row (A23-32; the bag's limit is the bottom line's count)
 	local h = select(2, BagUI.LayoutSize()) - top
 	local rows = h > L.Cell and math.floor((h + L.Gap) / (L.Cell + L.Gap)) or 6
 	local total = math.max(rows * cols, math.ceil(#list / cols) * cols)
@@ -1172,7 +1226,20 @@ local function drawBar(bar)
 		Size = UDim2.fromOffset(L.CoinW, L.CoinW) })
 	if coin then coin.Parent = bar end
 	label(bar, Util.FormatInt(gold), L.Size.Body, colorOf("Gold"), { Name = "Gold", AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, L.CoinW + 6, 0.5, 0), Size = UDim2.new(0.4, 0, 1, 0), TextWrapped = false, Style = "Number" })
+		Position = UDim2.new(0, L.CoinW + 6, 0.5, 0), Size = UDim2.fromOffset(L.SlotsX - L.CoinW - 12, L.Round), TextWrapped = false,
+		Style = "Number" })
+	-- 최종 검수 10/14 bag slots: "used / slots" for the whole bag (red when full), new slots shine once
+	local used, slots = BagUI.Used(BagUI.Cells(context())), BagUI.Slots(attr("BagSlots"))
+	local bagIcon = kit.ArtImage("IconBag", { Name = "SlotsIcon", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, L.SlotsX, 0.5, 0),
+		Size = UDim2.fromOffset(L.CoinW, L.CoinW) })
+	if bagIcon then bagIcon.Parent = bar end
+	local count = label(bar, string.format(TXT.SlotsF, used, slots), L.Size.Body, used >= slots and colorOf("Bad") or colorOf("Text"),
+		{ Name = "Slots", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, L.SlotsX + L.CoinW + 4, 0.5, 0),
+			Size = UDim2.fromOffset(L.SlotsW, L.Round), TextWrapped = false, Style = "Number" })
+	if S.Flash then
+		S.Flash = nil
+		shine(count)
+	end
 	local wide = isWide()
 	local size = roundButton(bar, "Size", wide and "GlyphShrink" or "GlyphExpand", function() BagUI.Act("Size") end)
 	size.AnchorPoint = Vector2.new(1, 0.5)
@@ -1500,8 +1567,25 @@ function BagUI.Init(registry)
 	}) == true
 end
 
+-- 최종 검수 10/14 bag slots: BagSlots growing (a quest reward) -> the count shines at the next draw of the bag
+function BagUI.OnSlots(value)
+	local n = tonumber(value)
+	if not n then return end
+	n = math.floor(n)
+	local last = S.SlotsLast
+	S.SlotsLast = n
+	if type(last) == "number" and n > last then S.Flash = true end
+end
+
 function BagUI.Start()
 	pullInventory()
+	BagUI.OnSlots(attr("BagSlots"))
+	pcall(function()
+		LocalPlayer:GetAttributeChangedSignal("BagSlots"):Connect(function()
+			BagUI.OnSlots(attr("BagSlots"))
+			if VIEW.Kit then pcall(BagUI.Redraw) end
+		end)
+	end)
 	-- artisan contract ②: the anvil's prompt showing to me = in selling reach (the server checks the same distance)
 	local name = type(Config.WeaponShop) == "table" and Config.WeaponShop.PromptName or nil
 	local function near(prompt, on)
@@ -1516,6 +1600,6 @@ function BagUI.Start()
 end
 
 -- offline tests
-BagUI._T = { TXT = TXT, L = L, S = S }
+BagUI._T = { TXT = TXT, L = L, S = S, Context = function() return context() end }
 
 return BagUI

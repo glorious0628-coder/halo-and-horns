@@ -543,6 +543,17 @@ runGroup("buy refusals", function()
 	bd.BankGold = 1000
 	bd.Items.Jelly = 995
 	check(try(buyer, b, id, 5) == "No room for it.", "995 + 10 Jelly > 999", "")
+	-- bag slots (10/14): no Jelly yet and 12 other kinds in 12 slots: no room for a new kind
+	local kinds = {}
+	for k, def in b.Config.Loot.Items do
+		if def.Kind == "Material" and k ~= "Jelly" then table.insert(kinds, k) end
+	end
+	table.sort(kinds)
+	bd.Items = {}
+	for i = 1, 12 do bd.Items[kinds[i]] = 1 end
+	check(try(buyer, b, id, 5) == "No room for it." and next(bd.Market.In) == nil and bd.BankGold == 1000,
+		"a full bag (12 kinds): no new kind bought, nothing taken", show(bd.Market))
+	bd.Items = {}
 	bd.Items.Jelly = 1
 	bd.Level = 4
 	check(try(buyer, b, id, 5) == "You can buy from Lv 5.", "Lv4", "")

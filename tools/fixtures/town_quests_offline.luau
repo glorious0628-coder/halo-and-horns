@@ -407,6 +407,10 @@ runGroup("a23-70 lunchbox", function()
 	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 == true,
 		"Give it back: +1 HP potion, Honor unchanged, done", show({ d.HPPotionCount, d.Honor, d.Story.Done.Lunch1 }))
 	check(not has(lines, T.LeanGood) and not has(lines, T.Recorded), "no lean / saved line (the reward says it)", show(lines))
+	-- bag slots (10/14): Lunch1 done = +4 bag slots (12 -> 16) and its line, whichever pick
+	local bagLine = string.format(w.Config.BagSlots.Text.Gained, 4)
+	check(d.BagSlots == 16 and p:GetAttribute("BagSlots") == 16 and has(lines, bagLine),
+		"Lunch1 done: +4 bag slots (16) and '" .. bagLine .. "'", show({ d.BagSlots, p:GetAttribute("BagSlots"), lines }))
 	local fx = nil
 	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then fx = w.Fx[i].Data end end
 	check(fx and fx.Option == "Good", "Fx Choice { Option = 'Good' }", show(fx))
@@ -420,6 +424,21 @@ runGroup("a23-70 lunchbox", function()
 		show(bite))
 	check((d2.BankGold or 0) == bank + 25 and (d2.Honor or 0) == 0 and (d2.Infamy or 0) == 0,
 		"One bite: +25 gold, no score", show({ (d2.BankGold or 0) - bank, d2.Honor, d2.Infamy, bite }))
+	check(d2.BagSlots == 16 and has(bite, bagLine), "One bite: +4 bag slots too", show({ d2.BagSlots, bite }))
+	-- a save that finished Lunch1 before the slots existed: 16 at the join, no line; a second join adds nothing
+	local nC = #w.Notices
+	local pc, dc = w:Join(1707, { Faction = "Halo", Class = "Warrior", Level = 3,
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = { Lunch1 = true }, Pick = {}, First = { Migrated = true } } } })
+	w:Flush()
+	check(dc.BagSlots == 16 and pc:GetAttribute("BagSlots") == 16 and not has(w:NoticesFor(pc, nC), bagLine),
+		"an old save with Lunch1 done: 16 slots at the join, silently", show({ dc.BagSlots, w:NoticesFor(pc, nC) }))
+	w.Story.CatchUpBagSlots(pc, dc)
+	check(dc.BagSlots == 16, "the catch-up never adds twice", dc.BagSlots)
+	local _, dz = w:Join(1708, { Faction = "Halo", Class = "Warrior", Level = 3,
+		Data = { TutorialStep = 99, BagSlots = 20, Story = { Main = { Id = "" }, Subs = {}, Done = { Lunch1 = true }, Pick = {}, First = { Migrated = true } } } })
+	check(dz.BagSlots == 20, "a save with more slots keeps them", dz.BagSlots)
+	check(w.Config.StoryQuests.Defs.M2_7.Reward.BagSlots == 4 and L.Reward.BagSlots == 4,
+		"Config: Lunch1 and M2_7 (Lv10 story) give +4 bag slots each", show({ L.Reward, w.Config.StoryQuests.Defs.M2_7.Reward }))
 	-- a Horns player may give it back
 	local p3, d3 = fresh(1705, "Horns", 99)
 	local hp3 = d3.HPPotionCount or 0
@@ -562,6 +581,8 @@ runGroup("e0-old-saves", function()
 		show(e.Story.Main.Id))
 	local gold = { a.BankGold or 0, b.BankGold or 0 }
 	check(gold[1] == 0 and gold[2] == 0 and (a.Honor or 0) == 0 and #w.XP == 0, "skipped chapters pay nothing", show({ gold, a.Honor, #w.XP }))
+	check(a.BagSlots == 16 and b.BagSlots == 16 and (c.BagSlots or 12) == 12,
+		"bag slots (10/14): skipping M2_7 still gives its +4 (16), a Lv5 save stays at 12", show({ a.BagSlots, b.BagSlots, c.BagSlots }))
 end)
 
 ------------------------------------------------------------------ 6. LootService.GrantItem (E6)
@@ -1265,6 +1286,16 @@ runGroup("ch3-halo-good", function()
 	w:MoveTo(p, vec(gate.X + 2, 0, gate.Z))
 	w.Story.Refresh(p)
 	w:Flush()
+	-- 최종 검수 10/14: a full bag (no scroll yet, every slot used) still gets the reward scroll
+	d.Items = d.Items or {}
+	d.Items.Enh70 = nil
+	local fill = {}
+	for k, def in w.Config.Loot.Items do
+		if def.Kind == "Material" then table.insert(fill, k) end
+	end
+	table.sort(fill)
+	for i = 1, w.Config.BagSlotsOf(d) do if fill[i] and (d.Items[fill[i]] or 0) < 1 then d.Items[fill[i]] = 1 end end
+	check(not w.Config.BagHasRoom(d), "(the bag is full before Pip1's reward)", w.Config.BagUsed(d))
 	local enh, n3 = d.Items and d.Items.Enh70 or 0, #w.Notices
 	w:Act(p, "Pip1", "Talk")
 	check(d.Story.Done.Pip1 and (d.Items.Enh70 or 0) == enh + 1

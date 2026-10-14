@@ -268,6 +268,16 @@ runGroup("day caps", function()
 	local p, d = atBoard(w, 601, { "J6", "J3", "J1", "J4" })
 	local st = d.Board
 	st.Done = 4
+	-- 최종 검수 10/14: a full bag (every slot used, Enh30 not held) still gets the reward
+	do
+		local mats = {}
+		for k, def in C0.Loot.Items do if def.Kind == "Material" and k ~= "Enh30" then table.insert(mats, k) end end
+		table.sort(mats)
+		d.Items = d.Items or {}
+		d.Items.Enh30 = nil
+		for _, k in mats do if C0.BagHasRoom(d) then d.Items[k] = 1 end end
+		check(not C0.BagHasRoom(d), "(the bag is full before the reward)", C0.BagUsed(d))
+	end
 	local enh0, n0 = d.Items and d.Items.Enh30 or 0, #w.Notices
 	w:Act(p, "Meadow", "Take", 1, "Kind")
 	w:Gold(p, 40, "Monster")

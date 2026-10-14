@@ -340,7 +340,7 @@ end
 local function grantItem(player, id, n)
 	local loot = S.LootService
 	if type(id) ~= "string" or type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return nil end
-	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)))
+	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)), "Reward") -- a reward fits a full bag (10/14)
 	if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 	local given = ok and math.floor(num(res)) or 0
 	if given <= 0 then return nil end
@@ -392,6 +392,11 @@ local function complete(player, data, id)
 	end
 	-- A23-130: the reward line only, with the QuestDone sound (def.Finish lore lines are not sent)
 	notify(player, msg, "reward", "QuestDone")
+	-- bag slots (10/14): Reward.BagSlots = +n slots and one line ("+4 bag slots")
+	if type(def.Reward) == "table" and num(def.Reward.BagSlots) > 0 and S.LootService and type(S.LootService.AddBagSlots) == "function" then
+		local ok, added = pcall(S.LootService.AddBagSlots, player, def.Reward.BagSlots)
+		if ok and num(added) > 0 then notify(player, string.format(Config.BagSlots.Text.Gained, added), "reward", "None") end
+	end
 	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
 	if type(def.Reward) == "table" and def.Reward.Item then
 		local line = grantItem(player, def.Reward.Item, def.Reward.N)
@@ -411,6 +416,21 @@ local function complete(player, data, id)
 	giveWeapon(player, def)
 	dirty(player)
 	StoryQuestService.QuestDone:Fire(player, id)
+end
+
+-- bag slots (10/14): a save that finished its Reward.BagSlots quests before the slots existed gets them at the join
+-- (silently; the slots only grow, never past Config.BagSlots.Max)
+function StoryQuestService.CatchUpBagSlots(player, data)
+	local loot = S.LootService
+	if type(loot) ~= "table" or type(loot.AddBagSlots) ~= "function" then return end
+	local want = Config.BagSlots.Default
+	for id in story(data).Done do
+		local def = DEFS[id]
+		if def and type(def.Reward) == "table" then want += math.max(0, math.floor(num(def.Reward.BagSlots))) end
+	end
+	want = math.min(want, Config.BagSlots.Max)
+	local have = Config.BagSlotsOf(data)
+	if want > have then loot.AddBagSlots(player, want - have) end
 end
 
 -- A23-110: nothing of potions yet: no stock, no potion ever bought or drunk (the King's Hop is for those saves only)
@@ -657,6 +677,9 @@ local function refresh(player)
 			end
 		end
 		changed = true
+		-- bag slots (10/14): a skipped quest with Reward.BagSlots still gives its slots (the bag is not a past reward)
+		local okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)
+		if not okBag then Util.Warn(TAG, "CatchUpBagSlots: " .. tostring(errBag)) end
 	end
 	st.First.Migrated = true
 	-- A23-113: first meetings (Config.StoryQuests.Meetings: what the player holds, the size scale on their own body) leave a saved flag
@@ -1136,7 +1159,7 @@ local function payChoice(player, obj, side)
 	local id = r.Item or r.Potion
 	local loot = S.LootService
 	if type(id) == "string" and type(loot) == "table" and type(loot.GrantItem) == "function" then
-		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)))
+		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)), "Reward") -- a reward fits a full bag (10/14)
 		if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 		local given = ok and math.floor(num(res)) or 0
 		if given > 0 then
@@ -1313,6 +1336,8 @@ function StoryQuestService.Start()
 			publishTownPick(player, story(data)) -- A23-64 ①: TownPick from the save (sanitize backfilled it)
 			local okGift, errGift = pcall(StoryQuestService.RetryGifts, player) -- a step gift that gave nothing, again
 			if not okGift then Util.Warn(TAG, "RetryGifts: " .. tostring(errGift)) end
+			local okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)
+			if not okBag then Util.Warn(TAG, "CatchUpBagSlots: " .. tostring(errBag)) end
 		end
 		pcall(refresh, player)
 	end)

@@ -75,8 +75,8 @@ local function bossWorld(opts)
 			w.TitlesOf[p][id] = true
 			return true
 		end },
-		LootService = { GrantItem = function(p, id, n)
-			table.insert(w.Grants, { P = p, Id = id, N = n })
+		LootService = { GrantItem = function(p, id, n, source)
+			table.insert(w.Grants, { P = p, Id = id, N = n, Src = source })
 			if w.GrantReturn ~= nil then return w.GrantReturn end
 			return n
 		end },
@@ -483,7 +483,7 @@ runGroup("clatter extras", function()
 	local da, db = w.DataOf[a].FieldBoss.Clatter, w.DataOf[b].FieldBoss.Clatter
 	check(da.Kills == 1 and db.Kills == 1 and w.TitlesOf[a].ClatterStopper and w.TitlesOf[b].ClatterStopper,
 		"first kill: Kills 1, Clatter Stopper", show(da))
-	check(#w.Grants == 2 and w.Grants[1].Id == "CaptainBadge" and w.Grants[1].N == 1 and da.Owed == 0,
+	check(#w.Grants == 2 and w.Grants[1].Id == "CaptainBadge" and w.Grants[1].N == 1 and w.Grants[1].Src == "Reward" and da.Owed == 0,
 		"the week's first kill always gives the badge", #w.Grants)
 	check(#w:NoticesFor(a) == 1, "a badge line", #w:NoticesFor(a))
 	-- same week: no badge

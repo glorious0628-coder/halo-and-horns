@@ -2995,6 +2995,59 @@ runGroup("sell one gathered kind", function()
 	end
 end)
 
+------------------------------------------------------------------ 7c. bag slots (game dev 2, 2026-10-14)
+runGroup("bag slots", function()
+	local f = fixture()
+	local C, L = f.Config, f.L
+	local B = C.BagSlots
+	check(B.Default == 12 and B.Step == 4 and B.Max == 20 and C.Data.Defaults.BagSlots == 12 and table.find(C.Data.Mirrored, "BagSlots") ~= nil,
+		"slots 12 -> 16 -> 20, saved from 12, mirrored as the BagSlots attribute", show(B))
+	check(type(B.Text.Full) == "string" and B.Text.Gained == "+%d bag slots", "the Full / Gained lines", show(B.Text))
+	-- the material ids, sorted (Jelly kept apart: the kind already held)
+	local mats = {}
+	for id, def in L.Items do
+		if def.Kind == "Material" and id ~= "Jelly" then table.insert(mats, id) end
+	end
+	table.sort(mats)
+	check(#mats >= 13, "(enough material kinds to fill the bag)", #mats)
+	f:Give("Jelly", 5)
+	for i = 1, 11 do f:Give(mats[i], 1) end
+	check(C.BagUsed(f.Data) == 12 and not C.BagHasRoom(f.Data), "12 kinds held: the bag is full", C.BagUsed(f.Data))
+	f.Notices = {}
+	local got = f:Give(mats[12], 3)
+	check(got == 0 and f:Count(mats[12]) == 0 and f:Noticed(B.Text.Full) == 1, "a 13th kind: not taken, the Full line", show({ got, f:Count(mats[12]) }))
+	f:Give(mats[13], 1)
+	check(f:Noticed(B.Text.Full) == 1, "the Full line at most once in 5 minutes", f:Noticed(B.Text.Full))
+	check(f:Give("Jelly", 4) == 4 and f:Count("Jelly") == 9, "a kind already held still stacks", f:Count("Jelly"))
+	-- 최종 검수 10/14: a quest / story reward always goes in (past the slots); any other source does not
+	check(f.Loot.GrantItem(f.Player, mats[12], 2) == 0 and f:Count(mats[12]) == 0, "GrantItem (a drop / no source): refused when full", "")
+	check(f.Loot.GrantItem(f.Player, mats[12], 2, "Gift") == 0, "... another source too", "")
+	check(f.Loot.GrantItem(f.Player, mats[12], 2, "Reward") == 2 and f:Count(mats[12]) == 2 and C.BagUsed(f.Data) == 13,
+		"GrantItem source Reward: in, past the slots (13 kinds in 12)", C.BagUsed(f.Data))
+	check(f:Give(mats[13], 1) == 0, "... and picking up a new kind still stops", f:Count(mats[13]))
+	f.Data.Items[mats[12]] = nil
+	-- a scroll is a slot too; a potion is not (not in the grid)
+	check(f:Give("Enh70", 1) == 0, "a scroll of a new kind: no room either", f:Count("Enh70"))
+	-- spares: a new key needs a slot, a key held stacks
+	f.Data.Spares = {}
+	check(f.Loot.SpareRoom(f.Player, 4, 0) == false, "a new spare key in a full bag: no room", "")
+	-- a used-up kind frees its slot
+	f.Data.Items[mats[11]] = 0
+	check(C.BagUsed(f.Data) == 11 and f:Give(mats[12], 2) == 2, "a kind at 0 is no slot: the 13th fits now", C.BagUsed(f.Data))
+	check(f.Loot.SpareRoom(f.Player, 4, 0) == false, "(full again)", "")
+	-- the quest reward: +4, +4, then nothing past Max
+	check(f.Loot.AddBagSlots(f.Player, 4) == 4 and f.Data.BagSlots == 16 and f.Player:GetAttribute("BagSlots") == 16,
+		"+4 slots: 16 (saved, attribute)", show({ f.Data.BagSlots, f.Player:GetAttribute("BagSlots") }))
+	check(f.Loot.SpareRoom(f.Player, 4, 0) == true and f.Loot.AddSpare(f.Player, 4, 0) == true and C.BagUsed(f.Data) == 13,
+		"room now: a new spare key is a slot", C.BagUsed(f.Data))
+	check(f.Loot.AddBagSlots(f.Player, 4) == 4 and f.Data.BagSlots == 20, "+4 again: 20", f.Data.BagSlots)
+	check(f.Loot.AddBagSlots(f.Player, 4) == 0 and f.Data.BagSlots == 20, "never past Max", f.Data.BagSlots)
+	check(f.Loot.AddBagSlots(f.Player, 0) == 0 and f.Loot.AddBagSlots(f.Player, -3) == 0, "0 / negative: nothing", "")
+	-- an odd saved value is read inside Default..Max
+	check(C.BagSlotsOf({ BagSlots = 3 }) == 12 and C.BagSlotsOf({ BagSlots = 999 }) == 20 and C.BagSlotsOf({}) == 12
+		and C.BagSlotsOf({ BagSlots = 0 / 0 }) == 12, "a saved value is clamped to 12..20", "")
+end)
+
 ------------------------------------------------------------------ 8. rebirth (A23-14: only Level and XP reset)
 runGroup("rebirth", function()
 	local saved = deepCopy(DEFAULT_ROW)

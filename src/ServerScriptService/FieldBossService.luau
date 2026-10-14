@@ -264,7 +264,7 @@ local function extraOne(key, c, player, sides)
 	row.Owed = math.min(max, row.Owed) -- a broken save never banks more than Max
 	if row.Owed <= 0 then return end
 	local n = math.max(1, math.floor(num(W.N, 1)))
-	local ok, got = pcall(S.LootService.GrantItem, player, W.Item, n)
+	local ok, got = pcall(S.LootService.GrantItem, player, W.Item, n, "Reward") -- a reward fits a full bag (10/14)
 	if not ok then
 		warnThrottled("weekly", got)
 		return

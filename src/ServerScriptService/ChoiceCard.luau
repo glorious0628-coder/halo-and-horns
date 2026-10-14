@@ -127,7 +127,7 @@ local function pay(player, reward)
 	local given, gold = 0, math.max(0, math.floor(num(r.Gold)))
 	if type(id) == "string" then
 		local want = math.max(0, math.floor(num(r.N, 1)))
-		local ok, res = pcall(S.LootService.GrantItem, player, id, want)
+		local ok, res = pcall(S.LootService.GrantItem, player, id, want, "Reward") -- a reward fits a full bag (10/14)
 		if ok then
 			given = math.clamp(math.floor(num(res)), 0, want)
 		else

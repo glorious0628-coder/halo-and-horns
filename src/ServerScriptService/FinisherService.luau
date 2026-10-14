@@ -100,7 +100,7 @@ local function gift(player, option, kind)
 	if option ~= "Help" then return 0, math.max(0, math.floor(num(c.Tickle.Gold))) end
 	local id, n = c.Help.Item, math.max(0, math.floor(num(c.Help.N)))
 	local given = 0
-	local ok, res = pcall(S.LootService.GrantItem, player, id, n)
+	local ok, res = pcall(S.LootService.GrantItem, player, id, n, "Reward") -- a reward fits a full bag (10/14)
 	if ok then
 		given = math.clamp(math.floor(num(res)), 0, n)
 	else

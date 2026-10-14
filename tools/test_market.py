@@ -34,6 +34,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # bag slots (2026-10-14)
+    ("bag: a market buy ignores the slots", X, "\t\tif have < 1 and def and counts[def.Kind] and not Config.BagHasRoom(data) then return false end\n", ""),
     # --- config
     ("config: the switch ships on", C, "Config.Features = { NeutralFaction = false, Market = false,", "Config.Features = { NeutralFaction = false, Market = true,"),
     ("config: buying from Lv1", C, "BuyLevel = 5, ListLevel = 10,", "BuyLevel = 1, ListLevel = 10,"),

@@ -264,6 +264,11 @@ runGroup("card: offer, pick, reward", function()
 	check(en and en.Id == 1 and en.Kind == "LostBear" and en.Side == "Good" and en.Stat == "Honor" and en.Score == 1 and en.Item == "Jelly" and en.N == 2 and en.Gold == 0 and en.Full == false,
 		"Fx CardEnd { Good, Honor +1, 2 Jelly }", show(en))
 	check(d.Items and d.Items.Jelly == 2 and d.Honor == 6, "2 Jelly in the bag, Honor 6", show({ d.Items, d.Honor }))
+	do -- 최종 검수 10/14: everything a player is GIVEN goes in as a reward (a full bag too; only pick-ups check the slots)
+		local bad = 0
+		for _, g in w.Grants do if g.Src ~= "Reward" then bad += 1 end end
+		check(#w.Grants > 0 and bad == 0, "a card's item goes in as a reward (GrantItem source Reward)", bad .. " of " .. #w.Grants)
+	end
 	check(d.Cards.Pending == nil and CCS.Pending(p) == nil, "the card is gone, nothing pending", show(d.Cards))
 	check(d.Story.N.LostBear.Good == 1 and d.Story.N.LostBear.Evil == nil, "counted: Story.N.LostBear.Good = 1", show(d.Story))
 	check(p:GetAttribute("DeedsToday") == 1, "the pick used one deed point", p:GetAttribute("DeedsToday"))
