@@ -434,15 +434,19 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     out = [
         # A23-187: joints are written only for a resting hold (Config.HoldPoses on top of the animation, after it)
         ("WeaponPose writes joints only while a weapon rests (Config.HoldPoses, Stepped), no ClassGrips pose",
-         "\t\t\t\t\tm.Transform = out\n" in wp and "local now = m.Transform" in wp and 'S.Rest[tool] == "Rest"' in wp
-         and "RunService.Stepped:Connect(function()" in wp and wp.count("m.Transform") == 2 and "ClassGrips" not in wp
+         "\t\t\t\tm.Transform = out\n" in wp and "local now = m.Transform" in wp
+         and "\t\tif share <= 0 then continue end -- the attack clip owns the arm\n" in wp
+         and "RunService.Stepped:Connect(function(_, dt)" in wp and wp.count("m.Transform") == 2 and "ClassGrips" not in wp
          and "SolveArm" not in wp),
         ("WeaponPose: the grip probe runs in Studio only, with GripProbe", 'RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true' in wp),
         ("ClientMain still loads WeaponPose", '"WeaponPose"' in main),
         # 최종 검수 10/14: the sword rests at the side unless an attack clip runs (toolnone faded, the Rest grip)
-        ("WeaponPose.RestStep: toolnone faded and the Rest grip while no attack runs, back for an attack",
-         "local want = WeaponPose.Want(kind, fxAttacking(char))" in wp and "local w = rest and T.Low or 1" in wp
-         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)' in wp and "tr:AdjustWeight(w, rest and T.Fade or 0)" in wp and "weld.C1 = c1" in wp
+        # hold-pose-2 (Codex ③): toolnone stays down (rest and attack); the grip Turn <-> Rest on the pose's clock (PoseStep)
+        ("WeaponPose: toolnone down while held, the Rest grip while no attack runs (blended on the pose's clock)",
+         "local want = WeaponPose.Want(kind, fxAttacking(char))" in wp
+         and "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end" in wp
+         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest"), share)' in wp
+         and "weld.C1 = c1" in wp
          and "weld.Part1 == handle" in wp
          and "pcall(WeaponPose.RestStep, os.clock())" in wp and "function Fx.AttackPlaying(char)" in fx),
         ("ClassGrips: nine rows, each only its Weapon", len(rows) == 9 and all(line.rstrip().endswith("},") or "}, --" in line for line in rows)
@@ -531,11 +535,13 @@ MUTATIONS = [
     ("FX", "drop leaves the bow in the left hand", "\tFeel.clearWeaponMotion(st)\n\tFeel.bowHand(st, false)\n", "\tFeel.clearWeaponMotion(st)\n"),
     ("FX", "a sword moved too", 'weapon:GetAttribute("AttackHand") == "LeftHand" and weapon:FindFirstChild("Handle")', 'weapon:FindFirstChild("Handle")'),
     ("FX", "an attack clip changed", "PaladinSwing", "PaladinSwing2"),
-    ("WP", "the sword never rests", "local w = rest and T.Low or 1", "local w = 1"),
+    ("WP", "the sword never rests", 'Config.WeaponGrip(kind, handle.Size.Y):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest"), share)',
+     "Config.WeaponGrip(kind, handle.Size.Y)"),
     ("WP", "rests during an attack too", "local want = WeaponPose.Want(kind, fxAttacking(char))", "local want = WeaponPose.Want(kind, false)"),
     ("WP", "the rest step never runs", "local okR, errR = pcall(WeaponPose.RestStep, os.clock())", "local okR, errR = true, nil"),
     ("WP", "the weld never turns (Tool.Grip only: the engine weld kept the blade level)", "weld.C1 = c1", "local _ = c1"),
-    ("WP", "an attack fades in (the blade level with the arm still down)", "tr:AdjustWeight(w, rest and T.Fade or 0)", "tr:AdjustWeight(w, T.Fade)"),
+    ("WP", "toolnone raised for an attack again", "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end",
+     "local w = rest and T.Low or 1 if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, 0) end"),
     ("WP", "WeaponPose writes a joint again", "function WeaponPose.Step(dt)\n", "function WeaponPose.Step(dt)\n\tlocal m = nil; if m then m.Transform = CFrame.identity end\n"),
     ("HERO", "the Hero preview drops the weapon Tool", 'if inst:IsA("Tool") and inst.Name == "WeaponModel" then return true end', ""),
 ]
