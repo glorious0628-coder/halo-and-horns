@@ -443,3 +443,9 @@
    - **주의: 시험 여럿이 CHECK_FAIL이어도 종료코드 0** → 판정은 출력의 'Status:'/CHECK_FAIL/MISSED로. 전체 217개 스윕 스크립트 = ../wt_kosweep/build/sweep.sh. origin/main에서도 실패하는 것(craft·finisher·gamepass·first_ko_king·lost_found·ops_safety·onboarding·weapon_ladder·studio_guard·loot·walk_forge_client 등)은 내 몫 아님.
    - 남은 것: 상호작용(G) 'Talk' 글자 = Roblox 기본 프롬프트(없애려면 새 프롬프트 화면), 서버 Notify 송신 줄 정리 = 개발 2, Panels Items T 표 중앙 표 이동.
 - 다음: 개발 2 황금 거위 화면 몫(①EggFx 경계 점 높이·광장 흔들림·못 줍는 알 반투명·두 집 보이기 ②결과 막대 멈춤+이긴 편 반짝+색종이 ④퀘스트 줄 → Join 칩 반짝 ⑤거위 뒤뚱·내려앉기·줍기/배달 소리) — 서버 dev2-goose-polish f3b67a9c, 근거 Game/build/codex/goose_review_2026-10-14.md.
+40. **10/14 밤 마무리** — 최종 검수에 보고한 것:
+   - **dev1-goose-polish fb6394bf**(dev2-goose-polish + no-banner 위, **아직 main 병합 전**): 두 집 원 모두에게, 경계 점 삭제, 광장 흔들림 없음, 못 줍는 알 반투명, 끝난 뒤 막대 멈춤+이긴 편 둥근 반짝, 시작 칩 반짝, 퀘스트 줄 → Join 칩 반짝(EventHUD.PulseGooseChip), 줍기 소리 = 서버 확인 뒤(대역 Loot). 사진 필요(거위 광장 판 중/끝).
+   - **dev1-hud-fix d1cd2dc4**(origin/main 위): 버프 칩 넓은 가로 한 줄(미니맵~메뉴 사이), HUD.QuestGoal 번역 뒤 마침표. publish9 사진으로 확인됨(칩·퀘스트 줄 OK, 가방 Use 탭 Studio에선 열림).
+   - 전체 스윕(main+goose) 진행 중이었음: 결과 = ../wt_kosweep/build/sw/_summary.txt (103/217까지 새 실패 없음). 알려진 실패 목록은 39번 참고 — 그 밖의 줄만 보면 됨.
+- **내일 큐(최종 검수 10/14):** 퀘스트 창 목록의 'Go to Otto's Forge in the Crossroads'가 영어 — QuestBook/HUD 목록 라벨의 번역 경로 확인(서버가 보내는 줄 Text = 원문 English; 라벨 AutoLocalize 또는 UIKit.TrWord로).
+- worktree: ../wt_kofix(dev1-hud-fix 체크아웃), ../wt_kosweep(스윕용, detached, 지워도 됨).
