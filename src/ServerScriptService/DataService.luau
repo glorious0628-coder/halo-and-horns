@@ -497,7 +497,7 @@ local function loadLocked(player)
 		-- An older save gets its slots once from its level and rebirths (this may lower them, once); after that
 		-- SkillService only raises them (Version stays 3: an additive fix like BB2)
 		if d.SkillsA71 ~= true then
-			d.SkillSlots = Config.SkillSlotsFor(d.Level, d.Rebirths)
+			d.SkillSlots = Config.SkillSlotsFor(d.Level, d.Rebirths, { Z = true, X = true }) -- 99N D: an old save keeps its slots
 			d.SkillsA71 = true
 		end
 	end

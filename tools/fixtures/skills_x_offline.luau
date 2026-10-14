@@ -18,6 +18,7 @@ local function xWorld(o)
 	local w = bareWorld({ Hit = o.Hit })
 	local K = w.Config.Skills
 	K.ZEnabled, K.XEnabled, K.PvPZX = o.Z ~= false, o.X ~= false, o.PvP == true
+	K.Tasks.Enabled = false -- 99N D: these heroes open Z / X by the level (the tasks: skills_offline "class tasks")
 	if o.Taunt == false then K.Taunt = false end
 	if o.Fields == false then K.Fields = false end
 	if o.Move == false then K.MoveSkills = false end

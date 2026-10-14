@@ -24,6 +24,7 @@ local function fightWorld(o)
 	local w = bareWorld({})
 	local K = w.Config.Skills
 	K.ZEnabled, K.XEnabled, K.PvPZX = true, true, true
+	K.Tasks.Enabled = false -- 99N D: these heroes open Z / X by the level (the tasks: skills_offline "class tasks")
 	K.Unlock = { Q = 1, Z = 5, X = 8 }
 	if o.Friends then w.Friends = o.Friends end
 	if o.FriendError then w.FriendError = o.FriendError end

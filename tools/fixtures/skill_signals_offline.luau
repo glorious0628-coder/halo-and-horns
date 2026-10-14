@@ -18,6 +18,7 @@ local function sigWorld(o)
 	local w = bareWorld({ Hit = o.Hit })
 	local K = w.Config.Skills
 	K.ZEnabled, K.XEnabled, K.PvPZX = true, true, o.PvP == true
+	K.Tasks.Enabled = false -- 99N D: these heroes open Z / X by the level
 	-- a KO runs CombatService's death pipeline: its other services are quiet doubles here
 	local reg = w.Registry
 	-- o.Hit: only players of different sides may fight (a friend of my side is never a PvP target)
