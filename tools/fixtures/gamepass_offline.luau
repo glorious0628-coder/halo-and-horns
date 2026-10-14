@@ -44,6 +44,18 @@ local function passWorld(opts)
 		local mine = w.Owns[userId]
 		return mine ~= nil and mine[passId] == true
 	end
+	-- A23-182: subscriptions (GetUserSubscriptionStatusAsync answers per user and api id; opts.SubFail = every ask errors)
+	w.Subs, w.SubAsks = opts.Subs or {}, {}
+	function mp.GetUserSubscriptionStatusAsync(_, player, apiId)
+		table.insert(w.SubAsks, { UserId = player.UserId, Id = apiId })
+		if opts.SubFail then error("offline subscription failure") end
+		local mine = w.Subs[player.UserId]
+		return { IsSubscribed = mine ~= nil and mine[apiId] == true, IsRenewing = true }
+	end
+	local subSig = rbxSignal(w.Warnings)
+	subSig.__kind = "RBXScriptSignal"
+	w.Players.UserSubscriptionStatusChanged = subSig
+	w.SubChanged = subSig
 	w.Services.MarketplaceService = mp
 	w.Market = mp
 
@@ -1040,6 +1052,53 @@ runGroup("bubbles", function()
 end)
 
 ------------------------------------------------------------------ A23-167 the first minutes x2 XP (게임성 개발 2, 2026-10-14)
+------------------------------------------------------------------ A23-182 the Fast Travel subscription (2026-10-14)
+runGroup("subscription", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local S0 = C.Subscriptions.FastTravel
+	check(S0.Id == 118606392447792 and S0.Attr == "SubFastTravel", "Config.Subscriptions.FastTravel: the Creator Hub id, attribute SubFastTravel", show(S0))
+	local info = C.SubscriptionInfo.FastTravel
+	check(info.Name == "Fast Travel" and info.Line == "Teleport to any zone you have unlocked from the menu. No stats are for sale."
+		and info.Price == 149 and info.Attr == "SubFastTravel" and info.Icon == "IconTravel" and info.Id == "EXP-118606392447792",
+		"Config.SubscriptionInfo.FastTravel: the shop card's keys, its Id made from Config.Subscriptions", show(info))
+	check(C.PassInfo == nil or C.PassInfo.FastTravel == nil, "not a pass (PassInfo has no FastTravel)", "")
+	local API = "EXP-118606392447792"
+	local w = passWorld({ Subs = { [2] = { [API] = true } } })
+	check(w.Ms.SubscriptionApiId("FastTravel") == API, "the api id is EXP-<id>", tostring(w.Ms.SubscriptionApiId("FastTravel")))
+	local a = w:Join(1)
+	local b = w:Join(2)
+	check(a:GetAttribute("SubFastTravel") == false and not w.Ms.HasSub(a, "FastTravel"), "not subscribed: SubFastTravel false", "")
+	check(b:GetAttribute("SubFastTravel") == true and w.Ms.HasSub(b, "FastTravel") == true, "subscribed: SubFastTravel true", "")
+	local asked = 0
+	for _, x in w.SubAsks do if x.Id == API then asked += 1 end end
+	check(asked == 2, "one ask a join, with the api id", show(w.SubAsks))
+	-- bought during the session: Roblox's signal -> asked again
+	w.Subs[1] = { [API] = true }
+	w.SubChanged:Fire(a, "EXP-999")
+	check(a:GetAttribute("SubFastTravel") == false, "another subscription's change: nothing", "")
+	w.SubChanged:Fire(a, API)
+	check(a:GetAttribute("SubFastTravel") == true and w.Ms.HasSub(a, "FastTravel") == true, "its change: asked again, now on", "")
+	-- ended: off again at the next answer
+	w.Subs[2] = {}
+	w.SubChanged:Fire(b, API)
+	check(b:GetAttribute("SubFastTravel") == false and not w.Ms.HasSub(b, "FastTravel"), "ended: off", "")
+	w:Leave(a)
+	check(not w.Ms.HasSub(a, "FastTravel"), "a player who left: nothing kept", "")
+	-- Roblox fails (or Studio): not subscribed, no warning
+	local f = passWorld({ SubFail = true, Subs = { [3] = { [API] = true } } })
+	local c = f:Join(3)
+	check(c:GetAttribute("SubFastTravel") == false and not f.Ms.HasSub(c, "FastTravel") and #f.Warnings == 0, "a failing ask: off, no warning",
+		table.concat(f.Warnings, " | "))
+	-- Id 0 = off: never asked
+	local z = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = 0 end, Subs = { [4] = { [API] = true } } })
+	local e = z:Join(4)
+	check(#z.SubAsks == 0 and e:GetAttribute("SubFastTravel") == false and z.Ms.SubscriptionApiId("FastTravel") == nil, "Id 0: never asked, off", "")
+	-- a string id is used as it is
+	local s = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = "EXP-42" end, Subs = { [5] = { ["EXP-42"] = true } } })
+	local g = s:Join(5)
+	check(g:GetAttribute("SubFastTravel") == true, "a string id EXP-42 is asked as it is", show(s.SubAsks))
+end)
+
 runGroup("A23-167 first minutes 2x XP", function()
 	local E = C0.EarlyXP
 	check(type(E) == "table" and E.Enabled == true and E.Seconds == 600 and E.Mult == 2,

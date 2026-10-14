@@ -677,6 +677,31 @@ local function labelAbove(up)
 	ui.text.Position = UDim2.new(0.5, 0, 0.5, up and -off or off)
 end
 
+-- 최종 검수 10/14 (user photo: the marker sat between 'Crown War · 9:38' and the goose chip): a band at the top the
+-- marker never enters - from the screen top down to the lowest DRAWN bottom of the top-centre HUD (HUD.TopBottom: war
+-- meter + info line + chips row; EventHUD.TopBottom: the next-event chip) plus Gap, the icon's half height under it;
+-- never above the Roblox top bar rule. Pure: (bottoms = list of du or nil, topBar du, halfY du, gap du) -> the least
+-- icon-centre y
+T.TopGap = 8
+function QuestMarker.TopLimit(bottoms, topBar, halfY, gap)
+	local lim = (tonumber(topBar) or 0) + (tonumber(halfY) or 0)
+	for _, b in type(bottoms) == "table" and bottoms or {} do
+		if type(b) == "number" and b == b then lim = math.max(lim, b + (tonumber(gap) or T.TopGap) + (tonumber(halfY) or 0)) end
+	end
+	return lim
+end
+
+local function topLimit()
+	local list = {}
+	for _, m in { C and C.HUD, C and C.EventHUD } do
+		if type(m) == "table" and type(m.TopBottom) == "function" then
+			local ok, b = pcall(m.TopBottom)
+			if ok and type(b) == "number" then table.insert(list, b) end
+		end
+	end
+	return QuestMarker.TopLimit(list, T.TopBar, T.HalfY, T.TopGap)
+end
+
 -- edge indicator: from the screen centre toward the target (camera space, so behind the camera works too), on the
 -- track box, out of the HUD blocks; the arrow beside the icon points the way, the distance sits on the other side
 local function placeEdge(cam, origin, s, W, H, lifted, root)
@@ -691,7 +716,7 @@ local function placeEdge(cam, origin, s, W, H, lifted, root)
 	-- the whole indicator (icon + the arrow beside it + the distance) stays on screen: the icon centre keeps at least its
 	-- footprint from every edge (UiSandbox 2026-10-06: a 48 du margin left half the arrow outside on the left)
 	local mx, my = math.max(T.Margin, T.HalfX), math.max(T.Margin, T.HalfY)
-	local box = { mx, math.max(my, T.TopBar + T.HalfY), W - mx, H - my }
+	local box = { mx, math.max(my, topLimit()), W - mx, H - my } -- the top band too (10/14)
 	if box[3] <= box[1] or box[4] <= box[2] then
 		box = { W / 2, H / 2, W / 2, H / 2 } -- a tiny viewport: park it in the middle
 	end
@@ -794,6 +819,7 @@ local function moveStep()
 		local me = selfBox(cam, root, origin, s)
 		if me then ly = QuestMarker.ClearOfHud(lx, ly, { me }, T.TopBar + T.HalfY, H - T.HalfY) end
 		ly = QuestMarker.ClearOfHud(lx, ly, S.hud, T.TopBar + T.HalfY, H - T.HalfY)
+		ly = math.min(math.max(ly, topLimit()), H - T.HalfY) -- never in the top band (war line / chips / event chip)
 		moveTo(lx, ly)
 		labelAbove(false)
 	else

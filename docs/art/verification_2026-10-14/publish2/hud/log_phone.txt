@@ -1,0 +1,20 @@
+device: samsung_galaxy_s22_ultra
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=0 AttendReady=true
+fired AcceptTutorial
+TutorialStep 99
+state: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=99 AttendReady=true
+saved phone_01_town
+B: Menu
+fold: fold lines 2 | y3: Character Skills Pet Ranking Codex Shop Invite Attendance News  | y-47: Diary Travel Help Settings  || row:  || cut names: Codex(Monsters) || names: Menu 9.6px room 11.5; Lv 2 9.6px room 21.0; Lv 5 9.6px room 21.0; Get pet 9.6px room 2.0; Story 1 9.6px room 7.0; Monsters 8.8px room -3.5; Shop 9.6px room 15.0; Invite 9.6px room 11.5; Gifts 9.6px room 17.0; News 9.6px room 12.0; Diary 9.6px room 13.5; Travel 9.6px room 10.5; Help 9.6px room 17.0; Settings 8.8px room 1.0
+saved phone_02_fold_open
+B: Menu
+moved to 430, 0, 0
+chips: WarMeter y=-44 h=37 | StatusChips y=2 h=14 | GooseChip y=21 h=15
+saved phone_03_out_of_town
+play stopped
+device: default

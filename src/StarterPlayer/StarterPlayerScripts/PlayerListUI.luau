@@ -281,7 +281,7 @@ local function newRow(i)
 			TextSize = T.Text,
 			TextXAlignment = Enum.TextXAlignment.Right,
 			Text = TXT.Missing,
-			Number = true,
+			Number = true, AutoLocalize = false,
 			Parent = parent,
 		})
 	end)

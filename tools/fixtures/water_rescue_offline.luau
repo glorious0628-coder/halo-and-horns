@@ -46,7 +46,7 @@ local function zoneWorld(opts)
 	env.OverlapParams = { new = function() w.OverlapMade += 1; return { __kind = "OverlapParams" } end }
 	local Z = execute("ZoneService", ZONE_WATER_SOURCE, env)
 	Z.Init(reg)
-	w.Z, w.T, w.PS, w.WS, w.Terrain = Z, Z.__WaterTest, ps, ws, terrain
+	w.Z, w.T, w.PS, w.WS, w.Terrain, w.Reg = Z, Z.__WaterTest, ps, ws, terrain, reg
 	local P = w.T.waterProbe
 	w.Real = { Surface = P.Surface, Ground = P.Ground, Clear = P.Clear }
 	w.Calls = { Surface = 0, Ground = 0, Clear = 0 }
@@ -477,6 +477,36 @@ runGroup("a probe error is contained", function()
 end)
 
 ------------------------------------------------------------------ the real probes on engine doubles
+------------------------------------------------------------------ A23-182 the menu's teleport = the Fast Travel subscription
+runGroup("fast travel subscription", function()
+	local w = zoneWorld()
+	local subs = {}
+	local calls = {}
+	w.Z.Travel = function(p, dest) table.insert(calls, dest) return true end -- ZoneService.Travel itself is not under test here
+	local p = w:NewPlayer(1, {})
+	w.Ready[p] = true
+	w:Advance(5)
+	w.T.onTravel(p, "SlimeMeadow")
+	check(#calls == 0, "no MonetizationService: the menu's teleport does nothing", #calls)
+	w.Reg.MonetizationService = { HasSub = function(pl, key) return key == "FastTravel" and subs[pl] end }
+	w:Advance(5)
+	w.T.onTravel(p, "SlimeMeadow")
+	check(#calls == 0, "not subscribed: nothing (silently)", #calls)
+	subs[p] = false
+	w:Advance(5)
+	w.T.onTravel(p, "SlimeMeadow")
+	check(#calls == 0, "HasSub false: nothing", #calls)
+	subs[p] = true
+	w:Advance(5)
+	w.T.onTravel(p, "SlimeMeadow")
+	check(#calls == 1 and calls[1] == "SlimeMeadow", "subscribed: travels", show(calls))
+	w.Ready[p] = nil
+	w:Advance(5)
+	w.T.onTravel(p, "SlimeMeadow")
+	check(#calls == 1, "subscribed but not ready: nothing", #calls)
+	check(#w.Warnings == 0, "no warning", table.concat(w.Warnings, " | "))
+end)
+
 runGroup("Terrain water probe", function()
 	local w = zoneWorld()
 	local reads = {}

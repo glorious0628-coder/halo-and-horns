@@ -988,7 +988,7 @@ function L.BuildQuick(root)
 	UIKit.Create("ImageLabel", { Name = "Icon", BackgroundTransparency = 1, Image = "", AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.66, 0.66), ZIndex = 3, Parent = btn })
 	local count = UIKit.LightText({ Name = "Count", Parent = btn, Text = "", AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromScale(0.5, 0.38), TextScaled = true, Number = true,
+		Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromScale(0.5, 0.38), TextScaled = true, Number = true, AutoLocalize = false,
 		MaxTextSize = 16, ZIndex = 5 })
 	L.FitText(count, 14, true, 11, true)
 	local key = UIKit.LightText({ Name = "Key", Parent = btn, Text = "3", TextSize = 11, ZIndex = 6,
@@ -1050,7 +1050,7 @@ function L.RefreshBadge()
 		Size = UDim2.fromScale(1, 1),
 		TextScaled = true,
 		MaxTextSize = 26,
-		Number = true,
+		Number = true, AutoLocalize = false,
 		Color = ink and ac("Ink", COL.Dark) or ac("Light", COL.White),
 		Text = tostring(math.floor(num("Level", 1))),
 		ZIndex = 6,
@@ -1221,7 +1221,7 @@ local function buildWar(root)
 				Size = UDim2.fromScale(inner.Width / def.Size.X, inner.Height / def.Size.Y),
 				TextScaled = true,
 				MaxTextSize = 22,
-				Number = true,
+				Number = true, AutoLocalize = false,
 				ZIndex = 4,
 				Parent = badge,
 			})
@@ -1235,7 +1235,7 @@ local function buildWar(root)
 				Position = UDim2.new(s[2], s[2] == 0 and 16 or -16, 0, 0),
 				Size = UDim2.new(0.5, -20, 1, 0),
 				TextSize = 15,
-				Number = true,
+				Number = true, AutoLocalize = false,
 				TextXAlignment = s[2] == 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Right,
 				ZIndex = 2,
 				Parent = bar,
@@ -2161,6 +2161,9 @@ function L.BuildTracker(root)
 	local goal = UIKit.StyledLabel({ Name = "Goal", LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4,
 		Parent = frame }, "Body")
+	for _, prop in { "TextFits", "TextBounds" } do -- A23-179: a longer translation shrinks it (L.GoalGuard)
+		goal:GetPropertyChangedSignal(prop):Connect(function() task.defer(L.GoalGuard) end)
+	end
 	-- line 3: (p/t) + the Claim pill
 	local prog = UIKit.Create("Frame", { Name = "Progress", LayoutOrder = 3, BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 0, T.ProgH), ZIndex = 4, Parent = frame }, {
@@ -2365,6 +2368,25 @@ end
 -- Studio 991x451, UIScale 0.5: AutomaticSize gave the box one line while the words wrapped to two - "...in the" and the
 -- rest cut off). A size under the style's real-px floor is measured at the floor (that is what renders); while a size is
 -- being measured the line keeps AutomaticSize
+-- 최종 검수 10/14 (A23-179 translation overflow): Roblox's automatic translation changes only what is DRAWN - goal.Text
+-- stays English, so FitGoal (TextService on goal.Text) sized the box for the English sentence. The engine's TextFits is
+-- computed on the drawn (translated) text: while it is false the size steps down by 1 (pure L.GuardStep) to the least of
+-- GoalMin and the style floor; FitGoal starts over at the next text / layout change.
+function L.GuardStep(fits, size, least)
+	if fits == false and type(size) == "number" and type(least) == "number" and size > least then return size - 1 end
+	return size
+end
+
+function L.GoalGuard()
+	local t, T = ui.tracker, L.Tracker
+	local goal = t and t.Goal
+	if not (goal and T.GoalMin) or goal.AutomaticSize ~= Enum.AutomaticSize.None then return end
+	local tc = goal:FindFirstChildOfClass("UITextSizeConstraint")
+	local floorDu = tc and math.ceil(tc.MinTextSize / math.max(0.05, currentScale())) or 0
+	local size = L.GuardStep(goal.TextFits, goal.TextSize, math.max(T.GoalMin, floorDu))
+	if size ~= goal.TextSize then goal.TextSize = size end
+end
+
 function L.FitGoal()
 	local t, T = ui.tracker, L.Tracker
 	if not (t and T.Rect and T.GoalMax) then return end
@@ -3169,7 +3191,7 @@ local function buildButtons(root)
 		Size = UDim2.fromScale(0.6, 0.3),
 		TextScaled = true,
 		MaxTextSize = 26,
-		Number = true,
+		Number = true, AutoLocalize = false,
 		Color = Theme.Gold,
 		Visible = false,
 		ZIndex = 4,
@@ -3730,6 +3752,40 @@ end
 
 -- the status chip row shows at least one chip (user 10/13 first look: out of town the row is empty and EventHUD's
 -- next-event line floated a whole row under the war meter; EventHUD lifts it into the empty row)
+-- 최종 검수 10/14 (user photo while playing: 'Crown War · 9:38', the quest marker and 'Golden Goose 3:43' piled up at the
+-- top centre): the DRAWN bottom (du, MainGui units incl. the top bar) of the top-centre HUD - the war meter with its plate
+-- and info line (they reach below Rects.war_meter) and the status chips row while it shows. nil = nothing there.
+-- EventHUD puts the next-event chip under it, QuestMarker keeps the quest marker under it.
+-- (pure) the lowest drawn bottom of `list` (GuiObjects: AbsolutePosition / AbsoluteSize in px) in du
+function L.DrawnBottom(list, rootY, s)
+	local b = nil
+	s = (type(s) == "number" and s > 0) and s or 1
+	for _, g in list do
+		local h = g.AbsoluteSize.Y
+		if h > 0 then
+			local y = (g.AbsolutePosition.Y + h - rootY) / s
+			if not b or y > b then b = y end
+		end
+	end
+	return b
+end
+
+function HUD.TopBottom()
+	local root = UIKit and UIKit.Gui
+	if not root then return nil end
+	local list = {}
+	if ui.war and ui.war.Visible then
+		table.insert(list, ui.war)
+		for _, g in { ui.warPlate, ui.warInfo } do
+			if typeof(g) == "Instance" and g:IsA("GuiObject") and g.Visible then table.insert(list, g) end
+		end
+	end
+	if HUD.ChipsShown() then table.insert(list, ui.chips) end
+	if #list == 0 then return nil end
+	local ok, b = pcall(L.DrawnBottom, list, root.AbsolutePosition.Y, currentScale())
+	return ok and b or nil
+end
+
 function HUD.ChipsShown()
 	if not (ui.chips and ui.chips.Visible) then return false end
 	for _, c in ui.chips:GetChildren() do
@@ -5791,6 +5847,8 @@ function L.TileWindow(def)
 	local panels = C and C.Panels
 	local has = type(panels) == "table" and type(panels.Has) == "function" and panels.Has or nil
 	if not has then return nil end
+	-- A23-182: the Travel square only for a Fast Travel subscriber (Panels.TravelOn: SubFastTravel)
+	if def.Window == "Travel" and not (type(panels.TravelOn) == "function" and panels.TravelOn() == true) then return nil end
 	if def.Window and has(def.Window) == true then return def.Window end
 	if def.Alt and has(def.Alt) == true then return def.Alt end
 	return nil
@@ -6649,6 +6707,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
 	UIKit.OnAttr({ "Class", "ClassChosen", "Faction" }, L.RefreshSkillIcon)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays", "AttendReady" }, refreshMenuGlow)
+	UIKit.OnAttr({ "SubFastTravel" }, function() if ui.foldOpen then L.PlaceFold(false) end end) -- A23-182: the Travel square
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",

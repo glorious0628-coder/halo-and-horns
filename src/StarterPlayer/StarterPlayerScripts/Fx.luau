@@ -1171,6 +1171,7 @@ end
 -- style = { Key, Prefix?, Suffix?, Color, Scale, Pop?, Crit? }
 local function showAmount(worldPos, amount, style)
 	if typeof(worldPos) ~= "Vector3" or not nearCamera(worldPos) then return end
+	if MOTION.IsDamageKey(style.Key) and not MOTION.DamageNumbersOn() then return end -- 2-C #9 Settings DmgNum
 	amount = asNum(amount, 0)
 	local ok, err = pcall(function()
 		ensurePool()
@@ -4189,7 +4190,7 @@ handlers.Release = function(data)
 			showHits(data.Hits, own, true, data.Auto ~= true and { Stop = classId == "Warrior", Kick = true } or nil)
 			local total = asNum(data.Total, 0)
 			local top = pos + Vector3.new(0, 6, 0)
-			if total > 0 then
+			if total > 0 and MOTION.DamageNumbersOn() then
 				-- A9-2: my Release numbers pop (PopScale -> 1 in PopTime)
 				Fx.ShowNumber(top, Util.FormatNumber(total), own and COLOR_GOLD or WHITE, HUGE_SCALE, { Pop = own })
 			end
@@ -4637,6 +4638,18 @@ function MOTION.EdgeStep()
 	end
 end
 
+-- 2-C #9 (최종 검수 10/14): the Settings row "Damage numbers" (DmgNum "All" | "Off") - saved since BB2 but never read
+-- until now. Off hides every damage number (my hits M / PvP P, the Release total, the hits I take H); gold / XP / loot
+-- lines (G, RG, RX, ShowNumber gold) stay
+MOTION.DamageKeys = { M = true, P = true, H = true }
+function MOTION.IsDamageKey(key)
+	return type(key) == "string" and MOTION.DamageKeys[string.sub(key, 1, 1)] == true
+end
+
+function MOTION.DamageNumbersOn()
+	return MOTION.Pref("DmgNum", "All") ~= "Off"
+end
+
 function MOTION.ShakeAllowed()
 	if MOTION.Pref("Shake", true) == false then return false end
 	local ok, reduced = pcall(function() return game:GetService("GuiService").ReducedMotionEnabled end)
@@ -4666,6 +4679,14 @@ function Fx.PlaySound(name)
 		s.Volume = (SOUND_VOLUME[name] or 0.5) * math.clamp(mult, 0, 1)
 		SoundService:PlayLocalSound(s)
 	end)
+end
+
+-- 최종 검수 10/14: is a class attack clip running on this character right now? (WeaponPose.RestStep: the sword is raised
+-- only while attacking)
+function Fx.AttackPlaying(char)
+	local st = char and Feel.Chars[char]
+	local attack = st and Feel.Active[st] and st.Layers and st.Layers.Attack
+	return attack ~= nil and attack.Clip ~= nil
 end
 
 -- opts (optional, addendum A9-2): { Pop = true } scales the number PopScale -> 1 in PopTime. Plain text never merges.

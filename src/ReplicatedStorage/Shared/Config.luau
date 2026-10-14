@@ -706,8 +706,6 @@ Config.Skills = {
 	Text = {
 		NewSkill = "New skill! %s (%s)", NewSkillTouch = "New skill! Tap the new button.", TryIt = "Try it",
 		NoMP = "Not enough MP", NoTarget = "No target", TooHeavy = "Too heavy to jump!", CantHop = "Can't hop here",
-		-- 2-C #8 (game dev 1, 10/14): the short word over a refused skill button (SkillBar; the server's Fx "SkillPress")
-		NotReady = "Not ready", NotNow = "Not now",
 		UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt", Guarded = "Guarded", MPGain = "+%d MP",
 		Cost = "Costs %d MP", Cooldown = "%s s cooldown", Ready = "Ready", NeedMP = "Need MP",
 		XHalo = "Halo: guards friends", XHorns = "Horns: steals MP", XArtisan = "Artisan: crafted look",
@@ -4515,11 +4513,11 @@ end
 -- Attr = the Player attribute (true / false) the server keeps while the player owns it. No stat is ever sold (A23-75):
 -- 2x XP / 2x Gold double what is EARNED, and that counts for the level cap and the rankings as it is.
 Config.GamePasses = {
-	XP2 = { Id = 0, Price = 199, Name = "2x XP", Attr = "PassXP2" },
-	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
-	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
-	Stickers = { Id = 0, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
-	Bubbles = { Id = 0, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
+	XP2 = { Id = 2037356271, Price = 199, Name = "2x XP", Attr = "PassXP2" },
+	Gold2 = { Id = 2036360276, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
+	VIP = { Id = 2037986277, Price = 249, Name = "VIP", Attr = "PassVIP" },
+	Stickers = { Id = 2037920281, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
+	Bubbles = { Id = 2038178270, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
 -- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
@@ -4591,6 +4589,7 @@ Config.PassInfo = {
 		PrivateName = "Private Server",
 		PriceF = "%s R$",
 		MonthF = "%s R$ / mo",
+		MonthTextF = "%s / mo", -- a subscription priced by Roblox in the player's money ("$4.99 / mo")
 		Owned = "Owned",
 		Soon = "Coming soon",
 		Off = "Not on sale",
@@ -4652,15 +4651,35 @@ function Config.BubbleSide(key)
 	end
 	return nil
 end
+
+-- A23-182 (user 2026-10-14: 이동 = 월 구독, 패스 아님): Fast Travel = a monthly in-experience subscription. Id = the number
+-- Creator Hub shows (the API gets "EXP-<Id>"; a string Id is used as it is); 0 = off. MonetizationService asks Roblox at
+-- PlayerReady and on Players.UserSubscriptionStatusChanged (GetUserSubscriptionStatusAsync, pcall: a failure / Studio = not
+-- subscribed) and mirrors the answer as the player attribute Attr (the screen reads it). The Travel remote (the menu's
+-- teleport) works only while subscribed; the glowing pads (ZoneService pads, the PvP pads) stay free for everyone.
+Config.Subscriptions = {
+	FastTravel = { Id = 118606392447792, Attr = "SubFastTravel" },
+}
+-- the shop card (game dev 1, fix/fast-travel-pass-ui): Id = the api id ("EXP-<Id>", "" = off: no card) made from
+-- Config.Subscriptions below (one source), Price = R$ a month (set on Creator Hub; shown only), Attr / Icon
+Config.SubscriptionInfo = {
+	FastTravel = { Name = "Fast Travel", Line = "Teleport to any zone you have unlocked from the menu. No stats are for sale.",
+		Price = 149, Attr = "SubFastTravel", Icon = "IconTravel" },
+}
+for key, info in Config.SubscriptionInfo do
+	local id = Config.Subscriptions[key] and Config.Subscriptions[key].Id
+	info.Id = (type(id) == "number" and id > 0) and string.format("EXP-%d", id) or (type(id) == "string" and id ~= "0" and id or "")
+end
+
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
 -- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
 -- comma-separated, in Order); worn: LookOn (an id of the player's own faction, or "").
 Config.Looks = {
-	HaloIce = { Faction = "Halo", PassId = 0, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
-	HaloGold = { Faction = "Halo", PassId = 0, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
-	HornsLava = { Faction = "Horns", PassId = 0, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
-	HornsShadow = { Faction = "Horns", PassId = 0, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
+	HaloIce = { Faction = "Halo", PassId = 2036084293, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
+	HaloGold = { Faction = "Halo", PassId = 2036414290, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
+	HornsLava = { Faction = "Horns", PassId = 2036582289, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
+	HornsShadow = { Faction = "Horns", PassId = 2037344272, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
 	HaloSprout = { Faction = "Halo", Unlock = { Attendance = 14 }, Name = "Sprout Halo", Icon = "LookHaloSprout", Order = 5 },
 	HornsSprout = { Faction = "Horns", Unlock = { Attendance = 14 }, Name = "Sprout Horns", Icon = "LookHornsSprout", Order = 6 },
 	HaloStarlight = { Faction = "Halo", Unlock = { Attendance = 50 }, Name = "Star Halo", Icon = "LookHaloStarlight", Order = 7 },
@@ -4740,6 +4759,7 @@ Config.Visuals = {
 	SackThresholdsPerLevel = { 10, 40, 120, 300, 800 }, -- sack tier = count of thresholds t with gold >= t * level
 	SackSizes = { 0.8, 1.2, 1.6, 2.1, 2.8 }, -- ball diameter per tier (tier 0 = no sack)
 	NametagMaxDistance = 120,
+	NametagNearDistance = 40, -- 2-C #9: Settings "Other players' name tags" = Nearby only (NameTagPrefs, this client only)
 	MaxDamagePopups = 25,
 	FxCullDistance = 150,
 	GrudgeSackColor = Color3.fromRGB(110, 40, 150),
@@ -6438,9 +6458,14 @@ Config.ClassGrips = {
 -- in CharacterVisuals is gone. The swords follow Roblox's ClassicSword (메인 반영 1 10/13, main_apply/classic_sword:
 -- Tool.Grip (0, 0, -1.5) on its 4-stud handle mesh; side photo: the fist's middle 74% up the hilt from the pommel end,
 -- its top against the guard): 0.75 of our 1.2-stud hilt (the table's first 0.6 left a gap under the guard).
+-- 최종 검수 10/14 (user while playing: from behind the swordsman held the blade straight up over the shoulder like a pole,
+-- the fist on the guard): the swords are held in the MIDDLE of the hilt (Point 0.5: the guard sits above the fist), and
+-- Rest = the turn in the fist while standing / walking (WeaponPose.RestStep fades the default toolnone out, so the arm
+-- hangs): the blade at the side, its tip up and back (130 degrees about the fist's X = 40 degrees back from upright);
+-- an attack clip brings back the plain grip (Turn) and toolnone
 Config.WeaponGrips = {
-	Sword = { Point = 0.75 },
-	DarkSword = { Point = 0.75 },
+	Sword = { Point = 0.5, Rest = { 130, 0, 0 } },
+	DarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },
 	Bow = { Point = 0.5 },
 	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
 	Staff = { Point = 0.45 },
@@ -6458,12 +6483,14 @@ function Config.WeaponGripOf(kind)
 end
 
 -- (pure) the Tool.Grip of a weapon kind whose Handle is len studs long: the grip point (0, (Point - 0.5) x len, 0) on the
--- Handle, turned by Turn. The engine then puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's
--- frame in the fist = CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
-function Config.WeaponGrip(kind, len)
+-- Handle, turned by Turn (mode "Rest" and a row with Rest: turned by Rest - the standing / walking hold). The engine then
+-- puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's frame in the fist =
+-- CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
+function Config.WeaponGrip(kind, len, mode)
 	local row = Config.WeaponGripOf(kind)
 	local point = math.clamp(tonumber(row.Point) or 0.5, 0, 1)
 	local turn = type(row.Turn) == "table" and row.Turn or {}
+	if mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end
 	local angles = CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
 	return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
 end
@@ -9325,6 +9352,10 @@ Config.SaveV4 = {
 	MarketDone = 50, -- Market.Done: most finished ids kept
 	MarketIdLen = 40, -- a market row id
 	MarketMaxN = 999, -- items in one market row
+	-- C-5 (MarketService): Pend = an Out row saved before its ledger record (the join check finishes it), Pay = an In row
+	-- paid before the ledger said Sold (the join check delivers or refunds)
+	-- review 10/14: the states an older server knows too (a listing not public yet = Open + Pend, a purchase paid and not
+	-- settled = Sold + Pay: flags keepExtra keeps), so a save loaded by a server from before the market loses no row
 	MarketStates = { Open = true, Sold = true, Cancel = true, Expired = true, Paid = true },
 }
 -- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
@@ -9855,6 +9886,149 @@ function Config.CodexFromKillLog(killLog, codex)
 		end
 	end
 	return out
+end
+
+------------------------------------------------------------------ C-5 / C-7 the player market (게임성 개발 2, 2026-10-13)
+-- SPEC A23-127 / A23-133; server design docs/design/market_server_2026-10-13.md; the window MarketWindow.luau (게임성 개발 4,
+-- docs/design/market_window_2026-10-12.md §6). Switch Config.Features.Market (off: no window, no new listing or purchase;
+-- rows already in the market still settle). One market for every server: the ledger (DataStore Store, key "L_<id>" =
+-- { Id, Seller, K, N, Price, At, Exp, St, Buyer?, SoldAt?, Paid? }) is the truth; the MemoryStore maps only list what is
+-- open. Price = gold for ONE unit (a row of N costs N x Price); the seller gets the row's total minus Fee (floored), as bank
+-- gold "Market" (never 2x, A23-133); a refund is "MarketRefund".
+Config.Market = {
+	Store = "HaloHorns_Market_v1", -- the ledger DataStore (Config.StoreName)
+	Maps = "HHMkt_", -- MemoryStore sorted map per market key (":" -> "_"): listing id -> { p, n, x (ends), s (seller) }
+	IndexMap = "HHMktIndex", -- market key -> { L = lowest price, C = open rows } (a hint, rebuilt from the key's map)
+	SoldMap = "HHMktSold", -- seller UserId -> listing ids sold and not paid yet (a hint: the seller's server pays sooner)
+	Hours = 72, -- a listing stays open this long
+	Fee = 0.07, -- A23-183 (user 10/14): 7% of the sale, floored
+	BuyLevel = 5, ListLevel = 10, ListPlaySeconds = 3600, ListAccountDays = 7, -- A23-133 gates
+	OpenMax = 10, -- open listings of one player
+	DayLists = 20, DayBuys = 30, -- a KST day
+	PairDay = 3, -- purchases from the same seller a KST day (alt accounts)
+	PageRows = 50, PageFetch = 200, -- rows a page; rows one map read gives (4 pages)
+	IndexCache = 30, PageCache = 15, -- s a server keeps the index / a key's rows
+	MapTTL = 3600, -- s a map row outlives its listing
+	IndexTTL = 3888000, -- s an index row lives (45 days, the MemoryStore maximum)
+	PollSeconds = 20, -- the owner's server: sold hints, ended listings, retries
+	LedgerSeconds = 300, -- ... and every open listing read from the ledger this often
+	KeepFinished = 86400, -- s a finished row (Paid / Cancel / Expired) stays on the Mine tab
+	-- Config.Loot.Items kinds that can be listed (no HP / MP potions: they are not Items; no quest things, no looks)
+	Kinds = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true },
+	-- the price range of ONE unit: Ref (the Sell tab's first price), Min, Max
+	MaterialRef = 3, MaterialMax = 25, -- a material: Ref = Sell x 3, Min = Sell, Max = Sell x 25
+	TonicRef = 5, -- a tonic / Pet Treat: Ref = Sell x 5
+	Ref = { Enh70 = 300, Enh30 = 800, Enh10 = 2000, Move70 = 400, Move30 = 900, Move10 = 2000 }, -- scrolls
+	PlusRef = 0.3, -- a weapon: Ref = Config.Weapons[tier].Price x (1 + 0.3 x plus); tier 8 (no price) = WeaponRef8
+	WeaponRef8 = 20000,
+	MinMult = 0.2, MaxMult = 5, -- scrolls, tonics, weapons: Min = Ref x 0.2, Max = Ref x 5
+	-- one line per notice / refusal (MarketWindow shows the refusal keys on its buttons: Gate.Buy / Gate.List)
+	Text = {
+		MarketListed = "Listed on the Market.",
+		MarketBought = "Bought %s!", -- (the thing's name)
+		MarketPaid = "Sold on the Market! +%s gold", -- (what the seller got)
+		MarketCancelled = "Listing cancelled. It's back in your bag.",
+		MarketExpired = "A listing ended. It's back in your bag.",
+		-- A23-183 (user 10/14): no player refund / undo exists; a purchase that failed inside (lost the race, cut off) puts the
+		-- gold back by itself and says only this
+		MarketRefund = "Purchase failed.",
+		Checking = "Checking the Market…",
+		NeedLevelBuy = "You can buy from Lv 5.",
+		NeedLevelList = "You can sell from Lv 10.",
+		NeedPlaytime = "You can sell after 1 hour of play.",
+		NeedAccountAge = "You can sell when your account is 7 days old.",
+		PriceChanged = "The price changed.",
+		AlreadySold = "Already sold.",
+		NotEnoughGold = "Not enough gold.",
+		CantReceive = "No room for it.",
+		Owned = "You have this weapon already.",
+		TooMany = "10 listings at once at most.",
+		DayLimit = "That's all for today.",
+		PriceRange = "That price is out of range.",
+		Resting = "The market is resting.",
+		Full = "The market is full.",
+		PairLimit = "Too many trades with them today.",
+		TooFast = "Too fast. Try again.",
+		Off = "The market is closed.",
+		Own = "That's your own listing.",
+		NoItem = "You don't have that.",
+		CantSell = "You can't sell that.",
+		InHand = "Put it away first.",
+	},
+}
+for name, s in { MarketIndex = 1, MarketBrowse = 1, MarketMine = 1, MarketList = 6, MarketBuy = 6, MarketCancel = 6,
+	PackWeapon = 1, UnpackSpare = 1 } do
+	Config.RateLimits[name] = s
+end
+-- A23-133 the market quests (one row each, waiting for the switch): the first purchase (Lv5), the first listing (Lv10),
+-- the first sale paid (after the listing one). Event steps with Past: MarketService tells StoryQuestService.Event
+-- MarketBought / MarketListed / MarketPaid (a player who traded before the quest opened passes at once). Guide = the
+-- window's tab ([Go] opens Market on it: MarketBuy / MarketSell / MarketMine). Rewards = minutes of hunting (proposed;
+-- 최종 검수 sets them).
+Config.StoryQuests.Events.MarketBought = true
+Config.StoryQuests.Events.MarketListed = true
+Config.StoryQuests.Events.MarketPaid = true
+Config.StoryQuests.Defs.MK1 = { Kind = "Sub", Title = "Market Day", ShortName = "Market buy",
+	Requires = { Level = 5, Feature = "Market" },
+	Steps = { { Text = "Buy something at the Market", ShortName = "Buy one", Guide = "MarketBuy",
+		Obj = { Type = "Event", Name = "MarketBought", Past = true } } },
+	Reward = { Gold = 2, XP = 2 } }
+Config.StoryQuests.Defs.MK2 = { Kind = "Sub", Title = "My First Stall", ShortName = "Market sell",
+	Requires = { Level = 10, Feature = "Market" },
+	Steps = { { Text = "List something at the Market", ShortName = "List one", Guide = "MarketSell",
+		Obj = { Type = "Event", Name = "MarketListed", Past = true } } },
+	Reward = { Gold = 2, XP = 2 } }
+Config.StoryQuests.Defs.MK3 = { Kind = "Sub", Title = "Sold!", ShortName = "Market sold",
+	Requires = { Level = 10, Feature = "Market", Done = { "MK2" } },
+	Steps = { { Text = "Sell something at the Market", ShortName = "Get paid", Guide = "MarketMine",
+		Obj = { Type = "Event", Name = "MarketPaid", Past = true } } },
+	Reward = { Gold = 3, XP = 3 } }
+for _, id in { "MK1", "MK2", "MK3" } do table.insert(Config.StoryQuests.Subs, id) end
+
+-- a market key of a thing that may be listed: kind "I" + a Config.Loot.Items id of a tradeable kind -> "I:<id>"; kind "W"
+-- + a spare key "T:P" (tier 2..MaxWeaponTier, plus 0..MaxEnhance, whole numbers) -> "W:T:P"; anything else nil
+function Config.MarketKey(kind, id)
+	if type(id) ~= "string" or #id > 32 then return nil end
+	if kind == "I" then
+		local def = Config.Loot.Items[id]
+		if type(def) == "table" and Config.Market.Kinds[def.Kind] == true then return "I:" .. id end
+		return nil
+	end
+	if kind ~= "W" then return nil end
+	local t, p = string.match(id, "^(%d+):(%d+)$")
+	local tier, plus = tonumber(t), tonumber(p)
+	if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier or plus > Config.Loot.MaxEnhance then return nil end
+	return string.format("W:%d:%d", tier, plus)
+end
+
+-- a market key -> { Kind = "I", Id } | { Kind = "W", Tier, Plus } (nil = not a key that may be listed)
+function Config.MarketParse(key)
+	if type(key) ~= "string" then return nil end
+	local id = string.match(key, "^I:(.+)$")
+	if id then return Config.MarketKey("I", id) == key and { Kind = "I", Id = id } or nil end
+	local tp = string.match(key, "^W:(.+)$")
+	if tp and Config.MarketKey("W", tp) == key then
+		local t, p = string.match(tp, "^(%d+):(%d+)$")
+		return { Kind = "W", Tier = tonumber(t), Plus = tonumber(p) }
+	end
+	return nil
+end
+
+-- the price range of one unit of a key: Ref, Min, Max (whole gold, Min >= 1); nil for a key that may not be listed
+function Config.MarketRange(key)
+	local M, info = Config.Market, Config.MarketParse(key)
+	if not info then return nil end
+	if info.Kind == "I" then
+		local def = Config.Loot.Items[info.Id]
+		local sell = math.max(1, math.floor(tonumber(def.Sell) or 1))
+		if def.Kind == "Material" then return sell * M.MaterialRef, sell, sell * M.MaterialMax end
+		local ref = M.Ref[info.Id] or sell * M.TonicRef
+		return ref, math.max(1, math.floor(ref * M.MinMult)), math.floor(ref * M.MaxMult)
+	end
+	local w = Config.Weapons[info.Tier]
+	local base = (w and (tonumber(w.Price) or 0) > 0) and w.Price or M.WeaponRef8
+	local ref = math.floor(base * (1 + M.PlusRef * info.Plus))
+	return ref, math.max(1, math.floor(ref * M.MinMult)), math.floor(ref * M.MaxMult)
 end
 
 -- A23-160 ④ (게임성 개발 2, 10/13): the private test's numbers board (TestMetricsService; docs/design/test_metrics_2026-10-13.md,

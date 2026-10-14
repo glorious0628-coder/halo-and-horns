@@ -285,7 +285,7 @@ local function partIcon(parent, part, i, count)
 	local n = part.Kind == "Item" and (part.N > 1 and ("x" .. tostring(part.N)) or "") or Util.FormatNumber(part.N)
 	if not icon then n = (part.Kind == "Item" and itemName(part.Id) or part.Kind) .. " " .. n end
 	text({ Name = "Count", Text = n, AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, 1),
-		Size = UDim2.new(1, 4, 0, L.CountH), TextScaled = true, MaxTextSize = 18, Number = true, ZIndex = 4, Parent = holder }, true)
+		Size = UDim2.new(1, 4, 0, L.CountH), TextScaled = true, MaxTextSize = 18, Number = true, AutoLocalize = false, ZIndex = 4, Parent = holder }, true)
 	return icon
 end
 
@@ -436,7 +436,7 @@ local function build(parent, k)
 	VIEW.Disc = nil
 	if VIEW.Ribbon then
 		VIEW.Disc = text({ Name = "Disc", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(L.Disc.X, L.Disc.Y),
-			Size = UDim2.fromScale(L.Disc.W, L.Disc.H), TextScaled = true, Number = true, ZIndex = 3, Parent = VIEW.Ribbon }, false)
+			Size = UDim2.fromScale(L.Disc.W, L.Disc.H), TextScaled = true, Number = true, AutoLocalize = false, ZIndex = 3, Parent = VIEW.Ribbon }, false)
 	end
 	local left = VIEW.Ribbon and (L.Ribbon + 12) or 0
 	VIEW.Days = text({ Name = "Collected", Text = "", Position = UDim2.fromOffset(left, 4), Size = UDim2.new(1, -left, 0, 28),

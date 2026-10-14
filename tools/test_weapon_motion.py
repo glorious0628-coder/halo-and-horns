@@ -695,9 +695,9 @@ for _,data in FIXTURES do
                 elseif class=="Warrior" then
                     local handle=equipped:FindFirstChild("Handle")
                     local grip=handle.CFrame:PointToObjectSpace(Feel.handPoint(st.Char,false))
-                    -- A23-150 7: the fist on the hilt's Config.WeaponGrips Point (above its middle, towards the guard), on
-                    -- its centreline
-                    check(near(grip,Config.WeaponGrip("Sword",handle.Size.Y).Position) and grip.Y>0,
+                    -- A23-150 7: the fist on the hilt's Config.WeaponGrips Point, on its centreline; 최종 검수 10/14 (user:
+                    -- the fist sat on the guard) the Point is the hilt's middle now (never below it)
+                    check(near(grip,Config.WeaponGrip("Sword",handle.Size.Y).Position) and grip.Y>-1e-6,
                         data.name..": actual sword handle held in right hand")
                 end
                 Feel.drop(st)

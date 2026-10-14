@@ -15,11 +15,15 @@
 --            one line on it (PC "Press Q", phones "Tap the new button" - C.HUD.Hint) and the SkillLearn sound (PowerUp
 --            until that file exists). Replaces A23-68 #2's "Try your skill!" after the first kill
 --   input  : a press = SkillBar.Use(slot): one press, one cast. Inside the 0.5 s gap between casts one press waits in
---            line (white rim) and goes when the gap ends. Refused here (locked, cooling, MP) -> the button shakes and a
---            short word floats up. 2-C #8 (최종 검수 10/14): the server's answer Fx "SkillPress" { Slot, Result }
---            (SkillService) does the same for what only the server knows - "No target", "Can't hop here", "Too heavy to
---            jump!", its own cooldown / MP view ("Not ready" / "Not enough MP"), a switched-off slot ("Not now");
---            "Queued" says nothing. Words: Config.Skills.Text.
+--            line (white rim) and goes when the gap ends. Gated here (see below) -> nothing is sent and nothing is said;
+--            before A23-180 the button shook and a
+--            short word floats up. A23-180 (user 10/14: "스킬 거절 알림을 왜 해? 서버가 거절을 안 하게 해야지"): no
+--            refusal words and no shake any more. This screen gates first (SkillBar.Gate): a slot not learned, MP below
+--            the cost, more than Config.Skills.PressBuffer (0.35 s) of cooldown left, or the Hop slot while I carry
+--            something (the grudge sack SackGold, a kaiju KaijuState Siren / Active, a goose egg EggCarry) = the button
+--            is dimmed and a press (button or key) sends nothing; a press with PressBuffer s or less left goes (the
+--            server holds it until the cooldown ends). The server casts at the air when no monster is there and answers
+--            only "Queued" (Fx "SkillPress").
 --   hop    : 2-C #8 prep (SKL-3 X Hop: archer X, tamer Big Boing; Config.Skills.XEnabled off until 10/20): the server's
 --            Fx "Hop" { To, T } to the caster -> this client moves my own character to To (its ground height) along a low
 --            arc over T s (the server allowed that one move: ZoneService.AllowMove); a far / broken To or a dead / new
@@ -67,9 +71,8 @@ local T = {
 	Disc = "BtnSpecial", -- the approved skill disc (BtnSkill art)
 	Rim = { Halo = "BtnSkillHalo", Horns = "BtnSkillHorns", Neutral = "BtnSkillNeutral" }, -- faction rims when drawn
 	Sweep = 0.4, -- transparency of the cooldown shade
-	Shake = { 7, -6, 4, -2, 0 }, -- degrees, one step each
-	ShakeStep = 0.035,
-	FloatTime = 0.7, -- s: the refusal word floats up and fades
+	PressBuffer = 0.35, -- s: a press this close to the cooldown's end still goes (Config.Skills.PressBuffer wins)
+	Heavy = { Siren = true, Active = true }, -- kaiju states that block the Hop (SkillService TUNE.Kaiju)
 	Flash = 0.28, -- s: the ready flash
 	MinTap = 60, -- du (HudLayout MIN_TAP; the rects are already >= it on touch)
 }
@@ -91,7 +94,6 @@ local COL = {
 local TXT = {
 	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
 	Level = "Lv %d",
-	Unlock = "Unlocks at Lv %d",
 	NewSkill = "New skill! %s", -- A23-71 the learn moment
 	LearnKey = "Press %s",
 	LearnTouch = "Tap the new button",
@@ -118,9 +120,7 @@ local S = {
 	lastWarnAt = -math.huge,
 }
 local ui = {} -- root, buttons = { [slot] = b }
--- 2-C #8: the server's refusal results -> Config.Skills.Text keys; HOP = the X hop move (Live = the running hop)
-local PRESS = { Word = { Cooldown = "NotReady", NoMP = "NoMP", NoTarget = "NoTarget", TooHeavy = "TooHeavy",
-	CantHop = "CantHop", Locked = "NotNow" } }
+-- HOP = the X hop move (Live = the running hop)
 local HOP = { MaxDist = 16, Arc = 0.15, ArcMin = 0.8, ArcMax = 2, TMin = 0.1, TMax = 0.6, Ray = 12, Live = nil }
 local acc = { Tick = 0 }
 
@@ -212,6 +212,7 @@ local function defOf(slot)
 		MP = tonumber(def and def.MP) or (slot == "Q" and tonumber(basic.ManaCost) or 0) or 0,
 		CD = tonumber(def and def.CD) or (slot == "Q" and tonumber(basic.Cooldown) or 3) or 3,
 		Name = def and def.NameEn or nil,
+		Hop = def ~= nil and def.Shape == "Hop", -- A23-180: the slot the carried things block
 	}
 	-- X: the faction's own name (Guardian Roar / Rage Roar ...)
 	local fx = def and type(def[faction]) == "table" and def[faction] or nil
@@ -431,10 +432,6 @@ local function buildButton(slot)
 	b.RingStroke = b.Ring:FindFirstChild("Stroke")
 
 	-- the refusal word above the button
-	b.Word = smallLabel({
-		Name = "Word", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, -0.05),
-		Size = UDim2.fromScale(1.6, 0.3), TextScaled = true, ZIndex = 10, Visible = false, Parent = holder,
-	}, "NameTag")
 	ui.buttons[slot] = b
 	return b
 end
@@ -457,13 +454,6 @@ local function setIcon(b)
 end
 
 -- the slot's live state: { On, Locked, Unlock, Left (s), Frac (0..1 of the cooldown still to go), MPShort, Def }
--- a player-facing skill word (Config.Skills.Text, A23-48 English); "" when the key is missing
-local function skillWord(key)
-	local t = type(Config.Skills) == "table" and Config.Skills.Text or nil
-	local v = type(t) == "table" and t[key] or nil
-	return type(v) == "string" and v or ""
-end
-
 local function stateOf(slot)
 	local def = defOf(slot)
 	local unlock = unlockLevel(slot)
@@ -480,8 +470,27 @@ local function stateOf(slot)
 		Left = left,
 		Frac = def.CD > 0 and math.clamp(left / def.CD, 0, 1) or 0,
 		MPShort = num("Mana", 0) < def.MP,
+		-- A23-180: the Hop slot while I carry something (the server would not hop)
+		Heavy = def.Hop == true and (num("SackGold", 0) > 0 or T.Heavy[attr("KaijuState", "None")] == true
+			or num("EggCarry", 0) > 0),
 		Def = def,
 	}
+end
+
+-- A23-180 (pure): may a press of a slot in state `st` go to the server? -> true, or false + why ("Locked", "MP",
+-- "Cooldown" = more than `buffer` s left, "Heavy"). Nothing is shown for a false
+function SkillBar.Gate(st, buffer)
+	if type(st) ~= "table" then return false, "Locked" end
+	if st.Locked then return false, "Locked" end
+	if st.MPShort then return false, "MP" end
+	if st.Heavy then return false, "Heavy" end
+	if (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then return false, "Cooldown" end
+	return true
+end
+
+local function pressBuffer()
+	local v = tonumber(skills().PressBuffer)
+	return (v and v >= 0) and v or T.PressBuffer
 end
 
 local function paintButton(b)
@@ -504,12 +513,14 @@ local function paintButton(b)
 	end
 	if st.Locked then setSweep(b, 1) end -- the face stays shaded while locked (the 10 Hz tick leaves it alone)
 	-- MP short: the whole button dims (A23-60: no MP number on it)
-	if b.Disc and b.Disc:IsA("ImageLabel") then b.Disc.ImageColor3 = (st.MPShort and not st.Locked) and COL.Dim or COL.White end
-	if b.Lock then b.Lock.Visible = st.Locked end
-	if b.LockText then
-		b.LockText.Visible = st.Locked
-		b.LockText.Text = string.format(TXT.Level, st.Unlock)
+	-- A23-180: carrying something dims the Hop slot the same way
+	local dim = (st.MPShort or st.Heavy) and not st.Locked
+	if b.Disc and b.Disc:IsA("ImageLabel") then b.Disc.ImageColor3 = dim and COL.Dim or COL.White end
+	if b.Icon and dim then
+		if b.Icon:IsA("ImageLabel") then b.Icon.ImageColor3 = COL.Dim elseif b.Icon:IsA("TextLabel") then b.Icon.TextColor3 = COL.Dim end
 	end
+	if b.Lock then b.Lock.Visible = st.Locked end
+	if b.LockText then b.LockText.Visible = false end -- A23-180: the lock picture only, no words
 	if b.PillText then b.PillText.Text = st.Def.Name end
 	if b.Pill then b.Pill.Visible = not st.Locked end
 	if b.Key then
@@ -580,36 +591,6 @@ local function refreshAll()
 end
 
 ----------------------------------------------------------------- refusals / queue
-local function shake(b, word)
-	local h = b.Holder
-	b.ShakeToken = (b.ShakeToken or 0) + 1
-	local token = b.ShakeToken
-	task.spawn(function()
-		for _, deg in T.Shake do
-			if b.ShakeToken ~= token then return end
-			h.Rotation = deg
-			task.wait(T.ShakeStep)
-		end
-	end)
-	if word and word ~= "" then
-		local w = b.Word
-		w.Text = word
-		w.Visible = true
-		w.TextTransparency = 0
-		w.Position = UDim2.fromScale(0.5, -0.05)
-		local info = TweenInfo.new(T.FloatTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-		TweenService:Create(w, info, { Position = UDim2.fromScale(0.5, -0.35), TextTransparency = 1 }):Play()
-		local stroke = w:FindFirstChildWhichIsA("UIStroke")
-		if stroke then
-			stroke.Transparency = 0
-			TweenService:Create(stroke, info, { Transparency = 1 }):Play()
-		end
-		task.delay(T.FloatTime, function()
-			if b.ShakeToken == token then w.Visible = false end
-		end)
-	end
-end
-
 local function showQueue(slot, on)
 	for s, b in ui.buttons do
 		if b.RingStroke then
@@ -673,7 +654,6 @@ local function placeAll()
 	-- the words / pills keep a readable size on every UIScale (UIKit text styles floor them)
 	local s = guiScale()
 	for _, b in ui.buttons do
-		if b.Word then b.Word.Size = UDim2.new(1.6, 0, 0, math.ceil(14 / s)) end
 	end
 end
 
@@ -778,20 +758,9 @@ function SkillBar.Use(slot)
 	end
 	local st = stateOf(slot)
 	b.State = st
-	if st.Locked then
-		shake(b, string.format(TXT.Unlock, st.Unlock))
-		return false
-	end
-	if st.Left > 0.05 then
-		shake(b, skillWord("NotReady"))
-		return false
-	end
-	if st.MPShort then
-		shake(b, skillWord("NoMP"))
-		local audio = C and C.Audio -- the 'no' sound once Audio.luau exists (quality ideas ①)
-		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "No") end
-		return false
-	end
+	-- A23-180: the screen gates first and says nothing (no shake, no word, no sound); a cooldown with PressBuffer s or
+	-- less left still goes - the server holds that press until the cooldown ends
+	if not SkillBar.Gate(st, pressBuffer()) then return false end
 	if os.clock() < S.gapUntil then
 		-- inside the gap between casts: this press waits in line (the newest one wins)
 		S.queued = slot
@@ -800,29 +769,6 @@ function SkillBar.Use(slot)
 		return true
 	end
 	cast(slot)
-	return true
-end
-
--- 2-C #8: the server's answer to my press (Fx "SkillPress"): a refusal shakes the button with its short word -> true
-function SkillBar.OnPress(data)
-	if type(data) ~= "table" or not ui.buttons then return false end
-	local b = ui.buttons[data.Slot]
-	local key = PRESS.Word[data.Result]
-	if not (b and key) then return false end
-	local word = skillWord(key)
-	if data.Result == "Locked" then
-		local st = stateOf(data.Slot)
-		if st.Locked then word = string.format(TXT.Unlock, st.Unlock) end
-	end
-	if S.queued == data.Slot then -- the line waiting behind a refused press goes too
-		S.queued = nil
-		showQueue(data.Slot, false)
-	end
-	shake(b, word)
-	if data.Result == "NoMP" then
-		local audio = C and C.Audio
-		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "No") end
-	end
 	return true
 end
 
@@ -929,6 +875,7 @@ function SkillBar.Start()
 	end
 	UIKit.OnAttr({ "Mana", "MaxMana", "Level", "Class", "ClassChosen", "Faction", "SkillReadyAt", "SkillReadyAtZ",
 		"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }, refreshAll)
+	UIKit.OnAttr({ "SackGold", "KaijuState", "EggCarry" }, refreshAll) -- A23-180: what blocks the Hop slot
 	-- 2-C #8: the server's press answers and the X hop (Fx; the Remotes folder comes from the server)
 	task.spawn(function()
 		local okFx, fx = pcall(function()
@@ -937,9 +884,7 @@ function SkillBar.Start()
 		end)
 		if not (okFx and typeof(fx) == "Instance" and fx:IsA("RemoteEvent")) then return end
 		fx.OnClientEvent:Connect(function(kind, data)
-			if kind == "SkillPress" then
-				guard(function() SkillBar.OnPress(data) end, "press")
-			elseif kind == "Hop" then
+			if kind == "Hop" then -- A23-180: "SkillPress" now only says "Queued" (the client's own line shows that)
 				guard(function() SkillBar.OnHop(data) end, "hop")
 			end
 		end)
@@ -978,6 +923,6 @@ function SkillBar.Start()
 end
 
 SkillBar.Learn = LEARN -- test aid
-SkillBar._T = { PRESS = PRESS, HOP = HOP, S = S, ui = ui } -- tools/test_skill_press.py
+SkillBar._T = { HOP = HOP, S = S, ui = ui, StateOf = stateOf } -- tools/test_skill_press.py
 
 return SkillBar

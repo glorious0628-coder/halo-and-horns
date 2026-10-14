@@ -1276,8 +1276,8 @@ local function artText(props, color, outlineColor, outlineTransparency, thicknes
 			p[key] = value
 		end
 	end
-	-- A23-179: a number-only label is never sent to Roblox's translation (it stays as it is; no noise in the table)
-	if props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end
+	-- A23-179 (review 10/14): Number = the number font only; a label that holds ONLY numbers says AutoLocalize = false
+	-- itself (a label with words in it - "Lv 10 · Power 424", "Pouch" - is translated)
 	if props.Font == nil then
 		if props.Number then
 			p.Font = artFont("Number", Enum.Font.FredokaOne)

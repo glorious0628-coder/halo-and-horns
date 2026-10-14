@@ -87,12 +87,58 @@ local function attrOf(name, default)
 end
 
 -- one pass's live numbers: Config.GamePasses[Kind] (게임성 개발 2) over the A23-75 stand-ins
+-- 2-C #10 (최종 검수 10/14): the card prices are Roblox's own - MarketplaceService:GetProductInfo(id, infoType)
+-- .PriceInRobux (regional prices and sales: the same number as the buy window). Read once per id in the background
+-- (pcall), cached for the session; until then, on a failure, without a price (not for sale) or with id 0: the Config
+-- price. A new price repaints the open shop (PRICE.Refresh). fetch(id, infoType) -> info is for the offline test.
+local PRICE = { Cache = {}, Busy = {}, Refresh = nil, Fetch = nil, SubFetch = nil }
+-- one background read per key: call() -> info (pcall), read(info) -> the price or nil (nil / a failure is remembered as
+-- false = the fallback from then on); the first answer repaints the open shop
+function PRICE.Ask(key, fallback, call, read)
+	local v = PRICE.Cache[key]
+	if v ~= nil then return v == false and fallback or v end
+	if not PRICE.Busy[key] then
+		PRICE.Busy[key] = true
+		task.spawn(function()
+			local ok, price = pcall(function()
+				local info = call()
+				return type(info) == "table" and read(info) or nil
+			end)
+			PRICE.Cache[key] = (ok and price ~= nil) and price or false
+			PRICE.Busy[key] = nil
+			if PRICE.Refresh then pcall(PRICE.Refresh) end
+		end)
+	end
+	return fallback
+end
+function ShopUI.LivePrice(id, infoType, fallback, fetch)
+	id = math.floor(tonumber(id) or 0)
+	if id <= 0 then return fallback end
+	local get = fetch or PRICE.Fetch or function(i, t) return MarketplaceService:GetProductInfo(i, t) end
+	return PRICE.Ask(tostring(infoType) .. ":" .. id, fallback, function() return get(id, infoType) end, function(info)
+		local price = tonumber(info.PriceInRobux)
+		return (price and price >= 0) and math.floor(price) or nil
+	end)
+end
+-- A23-182 subscription card: GetSubscriptionProductInfoAsync("EXP-...") the same way -> Roblox's own price text
+-- (DisplayPrice, the player's local money) or a PriceInRobux number; id "" / failure / neither = the Config R$ price
+function ShopUI.SubPrice(id, fallback, fetch)
+	if type(id) ~= "string" or id == "" or id == "0" then return fallback end
+	local get = fetch or PRICE.SubFetch or function(i) return MarketplaceService:GetSubscriptionProductInfoAsync(i) end
+	return PRICE.Ask("Sub:" .. id, fallback, function() return get(id) end, function(info)
+		if type(info.DisplayPrice) == "string" and info.DisplayPrice ~= "" then return info.DisplayPrice end
+		local robux = tonumber(info.PriceInRobux)
+		return (robux and robux >= 0) and math.floor(robux) or nil
+	end)
+end
+ShopUI._PRICE = PRICE -- tools/test_shop_price.py
+
 local function passDef(p)
 	local all = type(Config.GamePasses) == "table" and Config.GamePasses or {}
 	local cfg = type(all[p.Kind]) == "table" and all[p.Kind] or {}
 	return {
 		Id = math.floor(tonumber(cfg.Id) or 0),
-		Price = tonumber(cfg.Price) or tonumber(cfg.PriceHint) or p.Price,
+		Price = ShopUI.LivePrice(cfg.Id, Enum.InfoType.GamePass, tonumber(cfg.Price) or tonumber(cfg.PriceHint) or p.Price),
 		Attr = type(cfg.Attr) == "string" and cfg.Attr or p.Attr,
 	}
 end
@@ -164,6 +210,31 @@ end
 local function metric(id, arg)
 	local cb = C and C.ComeBack
 	if type(cb) == "table" and type(cb.Metric) == "function" then pcall(cb.Metric, id, arg) end
+end
+
+-- A23-182 (user 10/14, 정정: Fast Travel = a monthly subscription): the subscription cards under the passes, one a row of
+-- Config.SubscriptionInfo (game dev 2: { [kind] = { Id = "EXP-…", Name, Line, Price, Attr?, Icon? } }) whose Id is a real
+-- subscription id ("" / 0 = no card); a tap = MarketplaceService:PromptSubscriptionPurchase; Attr (default "Sub"..kind,
+-- e.g. SubFastTravel, set by the server) = subscribed. Pure (tools/test_fast_travel_ui.py)
+function ShopUI.SubCards()
+	local all = type(Config.SubscriptionInfo) == "table" and Config.SubscriptionInfo or {}
+	local out = {}
+	for kind, d in all do
+		if type(kind) == "string" and type(d) == "table" and type(d.Id) == "string" and d.Id ~= "" and d.Id ~= "0"
+			and type(d.Name) == "string" then
+			table.insert(out, { Kind = kind, Id = d.Id, Name = d.Name, Line = type(d.Line) == "string" and d.Line or nil,
+				Price = tonumber(d.Price) or 0, Attr = type(d.Attr) == "string" and d.Attr or ("Sub" .. kind),
+				Icon = type(d.Icon) == "string" and d.Icon or "IconTravel" })
+		end
+	end
+	table.sort(out, function(a, b) return a.Kind < b.Kind end)
+	return out
+end
+
+local function promptSub(id, kind)
+	metric("PurchasePrompt", kind)
+	local ok, err = pcall(MarketplaceService.PromptSubscriptionPurchase, MarketplaceService, player, id)
+	if not ok then Util.Warn(TAG, "PromptSubscriptionPurchase failed: " .. tostring(err)) end
 end
 
 local function prompt(id, kind)
@@ -363,7 +434,8 @@ local function refreshLook(kit, cell)
 	elseif not salesOn() then
 		setCapsule(kit, cell, T.Off, kit.Palette.Button, false)
 	else
-		setCapsule(kit, cell, string.format(T.PriceF, Util.FormatInt(tonumber(def.Price) or 99)), kit.Palette.Buy, true)
+		local price = ShopUI.LivePrice(def.PassId or def.Id, Enum.InfoType.GamePass, tonumber(def.Price) or 99)
+		setCapsule(kit, cell, string.format(T.PriceF, Util.FormatInt(price)), kit.Palette.Buy, true)
 	end
 end
 
@@ -401,9 +473,12 @@ local function buildTickets(u, kit, parent, rows)
 		b.AnchorPoint = Vector2.new(1, 0.5)
 		b.Position = UDim2.new(1, -10, 0.5, 0)
 		local onSale = p ~= nil and (tonumber(p.Id) or 0) ~= 0
-		b.Text = onSale and string.format(T.PriceF, tostring(p.PriceHint)) or T.Soon
+		local function priceText()
+			return onSale and string.format(T.PriceF, tostring(ShopUI.LivePrice(p.Id, Enum.InfoType.Product, p.PriceHint))) or T.Soon
+		end
+		b.Text = priceText()
 		kit.SetEnabled(b, onSale)
-		table.insert(rows, { Label = label, Name = (p and p.Name) or kind,
+		table.insert(rows, { Label = label, Name = (p and p.Name) or kind, Button = b, PriceText = priceText,
 			Attr = kind == "Class" and "ClassTickets" or "FactionTickets" })
 	end
 end
@@ -442,6 +517,43 @@ local function buildShop(parent, kit, arg)
 		if not p.Info then metric("PassView", p.Kind) end -- one a kind per open (ComeBack keeps its own gap)
 	end
 
+	-- A23-182: the subscriptions (Fast Travel), one card each, under the passes
+	local subCells = {}
+	local subs = ShopUI.SubCards()
+	if #subs > 0 then
+		local scards = grid(kit, parent, "Subscriptions", L.Cols, L.CardH, #subs)
+		for _, sd in subs do
+			local function tapSub()
+				if attrOf(sd.Attr, false) == true then kit.Toast(T.OwnedToast, "info"); return end
+				promptSub(sd.Id, sd.Kind)
+			end
+			local card = cardButton(u, kit, scards, "Sub" .. sd.Kind, tapSub, openedAt)
+			rimSlot(u, "SlotRare", sd.Icon, {
+				Name = "Slot", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, L.Pad),
+				Size = UDim2.fromOffset(L.Slot, L.Slot), ScaleType = Enum.ScaleType.Fit, Parent = card,
+			})
+			cardWords(u, card, sd.Name, sd.Line, linesTop, linesH)
+			local cell = { Sub = sd }
+			cell.Button = capsule(kit, card, function()
+				if os.clock() >= openedAt + L.Guard then tapSub() end
+			end)
+			table.insert(subCells, cell)
+		end
+	end
+	local function refreshSubs()
+		for _, cell in subCells do
+			if attrOf(cell.Sub.Attr, false) == true then
+				setCapsule(kit, cell, T.Owned, kit.Palette.Free, true)
+			else
+				local price = ShopUI.SubPrice(cell.Sub.Id, cell.Sub.Price) -- 2-C #10: Roblox's price (text or R$)
+				local text = type(price) == "string" and string.format(T.MonthTextF, price)
+					or string.format(T.MonthF, Util.FormatInt(price))
+				setCapsule(kit, cell, text, kit.Palette.Buy, true)
+			end
+		end
+	end
+	refreshSubs()
+
 	-- looks: my side's rim tiles (nothing while no look is listed yet)
 	local looks = lookList()
 	local mine = myFaction()
@@ -472,13 +584,17 @@ local function buildShop(parent, kit, arg)
 	if ticketsOnSale() then buildTickets(u, kit, parent, ticketRows) end
 	kit.Text(parent, T.Note, { Color = kit.Theme.SubText, Size = 15, Align = Enum.TextXAlignment.Center })
 
-	return function()
+	local function refreshAll()
 		for _, cell in passCells do refreshPass(kit, cell) end
+		refreshSubs()
 		for _, cell in lookCells do refreshLook(kit, cell) end
 		for _, r in ticketRows do
 			r.Label.Text = string.format(T.TicketF, r.Name, math.floor(tonumber(attrOf(r.Attr, 0)) or 0))
+			if r.Button and r.PriceText then r.Button.Text = r.PriceText() end
 		end
 	end
+	PRICE.Refresh = refreshAll -- 2-C #10: a price read later repaints this shop
+	return refreshAll
 end
 
 ------------------------------------------------------------------ VIP crown on name tags (A23-75)
@@ -486,23 +602,40 @@ end
 -- it from the name as it renders here: Height of the line's TextBounds (Denk One: about 0.8 of the letters), the art's
 -- own width : height, Gap px before the first letter. The padding takes the crown's room, so crown + name stay one
 -- centred group, and a long name that TextScaled shrinks takes the crown down with it.
-local CROWN = { Height = 0.62, Gap = 3, Sweep = 1, Watched = setmetatable({}, { __mode = "k" }) }
+local CROWN = { Height = 0.62, TitleK = 0.8, Gap = 3, Sweep = 1, Watched = setmetatable({}, { __mode = "k" }) }
 
+-- A23-179 (review 10/14): the line's "[title]" is its own child label "Title" (translated; the name is not), placed
+-- left of the crown (or of the name), its size from the name's rendered height; the pad takes both rooms
 function CROWN.Fit(label)
-	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
-	if not (crown and pad and crown:IsA("ImageLabel") and pad:IsA("UIPadding")) then return end
+	local crown, pad, title = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad"), label:FindFirstChild("Title")
+	if not (pad and pad:IsA("UIPadding")) then return end
+	if crown and not crown:IsA("ImageLabel") then crown = nil end
+	if title and not (title:IsA("TextLabel") and title.Text ~= "") then title = nil end
+	if not (crown or title) then return end
 	local tb = label.TextBounds
 	if tb.X < 1 or tb.Y < 1 then return end
-	local ch = math.max(6, math.floor(tb.Y * CROWN.Height + 0.5))
-	local cw = math.floor(ch * (tonumber(crown:GetAttribute("Aspect")) or 1.46) + 0.5)
-	local room = cw + CROWN.Gap
+	local room, left = 0, math.floor(tb.X / 2 + CROWN.Gap + 0.5) -- left = px from the name's middle to the next piece
+	if crown then
+		local ch = math.max(6, math.floor(tb.Y * CROWN.Height + 0.5))
+		local cw = math.floor(ch * (tonumber(crown:GetAttribute("Aspect")) or 1.46) + 0.5)
+		local size = UDim2.fromOffset(cw, ch)
+		-- the padded box's middle is the name's middle: half the name to the left, then the gap
+		local pos = UDim2.new(0.5, -left, 0.5, -1)
+		if crown.Size ~= size then crown.Size = size end
+		if crown.Position ~= pos then crown.Position = pos end
+		if not crown.Visible then crown.Visible = true end
+		room += cw + CROWN.Gap
+		left += cw + CROWN.Gap
+	end
+	if title then
+		local ts = math.max(8, math.floor(tb.Y * CROWN.TitleK + 0.5))
+		if title.TextSize ~= ts then title.TextSize = ts end
+		local pos = UDim2.new(0.5, -left, 0.5, 0)
+		if title.Position ~= pos then title.Position = pos end
+		if not title.Visible then title.Visible = true end
+		room += math.ceil(title.TextBounds.X) + CROWN.Gap
+	end
 	if pad.PaddingLeft.Offset ~= room then pad.PaddingLeft = UDim.new(0, room) end -- may re-scale the name: refit
-	local size = UDim2.fromOffset(cw, ch)
-	-- the padded box's middle is the name's middle: half the name to the left, then the gap
-	local pos = UDim2.new(0.5, -math.floor(tb.X / 2 + CROWN.Gap + 0.5), 0.5, -1)
-	if crown.Size ~= size then crown.Size = size end
-	if crown.Position ~= pos then crown.Position = pos end
-	if not crown.Visible then crown.Visible = true end
 end
 
 function CROWN.Watch(label)
@@ -515,7 +648,7 @@ function CROWN.Watch(label)
 	label:GetPropertyChangedSignal("TextBounds"):Connect(fit)
 	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
 	label.ChildAdded:Connect(function(child)
-		if child.Name == "VipCrown" or child.Name == "VipPad" then task.defer(fit) end
+		if child.Name == "VipCrown" or child.Name == "VipPad" or child.Name == "Title" then task.defer(fit) end
 	end)
 	fit()
 end
@@ -532,7 +665,7 @@ function CROWN.Start()
 		while true do
 			task.wait(CROWN.Sweep)
 			for label in CROWN.Watched do
-				if label.Parent and label:FindFirstChild("VipCrown") then pcall(CROWN.Fit, label) end
+				if label.Parent and (label:FindFirstChild("VipCrown") or label:FindFirstChild("Title")) then pcall(CROWN.Fit, label) end
 			end
 		end
 	end)

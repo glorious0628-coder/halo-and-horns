@@ -78,7 +78,8 @@ local kit = {
 	end,
 	Open = function(id, arg) table.insert(opened, { id, arg }) end,
 }
-local panels = { Register = function(id, opts) reg[id] = opts return true end }
+local TRAVEL_ON = true -- A23-182: the Travel window = Fast Travel subscribers (Panels.TravelOn)
+local panels = { Register = function(id, opts) reg[id] = opts return true end, TravelOn = function() return TRAVEL_ON end }
 local arts = {}
 local UIKit = {
 	ArtId = function(name) return arts[name] end,
@@ -284,6 +285,10 @@ open()
 check(findText("Halo Slam  [Z]") == nil and hasText("Halo Slam"), "a slot not learned yet shows no key (keyboards)")
 -- locked + touch
 UIS.KeyboardEnabled = false
+TRAVEL_ON = false
+open()
+check(btn(W.WhereToHunt) == nil, "no Fast Travel subscription: no [Where to hunt] (A23-182)")
+TRAVEL_ON = true
 open()
 local hunt = btn(W.WhereToHunt)
 check(hunt ~= nil, "a slot not learned: [Where to hunt]")

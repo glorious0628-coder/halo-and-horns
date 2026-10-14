@@ -5,8 +5,14 @@
 -- gone: it never writes a joint. What stays is Studio's grip measurement for the photo checks (메인 반영 1 sets the
 -- LocalPlayer attribute GripProbe = true): my own held weapon measured every frame on the real parts, one console line
 -- per ProbeEvery s with this frame's value and the window's worst (walk / run / jump included).
+-- 최종 검수 10/14 (user while playing: from behind, the swordsman held the blade straight up over the shoulder like a pole,
+-- the fist on the guard): RestStep - on every character holding a sword (Config.WeaponGrips rows with Rest), while no
+-- attack clip runs (Fx.AttackPlaying) the default Animate's toolnone track is faded to ~0 (the arm hangs with the idle /
+-- walk animation) and the Tool.Grip turns to the row's Rest (the blade at the side, tip up and back); an attack brings
+-- toolnone and the plain grip back, so the swing starts from the raised arm as before. Local only (every client does
+-- it for every character); it still never writes a joint.
 -- Public API: WeaponPose.Init(C), WeaponPose.Start(), WeaponPose.Measure(char, model) -> { Right, Left }?,
--- WeaponPose.ProbeStep(player, now), WeaponPose.Step(dt).
+-- WeaponPose.ProbeStep(player, now), WeaponPose.Step(dt), WeaponPose.RestStep(now), WeaponPose.Want(kind, attacking).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -17,12 +23,16 @@ local Util = require(Shared:WaitForChild("Util"))
 
 local WeaponPose = {}
 local TAG = "WeaponPose"
+local C = nil
 
 local T = {
 	Model = "WeaponModel",
+	ToolNone = "ToolNoneAnim", -- the default Animate's toolnone Animation
+	Low = 0.001, Fade = 0.15, -- the faded toolnone weight / its fade time (s)
+	RestEvery = 0.05, -- s between the hold checks
 	ProbeEvery = 2, -- s: Studio's GripProbe print (every frame measured, the worst printed)
 }
-local S = { Probe = nil, Started = false }
+local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0 }
 
 -- per hand: dHand = the hand's centre to the weapon line, dGrip = its grip attachment to the line (the holding hand: 0 =
 -- the Handle runs through the fist), axis = its held axis (-Z, the knuckle line) against the line, fore = the forearm
@@ -91,6 +101,8 @@ function WeaponPose.ProbeStep(me, now)
 end
 
 function WeaponPose.Step(dt)
+	local okR, errR = pcall(WeaponPose.RestStep, os.clock())
+	if not okR then Util.Warn(TAG, "rest failed: " .. tostring(errR)) end
 	local me = Players.LocalPlayer
 	if RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true then
 		local ok, err = pcall(WeaponPose.ProbeStep, me, os.clock())
@@ -98,7 +110,72 @@ function WeaponPose.Step(dt)
 	end
 end
 
-function WeaponPose.Init(_registry) end
+-- (pure) what a held weapon of `kind` does now: "Rest" (a sword, no attack: the hanging hold), "Hold" (the plain grip and
+-- toolnone) or nil (not a resting kind: Roblox's hold untouched)
+function WeaponPose.Want(kind, attacking)
+	local rows = Config.WeaponGrips
+	local row = type(rows) == "table" and type(kind) == "string" and rows[kind] or nil
+	if type(row) ~= "table" or type(row.Rest) ~= "table" then return nil end
+	return attacking and "Hold" or "Rest"
+end
+
+local function toolNoneTracks(char)
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	local animator = hum and hum:FindFirstChildOfClass("Animator")
+	if not animator then return {} end
+	local out = {}
+	for _, tr in animator:GetPlayingAnimationTracks() do
+		local a = tr.Animation
+		if a and a.Name == T.ToolNone then table.insert(out, tr) end
+	end
+	return out
+end
+
+local function fxAttacking(char)
+	local fx = C and C.Fx
+	if type(fx) ~= "table" or type(fx.AttackPlaying) ~= "function" then return false end
+	local ok, v = pcall(fx.AttackPlaying, char)
+	return ok and v == true
+end
+
+-- every RestEvery s: each character's held sword rests (toolnone ~0, Grip Rest) or holds (toolnone 1, plain Grip)
+function WeaponPose.RestStep(now)
+	if now - S.RestAt < T.RestEvery then return end
+	S.RestAt = now
+	for _, p in Players:GetPlayers() do
+		local char = p.Character
+		local tool = char and char:FindFirstChild(T.Model)
+		if tool and tool:IsA("Tool") then
+			local kind = tool:GetAttribute("Kind")
+			local want = WeaponPose.Want(kind, fxAttacking(char))
+			local handle = tool:FindFirstChild("Handle")
+			if want and handle and handle:IsA("BasePart") then
+				local rest = want == "Rest"
+				for _, tr in toolNoneTracks(char) do
+					local w = rest and T.Low or 1
+					-- SwordTest 10/14: to an attack at once (the swing grip comes with it - a fade showed the blade level for a
+					-- moment with the arm still down); back to rest with the fade
+					if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, rest and T.Fade or 0) end
+				end
+				-- the engine's RightGrip weld (C1 = the Tool.Grip it was made with): a client's Tool.Grip change does not reach
+				-- the server-made weld (SwordTest Studio 10/14: the blade stayed level), so the weld's C1 itself turns (local)
+				local hand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
+				local weld = hand and hand:FindFirstChild("RightGrip")
+				if weld and weld:IsA("JointInstance") and weld.Part1 == handle then
+					local c1 = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)
+					if S.Rest[tool] ~= want or weld.C1 ~= c1 then
+						S.Rest[tool] = want
+						weld.C1 = c1
+					end
+				end
+			end
+		end
+	end
+end
+
+function WeaponPose.Init(registry)
+	C = registry
+end
 
 function WeaponPose.Start()
 	if S.Started then return end

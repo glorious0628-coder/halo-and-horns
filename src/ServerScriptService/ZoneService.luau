@@ -813,6 +813,9 @@ end
 local function onTravelRemote(player, destId)
 	if not S.PlayerService.IsReady(player) then return end
 	if type(destId) ~= "string" or #destId > MAX_DEST_LENGTH then return end
+	-- A23-182: the menu's teleport is the Fast Travel subscription's (silently nothing without it; the pads stay free)
+	local mon = S.MonetizationService
+	if not (type(mon) == "table" and type(mon.HasSub) == "function" and mon.HasSub(player, "FastTravel") == true) then return end
 	if not Util.RateLimit(player, "Travel", Config.RateLimits.Travel) then return end
 	S.PlayerService.MarkActive(player)
 	local ok, accepted, reason = pcall(ZoneService.Travel, player, destId, false)
