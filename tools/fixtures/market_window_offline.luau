@@ -416,8 +416,9 @@ check(names(findAll(right, "^Offer_")) == "Offer_a1,Offer_a2,Offer_7", "the page
 local a1 = find(right, "Offer_a1")
 check(find(a1, "Count").Text == "×10" and find(a1, "Price").Text == "3" and find(a1, "Left").Text == "2:05",
 	"a row: count, price, time left m:ss", find(a1, "Count").Text .. " " .. find(a1, "Price").Text .. " " .. find(a1, "Left").Text)
-check(find(find(right, "Offer_a2"), "Left").Text == "59:59" and MarketWindow.TimeText(3600) == "1:00" and MarketWindow.TimeText(3725) == "1:02"
-	and MarketWindow.TimeText(0) == "0:00" and MarketWindow.TimeText(-5) == "0:00", "time left: m:ss under an hour, h:mm from an hour")
+check(find(find(right, "Offer_a2"), "Left").Text == "59:59" and MarketWindow.TimeText(3600) == "1h 00m" and MarketWindow.TimeText(3725) == "1h 02m"
+	and MarketWindow.TimeText(3900) == "1h 05m" and MarketWindow.TimeText(65) == "1:05"
+	and MarketWindow.TimeText(0) == "0:00" and MarketWindow.TimeText(-5) == "0:00", "time left: m:ss under an hour, '1h 05m' from an hour (65 s and 3900 s never look alike)")
 check(find(a1, "Buy").Text == "Buy" and find(a1, "Buy").Enabled == true and find(a1, "Buy").Color == "buy", "[Buy] on")
 check(find(find(right, "Pager"), "Page").Text == "1 / 3" and find(find(right, "Pager"), "Prev").Enabled == false
 	and find(find(right, "Pager"), "Next").Enabled == true, "the pages: 1 / 3, ◀ off, ▶ on")
@@ -523,11 +524,11 @@ find(root, "Kind_Material").OnClick()
 
 ------------------------------------------------------------------ 5. Sell
 inventory = { Items = { Jelly = 12, Petal = 1, Enh70 = 2, MightTonic = 3, PetTreat = 1, Nope = 5, ZQuest = 2 },
-	Spares = { ["3:2"] = 2, ["2:0"] = 1, x = 4, ["99:0"] = 1 } }
+	Spares = { ["3:2"] = 2, ["2:0"] = 1, x = 4, ["99:0"] = 1, ["1:0"] = 1 } }
 find(root, "Tab_Sell").OnClick()
 local sl = find(root, "List")
 check(names(findAll(sl, "^Row_")) == "Row_I:Enh70,Row_I:Jelly,Row_I:Petal,Row_I:MightTonic,Row_I:PetTreat,Row_W:2:0,Row_W:3:2",
-	"Sell: materials, scrolls, tonics, Pet Treat and the spares; no quest thing, no unknown id, no bad spare, no HP potion",
+	"Sell: materials, scrolls, tonics, Pet Treat and the spares; no quest thing, no unknown id, no bad spare, no HP potion, no tier-1 spare",
 	names(findAll(sl, "^Row_")))
 check(find(find(sl, "Row_I:Jelly"), "Right1").Text == "×12" and find(find(sl, "Row_W:3:2"), "Right1").Text == "×2"
 	and find(find(sl, "Row_W:3:2"), "Name").Text == Config.WeaponName(3, "Warrior", "Halo") .. " +2", "each row: the name and how many I have")
@@ -663,6 +664,8 @@ check(find(find(mine, "Mine_m2"), "State").Text == "Sold" and find(find(mine, "M
 	and find(find(mine, "Mine_m3"), "Paid").Text == "Paid" and find(find(mine, "Mine_m2"), "Cancel") == nil,
 	"Sold: Sold + Paying… / Paid; no [Cancel]")
 check(find(find(mine, "Mine_m2"), "Name").Text == Config.WeaponName(3, "Warrior", "Halo") .. " +2", "a sold weapon: its name and +N")
+check(find(find(mine, "Mine_m2"), "Price").Text == "432" and find(find(mine, "Mine_m3"), "Price").Text == "270"
+	and find(find(mine, "Mine_m1"), "Price").Text == "40", "a sold row shows what I get (price - 10%); an open row its price", find(find(mine, "Mine_m2"), "Price").Text)
 check(find(find(mine, "Mine_m4"), "State").Text == "Back in your bag" and find(find(mine, "Mine_m5"), "State").Text == "Back in your bag"
 	and find(find(mine, "Mine_m4"), "Cancel") == nil, "Expired / Cancel: Back in your bag")
 check(find(mine, "Waiting1").Text == TXT.Checking and find(mine, "Waiting2").Text == TXT.Checking and find(mine, "Waiting3") == nil,

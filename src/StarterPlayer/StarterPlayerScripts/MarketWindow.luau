@@ -74,6 +74,8 @@ local TXT = {
 	Paying = "Paying…",
 	Back = "Back in your bag",
 	Today = "Today: %d listed · %d bought",
+	-- artisan contract ⑤ (10/14): an hour or more reads "1h 05m" (it read "1:05" like 65 s did)
+	Hours = "%dh %02dm",
 }
 L10n.Register("MarketWindow.TXT", TXT)
 
@@ -190,11 +192,11 @@ local function noteText(key)
 end
 MarketWindow.NoteText = noteText
 
--- seconds -> "m:ss" (under an hour) or "h:mm"
+-- seconds -> "m:ss" (under an hour) or "1h 05m" (TXT.Hours; "h:mm" looked the same as m:ss - 3900 s and 65 s both "1:05")
 function MarketWindow.TimeText(sec)
 	sec = math.max(0, math.floor(num(sec, 0)))
 	if sec >= 3600 then
-		return string.format("%d:%02d", sec // 3600, (sec % 3600) // 60)
+		return tx(TXT, "Hours", sec // 3600, (sec % 3600) // 60)
 	end
 	return string.format("%d:%02d", sec // 60, sec % 60)
 end
@@ -328,6 +330,8 @@ function MarketWindow.SellEntries(ctx)
 	local spares = {}
 	for key, n in type(ctx.Spares) == "table" and ctx.Spares or {} do
 		local t, p = string.match(tostring(key), "^(%d+):(%d+)$")
+		-- artisan contract ⑤: no tier-1 spare (the free class weapon; the server refuses W:1:*)
+		if t and tonumber(t) <= 1 then t = nil end
 		local info = t and MarketWindow.KeyInfo("W:" .. t .. ":" .. p, ctx) or nil
 		n = math.floor(num(n, 0))
 		if info and n >= 1 then table.insert(spares, { Key = info.Key, Info = info, Count = n }) end
@@ -1005,7 +1009,10 @@ local function mineRow(list, r, info, ctx, i)
 		Size = UDim2.fromOffset(150, L.MineRowH - 8), TextYAlignment = Enum.TextYAlignment.Center, ZIndex = z })
 	label(row, tx(TXT, "Count", r.N), L.Size.Small, colorOf("Text"), { Name = "Count", Position = UDim2.fromOffset(218, 9),
 		Size = UDim2.fromOffset(84, 18), TextWrapped = false, ZIndex = z, Style = false })
-	label(row, money(r.Price), L.Size.Small, colorOf("Gold"), { Name = "Price", Position = UDim2.fromOffset(218, 31),
+	-- artisan contract ⑤: a sold listing shows what I get (price - the market's cut), like "You get" when listing
+	local shown = r.Price
+	if r.State == "Sold" then shown = select(2, MarketWindow.Fee(r.Price)) end
+	label(row, money(shown), L.Size.Small, colorOf("Gold"), { Name = "Price", Position = UDim2.fromOffset(218, 31),
 		Size = UDim2.fromOffset(84, 18), TextWrapped = false, ZIndex = z, Style = false })
 	local x = 310
 	if r.State == "Open" then
