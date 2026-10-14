@@ -1,0 +1,36 @@
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+TutorialStep 99
+open Shop
+shop texts: Shop | 2x XP | Level up 2x faster | Owned | Owned | 2x Gold | Earn 2x gold | Owned | Owned | VIP | Crown, chat tag, Supporters board | Owned | Owned | Sticker Pack | 13 more chat stickers | Owned | Owned | Bubble Pack | Fancy chat bubbles | Owned | Owned | Private Server | Play with just your friends.
+Rewards are halved in private servers | 100 R$ / mo | 100 R$ / mo | Fast Travel | Teleport to any zone you have unlocked from the menu. No stats are for sale. | 149 R$ / mo | 149 R$ / mo | Looks for Knights of Light | Ice Halo | Wear | Wear | Gold Halo | Wear | Wear | Always ask a grown-up before you buy.
+saved 01_shop_top
+scrolled
+saved 01_shop_scroll1
+scrolled
+saved 01_shop_scroll2
+scrolled
+saved 01_shop_scroll3
+open Menu
+menu texts: Menu | Bag | Bag | Rebirth | Rebirth | Change Class | Change Class | Map | Map | Nickname | Nickname | Replay Opening | Replay Opening | My name in announcements and rankings: shown | My name in announcements and rankings: shown | Change sides at the Altar of Fate in the Crossroads! | Halos and horns are the power of the Crown Shards. They grow as your rank goes up.
+travel in menu: False
+saved 02_menu
+open Menu
+gear: ok ok
+fired EquipWeapon
+held: Tool WeaponModel
+anchored on
+cam back
+saved 03_sword_back
+cam side
+saved 03_sword_side
+fired Swing
+saved 03_sword_attack
+reset
+anchored off
+console errors: [ServerErrorService] started
+play stopped
