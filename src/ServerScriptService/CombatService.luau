@@ -523,11 +523,13 @@ function CombatService.ComputeMonsterHit(attacker, allowCrit, shape)
 	local c = shape or cls(attacker)
 	local level = numAttr(attacker, "Level", 1)
 	local tier = numAttr(attacker, "WeaponTier", 0)
+	local alloc = Config.StatAllocOf(attacker) -- A23-69: Attack points (x1 while Features.StatPoints is off)
 	local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, "WeaponEnhance", 0))
 		* (c.Damage or 1)
 		* (1 + CombatService.GetDamageBonus(attacker, nil))
 		* gearAtk(attacker) -- ⑥ gear (게임성 개발 3): the ring's atk mult
 		* CombatService.GetDamageMult(attacker, nil, shape)
+		* (Config.StatMults(alloc.A, alloc.H))
 	local crit = allowCrit == true and Util.Random:NextNumber() < Config.Combat.CritChance
 	if crit then
 		dmg *= Config.Combat.CritMult
@@ -544,13 +546,19 @@ function CombatService.ComputePvPHit(attacker, victim, shape)
 	local vLevel = numAttr(victim, "Level", 1)
 	local vTier = numAttr(victim, "WeaponTier", 0)
 	local vClass = S.ClassService.GetClass(victim)
-	local base = Config.MaxHealth(vLevel, faction(victim), vClass) * Config.PvP.HitPctOfMaxHP
+	-- A23-69 §3-3: the victim's Health points raise its max HP here (the base) and only lower the ratio once below;
+	-- the attacker's Attack points raise the ratio - all inside the PvP clamp (both x1 while Features.StatPoints is off)
+	local aAlloc, vAlloc = Config.StatAllocOf(attacker), Config.StatAllocOf(victim)
+	local aAtk = Config.StatMults(aAlloc.A, aAlloc.H)
+	local _, vHp = Config.StatMults(vAlloc.A, vAlloc.H)
+	local base = Config.StatMaxHealth(vLevel, faction(victim), vClass, vAlloc.H) * Config.PvP.HitPctOfMaxHP
 	-- A23-12: enhancement and the legendary tier only move this ratio; the PvP clamp below still caps it
 	local vWeapon = Config.WeaponDamage(vTier, vLevel, numAttr(victim, "WeaponEnhance", 0))
 	local ratio = Config.PvP.PowerRatioMax
-	if vWeapon > 0 then -- ⑥ gear (게임성 개발 3): each weapon damage x its owner's ring mult; the same clamp below
-		ratio = Config.WeaponDamage(aTier, aLevel, numAttr(attacker, "WeaponEnhance", 0)) * gearAtk(attacker)
-			/ (vWeapon * gearAtk(victim))
+	if vWeapon > 0 then -- ⑥ gear (게임성 개발 3): each weapon damage x its owner's ring mult; A23-69 §3-3: x the attacker's
+		-- Attack mult / the victim's Health mult (both 1 while Features.StatPoints is off); the same clamp below
+		ratio = Config.WeaponDamage(aTier, aLevel, numAttr(attacker, "WeaponEnhance", 0)) * gearAtk(attacker) * aAtk
+			/ (vWeapon * gearAtk(victim) * vHp)
 	end
 	-- A23-34 (검수 2026-10-06): a bare-handed attacker never gets the weapon floor PowerRatioMin, so a punch (and a
 	-- bare-handed skill) stays weaker than any tier-1 weapon against every opponent (Config.Combat.Unarmed.PvPRatioMin)

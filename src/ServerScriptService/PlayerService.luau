@@ -119,7 +119,11 @@ local function computeMaxHealth(player)
 	local level = tonumber(stat(player, "Level", 1)) or 1
 	local faction = stat(player, "Faction", "None")
 	local class = stat(player, "Class", "Warrior")
-	return math.max(1, math.floor(Config.MaxHealth(level, faction, class) * healthMult(player)
+	-- A23-69: Health points (Config.StatMaxHealth = the plain max HP while Features.StatPoints is off; a Config without
+	-- the stat functions = the plain max HP, like gearHp)
+	local maxOf = type(Config.StatMaxHealth) == "function" and Config.StatMaxHealth or Config.MaxHealth
+	local hp = type(Config.StatAllocOf) == "function" and Config.StatAllocOf(player).H or 0
+	return math.max(1, math.floor(maxOf(level, faction, class, hp) * healthMult(player)
 		* gearHp(player))) -- ⑥ gear (게임성 개발 3): the armor's hp mult (1 while the switch is off)
 end
 

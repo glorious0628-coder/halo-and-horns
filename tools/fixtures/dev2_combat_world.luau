@@ -89,6 +89,9 @@ local function bareWorld(o)
 	end
 	function ps.MarkActive() end
 	function ps.GetLastActive() return w.Clock end
+	-- A23-69 stage 2: StatService re-reads a player's character after a stat change (w.Refreshed = { { P, Full } })
+	w.Refreshed = {}
+	function ps.RefreshCharacter(p, full) table.insert(w.Refreshed, { P = p, Full = full }) end
 	local reg = { PlayerService = ps }
 	w.Registry, w.PS = reg, ps
 	reg.DataService = { IsMemoryMode = function() return false end }
@@ -244,12 +247,16 @@ local function bareWorld(o)
 	local window = WINDOW_SOURCE and w:Load("DamageWindow", WINDOW_SOURCE) or nil
 	local skills = SKILL_SOURCE and w:Load("SkillService", SKILL_SOURCE) or nil
 	reg.DamageWindow, reg.SkillService = window, skills
+	-- A23-69 stage 2 (when bound): StatService on the same registry
+	local stat = STAT_SOURCE and w:Load("StatService", STAT_SOURCE) or nil
+	reg.StatService = stat
 	combat.Init(reg)
 	loot.Init(reg)
 	story.Init(reg)
 	if pet then pet.Init(reg) end
 	if window then window.Init(reg) end
 	if skills then skills.Init(reg) end
+	if stat then stat.Init(reg) end
 	local n0 = #w.Spawned
 	combat.Start()
 	assert(#w.Spawned == n0 + 2, "CombatService.Start spawns the regen and the auto-combat loop")
@@ -259,9 +266,10 @@ local function bareWorld(o)
 	if pet then pet.Start() end
 	if window then window.Start() end
 	if skills then skills.Start() end
+	if stat then stat.Start() end
 	w.Spawned = {}
 	assert(coroutine.resume(autoLoop)) -- runs to its first task.wait
-	w.Combat, w.Loot, w.Story, w.Pet, w.Window, w.Skills = combat, loot, story, pet, window, skills
+	w.Combat, w.Loot, w.Story, w.Pet, w.Window, w.Skills, w.Stat = combat, loot, story, pet, window, skills, stat
 	-- one auto-combat step for every ready player
 	function w:AutoTick()
 		local ok, err = coroutine.resume(autoLoop)

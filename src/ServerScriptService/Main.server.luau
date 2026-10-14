@@ -13,7 +13,7 @@ local INIT_ORDER = {
 	"GrudgeService", "WarService", "KaijuService", "GooseService", "ShopService", "QuestService", "StoryQuestService",
 	"AnnounceService", "SettingsService", "RankingService", "LootService", "TelemetryService", "TitleService",
 	"CharacterVisuals", "HalloweenService", "PetService", "BoardService", "BarkService", "DamageWindow", "SkillService",
-	"ChatText",
+	"StatService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
 	"FinisherService", -- 게임성 개발 2: the field bosses' finisher card (points: Deeds)
@@ -45,7 +45,7 @@ local START_ORDER = {
 	"ShopService", "QuestService", "StoryQuestService", "AnnounceService", "HalloweenService", "LootService", "TelemetryService",
 	"TitleService", "MonetizationService", "CharacterVisuals", "DataService",
 	"NicknameService", "SettingsService", "RankingService", "PetService", "BoardService", "BarkService", "DamageWindow",
-	"SkillService", "ChatText",
+	"SkillService", "StatService", "ChatText",
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
 	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)

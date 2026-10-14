@@ -87,7 +87,7 @@ MUTATIONS = [
     ("power: CombatPower drops the gear", C, "\tlocal raw = Config.PowerOf(level, tier, 1, enhance, alloc, gear)\n", "\tlocal raw = Config.PowerOf(level, tier, 1, enhance, alloc)\n"),
     ("power: PowerOf ignores the gear", C, "\tif type(gear) == \"table\" then am, hm = am * Config.GearMult(gear.A), hm * Config.GearMult(gear.H) end" + HOOK + "\n", ""),
     ("power: the armor in the attack factor", C, "hm * Config.GearMult(gear.H)", "hm * Config.GearMult(gear.A)"),
-    ("power: CombatPowerOf drops the gear", C, "tier, enhance, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })", "tier, enhance, Config.StatAllocOf(player))"),
+    ("power: CombatPowerOf drops the gear", C, "tier, enhance, alloc, { A = gearAtk, H = gearHp })", "tier, enhance, alloc)"),
     ("power: MaxCombatPower without the best gear", C, "Config.Loot.MaxEnhance, even, top))", "Config.Loot.MaxEnhance, even))"),
     ("power: MaxCombatPower shares one cache", C, "\tif gearOn then key ..= \"Gear\" end -- ⑥ gear (게임성 개발 3): its own cache value\n", ""),
     ("power: MaxCombatPower without the best armor", C, "H = 1 + Config.GearBonus(\"Armor\", Config.Gear.MaxTier, Config.Gear.MaxPlus) }", "H = 1 }"),
@@ -102,11 +102,12 @@ MUTATIONS = [
     ("hook: max HP without the armor", P, "\t\t* gearHp(player))) -- ⑥ gear", "\t\t* 1)) -- ⑥ gear"),
     ("hook: max HP from the ring's number", P, "\tlocal ok, _, h = pcall(Config.GearMultsOf, player)\n", "\tlocal ok, h = pcall(Config.GearMultsOf, player)\n"),
     ("hook: monster hit without the ring", CO, "\t\t* gearAtk(attacker) -- ⑥ gear (게임성 개발 3): the ring's atk mult\n", ""),
-    ("hook: PvP ratio without the attacker's ring", CO, " * gearAtk(attacker)\n\t\t\t/ (vWeapon", "\n\t\t\t/ (vWeapon"),
-    ("hook: PvP ratio without the victim's ring", CO, "/ (vWeapon * gearAtk(victim))", "/ vWeapon"),
-    ("hook: PvP ratio from the armor", CO, " * gearAtk(attacker)\n\t\t\t/ (vWeapon", " * select(2, Config.GearMultsOf(attacker))\n\t\t\t/ (vWeapon"),
+    # (2-A ⑧: the stat mults aAtk / vHp sit beside the rings in the same ratio)
+    ("hook: PvP ratio without the attacker's ring", CO, " * gearAtk(attacker) * aAtk\n", " * aAtk\n"),
+    ("hook: PvP ratio without the victim's ring", CO, "/ (vWeapon * gearAtk(victim) * vHp)", "/ (vWeapon * vHp)"),
+    ("hook: PvP ratio from the armor", CO, " * gearAtk(attacker) * aAtk\n", " * select(2, Config.GearMultsOf(attacker)) * aAtk\n"),
     ("hook: PvP ratio without the clamp", CO, "\tratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)\n", "\tratio = math.max(ratio, floor)\n"),
-    ("hook: PvP base grows with the victim's armor", CO, "vClass) * Config.PvP.HitPctOfMaxHP\n", "vClass) * Config.PvP.HitPctOfMaxHP * select(2, Config.GearMultsOf(victim))\n"),
+    ("hook: PvP base grows with the victim's armor", CO, "vAlloc.H) * Config.PvP.HitPctOfMaxHP\n", "vAlloc.H) * Config.PvP.HitPctOfMaxHP * select(2, Config.GearMultsOf(victim))\n"),
     ("hook: the power watch misses GearAtk", J, "\"StatHp\", \"GearAtk\", \"GearHp\" } do", "\"StatHp\", \"GearHp\" } do"),
     ("hook: the power watch misses GearHp", J, "\"StatHp\", \"GearAtk\", \"GearHp\" } do", "\"StatHp\", \"GearAtk\" } do"),
     # --- PetService (the pet's side)
@@ -250,9 +251,12 @@ def static() -> tuple[int, list[str]]:
     check('dealt = dealt * S.BuffService.Mult(player, "MonsterDamage")' in dmon and "gearAtk" not in dmon
           and "BuffService" not in mh, "a Might Tonic x a ring: two factors (damageMonster x the tonic, ComputeMonsterHit x the ring)")
     check("gearAtk(attacker)" in pvp and "gearAtk(victim)" in pvp, "CombatService.ComputePvPHit: both rings inside the ratio")
-    check("local base = Config.MaxHealth(vLevel, faction(victim), vClass) * Config.PvP.HitPctOfMaxHP" in pvp and "Gear" not in
-          [line for line in pvp.splitlines() if "local base" in line][0],
-          "ComputePvPHit: the base stays the victim's BASE MaxHealth")
+    # A23-69 stage 2 (2-A ⑧): the victim's Health points raise the base (StatMaxHealth = MaxHealth while StatPoints is off);
+    # the armor never does
+    check(("local base = Config.MaxHealth(vLevel, faction(victim), vClass) * Config.PvP.HitPctOfMaxHP" in pvp
+           or "local base = Config.StatMaxHealth(vLevel, faction(victim), vClass, vAlloc.H) * Config.PvP.HitPctOfMaxHP" in pvp)
+          and "Gear" not in [line for line in pvp.splitlines() if "local base" in line][0],
+          "ComputePvPHit: the base stays the victim's BASE MaxHealth (+ its Health points, never the armor)")
     check("ratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)" in pvp, "ComputePvPHit: the same 0.8..1.5 clamp after the ratio")
     justice = read(SSS / "JusticeService.luau")
     watch = function_block(justice, "function POWER.Watch(")
