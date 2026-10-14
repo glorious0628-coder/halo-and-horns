@@ -1,0 +1,93 @@
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+saved pc_08a_first_mission
+open Bag
+bag before gift: Bag | Gear | Gear | Use | Use | Scrolls | Scrolls | Materials | Materials | Weapon | Armor | Ring | Pet | 0 | 0 / 12 | Newest
+saved pc_08b_bag_before
+modal hidden
+anvil 39, 1.5, 45
+pos: 41.345279693603516, 6.19678258895874, 51.12269973754883
+prompt used enabled=true
+Class=Warrior WeaponTier=1 Mask=1 weapon=Tool parts=Handle,Guard,Blade
+open Bag
+bag after gift: Bag | Gear | Gear | Use | Use | Scrolls | Scrolls | Materials | Materials | Weapon | Armor | Ring | Pet | Twig | ★ Common | Attack 8 | Power 283 | Your first weapon, a gift from the Blacksmith | Equipped | Equipped | 300 | 0 / 12 | Newest
+saved pc_08c_bag_after
+modal hidden
+gear: ok,ok,5
+open WeaponShop
+forge texts: Forge | Otto: Clang, clang… done. Cocoa time. | Crossroads → Artisan Guild anvil · interact up close | Show me the way | Show me the way | Pick a basic weapon to buy. Weapons you own can be equipped again for free. | Current weapon: Twig | You have 5,300 gold (Vault 5,300 + Pouch 0) | No materials to sell | No materials to sell | ★ Twig · Equipped | First weapon · free to re-equip · can't be sold | Slime in 2 basic hits | Equipped | Equipped | The first weapon can't be sold | The first weapon can't be sold | ★ Wooden Sword · Not owned | Price 150 gold · Needs Lv 1 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 15 gold (1/10 of the price) | Buy · 150 gold | Buy · 150 gold | Sell · 15 gold | Sell · 15 gold | ★★ Iron Sword · Not owned | Price 800 gold · Needs Lv 5 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 80 gold (1/10 of the price) | Buy · 800 gold | Buy · 800 gold | Sell · 80 gold | Sell · 80 gold | ★ Frying Pan · Not owned | Just for fun: not stronger, just funny! | Price 300 gold · Needs Lv 1 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 30 gold (1/10 of the price) | Buy · 300 gold | Buy · 300 gold | Sell · 30 gold | Sell · 30 gold | ★ Rubber Chicken · Not owned | Just for fun: not stronger, just funny! | Price 300 gold · Needs Lv 1 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 30 gold (1/10 of the price) | Buy · 300 gold | Buy · 300 gold | Sell · 30 gold | Sell · 30 gold
+saved pc_05a_forge_top
+scroll 300 canvas 533 win 289
+saved pc_05b_forge_scroll
+scroll 99999 canvas 533 win 289
+saved pc_05c_forge_scroll
+forge texts after scroll: Forge | Otto: Clang, clang… done. Cocoa time. | Crossroads → Artisan Guild anvil · interact up close | Show me the way | Show me the way | Pick a basic weapon to buy. Weapons you own can be equipped again for free. | Current weapon: Twig | You have 5,300 gold (Vault 5,300 + Pouch 0) | No materials to sell | No materials to sell | ★ Twig · Equipped | First weapon · free to re-equip · can't be sold | Slime in 2 basic hits | Equipped | Equipped | The first weapon can't be sold | The first weapon can't be sold | ★ Wooden Sword · Not owned | Price 150 gold · Needs Lv 1 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 15 gold (1/10 of the price) | Buy · 150 gold | Buy · 150 gold | Sell · 15 gold | Sell · 15 gold | ★★ Iron Sword · Not owned | Price 800 gold · Needs Lv 5 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 80 gold (1/10 of the price) | Buy · 800 gold | Buy · 800 gold | Sell · 80 gold | Sell · 80 gold | ★ Frying Pan · Not owned | Just for fun: not stronger, just funny! | Price 300 gold · Needs Lv 1 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 30 gold (1/10 of the price) | Buy · 300 gold | Buy · 300 gold | Sell · 30 gold | Sell · 30 gold | ★ Rubber Chicken · Not owned | Just for fun: not stronger, just funny! | Price 300 gold · Needs Lv 1 · Now Lv 30 | Slime in 2 basic hits → 1 hit | Sells for 30 gold (1/10 of the price) | Buy · 300 gold | Buy · 300 gold | Sell · 30 gold | Sell · 30 gold
+buy 10
+buy 11
+Class=Warrior WeaponTier=11 Mask=1537 weapon=Tool parts=Handle,Guard,Blade
+modal hidden
+plaza
+chips: HaloScore='0' | HornsScore='0' | Text='Safe Zone' | Text='2x XP · Gold' | Text='Sprout Shield' | Text='Revive Shield' | Text='+2' | Chevron='▼' | Sub='Skill' | Label='Menu' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='Golden Goose 6:36' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | Title='Forge' | Label='The first weapon can't be sold' | Label='Sell · 15 gold' | Label='Sell · 80 gold' | Label='Sell · 30 gold' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Knights of Light' | Motto='Heal friends and catch thieves!' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Horn Legion' | Motto='Tricks & PvP gold!' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Desc='Stay back and blast a wide area' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | PassLabel='Mountain Pass' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · M / Esc: close' | Text='Halo Slam'
+saved pc_01_crown_bar
+open Journal event
+event tab: Quests | Main 1 | Main 1 | Side 2 | Side 2 | Event 1 | Event 1 | In progress | Crown War: next crown in 8:56 | Available | Nothing new right now. | Done | Nothing finished yet.
+saved pc_01b_event_tab
+modal hidden
+outlaw on
+chips outlaw: HaloScore='0' | HornsScore='0' | Text='Outlaw' | Text='Safe Zone' | Text='2x XP · Gold' | Text='Sprout Shield' | Text='Revive Shield' | Text='+2' | Chevron='▼' | Sub='Skill' | Label='Menu' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='Golden Goose 6:26' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | Title='Quests' | Label='Side 2' | Label='Event 1' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Knights of Light' | Motto='Heal friends and catch thieves!' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Horn Legion' | Motto='Tricks & PvP gold!' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Desc='Stay back and blast a wide area' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | PassLabel='Mountain Pass' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · M / Esc: close' | Text='Halo Slam'
+saved pc_02_chips_outlaw
+outlaw off
+goose: ok
+chips goose: HaloScore='0' | HornsScore='0' | Text='Outlaw' | Text='Safe Zone' | Text='2x XP · Gold' | Text='Sprout Shield' | Text='Revive Shield' | Text='+2' | Chevron='▼' | Sub='Skill' | Label='Menu' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='Golden Goose 0:56' | Label='Join' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | Title='Quests' | Label='Side 2' | Label='Event 3' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Knights of Light' | Motto='Heal friends and catch thieves!' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Horn Legion' | Motto='Tricks & PvP gold!' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Desc='Stay back and blast a wide area' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | PassLabel='Mountain Pass' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · M / Esc: close' | Text='Halo Slam'
+saved pc_03_goose_chip
+days 27
+open Attendance
+attendance 27: Daily Gifts | 28 | Days collected: 27 | 28 days: Name frame | Day 1 | x2 | Day 2 | 4.6K | Day 3 | Day 4 | 4.6K | Day 5 | x3 | x19 | Day 6 | 7.8K | Day 7 | Today · Day 1: +HP Potion x2 | Claim! | Claim! | Missed a day? No problem. Nothing resets.
+saved pc_04_attendance27
+modal hidden
+days 28
+open Attendance
+attendance 28: Daily Gifts | 50 | Days collected: 28 | 50 days: Super Regular title + Star Halo | Day 1 | x2 | Day 2 | 4.6K | Day 3 | Day 4 | 4.6K | Day 5 | x3 | x19 | Day 6 | 7.8K | Day 7 | Today · Day 1: +HP Potion x2 | Claim! | Claim! | Missed a day? No problem. Nothing resets.
+saved pc_04_attendance28
+modal hidden
+eq 10
+Class=Warrior WeaponTier=10 Mask=1537 weapon=Tool parts=Handle,Guard,Blade
+saved pc_06_pan_hold
+fired Swing
+saved pc_06_pan_swing
+eq 11
+Class=Warrior WeaponTier=11 Mask=1537 weapon=Tool parts=Handle,Guard,Blade
+saved pc_06_chicken_hold
+fired Swing
+saved pc_06_chicken_swing
+ok
+class Warrior: ok
+eq 3
+Class=Warrior WeaponTier=3 Mask=511 weapon=Tool parts=Handle,Guard,Blade
+anchored on
+cam side
+saved pc_07_sword_side
+reset
+anchored off
+class Mage: ok
+eq 3
+Class=Mage WeaponTier=3 Mask=511 weapon=Tool parts=Handle,Collar,Tip
+anchored on
+cam side
+saved pc_07_staff_side
+reset
+anchored off
+class Archer: ok
+eq 3
+Class=Archer WeaponTier=3 Mask=511 weapon=Tool parts=Arc1,Arc2,Handle,Arc4,Arc5,String
+anchored on
+cam side
+saved pc_07_bow_side
+reset
+anchored off
+console errors: [ServerErrorService] started
+play stopped
