@@ -25,10 +25,7 @@ local C = nil
 local TAG = "GearSlots"
 local LocalPlayer = Players.LocalPlayer
 
-local TXT = {
-	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
-	PetLv = "Lv %d",
-}
+local TXT = Config.ClientText.GearSlots -- the words: Config.ClientText.GearSlots (moved 10/14)
 L10n.Register("GearSlots.TXT", TXT)
 
 -- the same numbers as CharacterUI's L (cell, gaps, columns, rows) and the bag's grade slot parts

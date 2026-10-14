@@ -262,7 +262,8 @@ def static_checks(config: str, worldmap: str):
          'if Config.FeatureOn("Market") then -- not in the beta' in worldmap
          and re.search(r'if Config\.FeatureOn\("Market"\) then[^\n]*\n\t\tlandmark\("Market"', worldmap) is not None),
         ("the world map calls the anvil spot Forge while the artisan guild is off",
-         'Text = Config.FeatureOn("NeutralFaction") and TXT.Guild or TXT.Forge,' in worldmap and 'Forge = "Forge",' in worldmap),
+         'Text = Config.FeatureOn("NeutralFaction") and TXT.Guild or TXT.Forge,' in worldmap and 'Forge = "Forge",' in config
+         and "local TXT = Config.ClientText.WorldMap" in worldmap),
     ] + english_checks()
 
 

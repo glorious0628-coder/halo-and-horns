@@ -51,7 +51,7 @@ local T = {
 	PerfActive = 60, -- s of focused play a Perf window needs (the contract)
 	PerfGapCut = 5, -- s: a longer frame gap is the app away (dropped); 1..5 s counts as a freeze (검수 10/10)
 	-- game text: English only (A23-48), short and easy
-	Text = { MyWay = "Your way: %s" },
+	Text = Config.ClientText.ComeBack, -- the words: Config.ClientText.ComeBack (moved 10/14)
 }
 local S = { SentAt = {}, OptInAsked = false, KOAt = -math.huge, FailAt = -math.huge, BuyAt = -math.huge,
 	MyWay = nil, MyWaySeen = false,

@@ -105,7 +105,11 @@ local ATT_OPENED = 0
 Cdouble.AttendanceUI = { Open = function() ATT_OPENED += 1 return true end,
 	SlotIcon = function(slot) return slot == 7 and "IconWeeklyBox" or (slot <= 7 and "IconCoin" or nil) end }
 local CONFIG = { Return = { Text = { TomorrowTitle = "Tomorrow's gift", TomorrowLine = "Come back tomorrow for your Day %d gift!",
-	TodayLine = "Today's gift is waiting too!" } } }
+	TodayLine = "Today's gift is waiting too!" } },
+	-- 10/14: the card's own words moved to Config.ClientText.PauseCard
+	ClientText = { PauseCard = { PauseTitle = "Saved!", PauseNext = "Next time: %s", PausePlain = "Everything is saved.",
+		PauseTomorrow = "Tomorrow: %s", Keep = "Keep playing", OK = "OK", BackTitle = "Welcome back!", BackNext = "Next: %s",
+		BackPlain = "Good to see you again!", Go = "Go", Open = "Open", TipTitle = "Tip" } } }
 for name in OPEN do
 	Cdouble[name] = { IsOpen = function() return OPEN[name] end }
 end

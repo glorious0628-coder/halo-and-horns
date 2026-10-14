@@ -233,7 +233,7 @@ local NOTIFY = {
 	Avoid = nil,
 	WrapFits = setmetatable({}, { __mode = "k" }), -- [label] = its UIKit.WrapHeight fit (toasts: fit again on Avoid)
 	-- A23-68 #4 / quality ⑨: the "NEW!" tag (UIKit.NewTag): the approved white Chip tinted gold, navy "Number" text
-	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = "NEW!", Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4,
+	NewTag = { Seconds = 6, H = 20, MinPx = 12, Text = Config.ClientText.UIKit.NewTag, Gold = Color3.fromRGB(255, 206, 72), WidthEm = 3.4,
 		ThinK = 1.6, ThinDY = 4, -- a target up to ThinK tag heights tall wears it beside its right end (UIKit.NewTag)
 		Gap = 0.4 }, -- s between one tag going and the next waiting one (NOTIFY.NewQ)
 	-- 검수 10/10 (the war bar, its info line and the goose chip all wore NEW! at once): one tag at a time. Active = the
@@ -3435,7 +3435,7 @@ function UIKit.Confirm(title, body, confirmText, onConfirm)
 	})
 	UIKit.ArtTextButton("BtnSecondary", {
 		Name = "Cancel",
-		Text = "Cancel",
+		Text = Config.ClientText.UIKit.Cancel,
 		AnchorPoint = Vector2.new(1, 0),
 		Position = UDim2.new(0.5, -8, 0, 2),
 		Size = UDim2.fromOffset(180, 52),
@@ -4154,7 +4154,7 @@ function UIKit.RewardPopup(opts)
 	local second = type(opts.Second) == "string" and opts.Second ~= ""
 	local room = plateW - pad.L - pad.R
 	local claimW = math.floor(math.min(cfg.ButtonW, second and (room - 14) / 1.7 or room))
-	UIKit.ArtTextButton("BtnConfirm", { Name = "Claim", Text = tostring(opts.Button or "Claim!"), LayoutOrder = 2,
+	UIKit.ArtTextButton("BtnConfirm", { Name = "Claim", Text = tostring(opts.Button or Config.ClientText.UIKit.Claim), LayoutOrder = 2,
 		Size = UDim2.fromOffset(claimW, buttonH), TextSize = 24, ZIndex = buttons.ZIndex + 1, Parent = buttons,
 		Color = UIKit.Theme.Good }, press(opts.OnClaim))
 	if second then

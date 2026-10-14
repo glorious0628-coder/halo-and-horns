@@ -60,8 +60,8 @@ MUTATIONS = [
      "\tif why ~= PVP.Why then return end\n"),
     ("PvP card: another card's close saves the flag", "\tif why ~= PVP.Why or PVP.Step ~= 1 then return end\n",
      "\tif PVP.Step ~= 1 then return end\n"),
-    ("PvP card: back to three cards", 'Text = "Other players can fight you here!\\nKnocked out?',
-     'Cards = { "a", "b", "c" }, Text = "Other players can fight you here!\\nKnocked out?'),
+    ("PvP card: back to three cards", 'local PVP = { Title = Config.ClientText.FirstStepsPvP.PvPTitle,',
+     'local PVP = { Cards = { "a", "b", "c" }, Title = Config.ClientText.FirstStepsPvP.PvPTitle,'),
     ("the marker at once (검수 10/09: only after 45 s)", "MarkAfter = 45,", "MarkAfter = 0,"),
     ("the marker never waits", "\telseif now - (HINT.MeadowSince or now) < HINT.MarkAfter or not HINT.MeadowSince then\n",
      "\telseif false then\n"),
@@ -112,7 +112,8 @@ def main():
     static = [
         ("ClientMain loads FirstSteps before SkillBar and Audio",
          "FirstSteps" in names and names.index("FirstSteps") < names.index("SkillBar") < names.index("Audio")),
-        ("the travel line is English", 'Travel = "Off to %s!"' in steps),
+        ("the travel line is English", 'Travel = "Off to %s!"' in steps
+         or 'Travel = "Off to %s!"' in (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig")),
         # 게임성 검수 10/12: the hookups the fixture cannot run (Start)
         ("FirstSteps adds PVP.SkipToast to UIKit.NotifyFilters",
          "table.insert(ui.NotifyFilters, PVP.SkipToast)" in steps),

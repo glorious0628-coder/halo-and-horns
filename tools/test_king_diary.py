@@ -90,7 +90,7 @@ def main():
     order = re.search(r"local ORDER = \{([^}]*)\}", cm)
     names = re.findall(r'"([A-Za-z]+)"', order[1]) if order else []
     code = "\n".join(line.split("--", 1)[0] for line in src.splitlines())
-    words = re.search(r"\tText = \{(.*?)\},", src, re.S)
+    words = re.search(r"\tText = \{(.*?)\},", src, re.S) or re.search(r"\nConfig\.ClientText\.KingDiary = \{(.*?)\n\}", CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n"), re.S)
     book = (SCRIPTS / "QuestBook.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     static = [
         ("ClientMain loads KingDiary after Panels and PauseCard", "KingDiary" in names and "Panels" in names and "PauseCard" in names

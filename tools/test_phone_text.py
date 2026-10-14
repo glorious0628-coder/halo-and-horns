@@ -211,7 +211,7 @@ def run(src: dict) -> tuple[int, int, str]:
     text = ("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) + "\nlocal UTIL_SOURCE = " + lua_str(cut("UTIL", src["UTIL"]))
             + "\nlocal EVENT_SOURCE = " + lua_str(cut("EVENT", src["EVENT"])) + "\nlocal GOOSE_SOURCE = "
             + lua_str(cut("GOOSE", src["GOOSE"])) + "\nlocal TXT_SOURCE = "
-            + lua_str(txt_line(src["EVENT"]) + "\nlocal L = {}\n" + tx_cut(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
+            + lua_str(txt_line(src["CONFIG"]) + "\nlocal L = {}\n" + tx_cut(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
             + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "phone_text.luau"

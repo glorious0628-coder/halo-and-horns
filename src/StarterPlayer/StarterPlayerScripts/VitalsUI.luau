@@ -20,7 +20,7 @@ local ACTION = { HP = "PotionHP", MP = "PotionMP" } -- Config.Keybinds action of
 -- the potion count on the BtnPotion socket (real px: box W x H at least, text Min..Max, outline thickness)
 local COUNT_PX = { W = 24, H = 18, Min = 14, Max = 18, Outline = 1.5 }
 -- UI round 2 #3 (검수 2026-10-07): with no potions the [Buy] press shows the way to the merchant (HUD.ShowGuide)
-local WAY = { Label = "Potion shop", Gap = 1, At = -math.huge }
+local WAY = { Label = Config.ClientText.VitalsUI.PotionShop, Gap = 1, At = -math.huge }
 
 local function canUse()
 	if player.Parent ~= Players or player:GetAttribute("DataLoaded") ~= true

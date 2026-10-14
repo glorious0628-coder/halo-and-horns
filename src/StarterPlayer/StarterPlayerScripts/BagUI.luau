@@ -41,37 +41,7 @@ local TAG = "BagUI"
 local LocalPlayer = Players.LocalPlayer
 
 -- player text (A23-130: short; A23-111: keys "BagUI.TXT.<field>")
-local TXT = {
-	Title = "Bag",
-	Tabs = { Gear = "Gear", Use = "Use", Scroll = "Scrolls", Material = "Materials" },
-	Sorts = { Default = "Newest", Name = "Name", Grade = "Grade", Kind = "Type" },
-	Worn = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", PetGear = "Pet" }, -- one short word per slot (UiSandbox 10/12: "Pet gear" ran into "Ring")
-	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
-	Attack = "Attack %s",
-	Power = "Power %s → %s",
-	PowerNow = "Power %s",
-	SlotsF = "%d / %d", -- 최종 검수 10/14: kinds in the bag / its slots (Config.BagSlots)
-	Spare = "Spare",
-	Count = "×%d",
-	TonicLeft = "%s left",
-	TonicWait = "Wait %s", -- two others run: when the first of them ends (UiSandbox 10/12: an off Drink still looked on)
-	Drink = "Drink", Full = "Full", Empty = "Empty", Wait = "%d s", Quick = "Quick slot",
-	Use = "Use", Cancel = "Cancel", Enhance = "Enhance", Move = "Move",
-	ScrollEnh = "+%d on success · %d%%",
-	ScrollMove = "Moves all + to another weapon · %d%%",
-	PickEnhance = "Pick a weapon.",
-	PickFrom = "Pick the weapon to take + from.",
-	PickTo = "Pick the weapon to get +%d.",
-	ConfirmEnh = "%s\n+%d → +%d · %d%% chance", -- UiSandbox 10/12: "+0 → +1" no longer breaks in the 200 du column
-	ConfirmMove = "%s +%d →\n%s +%d · %d%% chance",
-	FailDown = "A fail may drop it 1 step. Weapons never break!",
-	FailKeep = "Nothing changes on a fail.",
-	SellsFor = "Sells for %s each",
-	SellOne = "Sell 1", -- artisan contract ②: a gathered material at the anvil
-	SellAll = "Sell all",
-	SellWhere = "Sell it at the Forge's anvil.",
-	From = "From: %s",
-}
+local TXT = Config.ClientText.BagUI -- the words: Config.ClientText.BagUI (moved 10/14)
 L10n.Register("BagUI.TXT", TXT)
 
 -- layout (du = MainGui units) and fixed rules

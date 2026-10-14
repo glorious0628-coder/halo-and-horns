@@ -35,7 +35,7 @@ local T = {
 	Poll = 0.2,
 	-- the key action of each slot (Config.Keybinds: the old potion keys 1 / 2 and the new 3)
 	Actions = { "PotionHP", "PotionMP", "QuickSlot3" },
-	Text = { Empty = "", Set = "%d", BagTitle = "Quick slots", BagHint = "Put an item in slot 1, 2 or 3." },
+	Text = Config.ClientText.QuickSlots, -- the words: Config.ClientText.QuickSlots (moved 10/14)
 }
 -- Local = this session's own slots (no server yet, or a change the server has not answered within LocalWait s)
 local S = { Local = nil, LocalAt = 0, LocalRemote = false, Started = false, Hooked = false }

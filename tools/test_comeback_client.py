@@ -24,6 +24,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+CFG_TXT = (Path(__file__).resolve().parents[1] / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")  # the moved words (Config.ClientText)
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
@@ -137,7 +138,7 @@ def early_block(config: str) -> str:
 
 
 def run(hud: str, config: str) -> tuple[int, int, str]:
-    words = early_words(hud)
+    words = early_words(hud + "\n" + CFG_TXT)  # the words live in Config.ClientText.HUD
     text = ("local HUD_SOURCE = " + lua_str(cut(hud)) + "\nlocal CONFIG_SOURCE = " + lua_str(early_block(config))
             + "\nlocal EARLY_WORDS = " + (lua_str(words) if words is not None else "nil") + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:
@@ -159,7 +160,7 @@ def statics(h: str) -> list[tuple[str, bool]]:
          'local key = (gold and not xp and not early) and "IconGoldPile" or "IconExp"' in h),
         ("the tick refreshes the chips (the minutes count down)", re.search(r"local function tick\(\).*?\n\trefreshChips\(\)\n", h,
                                                                            re.S) is not None),
-        ("TXT.EarlyXP takes the minutes", (early_words(h) or "").count("%d") == 1),
+        ("TXT.EarlyXP takes the minutes", (early_words(h + "\n" + CFG_TXT) or "").count("%d") == 1),
     ]
 
 

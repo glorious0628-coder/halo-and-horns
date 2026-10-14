@@ -45,27 +45,7 @@ local T = {
 	-- column (its words take the room: main photo skillbook_v2, the window ran 17 du past its height)
 	Name = 20, Body = 16, Small = 15, -- text px (>= 15, 검수 10/10)
 	-- game text: English only (A23-48), short and easy; the skill words live in Config.Skills.Text
-	Text = {
-		Title = "Skills",
-		Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- a slot whose kit has no name yet (SkillBar's words)
-		Attack = "Attack",
-		Punch = "Punch",
-		PunchDesc = "No weapon yet. A quick punch at the closest monster.",
-		Every = "%s s per hit",
-		Reach = "Reach %d",
-		HitsAll = "Hits all in front",
-		Hits = "Hits %d",
-		Splash = "Blast %d",
-		MageMP = "%d MP per hit",
-		Hit = "Hit x%s",
-		Wait = "%.1f s",
-		Passive = "Passive",
-		FallMarks = "Fall marks x%d: gold +%d%%",
-		RedeemMarks = "Redeem marks x%d: XP +%d%%",
-		ChangeKeys = "Change keys",
-		-- used only when Config.Skills.Text misses a word
-		Ready = "Ready", NeedMP = "Need MP", UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt",
-	},
+	Text = Config.ClientText.SkillBook, -- the words: Config.ClientText.SkillBook (moved 10/14)
 }
 local S = { Ready = false }
 local VIEW = { Rows = {} } -- the open window's skill rows: { Row, State = TextLabel, Button = GuiObject? }

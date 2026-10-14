@@ -75,15 +75,7 @@ local T = {
 }
 
 -- player-facing text (A23-48: English only)
-local TXT = {
-	Title = "Players %d",
-	NameHeader = "Name",
-	Missing = "-",
-	Close = "Close",
-	Invite = "Invite a friend",
-	Friend = "Add friend",
-	Block = "Block",
-}
+local TXT = Config.ClientText.PlayerListUI -- the words: Config.ClientText.PlayerListUI (moved 10/14)
 
 -- Columns = { { Id, Name, W } } from Config.Leaderstats; Rows = pooled row widgets (reused on every refresh)
 local S = { Open = false, Held = false, Token = 0, Started = false, Columns = {}, Rows = {}, WarnAt = -math.huge,

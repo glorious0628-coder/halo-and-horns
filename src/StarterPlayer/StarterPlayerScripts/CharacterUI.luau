@@ -44,43 +44,7 @@ local TAG = "CharacterUI"
 local LocalPlayer = Players.LocalPlayer
 
 -- player text (A23-48 English, A23-130 short, no tips; A23-111: keys "CharacterUI.TXT.<field>")
-local TXT = {
-	Title = "Hero",
-	Tabs = { Gear = "Gear", Stats = "Stats" },
-	Power = "Power",
-	LevelClass = "Lv %d · %s",
-	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
-	Weapons = "Weapons", Back = "Back", NoWeapons = "No weapons yet.",
-	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
-	Attack = "Attack %s",
-	PowerNow = "Power %s",
-	PowerChange = "Power %s → %s",
-	-- 최종 검수 10/13 (ref_rpg_ui #1): what the power is made of, under the number; a press lists the sources
-	Why = { Level = "Level %d", Weapon = "%s +%d", Fist = "Bare hands", Points = "Points +%d", Ring = "Ring +%d%%",
-		Armor = "Armor +%d%%" },
-	PetLv = "Lv %d",
-	TitleHead = "Title", TitleAuto = "Auto",
-	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Now", Rebirth = "Rebirth", Rank = "Rank" },
-	Stat = {
-		Level = "Level", MaxHP = "Max HP", MP = "MP", Speed = "Walk speed", Hit = "Base hit", Crit = "Crit",
-		Class = "Class", Side = "Side",
-		Size = "Size", Bully = "Bully", Wanted = "Wanted", Revenge = "Revenge", Blessing = "Blessing",
-		Rebirths = "Rebirths", RebirthBonus = "Rebirth bonus", Fall = "Fall marks", Redeem = "Redeem marks",
-		Honor = "Honor", Infamy = "Mischief", Rank = "Rank", Next = "Next rank",
-	},
-	CritValue = "%d%% · ×%s",
-	-- 최종 검수 10/13 (ref_rpg_ui #5, A23-130): the Stats tab's traits and effects as short number chips, no sentences
-	Chip = { XP = "XP +%d%%", Gold = "Gold +%d%%", HP = "HP +%d%%", ATK = "ATK +%d%%", Regen = "Healing", Steal = "HP steal %d%%",
-		Heal = "Heals allies", Size = "Size ×%.2f", Bully = "Bully -%d%%", NoAuto = "No Auto Battle", Wanted = "%s +%d%%",
-		Revenge = "Revenge +%d%% %s", Blessing = "Gold & XP +%d%%" },
-	Change = "Change",
-	RebirthBonusValue = "+%d%% gold & XP",
-	MarksValue = "%d / %d",
-	NextValue = "%s · %d to go",
-	TopRank = "Top rank",
-	ToGo = "%d to go", -- the next rank bar's number (ref_rpg_ui #9)
-	Clock = "%d:%02d",
-}
+local TXT = Config.ClientText.CharacterUI -- the words: Config.ClientText.CharacterUI (moved 10/14)
 L10n.Register("CharacterUI.TXT", TXT)
 
 -- layout (du = MainGui units) and fixed rules

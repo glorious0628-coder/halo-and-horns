@@ -37,7 +37,8 @@ MUTATIONS = [
      "if type(T) ~= \"table\" or T.Enabled ~= true then return false end"),
     ("the sales value ignored", "CONFIG", "defs.PassSales.Default = T.PassSales == true", "defs.PassSales.Default = true"),
     ("on the Live game too", "CONFIG", '\tif type(Config.EnvName) == "function" and Config.EnvName() == "Live" then return false end\n', ""),
-    ("applied by Config itself", "CONFIG", "\treturn true\nend\n\nreturn Config\n", "\treturn true\nend\nConfig.ApplyTestServer()\n\nreturn Config\n"),
+    # (the moved client words, Config.ClientText, now sit between ApplyTestServer and the module's end)
+    ("applied by Config itself", "CONFIG", "\n\nreturn Config\n", "\nConfig.ApplyTestServer()\n\nreturn Config\n"),
     ("Main never applies", "MAIN", APPLY_LINE, "-- A23-156"),
     ("Main applies after Net.CreateAll", "MAIN",
      APPLY_LINE + ": the private test server's settings (Config.TestServer), before any service reads them\nNet.CreateAll()",

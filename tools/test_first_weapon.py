@@ -89,7 +89,7 @@ def main():
         ("Config.Audio.Sounds.PowerUp exists", re.search(r"^\t\tPowerUp = \{ File = ", config, re.M) is not None),
         ("HUD watches WeaponTier for the first weapon",
          'UIKit.OnAttr({ "WeaponTier", "DataLoaded", "ClassChosen" }, L.TierChanged)' in hud),
-        ("the banner text is English", 'Stronger = "Stronger!",' in hud),
+        ("the banner text is English", 'Stronger = "Stronger!",' in config),
     ]
     for name, good in static:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
