@@ -122,14 +122,14 @@ friend.Parent = PLAYERS
 local joined = {}
 Invite.FriendJoined:Connect(function(p) table.insert(joined, p) end)
 PLAYERS.PlayerAdded:Fire(friend)
-check("a friend joins: FriendJoined fires and one line shows", #joined == 1 and joined[1] == friend and #TOASTS == 1
-	and TOASTS[1][1] == "Your friend Bo joined!", TOASTS[1] and TOASTS[1][1])
+check("a friend joins: FriendJoined fires, no line (A23-191)", #joined == 1 and joined[1] == friend and #TOASTS == 0,
+	TOASTS[1] and TOASTS[1][1])
 PLAYERS.PlayerAdded:Fire(friend)
-check("the same friend again (rejoin): no second line this session", #joined == 1 and #TOASTS == 1)
+check("the same friend again (rejoin): FriendJoined not again this session", #joined == 1 and #TOASTS == 0)
 local stranger = player(44, "Zed")
 stranger.Parent = PLAYERS
 PLAYERS.PlayerAdded:Fire(stranger)
-check("a stranger joins: nothing", #joined == 1 and #TOASTS == 1)
+check("a stranger joins: nothing", #joined == 1 and #TOASTS == 0)
 PLAYERS.PlayerAdded:Fire(ME)
 check("my own join: nothing", #joined == 1)
 -- a friend card of its own (이미지 개발) switches the plain line off: the signal still fires, no second line
@@ -137,7 +137,7 @@ Invite.DefaultLine = false
 local friend2 = player(33, "Cy")
 friend2.Parent = PLAYERS
 PLAYERS.PlayerAdded:Fire(friend2)
-check("DefaultLine false: FriendJoined fires, the plain line stays off", #joined == 2 and joined[2] == friend2 and #TOASTS == 1,
+check("DefaultLine false: FriendJoined fires, no line", #joined == 2 and joined[2] == friend2 and #TOASTS == 0,
 	#TOASTS)
 Invite.DefaultLine = true
 

@@ -106,7 +106,7 @@ check(L.First.Tier == 0 and not L.First.Pop, "the first live reading is the base
 set("WeaponTier", 1) L.TierChanged()
 check(L.First.Pop == true, "0 -> 1 arms the moment", L.First.Pop)
 L.PowerPopup(120, 340, 220)
-check(#W.Announced == 1 and W.Announced[1][1] == "Stronger!", "a big 'Stronger!' banner", W.Announced[1] and W.Announced[1][1])
+check(#W.Announced == 0, "A23-191: no 'Stronger!' banner", W.Announced[1] and W.Announced[1][1])
 check(W.Played[1] == "PowerUp", "the PowerUp sound", W.Played[1])
 check(W.Emitted == L.First.Sparks and W.Emitted > 0, "gold sparkles burst from me", W.Emitted)
 local grew = false
@@ -118,21 +118,22 @@ local mid
 for i, v in W.Sets do if i > 1 and v > 120 and v < 340 then mid = v end end
 check(mid ~= nil and #W.Sets >= math.floor(L.First.Count * 30) - 2, "the count-up is the slow one (First.Count)", #W.Sets)
 advance(3)
-check(#W.Announced == 1, "the fallback does not show it a second time", #W.Announced)
+check(#W.Played == 1, "the fallback does not play it a second time", #W.Played)
 
 -- 3. no power popup came: the fallback shows it once
 reset()
 set("WeaponTier", 0) L.TierChanged()
 set("WeaponTier", 1) L.TierChanged()
 advance(L.First.Wait + 0.5)
-check(#W.Announced == 1 and L.First.Pop == false, "without a power rise the moment still shows once", #W.Announced)
+check(#W.Played == 1 and W.Played[1] == "PowerUp" and L.First.Pop == false, "without a power rise the moment still plays once",
+	#W.Played)
 
 -- 4. a later weapon (1 -> 2) is no first weapon
 reset()
 set("WeaponTier", 1) L.TierChanged()
 set("WeaponTier", 2) L.TierChanged()
 advance(3)
-check(#W.Announced == 0, "1 -> 2 shows nothing", #W.Announced)
+check(#W.Announced == 0 and #W.Played == 0, "1 -> 2 shows nothing", #W.Played)
 L.PowerPopup(340, 500, 160)
 check(#W.Announced == 0, "an ordinary power rise shows no banner", #W.Announced)
 
@@ -144,7 +145,7 @@ set("WeaponTier", 1) L.TierChanged()
 L.PowerPopup(120, 340, 220)
 local grewReduced = false
 for _, t in W.Tweens do if t[1].Name == "FirstWeaponScale" then grewReduced = true end end
-check(#W.Announced == 1 and not grewReduced, "reduced motion: the banner, no growing number", tostring(grewReduced))
+check(#W.Played == 1 and not grewReduced, "reduced motion: the moment, no growing number", tostring(grewReduced))
 W.Reduced = false
 
 print(string.format("FIRST_WEAPON_SUMMARY checks=%d failed=%d", checks, failed))

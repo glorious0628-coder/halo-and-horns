@@ -33,9 +33,9 @@ MUTATIONS = [
     ("PassSales ignored on the looks",
      "\telseif not salesOn() then\n\t\tsetCapsule(kit, cell, T.Off, kit.Palette.Button, false)\n\telse\n\t\tlocal price = ShopUI.LivePrice(",
      "\telse\n\t\tlocal price = ShopUI.LivePrice("),
-    ("a pass prompt while sales are off", "\tif not salesOn() then kit.Toast(T.OffToast, \"info\"); return end\n\tprompt(d.Id, p.Kind)",
+    ("a pass prompt while sales are off", "\tif not salesOn() then kit.Toast(T.OffToast, \"bad\"); return end\n\tprompt(d.Id, p.Kind)",
      "\tprompt(d.Id, p.Kind)"),
-    ("a look prompt while sales are off", "\tif not salesOn() then kit.Toast(T.OffToast, \"info\"); return end\n\tprompt(passId, \"Look\")",
+    ("a look prompt while sales are off", "\tif not salesOn() then kit.Toast(T.OffToast, \"bad\"); return end\n\tprompt(passId, \"Look\")",
      "\tprompt(passId, \"Look\")"),
     ("no switch sent = off", "\treturn not (gs and gs:GetAttribute(\"SwitchPassSales\") == false)\n",
      "\treturn gs ~= nil and gs:GetAttribute(\"SwitchPassSales\") == true\n"),
@@ -94,8 +94,8 @@ def main():
          'pcall(panels.Open, "Shop", { Focus = kind })' in sticker and sticker.count("openShop(Config.Stickers.Pass)") == 1
          and sticker.count("openShop(Config.Bubbles.Pass)") == 1),
         ("ShopUI keeps no words of its own (Config.PassInfo.Screen)", "local T = type(INFO.Screen)" in src and not shop_words),
-        ("the HUD shows one private-server chip from GameState PrivateServer (a press: Config.PrivateServer.Text)",
-         'UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf' in hud and "pcall(UIKit.Toast, ps.Text" in hud
+        ("the HUD shows one private-server chip from GameState PrivateServer (A23-191: a press says nothing)",
+         'UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf' in hud and "pcall(UIKit.Toast, ps.Text" not in hud
          and '"Boost", "Private",' in hud),
     ]
     for name, good in static:
