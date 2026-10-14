@@ -1,6 +1,25 @@
-# 게임성 개발 2 — 상태 (2026-10-14 한밤, 첫 흐름 A23-188 보고)
+# 게임성 개발 2 — 상태 (2026-10-14 밤 늦게, 장인 ③~⑥ 가지 쌓기)
 
-## 지금 (10/14 한밤)
+## 지금 (10/14 밤 늦게)
+- **가지 쌓기(모두 craft 시험이 겹쳐서 위로 쌓음, 리베이스 없음):** market-ready → alch → benches → gpt-fixes → kill-switches → ops-env. 맨 위를 병합하면 아래가 다 들어감.
+
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-market-ready | 32bb2660 | 장인 ③: Switches.Defs.Market(실시간 끄기) + 서버 죽이기 단계 시험 + UnpackSpare | market 206/91 |
+| dev2-alch | 4c4b011d | 장인 ⑤: 연금 레시피 AP1(HP 물약 2)·AP2(MP 2)·AS1(70% 주문서, Lv3), Kind Potion(재고 한도 N+2), main 합침 | craft 200/122 |
+| dev2-benches | cad622fd | 장인 ④: Config.Craft.Benches(Smith·Alch·Tame), 모루 옆 Workbench_<역할> 자동 배치(CraftStation 태그, 12번 재시도), alch 합침 | craft 210/125 |
+| dev2-gpt-fixes | 648db8b2 | GPT 검토 4건: ① 재료를 다 쓰는 무기 제작 = 빈 칸 셈 ② 가진 단계의 더 높은 +N = 바꿔 끼움·거래소 구매 됨 ③ 이미 가진 첫 드롭 = 강화 주문서 + 예비 +0 ④ 숫자판 DropWeapon(8분) | craft 215, loot 695, market 185, test_metrics 78/48 |
+| dev2-kill-switches | ae0e9c4a | ⑤(가): Artisan·Crafting·Gathering·Tonics·Research·Gear 끄기(Feature → Config.LiveOff) + FieldBoss; 다시 켜면 Gear onReady·채집 Build·제작 프롬프트+대기 정산 | craft 220, market 212/93, sweep 211 = 원래 실패 8만 |
+| dev2-ops-env | 928dd298 | ⑥: Config.Env Names + Places{Beta, Live} place id, 공개 서버가 Dev면 경고 1줄. 배지 ID 0 = 안전하게 건너뜀 | ops_safety 141/71(Halloween 변이 = 원래 놓침) |
+- **모두 보고함.** 최종 검수: ae0e9c4a 묶음을 4번째 병합 묶음으로 시험 중, ops-env 928dd298은 같은 묶음 또는 5번째.
+- ⑦ 스탯 dev2-stats3 544a2e82 = origin/main 178914e1 합침(깨끗), sweep 212 = 원래 실패 8만, 보고함. 스탯 스위치 꺼짐.
+- 골드 0→300(첫 무기) = 2배 골드 패스(제작자 자동 소유), 버그 아님(최종 검수 확인, A23-75 그대로).
+- 주의: keepboth.py는 겹친 충돌(같은 줄에 두 그룹)을 반토막 냄 → 큰 fixture 충돌은 한쪽(--theirs) + 내 그룹을 원래 커밋에서 다시 끼우기(스크래치 rebuild_craft.py, gpt_merge.py, ks_merge.py).
+- W2가 main에서 약초 3 + 구리 2 → 시험의 대장장이엔 Herb 넣기.
+- worktree: ../wt_alch, ../wt_bench, ../wt_gpt, ../wt_ks, ../wt_ops (+ 옛 것).
+
+
+## 앞서 (10/14 한밤)
 - **main 병합됨:** artisan-sell, bag-slots, bag-reward(6곳 포함 77699c57), sub-retry, fund-ladder, no-ticket, first-hit, weapon-shop(v6), market, stale-text.
 - **push·보고, 병합 대기:**
 
