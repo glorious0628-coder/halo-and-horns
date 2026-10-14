@@ -1,6 +1,20 @@
-# 게임성 개발 2 — 상태 (2026-10-14 밤 늦게, 장인 ③~⑥ 가지 쌓기)
+# 게임성 개발 2 — 상태 (2026-10-14 밤, 계획 5·8 서버 몫 보고)
 
-## 지금 (10/14 밤 늦게)
+## 지금 (10/14 밤)
+- **보고함, 병합 대기:**
+
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-skill-tasks | c56594e0 | 99N D(계획 5): Z/X = 레벨 + 직업 과제(Config.Skills.Tasks; 전사 기본 공격 처치 40 / Z 3+ ×15, 마법사 Q 2+ ×20 / Z 3+ ×15, 궁수 20스터드+ 처치 30 / 25+ 50; 장인 직업 = 원래 직업 것). data.SkillTask, 속성 SkillTaskSlot·SkillTaskN, Config.SkillTaskLine(화면 글) | skills 182/새 변이 11, sweep 211 = 원래 8 |
+| dev2-revive | 60c69182 | 99N G(계획 8): ReviveService — 40스터드 안 같은 편 있으면 10초 대기 + G 3초 프롬프트(6스터드), HP 물약 1, HP 30%·보호 3초, Honor/Infamy +1, 쿨 10초, ReviveSkip | test_revive 49/31, sweep 214 = 원래 8 |
+- 최종 검수 OK: 수치·모양(Unlock 그대로 + Tasks 표 따로), 살리기 설계.
+- 개발 1 몫으로 알림: SkillBook learned() 마지막 줄(레벨만 보고 배움), 살리기 프롬프트 다른 편에겐 숨기기, 죽음 화면 ReviveUntil·ReviveSkip 버튼, 목표 칩 SkillTaskLine.
+- 앞선 묶음(ae0e9c4a·928dd298·544a2e82)은 최종 검수 4·5번째 병합 묶음에서 시험 중.
+- worktree: ../wt_sktask, ../wt_revive (+ ../wt_ks, ../wt_ops, ../wt_gpt, ../wt_bench, ../wt_alch, ../wt_stats3 병합 뒤 지워도 됨).
+- 주의: 레벨로 Z/X 여는 시험 세계는 K.Tasks.Enabled = false 넣어야 함(skills_x·skill_signals·friend_pvp에 넣음).
+
+
+## 앞서 (10/14 밤 늦게)
 - **가지 쌓기(모두 craft 시험이 겹쳐서 위로 쌓음, 리베이스 없음):** market-ready → alch → benches → gpt-fixes → kill-switches → ops-env. 맨 위를 병합하면 아래가 다 들어감.
 
 | 가지 | tip | 무엇 | 시험 |
