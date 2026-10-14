@@ -1,5 +1,12 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 낮 (게시 앞 sync + Play 사진, 최종 검수 신청 OK)
+- **Studio**: build/GoodEvil.rbxlx(10/13 23:28:22 판)로 다시 열었음(전 Studio는 홈 화면이라 새로 염, id 58a04fbe…), Edit, Play 없음, 창 앞에 둠, StudioFreshSave=true, **저장 안 함**. 코드 = main 30b7a13e sync(새로 쓴 스크립트 36). Save As = 사용자(최종 검수 판정 뒤).
+- **사진**(docs/art/verification_2026-10-14/publish2/): pc/(first_look 3장+log), phone/(844 first10 11장), new/(마을 기금 카드·설정 창 아래 줄(피해 숫자·남 이름표)·이름표 VIP 왕관 있음/없음 + log). 콘솔 오류 0(DataStore 안내만).
+- 새 시험 스크립트 tools/play_publish2_photos.py(분수로 텔레포트 → FundOpen 보냄, OpenPanel Settings, PassVIP 켜고 끄고 이름표 사진; KEEP=1이면 Play 안 끔).
+- 참고: 마을 기금 카드는 분수 반경+8 밖이면 곧 닫힘(설계대로) — 시험은 FundSpot_Halo 옆으로 텔레포트 후 연다. 내 이름표는 서버가 나에게 숨김(PlayerToHideFrom) — 사진은 그 속성을 시험용으로 풀어서 찍음.
+- 다음: 최종 검수 판정 → 사용자 Save to File As build/GoodEvil.rbxlx → 시간·해시 확인 → place/ 복사 → push_paths → 사용자 Alt+P.
+
 ## 10/14 아침 (Studio 열기·sync·사진 3종)
 - **Studio**: build/GoodEvil.rbxlx(10/13 23:28:22 판)로 열림(id 73c64908…, list_roblox_studios), Edit, Play 없음, 창 최소화, StudioFreshSave=true, **저장 안 함**(Save As = 10/16 저녁 사용자). 코드 = main 89255e8b sync(스크립트 12 새로 씀·161 그대로).
 - **사진**(docs/art/verification_2026-10-14/): comeback/(PC+phone 5장씩), phone_first10/(844·phone 11장씩), first_look_1014/(pc_01~03; menu_one_line/ 덮어쓴 것의 복사). 콘솔 오류 0.
