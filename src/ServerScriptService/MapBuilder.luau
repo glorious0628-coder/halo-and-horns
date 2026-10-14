@@ -663,7 +663,7 @@ local function ensureAltarPrompt(altar)
 	prompt.ObjectText = "Altar of Fate"
 	-- 검수 2026-10-08: E opens it at once like the forge / potion / board prompts (the side switch asks again in its window)
 	prompt.HoldDuration = 0
-	prompt.AutoLocalize = false
+	prompt.AutoLocalize = true -- A23-179: translated again (the saved place still had it off)
 	prompt.MaxActivationDistance = 12
 	prompt.RequiresLineOfSight = false
 	prompt.KeyboardKeyCode = ALTAR_PROMPT_KEY

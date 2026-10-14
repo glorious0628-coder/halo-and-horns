@@ -126,6 +126,7 @@ local function draw(part)
 		row.Font = Enum.Font.GothamBold
 		row.TextScaled = true
 		row.TextColor3 = T.Colors.Text
+		row.AutoLocalize = false -- A23-179: supporters' names stay as they are
 		row.Text = text
 		row.Parent = body
 	end

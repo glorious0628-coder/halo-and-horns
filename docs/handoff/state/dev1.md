@@ -1,5 +1,32 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 11 — 마을 기금 검토 고침 + 자동 번역 추가분 (다 됨·push, 최신)
+- **dev1-village-fund 23660dc6** = 1e68b071(검토 고침) + origin/main 병합(merge-tree가 Config 충돌로 봐서; 실제 merge는 자동). 고침: FIX 1 S.Prompts 강한 표 + 진영 바뀔 때 월드 FundPrompt 다시 consider; MINOR ① cardCtx(KO → Closed, Radius 밖 → 새 Screen.Far "Walk up to the fountain.") [Give] 흐림, 폴마다 다시 그림; ② Lead 'Halo Citadel'/'Horns Den'; 개발 2 07ca5b92 따라 분수 자리 = Workspace.VillageFund.FundSpot_<진영> 위치 − Lift(없으면 Config Pos), 자리가 움직이면 등불 다시 지음. 시험 village_fund_ui 74·29/29.
+- **개발 2 dev2-village-fund 07ca5b92는 main과 Config 충돌**(Switches PioneerTitle Unread 줄 옆 VillageFund 스위치) → 개발 2에 main 병합 부탁함(풀이: main 줄 그대로 + VillageFund 2줄). 임시판으로 풀어 돌림: village_fund 114/114, village_fund_ui 74·29/29(진짜 Config), english 통과.
+- **fix/auto-translate-on 292d184b** = 70cd9694 + Config.Settings.Order "Lang" 뺌(설정 창은 원래 Lang 줄 없음) + FactionPicker Crafting 변형·NEUTRAL_NOTE 사본 삭제(Config에서만, 비면 줄 없음). test_auto_translate 17·10/10.
+- 설정 창 줄: **fix/settings-apply be336a32** = SettingsUI에 피해 숫자(All/Off)·남 이름표(All→Near→Off) 줄 추가, test_settings_apply 25·14/14, character_ui·quest_window·keys_settings·audio·phone_text·english 통과. dev1-village-fund와 ClientMain ORDER 한 줄 충돌(먼저 안 들어간 쪽에 main 병합).
+- 대기 3개: fix/auto-translate-on 292d184b, dev1-village-fund 23660dc6(+개발 2 main 병합), fix/settings-apply be336a32. 다음: 패스 ID 오면 2-C #10.
+
+## 10/14 밤 10 — fix/auto-translate-on 70cd9694 (급함, 다 됨·push, 최신)
+- SPEC A23-179(사용자 "누가 자동 번역까지 끄래"): ClientMain의 전체 AutoLocalize=false watcher(69f1fe45) 삭제 → Roblox 자동 번역 켜짐.
+- 끈 채로 둔 것(만드는 곳에서만): 이름표 Line1("[칭호] 이름", CharacterVisuals; Line2·3은 번역), Tab 목록 PlayerName, 후원자 판 이름 줄, UIKit artText Number=true(숫자 라벨 전부, 호출자가 AutoLocalize 주면 그 값), 피해 숫자 풀(전리품 줄은 번역: e.Gui.AutoLocalize = look ~= nil), 스킬 초, 입력칸(닉네임·시장). 새 UIKit.NoTranslate(inst). 채팅 말풍선은 Roblox TextChatService 것이라 해당 없음.
+- 운명의 제단 프롬프트: 저장된 place에 AutoLocalize=false가 1개 남아 있어(rbxlx 유일) MapBuilder가 이제 true로 씀(지우기만 하면 place 값이 남음).
+- 시험: 새 test_auto_translate 14·7/7(전체 끄기 없음, DescendantAdded 안 끄기 없음, false는 허용 목록 9곳만, 필수 자리 11개), test_place_english 검사 2개 새 규칙으로, market_window 165·60/60, nickname 790, supporter_board, english, l10n, story_text, skill_learn, skill_fx, king_drop, hud_layout, phone_first10, fit_text, beta_basics, keys_settings, grudge, ranking, loot, golden_egg, goose_square, class_grips_server 통과; rank_marks 117/117(정적 10 = 성긴 worktree glb 없음, 거짓). luau-compile 바꾼 10파일 OK. 기다리는 가지 모두와 merge-tree 깨끗.
+- ⑤ 번역으로 글이 길어질 때 넘칠 곳(목록만):
+  1. **FitText·HUD L.FitGoal·L.TextLines·MeasureRenderedText는 TextService로 영어 원문을 잼** → 번역문이 길면 '맞춤' 라벨도 넘침(메뉴 칸 이름 FitMinPx 8, 퀘스트 목표 2줄, Faction/ClassPicker 카드). TextScaled 라벨은 실제 그린 글 기준이라 안전.
+  2. DeathScreen 줄: TextWrapped + 높이 size+8 고정 → 번역이 두 줄이면 다음 줄과 겹침(박스 높이 합은 줄마다 한 줄 기준).
+  3. HUD 목표 칩 2·3층: 한 줄 + "..." → 긴 번역은 잘림.
+  4. Panels 키트 버튼(ArtTextButton TextScaled, 바닥 12px): 좁은 버튼(마을 기금 190du, 출석 Claim, 상점 Buy)에서 긴 단어는 12px에서도 넘칠 수 있음.
+  5. TextTruncate 라벨(CharacterUI, PetWindow, PlayerListUI, Panels 일부): 넘치진 않고 잘림.
+  6. 자동 번역은 string.format으로 만든 문장(숫자·이름 낀 줄)은 통째로 한 항목 → Creator Hub에 숫자별 항목이 쌓일 수 있음(번역 안 될 수 있음).
+
+## 10/14 밤 9 — fix/settings-apply fe85439a (다 됨·push, 최신)
+- 계획 2-C #9 앞 두 개. 확인: 설정 DmgNum(All/Off)·Tags(All/Near/Off)는 저장만 되고 클라 어디서도 안 읽었음(Settings.luau 말고 0곳).
+- 피해 숫자: Fx MOTION.DamageNumbersOn()(Settings DmgNum, 기본 All) + MOTION.IsDamageKey(M 내 타격·P PvP·H 받은 피해) → showAmount 맨 앞에서 Off면 안 그림, Release 합계(ShowNumber)도. 골드·XP·전리품(G·RG·RX) 그대로.
+- 남 이름표: 새 모듈 NameTagPrefs(ClientMain ChatTags 뒤): 서버 CharacterVisuals의 머리 "Nametag" 중 남의 것만(PlayerToHideFrom ~= 나) All = MaxDistance 120(Config.Visuals.NametagMaxDistance), Near = 새 Config.Visuals.NametagNearDistance 40, Off = Enabled false; 나중에 다시 만든 이름표·새 플레이어·설정 바꿈 바로 적용, 유령 글 등 다른 billboard 안 건드림.
+- 시험: 새 test_settings_apply 23·12/12(+정적 3), fx_edges, skill_fx 109·18/18, skill_signals, hit_ring, king_drop, weapon_motion 269, keys_settings, english, l10n 통과; luau-compile Fx·NameTagPrefs·HUD OK.
+- 병합 주의: dev1-village-fund와 ClientMain ORDER 한 줄 충돌(둘 다 모듈 추가) → 마을 기금 먼저 병합되면 내가 이 가지에 origin/main 병합해 한 줄 풀기. main·skill-press-reject와는 깨끗.
+
 ## 10/14 밤 8 — fix/skill-press-reject 3468b49c (다 됨·push, 최신)
 - 81e1d003 위 3468b49c = 최종 검수 MINOR 2개(목표 칩): ① HUD L.GoalTiers Big 줄은 Halo/Horns 글이 있을 때만(Neutral/None/nil 명시로 없음) ② 칩 2·3층 TextWrapped=false + TextTruncate AtEnd(작은 PC 방 계산이 한 줄씩이라 두 줄로 밀리지 않음, 긴 줄은 "...").
 - 시험: goal_chips 52·21/21(새 검사 1 + 돌연변이 2: format 에러 기대기, 두 줄 감기), hud_layout, hud_reveal, quest_lines, phone_first10, phone_text, first_look, comeback_client, fit_text, english, l10n, skill_press, skill_learn 통과.

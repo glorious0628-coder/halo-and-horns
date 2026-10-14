@@ -16,7 +16,14 @@
 --            until that file exists). Replaces A23-68 #2's "Try your skill!" after the first kill
 --   input  : a press = SkillBar.Use(slot): one press, one cast. Inside the 0.5 s gap between casts one press waits in
 --            line (white rim) and goes when the gap ends. Refused here (locked, cooling, MP) -> the button shakes and a
---            short word floats up. Q goes through HUD.Release (the live Release remote) until SkillService's UseSkill
+--            short word floats up. 2-C #8 (최종 검수 10/14): the server's answer Fx "SkillPress" { Slot, Result }
+--            (SkillService) does the same for what only the server knows - "No target", "Can't hop here", "Too heavy to
+--            jump!", its own cooldown / MP view ("Not ready" / "Not enough MP"), a switched-off slot ("Not now");
+--            "Queued" says nothing. Words: Config.Skills.Text.
+--   hop    : 2-C #8 prep (SKL-3 X Hop: archer X, tamer Big Boing; Config.Skills.XEnabled off until 10/20): the server's
+--            Fx "Hop" { To, T } to the caster -> this client moves my own character to To (its ground height) along a low
+--            arc over T s (the server allowed that one move: ZoneService.AllowMove); a far / broken To or a dead / new
+--            character = no move. Q goes through HUD.Release (the live Release remote) until SkillService's UseSkill
 --            remote exists; Z / X fire UseSkill(slot) (SKL-2). HUD's key dispatch sends SkillQ / SkillZ / SkillX here.
 --   Studio : the local attribute SkillBarPreview = true shows Z / X with their flags off (UiSandbox captures only)
 -- Presentation + input only: the server decides every cast (MP, cooldown, targets).
@@ -85,8 +92,6 @@ local TXT = {
 	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
 	Level = "Lv %d",
 	Unlock = "Unlocks at Lv %d",
-	NeedMP = "Not enough MP",
-	Wait = "Not yet",
 	NewSkill = "New skill! %s", -- A23-71 the learn moment
 	LearnKey = "Press %s",
 	LearnTouch = "Tap the new button",
@@ -113,6 +118,10 @@ local S = {
 	lastWarnAt = -math.huge,
 }
 local ui = {} -- root, buttons = { [slot] = b }
+-- 2-C #8: the server's refusal results -> Config.Skills.Text keys; HOP = the X hop move (Live = the running hop)
+local PRESS = { Word = { Cooldown = "NotReady", NoMP = "NoMP", NoTarget = "NoTarget", TooHeavy = "TooHeavy",
+	CantHop = "CantHop", Locked = "NotNow" } }
+local HOP = { MaxDist = 16, Arc = 0.15, ArcMin = 0.8, ArcMax = 2, TMin = 0.1, TMax = 0.6, Ray = 12, Live = nil }
 local acc = { Tick = 0 }
 
 ----------------------------------------------------------------- helpers
@@ -354,6 +363,7 @@ local function buildButton(slot)
 	b.Seconds = smallLabel({
 		Name = "Seconds", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(0.7, 0.42), TextScaled = true, ZIndex = 6, Visible = false, Parent = face,
+		AutoLocalize = false, -- A23-179: seconds only
 	}, "Number")
 
 	-- locked: lock glyph (+ "Lv N"); without the GlyphLock art a code lock (white body + shackle ring, IMG-R4, review
@@ -447,6 +457,13 @@ local function setIcon(b)
 end
 
 -- the slot's live state: { On, Locked, Unlock, Left (s), Frac (0..1 of the cooldown still to go), MPShort, Def }
+-- a player-facing skill word (Config.Skills.Text, A23-48 English); "" when the key is missing
+local function skillWord(key)
+	local t = type(Config.Skills) == "table" and Config.Skills.Text or nil
+	local v = type(t) == "table" and t[key] or nil
+	return type(v) == "string" and v or ""
+end
+
 local function stateOf(slot)
 	local def = defOf(slot)
 	local unlock = unlockLevel(slot)
@@ -766,11 +783,11 @@ function SkillBar.Use(slot)
 		return false
 	end
 	if st.Left > 0.05 then
-		shake(b, TXT.Wait)
+		shake(b, skillWord("NotReady"))
 		return false
 	end
 	if st.MPShort then
-		shake(b, TXT.NeedMP)
+		shake(b, skillWord("NoMP"))
 		local audio = C and C.Audio -- the 'no' sound once Audio.luau exists (quality ideas ①)
 		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "No") end
 		return false
@@ -784,6 +801,89 @@ function SkillBar.Use(slot)
 	end
 	cast(slot)
 	return true
+end
+
+-- 2-C #8: the server's answer to my press (Fx "SkillPress"): a refusal shakes the button with its short word -> true
+function SkillBar.OnPress(data)
+	if type(data) ~= "table" or not ui.buttons then return false end
+	local b = ui.buttons[data.Slot]
+	local key = PRESS.Word[data.Result]
+	if not (b and key) then return false end
+	local word = skillWord(key)
+	if data.Result == "Locked" then
+		local st = stateOf(data.Slot)
+		if st.Locked then word = string.format(TXT.Unlock, st.Unlock) end
+	end
+	if S.queued == data.Slot then -- the line waiting behind a refused press goes too
+		S.queued = nil
+		showQueue(data.Slot, false)
+	end
+	shake(b, word)
+	if data.Result == "NoMP" then
+		local audio = C and C.Audio
+		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "No") end
+	end
+	return true
+end
+
+-- 2-C #8 prep (pure): the landing height - To's ground plus how high my root stood over the ground I left (the
+-- server's To keeps my root height on flat ground); no ground under one of them = To as it is
+function SkillBar.HopLanding(from, to, groundFrom, groundTo)
+	if type(groundFrom) == "number" and type(groundTo) == "number" then
+		return Vector3.new(to.X, groundTo + math.clamp(from.Y - groundFrom, 0, 6), to.Z)
+	end
+	return to
+end
+
+-- (pure) the point at a (0..1) along a low arc from -> to, height h at the middle
+function SkillBar.HopPoint(from, to, a, h)
+	a = math.clamp(a, 0, 1)
+	return Vector3.new(from.X + (to.X - from.X) * a, from.Y + (to.Y - from.Y) * a + 4 * h * a * (1 - a),
+		from.Z + (to.Z - from.Z) * a)
+end
+
+local function groundY(pos, char)
+	local ok, hit = pcall(function()
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = { char }
+		return workspace:Raycast(pos + Vector3.new(0, HOP.Ray / 2, 0), Vector3.new(0, -HOP.Ray * 1.5, 0), params)
+	end)
+	return (ok and hit) and hit.Position.Y or nil
+end
+
+-- the server's Fx "Hop" { To, T }: my client moves my character there -> true when a hop started
+function SkillBar.OnHop(data)
+	if type(data) ~= "table" or typeof(data.To) ~= "Vector3" then return false end
+	local char = LocalPlayer.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not (root and hum and hum.Health > 0) then return false end
+	local from = root.Position
+	local flat = Vector3.new(data.To.X - from.X, 0, data.To.Z - from.Z).Magnitude
+	if flat < 0.5 or flat > HOP.MaxDist then return false end
+	local to = SkillBar.HopLanding(from, data.To, groundY(from, char), groundY(data.To, char))
+	local t = math.clamp(tonumber(data.T) or 0.25, HOP.TMin, HOP.TMax)
+	HOP.Live = { Char = char, Root = root, Hum = hum, From = from, To = to, Start = os.clock(), T = t,
+		H = math.clamp(flat * HOP.Arc, HOP.ArcMin, HOP.ArcMax) }
+	return true
+end
+
+-- one frame of the running hop (Heartbeat): the root follows the arc, keeps its facing; it ends at To, still
+function SkillBar.HopStep(now)
+	local h = HOP.Live
+	if not h then return end
+	if LocalPlayer.Character ~= h.Char or not h.Root.Parent or h.Hum.Health <= 0 then
+		HOP.Live = nil
+		return
+	end
+	local a = math.clamp((now - h.Start) / h.T, 0, 1)
+	local p = SkillBar.HopPoint(h.From, h.To, a, h.H)
+	h.Root.CFrame = h.Root.CFrame.Rotation + p
+	if a >= 1 then
+		h.Root.AssemblyLinearVelocity = Vector3.zero
+		HOP.Live = nil
+	end
 end
 
 function SkillBar.Relayout()
@@ -829,6 +929,24 @@ function SkillBar.Start()
 	end
 	UIKit.OnAttr({ "Mana", "MaxMana", "Level", "Class", "ClassChosen", "Faction", "SkillReadyAt", "SkillReadyAtZ",
 		"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }, refreshAll)
+	-- 2-C #8: the server's press answers and the X hop (Fx; the Remotes folder comes from the server)
+	task.spawn(function()
+		local okFx, fx = pcall(function()
+			local folder = ReplicatedStorage:WaitForChild("Remotes", 30)
+			return folder and folder:WaitForChild("Fx", 30)
+		end)
+		if not (okFx and typeof(fx) == "Instance" and fx:IsA("RemoteEvent")) then return end
+		fx.OnClientEvent:Connect(function(kind, data)
+			if kind == "SkillPress" then
+				guard(function() SkillBar.OnPress(data) end, "press")
+			elseif kind == "Hop" then
+				guard(function() SkillBar.OnHop(data) end, "hop")
+			end
+		end)
+	end)
+	RunService.Heartbeat:Connect(function()
+		if HOP.Live then guard(function() SkillBar.HopStep(os.clock()) end, "hop step") end
+	end)
 	RunService.Heartbeat:Connect(function(dt)
 		acc.Tick += dt
 		if acc.Tick < T.Tick then return end
@@ -860,5 +978,6 @@ function SkillBar.Start()
 end
 
 SkillBar.Learn = LEARN -- test aid
+SkillBar._T = { PRESS = PRESS, HOP = HOP, S = S, ui = ui } -- tools/test_skill_press.py
 
 return SkillBar

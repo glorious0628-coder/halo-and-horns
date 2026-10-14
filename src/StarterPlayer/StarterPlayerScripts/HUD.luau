@@ -2177,12 +2177,14 @@ function L.BuildTracker(root)
 		ZIndex = 5, Parent = prog }, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
 	local claimText = UIKit.StyledLabel({ Name = "Text", Size = UDim2.fromScale(1, 1), Text = TXT.Claim, ZIndex = 6,
 		Parent = claim }, "Number")
-	-- A23-167 ①: goal chip tiers 2 'Next' and 3 'Big goal' under the 'now do' quest (L.RefreshGoalTiers; one line each)
+	-- A23-167 ①: goal chip tiers 2 'Next' and 3 'Big goal' under the 'now do' quest (L.RefreshGoalTiers; one line each).
+	-- 최종 검수 10/14 (MINOR): never wrapped - the small-PC room (L.LayoutTracker) counts one line each, and a second line
+	-- ('Big goal: Win the Crown for the Knights' in a narrow window) pushed the tracker up; a too-long line ends in "..."
 	local tiers = {}
 	for i = 2, 3 do
 		tiers[i] = UIKit.StyledLabel({ Name = "GoalTier" .. i, LayoutOrder = 2 + i, Size = UDim2.new(1, 0, 0, 0),
-			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left,
-			Visible = false, ZIndex = 4, Parent = frame }, "Body")
+			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd,
+			TextXAlignment = Enum.TextXAlignment.Left, Visible = false, ZIndex = 4, Parent = frame }, "Body")
 	end
 	tiers[3].TextColor3 = ac("GoldText", Theme.Gold)
 	if IS_TOUCH then -- phones: the game's 11 px floor for the sentence and the numbers (the block sits beside the minimap)
@@ -2248,7 +2250,11 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 	for _, s in steps do
 		if (shown == nil or s.At > shown) and (best == nil or s.At < best.At) then best = s end
 	end
-	return best and fmt(W.Next, best.Text) or nil, fmt(W.Big, W[faction]) or nil
+	-- 최종 검수 10/14 (MINOR): the crown line only for a side that has one - Neutral / None / nil get none on purpose
+	-- (it used to come out nil only because string.format failed on the missing word)
+	local sideWord = (faction == "Halo" or faction == "Horns") and W[faction] or nil
+	local big = type(sideWord) == "string" and fmt(W.Big, sideWord) or nil
+	return best and fmt(W.Next, best.Text) or nil, big
 end
 
 -- tiers 2-3 text size (du) from the goal sentence's
