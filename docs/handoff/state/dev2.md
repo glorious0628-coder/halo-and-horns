@@ -8,7 +8,9 @@
 | dev2-village-fund | 04ef28c7 | A23-178 B 마을 기금 서버(VillageFundService, 계약 `docs/design/village_fund_server_2026-10-14.md`), launch-dates 합침 위. Net 이름 FundGive·FundOpen + GameState 기본값 = 이 가지(개발 1 dev1-village-fund 864cf867은 Net 안 건드림) | 보고함. test_village_fund 99 / 38, 전체 = 원래 실패만 |
 | dev2-stats3 | f1aeeb48 | 2-A ⑧ 스탯 2단계를 main 위로(옛 dev2-stats2 91a7dd8d, 리베이스 없음) + 장비 배수와 곱하기 + CombatPowerOf 레벨·스탯 덮어쓰기 + main 합침 1번. 스위치 꺼짐 | 보고함. stat_service 70 / 37·stats 77 / 46·gear_slots 203 / 109. main 합친 뒤 전체 196개 = 원래 실패 8개만(costume_physics·halloween·metrics_board·place_english·rank_marks·skeleton_ground·skin_binding_studio·walk_forge_client) |
 | dev2-gold-sinks | 8f53be76 | 2-A ⑥ 안 → 사용자 A23-178: 마을 기금(B)만, 주문서 구매(A) 안 함(소모품 = 연금술사) | 끝 |
-- worktree: ../wt_wluck, ../wt_dates, ../wt_vfund, ../wt_stats3 (+ 옛 것). 시험 실행기는 스크래치 sweep.py(세션마다 다시 만듦: `<wt> <out> [--jobs N] [--mut] [이름…]`).
+| fix/pioneer-switch-ready | cd7e3331 | launch-dates 2차 검토 FIX: 스위치 정의 `Unread`(첫 읽기 성공 전 값), PioneerTitle Unread = false + `SwitchService.HasRead()`; TitleService가 Changed(켬) 때 접속 중인 아이에게 다시 줌 | 보고함. ops_safety 127 / 65/66(Halloween 원래), beta_basics 236 / 37. **dev2-village-fund와 Config 스위치 줄 충돌** → 마을 기금이 먼저 병합되면 이 가지에 origin/main 합쳐 풀기 |
+- 스탯 가지(stats3)는 '큰 병합 하루 하나' 규칙으로 10/15 검토.
+- worktree: ../wt_wluck, ../wt_dates, ../wt_vfund, ../wt_stats3, ../wt_pioneer (+ 옛 것). 시험 실행기는 스크래치 sweep.py(세션마다 다시 만듦: `<wt> <out> [--jobs N] [--mut] [이름…]`).
 - **다음:** 10/15 패스 ID 9개 오면 그것 먼저 = origin/main 위 새 가지 dev2-pass-ids-2(9b90130c는 main에 있음)에 `py tools/set_pass_ids.py …` 커밋 1개 → test_gamepass(변이)·passes·pass_text·shop_layout·health → 보고. 그 밖엔 최종 검수가 정함.
 - 주의: worktree에서 git이 쓴 파일(merge·checkout·apply)은 CRLF가 될 수 있음 → first_ko_king 'LF tabs' 정적 검사가 잡음. 커밋 전 바꾼 파일 LF 확인.
 - 숲 서브 GW9·GW10은 영·한 대본(`docs/script/`)에 아직 없음 → ⑬ 때.
