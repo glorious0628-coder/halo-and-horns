@@ -87,12 +87,58 @@ local function attrOf(name, default)
 end
 
 -- one pass's live numbers: Config.GamePasses[Kind] (게임성 개발 2) over the A23-75 stand-ins
+-- 2-C #10 (최종 검수 10/14): the card prices are Roblox's own - MarketplaceService:GetProductInfo(id, infoType)
+-- .PriceInRobux (regional prices and sales: the same number as the buy window). Read once per id in the background
+-- (pcall), cached for the session; until then, on a failure, without a price (not for sale) or with id 0: the Config
+-- price. A new price repaints the open shop (PRICE.Refresh). fetch(id, infoType) -> info is for the offline test.
+local PRICE = { Cache = {}, Busy = {}, Refresh = nil, Fetch = nil, SubFetch = nil }
+-- one background read per key: call() -> info (pcall), read(info) -> the price or nil (nil / a failure is remembered as
+-- false = the fallback from then on); the first answer repaints the open shop
+function PRICE.Ask(key, fallback, call, read)
+	local v = PRICE.Cache[key]
+	if v ~= nil then return v == false and fallback or v end
+	if not PRICE.Busy[key] then
+		PRICE.Busy[key] = true
+		task.spawn(function()
+			local ok, price = pcall(function()
+				local info = call()
+				return type(info) == "table" and read(info) or nil
+			end)
+			PRICE.Cache[key] = (ok and price ~= nil) and price or false
+			PRICE.Busy[key] = nil
+			if PRICE.Refresh then pcall(PRICE.Refresh) end
+		end)
+	end
+	return fallback
+end
+function ShopUI.LivePrice(id, infoType, fallback, fetch)
+	id = math.floor(tonumber(id) or 0)
+	if id <= 0 then return fallback end
+	local get = fetch or PRICE.Fetch or function(i, t) return MarketplaceService:GetProductInfo(i, t) end
+	return PRICE.Ask(tostring(infoType) .. ":" .. id, fallback, function() return get(id, infoType) end, function(info)
+		local price = tonumber(info.PriceInRobux)
+		return (price and price >= 0) and math.floor(price) or nil
+	end)
+end
+-- A23-182 subscription card: GetSubscriptionProductInfoAsync("EXP-...") the same way -> Roblox's own price text
+-- (DisplayPrice, the player's local money) or a PriceInRobux number; id "" / failure / neither = the Config R$ price
+function ShopUI.SubPrice(id, fallback, fetch)
+	if type(id) ~= "string" or id == "" or id == "0" then return fallback end
+	local get = fetch or PRICE.SubFetch or function(i) return MarketplaceService:GetSubscriptionProductInfoAsync(i) end
+	return PRICE.Ask("Sub:" .. id, fallback, function() return get(id) end, function(info)
+		if type(info.DisplayPrice) == "string" and info.DisplayPrice ~= "" then return info.DisplayPrice end
+		local robux = tonumber(info.PriceInRobux)
+		return (robux and robux >= 0) and math.floor(robux) or nil
+	end)
+end
+ShopUI._PRICE = PRICE -- tools/test_shop_price.py
+
 local function passDef(p)
 	local all = type(Config.GamePasses) == "table" and Config.GamePasses or {}
 	local cfg = type(all[p.Kind]) == "table" and all[p.Kind] or {}
 	return {
 		Id = math.floor(tonumber(cfg.Id) or 0),
-		Price = tonumber(cfg.Price) or tonumber(cfg.PriceHint) or p.Price,
+		Price = ShopUI.LivePrice(cfg.Id, Enum.InfoType.GamePass, tonumber(cfg.Price) or tonumber(cfg.PriceHint) or p.Price),
 		Attr = type(cfg.Attr) == "string" and cfg.Attr or p.Attr,
 	}
 end
@@ -388,7 +434,8 @@ local function refreshLook(kit, cell)
 	elseif not salesOn() then
 		setCapsule(kit, cell, T.Off, kit.Palette.Button, false)
 	else
-		setCapsule(kit, cell, string.format(T.PriceF, Util.FormatInt(tonumber(def.Price) or 99)), kit.Palette.Buy, true)
+		local price = ShopUI.LivePrice(def.PassId or def.Id, Enum.InfoType.GamePass, tonumber(def.Price) or 99)
+		setCapsule(kit, cell, string.format(T.PriceF, Util.FormatInt(price)), kit.Palette.Buy, true)
 	end
 end
 
@@ -426,9 +473,12 @@ local function buildTickets(u, kit, parent, rows)
 		b.AnchorPoint = Vector2.new(1, 0.5)
 		b.Position = UDim2.new(1, -10, 0.5, 0)
 		local onSale = p ~= nil and (tonumber(p.Id) or 0) ~= 0
-		b.Text = onSale and string.format(T.PriceF, tostring(p.PriceHint)) or T.Soon
+		local function priceText()
+			return onSale and string.format(T.PriceF, tostring(ShopUI.LivePrice(p.Id, Enum.InfoType.Product, p.PriceHint))) or T.Soon
+		end
+		b.Text = priceText()
 		kit.SetEnabled(b, onSale)
-		table.insert(rows, { Label = label, Name = (p and p.Name) or kind,
+		table.insert(rows, { Label = label, Name = (p and p.Name) or kind, Button = b, PriceText = priceText,
 			Attr = kind == "Class" and "ClassTickets" or "FactionTickets" })
 	end
 end
@@ -495,7 +545,10 @@ local function buildShop(parent, kit, arg)
 			if attrOf(cell.Sub.Attr, false) == true then
 				setCapsule(kit, cell, T.Owned, kit.Palette.Free, true)
 			else
-				setCapsule(kit, cell, string.format(T.MonthF, Util.FormatInt(cell.Sub.Price)), kit.Palette.Buy, true)
+				local price = ShopUI.SubPrice(cell.Sub.Id, cell.Sub.Price) -- 2-C #10: Roblox's price (text or R$)
+				local text = type(price) == "string" and string.format(T.MonthTextF, price)
+					or string.format(T.MonthF, Util.FormatInt(price))
+				setCapsule(kit, cell, text, kit.Palette.Buy, true)
 			end
 		end
 	end
@@ -531,14 +584,17 @@ local function buildShop(parent, kit, arg)
 	if ticketsOnSale() then buildTickets(u, kit, parent, ticketRows) end
 	kit.Text(parent, T.Note, { Color = kit.Theme.SubText, Size = 15, Align = Enum.TextXAlignment.Center })
 
-	return function()
+	local function refreshAll()
 		for _, cell in passCells do refreshPass(kit, cell) end
 		refreshSubs()
 		for _, cell in lookCells do refreshLook(kit, cell) end
 		for _, r in ticketRows do
 			r.Label.Text = string.format(T.TicketF, r.Name, math.floor(tonumber(attrOf(r.Attr, 0)) or 0))
+			if r.Button and r.PriceText then r.Button.Text = r.PriceText() end
 		end
 	end
+	PRICE.Refresh = refreshAll -- 2-C #10: a price read later repaints this shop
+	return refreshAll
 end
 
 ------------------------------------------------------------------ VIP crown on name tags (A23-75)
