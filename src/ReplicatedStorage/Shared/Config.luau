@@ -47,6 +47,7 @@ Config.PluralWords = {
 	days = "day", times = "time", minutes = "minute", seconds = "second", hits = "hit", ["basic hits"] = "basic hit",
 	slimes = "slime", monsters = "monster", materials = "material", quests = "quest", players = "player",
 	["Wanted players"] = "Wanted player", Knights = "Knight", ["more great items"] = "more great item",
+	items = "item", -- A23-167 ③ the KO screen's "+1 item"
 }
 
 function Config.Plural(text)
@@ -7062,6 +7063,15 @@ Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 -- faction card perk rows (icon part + short plain text, mockup art/out/UI_Faction_B.png). Numbers must match
 -- Config.Factions (XPBonus, MaxHPMult, GoldBonus, DamageBonus, ChargeCap) and Config.Kaiju.StarsNeeded.
 -- Short (optional) = shorter line used when Text cannot fit its row at the min text size (landscape phones).
+-- A23-167 ④ (게임성 개발 1, 2026-10-14): under each side's card on the faction picker, the three things the pick changes,
+-- one short line each (text only, no new art): my home town (Config.Zones), the mark above my head
+-- (CharacterVisuals), my guide (Config.Tutorial.Welcome). tools/test_goal_chips.py checks the names against those.
+Config.FactionChanges = {
+	Halo = { "Home: Halo Citadel", "On your head: a gold halo", "Your guide: Hallie" },
+	Horns = { "Home: Horns Den", "On your head: little horns", "Your guide: Magpie" },
+	Neutral = { "Home: the Crossroads", "On your head: a teal gear", "Your guide: Kit" },
+}
+
 Config.UIArt.FactionPerks = {
 	Halo = {
 		{ Icon = "IconExp", Text = "XP +30%" },
@@ -7176,6 +7186,28 @@ Config.NextGoal = {
 	MaxKillsShown = 99, -- above this keep the normal upgrade text
 	GuideSeconds = 90, -- zone guide (HUD.ShowGuide) auto-clears after this many seconds
 	GuideZones = { "GoblinWoods", "SkeletonRuins" }, -- guide on reaching these zones' MinLevel (Lv 10 / Lv 25)
+}
+
+-- A23-167 ① (게임성 개발 1, 2026-10-14; plan 2026-10-14 §2-A ①): the HUD goal chips in three tiers - tier 1 = the 'now
+-- do' quest (the tracker, as before), tier 2 = 'Next' (the nearest of Steps above my level, after the level the
+-- tracker's own next-goal row already names), tier 3 = 'Big goal' (my side's crown). HUD.L.GoalTiers (pure). Phones
+-- show tier 1 only (TouchTiers). Steps: Skill = that slot's Config.Skills.Unlock level (Z / X only while their switch
+-- is on, none after a rebirth - like QuestService's next-goal row), Zone = the zone's MinLevel (seasonal zones never),
+-- Rebirth = Config.RebirthLevel. Equal levels: the first row here wins. No clock, no buy word (A23-79).
+Config.GoalChips = {
+	Enabled = true,
+	TouchTiers = 1,
+	SizeK = 0.85, -- tiers 2-3 text size / the goal sentence's (PC)
+	Steps = {
+		{ Kind = "Skill", Slot = "Q" }, { Kind = "Skill", Slot = "Z" }, { Kind = "Skill", Slot = "X" },
+		{ Kind = "Zone", Zone = "GoblinWoods" }, { Kind = "Zone", Zone = "SkeletonRuins" },
+		{ Kind = "Rebirth" },
+	},
+	Text = {
+		Next = "Next: %s", Big = "Big goal: %s",
+		FirstSkill = "Lv %d · first skill", Skill = "Lv %d · new skill", Zone = "Lv %d · %s", Rebirth = "Lv %d · Rebirth",
+		Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",
+	},
 }
 
 -- English message templates (always through string.format). Use these for the listed situations.
@@ -7603,6 +7635,12 @@ Config.Death = {
 		Lost = "Lost %s pouch gold", LostEn = "Lost %s pouch gold",
 		Sack = "You lost the Grudge Sack", SackEn = "You lost the Grudge Sack",
 		Respawn = "Back in %d s", RespawnEn = "Back in %d s",
+		-- A23-167 ③ (게임성 개발 1, 10/14): 'what this run gave me' - since my character came (DeathScreen.Tally), one
+		-- line each, only what grew; Honor for the Knights, Mischief for the Legion (A23-166)
+		GotTitle = "This run", GotTitleEn = "This run", GotXP = "+%s XP", GotXPEn = "+%s XP",
+		GotGold = "+%s gold", GotGoldEn = "+%s gold",
+		GotItems = "+%d items", GotItemsEn = "+%d items", -- Config.Plural: "+1 item" GotHonor = "+%s Honor", GotHonorEn = "+%s Honor",
+		GotMischief = "+%s Mischief", GotMischiefEn = "+%s Mischief",
 	},
 	-- one tip per situation (%s = the potion key name, or 'the potion button' on touch)
 	Tips = {
