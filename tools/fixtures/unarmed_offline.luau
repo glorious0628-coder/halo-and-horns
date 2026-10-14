@@ -390,6 +390,8 @@ runGroup("shop", function()
 		show({ f.WeaponOwnedMask, f.WeaponTier, f.CarriedGold }))
 	-- the anvil prompt passes M1_1's visit (1-A #2: the weapon comes with it, step 2 = Otto's scroll) before the shop opens
 	local w4 = bareWorld()
+	-- A23-188: the engine's step-1 gift on the old visit step (M1_1 ships a Slime Prince first)
+	w4.Config.StoryQuests.Defs.M1_1.Steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
 	local s, g = w4:Join(404, { Level = 2 })
 	w4.Story.Refresh(s)
 	check(g.Story and g.Story.Main.Id == "M1_1", "M1_1 is the active main quest after the first mission", show(g.Story and g.Story.Main))
@@ -516,9 +518,16 @@ runGroup("forge sells 5", function()
 end)
 
 ------------------------------------------------------------------ 7. the M1_1 gift (both orders)
+-- A23-188: M1_1 ships "Beat a Slime Prince" as step 1 (no second Forge visit); these groups test the engine's gift at the
+-- end of a GiveWeapon quest's first step on this world's own Config with the old visit step (State BlacksmithVisited)
+local function visitStep(world)
+	world.Config.StoryQuests.Defs.M1_1.Steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
+	world.Config.StoryQuests.Defs.M1_1.Steps[2].GiveItem = { Item = "Enh70", N = 1 } -- and Otto's scroll at step 2 (the old flow)
+	return world
+end
 runGroup("gift", function()
 	-- (a) the free tier 1 first, then the wood weapon (Buy back on: 1-A #2 ships Buy = false)
-	local w = bareWorld()
+	local w = visitStep(bareWorld())
 	w.Config.WeaponShop.Buy = true
 	local function useScroll(world, pl, tier)
 		world:Advance(1) -- RateLimits.UseItem
@@ -571,7 +580,7 @@ runGroup("gift", function()
 		show({ d.WeaponOwnedMask, d.WeaponTier, d.ItemSeqNext, seqBefore }))
 
 	-- (b) the wood weapon first, then the free tier 1 (in the bag, no power line)
-	local w2 = bareWorld()
+	local w2 = visitStep(bareWorld())
 	w2.Config.WeaponShop.Buy = true
 	local q, e = w2:Join(502, { Level = 2, Carried = 150 })
 	w2.Story.Refresh(q)
@@ -591,7 +600,7 @@ runGroup("gift", function()
 	end
 
 	-- (c) a save from before A23-34 (owns T1) finishing M1_1: nothing, no line
-	local w3 = bareWorld()
+	local w3 = visitStep(bareWorld())
 	local r, f = w3:Join(503, { Level = 3, Tier = 1, Mask = 1 })
 	w3.Story.Refresh(r)
 	local k0 = #w3.Notices
@@ -614,7 +623,7 @@ runGroup("gift", function()
 		show({ g.WeaponOwnedMask, g.WeaponTier }))
 	check(s ~= nil, "joined")
 	-- (e) a Mage gets the class weapon name; a Horns Lv1 shows 0 -> 283
-	local w5 = bareWorld()
+	local w5 = visitStep(bareWorld())
 	local t5, h = w5:Join(505, { Class = "Mage", Faction = "Horns", Level = 1 })
 	w5.Story.Refresh(t5)
 	local j0 = #w5.Notices

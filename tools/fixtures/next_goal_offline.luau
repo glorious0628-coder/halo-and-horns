@@ -24,6 +24,9 @@ local function ladderWorld(o)
 	w.Reg.KaijuService = { KaijuEnded = w.Util.Signal.new() }
 	w.Reg.FactionService.GetFaction = function(p) return p:GetAttribute("Faction") or "None" end
 	w.Reg.PvPService = { IsRookie = function() return false end, PlayerKO = w.Util.Signal.new() }
+	-- Codex B5: the field boss double (KingWait = seconds until the King Slime; 0 = here, nil = off)
+	w.KingWait = 0
+	w.Reg.FieldBossService = { SecondsUntil = function(key) return key == "SlimeKing" and w.KingWait or nil end }
 	local story = execute("StoryQuestService", STORY_SOURCE, env)
 	w.Reg.StoryQuestService = story
 	local quest = execute("QuestService", QUEST_SOURCE, env)
@@ -185,6 +188,14 @@ runGroup("the early goals and the story keep their place", function()
 	w.Config.WeaponShop.Buy = false
 	check(w.Config.WeaponShop.Buy == false and Q.PinnedRow(a).GoalKind == "IronDrop" and Q.PinnedRow(a).Text == TT.NextIronDrop,
 		"no iron weapon: the iron goal first (the drop line)", show(Q.PinnedRow(a).GoalKind))
+	-- Codex B5 (최종 검수 10/14): no King for more than KingSoon (120 s), or none at all: another goal comes first
+	w.KingWait = 121
+	check(Q.PinnedRow(a).GoalKind ~= "IronDrop", "the King 121 s away: no King line", show(Q.PinnedRow(a).GoalKind))
+	w.KingWait = nil
+	check(Q.PinnedRow(a).GoalKind ~= "IronDrop", "no King on this server: no King line", show(Q.PinnedRow(a).GoalKind))
+	w.KingWait = 120
+	check(Q.PinnedRow(a).GoalKind == "IronDrop" and w.Config.Tutorial.KingSoon == 120, "the King 120 s away: the line again", show(Q.PinnedRow(a).GoalKind))
+	w.KingWait = 0
 	TT.NextIronDrop = nil
 	check(Q.PinnedRow(a).GoalKind ~= "IronGold" and Q.PinnedRow(a).GoalKind ~= "IronDrop", "no drop line: no iron row, never the gold one",
 		show(Q.PinnedRow(a).GoalKind))

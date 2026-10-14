@@ -35,6 +35,9 @@ local L = {
 	Remote = "ClaimAttendance",
 	Gap = 8, CellH = 128, DayH = 22, CountH = 20, Pad = 5, MaxParts = 2,
 	TopH = 64, Ribbon = 64, ButtonW = 260, ButtonH = 56,
+	-- 최종 검수 10/14 (publish4 phone photo: [Claim] cut off under the window): on a touch screen the rows are shorter so
+	-- the whole board + [Claim] + the note fit a landscape phone without scrolling
+	Phone = { CellH = 92, TopH = 52, Ribbon = 52, ButtonH = 46 },
 	ClaimWait = 3, -- s the button stays "pending" after a press without an answer (then it unlocks again)
 	FirstWait = 600, -- s of play before the board opens by itself for a player who never claimed (not the first minutes)
 	Poll = 2, -- s between the auto-open checks
@@ -137,6 +140,18 @@ end
 
 -- the parts as one line ("+120 gold · +Enhance Scroll 70%"): the server's words and order (AttendanceService.partsText:
 -- gold, XP, then the items), so the claim's "Day N reward!" line reads the same
+-- (pure) the window's row sizes (du): L, or L.Phone over it on a touch screen; DaysH / GoalY / GoalH split the top row
+function AttendanceUI.Sizes(touch)
+	local z = { CellH = L.CellH, TopH = L.TopH, Ribbon = L.Ribbon, ButtonH = L.ButtonH }
+	if touch == true then
+		for key, v in L.Phone do z[key] = v end
+	end
+	z.DaysH = math.floor(z.TopH * 0.44)
+	z.GoalY = z.DaysH + 6
+	z.GoalH = z.TopH - z.GoalY - 2
+	return z
+end
+
 function AttendanceUI.Line(parts)
 	local out = {}
 	parts = type(parts) == "table" and parts or {}
@@ -178,13 +193,17 @@ function AttendanceUI.Board(ctx)
 	return { Rows = rows, Pays = n > 0 and slot or nil, Ready = ready and n > 0, WeekDone = weekDone }
 end
 
--- what a milestone really gives me: its title (TitleService) and my side's attendance looks (MonetizationService.GrantLook,
--- worn from the Shop's Looks). Not its Border (the 28-day name frame): no screen draws it yet
+-- what a milestone really gives me: its title (TitleService), its name frame (Border: the 28-day ribbon NameTagPrefs
+-- draws by the name since fix/small-ui-batch, while its art is in) and my side's attendance looks
+-- (MonetizationService.GrantLook, worn from the Shop's Looks)
 local function goalRewards(m, faction)
 	local at = int(m.Days)
 	local what = {}
 	local def = m.Title and Config.TitleDefs and Config.TitleDefs[m.Title]
 	if def then table.insert(what, tx("GoalTitle", tostring(def.NameEn or def.Name))) end
+	local parts = type(Config.UIArt) == "table" and type(Config.UIArt.Parts) == "table" and Config.UIArt.Parts or {}
+	local art = type(m.Border) == "string" and parts["Ribbon" .. m.Border] or nil
+	if type(art) == "table" and type(art.Id) == "string" and art.Id ~= "" then table.insert(what, tx("GoalBorder")) end
 	local looks = {}
 	for id, look in type(Config.Looks) == "table" and Config.Looks or {} do
 		local need = type(look) == "table" and type(look.Unlock) == "table" and int(look.Unlock.Attendance) or 0
@@ -196,8 +215,8 @@ local function goalRewards(m, faction)
 end
 
 -- the next milestone after `days` that really gives me something: { Days, Text } or nil. Final review 10/13: a milestone
--- with nothing real for me (the 28-day name frame nobody draws yet, the 14-day looks for an artisan) is skipped - the
--- board never promises a reward that does not exist
+-- with nothing real for me (the 14-day looks for an artisan; a name frame without its art) is skipped - the board never
+-- promises a reward that does not exist
 function AttendanceUI.Goal(days, faction)
 	days = int(days)
 	local list = {}
@@ -427,24 +446,25 @@ end
 local function build(parent, k)
 	VIEW.Kit, VIEW.Cells, VIEW.Shown, VIEW.RibbonKey = k, {}, true, nil
 	S.OpenedDay = Config.DayIndex(os.time()) -- opened today (by hand or by itself): no second auto-open
+	local Z = AttendanceUI.Sizes(game:GetService("UserInputService").TouchEnabled)
 	-- days collected + the next milestone
-	local top = row(k, parent, "Days", L.TopH)
+	local top = row(k, parent, "Days", Z.TopH)
 	local ms = type(att().Milestones) == "table" and att().Milestones or {}
 	local first = ms[1] and ("RibbonDays" .. tostring(int(ms[1].Days))) or "RibbonDays7"
-	VIEW.Ribbon = image(first, { Name = "Ribbon", Size = UDim2.fromOffset(L.Ribbon, L.Ribbon), Parent = top })
+	VIEW.Ribbon = image(first, { Name = "Ribbon", Size = UDim2.fromOffset(Z.Ribbon, Z.Ribbon), Parent = top })
 	VIEW.RibbonKey = VIEW.Ribbon and first or nil
 	VIEW.Disc = nil
 	if VIEW.Ribbon then
 		VIEW.Disc = text({ Name = "Disc", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(L.Disc.X, L.Disc.Y),
 			Size = UDim2.fromScale(L.Disc.W, L.Disc.H), TextScaled = true, Number = true, AutoLocalize = false, ZIndex = 3, Parent = VIEW.Ribbon }, false)
 	end
-	local left = VIEW.Ribbon and (L.Ribbon + 12) or 0
-	VIEW.Days = text({ Name = "Collected", Text = "", Position = UDim2.fromOffset(left, 4), Size = UDim2.new(1, -left, 0, 28),
+	local left = VIEW.Ribbon and (Z.Ribbon + 12) or 0
+	VIEW.Days = text({ Name = "Collected", Text = "", Position = UDim2.fromOffset(left, 4), Size = UDim2.new(1, -left, 0, Z.DaysH),
 		TextXAlignment = Enum.TextXAlignment.Left, TextScaled = true, MaxTextSize = 24, Title = true, Parent = top }, true)
-	VIEW.Goal = text({ Name = "Goal", Text = "", Position = UDim2.fromOffset(left, 34), Size = UDim2.new(1, -left, 0, 24),
+	VIEW.Goal = text({ Name = "Goal", Text = "", Position = UDim2.fromOffset(left, Z.GoalY), Size = UDim2.new(1, -left, 0, Z.GoalH),
 		TextXAlignment = Enum.TextXAlignment.Left, TextScaled = true, MaxTextSize = 20, Parent = top }, true)
 	-- the 7 slots in one row
-	local boardFrame = row(k, parent, "Board", L.CellH)
+	local boardFrame = row(k, parent, "Board", Z.CellH)
 	local list = Instance.new("UIGridLayout")
 	local board = type(att().Board) == "table" and att().Board or {}
 	local n = math.max(1, #board)
@@ -459,8 +479,8 @@ local function build(parent, k)
 	end
 	-- what the next slot gives, [Claim], the calm line
 	VIEW.Line = k.Text(parent, "", { Name = "Pays", Size = 18, Align = Enum.TextXAlignment.Center, Color = k.Theme.Gold })
-	local buttons = row(k, parent, "Claim", L.ButtonH)
-	VIEW.Button = k.Button(buttons, tx("Claim"), k.Palette.Free, UDim2.fromOffset(L.ButtonW, L.ButtonH), claim)
+	local buttons = row(k, parent, "Claim", Z.ButtonH)
+	VIEW.Button = k.Button(buttons, tx("Claim"), k.Palette.Free, UDim2.fromOffset(L.ButtonW, Z.ButtonH), claim)
 	VIEW.Button.Name = "ClaimButton"
 	VIEW.Button.AnchorPoint = Vector2.new(0.5, 0)
 	VIEW.Button.Position = UDim2.fromScale(0.5, 0)

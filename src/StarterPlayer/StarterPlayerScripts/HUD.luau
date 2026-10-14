@@ -1254,20 +1254,28 @@ local function buildWar(root)
 	end
 	ui.warBar = bar
 
-	-- A23-130 (user, again 10/14: "막대 아래에 글 넣지 말라"): NO line under the bar - the round's time is one small
-	-- number in the middle of the bar (no words, never translated); my points live in the war window
-	ui.warTime = artLabel(false, {
-		Name = "Time",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.new(0, TB.TimeW, 1, 0),
-		TextScaled = true,
-		MaxTextSize = 16,
-		Number = true, AutoLocalize = false,
-		ZIndex = 5,
-		Parent = inner,
+	-- A23-130 / A23-184 (user 10/14: "막대 아래에 글 넣지 말라", then "저 9:25 뭐냐고!"): NO words and NO numbers on or
+	-- under the bar but the two badge scores - the bar is the crown, the two scores and the gold / red fills. The round's
+	-- time lives in the quest window's Event tab ("Crown War: next crown in 8:54"): a press on the bar opens it
+	local open = UIKit.Create("TextButton", {
+		Name = "Open",
+		Text = "",
+		AutoButtonColor = false,
+		BackgroundTransparency = 1,
+		Size = UDim2.fromScale(1, 1),
+		ZIndex = 6,
+		Parent = w,
 	})
+	open.Activated:Connect(function() pcall(L.OpenWarInfo) end)
 end
+
+-- A23-184: the war's time and rules = the quest window's Event tab (QuestBook.Sections "Crown War: next crown in …")
+function L.OpenWarInfo()
+	if not L.HasQuestBook() then return end
+	C.QuestBook.Toggle(true)
+	if type(C.QuestBook.ShowTab) == "function" then C.QuestBook.ShowTab(L.WarInfoTab) end
+end
+L.WarInfoTab = "Event"
 
 -- the top bar plate hugs the bar (A23-130: nothing under the bar any more)
 function L.SizeWarPlate()
@@ -1301,13 +1309,7 @@ function L.LayoutWar(h)
 		end
 	end
 	if ui.warCrown then ui.warCrown.Size = UDim2.fromOffset(TB.Crown * k, TB.Crown * k) end
-	if ui.warTime then ui.warTime.Size = UDim2.new(0, TB.TimeW * k, 1, 0) end
 	L.SizeWarPlate()
-end
-
--- A23-130: the bar's one number = the round's time left ("8:54", no words)
-function L.WarClock(clock)
-	if ui.warTime and ui.warTime.Text ~= clock then ui.warTime.Text = clock end
 end
 
 ----------------------------------------------------------------- building: status chips
@@ -1419,12 +1421,13 @@ local function buildChips(root)
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
 	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
 	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
-		Boost = "IconExp", Private = "IconPrivateServer" }
+		Boost = "IconExp", Private = "IconPrivateServer", Outlaw = "IconLock" } -- Outlaw: Auto Battle locked (IconLock)
 	L.ChipIcons = icons
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
-	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Outlaw", "Wanted", "Combat", "Boost", "Private", "Rookie", "Protected", "Blessing",
+	-- '+N' in town, so a buyer never saw it). 최종 검수 10/14 (publish4 photos: the Outlaw chip hid in '+3' behind Safe
+	-- Zone · 2x XP · the sprout): the danger chips (Bully, Outlaw, Wanted, Combat) come FIRST, so they always show
+	L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost", "Private", "Rookie", "Protected", "Blessing",
 		"Size", "Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
@@ -1552,8 +1555,9 @@ end
 function L.CheckChipFit()
 	if not ui.chips or not ui.chipList then return end
 	local content, room = ui.chipList.AbsoluteContentSize.X, ui.chips.AbsoluteSize.X
-	if room > 0 and content > room + 1 and L.ChipFit > 1 then
-		L.ChipFit -= 1
+	if room > 0 and content > room + 1 and (L.ChipFit > 1 or not L.ChipShort) then
+		-- one chip left and still too wide (the Outlaw line on a small PC): the short words
+		if L.ChipFit > 1 then L.ChipFit -= 1 else L.ChipShort = true end
 		task.defer(function()
 			local ok, err = pcall(refreshChips)
 			if not ok then warnThrottled("chip fit failed: " .. tostring(err)) end
@@ -3634,7 +3638,9 @@ refreshChips = function()
 	setChip(ui.chip.Bully, bully > 0, L.Tx(TXT, "BullyPenalty", bullyLeft), Theme.Bad)
 	-- 2-C #9 (A23-23): this week's outlaw (RankingService attribute Outlaw) - the danger chip with the ranking's own line
 	local rk = type(Config.Ranking) == "table" and type(Config.Ranking.Text) == "table" and Config.Ranking.Text or {}
-	setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(rk.OutlawChip) == "string", rk.OutlawChip, Theme.Bad)
+	-- phones (and a PC row too narrow for the whole line, L.ChipShort): the icon + the short word (Config OutlawChipShort)
+	local outlaw = (IS_TOUCH or L.ChipShort) and type(rk.OutlawChipShort) == "string" and rk.OutlawChipShort or rk.OutlawChip
+	setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(outlaw) == "string", outlaw, Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
 	setChip(ui.chip.Private, UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf, Theme.SubText, false, nil, true)
 	L.RefreshBoost()
@@ -3649,6 +3655,7 @@ refreshChips = function()
 	if wantKey ~= L.ChipWantKey then
 		L.ChipWantKey = wantKey
 		L.ChipFit = L.MaxChips
+		L.ChipShort = false
 	end
 	local shownChips, folded = 0, 0
 	for _, key in L.ChipOrder do
@@ -3767,7 +3774,6 @@ local function fmtScore(v)
 	return string.format("%g", math.floor(v * 100 + 0.5) / 100)
 end
 
-L.WarParts = { Clock = "" }
 
 -- 검수 10/09: near 0 : all or all : 0 the crown ran under a faction badge; it stops where its side meets the badge's
 -- inner edge (the split line itself still shows the true share)
@@ -3782,13 +3788,6 @@ function L.WarCrownFrac(frac)
 	if lo >= hi then return 0.5 end
 	return math.clamp(frac, lo, hi)
 end
-local function refreshWarTime()
-	local endsAt = tonumber(UIKit.GameAttr("WarRoundEndsAt", 0)) or 0
-	local clock = endsAt <= 0 and "-:--" or Util.FormatTime(endsAt - Util.Now())
-	L.WarParts.Clock = clock
-	L.WarClock(clock)
-end
-
 local function refreshWar()
 	local h = math.max(0, tonumber(UIKit.GameAttr("WarHaloScore", 0)) or 0)
 	local r = math.max(0, tonumber(UIKit.GameAttr("WarHornsScore", 0)) or 0)
@@ -3801,7 +3800,6 @@ local function refreshWar()
 	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(L.WarCrownFrac(frac), 0.5) end
 	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or L.Tx(TXT, "WarHalo", fmtScore(h))
 	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or L.Tx(TXT, "WarHorns", fmtScore(r))
-	refreshWarTime()
 	refreshChips()
 end
 
@@ -3924,7 +3922,6 @@ function L.ApplyFold(changed)
 		end
 	end
 	local fold = L.RookieFold()
-	if ui.warTime and ui.warTime.Visible == fold then ui.warTime.Visible = not fold end
 	L.SizeWarPlate()
 	if changed and L.WasFolded == true and not fold and type(UIKit.NewTag) == "function" then
 		pcall(UIKit.NewTag, ui.warBar)
@@ -6279,8 +6276,7 @@ L.QuickKeyPx = 12 -- A23-109: the quick slot numbers 1 · 2 · 3 in real px
 -- each end, the crown Crown du; DesignH = the meter height those sizes are for (PC 0.8), KMax = how much they may grow
 -- on a taller meter (small PC windows, L.LayoutWar)
 L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40,
-	DesignH = 52.5, KMax = 1.8, ScoreMinPx = 12, ScoreMaxPx = 18, -- the badge scores in real px (검수 10/10: >= 12)
-	TimeW = 56 } -- A23-130: the time number's box in the middle of the bar (du)
+	DesignH = 52.5, KMax = 1.8, ScoreMinPx = 12, ScoreMaxPx = 18 } -- the badge scores in real px (검수 10/10: >= 12)
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
@@ -6451,7 +6447,6 @@ local function tick()
 	local visible = refreshVisibility()
 	if ui.foldOpen then L.FoldWatch() end
 	if not visible then return end
-	refreshWarTime()
 	refreshChips()
 	refreshSkill()
 	refreshTravel()

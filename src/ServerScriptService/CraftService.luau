@@ -131,6 +131,9 @@ function CraftService.RecipeOn(id)
 		if not Config.FeatureOn("Gear") or type(r.Slot) ~= "string" or type(r.Tier) ~= "number" then return nil end
 	elseif r.Kind == "Item" then
 		if not Config.Loot.Items[r.Item] then return nil end
+	elseif r.Kind == "Potion" then
+		-- 장인 ⑤: HP / MP potions into the potion stock (LootService.GrantItem pays potions too)
+		if type(r.Potion) ~= "string" or not Config.PotionStockKey(r.Potion) then return nil end
 	elseif r.Kind == "Pet" then
 		-- ⑤ a summon needs the research switch, a known species and both services' calls
 		local P, T = S and S.PetService, S and S.TamerService
@@ -177,6 +180,10 @@ local function room(player, data, r)
 	elseif r.Kind == "Pet" then
 		local ok, yes = pcall(S.PetService.HasRoom, player)
 		return ok and yes == true
+	elseif r.Kind == "Potion" then -- 장인 ⑤: N + the best +N (2) under the potion cap
+		local key = Config.PotionStockKey(r.Potion)
+		local have = key and math.floor(num(data[key])) or 0
+		return key ~= nil and have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Vitals.PotionInventoryCap
 	end
 	local have = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
 	-- bag slots (10/14): a result of a new kind needs a free slot (a material used up by this recipe frees its own)
@@ -207,6 +214,14 @@ local function payOut(player, data, r, plus)
 	elseif r.Kind == "Weapon" then
 		local ok, yes = pcall(S.LootService.AddSpare, player, r.Tier, plus)
 		return ok and yes == true
+	elseif r.Kind == "Potion" then
+		-- 장인 ⑤: all of it or nothing (the cap again at the end: the stock may have grown during the hammer)
+		local n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))
+		local key = Config.PotionStockKey(r.Potion)
+		local before = key and math.floor(num(data[key])) or 0
+		if not key or before + n > Config.Vitals.PotionInventoryCap then return false end
+		pcall(S.LootService.GrantItem, player, r.Potion, n, "Reward")
+		return math.floor(num(data[key])) - before >= n
 	elseif r.Kind == "Gear" then
 		if type(data.Gear) ~= "table" then data.Gear = Config.SanitizeGear(data.Gear) end
 		local own = data.Gear.Own
@@ -301,7 +316,7 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	end
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if player.Parent == Players then
-		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item,
+		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item, Potion = r.Potion,
 			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet, Fame = fame })
 		sendInfo(player, data)
 	end
