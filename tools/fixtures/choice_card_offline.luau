@@ -62,7 +62,7 @@ runGroup("config", function()
 	check(C.Deeds.PerDay == 6 and C.Deeds.Points == 1, "6 points a day, a deed is 1 (A23-86)", show(C.Deeds))
 	check(C.Data.Defaults.Deeds.Day == 0 and C.Data.Defaults.Deeds.N == 0, "save default Deeds { Day 0, N 0 }", show(C.Data.Defaults.Deeds))
 	check(C.Data.Defaults.Cards.Serial == 0 and C.Data.Defaults.Cards.Pending == nil, "save default Cards { Serial 0 }", show(C.Data.Defaults.Cards))
-	check(C.Data.Version == 5, "data version 5 = A23-153's codex (C1's tier 9 made it 4) (the card fields are additive)", C.Data.Version)
+	check(C.Data.Version == 6, "data version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9) (the card fields are additive)", C.Data.Version)
 	check(C.RateLimits.CardAction == 0.3, "CardAction 0.3 s", C.RateLimits.CardAction)
 	check(type(C.ChoiceCard.Kinds) == "table" and C.ChoiceCard.Grace == 1, "ChoiceCard.Kinds table, Grace 1 s", show(C.ChoiceCard))
 	check(C.ChoiceCard.Text.Full == "Your shard is full for today. Come back tomorrow!", "the full line (A23-86)", C.ChoiceCard.Text.Full)
@@ -264,6 +264,11 @@ runGroup("card: offer, pick, reward", function()
 	check(en and en.Id == 1 and en.Kind == "LostBear" and en.Side == "Good" and en.Stat == "Honor" and en.Score == 1 and en.Item == "Jelly" and en.N == 2 and en.Gold == 0 and en.Full == false,
 		"Fx CardEnd { Good, Honor +1, 2 Jelly }", show(en))
 	check(d.Items and d.Items.Jelly == 2 and d.Honor == 6, "2 Jelly in the bag, Honor 6", show({ d.Items, d.Honor }))
+	do -- 최종 검수 10/14: everything a player is GIVEN goes in as a reward (a full bag too; only pick-ups check the slots)
+		local bad = 0
+		for _, g in w.Grants do if g.Src ~= "Reward" then bad += 1 end end
+		check(#w.Grants > 0 and bad == 0, "a card's item goes in as a reward (GrantItem source Reward)", bad .. " of " .. #w.Grants)
+	end
 	check(d.Cards.Pending == nil and CCS.Pending(p) == nil, "the card is gone, nothing pending", show(d.Cards))
 	check(d.Story.N.LostBear.Good == 1 and d.Story.N.LostBear.Evil == nil, "counted: Story.N.LostBear.Good = 1", show(d.Story))
 	check(p:GetAttribute("DeedsToday") == 1, "the pick used one deed point", p:GetAttribute("DeedsToday"))

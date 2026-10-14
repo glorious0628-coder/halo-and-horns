@@ -65,7 +65,7 @@ runGroup("config", function()
 	check(#C.Tamer.Card.Stats == #C.Tamer.Card.StatsEn and #C.Tamer.Card.Stats == #r.Stats, "card stats KO + EN lines")
 	local D = C.Data.Defaults
 	check(type(D.Pets) == "table" and next(D.Pets.List) == nil and next(D.Pets.Equipped) == nil and D.Pets.Next == 1
-		and D.TamerNotice == false and C.Data.Version == 5, "save defaults: no pet, TamerNotice false, Version 5 (A23-153's codex; C1's tier 9 made it 4)")
+		and D.TamerNotice == false and C.Data.Version == 6, "save defaults: no pet, TamerNotice false, Version 6 (A23-186's joke weapons; 5 = A23-153's codex)")
 end)
 
 ------------------------------------------------------------------ 2. combat: the Archer numbers with the pet look

@@ -28,6 +28,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("bag 10/14: a reward refused when the bag is full", "BOARD_SOURCE", "pcall(loot.GrantItem, player, B.BonusItem, 1, \"Reward\")", "pcall(loot.GrantItem, player, B.BonusItem, 1)"),
     ("job rows lose their ShortName", BD, ", ShortName = job.ShortName,", ","),
     ("the hint row loses its ShortName", BD, "\n\t\t\tShortName = (B.Text or {}).HintShort,", ""),
     ("the switch ignored", BD, "local function on()\n\treturn B.Enabled == true\nend", "local function on()\n\treturn true\nend"),

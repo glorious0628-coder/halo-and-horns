@@ -14,6 +14,14 @@
 - Codex 그림자 없는 다시 그리기 3개(T3: Paladin·LightMage·Ranger) 4면 = `art/out/s2/weapons_t13_4v_ns/`, 시트 `art/review/weapon_design/ns_redraw_T3_3.jpg`. 문제: Ranger_T3 새 뒷면 시위가 오른쪽(옛 뒷면은 왼쪽 = 거울) → 쓰려면 다시. 결정 B로 지금은 '옛 HD가 떨어지면'만 씀.
 - 도구: `tools/weapon_hd_views.py`(Blender 렌더), `tools/weapon_hd_sheet.py`(무기 하나), `tools/weapon_chunk_sheet.py`(3개 한 장), `tools/weapon_ns_sheet.py`(옛/새 2D). 렌더 PNG(`art/review/weapon_design/<직업_T>/v_*.png`)는 git에 안 올림.
 
+## 덩어리 진행
+- 1 Paladin: 최종 검수 통과 → Blender 맞춤 끝 `<이름>_HD_fit.glb`(+ .json): T1 3 / T2 3.5 / T3 4 스터드, 원점 = 손잡이 가운데(폭 단면으로 찾음, 길이의 0.15~0.19), +Y 칼끝, 앞면 Roblox -Z. 확인 `art/review/weapon_design/chunk1_Paladin_fit.png`. 도구 `tools/weapon_hd_fit.py`, `tools/weapon_fit_check.py` + `tools/weapon_fit_check_sheet.py`.
+- 2 LightMage: 최종 검수 통과(T2 각진 보석 허용) → 맞춤 끝(--kind staff --grip 0.45, 길이 3/3.5/4), 확인 `chunk2_LightMage_fit.png`. 닫힌 틈(T1 220px·T2 4,148px)은 2D에도 있는 고리 틈. T2 구슬이 3D에선 각진 보석.
+
+- 3 Ranger: 통과 → 맞춤 끝(--kind bow --grip 0.5), 확인 `chunk3_Ranger_fit.png`. 각 _HD_fit.json에 code_len(`tools/weapon_code_len.py`, 최종 검수: 넣을 때 코드가 MeshPart 크기 맞춤 = 개발 1).
+- 4~6 Horns: 시트 `chunk_Horns_{Berserker,DarkMage,ShadowHunter}.jpg` 보고, 판정 대기. Berserker T3 칼날 바늘구멍(`Berserker_T3_pinhole.png`) = 구멍 규칙상 떨어짐 후보. 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
+- 주의: 게임 코드(CharacterVisuals tierLen)는 Config Length를 그대로 안 씀: 칼 ≈3.85~4.55, 지팡이 = 아바타 키 0.65~0.75, 활 3.1~4.9 스터드. GLB는 Config Length로 맞췄음(최종 검수 지시) — 넣을 때 MeshPart 크기로 맞추면 됨.
+
 ## 다음
 - 최종 검수의 Paladin 판정 → 통과면 Blender 크기·피벗·방향(Config.Weapons Length, 피벗 = 손잡이 중앙, +Y 칼끝).
 - 덩어리 2 LightMage T1~T3, 3 Ranger T1~T3 → Horns → Neutral (렌더는 `weapon_hd_views.py`, 시트는 `weapon_chunk_sheet.py`).

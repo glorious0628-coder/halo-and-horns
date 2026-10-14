@@ -185,7 +185,7 @@ SUITE = Suite(
              "LootService.GrantFirstWeapon (tier 1 equipped, 'Power 0 -> N'), step 1 'Travel to Squishy Meadow - step on the "
              "glowing travel pad (or Map -> Travel)' (ShortName 'To the meadow'), no weapon window, no automatic trip; any "
              "arrival in the meadow (the pad, Map -> Travel, a walk) starts the hunt (step 2). The claim always clears "
-             "BlacksmithVisited (M1_1 = a new visit; gameplay plan 1-A #2: step 2 opens with Otto's one Enhance Scroll, the Forge refuses buying a weapon not owned (WeaponShop.Buy = false, Text.WeaponDropOnly), a scroll used on the weapon finishes M1_1 with Gold 1) "
+             "BlacksmithVisited (M1_1 = a new visit; gameplay plan 1-A #2: step 2 opens with Otto's one Enhance Scroll, A23-186: the Forge sells again (WeaponShop.Buy = true; with Buy = false it refuses buying a weapon not owned, Text.WeaponDropOnly), a scroll used on the weapon finishes M1_1 with Gold 1) "
              "and says only the reward (A23-130 Claimed '+%s gold', no line at the hunt start or 5/5). Old saves at steps 1 / 2 / "
              "99, class chosen, bare-handed without tier 1 get the gift at the join (once a session; never at steps 0 / "
              "3, never when armed). No anvil: the gift at once. The Forge step survives a save / load.",

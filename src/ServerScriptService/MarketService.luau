@@ -382,14 +382,22 @@ end
 local function hasRoom(data, key, n)
 	local info = Config.MarketParse(key)
 	if not info then return false end
+	local counts = Config.BagSlots.Counts
 	if info.Kind == "I" then
 		local items = type(data.Items) == "table" and data.Items or {}
-		return math.floor(num(items[info.Id], 0)) + n <= Config.Loot.ItemCap
+		local have = math.floor(num(items[info.Id], 0))
+		-- bag slots (10/14): a new kind needs a free slot
+		local def = Config.Loot.Items[info.Id]
+		if have < 1 and def and counts[def.Kind] and not Config.BagHasRoom(data) then return false end
+		return have + n <= Config.Loot.ItemCap
 	end
 	local spares = type(data.Spares) == "table" and data.Spares or {}
 	local sum = 0
 	for _, c in spares do sum += math.max(0, math.floor(num(c, 0))) end
 	local key2 = string.format("%d:%d", info.Tier, info.Plus)
+	-- bag slots (10/14): a new spare key needs a free slot (a tier not owned yet is owned, no slot)
+	local owned = bit32.btest(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, info.Tier - 1))
+	if owned and math.floor(num(spares[key2], 0)) < 1 and counts.Spare and not Config.BagHasRoom(data) then return false end
 	return math.floor(num(spares[key2], 0)) + n <= Config.SaveV4.SpareKeyMax and sum + n <= Config.SaveV4.SpareSum
 end
 
@@ -965,7 +973,7 @@ local HANDLERS = {
 		act(player, "MarketCancel", doCancel, id)
 	end,
 	PackWeapon = function(player, tier)
-		if not whole(tier, 2, Config.MaxWeaponTier) then return end
+		if not whole(tier, 2, Config.MaxWeaponTier) or Config.Weapons[tier].Meme then return end -- A23-186: no joke weapon
 		local data = begin(player, "PackWeapon")
 		if not data or not switchOn() then return end
 		local r = S.LootService.PackWeapon(player, tier)

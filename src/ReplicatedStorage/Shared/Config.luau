@@ -132,7 +132,9 @@ Config.Data = {
 	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
 	-- C1 (save v4): 4 = weapon tier 9 (a 9-bit mask, WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).
 	-- A23-153 (save v5): 5 = the monster codex (Codex; DataService.migrate fills it once from KillLog.ByKind).
-	Version = 5,
+	-- A23-186 (save v6): 6 = weapon tiers 10 / 11 (the Forge's joke weapons: an 11-bit mask, WeaponEnhance[10..11]); a v5
+	-- server would read such a mask as corrupted and wipe it, so it must refuse v6 records (CR-L3)
+	Version = 6,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -141,7 +143,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 5,
+		Version = 6,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -254,6 +256,7 @@ Config.Data = {
 		"IntroSeen", -- A23-9
 		"AutoCombatUnlocked", "AutoCombatEnabled", -- A23-1
 		"SkillSlots", -- SKL-2: the SkillBar shows these slots
+		"BagSlots", -- bag slots (game dev 2, 10/14): the bag draws this many open slots
 	},
 }
 
@@ -278,10 +281,10 @@ end
 
 ----------------------------------------------------------------- weapons (7 tiers shared by every class)
 -- Damage = normal per-target swing damage at Lv 1 for class Damage multiplier 1.0, BEFORE the 50% immediate rule.
--- Gameplay plan 2026-10-13 1-A #2 (A23-127: weapons come from drops and trades): Buy = false refuses only buying a weapon
--- not owned yet (ShopService, Text.WeaponDropOnly; the Forge hides its buy button). Equip, enhance and sell stay, and
--- MaxSoldTier still bounds the Forge rows (never 0: that closes enhance and sell too)
-Config.WeaponShop = { MaxSoldTier = 3, Buy = false, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+-- A23-186 (user 10/14 "기본 무기는 팔자고 했는데? 5개 정도 팔자"): Otto sells again (Buy = true; Buy = false would refuse
+-- buying a weapon not owned yet, Text.WeaponDropOnly). The Forge rows = tiers 2..MaxSoldTier (tier 1 stays the free M1_1
+-- gift) + every Meme row (Config.WeaponSoldAtForge); MaxSoldTier also bounds enhance / sell rows (never 0)
+Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
 
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
@@ -301,24 +304,54 @@ Config.Weapons = {
 	-- jackpot, never sold at the Forge (WeaponShop.MaxSoldTier), never a commission. Price = the sale-value reference only.
 	-- Color = placeholder until the image team picks the Mythic look.
 	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.2 }, -- C1: 0.3 under T7 (the bigger orb keeps the staff within the avatar's height, A23-133)
+	-- A23-186: the Forge's joke weapons (Meme = their Config.WeaponMemes key). Any class holds them under one name (AnyClass),
+	-- as strong as the Wooden tier 2 (Damage 15), gold only at the Forge: never dropped, never a jackpot, never crafted,
+	-- never a commission; enhanced like any weapon. Never "a better weapon" by their tier number (Config.WeaponAtLeast)
+	{ Tier = 10, Damage = 15, Price = 300, MinLevel = 1, Meme = "Pan", AnyClass = true, Color = Color3.fromRGB(70, 72, 80), Material = Enum.Material.Metal, Length = 3 },
+	{ Tier = 11, Damage = 15, Price = 300, MinLevel = 1, Meme = "Chicken", AnyClass = true, Color = Color3.fromRGB(255, 214, 60), Material = Enum.Material.SmoothPlastic, Length = 3 },
 }
 Config.MaxWeaponTier = #Config.Weapons
+-- A23-186: what a joke weapon's hit adds (CombatService Fx "Swing" Meme = the key; the client plays Sound / Particle,
+-- game dev 1). Push = studs added to the hit monster's usual shove. SoundId / ParticleId = "" until the assets are made
+Config.WeaponMemes = {
+	Pan = { Sound = "Bonk", SoundId = "", Push = 1.5 },
+	Chicken = { Sound = "Squeak", SoundId = "", Particle = "Feathers", ParticleId = "" },
+}
+-- A23-186: true for a tier the Forge sells for gold (2..MaxSoldTier and every Meme row; tier 1 is the M1_1 gift)
+function Config.WeaponSoldAtForge(tier)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	if type(def) ~= "table" then return false end
+	if def.Meme then return true end
+	local shop = Config.WeaponShop
+	return tier >= 2 and type(shop) == "table" and tier <= (tonumber(shop.MaxSoldTier) or 0)
+end
+-- A23-186: true when weapon `tier` is at least as strong as weapon `ref` (by Damage; a joke weapon never counts, whatever
+-- its tier number) - "owns an Iron weapon" and the like
+function Config.WeaponAtLeast(tier, ref)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	local r = type(ref) == "number" and Config.Weapons[ref] or nil
+	if type(def) ~= "table" or type(r) ~= "table" or def.Meme then return false end
+	return (tonumber(def.Damage) or 0) >= (tonumber(r.Damage) or 0)
+end
 
 -- display names per class (A23-48: English only); tier 7 is a table keyed by faction. Index = saved tier key: only
 -- ever APPEND tiers. T4-T6 names come from the monsters that drop them (design skills_weapons_pets_2026-10-05 §1 B3).
 Config.WeaponNames = {
 	Warrior = { "Twig", "Wooden Sword", "Iron Sword", "Goblin Thief's Golden Sword", "Old Kingdom Crystal Sword", "Guardian Spirit Sword",
-		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword" },
+		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword",
+		"Frying Pan", "Rubber Chicken" }, -- A23-186: the joke weapons, the same name for every class
 	Mage = { "Dry Staff", "Oak Staff", "Iron Staff", "Goblin Thief's Golden Staff", "Old Kingdom Crystal Staff", "Guardian Spirit Staff",
-		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff" },
+		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff",
+		"Frying Pan", "Rubber Chicken" },
 	Archer = { "Slingshot Bow", "Wooden Bow", "Iron Bow", "Goblin Thief's Golden Bow", "Old Kingdom Crystal Bow", "Guardian Spirit Bow",
-		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow" },
+		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow",
+		"Frying Pan", "Rubber Chicken" },
 }
 
 -- A23-39: the pet tamer (artisan guild Archer, Config.IsTamer) holds taming batons instead of bows (same stats)
 Config.WeaponNames.Tamer = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton",
 	"Old Kingdom Crystal Baton", "Guardian Spirit Baton", { Halo = "Dawn Baton", Horns = "Ruin Baton", None = "Crown Shard Baton" },
-	"Jelly Crown Baton", "Crownforged Baton" }
+	"Jelly Crown Baton", "Crownforged Baton", "Frying Pan", "Rubber Chicken" }
 -- the former English twin is the same tables now (readers of WeaponNamesEn keep working)
 Config.WeaponNamesEn = Config.WeaponNames
 
@@ -347,6 +380,8 @@ Config.WeaponInfo = {
 	{ Grade = "Legend", Source = "Crafted by artisans" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
 	{ Grade = "Mythic", Source = "Crafted by artisans" },
+	{ Grade = "Common", Source = "A joke weapon from the Forge" }, -- A23-186 Frying Pan
+	{ Grade = "Common", Source = "A joke weapon from the Forge" }, -- A23-186 Rubber Chicken
 }
 
 function Config.WeaponGrade(tier)
@@ -404,6 +439,7 @@ function Config.WeaponArtKey(tier, classId, factionId)
 	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
 	if tier < 1 then return nil end
 	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
+	if Config.Weapons[tier] and Config.Weapons[tier].Meme then return nil end -- A23-186: no icon yet (the slot's code look)
 	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
 	-- A23-39: the pet tamer's batons (icons T1-T6; T7 / T8 keep the Archer keys until they are drawn)
 	if tier <= 6 and Config.IsTamer(classId, factionId) then return "Weapon_Tamer_T" .. tostring(tier) end
@@ -1407,6 +1443,9 @@ Config.Data.Defaults.HuntFame = 0
 -- A23-155). The live switch VillageFund stops new gifts only. Spot Pos = the pool centre; the prompt sits there.
 Config.VillageFund = {
 	Enabled = true,
+	-- 최종 검수 10/14 ② (the first 15 minutes need a place to spend): a child's gifts climb a ladder over their whole
+	-- save, counted from FundGiven: the 1st gift Ladder[1] (200), the 2nd Ladder[2] (500), every one after = Step (1000)
+	Ladder = { 200, 500 },
 	Step = 1000,
 	PerDay = 3,
 	Points = 1,
@@ -1436,6 +1475,18 @@ Config.VillageFund = {
 		Closed = "The fund is closed right now.",
 	},
 }
+-- the gold of a child's next gift from all the gold they gave before (data.FundGiven): Ladder rungs in turn, then Step
+function Config.VillageFundStep(given)
+	local V = Config.VillageFund
+	local left = math.floor(tonumber(given) or 0)
+	if left ~= left or left < 0 then left = 0 end
+	for _, rung in type(V.Ladder) == "table" and V.Ladder or {} do
+		local n = math.max(1, math.floor(tonumber(rung) or 1))
+		if left < n then return n end
+		left -= n
+	end
+	return math.max(1, math.floor(tonumber(V.Step) or 1000))
+end
 -- the player's fund record (additive keys): the KST day of the last gift, gifts that day, all gold given
 Config.Data.Defaults.FundDay = 0
 Config.Data.Defaults.FundToday = 0
@@ -3145,6 +3196,7 @@ Config.StoryQuests = {
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
+			Reward = { BagSlots = 4 }, -- bag slots 10/14: the first upgrade (12 -> 16), whichever pick
 		},
 		-- SKL-3 (skill_kit §2): practice a new skill right after learning it. Requires.Skill = that skill is learned (its
 		-- switch on and the slot open: Z at Skills.Unlock.Z, X at Unlock.X). SkillHit Slot = only that skill's casts count
@@ -3311,7 +3363,7 @@ Config.StoryQuests = {
 				} },
 				{ Text = "Go to the Goblin Woods", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
 			},
-			Reward = { Gold = 2, XP = 2 },
+			Reward = { Gold = 2, XP = 2, BagSlots = 4 }, -- bag slots 10/14: the Lv10 upgrade (16 -> 20)
 		},
 		-- 3장 "Grab Club" (story_depth §2 3장 + §5 ③④, quest_chain 3장; A23-56: the whole chapter in the beta). Rewards:
 		-- G1 = { Gold = 1 }, the chapter ends M3_4 / M3_8 = { Gold = 2, XP = 2 } with [Claim]. Echoes of M3_4: Good / A ->
@@ -4351,6 +4403,13 @@ Config.Quests = {
 		-- LostFound / KillCards switch in Config), else the slot is another kind.
 		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 14, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Make a kind or sneaky choice" },
+		-- artisan min ④ (docs/design/artisan_min_server_2026-10-14.md): the guild's own dailies (Neutral only; Gather while
+		-- Config.Features.Gathering is on, Craft while Crafting is on). Gather = one pick at a node (GatherService.Gathered),
+		-- Craft = one finished craft (CraftService.Crafted)
+		{ Id = "Gather", ShortName = "Gathering", Weight = 20, Units = { 6, 8 }, DailyUnits = { 8 }, RewardPerUnit = 3, Faction = "Neutral",
+			NonHunt = true, Text = "Gather %d times" },
+		{ Id = "Craft", ShortName = "Crafting", Weight = 20, Units = { 1, 2 }, DailyUnits = { 2 }, RewardPerUnit = 15, Faction = "Neutral",
+			NonHunt = true, Text = "Craft %d things" },
 	},
 	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
 	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
@@ -4387,6 +4446,8 @@ Config.Quests = {
 			{ Id = "Kill", Weight = 1, Monster = "Slime", Targets = { 12, 15 } }, -- sometimes / on reroll: 슬라임 12~15마리
 			{ Id = "Release", Weight = 3, Targets = { 3, 4, 5 } }, -- 몬스터에게 스킬 3~5번 맞히기
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
+			{ Id = "Gather", Weight = 3, Targets = { 6, 8 } }, -- artisan min ④: the guild (Neutral, Gathering on)
+			{ Id = "Craft", Weight = 2, Targets = { 1, 2 } }, -- artisan min ④: the guild (Neutral, Crafting on)
 		},
 	},
 	-- E12 (quest_volume §3-4, A23-56): the Goblin Woods band Lv10-24 works like Newbie (rows reuse a template Id, exact
@@ -4409,6 +4470,8 @@ Config.Quests = {
 			{ Id = "Hunt", Weight = 0.4, Targets = { 1 } }, -- PvP, Halo (A23-113: rarely drawn: never pushed on a child)
 			{ Id = "Plunder", Weight = 0.4, Targets = { 1 } }, -- PvP, Horns
 			{ Id = "Choice", Weight = 3, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
+			{ Id = "Gather", Weight = 3, Targets = { 8, 10 } }, -- artisan min ④: the guild (Neutral, Gathering on)
+			{ Id = "Craft", Weight = 2, Targets = { 2 } }, -- artisan min ④: the guild (Neutral, Crafting on)
 		},
 	},
 }
@@ -4480,16 +4543,13 @@ function Config.VacationReward(level, days) -- gold, xp for `days` missed days (
 	return math.floor(g * Config.Daily.VacationRate * d + 1e-6), math.floor(x * Config.Daily.VacationRate * d + 1e-6)
 end
 
------------------------------------------------------------------ Robux change tickets ("변경권")
--- Id 0 = Developer Product not created yet -> buy buttons show "상품 준비 중". After publishing, create two
--- consumable Developer Products on create.roblox.com and paste their ids here.
-Config.Products = {
-	ClassTicket = { Id = 0, PriceHint = 49, Kind = "Class", Name = "Class Change Ticket" },
-	FactionTicket = { Id = 0, PriceHint = 79, Kind = "Faction", Name = "Side Change Ticket" },
-}
+----------------------------------------------------------------- change tickets ("변경권")
+-- A23-28 (최종 검수 10/14 ③): no Robux change tickets in the beta. Tickets are earned in play only (the daily chest,
+-- the tamer's free one) and spent on a class / side change; there is no Developer Product and no ProcessReceipt.
+-- Config.ProductByKind stays (always nil) until the client's old shop rows are gone (game dev 1).
+Config.Products = {}
 Config.Tickets = {
-	MaxReceiptsKept = 50,
-	ReceiptWaitSeconds = 15, -- ProcessReceipt waits this long for the buyer's data to load
+	MaxReceiptsKept = 50, -- the old save field ProcessedReceipts is still trimmed to this (DataService)
 }
 
 function Config.ProductByKind(kind)
@@ -4590,8 +4650,6 @@ Config.PassInfo = {
 		Wearing = "Wearing",
 		LooksSideF = "Looks for %s",
 		Looks = "Looks",
-		Tickets = "Change Tickets",
-		TicketF = "%s · you have %d",
 		SoonToast = "Not on sale yet. Check back soon!",
 		OffToast = "Not on sale right now. Check back later!",
 		OwnedToast = "You already have this!",
@@ -4714,7 +4772,10 @@ function Config.SanitizeLooks(looks, seen)
 	local passSeen = {}
 	if type(seen) == "table" then
 		for id, v in seen do
-			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]) then
+			-- "Sub:<key>" = a subscription's last answer (최종 검수 10/14 ①, MonetizationService SUB.Check)
+			local sub = type(id) == "string" and string.match(id, "^Sub:(.+)$") or nil
+			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]
+				or (sub ~= nil and type(Config.Subscriptions) == "table" and Config.Subscriptions[sub] ~= nil)) then
 				passSeen[id] = v
 			end
 		end
@@ -5887,6 +5948,9 @@ Config.Loot = {
 		SellDone = "Sold %d materials! Gold +%s",
 		SellNothing = "No materials to sell.",
 		SellFar = "Sell materials near the Forge anvil.",
+		-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): one gathered / crafted material at a time (SellItem)
+		SellItemDone = "Sold %d %s! Gold +%s", -- (n, item name, gold)
+		SellItemNone = "You don't have that many.",
 	},
 }
 -- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
@@ -6392,6 +6456,44 @@ Config.Audio.Ambient = {
 		Spots = { Vector3.new(-188, 3, -493), Vector3.new(188, 3, -493), Vector3.new(-190, 7, -582), Vector3.new(190, 7, -582),
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
+
+-- 최종 검수 10/14 (gameplay plan 3, bag slot upgrade as a quest reward): ONE number for the whole bag = how many kinds
+-- it holds. A slot = one kind in the grid of a Counts kind (a material / scroll / tonic / treat id, a spare weapon "T:P");
+-- owned weapons, gear and potions never count. The owner's attribute BagSlots (game dev 2: saved data.BagSlots, only
+-- grows 12 -> 16 -> 20 by two quest rewards Reward.BagSlots = Step); no attribute = Default. Full: the server takes no
+-- NEW kind (a kind I have keeps stacking) and says Text.Full; Text.Gained = the quest reward line. The bag (game dev 1)
+-- shows "used / slots" on its bottom line (red when full) and shows every thing it has.
+Config.BagSlots = { Default = 12, Step = 4, Max = 20,
+	Counts = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true, Spare = true },
+	Text = { Gained = "+%d bag slots", Full = "Your bag is full! Sell or use something to make room." } }
+-- (game dev 2, 10/14) the save's slots: data.BagSlots (only grows, by quest rewards Reward.BagSlots), Default..Max
+Config.Data.Defaults.BagSlots = Config.BagSlots.Default
+function Config.BagSlotsOf(data)
+	local B = Config.BagSlots
+	local n = type(data) == "table" and tonumber(data.BagSlots) or nil
+	if n == nil or n ~= n then n = B.Default end
+	return math.clamp(math.floor(n), B.Default, B.Max)
+end
+-- the slots a save uses: every Config.Loot.Items id of a Counts kind it holds (>= 1) and every spare key "T:P" (>= 1)
+-- = one slot each (owned weapons, gear and potions are not in the grid). The bag (BagUI.Used) counts the same way.
+function Config.BagUsed(data)
+	if type(data) ~= "table" then return 0 end
+	local counts, n = Config.BagSlots.Counts, 0
+	for id, c in type(data.Items) == "table" and data.Items or {} do
+		local def = Config.Loot.Items[id]
+		if def and counts[def.Kind] and (tonumber(c) or 0) >= 1 then n += 1 end
+	end
+	if counts.Spare then
+		for _, c in type(data.Spares) == "table" and data.Spares or {} do
+			if (tonumber(c) or 0) >= 1 then n += 1 end
+		end
+	end
+	return n
+end
+-- true when one more KIND fits (a kind already held always stacks)
+function Config.BagHasRoom(data)
+	return Config.BagUsed(data) < Config.BagSlotsOf(data)
+end
 
 -- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
 -- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
@@ -7353,6 +7455,14 @@ Config.NextGoal = {
 -- show tier 1 only (TouchTiers). Steps: Skill = that slot's Config.Skills.Unlock level (Z / X only while their switch
 -- is on, none after a rebirth - like QuestService's next-goal row), Zone = the zone's MinLevel (seasonal zones never),
 -- Rebirth = Config.RebirthLevel. Equal levels: the first row here wins. No clock, no buy word (A23-79).
+-- 최종 검수 10/14 (감사 2 '못 하는 일 숨기기': in the first 10 minutes rows you CANNOT do now showed as much as the
+-- things to do): a quest row whose thing is far away folds out of the HUD lines / tracker (the quest window keeps it),
+-- and comes back by itself in time. Goose = a story step guided to the goose (S1 / GW5 'Join a Golden Egg hunt'):
+-- shown while a hunt runs or the next one (GameState GooseNextAt) is within Window s. War = the rows in WarRows (S2 a
+-- crown war chest): shown while the war is fought (WarMode not Idle) and the round ends within Window s. Check = s
+-- between the HUD's looks (the time passing). Words: none (the row just waits).
+Config.QuestNotNow = { Enabled = true, Window = 3600, Check = 15, GooseGuide = "Goose", WarRows = { S2 = true } }
+
 Config.GoalChips = {
 	Enabled = true,
 	TouchTiers = 1,
@@ -7482,7 +7592,6 @@ Config.Text = {
 	SwitchDoneTicket = "You joined the %s! (Ticket used, points kept)",
 	SwitchCooldown = "You can switch sides again in %s.",
 	NoTicket = "No change ticket.",
-	TicketSaving = "Still saving. Try again soon.", -- CR-L25: UseTicket returned "Pending"
 	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
@@ -7490,8 +7599,6 @@ Config.Text = {
 	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
-	ClassTicketGot = "You got 1 Class Change Ticket!",
-	FactionTicketGot = "You got 1 Side Change Ticket!",
 	ProductNotReady = "This item isn't ready yet.",
 	-- rebirth
 	RebirthNeed = "You need Lv %d to be reborn.",
@@ -9800,6 +9907,7 @@ end
 Config.Data.Defaults.Codex = {} -- save v5 (the version step: DataService.migrate)
 Config.RateLimits.CodexOpen = 1 -- c->s "CodexOpen" (no arguments): the answer is the "Codex" snapshot
 Config.RateLimits.FundGive = 1 -- A23-178 c->s "FundGive" (no arguments): one village fund gift (VillageFundService)
+Config.RateLimits.SellItem = 0.3 -- artisan min ② c->s "SellItem" (itemId, n): one gathered material kind at the anvil
 Config.PassBoost.GoldSources.Codex = true -- earned gold (the 2x Gold pass doubles it)
 Config.TitleDefs.SlimeScholar = { Name = "Slime Scholar", NameEn = "Slime Scholar", Color = Color3.fromRGB(140, 220, 140) }
 Config.TitleDefs.GoblinScholar = { Name = "Goblin Scholar", NameEn = "Goblin Scholar", Color = Color3.fromRGB(170, 200, 90) }
@@ -9994,6 +10102,7 @@ function Config.MarketKey(kind, id)
 	local t, p = string.match(id, "^(%d+):(%d+)$")
 	local tier, plus = tonumber(t), tonumber(p)
 	if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier or plus > Config.Loot.MaxEnhance then return nil end
+	if Config.Weapons[tier].Meme then return nil end -- A23-186: the joke weapons are the Forge's only, never traded
 	return string.format("W:%d:%d", tier, plus)
 end
 

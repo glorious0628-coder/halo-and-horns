@@ -179,6 +179,17 @@ local function room(player, data, r)
 		return ok and yes == true
 	end
 	local have = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
+	-- bag slots (10/14): a result of a new kind needs a free slot (a material used up by this recipe frees its own)
+	local def = Config.Loot.Items[r.Item]
+	if have < 1 and def and Config.BagSlots.Counts[def.Kind] then
+		local freed = 0
+		for item, n in r.Mats do
+			local mdef = Config.Loot.Items[item]
+			local held = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+			if mdef and Config.BagSlots.Counts[mdef.Kind] and held >= 1 and held <= n then freed += 1 end
+		end
+		if Config.BagUsed(data) - freed >= Config.BagSlotsOf(data) then return false end
+	end
 	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 

@@ -235,6 +235,9 @@ end
 local function templateFitsNow(t, faction, data)
 	if not templateFitsFaction(t, faction) then return false end
 	if t.Id == "Choice" and not choiceOn() then return false end
+	-- artisan min ④: the guild's dailies only while their feature is on
+	if t.Id == "Gather" and not Config.FeatureOn("Gathering") then return false end
+	if t.Id == "Craft" and not Config.FeatureOn("Crafting") then return false end
 	return t.Id ~= "Release" or (data ~= nil and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths))
 end
 
@@ -718,7 +721,8 @@ local function nextGoalText(data, player)
 	local level = getLevel(data)
 	local iron = Config.Weapons[IRON_TIER]
 	local owned = math.floor(num(data.WeaponOwnedMask, 1))
-	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
+	-- A23-186: the equipped weapon counts when it is at least Iron by strength (never a joke weapon's tier number)
+	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or Config.WeaponAtLeast(math.floor(num(data.WeaponTier, 1)), IRON_TIER)
 	if iron and not hasIron then
 		if level < iron.MinLevel then
 			-- A23-71 D6 / S16: the first skill comes at the same level (Skills.Unlock.Q): one line for both
@@ -1446,6 +1450,18 @@ function M.Init(registry)
 		deeds.Booked:Connect(function(player)
 			if typeof(player) == "Instance" and player:IsA("Player") then addProgress(player, "Choice", 1) end
 		end)
+	end
+	-- artisan min ④: a pick at a gathering node / a finished craft fills the guild's dailies. Soft: a world without those
+	-- services never has those dailies
+	for _, hook in { { "GatherService", "Gathered", "Gather" }, { "CraftService", "Crafted", "Craft" } } do
+		local svc = S[hook[1]]
+		local sig = type(svc) == "table" and svc[hook[2]] or nil
+		if type(sig) == "table" and type(sig.Connect) == "function" then
+			local questId = hook[3]
+			sig:Connect(function(player)
+				if typeof(player) == "Instance" and player:IsA("Player") then addProgress(player, questId, 1) end
+			end)
+		end
 	end
 	connectSignal("PvPService", "PlayerKO", onPlayerKO)
 	connectSignal("KaijuService", "KaijuEnded", onKaijuEnded)

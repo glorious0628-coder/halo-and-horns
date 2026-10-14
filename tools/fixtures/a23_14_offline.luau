@@ -244,6 +244,7 @@ local function questWorld(saved, seed, opts)
 		GooseService = { GooseFinished = signal() }, PvPService = { PlayerKO = signal(),
 			IsRookie = function() return not (opts and opts.Graduated) end },
 		KaijuService = { KaijuEnded = signal() }, StoryQuestService = { QuestDone = signal() }, Deeds = { Booked = signal() },
+		GatherService = { Gathered = signal() }, CraftService = { Crafted = signal() }, -- artisan min ④
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return ds.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() },
 		ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end },
@@ -324,7 +325,11 @@ runGroup("dailies-config", function()
 		check(TEMPLATE[row.Id] ~= nil and not TEMPLATE[row.Id].PvP, "every newbie row reuses a non-PvP template Id", row.Id)
 		check(type(row.Targets) == "table" and #row.Targets > 0, "every newbie row has exact Targets", row.Id)
 	end
-	check(ids.Kill and ids.Release and ids.Gold and count(ids) == 3, "newbie pool = three different goals (kill / skill / gold)", show(ids))
+	-- artisan min ④: the guild's rows (Gather / Craft) are Neutral-only and switched; every player has kill / skill / gold
+	local plain = 0
+	for id in ids do if id ~= "Gather" and id ~= "Craft" then plain += 1 end end
+	check(ids.Kill and ids.Release and ids.Gold and plain == 3, "newbie pool = three different goals (kill / skill / gold) + the guild's rows",
+		show(ids))
 	check(not ids.Goose and not ids.Golden, "no goose / golden-luck goals for rookies")
 	local king = newbieRows("Kill")[1]
 	check(king and king.Monster == "BigSlime" and king.Strict == true and king.Targets[1] == 3, "first kill row: 왕 슬라임 3마리, strict",
@@ -1462,8 +1467,8 @@ end
 
 runGroup("daily-intro (A23-104)", function()
 	local C = CONFIG
-	check(C.Daily.IntroGate == true and C.Daily.IntroQuest == "D0" and C.Data.Defaults.DailyIntro == false and C.Data.Version == 5,
-		"config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 5 = A23-153's codex (C1's tier 9 made it 4))", show({ C.Daily.IntroGate, C.Daily.IntroQuest }))
+	check(C.Daily.IntroGate == true and C.Daily.IntroQuest == "D0" and C.Data.Defaults.DailyIntro == false and C.Data.Version == 6,
+		"config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9))", show({ C.Daily.IntroGate, C.Daily.IntroQuest }))
 	local def = C.StoryQuests.Defs.D0
 	check(def and def.Kind == "Sub" and def.Factions == nil and def.Hidden ~= true and table.concat(def.Requires.Done, ",") == "M1_4"
 		and #def.Steps == 1 and def.Steps[1].Panel == true and def.Steps[1].Npc == nil and def.Steps[1].Obj.Type == "Talk"
@@ -1612,6 +1617,76 @@ runGroup("class-change", function()
 	end
 	check(string.find(C.Text.ClassChangeRuleF, "%d", 1, true) ~= nil and string.format(C.Text.ClassChangeRuleF, 5) ~= C.Text.ClassChangeRuleF,
 		"ClassPicker footer text takes the Lv5 number from Config")
+end)
+
+------------------------------------------------------------------ artisan min ④: the guild's dailies (2026-10-14)
+runGroup("guild dailies", function()
+	local both = function(c) c.Features.Gathering = true; c.Features.Crafting = true end
+	local function ids(f)
+		local out = {}
+		for _, q in f.Data.Quests do out[q.Id] = true end
+		return out
+	end
+	local function sweep(level, faction, edit)
+		local seen = {}
+		for seed = 1, 60 do
+			local f = questWorld(rookieRow(level, faction), seed * 17 + level, { EditConfig = edit })
+			for id in ids(f) do seen[id] = true end
+		end
+		return seen
+	end
+	-- switches off (as shipped): never a guild daily
+	for _, level in { 5, 12, 30 } do
+		local s = sweep(level, "Neutral", nil)
+		check(not s.Gather and not s.Craft, "Gathering / Crafting off: no guild daily for a Neutral Lv" .. level, show(s))
+	end
+	-- on: Neutral gets them in every band, Halo / Horns never
+	for _, level in { 5, 12, 30 } do
+		local s = sweep(level, "Neutral", both)
+		check(s.Gather and s.Craft, "both on: a Neutral Lv" .. level .. " gets Gather and Craft dailies", show(s))
+		for _, side in { "Halo", "Horns" } do
+			local h = sweep(level, side, both)
+			check(not h.Gather and not h.Craft, "both on: never for " .. side .. " Lv" .. level, show(h))
+		end
+	end
+	local onlyGather = sweep(12, "Neutral", function(c) c.Features.Gathering = true end)
+	check(onlyGather.Gather and not onlyGather.Craft, "Gathering on, Crafting off: Gather only", show(onlyGather))
+	-- texts and sizes
+	local T = {}
+	for _, t in CONFIG.Quests.Templates do T[t.Id] = t end
+	check(T.Gather and T.Gather.Faction == "Neutral" and T.Gather.NonHunt == true and #T.Gather.ShortName <= 14
+		and T.Craft and T.Craft.Faction == "Neutral" and T.Craft.NonHunt == true and #T.Craft.ShortName <= 14,
+		"templates Gather / Craft: Neutral, not hunting, short names fit the phone row", show({ T.Gather, T.Craft }))
+	-- progress: a pick at a node / a finished craft
+	local g, c
+	for seed = 1, 200 do
+		local f = questWorld(rookieRow(12, "Neutral"), seed * 29 + 3, { EditConfig = both })
+		local got = ids(f)
+		if got.Gather and not g then g = f end
+		if got.Craft and not c then c = f end
+		if g and c then break end
+	end
+	check(g ~= nil and c ~= nil, "Lv12 worlds with a Gather and a Craft daily")
+	if g then
+		local _, q = g:Slot("Gather")
+		local p0 = q.Progress -- a new daily may start a little done (EndowedMin)
+		g.Registry.GatherService.Gathered:Fire(nil, "Herb", 1, "Herb")
+		g.Registry.GatherService.Gathered:Fire("x", "Herb", 1, "Herb")
+		check(q.Progress == p0, "Gathered with a bad player: nothing", q.Progress)
+		g.Registry.GatherService.Gathered:Fire(g.Player, "Herb", 3, "Herb")
+		check(q.Progress == p0 + 1, "one pick = 1 (not the item count)", show({ p0, q.Progress }))
+		g.Registry.CraftService.Crafted:Fire(g.Player, "W2", 0)
+		check(q.Progress == p0 + 1, "a craft does not fill the Gather daily", q.Progress)
+	end
+	if c then
+		local _, q = c:Slot("Craft")
+		local p0 = q.Progress
+		c.Registry.CraftService.Crafted:Fire(c.Player, "W2", 1)
+		local p1 = q.Progress
+		check(p1 == math.min(q.Target, p0 + 1), "one craft = 1", show({ p0, p1, q.Target }))
+		c.Registry.GatherService.Gathered:Fire(c.Player, "Herb", 1, "Herb")
+		check(q.Progress == p1, "a pick does not fill the Craft daily", q.Progress)
+	end
 end)
 
 ------------------------------------------------------------------ summary

@@ -265,7 +265,7 @@ local function finish(player, data, index)
 		st.Bonus = true -- saved before the scroll
 		local loot = S.LootService
 		if type(loot) == "table" and type(loot.GrantItem) == "function" and type(B.BonusItem) == "string" then
-			local ok, given = pcall(loot.GrantItem, player, B.BonusItem, 1)
+			local ok, given = pcall(loot.GrantItem, player, B.BonusItem, 1, "Reward") -- a reward fits a full bag (10/14)
 			if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(given)) end
 			local item = Config.Loot.Items[B.BonusItem]
 			if ok and num(given) > 0 then

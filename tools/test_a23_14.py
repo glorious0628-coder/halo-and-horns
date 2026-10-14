@@ -248,6 +248,22 @@ MUTATIONS = [
     ("goose rest: no save field", "CONFIG_SOURCE", "Config.Data.Defaults.GooseDay = 0", "Config.Data.Defaults.GooseDay_ = 0"),
     ("PvP weight: the woods Hunt row is common again", "CONFIG_SOURCE", "{ Id = \"Hunt\", Weight = 0.4, Targets = { 1 } }", "{ Id = \"Hunt\", Weight = 1.5, Targets = { 1 } }"),
     ("PvP weight: the Hunt template is common again", "CONFIG_SOURCE", "{ Id = \"Hunt\", ShortName = \"Catch Wanted\", Weight = 3, Units", "{ Id = \"Hunt\", ShortName = \"Catch Wanted\", Weight = 40, Units"),
+    # artisan min ④ (2026-10-14): the guild's dailies
+    ("guild: Gather without its switch", "QUEST_SOURCE",
+     "\tif t.Id == \"Gather\" and not Config.FeatureOn(\"Gathering\") then return false end\n", ""),
+    ("guild: Craft without its switch", "QUEST_SOURCE",
+     "\tif t.Id == \"Craft\" and not Config.FeatureOn(\"Crafting\") then return false end\n", ""),
+    ("guild: Craft follows the Gathering switch", "QUEST_SOURCE",
+     "if t.Id == \"Craft\" and not Config.FeatureOn(\"Crafting\")", "if t.Id == \"Craft\" and not Config.FeatureOn(\"Gathering\")"),
+    ("guild: a Gather daily for every side", "CONFIG_SOURCE",
+     "RewardPerUnit = 3, Faction = \"Neutral\",\n\t\t\tNonHunt = true, Text = \"Gather %d times\" },", "RewardPerUnit = 3,\n\t\t\tNonHunt = true, Text = \"Gather %d times\" },"),
+    ("guild: picks never counted", "QUEST_SOURCE",
+     "{ { \"GatherService\", \"Gathered\", \"Gather\" }, { \"CraftService\", \"Crafted\", \"Craft\" } }",
+     "{ { \"CraftService\", \"Crafted\", \"Craft\" } }"),
+    ("guild: crafts fill the Gather daily", "QUEST_SOURCE",
+     "{ \"CraftService\", \"Crafted\", \"Craft\" } }", "{ \"CraftService\", \"Crafted\", \"Gather\" } }"),
+    ("guild: no woods rows", "CONFIG_SOURCE",
+     "\t\t\t{ Id = \"Gather\", Weight = 3, Targets = { 8, 10 } }, -- artisan min ④: the guild (Neutral, Gathering on)\n", ""),
 ]
 
 

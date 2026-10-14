@@ -710,6 +710,20 @@ end)
 runGroup("jelly full", function()
 	local cap = C0F.Loot.ItemCap
 	local w = finWorld()
+	-- 최종 검수 10/14: a full bag (every slot used, no Jelly yet): Help's Jelly still comes in (a reward, not a pick-up)
+	do
+		local mats = {}
+		for k, def in C0F.Loot.Items do if def.Kind == "Material" and k ~= "Jelly" then table.insert(mats, k) end end
+		table.sort(mats)
+		local items = {}
+		for i = 1, C0F.BagSlots.Default do items[mats[i]] = 1 end
+		local z = w:Hero(209, { Faction = "Halo", Data = { Items = items } })
+		check(not C0F.BagHasRoom(w.Data[z]), "(the bag is full before the gift)", C0F.BagUsed(w.Data[z]))
+		local _, cz = w:Offer(z)
+		w:Pick(z, cz.Id, "Help")
+		local ez = w:Ends(z)[1]
+		check(w:Jelly(z) == CARD.Help.N and ez.N == CARD.Help.N and ez.Gold == 0, "a full bag: Help's Jelly still comes in (a reward)", show(ez))
+	end
 	-- one short of full: 1 Jelly + 2 gold
 	local a = w:Hero(201, { Faction = "Halo", Data = { Items = { Jelly = cap - 1 } } })
 	local _, c = w:Offer(a)

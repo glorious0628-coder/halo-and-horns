@@ -177,7 +177,7 @@ local TXT = {
 	Bully = "Bully Lv %d",
 	BullyPenalty = "Bully penalty: no Auto Battle · half XP & drops (%d min)", -- A23-22
 	KaijuQueued = "Kaiju waiting",
-	QuestHeader = IS_TOUCH and "Dailies %d/%d" or "Daily Quests %d/%d", -- phones: the 150 px block beside the map
+	QuestHeader = "Daily Quests %d/%d", QuestHeaderTouch = "Dailies %d/%d", -- phones: the 150 px block beside the map
 	QuestAllDone = "Dailies done! Bonus quests on",
 	QuestClaimable = " · Claim %d",
 	QuestTouchClaim = "Claim %d quests!",
@@ -253,6 +253,21 @@ local TXT = {
 	HintClick = "Click to hit!",
 	HintSkill = "Try your skill!",
 }
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key - UIKit.Tx -> UIKit.Tr (the localization table by key,
+-- "HUD.TXT.<key>" / "Config...."; English exactly as before). Without UIKit (offline tests) or on an error: string.format;
+-- a format that fails gives the words as they are (never nil)
+function L.Tx(t, key, ...)
+	local f = type(t) == "table" and t[key] or nil
+	if type(f) ~= "string" then return "" end
+	if type(UIKit) == "table" and type(UIKit.Tx) == "function" then
+		local ok, out = pcall(UIKit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 
 ----------------------------------------------------------------- state
 local ui = {}
@@ -632,8 +647,8 @@ end
 
 function L.PowerText(n)
 	local lv = math.floor(num("Level", 1))
-	if L.Pow.Short then return string.format(TXT.PowerLineShort, lv, Util.FormatInt(n)) end
-	return string.format(TXT.PowerLine, lv, TXT.PowerWord, Util.FormatInt(n))
+	if L.Pow.Short then return L.Tx(TXT, "PowerLineShort", lv, Util.FormatInt(n)) end
+	return L.Tx(TXT, "PowerLine", lv, TXT.PowerWord, Util.FormatInt(n))
 end
 
 function L.PowerOpen()
@@ -1528,7 +1543,7 @@ function L.ApplyChipFold()
 	end
 	local extra = #want - shown
 	fold.More.Visible = extra > 0
-	fold.More.Text = extra > 0 and string.format(TXT.MoreChips, extra) or ""
+	fold.More.Text = extra > 0 and L.Tx(TXT, "MoreChips", extra) or ""
 	fold.Frame.Visible = #want > 0
 end
 
@@ -2132,8 +2147,10 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 	local W = type(G.Text) == "table" and G.Text or {}
 	local skills = type(Config.Skills) == "table" and Config.Skills or {}
 	local order = skills.Order or { "Q", "Z", "X" }
-	local function fmt(f, ...)
+	local function fmt(key, ...) -- 10/14: by its key (Config.GoalChips.Text.<key>, translated through L.Tx)
+		local f = W[key]
 		if type(f) ~= "string" then return nil end
+		if type(L.Tx) == "function" then return L.Tx(W, key, ...) end
 		local ok, out = pcall(string.format, f, ...)
 		return ok and out or nil
 	end
@@ -2144,16 +2161,16 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 			local i = table.find(order, s.Slot)
 			local need = tonumber((skills.Unlock or {})[s.Slot])
 			if i and need and rebirths < 1 and i > skillSlots and (s.Slot == "Q" or skills[s.Slot .. "Enabled"] == true) then
-				at, text = need, fmt(i == 1 and W.FirstSkill or W.Skill, need)
+				at, text = need, fmt(i == 1 and "FirstSkill" or "Skill", need)
 			end
 		elseif s.Kind == "Zone" then
 			local z = Config.Zones[s.Zone]
 			if type(z) == "table" and z.Season == nil and tonumber(z.MinLevel) then
-				at, text = z.MinLevel, fmt(W.Zone, z.MinLevel, tostring(z.Name))
+				at, text = z.MinLevel, fmt("Zone", z.MinLevel, tostring(z.Name))
 			end
 		elseif s.Kind == "Rebirth" and type(Config.RebirthLevel) == "function" then
 			at = Config.RebirthLevel(math.max(0, rebirths))
-			text = fmt(W.Rebirth, at)
+			text = fmt("Rebirth", at)
 		end
 		if at and text and at > level then table.insert(steps, { Kind = s.Kind, At = at, Text = text }) end
 	end
@@ -2177,8 +2194,8 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 	-- 최종 검수 10/14 (MINOR): the crown line only for a side that has one - Neutral / None / nil get none on purpose
 	-- (it used to come out nil only because string.format failed on the missing word)
 	local sideWord = (faction == "Halo" or faction == "Horns") and W[faction] or nil
-	local big = type(sideWord) == "string" and fmt(W.Big, sideWord) or nil
-	return best and fmt(W.Next, best.Text) or nil, big
+	local big = type(sideWord) == "string" and fmt("Big", sideWord) or nil
+	return best and fmt("Next", best.Text) or nil, big
 end
 
 -- a tier's box = its drawn lines (TextBounds is screen px: back to du), at most TierLines lines; empty = one line
@@ -3506,7 +3523,7 @@ local function refreshStats()
 	-- the power line carries the level; the pouch (carried gold, it can be stolen) turns sack-orange while > 0
 	L.PowerSet(L.Pow.Shown or L.PowerValue())
 	local carried = math.max(0, num("CarriedGold", 0))
-	ui.pouch.Text = string.format(TXT.Pouch, TXT.CarriedTag, fmtNum(carried))
+	ui.pouch.Text = L.Tx(TXT, "Pouch", TXT.CarriedTag, fmtNum(carried))
 	-- 검수 10/09 (UI clutter review ④): the pouch line once I carry gold (or from Config.HudReveal.Level), then for good
 	L.PouchOn = L.PouchOn or Config.HudReveal.Shows("Pouch", { Level = num("Level", 0), Carried = carried })
 	ui.pouch.TextColor3 = carried > 0 and (Theme.Sack or ac("GoldText", Theme.Gold)) or ac("LightSub", Theme.SubText)
@@ -3543,7 +3560,7 @@ function L.BoostText(xp, gold, early)
 	local first = type(early) == "number" and early > 0
 	if gold then return (xp or first) and TXT.BoostBoth or TXT.BoostGold end
 	if xp then return TXT.BoostXP end
-	return first and string.format(TXT.EarlyXP, early) or nil
+	return first and L.Tx(TXT, "EarlyXP", early) or nil
 end
 
 -- A23-75: one gold chip while a 2x pass is owned (attribute names from Config.GamePasses, 게임성 개발 2); its icon is
@@ -3577,15 +3594,15 @@ refreshChips = function()
 	-- Horns wanted stars + bounty: a danger chip (the old card row)
 	local stars = f == "Horns" and math.floor(num("WantedStars", 0)) or 0
 	local bounty = f == "Horns" and math.max(0, num("Bounty", 0)) or 0
-	local wanted = string.format(TXT.Wanted, string.rep("★", math.clamp(stars, 0, 5)))
-	if bounty > 0 then wanted ..= string.format(TXT.WantedBounty, fmtNum(bounty)) end
+	local wanted = L.Tx(TXT, "Wanted", string.rep("★", math.clamp(stars, 0, 5)))
+	if bounty > 0 then wanted ..= L.Tx(TXT, "WantedBounty", fmtNum(bounty)) end
 	setChip(ui.chip.Wanted, stars > 0 or bounty > 0, wanted, Theme.Bad, false, nil, stars > 0)
 
 	local blessing = UIKit.GameAttr("WarBlessing", "None")
 	local bdef = (blessing == "Halo" or blessing == "Horns") and Config.Factions[blessing] or nil
 	if bdef then
 		local pct = math.floor((Config.War.BlessingGold or 0.25) * 100 + 0.5)
-		setChip(ui.chip.Blessing, true, string.format(TXT.Blessing, bdef.Name, pct), factionColor(blessing),
+		setChip(ui.chip.Blessing, true, L.Tx(TXT, "Blessing", bdef.Name, pct), factionColor(blessing),
 			blessing == f, nil, true)
 	else
 		setChip(ui.chip.Blessing, false)
@@ -3607,14 +3624,14 @@ refreshChips = function()
 	local rookieOn = attr("Rookie", false) == true and f ~= "Neutral"
 	if f == "Neutral" then graceLeft = 0 end -- Neutral never fights players (A6): no grace chip either
 	setChip(ui.chip.Rookie, rookieOn or graceLeft > 0, (not rookieOn and graceLeft > 0)
-		and string.format(TXT.RookieGrace, graceLeft) or TXT.Rookie, Theme.XP, false, pal.Rookie, true)
+		and L.Tx(TXT, "RookieGrace", graceLeft) or TXT.Rookie, Theme.XP, false, pal.Rookie, true)
 	setChip(ui.chip.Protected, attr("Protected", false) == true, TXT.Protected, Theme.XP)
 	setChip(ui.chip.Combat, num("InCombatUntil", 0) > now, TXT.InCombat, Theme.Revenge)
 	local size = num("SizeMult", 1)
-	setChip(ui.chip.Size, size > 1.001, string.format(TXT.Size, size), Theme.Gold)
+	setChip(ui.chip.Size, size > 1.001, L.Tx(TXT, "Size", size), Theme.Gold)
 	local bully = math.floor(num("BullyStacks", 0))
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
-	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
+	setChip(ui.chip.Bully, bully > 0, L.Tx(TXT, "BullyPenalty", bullyLeft), Theme.Bad)
 	-- 2-C #9 (A23-23): this week's outlaw (RankingService attribute Outlaw) - the danger chip with the ranking's own line
 	local rk = type(Config.Ranking) == "table" and type(Config.Ranking.Text) == "table" and Config.Ranking.Text or {}
 	setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(rk.OutlawChip) == "string", rk.OutlawChip, Theme.Bad)
@@ -3644,7 +3661,7 @@ refreshChips = function()
 			end
 		end
 	end
-	setChip(ui.chipMore, folded > 0, string.format(TXT.MoreChips, folded), Theme.SubText)
+	setChip(ui.chipMore, folded > 0, L.Tx(TXT, "MoreChips", folded), Theme.SubText)
 	L.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))
 	L.ApplyChipFold()
 end
@@ -3782,8 +3799,8 @@ local function refreshWar()
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
 	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(L.WarCrownFrac(frac), 0.5) end
-	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or string.format(TXT.WarHalo, fmtScore(h))
-	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or string.format(TXT.WarHorns, fmtScore(r))
+	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or L.Tx(TXT, "WarHalo", fmtScore(h))
+	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or L.Tx(TXT, "WarHorns", fmtScore(r))
 	refreshWarTime()
 	refreshChips()
 end
@@ -4211,7 +4228,7 @@ local function refreshTravel()
 	ui.travel.Visible = true
 	local total = math.max(0.1, Config.Travel.ChannelSeconds or 3)
 	ui.setTravel(1 - remaining / total)
-	ui.travelLabel.Text = string.format(TXT.TravelLeft, textOr("Traveling", TXT.Traveling), remaining)
+	ui.travelLabel.Text = L.Tx(TXT, "TravelLeft", textOr("Traveling", TXT.Traveling), remaining)
 end
 
 ----------------------------------------------------------------- quests
@@ -4315,8 +4332,9 @@ local function parseQuests()
 	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 3 / 1 / 2) decides here
 	local fold = TUT.FoldOthers == nil and L.RookieFold()
 	local shown = {}
+	local now = Util.Now()
 	for _, e in normal do
-		if not (fold or e.Folded) then table.insert(shown, e) end
+		if not (fold or e.Folded or L.NotNow(e, UIKit.GameAttr, now)) then table.insert(shown, e) end
 	end
 	local folded = #shown < #normal
 	if questState.Folded == true and not folded and #normal > 0 and (Config.Nudges or {}).DailiesOpened ~= false then
@@ -4327,6 +4345,39 @@ local function parseQuests()
 		table.insert(pinned, e)
 	end
 	return pinned
+end
+
+-- 최종 검수 10/14 (pure; tools/test_quest_not_now.py): a row you cannot do now (Config.QuestNotNow) - true = fold it.
+-- gs(name, default) reads a GameState attribute (UIKit.GameAttr), now = the server clock
+function L.NotNow(e, gs, now)
+	local R = Config.QuestNotNow
+	if type(R) ~= "table" or R.Enabled ~= true or type(e) ~= "table" or type(gs) ~= "function" then return false end
+	local story = type(e.Story) == "table" and e.Story or nil
+	if not story then return false end
+	local window = tonumber(R.Window) or 3600
+	now = tonumber(now) or 0
+	if story.Guide == R.GooseGuide then
+		if gs("GooseActive", false) == true then return false end
+		local nextAt = tonumber(gs("GooseNextAt", 0)) or 0
+		return not (nextAt > 0 and nextAt - now <= window)
+	end
+	if type(R.WarRows) == "table" and R.WarRows[story.Id] then
+		if gs("WarMode", "Idle") == "Idle" then return true end
+		local ends = tonumber(gs("WarRoundEndsAt", 0)) or 0
+		return not (ends > 0 and ends - now <= window)
+	end
+	return false
+end
+
+-- the rows folded by L.NotNow right now ("" = none): the HUD redraws its lines when this changes (the clock passing)
+function L.NotNowSig()
+	local data = questState.Data
+	if type(data) ~= "table" then return "" end
+	local now, out = Util.Now(), {}
+	for _, e in ipairs(data) do
+		if type(e) == "table" and L.NotNow(e, UIKit.GameAttr, now) then table.insert(out, tostring(e.Id)) end
+	end
+	return table.concat(out, ",")
 end
 
 -- CR-L50: the owner's quest list arrives on the "Quests" remote (fired only when it changes) instead of the
@@ -4735,8 +4786,8 @@ refreshQuests = function()
 	end
 
 	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
-	local head = (claims >= slots) and TXT.QuestAllDone or string.format(TXT.QuestHeader, claims, slots)
-	if claimable > 0 then head ..= string.format(TXT.QuestClaimable, claimable) end
+	local head = (claims >= slots) and TXT.QuestAllDone or L.Tx(TXT, IS_TOUCH and "QuestHeaderTouch" or "QuestHeader", claims, slots)
+	if claimable > 0 then head ..= L.Tx(TXT, "QuestClaimable", claimable) end
 	local hot = claimable > 0
 	if IS_TOUCH then
 		-- 검수 10/10 (API review ①): the phone's 'Claim N quests!' line and its gold count only the rows this block can
@@ -4753,7 +4804,7 @@ refreshQuests = function()
 		local line = head
 		if se then
 			local p, t = questNums(se) -- CR-M27 / CR-L31
-			line = se.ShowProgress and string.format(TXT.QuestTouchLine, p, t, se.Text) or se.Text
+			line = se.ShowProgress and L.Tx(TXT, "QuestTouchLine", p, t, se.Text) or se.Text
 		end
 		local sub = head
 		if callIndex and entries[shown] ~= entries[callIndex] then
@@ -4761,7 +4812,7 @@ refreshQuests = function()
 		elseif callIndex then
 			line = call.Label
 		elseif hot and not (se and se.Pinned and se.CanClaim and se.Progress >= se.Target) then
-			sub = Config.Plural(string.format(TXT.QuestTouchClaim, claimable)) -- "1 quests" -> "1 quest"
+			sub = Config.Plural(L.Tx(TXT, "QuestTouchClaim", claimable)) -- "1 quests" -> "1 quest"
 		end
 		ui.questHeaderText.Text = line
 		if ui.questHeaderSub then
@@ -4793,7 +4844,7 @@ refreshQuests = function()
 			local nums = nil
 			if e and e.ShowProgress then
 				local p, t = questNums(e) -- CR-M27 / CR-L31
-				nums = string.format(TXT.QuestLineNums, p, t)
+				nums = L.Tx(TXT, "QuestLineNums", p, t)
 			end
 			if li == 1 and not label then label = head end
 			L.SetQuestLine(l, e, label, nums)
@@ -4803,7 +4854,7 @@ refreshQuests = function()
 			-- the head line: how many quests there are (before the first mission is accepted, only that one line shows)
 			ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0
 				and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
-			ui.questHead.Text.Text = string.format(TXT.QuestHead, #all) -- every quest, the window's More rows too
+			ui.questHead.Text.Text = L.Tx(TXT, "QuestHead", #all) -- every quest, the window's More rows too
 			task.delay(0, L.LayoutQuestPlates) -- the head plate follows the head line
 		end
 		questState.ShownEntry = entries[shown]
@@ -5246,7 +5297,7 @@ local function onLevelChanged()
 	end
 	if targetZone then
 		local name = tostring(Config.Zones[targetZone].Name)
-		showGuide(findTravelTarget(targetZone), string.format(TXT.ZoneGuide, name), "zone:" .. targetZone, GUIDE_SECONDS)
+		showGuide(findTravelTarget(targetZone), L.Tx(TXT, "ZoneGuide", name), "zone:" .. targetZone, GUIDE_SECONDS)
 	end
 end
 
@@ -6548,6 +6599,7 @@ end
 function HUD.Init(registry)
 	C = registry
 	UIKit = C and C.UIKit
+	pcall(function() UIKit.L10n.Register("HUD.TXT", TXT) end) -- 10/14: the words' keys "HUD.TXT.<key>" (L.Tx / UIKit.Tr)
 	if type(UIKit) ~= "table" or not UIKit.Gui then
 		error("UIKit is not initialized")
 	end
@@ -6647,6 +6699,22 @@ function HUD.Start()
 	UIKit.OnAttr({ "SubFastTravel" }, function() if ui.foldOpen then L.PlaceFold(false) end end) -- A23-182: the Travel square
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
+	-- 10/14 (Config.QuestNotNow): a goose / war row folds or comes back as the next hunt / the round gets near
+	L.NotNowLast = L.NotNowSig()
+	local function notNowCheck()
+		local sig = L.NotNowSig()
+		if sig ~= L.NotNowLast then
+			L.NotNowLast = sig
+			refreshQuests()
+		end
+	end
+	UIKit.OnGameAttr({ "GooseActive", "GooseNextAt", "WarMode", "WarRoundEndsAt" }, notNowCheck)
+	task.spawn(function()
+		while true do
+			task.wait(tonumber((Config.QuestNotNow or {}).Check) or 15)
+			pcall(notNowCheck)
+		end
+	end)
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",
 		"KaijuState", "Faction", "Outlaw" }, refreshChips)
 	UIKit.OnAttr({ "WarPoints", "Faction" }, refreshWar)

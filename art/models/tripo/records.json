@@ -11432,6 +11432,33 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_src.glb",
    "bytes": 11659284,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0864,
+    0.2509,
+    0.9801
+   ],
+   "after_studs": [
+    0.768,
+    0.264,
+    3.0
+   ],
+   "grip": [
+    0.065,
+    0.275
+   ],
+   "pivot_share": 0.17,
+   "tris": 14746,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_Paladin_T2_web_hd_mv4": [
@@ -11480,6 +11507,33 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_src.glb",
    "bytes": 8685568,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0713,
+    0.3143,
+    0.98
+   ],
+   "after_studs": [
+    1.122,
+    0.255,
+    3.5
+   ],
+   "grip": [
+    0.07,
+    0.225
+   ],
+   "pivot_share": 0.147,
+   "tris": 13172,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_Paladin_T3_web_hd_mv4": [
@@ -11528,6 +11582,33 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_src.glb",
    "bytes": 9677644,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0753,
+    0.3328,
+    0.9791
+   ],
+   "after_studs": [
+    1.36,
+    0.307,
+    4.0
+   ],
+   "grip": [
+    0.09,
+    0.29
+   ],
+   "pivot_share": 0.19,
+   "tris": 12825,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T1_web_hd_mv4": [
@@ -11580,6 +11661,29 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_HD_src.glb",
    "bytes": 8363476,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0789,
+    0.163,
+    0.9827
+   ],
+   "after_studs": [
+    0.498,
+    0.241,
+    3.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14932,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk2_LightMage_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11629,6 +11733,29 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_HD_src.glb",
    "bytes": 7878836,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (orb is a faceted gem in 3D, smooth ball in 2D: allowed)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.089,
+    0.2034,
+    0.9808
+   ],
+   "after_studs": [
+    0.726,
+    0.318,
+    3.5
+   ],
+   "pivot_share": 0.45,
+   "tris": 14499,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk2_LightMage_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T3_web_hd_mv4": [
@@ -11681,6 +11808,29 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_HD_src.glb",
    "bytes": 10685748,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.135,
+    0.263,
+    0.9815
+   ],
+   "after_studs": [
+    1.072,
+    0.55,
+    4.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14391,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk2_LightMage_fit.png"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11729,6 +11879,29 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_HD_src.glb",
    "bytes": 9703972,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0881,
+    0.1926,
+    0.9818
+   ],
+   "after_studs": [
+    0.588,
+    0.269,
+    3.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 14770,
+   "code_len": 3.1,
+   "check": "art/review/weapon_design/chunk3_Ranger_fit.png"
   }
  ],
  "Weapon_Halo_Ranger_T2_web_hd_mv4": [
@@ -11777,6 +11950,29 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_HD_src.glb",
    "bytes": 10060016,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0557,
+    0.1688,
+    0.9803
+   ],
+   "after_studs": [
+    0.603,
+    0.199,
+    3.5
+   ],
+   "pivot_share": 0.5,
+   "tris": 13524,
+   "code_len": 3.357,
+   "check": "art/review/weapon_design/chunk3_Ranger_fit.png"
   }
  ],
  "Weapon_Halo_Ranger_T3_web_hd_mv4": [
@@ -11825,6 +12021,29 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_HD_src.glb",
    "bytes": 12991324,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0706,
+    0.1993,
+    0.9809
+   ],
+   "after_studs": [
+    0.813,
+    0.288,
+    4.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 13912,
+   "code_len": 3.614,
+   "check": "art/review/weapon_design/chunk3_Ranger_fit.png"
   }
  ],
  "Weapon_Horns_Berserker_T1_web_hd_mv4": [

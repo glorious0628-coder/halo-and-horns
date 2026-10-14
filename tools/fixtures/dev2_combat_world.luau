@@ -119,7 +119,7 @@ local function bareWorld(o)
 	-- w.Taunts / w.Slows (w.TauntRefuse = true: every taunt is refused), HopReach returns w.HopReach (nil = the full hop)
 	w.Taunts, w.Slows, w.HopAsks = {}, {}, {}
 	reg.MonsterService = { MonsterKilled = Signal.new(),
-		Shove = function(rec) table.insert(w.Shoves, { Rec = rec, At = w.Clock }) end,
+		Shove = function(rec, _, studs) table.insert(w.Shoves, { Rec = rec, At = w.Clock, Studs = studs }) end,
 		Displace = function(rec, mode, from, studs, player)
 			table.insert(w.Displaced, { Rec = rec, Mode = mode, From = from, Studs = studs, P = player })
 			return studs

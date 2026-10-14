@@ -95,6 +95,7 @@ local MATS = { Jelly = 200, Petal = 50, CopperOre = 80, SlimeCore = 30, GoblinTo
 -- a ready artisan at the anvil; extra = save fields
 local function smith(w, id, extra, class, faction)
 	local data = { Faction = faction or "Neutral", Class = class or "Warrior", ClassChosen = true, Level = 10, BankGold = 100000,
+		BagSlots = 20, -- bag slots 10/14: the 13 material kinds below need more than the starting 12
 		Items = deepCopy(MATS) }
 	for k, v in extra or {} do data[k] = v end
 	local p, d = w:Arrive(id, { Data = data })
@@ -516,6 +517,7 @@ runGroup("results", function()
 		c.Craft.Recipes.T1 = { Role = "Smith", Kind = "Item", Item = "Jelly", N = 3, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
 		c.Craft.Recipes.G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
 		c.Features.Gear = true -- ⑥: a gear recipe is on only while the gear switch is
+		c.Craft.Recipes.T2 = { Role = "Smith", Kind = "Item", Item = "Herb", N = 1, Lv = 1, Gold = 1, Mats = { CopperOre = 2 }, XP = 1 }
 	end })
 	local p, d = smith(w, 1)
 	d.Items.Jelly = 990
@@ -542,6 +544,16 @@ runGroup("results", function()
 	dr.Gear.Own["Armor:1:0"] = 20
 	w.C.Finish(r, last(fired(w, "CraftSession", r)).Id)
 	check(dr.Gear.Own["Armor:1:0"] == 20 and type(dr.Craft.Pend) == "table", "a full key (20) at the Finish: no 21st, it waits", show(dr.Gear.Own))
+	-- bag slots (10/14): a result of a new kind needs a free slot, checked before anything is taken
+	local b, db = smith(w, 4, { BagSlots = 13 })
+	check(w.C.TryStart(b, "T2") == "full" and db.Items.CopperOre == 80 and db.Items.Herb == nil,
+		"13 kinds in 13 slots: a new kind (Herb) is refused, nothing taken", show({ db.Items.CopperOre, db.Items.Herb }))
+	check(w.C.TryStart(b, "T1") == "ok", "... a kind already held (Jelly) still crafts", "")
+	local c2, dc2 = smith(w, 5, { BagSlots = 13 })
+	dc2.Items.CopperOre = 2
+	check(w.C.TryStart(c2, "T2") == "ok" and (dc2.Items.CopperOre or 0) == 0, "the last 2 copper go into it: that slot frees, Herb fits", show(dc2.Items))
+	local e2, de2 = smith(w, 6, { BagSlots = 14 })
+	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
 end)
 
 ------------------------------------------------------------------ craft XP

@@ -179,6 +179,10 @@ runGroup("the early goals and the story keep their place", function()
 	local dropText = TT.NextIronDrop
 	TT.NextIronDrop = dropText or "Next goal · Beat a King Slime for an Iron weapon"
 	local a, ad = veteran(w, 9, "Halo", 20, { WeaponTier = 1, WeaponOwnedMask = 1, CarriedGold = 10 })
+	-- A23-186: the Forge sells again (Buy = true ships): the gold row; the drop line stays for Buy = false
+	check(w.Config.WeaponShop.Buy == true and Q.PinnedRow(a).GoalKind == "IronGold", "A23-186 (Buy on): no iron weapon = the gold row",
+		show(Q.PinnedRow(a).GoalKind))
+	w.Config.WeaponShop.Buy = false
 	check(w.Config.WeaponShop.Buy == false and Q.PinnedRow(a).GoalKind == "IronDrop" and Q.PinnedRow(a).Text == TT.NextIronDrop,
 		"no iron weapon: the iron goal first (the drop line)", show(Q.PinnedRow(a).GoalKind))
 	TT.NextIronDrop = nil
@@ -186,7 +190,6 @@ runGroup("the early goals and the story keep their place", function()
 		show(Q.PinnedRow(a).GoalKind))
 	w.Config.WeaponShop.Buy = true
 	check(Q.PinnedRow(a).GoalKind == "IronGold", "Buy switched back on: the gold row", show(Q.PinnedRow(a).GoalKind))
-	w.Config.WeaponShop.Buy = false
 	TT.NextIronDrop = dropText or "Next goal · Beat a King Slime for an Iron weapon"
 	-- a pending skill
 	local b, bd = veteran(w, 10, "Halo", 3, { SkillSlots = 0 })

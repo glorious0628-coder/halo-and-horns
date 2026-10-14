@@ -25,7 +25,9 @@ end
 ------------------------------------------------------------------ tier 9 = Mythic, tiers 1-8 frozen
 runGroup("ladder", function()
 	local C = cfg()
-	check(C.MaxWeaponTier == 9 and #C.Weapons == 9, "9 weapon tiers (Config.MaxWeaponTier = #Config.Weapons)", C.MaxWeaponTier)
+	-- A23-186: tiers 10 / 11 = the Forge's joke weapons (Meme), appended after the Mythic tier 9
+	check(C.MaxWeaponTier == 11 and #C.Weapons == 11 and C.Weapons[10].Meme and C.Weapons[11].Meme and not C.Weapons[9].Meme,
+		"11 weapon tiers (Config.MaxWeaponTier = #Config.Weapons): 9 + the two joke weapons", C.MaxWeaponTier)
 	local w9 = C.Weapons[9]
 	check(w9 and w9.Tier == 9 and w9.Damage == 2200 and w9.MinLevel == 50 and w9.Price == 250000 and w9.Legend == nil
 		and w9.RequiresFaction == nil and w9.Color ~= nil, "T9: Damage 2200, MinLevel 50, Price 250000 (a value only), no faction gate",
@@ -64,7 +66,9 @@ runGroup("ladder", function()
 			"Crownforged Baton" },
 	}
 	for class, want in NAMES do
-		check(sameTable(C.WeaponNames[class], want) and #C.WeaponNames[class] == 9, "names: tiers 1-8 frozen, tier 9 Crownforged (" .. class .. ")",
+		check(sameTable(table.move(C.WeaponNames[class], 1, 9, 1, {}), want) and #C.WeaponNames[class] == 11
+			and C.WeaponNames[class][10] == "Frying Pan" and C.WeaponNames[class][11] == "Rubber Chicken",
+			"names: tiers 1-8 frozen, tier 9 Crownforged, 10 / 11 the joke weapons (" .. class .. ")",
 			show(C.WeaponNames[class][9]))
 	end
 	check(C.WeaponName(9, "Warrior", "Halo") == "Crownforged Sword" and C.WeaponName(9, "Mage", "Horns") == "Crownforged Staff"
@@ -80,7 +84,8 @@ runGroup("ladder", function()
 	check(#dropped == 0 and C.Loot.Jackpot.Tier == 8, "T9 is never a drop row and never the jackpot", show(dropped))
 	check(C.WeaponShop.MaxSoldTier == 3, "the Forge still sells tiers 2-3 only (MaxSoldTier 3)", C.WeaponShop.MaxSoldTier)
 	check(C.Commission.Orders[9] == nil and C.Loot.DuplicateWeaponGold[9] == nil, "T9 is no commission order and has no duplicate-drop gold", "")
-	check(C.WeaponUsable(9, 50) and not C.WeaponUsable(9, 49) and not C.WeaponUsable(10, 100), "T9 usable from Lv50; tier 10 does not exist", "")
+	check(C.WeaponUsable(9, 50) and not C.WeaponUsable(9, 49) and C.WeaponUsable(10, 1) and not C.WeaponUsable(12, 100),
+		"T9 usable from Lv50; the joke tier 10 from Lv1; tier 12 does not exist", "")
 	check(C.BestUsableWeapon(511, 100) == 9 and C.BestUsableWeapon(511, 49) == 7 and C.BestUsableWeapon(255, 100) == 7,
 		"BestUsableWeapon: T9 at Lv100, T7 below Lv50, 8-bit masks unchanged", "")
 end)
@@ -101,10 +106,10 @@ runGroup("load", function()
 		for k, v in fields or {} do r[k] = v end
 		return r
 	end
-	check(C.Data.Version == 5 and C.Data.Defaults.Version == 5, "Config.Data.Version = Defaults.Version = 5 (A23-153; C1 made it 4)", show({ C.Data.Version, C.Data.Defaults.Version }))
+	check(C.Data.Version == 6 and C.Data.Defaults.Version == 6, "Config.Data.Version = Defaults.Version = 5 (A23-153; C1 made it 4)", show({ C.Data.Version, C.Data.Defaults.Version }))
 	local enh = { 1, 2, 3, 4, 5, 6, 7, 8 }
 	local v3 = load(row(3, { WeaponTier = 7, WeaponOwnedMask = 255, WeaponEnhance = deepCopy(enh), BankGold = 500, Items = { Jelly = 3 } }))
-	check(v3.Version == 5 and v3.WeaponTier == 7 and v3.WeaponOwnedMask == 255 and sameTable(v3.WeaponEnhance, enh) and v3.BankGold == 500
+	check(v3.Version == 6 and v3.WeaponTier == 7 and v3.WeaponOwnedMask == 255 and sameTable(v3.WeaponEnhance, enh) and v3.BankGold == 500
 		and v3.Items.Jelly == 3, "a v3 record loads as v4 with its weapons, mask, +N and the rest kept", show({ v3.Version, v3.WeaponTier, v3.WeaponOwnedMask }))
 	check(sameTable(v3.Spares, {}) and sameTable(v3.Market, C.Data.Defaults.Market), "the v3 record gains Spares {} and the default Market", show(v3.Market))
 	check(sameTable(load(v3), v3), "loading it again changes nothing (idempotent)", "")
@@ -115,7 +120,7 @@ runGroup("load", function()
 	local t9 = load(row(3, { WeaponTier = 9, WeaponOwnedMask = 7 }))
 	check(t9.WeaponTier == 3 and t9.WeaponOwnedMask == 7, "v3: tier 9 equipped is corrupted -> the best usable owned weapon", show({ t9.WeaponTier, t9.WeaponOwnedMask }))
 	local old = load(row(2, { WeaponTier = 9, WeaponOwnedMask = 256 + 2 }))
-	check(old.Version == 5 and old.WeaponTier == 1 and old.WeaponOwnedMask == 1, "v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)",
+	check(old.Version == 6 and old.WeaponTier == 1 and old.WeaponOwnedMask == 1, "v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)",
 		show({ old.WeaponTier, old.WeaponOwnedMask }))
 	-- v4: the 9-bit mask is valid, the 10th bit is corruption
 	local v4 = load(row(4, { WeaponTier = 9, WeaponOwnedMask = 511, WeaponEnhance = { 0, 0, 0, 0, 0, 0, 0, 0, 7 } }))
@@ -128,6 +133,9 @@ runGroup("load", function()
 	check(keep9.WeaponOwnedMask == 258, "v4: a mask with bit 9 is kept", keep9.WeaponOwnedMask)
 	local bit10 = load(row(4, { WeaponTier = 2, WeaponOwnedMask = 512 + 2 }))
 	check(bit10.WeaponOwnedMask == 2 and bit10.WeaponTier == 2, "v4: bit 10 = corrupted -> the equipped bit only (the existing repair)", bit10.WeaponOwnedMask)
+	-- A23-186 (save v6): 11 tiers; a v6 record's bit 12 is corruption -> the equipped bit only
+	local bit12 = load(row(6, { WeaponTier = 2, WeaponOwnedMask = 2048 + 2 }))
+	check(bit12.WeaponOwnedMask == 2 and bit12.WeaponTier == 2, "v6: bit 12 = corrupted -> the equipped bit only", bit12.WeaponOwnedMask)
 	local t10 = load(row(4, { WeaponTier = 10, WeaponOwnedMask = 256 + 4 }))
 	check(t10.WeaponTier == 9 and t10.WeaponOwnedMask == 260, "v4: tier 10 = corrupted -> the best usable owned (T9 at Lv60)", show({ t10.WeaponTier }))
 	-- the v4 tables go through their repairs on load
@@ -139,7 +147,7 @@ runGroup("load", function()
 	check(sameTable(wrong.Spares, {}) and sameTable(wrong.Market, C.Data.Defaults.Market), "a Spares / Market of the wrong type becomes its default", "")
 	w.AllowWarn = { "field Spares had type string", "field Market had type number" }
 	local fresh = load(deepCopy(C.Data.Defaults))
-	check(fresh.Version == 5 and sameTable(fresh.Spares, {}) and sameTable(fresh.Market, { Out = {}, In = {}, Done = {}, Day = 0, Lists = 0, Buys = 0 }),
+	check(fresh.Version == 6 and sameTable(fresh.Spares, {}) and sameTable(fresh.Market, { Out = {}, In = {}, Done = {}, Day = 0, Lists = 0, Buys = 0 }),
 		"a brand-new save is v4 with Spares {} and Market { Out, In, Done, Day, Lists, Buys }", show(fresh.Market))
 end)
 
@@ -263,7 +271,7 @@ runGroup("spare api", function()
 		check(room == false and add == false and sameTable(data[p], before) and #pushes() == fired,
 			"refused, nothing changes, nothing sent: " .. label, show({ room, add }))
 	end
-	for label, tier in { zero = 0, ten = 10, frac = 1.5, nan = NAN, inf = INF, text = "3", none = false, neg = -1 } do
+	for label, tier in { zero = 0, twelve = 12, frac = 1.5, nan = NAN, inf = INF, text = "3", none = false, neg = -1 } do
 		refused("tier " .. label, tier, 0)
 	end
 	for label, plus in { neg = -1, eleven = 11, frac = 0.5, nan = NAN, inf = INF, text = "0", none = false } do
@@ -303,8 +311,8 @@ runGroup("spare api", function()
 	-- LootService's own repair (DebugReset runs it) never drops Spares / Market
 	data[p].Spares = { ["9:1"] = 3 }
 	data[p].Market.Lists = 2
-	check(L.DebugReset(p, 511) == "ok" and sameTable(data[p].Spares, { ["9:1"] = 3 }) and data[p].Market.Lists == 2 and #data[p].WeaponEnhance == 9,
-		"LootService's sanitize keeps Spares and Market (9 enhance tiers)", show({ data[p].Spares, data[p].Market }))
+	check(L.DebugReset(p, 511) == "ok" and sameTable(data[p].Spares, { ["9:1"] = 3 }) and data[p].Market.Lists == 2 and #data[p].WeaponEnhance == 11,
+		"LootService's sanitize keeps Spares and Market (11 enhance tiers, A23-186)", show({ data[p].Spares, data[p].Market }))
 end)
 
 finish()

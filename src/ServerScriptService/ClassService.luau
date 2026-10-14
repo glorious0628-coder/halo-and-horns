@@ -132,10 +132,9 @@ local function onChangeClass(player, classId, useTicket, gender)
 	local keepLevel = freeKeepsLevel(player)
 	if keepLevel then useTicket = false end
 	if useTicket then
-		local okTicket, why = S.MonetizationService.UseTicket(player, "Class")
+		local okTicket = S.MonetizationService.UseTicket(player, "Class")
 		if not okTicket then
-			-- CR-L25: a purchase still being saved is not "no ticket"
-			notify(player, why == "Pending" and "TicketSaving" or "NoTicket", "bad")
+			notify(player, "NoTicket", "bad")
 			return
 		end
 	end

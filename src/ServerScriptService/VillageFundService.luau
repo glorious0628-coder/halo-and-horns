@@ -1,6 +1,6 @@
 -- VillageFundService.luau : A23-178 the village fund (게임성 개발 2, 2026-10-14; contract
--- docs/design/village_fund_server_2026-10-14.md). A gold sink with no power: a Halo child gives Config.VillageFund.Step
--- gold at the Halo town fountain ('Share'), a Horns child at the Horns one ('Show off'); each gift = Points of the own
+-- docs/design/village_fund_server_2026-10-14.md). A gold sink with no power: a Halo child gives Config.VillageFundStep
+-- (Ladder 200, 500, then Step 1000) gold at the Halo town fountain ('Share'), a Horns child at the Horns one ('Show off'); each gift = Points of the own
 -- score (Honor / Infamy, shown as Mischief) through PlayerService.GrantFame (ctx Fund: never on the weekly boards), at
 -- most PerDay gifts a KST day (Config.DayIndex, the attendance day). Neutral / no side / a side without a Spot: no fund.
 --   - one invisible anchored part per Spot (Workspace.VillageFund.FundSpot_<side>) holds the ProximityPrompt "FundPrompt"
@@ -62,7 +62,8 @@ local function switchOn()
 	return not ok or value ~= false
 end
 
-local function step() return math.max(1, math.floor(num(V.Step, 1000))) end
+-- 최종 검수 10/14 ②: the gift's gold climbs Config.VillageFund.Ladder (200, 500) over the save, then Step (1000)
+local function step(data) return Config.VillageFundStep(data and data.FundGiven) end
 local function perDay() return math.max(1, math.floor(num(V.PerDay, 3))) end
 local function today() return Config.DayIndex(os.time()) end
 local function week() return Config.WeekIndex(os.time()) end
@@ -258,12 +259,12 @@ function VillageFundService.StateOf(player)
 		why = "Closed"
 	elseif count >= perDay() then
 		why = "Full"
-	elseif gold < step() then
+	elseif gold < step(data) then
 		why = "Poor"
 	end
 	local sum = VillageFundService.SumOf(side)
 	local g = type(V.Goals) == "table" and V.Goals or {}
-	return { Faction = side, Today = count, PerDay = perDay(), Step = step(), Gold = gold, Can = why == nil, Why = why,
+	return { Faction = side, Today = count, PerDay = perDay(), Step = step(data), Gold = gold, Can = why == nil, Why = why,
 		Week = week(), Sum = sum, Goals = { Lanterns = num(g.Lanterns), Fireworks = num(g.Fireworks) },
 		Level = VillageFundService.LevelOf(sum) }
 end
@@ -309,7 +310,7 @@ function VillageFundService.Give(player)
 		open(player)
 		return
 	end
-	local n = step()
+	local n = step(data)
 	if S.ProgressionService.SpendGold(player, n, "Fund") ~= true then
 		notify(player, type(TXT.Poor) == "string" and string.format(TXT.Poor, Util.FormatInt(n)) or nil, "bad")
 		open(player)

@@ -111,7 +111,7 @@ end
 local function giveItem(player, id, n)
 	local loot = S.LootService
 	if type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return 0 end
-	local ok, given = pcall(loot.GrantItem, player, id, n)
+	local ok, given = pcall(loot.GrantItem, player, id, n, "Reward") -- a reward fits a full bag (10/14)
 	if not ok then
 		Util.Warn(TAG, "GrantItem " .. tostring(id) .. ": " .. tostring(given))
 		return 0
