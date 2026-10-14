@@ -30,6 +30,21 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 C, CO, SK, DW, M = "CONFIG_SOURCE", "COMBAT_SOURCE", "SKILL_SOURCE", "WINDOW_SOURCE", "MONSTER_SOURCE"
 
 MUTATIONS = [
+    # --- 99N D (계획 5): the class tasks that open Z / X
+    ("task: Z opens at the level alone", C, "\t\tif tasks and slot ~= \"Q\" and not (type(done) == \"table\" and done[slot] == true) then break end\n", ""),
+    ("task: X before Z", C, "\t\tif tasks and slot ~= \"Q\" and not (type(done) == \"table\" and done[slot] == true) then break end\n",
+     "\t\tif tasks and slot ~= \"Q\" and not (type(done) == \"table\" and done[slot] == true) then continue end\n"),
+    ("task: a kill with a skill hit counts", SK, "\t\tTASK.Add(player, \"BasicKills\", function() return info.SkillHit ~= true end)\n",
+     "\t\tTASK.Add(player, \"BasicKills\", function() return true end)\n"),
+    ("task: a free rider counts", SK, "\t\tif type(info) ~= \"table\" or info.Minor == true then return end\n", "\t\tif type(info) ~= \"table\" then return end\n"),
+    ("task: a near kill counts as far", SK, "\t\t\t\tand (root.Position - info.Position).Magnitude >= num(def.Dist, math.huge)\n", "\n"),
+    ("task: any number of monsters counts", SK, "\t\t\treturn r.Slot == def.Slot and num(r.MonstersHit) >= math.max(1, num(def.Min, 1))\n",
+     "\t\t\treturn r.Slot == def.Slot\n"),
+    ("task: any slot counts", SK, "\t\t\treturn r.Slot == def.Slot and num(r.MonstersHit)", "\t\t\treturn true and num(r.MonstersHit)"),
+    ("task: the count is not saved", SK, "\tsaved[slot] = math.min(n, math.floor(num(saved[slot])) + 1)\n", ""),
+    ("task: done opens nothing", SK, "\tcatchUp(player, true) -- done: the slot opens", "\tTASK.Mirror(player) -- done: the slot opens"),
+    ("task: no goal mirrored", SK, "\tplayer:SetAttribute(\"SkillTaskSlot\", slot or \"\")\n", ""),
+    ("task: the saved count ignored at the join", SK, "\t\tif def and saved and num(saved[slot]) >= math.max(1, num(def.Count, 1)) then done[slot] = true end\n", ""),
     # --- SkillService: the gap, the queue, the gates
     ("no gap between skills", SK, "local wait = num(K.GlobalGap, 0.5) - (os.clock() - s.LastAt)", "local wait = 0"),
     ("a press inside the gap is dropped (no queue)", SK,

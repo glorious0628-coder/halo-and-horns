@@ -17,6 +17,8 @@ local function skillWorld(o)
 	-- A23-71 moved the unlocks to Q Lv5 / Z Lv15 / X Lv25 (the "slots" group runs those: o.RealUnlock). The shape, damage
 	-- and auto groups keep their SKL-2 heroes (Lv5 = Q + Z, Lv9 = all three) with the SKL-2 unlock levels
 	if not o.RealUnlock then K.Unlock = { Q = 1, Z = 5, X = 8 } end
+	-- 99N D: the class tasks only in the groups that ask for them (o.Tasks); the rest open Z / X by the level as before
+	K.Tasks.Enabled = o.Tasks == true
 	w.Rel = {}
 	w.Combat.Released:Connect(function(p, info) table.insert(w.Rel, { P = p, Info = info }) end)
 	-- a ready player with MP (the attribute the skills read); jo as w:Join plus Mana
@@ -88,11 +90,15 @@ runGroup("slots", function()
 		"a new save has no skill yet (0 slots), follows the A23-71 rule, mirrored", show({ d0.SkillSlots, d0.SkillsA71 }))
 	local U = C0.Skills.Unlock
 	check(U.Q == 5 and U.Z == 15 and U.X == 25, "A23-71: Q Lv5, Z Lv15, X Lv25", show(U))
-	local F = C0.SkillSlotsFor
+	local D = { Z = true, X = true } -- 99N D: both class tasks done
+	local F = function(lv, rb) return C0.SkillSlotsFor(lv, rb, D) end
 	check(F(1, 0) == 0 and F(4, 0) == 0 and F(5, 0) == 1 and F(14, 0) == 1 and F(15, 0) == 2 and F(24, 0) == 2
 		and F(25, 0) == 3 and F(99, 0) == 3 and F(1, 1) == 3 and F(nil, nil) == 0,
-		"Config.SkillSlotsFor: Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
+		"Config.SkillSlotsFor (tasks done): Lv1 0, Lv4 0, Lv5 1, Lv14 1, Lv15 2, Lv24 2, Lv25 3; a rebirth 3; nothing 0",
 		show({ F(1, 0), F(4, 0), F(5, 0), F(14, 0), F(15, 0), F(24, 0), F(25, 0), F(1, 1) }))
+	local G = C0.SkillSlotsFor
+	check(G(25, 0) == 1 and G(25, 0, { Z = true }) == 2 and G(25, 0, { X = true }) == 1 and G(1, 1) == 3,
+		"99N D: Z / X need their task too (X only after Z); a rebirth still opens all three", show({ G(25, 0), G(25, 0, { Z = true }) }))
 	local w = skillWorld({ Z = true, RealUnlock = true })
 	local p1 = w:Hero(1, { Level = 1 })
 	local p4 = w:Hero(2, { Level = 4 })
@@ -174,6 +180,70 @@ runGroup("slots", function()
 	end
 	check(w4:Count("Q") == 0 and w4:Count("Z") == 0 and w4:ManaSpent(a1) == 0 and #w4:FxOf("SkillPress", 0) == 0,
 		"auto combat at Lv3: no skill cast, no MP, no press answer", show({ w4:Count("Q"), w4:Count("Z"), w4:ManaSpent(a1) }))
+end)
+
+------------------------------------------------------------------ 99N D (계획 5, 최종 검수 10/14): the class tasks open Z / X
+runGroup("class tasks", function()
+	local T = C0.Skills.Tasks
+	check(T.Enabled == true and T.Warrior.Z.Kind == "BasicKills" and T.Warrior.Z.Count == 40 and T.Mage.Z.Kind == "SkillMulti"
+		and T.Mage.Z.Slot == "Q" and T.Mage.Z.Min == 2 and T.Archer.Z.Kind == "FarKills" and T.Archer.Z.Dist == 20
+		and T.Blacksmith == T.Warrior and T.Alchemist == T.Mage and T.Tamer == T.Archer,
+		"Config: Warrior basic kills 40, Mage Q on 2+ x20, Archer kills from 20+ studs x30; artisan kits follow their class", "")
+	check(C0.SkillTaskLine("Warrior", "Z", 3) == "Lv15 skill: Defeat 40 monsters with basic attacks (3/40)"
+		and C0.SkillTaskLine("Mage", "X", 99) == "Lv25 skill: Hit 3+ monsters at once with Skill 2, 15 times (15/15)"
+		and C0.SkillTaskLine("Archer", "Z", 0) == "Lv15 skill: Defeat 30 monsters from 20+ studs away (0/30)"
+		and C0.SkillTaskLine("Warrior", "Q", 0) == "" and C0.Data.Defaults.SkillTask.Z == 0,
+		"the goal line from Config (count capped), none for Q; a new save starts at 0", C0.SkillTaskLine("Mage", "X", 99))
+	local w = skillWorld({ Z = true, X = true, RealUnlock = true, Tasks = true })
+	local function attrs(p) return { p:GetAttribute("SkillSlots"), p:GetAttribute("SkillTaskSlot"), p:GetAttribute("SkillTaskN") } end
+	local p14 = w:Hero(1, { Level = 14 })
+	check(p14:GetAttribute("SkillSlots") == 1 and p14:GetAttribute("SkillTaskSlot") == "", "Lv14: Q only, no task yet", show(attrs(p14)))
+	local p, d = w:Hero(2, { Level = 15 })
+	d = d or w.Data[p]
+	check(p:GetAttribute("SkillSlots") == 1 and p:GetAttribute("SkillTaskSlot") == "Z" and p:GetAttribute("SkillTaskN") == 0,
+		"Lv15 warrior: Z waits for its task (SkillTaskSlot Z, 0)", show(attrs(p)))
+	local function kill(pl, skill, pos)
+		w.Registry.MonsterService.MonsterKilled:Fire(pl, { Kind = "Slime", ZoneId = "SquishyMeadow", Position = pos or vec(0, 0, -5),
+			SkillHit = skill == true, XP = 1, Gold = 1 })
+		w:Flush()
+	end
+	kill(p, true)
+	check(p:GetAttribute("SkillTaskN") == 0, "a kill with a skill hit on it: not counted", show(attrs(p)))
+	w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", Position = vec(0, 0, -5), Minor = true })
+	check(p:GetAttribute("SkillTaskN") == 0, "a free rider's share (Minor): not counted", show(attrs(p)))
+	for _ = 1, 39 do kill(p) end
+	check(p:GetAttribute("SkillTaskN") == 39 and d.SkillTask.Z == 39 and p:GetAttribute("SkillSlots") == 1, "39 basic kills: saved, Z still shut", show(attrs(p)))
+	local f0 = #w.Fx
+	kill(p)
+	check(p:GetAttribute("SkillSlots") == 2 and d.SkillSlots == 2 and #w:FxOf("SkillUnlocked", f0) == 1,
+		"the 40th: Z opens with the New skill notice", show({ attrs(p), #w:FxOf("SkillUnlocked", f0) }))
+	check(p:GetAttribute("SkillTaskSlot") == "" and d.SkillTask.Z == 40, "no task running at Lv15 after Z (X waits for Lv25)", show(attrs(p)))
+	-- Lv25: the X task (Z on 3+ monsters, 15 times); a Q release or Z on 2 never counts
+	p:SetAttribute("Level", 25)
+	w.Data[p].Level = 25
+	w.Registry.ProgressionService.LeveledUp:Fire(p, 25)
+	w:Flush()
+	check(p:GetAttribute("SkillTaskSlot") == "X" and p:GetAttribute("SkillSlots") == 2, "Lv25: the X task runs", show(attrs(p)))
+	local R = w.Combat.Released
+	R:Fire(p, { Slot = "Q", MonstersHit = 5 })
+	R:Fire(p, { Slot = "Z", MonstersHit = 2 })
+	check(p:GetAttribute("SkillTaskN") == 0, "Q on 5 / Z on 2: not counted", show(attrs(p)))
+	for _ = 1, 15 do R:Fire(p, { Slot = "Z", MonstersHit = 3 }) end
+	w:Flush()
+	check(p:GetAttribute("SkillSlots") == 3 and d.SkillTask.X == 15, "15 Z casts on 3+: X opens", show(attrs(p)))
+	-- an archer: far kills only; Lv25 straight away does Z's task first (X waits for Z)
+	local a = w:Hero(3, { Level = 25, Class = "Archer" })
+	check(a:GetAttribute("SkillTaskSlot") == "Z" and a:GetAttribute("SkillSlots") == 1, "a Lv25 archer without Z: the Z task first", show(attrs(a)))
+	kill(a, false, vec(0, 0, -10)) -- the heroes stand at the origin
+	kill(a, false, vec(0, 0, -21))
+	check(a:GetAttribute("SkillTaskN") == 1, "a kill 10 studs away: no; 21 away: yes", show(attrs(a)))
+	-- the saved count comes back after a rejoin
+	local q = w:Hero(4, { Level = 15, Data = { SkillTask = { Z = 12 } } })
+	check(q:GetAttribute("SkillTaskN") == 12 and q:GetAttribute("SkillSlots") == 1, "a saved count is shown at the join", show(attrs(q)))
+	local done = w:Hero(5, { Level = 15, Data = { SkillTask = { Z = 40 } } })
+	check(done:GetAttribute("SkillSlots") == 2, "a save with the task done gets Z at the join", show(attrs(done)))
+	local old = w:Hero(6, { Level = 15, Data = { SkillSlots = 2 } })
+	check(old:GetAttribute("SkillSlots") == 2, "a save that has Z already keeps it (never lowered)", show(attrs(old)))
 end)
 
 ------------------------------------------------------------------ the remote, the gap and the queue

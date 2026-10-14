@@ -41,6 +41,8 @@
 --   (Lv15), X at Unlock.X (Lv25) (A23-71), all three after a rebirth (Config.SkillSlotsFor); an old save catches up at
 --   PlayerReady. Z / X work only while Config.Skills.ZEnabled / XEnabled (Studio tests until the 10/20 decision); a
 --   newly opened slot sends Fx "SkillUnlocked" { Slot } only then (Q always).
+--   99N D (계획 5): Z / X also need their class task (Config.Skills.Tasks: BasicKills / SkillMulti / FarKills); the count
+--   is saved in data.SkillTask and mirrored as SkillTaskSlot / SkillTaskN; done = the slot opens (catchUp, the Fx above).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -803,9 +805,57 @@ function SkillService.AutoCast(player)
 	return SkillService.Cast(player, "Z", true)
 end
 
+------------------------------------------------------------------ 99N D (계획 5): the class tasks that open Z / X
+local TASK = { Order = { "Z", "X" } }
+
+function TASK.Kit(player)
+	return Config.SkillKit(classOf(player).Id, factionOf(player))
+end
+
+-- the saved counts (data.SkillTask, made when missing); nil before the data loads
+function TASK.Saved(player)
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" then return nil end
+	if type(data.SkillTask) ~= "table" then data.SkillTask = {} end
+	return data.SkillTask
+end
+
+-- done[slot] = true for each task whose count is reached (what Config.SkillSlotsFor needs)
+function TASK.Done(player)
+	local saved, kit, done = TASK.Saved(player), TASK.Kit(player), {}
+	for _, slot in TASK.Order do
+		local def = Config.SkillTask(kit, slot)
+		if def and saved and num(saved[slot]) >= math.max(1, num(def.Count, 1)) then done[slot] = true end
+	end
+	return done
+end
+
+-- the task running now: the first of Z / X not open yet whose level is reached (and every slot before it open); nil = none
+function TASK.Running(player)
+	if num(player:GetAttribute("Rebirths")) >= 1 then return nil end
+	local have, lv = slotsOf(player), num(player:GetAttribute("Level"), 1)
+	local unlock, kit = K.Unlock or {}, TASK.Kit(player)
+	for _, slot in TASK.Order do
+		if have >= SLOT[slot] then continue end
+		if have < SLOT[slot] - 1 or lv < num(unlock[slot], math.huge) then return nil end
+		local def = Config.SkillTask(kit, slot)
+		return def and slot or nil, def
+	end
+	return nil
+end
+
+-- the two mirrored attributes the client draws the goal from
+function TASK.Mirror(player)
+	if player.Parent == nil then return end
+	local slot = TASK.Running(player)
+	local saved = TASK.Saved(player)
+	player:SetAttribute("SkillTaskSlot", slot or "")
+	player:SetAttribute("SkillTaskN", slot and saved and math.floor(num(saved[slot])) or 0)
+end
+
 ------------------------------------------------------------------ slots (A23-71: Q Lv5, Z Lv15, X Lv25, all after a rebirth)
 local function slotsFor(player)
-	return Config.SkillSlotsFor(num(player:GetAttribute("Level"), 1), num(player:GetAttribute("Rebirths")))
+	return Config.SkillSlotsFor(num(player:GetAttribute("Level"), 1), num(player:GetAttribute("Rebirths")), TASK.Done(player))
 end
 
 -- raises the saved SkillSlots to what the level / rebirths allow (never lowers it); announce = the new-slot Fx
@@ -813,8 +863,9 @@ local function catchUp(player, announce)
 	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player) then return end
 	local have = slotsOf(player)
 	local want = slotsFor(player)
-	if want <= have then return end
+	if want <= have then return TASK.Mirror(player) end
 	S.PlayerService.SetStat(player, "SkillSlots", want)
+	TASK.Mirror(player)
 	if not announce then return end
 	local order = K.Order or { "Q", "Z", "X" }
 	for i = have + 1, want do
@@ -824,6 +875,18 @@ local function catchUp(player, announce)
 			if not ok then Util.Warn(TAG, "unlock: " .. tostring(err)) end
 		end
 	end
+end
+
+-- one step of the running task (kind = its Kind; ok(def) says whether this event fits); the slot opens when it is done
+function TASK.Add(player, kind, ok)
+	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player) then return end
+	local slot, def = TASK.Running(player)
+	if not slot or def.Kind ~= kind or not ok(def) then return end
+	local saved = TASK.Saved(player)
+	if not saved then return end
+	local n = math.max(1, math.floor(num(def.Count, 1)))
+	saved[slot] = math.min(n, math.floor(num(saved[slot])) + 1)
+	catchUp(player, true) -- done: the slot opens (+ the "New skill!" Fx while its switch is on); else the count mirrors
 end
 
 ------------------------------------------------------------------ remote
@@ -867,6 +930,25 @@ function SkillService.Start()
 	connect("PlayerService", "PlayerReady", function(player) catchUp(player, false) end)
 	connect("ProgressionService", "LeveledUp", function(player) catchUp(player, true) end)
 	connect("ProgressionService", "Rebirthed", function(player) catchUp(player, true) end)
+	-- 99N D: the class tasks
+	connect("MonsterService", "MonsterKilled", function(player, info)
+		if type(info) ~= "table" or info.Minor == true then return end
+		TASK.Add(player, "BasicKills", function() return info.SkillHit ~= true end)
+		TASK.Add(player, "FarKills", function(def)
+			local root = Util.GetRoot(player)
+			return root ~= nil and typeof(info.Position) == "Vector3"
+				and (root.Position - info.Position).Magnitude >= num(def.Dist, math.huge)
+		end)
+	end)
+	connect("CombatService", "Released", function(player, r)
+		if type(r) ~= "table" then return end
+		TASK.Add(player, "SkillMulti", function(def)
+			return r.Slot == def.Slot and num(r.MonstersHit) >= math.max(1, num(def.Min, 1))
+		end)
+	end)
+	-- the goal follows a class / faction change (another kit's task)
+	connect("ClassService", "ClassChanged", function(player) catchUp(player, false) end)
+	connect("FactionService", "FactionChanged", function(player) catchUp(player, false) end)
 	-- a real respawn resets the Z / X cooldowns like Q's (CombatService); a cosmetic one never does
 	connect("PlayerService", "CharacterSpawned", function(player, _character, _humanoid, cosmetic)
 		if cosmetic or not isPlayer(player) then return end
