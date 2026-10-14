@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 18 — fix/translate-overflow a61c7fda (push, 최신)
+## 10/14 밤 19 — fix/shop-price-live 503293ac (2-C #10, push, 최신)
+- ShopUI: 공유 읽기 PRICE.Ask(키마다 한 번, pcall, 캐시; 실패·없음 = false 기억; 첫 답 = 열린 상점 다시 그림 PRICE.Refresh = refreshAll). LivePrice(id, GamePass/Product, Config 가격) = GetProductInfo PriceInRobux → 패스 카드·모양·직업/진영 표. SubPrice("EXP-…") = GetSubscriptionProductInfoAsync: DisplayPrice 글(새 Config MonthTextF "%s / mo") 먼저, 없으면 PriceInRobux(MonthF), 없으면 Config. 구독 정보 칸 이름은 문서에 없어 추측 → 게시판 Play에서 확인.
+- main을 한 번 병합(a77b0a21; 구독 카드가 main에만). 새 test_shop_price 32·19/19, shop_ui 변이 글 한 줄(모양 줄) 맞춤 11/11, passes·fast_travel_ui·english·shop_layout 통과.
+- 다음: 장인 ③⑤(개발 2 서버 가지 기다림). Hop MINOR 2개(지붕 맞는 땅 레이, 서버 확인 시작점 호)는 X 켜기 전.
+
+## 10/14 밤 18 — fix/translate-overflow a61c7fda (push)
 - HUD L.GoalGuard(TextFits false → L.GuardStep 1씩, 바닥 max(GoalMin, 스타일 바닥)), FactionPicker 혜택 줄 setTextRange(MIN_TEXT, size), DeathScreen 줄·상자 AutomaticSize Y. FitText·ClassPicker·버튼(TextScaled)은 이미 그린 글 기준. 남은 위험: 키트 버튼 12px 바닥보다 긴 단어. 새 test_translate_overflow 18·7/7.
 - Fast Travel 합친 판(+dev2-pass-ids-2 1eb7399e) 통과; test_shop_ui 'ID 없는 패스' 검사 실패는 개발 2 가지만으로도 같음 → 개발 2에 부탁.
 - 대기 병합: sword-hold fe4665f9, fast-travel-pass-ui ca659495, dev1-artisan-sell 651e54e1, translate-overflow a61c7fda.
