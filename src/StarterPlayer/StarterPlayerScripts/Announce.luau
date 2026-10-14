@@ -78,52 +78,13 @@ function A.Show(msg)
 	if not ok or type(line) ~= "string" then return end
 	local g = Config.WeaponGrades[msg.Grade] or Config.WeaponGrades.Rare
 	local ev = type(msg) == "table" and type(Config.Announce.Events) == "table" and Config.Announce.Events[msg.Key] or nil
-	-- art left of the toast / banner text (UIKit.ItemIcon; nil = text only): the event's Icon, or the monster's head
-	-- for a rare drop (IconMon<Monster>)
 	local args = type(msg.Args) == "table" and msg.Args or {}
-	local icon = (type(ev) == "table" and type(ev.Icon) == "string" and ev.Icon)
-		or (msg.Key == "RareWeapon" and type(args.Monster) == "string" and "IconMon" .. args.Monster) or nil
 	if type(ev) == "table" then
-		-- event line: its own colour; the toast is skipped (not held) while the opening / a picker / the first
-		-- mission holds banners: by then the news is old, the chat line stays
+		-- event line: its own colour
 		g = { Rank = 0, Color = typeof(ev.Color) == "Color3" and ev.Color or g.Color }
-		local ui = C and C.UIKit
-		if ev.Toast == true and type(ui) == "table" and type(ui.Toast) == "function" then
-			local hold = false
-			if type(ui.ShouldHoldBanners) == "function" then
-				local okH, h = pcall(ui.ShouldHoldBanners)
-				hold = okH and h == true
-			end
-			if not hold then pcall(ui.Toast, (line:gsub("&lt;", "<"):gsub("&gt;", ">"):gsub("&amp;", "&")), "reward", 5, icon) end
-		end
+		-- A23-191 (user 10/14): no toast, the chat line only
 	end
-	-- big news is also visible without opening the chat: a banner for Legendary, a toast for Epic. Not for the
-	-- finder (they already got their own toast) and never over the opening / pickers / first mission: then a
-	-- Legendary banner / Epic toast waits in UIKit.HeldBanners (max 2, like Notify) until FlushBanners.
-	local ui = C and C.UIKit
-	if type(ui) == "table" and msg.Self ~= true and g.Rank >= 4 then
-		local hold = false
-		if type(ui.ShouldHoldBanners) == "function" then
-			local okH, h = pcall(ui.ShouldHoldBanners)
-			hold = okH and h == true
-		end
-		if g.Rank >= 5 then
-			if hold then
-				if type(ui.HeldBanners) ~= "table" then ui.HeldBanners = {} end
-				table.insert(ui.HeldBanners, { line, 6, nil, icon })
-				if #ui.HeldBanners > 2 then table.remove(ui.HeldBanners, 1) end
-			elseif type(ui.Announce) == "function" then
-				pcall(ui.Announce, line, 6, icon)
-			end
-		elseif hold then
-			-- A23-15: deferred, not dropped: shown as a toast by UIKit.FlushBanners after the opening / first mission
-			if type(ui.HeldBanners) ~= "table" then ui.HeldBanners = {} end
-			table.insert(ui.HeldBanners, { line, 4, "toast", icon })
-			if #ui.HeldBanners > 2 then table.remove(ui.HeldBanners, 1) end
-		elseif type(ui.Toast) == "function" then
-			pcall(ui.Toast, line, "reward", 4, icon)
-		end
-	end
+	-- A23-191 (user 10/14 "파란 UI 아예 나오지 않게"): no banner / toast for big news - the chat line only
 	A.Chat(line, g.Color)
 	-- lines_pack 12: the kings' banter of the day, right under the appear line, same colour, chat only
 	if type(ev) == "table" and type(args.Banter) == "string" and args.Banter ~= "" then

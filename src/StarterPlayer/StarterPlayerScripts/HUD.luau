@@ -750,7 +750,7 @@ end
 function L.FirstWeapon()
 	local F = L.First
 	if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, "PowerUp") end
-	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, TXT.Stronger, F.Banner) end
+	-- A23-191: no "Stronger!" banner (the sparkles + the power count-up say it)
 	-- gold sparkles bursting from me (Roblox's own sparkle texture; no new art)
 	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 	if root then
@@ -6798,13 +6798,8 @@ function HUD.Start()
 	for _, name in { "Level", "SkillSlots", "EquippedPet" } do
 		LocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)
 	end
-	-- Studio-only check hook (UiSandbox captures of A23-68 #2): the local attribute HintPreview = "Attack" / "Q" shows
-	-- that hint, any other value clears them; never read outside Studio
+	-- Studio-only check hooks (A23-191: the hint preview went with the hints)
 	if game:GetService("RunService"):IsStudio() then
-		LocalPlayer:GetAttributeChangedSignal("HintPreview"):Connect(function()
-			local v = LocalPlayer:GetAttribute("HintPreview")
-			if v == "Attack" or v == "Q" or v == "Z" or v == "X" then HUD.Hint(v) else HUD.ClearHint(nil) end
-		end)
 		-- ChipsFoldPreview = true / false folds / unfolds the status chips (이미지 개발 photos, ui_clutter_review ③)
 		LocalPlayer:GetAttributeChangedSignal("ChipsFoldPreview"):Connect(function()
 			-- a photo preview turns 개발 1's automatic fold off (L.ChipFold.Auto) so it cannot fold / unfold mid-shot

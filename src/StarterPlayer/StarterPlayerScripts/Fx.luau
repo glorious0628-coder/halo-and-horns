@@ -79,11 +79,7 @@ local MAX_SHAKE = 3
 local FONT_NUMBER = Enum.Font.DenkOne -- A23-63 (user 2026-10-07) / UI ideas #7: damage numbers, combo and milestone in Denk One
 local MIN_TEXT_SIZE = (Config.UI and Config.UI.MinTextSize) or 11 -- addendum M1
 
--- A7-3 level-up announce (client-only feature; A23-48: English).
--- Announce completed unlocks only; future unlock advertising was removed by user request.
-local TXT_UNLOCK_ZONE = "Now open: %s"
-local TXT_UNLOCK_REBIRTH = "Rebirth"
-local TXT_UNLOCKED_FALLBACK = "Unlocked! %s"
+-- A7-3 level-up banner removed (A23-191, user 10/14: no blue banners at all)
 local TXT_BANK = "Vault +%s"
 
 -- B14 loot popups / toasts (2026-10-05 loot review). One table: Fx.luau is close to the 200-locals limit.
@@ -2337,78 +2333,10 @@ end
 ----------------------------------------------------------------- own level-up announce (A7-3)
 local lastLevelSeen = nil
 
--- { [level] = { text, ... } }, { [level] = { zoneId, ... } } derived from Config only
-local function buildUnlocks()
-	local list = {}
-	local zonesAt = {}
-	local function add(level, text)
-		if type(level) ~= "number" or level <= 1 or type(text) ~= "string" then return end
-		local entry = list[level]
-		if entry then
-			table.insert(entry, text)
-		else
-			list[level] = { text }
-		end
-	end
-	for _, zoneId in Config.ZoneOrder do
-		local z = Config.Zones[zoneId]
-		if type(z) == "table" and z.Town ~= true and type(z.MinLevel) == "number" and z.MinLevel > 1 then
-			add(z.MinLevel, string.format(TXT_UNLOCK_ZONE, tostring(z.Name)))
-			zonesAt[z.MinLevel] = zonesAt[z.MinLevel] or {}
-			table.insert(zonesAt[z.MinLevel], zoneId)
-		end
-	end
-	local tier = asNum(myAttr("WeaponTier", 1), 1)
-	local classId = asStr(myAttr("Class", "Warrior"), "Warrior")
-	local factionId = asStr(myAttr("Faction", "None"), "None")
-	for t, w in Config.Weapons do
-		if t > tier and t <= Config.WeaponShop.MaxSoldTier and type(w) == "table" then
-			add(w.MinLevel, Config.WeaponName(t, classId, factionId))
-		end
-	end
-	add(Config.RebirthLevel(asNum(myAttr("Rebirths", 0), 0)), TXT_UNLOCK_REBIRTH)
-	return list, zonesAt
-end
-
 local function announceLevelUp(level)
-	level = math.floor(level)
-	local prev = lastLevelSeen
-	if type(prev) ~= "number" or prev >= level then prev = level - 1 end
-	prev = math.max(prev, level - 200)
-	lastLevelSeen = level
-
-	local unlocks, zonesAt = buildUnlocks()
-	local reached, reachedZones = {}, {}
-	for lvl = prev + 1, level do
-		local u = unlocks[lvl]
-		if u then
-			for _, text in u do table.insert(reached, text) end
-		end
-		local z = zonesAt[lvl]
-		if z then
-			for _, zoneId in z do table.insert(reachedZones, zoneId) end
-		end
-	end
-	local base = fmt("LevelUp", level)
-	if #reached > 0 then
-		uiCall("Announce", base .. " · " .. textOr("Unlocked", TXT_UNLOCKED_FALLBACK, table.concat(reached, ", ")))
-		-- crown-shard story one-liners, only at zone unlocks and only before the first rebirth
-		local lines = Config.StoryLines
-		if type(lines) == "table" and asNum(myAttr("Rebirths", 0), 0) == 0 and (Config.Nudges or {}).ZoneStoryLine ~= false then
-			local delayT = 1.2
-			for _, zoneId in reachedZones do
-				local line = plainLine(lines[zoneId])
-				if line and line ~= "" then
-					later(delayT, function()
-						uiCall("Toast", line, "info", 5)
-					end)
-					delayT += 1.5
-				end
-			end
-		end
-	else
-		uiCall("Announce", base)
-	end
+	-- A23-191 (user 10/14 "파란 UI 아예 나오지 않게"): no level-up banner, no unlock list, no zone story toast - the HUD's
+	-- level number and the goal line say it
+	lastLevelSeen = math.floor(level)
 end
 
 ----------------------------------------------------------------- A14-4 combat feel
@@ -4574,7 +4502,7 @@ handlers.Rare = function(_data)
 		ring(pos, 10, COLOR_GOLD, { Grow = 0.3, Fade = 0.6, Transparency = 0.3 })
 		pillar(pos, 30, 3, COLOR_GOLD, 1.2)
 	end
-	uiCall("Announce", fmt("RareToast"))
+	-- A23-191: no banner (the gold burst says it)
 end
 
 handlers.GooseEnd = function(data)

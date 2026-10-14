@@ -667,7 +667,7 @@ end
 ----------------------------------------------------------------- A23-71 learn moment
 function LEARN.Show(b, st)
 	local slot = b.Slot
-	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, trx(TXT, "NewSkill", st.Def.Name), LEARN.Banner) end
+	-- A23-191: no "New skill!" banner (the button pops in)
 	-- the button pops in (no bounce with 'Screen shake' off)
 	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
 	if not reduced then
@@ -701,8 +701,7 @@ function LEARN.LateHint(slot)
 	local line = LEARN.HintWait[slot]
 	if not line then return end
 	LEARN.HintWait[slot] = nil
-	local hud = C and C.HUD
-	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
+	-- A23-191 (user 10/14): no hint bubble over the new skill button
 end
 
 -- the keys tip (once): a calm card with [Open Settings] -> the Settings window's Keys tab (PauseCard waits for a free
@@ -710,10 +709,7 @@ end
 function LEARN.Tip()
 	if not LEARN.TipPending then return end
 	LEARN.TipPending = false
-	local card = C and C.PauseCard
-	if type(card) == "table" and type(card.Show) == "function" then
-		pcall(card.Show, "Tip", { Text = TXT.KeysTip, Go = { Text = TXT.KeysTipGo, Window = "Settings", Arg = { Tab = "Keys" } } })
-	end
+	-- A23-191 (user 10/14): no keys tip card (the same tip stays in Help)
 end
 
 -- the SkillLearn sound (PowerUp until its file is uploaded)

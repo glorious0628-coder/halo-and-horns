@@ -227,8 +227,7 @@ function HINT.Step(now)
 		if d < math.huge then
 			HINT.NearSince = HINT.NearSince or now
 			if now - HINT.NearSince >= HINT.Idle then
-				HINT.AttackShown = true
-				call("HUD", "Hint", "Attack")
+				HINT.AttackShown = true -- A23-191 (user 10/14): no attack hint bubble any more
 			end
 		else
 			HINT.NearSince = nil
@@ -303,7 +302,7 @@ function PVP.SkipToast(payload, text)
 end
 
 function PVP.Show()
-	call("PauseCard", "Show", "Tip", { Title = PVP.Title, Text = PVP.Text, Why = PVP.Why })
+	-- A23-191 (user 10/14 "다 삭제하라고"): no first-PvP tip card any more
 end
 
 -- my card was closed (PauseCard.Shown: kind, button, why): the flag, once
