@@ -17552,5 +17552,116 @@
    "result": "same fault (both ends round copper); 2D right view is not end-on (cap seen from the side) -> 2D side views need a redraw",
    "sheet": "art/review/weapon_design/Blacksmith_T2_2d_heads.jpg"
   }
+ ],
+ "Weapon_Neutral_Blacksmith_T2_web_hd_a23_174_v3": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 night",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "653914f6-3ef5-40ba-aa62-dbe1d1116592",
+   "balance_after": 18155,
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_front.png",
+    "left": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_left.png",
+    "right": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD3_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind hammer --grip 0.3",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    1.472,
+    0.825,
+    3.5
+   ],
+   "pivot_share": 0.3,
+   "tris": 7168,
+   "check": "art/review/weapon_design/new_HD3_fit.png",
+   "sheet": "art/review/weapon_design/redo_HD3_Blacksmith.jpg / meme_HD.jpg"
+  }
+ ],
+ "Weapon_Meme_FryingPan_web_hd_a23_174": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 night",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "80dd528e-8d03-4170-9207-d9952e2d780b",
+   "balance_after": 18100,
+   "inputs": {
+    "front": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_front.png",
+    "left": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_left.png",
+    "right": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_right.png",
+    "back": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Meme_FryingPan/Weapon_Meme_FryingPan_HD_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind meme --grip 0.28",
+   "out": "art/models/tripo/weapons/Weapon_Meme_FryingPan/Weapon_Meme_FryingPan_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    1.611,
+    0.311,
+    3.5
+   ],
+   "pivot_share": 0.28,
+   "tris": 7774,
+   "check": "art/review/weapon_design/new_HD3_fit.png",
+   "sheet": "art/review/weapon_design/redo_HD3_Blacksmith.jpg / meme_HD.jpg"
+  }
+ ],
+ "Weapon_Meme_RubberChicken_web_hd_a23_174": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 night",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "84c9bc27-d5f1-41c3-9ace-a11162941382",
+   "balance_after": 18045,
+   "inputs": {
+    "front": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_front.png",
+    "left": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_left.png",
+    "right": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_right.png",
+    "back": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Meme_RubberChicken/Weapon_Meme_RubberChicken_HD_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind meme --grip 0.15",
+   "out": "art/models/tripo/weapons/Weapon_Meme_RubberChicken/Weapon_Meme_RubberChicken_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    0.843,
+    0.818,
+    3.5
+   ],
+   "pivot_share": 0.15,
+   "tris": 7610,
+   "check": "art/review/weapon_design/new_HD3_fit.png",
+   "sheet": "art/review/weapon_design/redo_HD3_Blacksmith.jpg / meme_HD.jpg"
+  }
  ]
 }
