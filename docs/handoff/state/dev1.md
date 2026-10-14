@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 5 — dev1-village-fund f9afc184 (다 됨·push, 최신)
+## 10/14 밤 6 — dev1-village-fund 864cf867 (다 됨·push, 최신)
+- 개발 2 메시지(실제 서버 모양)에 맞춘 위 커밋 864cf867(f9afc184 위): Net.luau 뺌(개발 2가 FundGive/FundOpen + GameStateDefaults 넣음), 속성 = GameState 폴더, state Why("Poor"/"Full"/"Closed")·Can·Sum(막대; Week = 주 번호), 서버 글 Text.Title/Today/[side].Give/Poor(%s Step)/Full(%d PerDay)/Closed 사용, Config.VillageFundScreen은 Lead·Gold·Close·Week·Marks·Lanterns·Fireworks만, 프롬프트 ActionKey/ObjectKey Config 경로 → ActionText/ObjectText.
+- 시험 test_village_fund_ui 61·23/23 + 정적 8(Net 이름은 '많아야 1번'), english, l10n, story_text, place_english 통과. 개발 2 dev2-village-fund push 기다림 → 합친 판 시험 → 최종 검수 같이 병합.
+
+## 10/14 밤 5 — dev1-village-fund f9afc184
 - death-box(24eae591)·choice-card-held(84cefeeb) main 병합됨.
 - **마을 기금 화면**(A23-178 B, 계약 docs/design/village_fund_server_2026-10-14.md §8): 가지 **dev1-village-fund f9afc184**(origin/main 67ed5712 위 1커밋). 새 모듈 VillageFundUI(ClientMain ChoiceCardUI 뒤): ① FundPrompt는 내 진영 것만 Enabled(속성 Faction, 없으면 가까운 Spots), FundOpen → Panels 'VillageFund' 카드(Lead Share/Show off, Today n/3, 가진 골드, [Give 1,000] → FundGive:FireServer() 인자 없음, 1초 잠금, [Close]), 새 FundOpen = 제자리 갱신, 분수에서 Radius+8 멀어지거나 진영 바뀌면 닫힘 ② Poor/Full = [Give] 흐림 + 서버 글 Config.VillageFund.Text.Poor/Full ③ 주간 막대 UIKit.ArtBar(불꽃 목표까지 채움, 등불 30% 눈금, ReplicatedStorage FundHalo/FundHorns 실시간) ④ 등불(FundLevel≥1, 고리 8개·폰 4개, 둥근 반짝임+PointLight)·밤 불꽃(≥2 + DayPhase Night, 별·색종이 Emit 2.6~4.2초마다, 폰 5~7초·반), 빛줄기·Beam·Trail 없음.
 - Net: FundGive·FundOpen 내 가지가 넣음(개발 2에 알림). Config: 새 표 Config.VillageFundScreen만(카드 글). Config.VillageFund는 개발 2 몫 — 시험은 없으면 계약 §2 표를 넣고 돎.
