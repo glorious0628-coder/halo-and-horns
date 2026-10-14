@@ -337,8 +337,9 @@ Config.WeaponInfo = {
 	{ Grade = "Common", Source = "Your first weapon, a gift from the Blacksmith", SourceEn = "Your first weapon, a gift from the Blacksmith" }, -- A23-34
 	{ Grade = "Common", Source = "Slime Prince drop (your first one always drops it)", ShopSource = "Sold at the Forge" },
 	{ Grade = "Fine", Source = "King Slime drop (your first one always drops it)", ShopSource = "Sold at the Forge (from Lv5)" },
-	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes, or a Forge commission" },
-	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights, or a Forge commission" },
+	-- 2-A ⑤ weapon luck (Config.Loot.FirstTierDrops): the first Brute / Knight or Clatter always drops T4 / T5
+	{ Grade = "Rare", Source = "Rare drop in the Goblin Woods (your first Goblin Brute always drops it), or a Forge commission" },
+	{ Grade = "Epic", Source = "Rare drop in the Skeleton Ruins (your first Knight or Captain Clatter always drops it), or a Forge commission" },
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
 	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
@@ -3887,6 +3888,43 @@ Config.StoryQuests = {
 	},
 }
 
+-- gameplay plan 2026-10-14 2-A ⑤ (weapon luck, 게임성 개발 2): two woods subs for everyone (Lv12 = the tier-4 weapon's level,
+-- Lv20 = the tier-5 one's): the usual pick rewards + Gold 2 / XP 2 + one 30% scroll (Reward.Item) for the weapon. The
+-- words promise no weapon (the first Brute's tier 4 is Config.Loot.FirstTierDrops' own line)
+Config.StoryQuests.Defs.GW9 = {
+	Kind = "Sub", Title = "Otto's Lost Blades", ShortName = "Lost blades", Speaker = "Smith",
+	Requires = { Done = { "M2_7" }, Level = 12 },
+	Start = "Otto: The Goblin Brutes carry off my old blades! Find out why.",
+	Steps = {
+		{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 2 } },
+		{ Text = "The Brute's sack", Panel = true,
+			Lines = { All = { "Otto: Old blades! The Brutes use them to dig for shiny rocks.", "Otto: So what do we do with them?" } },
+			Obj = { Type = "Choice", Good = { Label = "Fix them for new hunters", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+				Evil = { Label = "Sell them back to the Brutes", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
+				Neutral = { A = "Fix them for new hunters", B = "Sell them back to the Brutes" } } },
+	},
+	Reward = { Gold = 2, XP = 2, Item = "Enh30", N = 1 },
+	Finish = "Otto: A blade is only as good as the hand that holds it.",
+}
+Config.StoryQuests.Defs.GW10 = {
+	Kind = "Sub", Title = "Ready for the Ruins", ShortName = "To the ruins",
+	Requires = { Done = { "M2_7" }, Level = 20 },
+	Start = "The Skeleton Ruins open at Lv25. Get your weapon ready in the woods!",
+	Steps = {
+		{ Text = "Goblins %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 15 } },
+		{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 3 } },
+		{ Text = "Before the ruins", Panel = true,
+			Lines = { All = { "Your weapon feels ready.", "The ruins are big. Who goes with you?" } },
+			Obj = { Type = "Choice", Good = { Label = "Wait for a new hunter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+				Evil = { Label = "Go first. Take the best spot!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
+				Neutral = { A = "Wait for a new hunter", B = "Go first. Take the best spot!" } } },
+	},
+	Reward = { Gold = 2, XP = 2, Item = "Enh30", N = 1 },
+	Finish = "Is it braver to go first, or to go together?",
+}
+table.insert(Config.StoryQuests.Subs, table.find(Config.StoryQuests.Subs, "GW8") + 1, "GW9")
+table.insert(Config.StoryQuests.Subs, table.find(Config.StoryQuests.Subs, "GW9") + 1, "GW10")
+
 -- A23-46 town sub-quest spots at the bridge ends of Config.Map.Bridges: the meadow end of the Goblin bridge (650, 0, 0)
 -- 14 studs back, outside the PvP woods (H1 spies there), and the Crossroads ends of the Halo / Horns bridges (0, 0, -150)
 -- / (0, 0, 150) 12 studs onto the land (N3 watches them). They move with the bridges: tools/test_town_quests.py fails
@@ -5686,6 +5724,21 @@ Config.Loot = {
 	-- gameplay plan 2026-10-13 1-A #2: the same for the first King Slime a player defeats (a paid kill, not a practice
 	-- King; LootFlags.FirstKingWeapon): the tier-3 iron weapon (Text.FirstKingWeapon / FirstKingEquip)
 	FirstKingDrop = { Monster = "SlimeKing", Tier = 3 },
+	-- gameplay plan 2026-10-14 2-A ⑤ (weapon luck, 게임성 개발 2): the same for the first Goblin Brute (tier 4) and the first
+	-- Skeleton Knight or Captain Clatter (tier 5, one guarantee for both) a player defeats: a paid kill (never a free rider's
+	-- share or a practice boss), LootFlags[Flag] once, a weapon owned already = the chance is used. Monsters = kind -> the
+	-- Text keys "First<that>Weapon" / "First<that>Equip"
+	FirstTierDrops = {
+		{ Monsters = { GoblinBrute = "Brute" }, Tier = 4, Flag = "FirstBruteWeapon" },
+		{ Monsters = { SkeletonKnight = "Knight", CaptainClatter = "Clatter" }, Tier = 5, Flag = "FirstKnightWeapon" },
+	},
+	-- 2-A ⑤ weapon luck: every kill that rolls a weapon row of a tier not owned yet adds that row's chance (x GoldenMult on a
+	-- golden monster, at most 1; no bully / ranking / pit multipliers; a BelowLevel row that is not rolled adds nothing) to
+	-- data.WeaponPity["T<tier>"] (an additive save field: it only ever grows). At At[tier] (= that many drops' worth of
+	-- luck) the tier drops for sure (Text.PityWeapon / PityEquip). At 1.5 = at most 300 Goblin Brutes or 750 Goblins for T4,
+	-- 375 Skeleton Knights for T5, 1500 Knights or 150 Captain Clatters (from Lv30) for T6, 100 Slime Princes for T3.
+	-- The jackpot (T8) has no pity.
+	WeaponPity = { Enabled = true, At = { [3] = 1.5, [4] = 1.5, [5] = 1.5, [6] = 1.5 } },
 	-- a weapon drop the player already owns turns into gold
 	DuplicateWeaponGold = { [2] = 15, [3] = 80, [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 }, -- C2: 2 / 3 = 10% of the old price
 	Text = {
@@ -5706,6 +5759,16 @@ Config.Loot = {
 		FirstDropEquip = "The Slime Prince dropped [%s]! Equipped.", -- C2: ... and it beat the weapon in hand
 		FirstKingWeapon = "The King Slime dropped [%s]!", -- 1-A #2: the first King's weapon (weapon)
 		FirstKingEquip = "The King Slime dropped [%s]! Equipped.", -- ... and it beat the weapon in hand
+		-- 2-A ⑤ FirstTierDrops (weapon); "...Equip" = it beat the weapon in hand
+		FirstBruteWeapon = "The Goblin Brute dropped [%s]!",
+		FirstBruteEquip = "The Goblin Brute dropped [%s]! Equipped.",
+		FirstKnightWeapon = "The Skeleton Knight dropped [%s]!",
+		FirstKnightEquip = "The Skeleton Knight dropped [%s]! Equipped.",
+		FirstClatterWeapon = "Captain Clatter dropped [%s]!",
+		FirstClatterEquip = "Captain Clatter dropped [%s]! Equipped.",
+		-- 2-A ⑤ WeaponPity (weapon)
+		PityWeapon = "Your hunting paid off! [%s]!",
+		PityEquip = "Your hunting paid off! [%s]! Equipped.",
 		JackpotSelf = "Legendary weapon [%s]!",
 		-- A23-34: the same jackpot found bare-handed is equipped at once
 		JackpotEquip = "Legendary weapon [%s]!",
@@ -5741,6 +5804,8 @@ Config.Loot = {
 		SellFar = "Sell materials near the Forge anvil.",
 	},
 }
+-- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
+Config.Data.Defaults.WeaponPity = {}
 
 -- Roblox's own chat lines in English (A23-48; 검수 2026-10-07: the team line showed in the player's Roblox language).
 -- ChatText.luau rewrites them on the legacy chat (server), Announce.luau on TextChatService (client).
