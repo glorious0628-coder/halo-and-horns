@@ -74,7 +74,7 @@ MUTATIONS = [
     ("loot: pack keeps the tier owned", L, "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(", "\tlocal _ = (bit32.band("),
     ("loot: pack keeps the +N on the tier", L, "\tdata.WeaponEnhance[tier] = 0\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(",
      "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band("),
-    ("loot: unpack an owned tier", L, "\tif owns(data, tier) then return \"Owned\" end\n\tLootService.TakeSpare(", "\tLootService.TakeSpare("),
+    ("loot: unpack an owned tier", L, "\tif owns(data, tier) then\n\t\t-- GPT review ②", "\tif false then\n\t\t-- GPT review ②"),
     # --- gates
     ("gate: no buy level", X, "\tif level < M.BuyLevel then\n\t\tg.Buy = \"NeedLevelBuy\"\n\telseif", "\tif false then\n\t\tg.Buy = \"NeedLevelBuy\"\n\telseif"),
     ("gate: no account age", X, "\telseif num(age, 0) < M.ListAccountDays then\n", "\telseif false then\n"),
@@ -95,7 +95,7 @@ MUTATIONS = [
     # --- buy
     ("buy: my own listing", X, "\tif rec.Seller == player.UserId then return note(player, \"Own\") end\n", ""),
     ("buy: any price", X, "\tif math.floor(num(rec.Price, -1)) ~= price then return note(player, \"PriceChanged\") end\n", ""),
-    ("buy: an owned weapon tier", X, "\tif info.Kind == \"W\" and ownsTier(data, info.Tier) then return note(player, \"Owned\") end\n", ""),
+    ("buy: an owned weapon tier", X, "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand info.Plus <= ", "\tif false and ownsTier(data, info.Tier)\n\t\tand info.Plus <= "),
     ("buy: no room check", X, "\tif info.Kind == \"I\" and not hasRoom(data, rec.K, n) then return note(player, \"CantReceive\") end\n", ""),
     ("buy: no pair limit", X, "\tif math.floor(num(m[pairKey], 0)) >= M.PairDay then return note(player, \"PairLimit\") end\n", ""),
     ("buy: one unit's price for the row", X, "\tlocal total = price * n\n", "\tlocal total = price\n"),
