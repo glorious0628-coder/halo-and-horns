@@ -1,5 +1,9 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 13:30 게시판 2 저장 (사용자 Save to File As)
+- build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/14 13:29:46, 44,746,759 B, SHA256 d8cb0d3e…d8fb, push 39a078e. 소스 176개 일치(main 5fb03ad0 = sync 판), 임시 시험 개체(TmpKoTest·TmpMainApplyTest) 0, 끝 `</roblox>`. 앞 판(83173b9e…, 12:24)을 새 판으로 덮음. 다음 = 사용자 Alt+P.
+- 번역 시험 기록: 임시 LocalizationTable을 LocalizationService 아래에 두면 HUD가 한국어로 그려짐(코드 정상, publish3/ko_local.png) — 게시본 영어는 클라우드 표에 글이 없어서(최종 검수 판단).
+
 ## 10/14 12:25 게시판 저장 (사용자 Save to File As)
 - build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/14 12:24:26, 44,728,640 B, SHA256 83173b9e…cd18, push 13c7098. 소스 176개 전부 일치(main 4204aa30 = HEAD src, 스크립트 Source 대조 missing 0), 끝 `</roblox>` 확인. 대조 스크립트 build/p2_cmp.py(git 무시). Studio 열림·Edit. 다음 = 사용자 Alt+P, '게시함' 오면 Creator Hub 기록 확인.
 
