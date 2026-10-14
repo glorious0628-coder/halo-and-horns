@@ -301,6 +301,14 @@ runGroup("teacher", function()
 	check(w.Skills.TryLearn(h, "Smokey") == false and h:GetAttribute("SkillSlots") == 0, "100 studs from Rose: too far", show(a(h)))
 	h.Character:FindFirstChild("HumanoidRootPart").Position = vec(0, 0, -90)
 	check(w.Skills.TryLearn(h, "Smokey") == true and h:GetAttribute("SkillSlots") == 1, "10 studs from Rose: learned", show(a(h)))
+	-- main Play 10/14: DebugCommand Level 5 (SetStat only, no LeveledUp) left the skill unready: any Level change catches up
+	local dbg = w:Hero(9, { Level = 1, Faction = "Halo" })
+	w:Flush()
+	local fd = #w.Fx
+	w.PS.SetStat(dbg, "Level", 5)
+	w:Flush()
+	check(dbg:GetAttribute("SkillLearnReady") == 1 and dbg:GetAttribute("SkillTeacher") == "Gleam" and dbg:GetAttribute("SkillSlots") == 0
+		and #w:FxOf("SkillUnlocked", fd) == 0, "a debug Level set (no level-up signal): Q ready at Sir Gleam too", show(a(dbg)))
 	-- two at once (Lv4 -> 16): Q and Z together from one talk
 	local j = w:Hero(3, { Level = 4, Faction = "Halo" })
 	local f1 = #w.Fx

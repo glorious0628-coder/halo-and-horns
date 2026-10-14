@@ -1002,7 +1002,20 @@ function SkillService.Start()
 		local ok, err = pcall(onUseSkill, player, ...)
 		if not ok then Util.Warn(TAG, "UseSkill: " .. tostring(err)) end
 	end)
-	connect("PlayerService", "PlayerReady", function(player) catchUp(player, false) end)
+	-- A23-193 (main Play 10/14: DebugCommand Level 5 left SkillLearnReady 0): any Level change (a debug / admin set, not
+	-- only ProgressionService's level-up) catches up too - the same idempotent step
+	local levelHooked = setmetatable({}, { __mode = "k" })
+	connect("PlayerService", "PlayerReady", function(player)
+		catchUp(player, false)
+		if levelHooked[player] or not isPlayer(player) then return end
+		levelHooked[player] = true
+		pcall(function()
+			player:GetAttributeChangedSignal("Level"):Connect(function()
+				local ok, err = pcall(catchUp, player, true)
+				if not ok then Util.Warn(TAG, "Level: " .. tostring(err)) end
+			end)
+		end)
+	end)
 	connect("ProgressionService", "LeveledUp", function(player) catchUp(player, true) end)
 	connect("ProgressionService", "Rebirthed", function(player) catchUp(player, true) end)
 	-- 99N D: the class tasks

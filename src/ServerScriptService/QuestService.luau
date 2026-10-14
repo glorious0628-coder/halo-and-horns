@@ -877,8 +877,11 @@ local function publish(player)
 	-- after the first mission the story main row takes the pinned slot (the next-goal line stays the fallback)
 	local story = S.StoryQuestService
 	if getStep(player) == TUT_DONE and story and type(story.MainRow) == "function" then
+		-- A23-193: a skill waiting at the side's teacher keeps the pinned row ("Learn a skill: meet <teacher>") over the
+		-- story main row (after the Forge visit; the main row comes back once it is learned)
+		local learnWaits = tutorial ~= nil and tutorial.GoalKind == "SkillLearn"
 		local okMain, main = pcall(story.MainRow, player, data)
-		if okMain and main then tutorial = main end
+		if okMain and main and not learnWaits then tutorial = main end
 	end
 	if tutorial then table.insert(list, tutorial) end -- always first, never occupies/rerolls a daily slot
 	if story and type(story.SubRows) == "function" then

@@ -94,6 +94,15 @@ function StoryNpcs.Refresh()
 		if ok then entries = list end
 	end
 	local called = StoryNpcs.Called(entries)
+	-- A23-193 (main Play 10/14: Sir Gleam's Talk prompt stayed off): the teacher of a ready skill is called too (server
+	-- attributes SkillLearnReady > SkillSlots, SkillTeacher = the NpcId), so the "!" shows and the Talk press reaches
+	-- SkillService.TryLearn
+	local me = game:GetService("Players").LocalPlayer
+	if me then
+		local teacher = me:GetAttribute("SkillTeacher")
+		local ready, slots = tonumber(me:GetAttribute("SkillLearnReady")) or 0, tonumber(me:GetAttribute("SkillSlots")) or 0
+		if type(teacher) == "string" and teacher ~= "" and ready > slots then called[teacher] = true end
+	end
 	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
 	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
 	if not ok or type(list) ~= "table" then return end
