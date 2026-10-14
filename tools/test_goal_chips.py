@@ -86,9 +86,9 @@ local rb0 = Config.RebirthLevel(0)
 Sk.ZEnabled, Sk.XEnabled = false, false
 local n, b = L.GoalTiers(1, 0, 0, "Halo", nil)
 check(n == string.format("Next: Lv %d · first skill", q), "Lv1, no skill: Next = the first skill", n)
-check(b == "Big goal: Win the Crown for the Knights", "Knights: Big goal = the crown for the Knights", b)
+check(b == "Big goal: Win the Crown", "Knights: Big goal = the crown (short; the side is the line's colour)", b)
 n, b = L.GoalTiers(1, 0, 0, "Horns", nil)
-check(b == "Big goal: Win the Crown for the Legion", "Legion: its own crown line", b)
+check(b == "Big goal: Win the Crown", "Legion: the same short crown line", b)
 n, b = L.GoalTiers(3, 0, 0, "Neutral", nil)
 check(b == nil and n ~= nil, "the Artisan Guild: no crown line (Next still)", tostring(b))
 -- 최종 검수 10/14 MINOR: no crown line for Neutral / None / no side on purpose, not by a format error
@@ -322,6 +322,11 @@ def run(src: dict) -> tuple[int, int, str]:
     return (int(m[1]) if m else 0), (int(m[2]) if m else 1), out
 
 
+def tier_block(h: str) -> str:
+    a = h.find("local tiers = {}")
+    return h[a:h.find("tiers[3].TextColor3", a)] if a >= 0 else ""
+
+
 def statics(src: dict) -> list[tuple[str, bool]]:
     h, ds, fp = src["HUD"], src["DS"], src["FP"]
     return [
@@ -330,11 +335,16 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          'UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction" }, function() L.RefreshGoalTiers() end)' in h),
         ("the tiers draw only while on and the tracker shows", "if L.GoalTiersOn() and t.Frame.Visible then" in h),
         ("the tracker's room on small PC windows counts the tiers",
-         "+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) + T.Gap) * 2 or 0)" in h),
+         "+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) * (1 + L.TierLines) + T.Gap * 2) or 0)" in h
+         and "L.TierLines = 2" in h),
         ("the tiers sit under the progress line (LayoutOrder 4-5)", "LayoutOrder = 2 + i," in h),
-        # 최종 검수 10/14 MINOR: the small-PC room counts ONE line per tier -> a tier never wraps to a second line
-        ("the tiers stay one line (the room counts one line each)",
-         "AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd," in h),
+        # 최종 검수 10/14 (user photo): a tier wraps (two lines at most), never a '…'; its box = its drawn text
+        ("the tiers wrap, never cut, sized from their drawn text; tier 3 in my side's colour",
+         "TextWrapped = true, TextTruncate = Enum.TextTruncate.None," in h and "Enum.TextTruncate.AtEnd" not in tier_block(h)
+         and 'l:GetPropertyChangedSignal("TextBounds"):Connect(function() L.FitTierHeight(l) end)' in h
+         and "local h = math.ceil(l.TextBounds.Y / math.max(0.05, currentScale()))" in h
+         and 'local col = (f == "Halo" or f == "Horns") and factionColor(f) or ac("GoldText", Theme.Gold)' in h
+         and 'Halo = "Win the Crown", Horns = "Win the Crown",' in src["CONFIG"]),
         ("the KO screen draws the Got labels", 'S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i)' in ds),
         ("the KO screen paints the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)" in ds),
         ("the run's attributes are watched", re.search(r'for _, k in \{ "Level", "XP", "CarriedGold", "BankGold", "Honor", "Infamy", '
@@ -346,7 +356,14 @@ def statics(src: dict) -> list[tuple[str, bool]]:
 
 
 STATIC_MUTATIONS = [
-    ("HUD", "a tier wraps to two lines", "TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd,", "TextWrapped = true,"),
+    ("HUD", "a tier cut with '…' again", "TextWrapped = true, TextTruncate = Enum.TextTruncate.None,",
+     "TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd,"),
+    ("HUD", "a tier's box ignores its drawn text", 'l:GetPropertyChangedSignal("TextBounds"):Connect(function() L.FitTierHeight(l) end)', ""),
+    ("HUD", "the room counts one line for tier 3", "* (1 + L.TierLines) + T.Gap * 2) or 0)", "* 2 + T.Gap * 2) or 0)"),
+    ("HUD", "tier 3 not in my side's colour", 'local col = (f == "Halo" or f == "Horns") and factionColor(f) or ac("GoldText", Theme.Gold)',
+     'local col = ac("GoldText", Theme.Gold)'),
+    ("CONFIG", "the long crown line again", 'Halo = "Win the Crown", Horns = "Win the Crown",',
+     'Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",'),
     ("HUD", "no tier refresh with the tracker", "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n", "\tt.Frame.Visible = label ~= nil\n"),
     ("FP", "no room for the lines", "areaH = math.max(1, areaH - chH)", "areaH = math.max(1, areaH)"),
     ("DS", "the KO screen ignores the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)", "DeathScreen.Lines(S.Data, left)"),
