@@ -1491,8 +1491,8 @@ local function buildChips(root)
 	ui.chip = {}
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
 	-- '+N' in town, so a buyer never saw it; the danger chips still come first on phones)
-	L.ChipOrder = { "Zone", "Luck", "Bully", "Wanted", "Combat", "Boost", "Private", "Rookie", "Protected", "Blessing", "Size",
-		"Kaiju" }
+	L.ChipOrder = { "Zone", "Luck", "Bully", "Outlaw", "Wanted", "Combat", "Boost", "Private", "Rookie", "Protected", "Blessing",
+		"Size", "Kaiju" }
 	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
@@ -3673,6 +3673,9 @@ refreshChips = function()
 	local bully = math.floor(num("BullyStacks", 0))
 	local bullyLeft = math.max(1, math.ceil((num("BullyEndsAt", 0) - now) / 60)) -- A23-22 penalty minutes
 	setChip(ui.chip.Bully, bully > 0, string.format(TXT.BullyPenalty, bullyLeft), Theme.Bad)
+	-- 2-C #9 (A23-23): this week's outlaw (RankingService attribute Outlaw) - the danger chip with the ranking's own line
+	local rk = type(Config.Ranking) == "table" and type(Config.Ranking.Text) == "table" and Config.Ranking.Text or {}
+	setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(rk.OutlawChip) == "string", rk.OutlawChip, Theme.Bad)
 	setChip(ui.chip.Kaiju, attr("KaijuState", "None") == "Queued", TXT.KaijuQueued, Theme.Bad)
 	setChip(ui.chip.Private, UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf, Theme.SubText, false, nil, true)
 	L.RefreshBoost()
@@ -6711,7 +6714,7 @@ function HUD.Start()
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",
-		"KaijuState", "Faction" }, refreshChips)
+		"KaijuState", "Faction", "Outlaw" }, refreshChips)
 	UIKit.OnAttr({ "WarPoints", "Faction" }, refreshWar)
 	UIKit.OnGameAttr({ "WarHaloScore", "WarHornsScore", "WarMode", "WarBlessing", "WarRoundEndsAt" }, refreshWar)
 	UIKit.OnAttr({ "TravelingUntil" }, refreshTravel)
