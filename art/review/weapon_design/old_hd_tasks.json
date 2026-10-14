@@ -1,0 +1,170 @@
+[
+ {
+  "name": "Weapon_Halo_Paladin_T1",
+  "task": "91e6175c-9c4d-437c-ab7e-5b2d0db10748",
+  "account": "web 2 (25,000)",
+  "bal": 15710
+ },
+ {
+  "name": "Weapon_Halo_Paladin_T2",
+  "task": "0e532da7-04d0-46f3-90aa-a1813eb3917a",
+  "account": "web 2 (25,000)",
+  "bal": 15655
+ },
+ {
+  "name": "Weapon_Halo_Paladin_T3",
+  "task": "04680c24-45d5-41bb-a05a-7e2089f1da62",
+  "account": "web 2 (25,000)",
+  "bal": 15600
+ },
+ {
+  "name": "Weapon_Halo_LightMage_T1",
+  "task": "b35be0a2-dcd4-45b5-9a69-f00a4833bf50",
+  "account": "web 2 (25,000)",
+  "bal": 15545
+ },
+ {
+  "name": "Weapon_Halo_LightMage_T2",
+  "task": "188ca818-4b6e-4bf5-930b-090919e6b084",
+  "account": "web 2 (25,000)",
+  "bal": 15490
+ },
+ {
+  "name": "Weapon_Halo_LightMage_T3",
+  "task": "8e757e6d-766b-4d4c-b7c1-f6214e8a9f35",
+  "account": "web 2 (25,000)",
+  "bal": 15435
+ },
+ {
+  "name": "Weapon_Halo_Ranger_T1",
+  "task": "0a8d6523-8c59-4ca5-81d0-13b5e2bc1d98",
+  "account": "web 2 (25,000)",
+  "bal": 15380
+ },
+ {
+  "name": "Weapon_Halo_Ranger_T2",
+  "task": "3ff5f6ef-c399-40f0-a96f-246e4da59846",
+  "account": "web 2 (25,000)",
+  "bal": 15325
+ },
+ {
+  "name": "Weapon_Halo_Ranger_T3",
+  "task": "05ccd29a-c7c3-406c-80a3-92dc04b1c072",
+  "account": "web 2 (25,000)",
+  "bal": 15270
+ },
+ {
+  "name": "Weapon_Horns_Berserker_T1",
+  "task": "fa2796e9-c493-402e-9251-1b219de9ab72",
+  "account": "web 2 (25,000)",
+  "bal": 15215
+ },
+ {
+  "name": "Weapon_Horns_Berserker_T2",
+  "task": "fedaccca-41e3-4f9c-ac36-05415dce2f7f",
+  "account": "web 2 (25,000)",
+  "bal": 15160
+ },
+ {
+  "name": "Weapon_Horns_Berserker_T3",
+  "task": "f5563bc6-c994-4639-b80d-23b244838fe3",
+  "account": "web 2 (25,000)",
+  "bal": 15105
+ },
+ {
+  "name": "Weapon_Horns_DarkMage_T1",
+  "task": "918a676a-ccc4-4f68-b6ec-293ba9f2e37f",
+  "account": "web 2 (25,000)",
+  "bal": 15050
+ },
+ {
+  "name": "Weapon_Horns_DarkMage_T2",
+  "task": "3fcd5f7d-c995-430b-b5d6-6f023f74516f",
+  "account": "web 2 (25,000)",
+  "bal": 14995
+ },
+ {
+  "name": "Weapon_Horns_DarkMage_T3",
+  "task": "8168a269-e82f-4b0a-88f7-164cb4746517",
+  "account": "web 2 (25,000)",
+  "bal": 14940
+ },
+ {
+  "name": "Weapon_Horns_ShadowHunter_T1",
+  "task": "43db4d08-993f-4606-a830-e858518c74dd",
+  "account": "web 2 (25,000)",
+  "bal": 14885
+ },
+ {
+  "name": "Weapon_Horns_ShadowHunter_T2",
+  "task": "c9c8ae8e-bf6f-44ce-9315-059b0fd13c62",
+  "account": "web 2 (25,000)",
+  "bal": 14830
+ },
+ {
+  "name": "Weapon_Horns_ShadowHunter_T3",
+  "task": "bf09dc34-5793-43c2-bee1-f7101b90baf1",
+  "account": "web 2 (25,000)",
+  "bal": 14775
+ },
+ {
+  "name": "Weapon_Neutral_Blacksmith_T1",
+  "task": "035dfbcd-84b2-46ce-9daa-b5e952c58bb5",
+  "account": "web 2 (25,000)",
+  "bal": 14720
+ },
+ {
+  "name": "Weapon_Neutral_Blacksmith_T2",
+  "task": "2bb84379-f185-4032-a6a5-92229b59b7fc",
+  "account": "web 2 (25,000)",
+  "bal": 14665
+ },
+ {
+  "name": "Weapon_Neutral_Blacksmith_T3",
+  "task": "7d150122-75d7-4068-b231-ca6e809231f8",
+  "account": "web 2 (25,000)",
+  "bal": 14610
+ },
+ {
+  "name": "Weapon_Neutral_Alchemist_T1",
+  "task": "36df806f-f036-482a-af02-0b6b8c7441c0",
+  "account": "web 2 (25,000)",
+  "bal": 14555
+ },
+ {
+  "name": "Weapon_Neutral_Alchemist_T2",
+  "task": "f1c4bb1c-95f0-416e-bc45-4d32937c3ef9",
+  "account": "web 2 (25,000)",
+  "bal": 14500
+ },
+ {
+  "name": "Weapon_Neutral_Alchemist_T3",
+  "task": "a34ecbc0-6ec7-4f44-a37a-71c3319b1e73",
+  "account": "web 2 (25,000)",
+  "bal": 14445
+ },
+ {
+  "name": "Weapon_Neutral_PetTamer_T1",
+  "task": "cca3d2ec-0746-486a-9c2a-95cb74e4bf0e",
+  "account": "web 2 (25,000)",
+  "bal": 14390
+ },
+ {
+  "name": "Weapon_Neutral_PetTamer_T2",
+  "task": "e02c0e52-a85b-424d-9ace-88fe01d7c9b1",
+  "account": "web 2 (25,000)",
+  "bal": 14335
+ },
+ {
+  "name": "Weapon_Neutral_PetTamer_T3",
+  "task": "8aeb1501-55e0-4886-8eaa-a876d9f6b4b2",
+  "account": "web 2 (25,000)",
+  "bal": 14280
+ },
+ {
+  "name": "Weapon_Horns_Berserker_final_b",
+  "task": "e0be264f-5fea-4014-8038-53b6a490c65f",
+  "account": "web 2 (25,000)",
+  "bal": 14225
+ }
+]

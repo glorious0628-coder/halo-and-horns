@@ -136,4 +136,5 @@ def main():
     print("match", match, "holes", hole_txt)
 
 
-main()
+if __name__ == "__main__":
+    main()

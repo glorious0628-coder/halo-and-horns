@@ -2,16 +2,20 @@
 
 역할 파일: `docs/handoff/role_prompts/18_weapon_design.md` (A23-187). 보고 = 최종 검수.
 
-## 끝낸 것
-- 읽기 + 시작 보고(최종 검수에 보냄).
-- Paladin 2D 4면 확인: `art/review/weapon_design/paladin_2d_4v_check.jpg`, 100% 크롭 `paladin_2d_crop100.jpg`. 바닥 그림자 없음, 4면 모양 일치. T1 부드러운 음영, T3 칼날 홈 어두움·금속 반사 강함(10/12 점검: T1 약간, T2 없음, T3 진함).
-- Paladin_T2 판정(0점, 있는 GLB `art/models/tripo/web/Weapon_Halo_Paladin_T2_MV4_HD_src.glb`): 시트 `art/review/weapon_design/Paladin_T2_sheet.jpg`. 2D와 모양·색 같음, 비침 0(자홍 배경·닫힌 구멍 0px), 삼각형 13,172, 크기 0.071×0.314×0.98(길이 Z). 내 판정 = 통과(최종 검수 두 번째 판정 대기).
-- 새 도구: `tools/weapon_hd_views.py`(Blender 4방향 + 3/4 렌더, 조명 상자 빛), `tools/weapon_hd_sheet.py`(2D | 3D | 자홍 | 100% 크롭, 2D 면과 렌더 자동 짝).
+## 최종 검수 결정 (10/14)
+- A: 옛 HD 28개(10/12, 조명 제거 꺼짐·폴리곤 15000)를 0점으로 다시 받아 하나씩 판정. 떨어지는 것만 A23-174 설정으로 새로(개수·점수 먼저 최종 검수에).
+- B: '진함' 13개도 옛 HD 먼저 판정 → HD에 그림자가 구워져 보이면 그것만 Codex 다시 그리기 → 새 HD.
+- 밈 2(Frying Pan·Rubber Chicken) = 2D부터 Codex. 순서: Paladin → 나머지 Halo → Horns → Neutral. 3개마다 시트 한 장.
 
-## 기다리는 것 (최종 검수 답)
-- A: 10/12에 무기 28개를 이미 Tripo HD로 만듦(records `*_web_hd_mv4`, 조명 제거 꺼짐·폴리곤 15000). 디스크엔 Paladin_T2 원본만. Tripo 기록에서 0점으로 다시 받아 판정할지, 새로 만들지.
-- B: 2D 27개가 그림자 점검에서 진함·약간 → 그대로 Tripo에 넣을지, Codex로 다시 그릴지.
+## 끝낸 것
+- 옛 HD 28개 다시 받음(0점, 잔액 18,375 그대로): `art/models/tripo/weapons/<이름>/<이름>_HD_src.glb` (디스크만, git에 안 올림 ≈305 MB). records.json 각 `*_web_hd_mv4`에 `web_redownload` 한 줄.
+  - 받는 법: Chrome 확장 javascript_tool이 서명 주소를 가림 → 페이지에서 `/ko/workspace/generate/<task>` 로 router.push → `$pinia…['feature-workspace'].current.latest.model_url` fetch → `http://127.0.0.1:8765/`(scratch 임시 서버, x-name 헤더) POST. 한 번 부를 때 45초 넘으면 시간 초과 → `.then`으로 뒤에서 돌림.
+- 판정 시트 덩어리 1 Paladin: `art/review/weapon_design/chunk1_Paladin.jpg` (+ 개별 `Paladin_T{1,2,3}_sheet.jpg`). 셋 다 비침 0, 삼각형 12,825~14,746. 내 판정: 통과(T1 3D가 잎 1개·옹이 조금 더, T3 칼날 홈이 2D보다 조금 더 어두움). T2는 최종 검수 통과.
+- Codex 그림자 없는 다시 그리기 3개(T3: Paladin·LightMage·Ranger) 4면 = `art/out/s2/weapons_t13_4v_ns/`, 시트 `art/review/weapon_design/ns_redraw_T3_3.jpg`. 문제: Ranger_T3 새 뒷면 시위가 오른쪽(옛 뒷면은 왼쪽 = 거울) → 쓰려면 다시. 결정 B로 지금은 '옛 HD가 떨어지면'만 씀.
+- 도구: `tools/weapon_hd_views.py`(Blender 렌더), `tools/weapon_hd_sheet.py`(무기 하나), `tools/weapon_chunk_sheet.py`(3개 한 장), `tools/weapon_ns_sheet.py`(옛/새 2D). 렌더 PNG(`art/review/weapon_design/<직업_T>/v_*.png`)는 git에 안 올림.
 
 ## 다음
-- 답 받으면 Paladin T1·T3 → 판정 시트 → 세 개 한 장 보고. 그다음 LightMage → Ranger → 뿔 → 장인 → 밈 2(2D부터).
-- 점수 쓴 것: 0.
+- 최종 검수의 Paladin 판정 → 통과면 Blender 크기·피벗·방향(Config.Weapons Length, 피벗 = 손잡이 중앙, +Y 칼끝).
+- 덩어리 2 LightMage T1~T3, 3 Ranger T1~T3 → Horns → Neutral (렌더는 `weapon_hd_views.py`, 시트는 `weapon_chunk_sheet.py`).
+- 밈 2개 2D(Codex).
+- 점수 쓴 것: 0. ChatGPT 그림 12장.
