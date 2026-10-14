@@ -36,6 +36,7 @@ local INIT_ORDER = {
 	"TestMetricsService", -- 게임성 개발 2: A23-160 the private test's numbers board (read-only observer)
 	"VillageFundService", -- 게임성 개발 2: A23-178 the village fund (the fountain gifts, the week's sums)
 	"MarketService", -- 게임성 개발 2: C-5 / C-7 the player market (after DataService, LootService, ProgressionService)
+	"ReviveService", -- 게임성 개발 2: 99N G helping a friend up (after FirstKOService and PvPService)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -67,6 +68,7 @@ local START_ORDER = {
 	"TestMetricsService", -- 게임성 개발 2: A23-160 (before PlayerService too: it listens to PlayerReady)
 	"VillageFundService", -- 게임성 개발 2: A23-178 (after SwitchService: it asks the switch VillageFund)
 	"MarketService", -- 게임성 개발 2: C-5 / C-7 (before PlayerService too: the join check at PlayerReady)
+	"ReviveService", -- 게임성 개발 2: 99N G (after PvPService: its spawn shield comes first; before PlayerService)
 	"PlayerService",
 }
 
