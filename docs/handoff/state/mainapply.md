@@ -1,5 +1,10 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 밤 (게시 준비 sync 대기)
+- **Studio**: 메인 창 = build/GoodEvil.rbxlx로 연 것(id 가변; list_roblox_studios, 창이 최소화되면 3D가 하얗게 찍히니 ShowWindowAsync 9로 복원), Edit, Play 없음, **저장 안 함**, main c7c3505a(= HEAD d05c8413 src 동일) sync 완료. build/·place/ = 13:44:07 판(소스 0703bbdd 시점).
+- **다음**: 사용자 Save to File As build/GoodEvil.rbxlx('저장했어') → 시간(sync 뒤)·해시·소스 대조(`py build/p2_cmp.py <rev>`, git 무시 — 없으면 CDATA Source를 git show <rev>:src/...와 sha1 대조) → place/ 복사 → `py tools/push_paths.py -m ...` → 사용자 Alt+P. 무기 메시 Model→MeshId/TextureId(build/weapon_mesh_ids.json)는 최종 검수가 build/weapon_model_ids.json 만든 뒤.
+- **알아둔 것**: push 때 .git/index.lock 찌꺼기가 가끔 남음(git 프로세스 없으면 rm). push_paths에 디렉터리 인자는 파일을 안 올림(파일 목록으로). 사진 스크립트: tools/play_publish2~7_photos.py(+phone). 임시 번역표는 LocalizationService 아래(ReplicatedStorage 아님), 시험 뒤 꼭 지움. 새 저장은 Crossroads 대장간에서 시작(A23-188).
+
 ## 10/14 13:30 게시판 2 저장 (사용자 Save to File As)
 - build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/14 13:29:46, 44,746,759 B, SHA256 d8cb0d3e…d8fb, push 39a078e. 소스 176개 일치(main 5fb03ad0 = sync 판), 임시 시험 개체(TmpKoTest·TmpMainApplyTest) 0, 끝 `</roblox>`. 앞 판(83173b9e…, 12:24)을 새 판으로 덮음. 다음 = 사용자 Alt+P.
 - 번역 시험 기록: 임시 LocalizationTable을 LocalizationService 아래에 두면 HUD가 한국어로 그려짐(코드 정상, publish3/ko_local.png) — 게시본 영어는 클라우드 표에 글이 없어서(최종 검수 판단).
