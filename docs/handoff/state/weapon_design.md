@@ -20,7 +20,10 @@
 
 - 3 Ranger: 통과 → 맞춤 끝(--kind bow --grip 0.5), 확인 `chunk3_Ranger_fit.png`. 각 _HD_fit.json에 code_len(`tools/weapon_code_len.py`, 최종 검수: 넣을 때 코드가 MeshPart 크기 맞춤 = 개발 1).
 - 4~6 Horns: 8개 통과 → 맞춤 끝(확인 `chunk_Horns_fit_a/b.png`). Berserker_T3 옛 HD 떨어짐(바늘구멍) → 새 HD(task 96d262d9, `_HD2_src.glb`, 6,852 삼각형, 구멍 0) → 맞춤 끝(`--guard-mult 2.5`, 확인 `Berserker_T3_HD2_fit.png`), 최종 검수 판정 대기.
-- 7~9 Neutral: 8개 통과 → 맞춤 끝(망치·몽둥이 0.3, 물병 지팡이 0.45; 확인 `chunk_Neutral_fit_a/b.png`). Blacksmith_T2 옛 HD·새 HD(task 614dca14) 둘 다 양쪽 끝 둥근 구리판 → 원인 = 2D 오른쪽 면이 끝을 정면으로 안 봄(`Blacksmith_T2_2d_heads.jpg`) → 2D 옆면 다시 그리기 제안.
+- 7~9 Neutral: 8개 통과 → 맞춤 끝(망치·몽둥이 0.3, 물병 지팡이 0.45; 확인 `chunk_Neutral_fit_a/b.png`). Blacksmith_T2 옛 HD·새 HD(task 614dca14) 둘 다 양쪽 끝 둥근 구리판 → 원인 = 2D 오른쪽 면이 끝을 정면으로 안 봄(`Blacksmith_T2_2d_heads.jpg`) → 최종 검수 OK: Codex로 왼쪽·오른쪽만 다시(`art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_{left,right}.png`; 왼쪽 = 무기 자기 왼쪽 = 앞면 그림 오른쪽 끝 = 구리 캡 정면, 오른쪽 = 네모 쇠 면 정면). 시트 `Blacksmith_T2_ns_sides.jpg` 판정 대기 → OK면 새 HD 55.
+- Berserker_T3 새 HD 최종 검수 통과.
+- Berserker final_b: 시트 `Berserker_final_b_sheet.jpg`, 비침 0, 같음. 길이·티어 모름 → 맞춤 전 최종 검수에 물음.
+- 밈 2개 2D 4면(Codex): `art/out/s2/weapons_meme_4v/`, 시트 `meme_2d_4v.jpg`, 판정 대기.
 - Tripo 점수: 110 씀(잔액 18,320 → 18,210). 받기 = 페이지 fetch → 127.0.0.1 임시 서버(x-suffix 헤더로 `_HD2_src`). 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
 - 주의: 게임 코드(CharacterVisuals tierLen)는 Config Length를 그대로 안 씀: 칼 ≈3.85~4.55, 지팡이 = 아바타 키 0.65~0.75, 활 3.1~4.9 스터드. GLB는 Config Length로 맞췄음(최종 검수 지시) — 넣을 때 MeshPart 크기로 맞추면 됨.
 
@@ -28,4 +31,4 @@
 - 최종 검수의 Paladin 판정 → 통과면 Blender 크기·피벗·방향(Config.Weapons Length, 피벗 = 손잡이 중앙, +Y 칼끝).
 - 덩어리 2 LightMage T1~T3, 3 Ranger T1~T3 → Horns → Neutral (렌더는 `weapon_hd_views.py`, 시트는 `weapon_chunk_sheet.py`).
 - 밈 2개 2D(Codex).
-- 점수 쓴 것: 0. ChatGPT 그림 12장.
+- ChatGPT 그림: 12 + 2 + 8 = 22장.
