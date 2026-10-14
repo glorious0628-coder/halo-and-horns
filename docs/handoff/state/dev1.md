@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 19 — fix/shop-price-live 503293ac (2-C #10, push, 최신)
+## 10/14 밤 20 — dev1-artisan-unpack 47e7bc66 (장인 ③, push, 최신)
+- CraftWindow.SparePlan(순수: 레시피 단계의 여분 "T:P" → 가장 높은 +N·개수·이미 가짐) + Detail: "Power A → B"(Config.CombatPowerOf, PowerDiff 색, 레벨로 못 쓰면 없음), "In your bag ×N", 가짐 = 줄만, 아니면 [Use it] → UnpackSpare → 비트 오면 EquipWeapon(레벨 되면), 3초 = 버튼 다시. Net.Names에 UnpackSpare 없으면 꺼짐(먼저 병합 가능). test_craft_window 158·59/59.
+- 개발 2에 관찰 전달(최종 검수 경유): dev2-market UnpackSpare가 거래소 스위치 꺼지면 안 됨 → 제작만 켜면 못 씀.
+- 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests 없음).
+
+## 10/14 밤 19 — fix/shop-price-live 503293ac (2-C #10, push)
 - ShopUI: 공유 읽기 PRICE.Ask(키마다 한 번, pcall, 캐시; 실패·없음 = false 기억; 첫 답 = 열린 상점 다시 그림 PRICE.Refresh = refreshAll). LivePrice(id, GamePass/Product, Config 가격) = GetProductInfo PriceInRobux → 패스 카드·모양·직업/진영 표. SubPrice("EXP-…") = GetSubscriptionProductInfoAsync: DisplayPrice 글(새 Config MonthTextF "%s / mo") 먼저, 없으면 PriceInRobux(MonthF), 없으면 Config. 구독 정보 칸 이름은 문서에 없어 추측 → 게시판 Play에서 확인.
 - main을 한 번 병합(a77b0a21; 구독 카드가 main에만). 새 test_shop_price 32·19/19, shop_ui 변이 글 한 줄(모양 줄) 맞춤 11/11, passes·fast_travel_ui·english·shop_layout 통과.
 - 다음: 장인 ③⑤(개발 2 서버 가지 기다림). Hop MINOR 2개(지붕 맞는 땅 레이, 서버 확인 시작점 호)는 X 켜기 전.
