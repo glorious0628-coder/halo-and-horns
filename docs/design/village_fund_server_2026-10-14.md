@@ -3,6 +3,8 @@
 사용자 10/14 09:40: "마을 기금은 좋아." 주문서 골드 구매(A)는 안 함(소모품은 연금술사 몫). 이 문서는 서버가 지킬 약속이에요.
 코드는 최종 검수 OK 뒤 origin/main 위 새 가지 `dev2-village-fund`(리베이스 없음). 새 그림 없음. 화면 몫은 맨 끝 4줄(개발 1).
 
+> **10/14 최종 검수 OK + 코드:** 가지 `dev2-village-fund`(origin/main + dev2-launch-dates 합침: 같은 스위치 목록). 결정: 목표 30,000/100,000 그대로(10/20 숫자 보고 조정), 뿔 = `Spots.Horns` 없음(오류·안내 없음), 날짜 = `Config.DayIndex`(출석과 같음), 단계 글 Lanterns·Fireworks = `Text` 표. 숫자는 '1,000'(`Util.FormatInt`). 시험 `tools/test_village_fund.py`.
+
 ## 1. 무엇
 - 빛(Halo) 아이는 빛 마을 분수에, 뿔(Horns) 아이는 뿔 마을 분수에 골드를 **1,000씩** 넣어요.
 - 넣을 때마다 자기 점수 +1: 빛 = Honor, 뿔 = Mischief(속 이름 `Infamy`). **하루 3번까지**(KST 날짜, `Config.DayIndex`).
@@ -13,8 +15,7 @@
 ## 2. 설정 `Config.VillageFund` (새 표, 숫자는 시작값)
 ```
 Enabled = true, Step = 1000, PerDay = 3, Points = 1,
-Spots = { Halo = { Pos = Vector3.new(22, 10, -590), Radius = 16, Zone = "HaloTown", Model = "Town_Halo_Fountain3" },
-          Horns = { Pos = <뿔 마을 분수 풀 중심>, Radius = 16, Zone = "HornsTown", Model = <이름> } },
+Spots = { Halo = { Pos = Vector3.new(22, 10, -590), Radius = 16, Zone = "HaloTown" } },  -- Horns = nil (아래)
 Goals = { Lanterns = 30000, Fireworks = 100000 },   -- 진영 주간 합계(골드)
 Store = "HaloHorns_VillageFund_v1", FlushSeconds = 60, ReadSeconds = 60, Rate = 1.0,
 Text = { Halo = { Prompt = "Share 1,000 gold", Done = "You shared 1,000 gold! Honor +1", ... },
@@ -26,7 +27,7 @@ Text = { Halo = { Prompt = "Share 1,000 gold", Done = "You shared 1,000 gold! Ho
 - 실시간 스위치 `Config.Switches.Defs.VillageFund = { Type = "Bool", Default = true }`: 끄면 새로 넣기만 멈춤(합계·꾸미기는 그대로).
 
 ## 3. 상호작용과 원격 검증
-- 서버가 분수 모델(`Spots[f].Model`, 없으면 `Pos`의 빈 앵커 파트) 안에 `ProximityPrompt "FundPrompt"`를 만듦(CraftService·GatherService 방식, `ActionText`는 글 표, MaxActivationDistance = Radius).
+- 서버가 `Workspace.VillageFund.FundSpot_<진영>`(보이지 않는 고정 파트, `Pos` = 풀 중심; 분수 모델과 떨어져 있어 모델이 바뀌어도 그대로) 안에 `ProximityPrompt "FundPrompt"`를 만듦(CraftService 방식: `ActionText` "" + 속성 `ActionKey` / `ObjectKey` / `Faction`, MaxActivationDistance = Radius, 누르기만).
   프롬프트는 **그 진영 아이에게만** 보이게 클라가 `Enabled`를 끔(서버는 어차피 다시 검사).
 - `PromptTriggered`(서버) → `Net.FundOpen:FireClient(player, state)` — state = `{ Faction, Today, PerDay, Step, Gold(가진 합), Week, Goals, Level(0/1/2) }`.
 - 클라가 확인 카드에서 [Give] → 원격 `Net.FundGive:FireServer()` (**인자 없음**: 금액·진영·횟수는 서버가 정함; 인자가 오면 무시).
@@ -52,7 +53,7 @@ Text = { Halo = { Prompt = "Share 1,000 gold", Done = "You shared 1,000 gold! Ho
 - 읽기: `ReadSeconds`마다 `GetAsync` → 보이는 합계 = 저장값 + 아직 안 쓴 이 서버 pending. Studio·메모리 모드 = 이 서버 것만.
 
 ## 5. 신호 (꾸미기, 힘 0)
-- 서버가 `ReplicatedStorage`(또는 Workspace) 속성으로 알림: `FundWeek`, `FundHalo`, `FundHorns`(보이는 주간 합계), `FundLevelHalo`, `FundLevelHorns`
+- 서버가 `Net.GameState()`(ReplicatedStorage 안 GameState 폴더) 속성으로 알림: `FundWeek`, `FundHalo`, `FundHorns`(보이는 주간 합계), `FundLevelHalo`, `FundLevelHorns`
   (0 = 없음, 1 = 합계 ≥ Goals.Lanterns → 등불, 2 = ≥ Goals.Fireworks → 등불 + 불꽃). 새 주 = 0부터.
 - 등불·불꽃은 클라가 그림(기존 Roblox 효과·승인 부품만). **불꽃은 둥근 반짝임·별·색종이만, 가운데서 퍼지는 빛줄기 금지**(10/07 규칙).
   밤(DayCycle)에만 불꽃, 등불은 늘 켜짐. 폰은 입자 적게(FountainFx 방식).
