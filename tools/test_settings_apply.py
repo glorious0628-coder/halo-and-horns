@@ -24,7 +24,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 FILES = {"FX": SPS / "Fx.luau", "TAGS": SPS / "NameTagPrefs.luau", "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
-         "MAIN": SPS / "ClientMain.client.luau"}
+         "MAIN": SPS / "ClientMain.client.luau", "SUI": SPS / "SettingsUI.luau"}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -197,6 +197,8 @@ MUTATIONS = [
     ("TAGS", "every billboard", "or bb.Name ~= L.Name then return false end", "then return false end"),
     ("TAGS", "later tags missed", "\tworkspace.DescendantAdded:Connect(consider)\n", ""),
     ("TAGS", "a Settings change ignored", "\t\tst.Changed:Connect(function()\n", "\t\t(function()\n"),
+    ("SUI", "no damage numbers row", "local _, hd = row(kit, frame, ST.DmgNumEn or ST.DmgNum)", "local _, hd = nil, frame"),
+    ("SUI", "the tags row skips Nearby only", 'cur == "All" and "Near" or cur == "Near" and "Off" or "All"', 'cur == "All" and "Off" or "All"'),
     ("MAIN", "never loaded", '"ChatTags", "NameTagPrefs", ', '"ChatTags", '),
 ]
 
@@ -217,13 +219,20 @@ def cut(text: str, start: str, end: str) -> str:
 
 
 def statics(src: dict) -> list[tuple[str, bool]]:
-    fx, main = src["FX"], src["MAIN"]
+    fx, main, sui = src["FX"], src["MAIN"], src["SUI"]
     sa = cut(fx, "local function showAmount(worldPos, amount, style)", "\nend\n")
     order = re.search(r"local ORDER = \{([^}]*)\}", main)
     names = re.findall(r'"(\w+)"', order.group(1)) if order else []
     return [
         ("showAmount asks the switch before any number", "if MOTION.IsDamageKey(style.Key) and not MOTION.DamageNumbersOn() then return end" in sa),
         ("the Release total asks it", "if total > 0 and MOTION.DamageNumbersOn() then" in fx),
+        # the window had no rows for them (found 10/14): a player could never change either value
+        ("the Settings window has a Damage numbers row (All <-> Off)",
+         'settingsSet("DmgNum", settingsGet("DmgNum", "All") == "Off" and "All" or "Off")' in sui
+         and "row(kit, frame, ST.DmgNumEn or ST.DmgNum)" in sui),
+        ("the Settings window has a name tags row (All -> Nearby only -> Off)",
+         'settingsSet("Tags", cur == "All" and "Near" or cur == "Near" and "Off" or "All")' in sui
+         and "row(kit, frame, ST.TagsEn or ST.Tags)" in sui and 'tb.Text = ST.Options[v .. "En"] or ST.Options[v] or v' in sui),
         ("ClientMain loads NameTagPrefs", "NameTagPrefs" in names and "Settings" in names
          and names.index("NameTagPrefs") > names.index("Settings")),
     ]
