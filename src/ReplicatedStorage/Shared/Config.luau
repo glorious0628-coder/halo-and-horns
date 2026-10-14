@@ -11048,7 +11048,7 @@ Config.ClientText.UIKit = {
 	Cancel = "Cancel", -- the confirm box's second button
 }
 Config.ClientText.ComeBack = { MyWay = "Your way: %s" }
-Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag (your weapon is safe even on a fail)" }
+Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag" }
 Config.ClientText.Invite = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" }
 Config.ClientText.PauseCard = {
 	PauseTitle = "Saved!",

@@ -32,20 +32,12 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-09/offline_hud_reveal_2026-10-09.json"
 
 STATIC = [
-    # 최종 검수 10/14 상단 HUD 1안 ②: the row starts closed (danger words, the Safe Zone icon, one buff icon, '+N'), a
-    # change no longer opens it by itself, a press opens it TapSeconds (5) and it closes again
-    ("chips: closed by default, a change does not open them, a press shows them 5 s", "HUD", [
-        "L.ChipFold.Auto, L.ChipFold.ShowSeconds, L.ChipFold.TapSeconds, L.ChipFold.Token = true, 3, 5, 0\n",
-        "L.ChipFold = { Folded = true, OnTap = nil, MaxIcons = 3 }", "\tL.ChipFold.Sig = sig\nend\n",
-        "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays\n",
-        "\tL.FoldLater(L.ChipFold.TapSeconds)\n", "L.ChipFold.OnTap = L.ChipFoldTap",
-        '\tL.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))\n']),
+    # A23-192 (user 10/14 "+1 이렇게 하지마"): the row never folds - no fold chip, no press, no '+N'
+    ("chips: never folded (A23-192)", "HUD", ["\treturn { Show = show, More = 0 }\n"]),
     ("Lucky chip words (Config.ClientText.EventHUD, 10/14)", "CONFIG", ['\tLuckShort = "Lucky +%s%%",\n']),
     ("Lucky chip: the bonus only, hidden without one; a press explains", "EVENT", [
         "\t\treturn Config.RareChance(events) - ((Config.Luck and Config.Luck.BaseRare) or 0)\n",
         "\tif not ok or type(bonus) ~= \"number\" or bonus <= 1e-9 then return nil end -- no bonus today: no chip\n"]),
-    ("Lucky chip press (the row open): one toast", "HUD", [
-        "\tif key == \"Luck\" then\n\t\tpcall(UIKit.Toast, TXT.LuckTap, \"info\")\n"]),
     ("Lucky chip press: its words (Config.ClientText.HUD)", "CONFIG", ['\tLuckTap = "Rare drops come a bit more often today!",']),
     ("potion row: Config.HudReveal, kept once shown, Level watched", "VITALS", [
         "\tif ui.Row and not ui.PotionSeen then\n", "\t\tui.PotionSeen = Config.HudReveal.Shows(\"Potions\",",
@@ -71,8 +63,6 @@ MUTATIONS = [
     ("HUD", "every fight unfolds the chips", '\tlocal keys = string.gsub(tostring(wantKey or ""), "Combat,", "")\n',
      '\tlocal keys = tostring(wantKey or "")\n'),
     ("HUD", "a zone change is no change", '(town and "T" or (pvp and "P" or "W"))', '"W"'),
-    ("HUD", "never folds", "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays\n", ""),
-    ("HUD", "the row starts open", "L.ChipFold = { Folded = true, OnTap = nil, MaxIcons = 3 }", "L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 }"),
     ("EVENT", "the total chance again", "\t\treturn Config.RareChance(events) - ((Config.Luck and Config.Luck.BaseRare) or 0)\n",
      "\t\treturn Config.RareChance(events)\n"),
     ("VITALS", "the potion row hides again", "\tif ui.Row and not ui.PotionSeen then\n", "\tif ui.Row then\n"),

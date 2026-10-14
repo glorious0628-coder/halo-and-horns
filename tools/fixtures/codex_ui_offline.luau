@@ -510,8 +510,7 @@ VIEW.Buttons.Tilt.Activated:Fire()
 -- a moment while the window is open: the card redrawn, the line a toast
 remotes.CodexUp.OnClientEvent:Fire({ Event = "Silver", Kind = "Slime", Stage = 2, Card = { Kills = 100, Golden = 0, Stage = 2, First = t0 },
 	Text = "Slime card is now Silver! +60 gold · +100 XP" })
-check(#T.S.Queue == 0 and #toasts == 1 and toasts[1].Kind == "reward" and string.find(toasts[1].Text, "Silver", 1, true),
-	"window open: no moment, the line as a reward toast", #toasts)
+check(#T.S.Queue == 0 and #toasts == 0, "window open: no moment and no toast (A23-191, user 10/14)", #toasts)
 check(T.S.Cards.Slime.Stage == 2 and VIEW.Big.StageText.Text == "Silver" and VIEW.Big.Sheen.Visible == true,
 	"window open: the card redrawn at Silver (sheen on)")
 -- slots are kept: a flip, the foil, a choice and a fresh snapshot never build them again (최종 검수 10/13 review)
@@ -617,14 +616,9 @@ check(#T.S.Queue == 1 and #popups == 0, "a second moment waits its turn")
 runDelays() -- the card's time is up
 check(gui:FindFirstChild("CodexMoment") == nil, "the card goes when its time is up")
 runDefers()
-check(#popups == 1 and popups[1].Lines[1] == "Goblin Woods page done! New title: Goblin Scholar" and popups[1].Button == "Yay!"
-	and popups[1].Title == "Monster Codex", "a page done: the reward popup with the line", #popups)
-check(#plays == 3, "the reward popup rings QuestDone", #plays)
-local pf = gui:FindFirstChild("RewardPopup")
-check(T.S.Busy == true and pf ~= nil, "the queue waits while the popup is open")
-runWaits()
-check(T.S.Busy == true, "still open after a wait")
-pf:Destroy()
+check(#popups == 0 and gui:FindFirstChild("RewardPopup") == nil and #toasts == 0,
+	"a page done: no popup and no toast (A23-191, user 10/14)", #popups)
+check(#plays == 3, "a page done still rings QuestDone", #plays)
 runWaits()
 runDelays()
 runDefers()

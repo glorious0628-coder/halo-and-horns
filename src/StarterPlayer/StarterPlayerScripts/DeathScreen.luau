@@ -394,11 +394,7 @@ function DeathScreen.OnFx(kind, data)
 	end
 	if kind == "Revived" then -- 99N G: one line who helped me up (the screen goes with my new character)
 		S.ReviveAt = 0
-		local by = type(data) == "table" and Players:GetPlayerByUserId(tonumber(data.By) or 0) or nil
-		local ui = kit()
-		if by and type(RX.HelpedBy) == "string" and ui and type(ui.Toast) == "function" then
-			pcall(ui.Toast, trx(RX, "HelpedBy", by.DisplayName), "info", 3)
-		end
+		-- A23-191 (user 10/14): no "who helped me up" toast
 		return true
 	end
 	if kind ~= "KO" then return false end

@@ -43,25 +43,9 @@ MUTATIONS = [
     ("hints on the way to the Forge (A23-74)", "\treturn step >= 1 and step < 99 and step ~= (tonumber(steps.Forge) or 3)\n",
      "\treturn step >= 1 and step < 99\n"),
     ("the Forge walk says the zone", '(data.Spot == "Forge" and TXT.Forge) or ', ""),
-    ("my swing does not restart the wait", "and mine(data) then\n\t\tHINT.NearSince = nil\n", "and mine(data) then\n"),
-    ("the attack hint repeats", "\t\t\t\tHINT.AttackShown = true\n", ""),
     # A23-130: the switch
-    ("the attack hint ignores its off switch", " and (Config.Nudges or {}).AttackHint ~= false then", " then"),
     ("the marker ignores my own slime", "(isMine and not bestMine) or ", ""),
-    ("PvP cards for the Artisan Guild too", '\tif attr("Faction", "") == "Neutral" then return false end\n', ""),
-    ("PvP cards every visit", "\treturn ok and seen ~= true\n", "\treturn ok\n"),
     # 게임성 검수 10/12 (A23-130): the server's "PvP zone!" line and the first PvP card never together
-    ("the 'PvP zone!' line over the open first card", "\tif PVP.Step == 1 then return true end\n", ""),
-    ("the 'PvP zone!' line with the entry that opens the card", "\treturn PVP.Step == 0 and PVP.Wanted()\n", "\treturn false\n"),
-    ("the 'PvP zone!' line never again", "\treturn PVP.Step == 0 and PVP.Wanted()\n", "\treturn true\n"),
-    ("every line held back", 'payload.Key == "EnteredPvP")) then return false end', 'payload.Key == "EnteredPvP")) then return true end'),
-    ("PvP cards: the flag never saved", '\tcall("Settings", "Set", "PvPCards", true)\n', ""),
-    ("PvP card: the flag saved again on every close", "\tif why ~= PVP.Why or PVP.Step ~= 1 then return end\n",
-     "\tif why ~= PVP.Why then return end\n"),
-    ("PvP card: another card's close saves the flag", "\tif why ~= PVP.Why or PVP.Step ~= 1 then return end\n",
-     "\tif PVP.Step ~= 1 then return end\n"),
-    ("PvP card: back to three cards", 'local PVP = { Title = Config.ClientText.FirstStepsPvP.PvPTitle,',
-     'local PVP = { Cards = { "a", "b", "c" }, Title = Config.ClientText.FirstStepsPvP.PvPTitle,'),
     ("the marker at once (검수 10/09: only after 45 s)", "MarkAfter = 45,", "MarkAfter = 0,"),
     ("the marker never waits", "\telseif now - (HINT.MeadowSince or now) < HINT.MarkAfter or not HINT.MeadowSince then\n",
      "\telseif false then\n"),
@@ -115,11 +99,11 @@ def main():
         ("the travel line is English", 'Travel = "Off to %s!"' in steps
          or 'Travel = "Off to %s!"' in (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig")),
         # 게임성 검수 10/12: the hookups the fixture cannot run (Start)
-        ("FirstSteps adds PVP.SkipToast to UIKit.NotifyFilters",
-         "table.insert(ui.NotifyFilters, PVP.SkipToast)" in steps),
+        ("A23-191: no first-PvP card and no held-back line in FirstSteps",
+         "PVP" not in steps and "NotifyFilters" not in steps),
         ("UIKit's Notify hookup asks UIKit.NotifyFilters before a toast / banner",
          "for _, skip in UIKit.NotifyFilters do" in uikit and "if okSkip and yes == true then return end" in uikit
-         and uikit.find("for _, skip in UIKit.NotifyFilters do") < uikit.find('if payload.Kind == "announce" then')
+         and uikit.find("for _, skip in UIKit.NotifyFilters do") < uikit.find('if payload.Kind == "bad" then UIKit.Toast')
          and "UIKit.NotifyFilters = {}" in uikit),
     ]
     for name, good in static:

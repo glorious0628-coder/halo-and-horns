@@ -169,8 +169,8 @@ do
 		for _, t in W.Toasts do
 			if string.find(t.Text, "zebra", 1, true) then banterToasts += 1 end
 		end
-		check(g, "the banter never toasts (the event's own toast stays as it was)",
-			banterToasts == 0 and #W.Toasts == (ev.Toast == true and 1 or 0), key .. " " .. show(W.Toasts))
+		check(g, "no toast at all, the chat lines only (A23-191, user 10/14)",
+			banterToasts == 0 and #W.Toasts == 0, key .. " " .. show(W.Toasts))
 		fire({ Key = key, Args = {}, Event = true })
 		check(g, "no Banter: one chat line (as before)", #W.Chat == 1, key .. " " .. show(W.Chat))
 		fire({ Key = key, Args = { Banter = 42 }, Event = true })

@@ -151,8 +151,6 @@ local ANNOUNCE_ICON = 64 -- the same left of the big banner's text (UIKit.Announ
 -- CR-L38: short (phone) viewports keep fewer toasts; the stack never takes more than WidthFrac of the screen width
 local TOAST_PHONE = { Height = 500, Max = 2, WidthFrac = 0.45 }
 local DEFAULT_TOAST_SECONDS = 3 -- 검수 10/09 (UI clutter review ②): one toast at a time, 3 s (NOTIFY.OneAtATime)
-local DEFAULT_ANNOUNCE_SECONDS = 3.5
-local MAX_ANNOUNCE_QUEUE = 3
 
 local Z_ANNOUNCE = 90
 local Z_TOASTS = 95
@@ -172,9 +170,6 @@ local toasts = {} -- oldest first: { Frame, Label, Stroke, Text, Token, Dead }
 local toastCounter = 0
 local toastMax = MAX_TOASTS -- CR-L38: TOAST_PHONE.Max on short viewports (set by applyScale)
 
-local announceCurrent = nil -- { Text, Token }
-local announceQueue = {} -- { { Text, Duration } }
-local announceToken = 0
 
 local lastWarnAt = -math.huge
 
@@ -2948,6 +2943,9 @@ end
 -- top; default 2.5 s. icon (optional) = a Config.Loot.Items id or a UIArt key (UIKit.ItemIcon), drawn left of the text.
 -- A toast whose text is already on screen is refreshed instead of stacked twice.
 function UIKit.Toast(text, kind, duration, icon)
+	-- A23-191 (user 10/14 "설명이 뜨는 파란 UI 다 삭제"): notice / good / reward / tip toasts are not drawn at all; only a
+	-- failure line (kind "bad": why what I just did did not work) is
+	if kind ~= "bad" then return end
 	if text == nil then return end
 	text = tostring(text)
 	if text == "" or not toastHolder then return end
@@ -3056,55 +3054,9 @@ function UIKit.Toast(text, kind, duration, icon)
 end
 
 ----------------------------------------------------------------- announce banner
-local function related(a, b)
-	return string.sub(b, 1, #a) == a or string.sub(a, 1, #b) == b
-end
-
-local showAnnounce -- forward
-
-local function showNextAnnounce()
-	if announceCurrent then return end
-	local nxt = table.remove(announceQueue, 1)
-	if nxt then
-		showAnnounce(nxt.Text, nxt.Duration, nxt.Icon)
-	end
-end
-
-local function hideAnnounce(token)
-	if announceToken ~= token or not announceFrame then return end
-	announceCurrent = nil
-	local info = TweenInfo.new(0.25)
-	NOTIFY.BannerFade(info, false)
-	TweenService:Create(announceLabel, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-	local icon = announceFrame:FindFirstChild("Icon")
-	if icon then TweenService:Create(icon, info, { ImageTransparency = 1 }):Play() end
-	task.delay(0.28, function()
-		if announceToken ~= token then return end
-		announceFrame.Visible = false
-		NOTIFY.PlaceToasts()
-		showNextAnnounce()
-	end)
-end
-
-local function armAnnounceTimer(duration)
-	announceToken += 1
-	local token = announceToken
-	if announceCurrent then announceCurrent.Token = token end
-	task.delay(duration, function()
-		hideAnnounce(token)
-	end)
-end
-
--- the banner's look fades in / out: the BannerAlert art when uploaded (the frame's own fill stays off), else the frame
-function NOTIFY.BannerFade(info, shown)
-	local art = NOTIFY.AlertImg
-	if art and art.Parent then
-		announceFrame.BackgroundTransparency = 1
-		TweenService:Create(art, info, { ImageTransparency = shown and 0 or 1 }):Play()
-	else
-		TweenService:Create(announceFrame, info, { BackgroundTransparency = shown and 0.3 or 1 }):Play()
-	end
-end
+-- A23-191 (user 10/14 "파란 UI 아예 나오지 않게 … 몇 번을 말하냐"): UIKit.Announce and its show / queue / timer are
+-- gone; nothing draws the big banner any more. The frame below is still built and laid out (never visible) so the
+-- notify column code keeps its shape; it can go with the next HUD clean-up.
 
 -- banner icon size + text box beside it (old path: ANNOUNCE_ICON; HUD v2: no taller than the shorter banner). With the
 -- BannerAlert art the forked tails and the gold rims grow with the banner's height (FitHeight): the icon and the words
@@ -3163,8 +3115,7 @@ end
 -- HUD v2: the banner and the toasts share the column top; while the banner shows, the toasts start under it (a taller
 -- wrapped banner used to cover the newest toast)
 function NOTIFY.BannerOffset()
-	if not (NOTIFY.Rect and announceFrame and announceFrame.Visible and announceCurrent) then return 0 end
-	return announceFrame.Size.Y.Offset + NOTIFY.ToastGap
+	return 0 -- A23-191: the banner never shows
 end
 
 function NOTIFY.PlaceToasts()
@@ -3213,91 +3164,6 @@ function UIKit.SetNotifyAvoid(rect)
 	end
 	NOTIFY.PlaceToasts()
 	NOTIFY.TrimToasts()
-end
-
--- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
-local function setAnnounceIcon(icon)
-	local old = announceFrame:FindFirstChild("Icon")
-	if old then old:Destroy() end
-	local img = type(icon) == "string" and UIKit.ItemIcon(icon, {
-		Name = "Icon",
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 28, 0.5, 0),
-		Size = UDim2.fromOffset(ANNOUNCE_ICON, ANNOUNCE_ICON),
-		ImageTransparency = 1,
-		ZIndex = Z_ANNOUNCE + 1,
-		Parent = announceFrame,
-	}) or nil
-	NOTIFY.LayoutAnnounceText(img)
-	return img
-end
-
-showAnnounce = function(text, duration, icon)
-	if not announceFrame then return end
-	announceCurrent = { Text = text, Token = 0 }
-	announceLabel.Text = text
-	local img = setAnnounceIcon(icon)
-	announceFrame.Visible = true
-	NOTIFY.PlaceToasts()
-	announceFrame.BackgroundTransparency = 1
-	if NOTIFY.AlertImg then NOTIFY.AlertImg.ImageTransparency = 1 end
-	announceLabel.TextTransparency = 1
-	announceLabel.TextStrokeTransparency = 1
-	announcePop.Scale = 0.85
-	local info = TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-	NOTIFY.BannerFade(info, true)
-	TweenService:Create(announceLabel, info, { TextTransparency = 0, TextStrokeTransparency = 0.2 }):Play()
-	if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
-	TweenService:Create(announcePop, info, { Scale = 1 }):Play()
-	armAnnounceTimer(duration)
-end
-
--- large banner at 30% screen height; default 3.5 s. Announcements queue (max 3 waiting); a text that extends the
--- one on screen (or queued), e.g. "레벨 업! Lv 10" -> "레벨 업! Lv 10 · 해금! ...", replaces it instead of queueing.
--- icon (optional) = a Config.Loot.Items id or a UIArt key drawn left of the text (UIKit.ItemIcon).
-function UIKit.Announce(text, duration, icon)
-	if text == nil then return end
-	text = tostring(text)
-	if text == "" or not announceFrame then return end
-	duration = tonumber(duration) or DEFAULT_ANNOUNCE_SECONDS
-	if duration <= 0 then duration = DEFAULT_ANNOUNCE_SECONDS end
-	-- UI round 2 #4: a window is open - the big banner comes as the one line around it
-	if NOTIFY.Avoid then
-		UIKit.Toast(text, "reward", duration, icon)
-		return
-	end
-
-	if announceCurrent and related(announceCurrent.Text, text) then
-		if #text > #announceCurrent.Text then
-			announceCurrent.Text = text
-			announceLabel.Text = text
-		end
-		announceFrame.Visible = true
-		if NOTIFY.AlertImg and NOTIFY.AlertImg.Parent then
-			NOTIFY.AlertImg.ImageTransparency = 0
-		else
-			announceFrame.BackgroundTransparency = 0.3
-		end
-		announceLabel.TextTransparency = 0
-		announceLabel.TextStrokeTransparency = 0.2
-		armAnnounceTimer(math.max(duration, 1.5))
-		return
-	end
-	for _, q in announceQueue do
-		if related(q.Text, text) then
-			if #text > #q.Text then q.Text = text end
-			q.Duration = math.max(q.Duration, duration)
-			return
-		end
-	end
-	if announceCurrent then
-		table.insert(announceQueue, { Text = text, Duration = duration, Icon = icon })
-		while #announceQueue > MAX_ANNOUNCE_QUEUE do
-			table.remove(announceQueue, 1)
-		end
-		return
-	end
-	showAnnounce(text, duration, icon)
 end
 
 ----------------------------------------------------------------- HUD v2 notify column (A23-26)
@@ -4286,21 +4152,9 @@ function UIKit.RewardPopup(opts)
 	return handle
 end
 
--- show the held world banners (called when the first mission is accepted / the opening ends)
+-- A23-191 (user 10/14): world banners / held toasts are never shown; anything still held is dropped
 function UIKit.FlushBanners()
-	if type(UIKit.HeldBanners) ~= "table" or #UIKit.HeldBanners == 0 or UIKit.ShouldHoldBanners() then return end
-	local held = UIKit.HeldBanners
 	UIKit.HeldBanners = {}
-	task.delay(3, function()
-		for _, b in held do
-			if b[3] == "toast" then
-				UIKit.Toast(b[1], "reward", b[2], b[4]) -- held server-wide Epic toast (A23-15); b[4] = optional icon
-			else
-				UIKit.Announce(b[1], b[2], b[4])
-			end
-			task.wait(3)
-		end
-	end)
 end
 
 function UIKit.Start()
@@ -4351,19 +4205,9 @@ function UIKit.Start()
 				local okSkip, yes = pcall(skip, payload, text)
 				if okSkip and yes == true then return end
 			end
-			local duration = tonumber(payload.Duration)
-			if payload.Kind == "announce" then
-				-- A23-3 / A23-9: world banners (goose / war / kaiju / bounty) wait until the first mission is
-				-- accepted and while the opening plays
-				if UIKit.ShouldHoldBanners() then
-					table.insert(UIKit.HeldBanners, { text, duration })
-					if #UIKit.HeldBanners > 2 then table.remove(UIKit.HeldBanners, 1) end
-					return
-				end
-				UIKit.Announce(text, duration)
-			else
-				UIKit.Toast(text, payload.Kind, duration)
-			end
+			-- A23-191 (user 10/14 "다 삭제하라고"): no banner (Kind "announce") and no notice / reward / tip toast - only a
+			-- failure line (Kind "bad": why the server refused what I just did) is still drawn
+			if payload.Kind == "bad" then UIKit.Toast(text, "bad", tonumber(payload.Duration)) end
 		end)
 	end)
 

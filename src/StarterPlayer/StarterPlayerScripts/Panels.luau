@@ -681,7 +681,7 @@ local function buy(kind)
 		local ok, err = pcall(MarketplaceService.PromptProductPurchase, MarketplaceService, player, p.Id)
 		if not ok then Util.Warn(TAG, "PromptProductPurchase failed: " .. tostring(err)) end
 	else
-		toast(fmtText("ProductNotReady"), "info")
+		toast(fmtText("ProductNotReady"), "bad") -- A23-191: why the buy did not start
 	end
 end
 
@@ -3540,7 +3540,6 @@ function Panels.Close(manual)
 	REG.CleanupBuilt()
 	REG.Arg = nil
 	clearContent()
-	if farewell then toast(farewell, "info", 4) end
 end
 
 function Panels.IsOpen()

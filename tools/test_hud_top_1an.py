@@ -71,21 +71,20 @@ local function plan(keys, open, fit, town, pvp, icons)
 	for _, r in p.Show do table.insert(out, r.Key .. (r.Icon and "*" or "")) end
 	return table.concat(out, ","), p.More
 end
+-- A23-192 (user 10/14 "+1 이렇게 하지마"): every chip with its words, in order, never '+N', never an icon alone
 local keys = { "Outlaw", "Wanted", "Zone", "Luck", "Boost", "Rookie" }
 local a, m = plan(keys, false, 2, true, false)
-check(a == "Outlaw,Wanted,Zone*,Boost*" and m == 2, "closed: danger words, the Safe Zone icon, ONE buff icon (Boost), +2", a .. " +" .. m)
-a, m = plan(keys, true, 2, true, false)
-check(a == "Outlaw,Wanted,Zone,Luck" and m == 2, "open: the others with words up to fit", a .. " +" .. m)
+check(a == "Outlaw,Wanted,Zone,Luck,Boost,Rookie" and m == 0, "all chips with their words, no +N (A23-192)", a .. " +" .. m)
 a, m = plan(keys, false, 0, true, false)
-check(a == "Outlaw,Wanted" and m == 4, "no room: the danger names still show, never in +N", a .. " +" .. m)
+check(a == "Outlaw,Wanted,Zone,Luck,Boost,Rookie" and m == 0, "no fit limit: the row wraps instead", a .. " +" .. m)
 a, m = plan({ "Bully", "Zone", "Luck" }, false, 2, false, true)
-check(a == "Bully,Zone,Luck*" and m == 0, "a PvP zone is a danger chip (words)", a .. " +" .. m)
-a, m = plan({ "Zone", "Protected", "Luck" }, false, 2, true, false, { Zone = true, Luck = true })
-check(a == "Zone*,Luck*" and m == 1, "a buff without an icon is skipped for the one buff icon", a .. " +" .. m)
+check(a == "Bully,Zone,Luck" and m == 0, "a PvP zone: words too", a .. " +" .. m)
+local p2 = HUD.ChipPlan({ "Bully", "Zone", "Luck" }, danger, iconOK, buffs, false, 2, false, true)
+check(p2.Show[1].Danger == true and p2.Show[2].Danger == true and not p2.Show[3].Danger, "danger marks kept (Bully, the PvP zone)")
 a, m = plan({}, false, 2, true, false)
 check(a == "" and m == 0, "nothing to show: no row", a)
 a, m = plan({ "Combat", "Kaiju" }, false, 2, false, false)
-check(a == "" and m == 2, "closed: other states wait behind +N", a .. " +" .. m)
+check(a == "Combat,Kaiju" and m == 0, "other states show too", a .. " +" .. m)
 
 -- ③ one event chip
 local K, KI, G = "Kaiju", "King", "Goose"
@@ -104,9 +103,8 @@ MUTATIONS = [
     ("HUD", "the crown on the track again", "\tlocal trackY = crownY + crown + px(\"CrownGap\")\n", "\tlocal trackY = crownY + crown * 0.6\n"),
     ("HUD", "badges outside the ends again", "\tlocal trackX = badge + px(\"BadgeGap\")\n", "\tlocal trackX = badge / 2\n"),
     ("HUD", "the plate down past the badges", "\tlocal plateH = math.min(trackH + 2 * pad, cy + badge / 2 - plateY)\n", "\tlocal plateH = trackH + 6 * pad + badge\n"),
-    ("HUD", "danger chips in '+N'", "\t\tif danger[k] or (k == \"Zone\" and zoneDanger) then\n", "\t\tif false then\n"),
-    ("HUD", "every buff as an icon", "\t\t\tpicked[b] = true\n\t\t\tbreak\n", "\t\t\tpicked[b] = true\n"),
-    ("HUD", "the Safe Zone with words when closed", "\tif table.find(rest, \"Zone\") and safeZone and iconOK.Zone then picked.Zone = true end\n", ""),
+    ("HUD", "a '+N' again (A23-192)", "\treturn { Show = show, More = 0 }\n", "\treturn { Show = { show[1] }, More = #show - 1 }\n"),
+    ("HUD", "the danger mark lost", "Danger = (danger[k] or (k == \"Zone\" and zoneDanger)) and true or nil", "Danger = nil"),
     ("HUD", "the war window shows a clock with no round", "local time = endsAt > now and", "local time = true and"),
     ("EV", "a tie swaps chips", "\t\tif c.Inst == current and c.Class == best.Class", "\t\tif false and c.Inst == current"),
     ("EV", "the kaiju waits behind a coming goose", "Inst = ui.KaijuChip, Class = 2, In = 0", "Inst = ui.KaijuChip, Class = 5, In = 0"),
@@ -169,11 +167,12 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("① a press on the bar opens the war window (Panels, registered in HUD.Start)",
          "\topen.Activated:Connect(function() pcall(L.OpenWarInfo) end)\n" in h and "C.Panels.Open(L.WarInfoId)" in h
          and "pcall(L.RegisterWarInfo)" in h),
-        ("② the status row: under the war meter's drawn bottom + Gap, 36 / 44 px tall, words >= 18 / 19 px, wraps, presses open it",
+        ("② the status row: under the war meter's drawn bottom + Gap, 36 / 44 px tall, words >= 18 / 19 px, wraps, no '+N', no press (A23-192)",
          "local warBottom = (ui.war.Visible and L.WarGeo) and (wm.Y + L.WarGeo.Bottom + CT.Gap / s) or ch.Y" in h
          and "local textDu = math.ceil((IS_TOUCH and CT.TextPxTouch or CT.TextPx) / s)" in h and "Wraps = true," in h
          and "L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24 }" in h
-         and "pcall(L.ChipPress, key)" in h and "L.ChipDanger = { Bully = true, Outlaw = true, Wanted = true }" in h),
+         and "pcall(L.ChipPress, key)" not in h and "ui.chipMore" not in h
+         and "L.ChipDanger = { Bully = true, Outlaw = true, Wanted = true }" in h),
         ("③ one event chip (V2.PickEvent, the kaiju too), 40 / 44 px, words >= 18 / 19 px, the notify rows under it",
          "eventInst = V2.PickEvent(cands, V2.EventCur)" in e and "{ Inst = ui.KaijuChip, Class = 2, In = 0 }" in e and "setVisible(ui.KaijuChip, eventInst == ui.KaijuChip)" in e
          and "L.EventTop = { H = 40, HTouch = 44, TextPx = 18, TextPxTouch = 19," in e and "\tV2.EventMinText()\n" in e

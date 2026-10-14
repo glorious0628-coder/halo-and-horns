@@ -109,11 +109,8 @@ local function trx(t, key, ...)
 end
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
-local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1,
-	TipSlot = "Q", TipAfterPress = 2.5, TipLate = 25, TipPending = false, -- A23-81 the keys tip
-	-- 검수 10/09 (UI clutter review ④, "help only when stuck"): the "Press Q" line waits HintAfter s and shows only
-	-- when the new skill was not used by then (HintWait[slot] = its line; SkillBar.Use clears it)
-	HintAfter = 45, HintWait = {} }
+-- A23-191 (user 10/14): no banner, no "Press Q" line, no keys tip card - the button pops in and the sound plays
+local LEARN = { Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1 }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -402,20 +399,7 @@ local function buildButton(slot)
 		Size = UDim2.fromScale(0.66, 0.24), TextScaled = true, ZIndex = 7, Visible = false, Parent = holder,
 	}, "Number")
 
-	-- PCs: the name pill on the lower rim, the key badge in the lower right (keyboards). The pill reaches a little past
-	-- the rim (like the tile captions) and its words take the 12 px Number floor, not the 16 px button floor: at 16 px
-	-- "Shockwave" stood taller than the 16 px pill and was cut ("Shockwa", 2026-10-07), Z / X names are longer still
-	if not IS_TOUCH then
-		b.Pill = UIKit.Create("Frame", {
-			Name = "Name", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.9),
-			Size = UDim2.fromScale(1.2, 0.22), BackgroundColor3 = COL.Navy, BackgroundTransparency = 0.12, ZIndex = 7,
-			Active = false, Parent = holder,
-		}, { corner() })
-		b.PillText = smallLabel({
-			Name = "Text", Text = "", Position = UDim2.fromScale(0.04, 0), Size = UDim2.fromScale(0.92, 1),
-			TextScaled = true, ZIndex = 8, Parent = b.Pill,
-		}, "Number")
-	end
+	-- A23-191 (user 10/14 "표시만 봐도 아니까"): no name pill under the skill icon; PCs keep the small key badge
 	local kb = C and C.Keybinds
 	local showKeys = type(kb) == "table" and type(kb.ShowsKeys) == "function" and kb.ShowsKeys() or false
 	if showKeys then
@@ -528,8 +512,6 @@ local function paintButton(b)
 	end
 	if b.Lock then b.Lock.Visible = st.Locked end
 	if b.LockText then b.LockText.Visible = false end -- A23-180: the lock picture only, no words
-	if b.PillText then b.PillText.Text = st.Def.Name end
-	if b.Pill then b.Pill.Visible = not st.Locked end
 	if b.Key then
 		-- only a key that works now (Keybinds.IsLive: SkillZ / SkillX are live once their flags are on), and only while
 		-- Settings.KeyBadges ('Key hints') is on - A23-78: off by default, like the HUD and potion badges (검수 10/08)
@@ -667,7 +649,7 @@ end
 ----------------------------------------------------------------- A23-71 learn moment
 function LEARN.Show(b, st)
 	local slot = b.Slot
-	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, trx(TXT, "NewSkill", st.Def.Name), LEARN.Banner) end
+	-- A23-191: no "New skill!" banner (the button pops in)
 	-- the button pops in (no bounce with 'Screen shake' off)
 	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
 	if not reduced then
@@ -677,43 +659,7 @@ function LEARN.Show(b, st)
 		scale.Parent = b.Holder
 		TweenService:Create(scale, TweenInfo.new(LEARN.Pop, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	end
-	-- one line on the new button: the key on keyboards, a tap on phones
-	local line = TXT.LearnTouch
-	if not IS_TOUCH then
-		local kb = C and C.Keybinds
-		local ok, label = false, nil
-		if type(kb) == "table" and type(kb.Label) == "function" then ok, label = pcall(kb.Label, T.Action[slot]) end
-		line = trx(TXT, "LearnKey", (ok and type(label) == "string" and label ~= "") and label or slot)
-	end
-	LEARN.HintWait[slot] = line
-	task.delay(LEARN.HintAfter, LEARN.LateHint, slot)
 	task.delay(LEARN.SoundDelay, LEARN.Sound)
-	-- A23-81: the first skill (this moment comes once per account: the slot opens while I play) brings the keys tip on
-	-- keyboards, after my first press of it, or TipLate s later if I never press
-	if slot == LEARN.TipSlot and not IS_TOUCH then
-		LEARN.TipPending = (Config.Nudges or {}).KeysTip ~= false -- 검수 10/09: the tip card is off (Config.Nudges.KeysTip)
-		task.delay(LEARN.TipLate, LEARN.Tip)
-	end
-end
-
--- the learn line, HintAfter s after the learn moment, only if the skill is still unused
-function LEARN.LateHint(slot)
-	local line = LEARN.HintWait[slot]
-	if not line then return end
-	LEARN.HintWait[slot] = nil
-	local hud = C and C.HUD
-	if type(hud) == "table" and type(hud.Hint) == "function" then pcall(hud.Hint, slot, line) end
-end
-
--- the keys tip (once): a calm card with [Open Settings] -> the Settings window's Keys tab (PauseCard waits for a free
--- screen; the same tip stays in Help)
-function LEARN.Tip()
-	if not LEARN.TipPending then return end
-	LEARN.TipPending = false
-	local card = C and C.PauseCard
-	if type(card) == "table" and type(card.Show) == "function" then
-		pcall(card.Show, "Tip", { Text = TXT.KeysTip, Go = { Text = TXT.KeysTipGo, Window = "Settings", Arg = { Tab = "Keys" } } })
-	end
 end
 
 -- the SkillLearn sound (PowerUp until its file is uploaded)
@@ -731,7 +677,7 @@ function LEARN.Tell(level, slot)
 	LEARN.TellAt = os.clock()
 	local task = math.floor(num("Level", 1)) >= (tonumber(level) or 1) and SkillBar.TaskFor(slot) or ""
 	local line = task ~= "" and task or trx(TXT, "Later", level)
-	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "info", 2.5) end
+	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "bad", 2.5) end -- A23-191: why the key did nothing
 end
 
 ----------------------------------------------------------------- public API
@@ -785,13 +731,7 @@ function SkillBar.Use(slot)
 		if st.On and st.Locked then LEARN.Tell(st.Unlock, slot) end
 		return false
 	end
-	LEARN.HintWait[slot] = nil -- used before the learn line came: it never comes
 	local hud = C and C.HUD
-	if type(hud) == "table" and type(hud.ClearHint) == "function" and type(hud.HintShown) == "function"
-		and hud.HintShown(slot) then
-		pcall(hud.ClearHint, slot) -- A23-68 #2: "Try your skill!" goes with the first press
-	end
-	if LEARN.TipPending and slot == LEARN.TipSlot then task.delay(LEARN.TipAfterPress, LEARN.Tip) end -- A23-81
 	if type(hud) == "table" and type(hud.InputAllowed) == "function" then
 		local ok, allowed = pcall(hud.InputAllowed)
 		if ok and allowed == false then return false end

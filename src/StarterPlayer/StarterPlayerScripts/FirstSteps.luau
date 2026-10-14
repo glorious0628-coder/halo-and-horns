@@ -5,11 +5,9 @@
 --      centre line "Off to Squishy Meadow! 3", 2, 1; the screen fades to black from T - Fade s and back in on
 --      TravelDone (T + MaxExtra s at the latest); open windows close. Input is never blocked here (the server ignores
 --      attacks until it moved me).
---   #2 during the first mission (TutorialStep 1..98): Idle s within my reach of a monster without a swing of mine -> the
---      attack button hint (C.HUD.Hint "Attack"); in the meadow before my first kill (my first Reward Fx) a small marker
---      over the nearest monster (C.QuestMarker.Focus). Each at most once per session. The "Try your skill!" hint moved
---      to the moment Q is learned (A23-71, SkillBar). The looks are image dev's: every call is pcall'd, so a missing
---      function just skips the hint.
+--   #2 during the first mission (TutorialStep 1..98), in the meadow before my first kill (my first Reward Fx): a small
+--      marker over the nearest monster after MarkAfter s (C.QuestMarker.Focus). A23-191 (user 10/14): no hint bubbles and
+--      no first-PvP card any more.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
@@ -46,8 +44,8 @@ local TRAVEL = { Fade = 0.4, MaxExtra = 1.5, FadeIn = 0.5, Token = 0, Gui = nil,
 	FocusUp = 1.5, Again = 0.15 }
 -- MarkAfter / MeadowSince: 검수 10/09 (UI clutter review ④, "help only when stuck") - the marker comes only after MarkAfter s
 -- in the meadow during the first mission without a kill (the time keeps counting across a trip out and back)
-local HINT = { Idle = 5, Tick = 0.25, Search = 120, MarkerGap = 0.5, NearSince = nil, MarkAfter = 45, MeadowSince = nil,
-	AttackShown = false, Killed = false, MarkerAt = -math.huge, Marked = nil }
+local HINT = { Tick = 0.25, Search = 120, MarkerGap = 0.5, MarkAfter = 45, MeadowSince = nil,
+	Killed = false, MarkerAt = -math.huge, Marked = nil }
 
 local function attr(key, default)
 	local v = LocalPlayer:GetAttribute(key)
@@ -201,11 +199,6 @@ function HINT.Nearest(pos, limit)
 	return best, best and bestD or math.huge
 end
 
-function HINT.Reach()
-	local p = Config.AttackProfile(attr("Class", "Warrior"), tonumber(attr("WeaponTier", 0)) or 0, attr("Faction", "None"))
-	return (type(p) == "table" and tonumber(p.Range) or 7) + 2 -- a little slack: standing at the edge counts
-end
-
 function HINT.Mark(model)
 	if HINT.Marked == model then return end
 	HINT.Marked = model
@@ -214,26 +207,12 @@ end
 
 function HINT.Step(now)
 	if not firstMission() then
-		HINT.NearSince = nil
 		if HINT.Marked then HINT.Mark(nil) end
 		return
 	end
 	local root = myRoot()
 	if not root then return end
-	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait); A23-130: off while
-	-- Config.Nudges.AttackHint = false
-	if not HINT.AttackShown and (Config.Nudges or {}).AttackHint ~= false then
-		local _, d = HINT.Nearest(root.Position, HINT.Reach())
-		if d < math.huge then
-			HINT.NearSince = HINT.NearSince or now
-			if now - HINT.NearSince >= HINT.Idle then
-				HINT.AttackShown = true
-				call("HUD", "Hint", "Attack")
-			end
-		else
-			HINT.NearSince = nil
-		end
-	end
+	-- A23-191 (user 10/14 "다 삭제하라고"): no attack hint bubble any more (the idle wait went with it)
 	-- the marker over the nearest monster, in the meadow, until my first kill
 	if HINT.Killed or attr("ZoneId", "") ~= "SlimeMeadow" then
 		if HINT.Marked then HINT.Mark(nil) end
@@ -257,8 +236,6 @@ function FirstSteps.OnFx(kind, data)
 		TRAVEL.Start(data)
 	elseif kind == "TravelDone" and mine(data) then
 		TRAVEL.Finish(TRAVEL.Token, true)
-	elseif (kind == "Swing" or kind == "Release" or kind == "Skill") and mine(data) then
-		HINT.NearSince = nil
 	elseif kind == "Reward" then -- sent only to the killer (ProgressionService)
 		HINT.Kill()
 	end
@@ -269,59 +246,10 @@ function FirstSteps.Init(registry)
 	pcall(function() C.UIKit.L10n.Register("FirstSteps.TXT", TXT) end) -- 10/14: the words' keys "FirstSteps.TXT.<key>" (trx)
 end
 
------------------------------------------------------------------ 검수 10/09 (system review ②) the first PvP zone
--- the first time I walk into a PvP zone (not the Artisan Guild: nobody can fight it), one calm card (PauseCard "Tip", it
--- waits for a calm screen; 검수 10/11 A23-130: the three cards became one - the danger line + one short line); once it
--- is closed the Settings flag PvPCards (saved with my account) keeps it from coming again. Shown only from the place: no
--- button sends me anywhere
-local PVP = { Title = Config.ClientText.FirstStepsPvP.PvPTitle, Why = "PvPIntro", Step = 0,
-	Text = Config.ClientText.FirstStepsPvP.PvPText } -- the words: Config.ClientText.FirstStepsPvP
-
--- the card would open for me now (not the Guild, my Settings loaded, PvPCards not set yet)
-function PVP.Wanted()
-	if attr("Faction", "") == "Neutral" then return false end
-	local st = C and C.Settings
-	if type(st) ~= "table" or type(st.Get) ~= "function" or (type(st.Loaded) == "function" and not st.Loaded()) then return false end
-	local ok, seen = pcall(st.Get, "PvPCards")
-	return ok and seen ~= true
-end
-
-function PVP.Check()
-	if PVP.Step > 0 or attr("ZonePvP", false) ~= true or not PVP.Wanted() then return end
-	PVP.Step = 1
-	PVP.Show()
-end
-
--- 게임성 검수 10/12 (A23-130, one explanation at a time): the server's "PvP zone!" line (Config.Text.EnteredPvP) does not
--- come with my first PvP card - while it waits / is open (Step 1) or when this entry opens it (the line may arrive before
--- ZonePvP); from the next entry on (the card seen) the line shows as before. A UIKit.NotifyFilters entry.
-function PVP.SkipToast(payload, text)
-	local line = type(Config.Text) == "table" and Config.Text.EnteredPvP or nil
-	if not ((line ~= nil and text == line) or (type(payload) == "table" and payload.Key == "EnteredPvP")) then return false end
-	if PVP.Step == 1 then return true end
-	return PVP.Step == 0 and PVP.Wanted()
-end
-
-function PVP.Show()
-	call("PauseCard", "Show", "Tip", { Title = PVP.Title, Text = PVP.Text, Why = PVP.Why })
-end
-
--- my card was closed (PauseCard.Shown: kind, button, why): the flag, once
-function PVP.OnShown(_kind, _button, why)
-	if why ~= PVP.Why or PVP.Step ~= 1 then return end
-	PVP.Step = 2
-	call("Settings", "Set", "PvPCards", true)
-end
+-- A23-191 (user 10/14): the first-PvP-zone card is gone (no card, no saved flag, no held-back line): the server's
+-- "PvP zone!" line (Kind "bad") shows on every entry
 
 function FirstSteps.Start()
-	local okPvp, errPvp = pcall(function()
-		LocalPlayer:GetAttributeChangedSignal("ZonePvP"):Connect(PVP.Check)
-		local card = C and C.PauseCard
-		if type(card) == "table" and type(card.Shown) == "table" then card.Shown:Connect(PVP.OnShown) end
-		local ui = C and C.UIKit
-		if type(ui) == "table" and type(ui.NotifyFilters) == "table" then table.insert(ui.NotifyFilters, PVP.SkipToast) end
-	end)
-	if not okPvp then warn("[FirstSteps] PvP cards hookup failed: " .. tostring(errPvp)) end
 	task.spawn(function()
 		local ok, err = pcall(function() Net.Get("Fx").OnClientEvent:Connect(FirstSteps.OnFx) end)
 		if not ok then warn("[FirstSteps] Fx hookup failed: " .. tostring(err)) end
@@ -336,6 +264,6 @@ function FirstSteps.Start()
 end
 
 -- test aids
-FirstSteps.Travel, FirstSteps.Hint, FirstSteps.Text, FirstSteps.PvP = TRAVEL, HINT, TXT, PVP
+FirstSteps.Travel, FirstSteps.Hint, FirstSteps.Text = TRAVEL, HINT, TXT
 
 return FirstSteps
