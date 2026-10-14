@@ -1,6 +1,24 @@
-# 게임성 개발 2 — 상태 (2026-10-14 늦은 밤, 가방 칸·장인 ①·큐 ①~④·무기 상점)
+# 게임성 개발 2 — 상태 (2026-10-14 한밤, 첫 흐름 A23-188 보고)
 
-## 지금 (10/14 늦은 밤) — 모두 push, 최종 검수 병합 대기
+## 지금 (10/14 한밤)
+- **main 병합됨:** artisan-sell, bag-slots, bag-reward(6곳 포함 77699c57), sub-retry, fund-ladder, no-ticket, first-hit, weapon-shop(v6), market, stale-text.
+- **push·보고, 병합 대기:**
+
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-artisan-quests | 4ee3c50d | 장인 ②: 목표 Gather·Craft·SellMat, N0(약초 3 + 구리 2 → 제작 → 150골드 + 만든 무기 장착 EquipBestSpare)·N0b(5개 팔기 → 30)·N4(N2 뒤 제작 2 → 교차로), W1 레시피 삭제, W2 = 약초 3 + 구리 2 | town_quests 1058/251, craft 186, craft_window 158/59 |
+| dev2-xp-ramp | 3a0808fc | Config.Levels.Ramp {10 = 0.5, 11 = 0.65, 12 = 0.8, 13 = 0.9}, 새 시험 test_xp_ladder | 13 / 5 |
+| dev2-first10-b | e5915e58 | Codex B1(Trials 줄 = 첫 미완 시험 글), B5(King 줄은 King 120초 안일 때만, FieldBossService.SecondsUntil), B6(XPEarned source, 숫자판 XP[Lv5/Lv10] 사냥/그 밖) | town_quests·next_goal·test_metrics·health 변이 |
+| dev2-first-flow | 0ec2dadc | A23-188: 첫 임무 = 대장간 방문(T1 + 150골드 finishFirst), 옛 1·2단계 저장 = 접속 때 끝, M1_1 = Prince 1 → 주문서 쓰기, M1_2 Prince 1, 숫자판 Weapon = T1 | weapon_first 113/52, unarmed 261/77, onboarding 842 |
+
+- 큐(최종 검수 10/14): 장인 ③ 거래소 실시간 끄기 키 Switches.Defs.Market + 단계별 서버 죽이기 시험 + 거래소 퀘스트 → ④ 작업대 3개(교차로 길드 마당, MapBuilder, CraftStation 태그) → ⑤ 연금 소모품 → ⑥ Gear 켜기 + 전투력 → ⑦ 새 기능 끄기 키 묶음 → 운영(Env.Names Beta/Live, 배지 7 ID, TestServer 되돌리기).
+- 규칙(최종 검수 10/14): 전체 시험은 가지당 한 번(4개 동시), 변이는 바뀐 시험만. 큐가 비면 상태 파일 push 뒤 clear_session("self").
+- 주의: main의 unarmed_start 변이 2개('join-time gift' 패턴 2번) — weapon-shop 가지에서 고쳐 main에 있음. skill_learn 'no banner' NOT APPLIED = 개발 1 몫(클라이언트).
+- worktree: ../wt_aq, ../wt_xp, ../wt_f10, ../wt_flow (+ 병합 끝난 wt_artisan·wt_bag·wt_subretry·wt_fundl·wt_ticket·wt_wshop·wt_tmpm은 지워도 됨).
+- 스크래치 도구: sweep.py(`<wt> <out> [--jobs N]`), only_mut.py(`<wt> <test.py> "이름|이름"`), keephead.py(충돌 = 우리 쪽).
+
+
+## 앞서 (10/14 늦은 밤)
 | 가지 | tip | 무엇 | 시험 |
 |---|---|---|---|
 | dev2-artisan-sell | 828f3bed | 장인 ①: 채집 재료 판매 SellItem(상점 근처, 골드 "Sale") + 길드 일일 Gather/Craft(Neutral, 스위치 따라) | loot 666/142, a23_14 329, gamepass 232/116. main 합친 트리 = 원래 실패만 |
