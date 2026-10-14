@@ -48,6 +48,9 @@ BINARY = find_binary()
 SENDS = ["MarketBrowse", "MarketBuy", "MarketCancel", "MarketIndex", "MarketList", "MarketMine"]
 
 MUTATIONS = [
+    ("WIN", "a sold row shows the price before the cut", 'if r.State == "Sold" then shown = select(2, MarketWindow.Fee(r.Price)) end', ""),
+    ("WIN", "tier-1 spares on the sell list", "if t and tonumber(t) <= 1 then t = nil end", ""),
+    ("WIN", "hours look like minutes again", 'return tx(TXT, "Hours", sec // 3600, (sec % 3600) // 60)', 'return string.format("%d:%02d", sec // 3600, (sec % 3600) // 60)'),
     ("WIN", "the menu entry shows while the switch is off", "Menu = function() return MarketWindow.On() and tx(TXT, \"Menu\") or nil end",
      "Menu = function() return tx(TXT, \"Menu\") end"),
     ("WIN", "Open works while the switch is off", "function MarketWindow.Open(tab)\n\tif not MarketWindow.On() then return end\n",
