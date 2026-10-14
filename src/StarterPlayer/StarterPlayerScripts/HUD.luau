@@ -3730,6 +3730,40 @@ end
 
 -- the status chip row shows at least one chip (user 10/13 first look: out of town the row is empty and EventHUD's
 -- next-event line floated a whole row under the war meter; EventHUD lifts it into the empty row)
+-- 최종 검수 10/14 (user photo while playing: 'Crown War · 9:38', the quest marker and 'Golden Goose 3:43' piled up at the
+-- top centre): the DRAWN bottom (du, MainGui units incl. the top bar) of the top-centre HUD - the war meter with its plate
+-- and info line (they reach below Rects.war_meter) and the status chips row while it shows. nil = nothing there.
+-- EventHUD puts the next-event chip under it, QuestMarker keeps the quest marker under it.
+-- (pure) the lowest drawn bottom of `list` (GuiObjects: AbsolutePosition / AbsoluteSize in px) in du
+function L.DrawnBottom(list, rootY, s)
+	local b = nil
+	s = (type(s) == "number" and s > 0) and s or 1
+	for _, g in list do
+		local h = g.AbsoluteSize.Y
+		if h > 0 then
+			local y = (g.AbsolutePosition.Y + h - rootY) / s
+			if not b or y > b then b = y end
+		end
+	end
+	return b
+end
+
+function HUD.TopBottom()
+	local root = UIKit and UIKit.Gui
+	if not root then return nil end
+	local list = {}
+	if ui.war and ui.war.Visible then
+		table.insert(list, ui.war)
+		for _, g in { ui.warPlate, ui.warInfo } do
+			if typeof(g) == "Instance" and g:IsA("GuiObject") and g.Visible then table.insert(list, g) end
+		end
+	end
+	if HUD.ChipsShown() then table.insert(list, ui.chips) end
+	if #list == 0 then return nil end
+	local ok, b = pcall(L.DrawnBottom, list, root.AbsolutePosition.Y, currentScale())
+	return ok and b or nil
+end
+
 function HUD.ChipsShown()
 	if not (ui.chips and ui.chips.Visible) then return false end
 	for _, c in ui.chips:GetChildren() do

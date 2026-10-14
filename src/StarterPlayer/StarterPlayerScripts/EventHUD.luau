@@ -1627,6 +1627,25 @@ function V2.rects()
 	return nil
 end
 
+-- 최종 검수 10/14 (user photo: the goose chip half over the 'Crown War · 9:38' line): the next-event chip never starts
+-- above the drawn bottom of the top-centre HUD (HUD.TopBottom: the war meter with its info line / plate, the chips row)
+-- plus Gap - one column, top to bottom, on PCs and phones. Pure (tools/test_hud_top_overlap.py)
+V2.TopGap = 6
+function V2.EventTop(evY, hudBottom, gap)
+	evY = num(evY)
+	if type(hudBottom) == "number" and hudBottom == hudBottom then
+		return math.max(evY, hudBottom + (tonumber(gap) or V2.TopGap))
+	end
+	return evY
+end
+
+function V2.hudBottom()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.TopBottom) ~= "function" then return nil end
+	local ok, b = pcall(hud.TopBottom)
+	return ok and type(b) == "number" and b or nil
+end
+
 -- the next-event line's top (du): its own row (Rects.event), or the status chip row's when that row is empty (user
 -- 10/13 first look: out of town the goose pill floated a whole empty row under the war meter). chipsShown = HUD's answer
 -- (nil = unknown -> its own row). Pure (tools/test_event_lift.py)
@@ -1638,6 +1657,11 @@ function V2.eventY(rects, chipsShown)
 		return chips.Y
 	end
 	return num(ev.Y)
+end
+
+-- the drawn bottom (du) of the next-event chip while the column places it (QuestMarker keeps the marker under it)
+function EventHUD.TopBottom()
+	return V2.Active and V2.EventBottom or nil
 end
 
 function V2.chipsShown()
@@ -1754,10 +1778,12 @@ function V2.stack()
 		end
 		local natural = eventInst == ui.KingChip
 			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or GOOSE_CHIP_W
+		V2.EventBottom = nil
 		if eventInst then
-			local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y
+			local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)
 			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(evY - top + 0.5)),
 				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))
+			V2.EventBottom = evY + num(ev.H)
 		end
 		setVisible(ui.KingChip, eventInst == ui.KingChip)
 		setVisible(ui.GooseChip, eventInst == ui.GooseChip)
