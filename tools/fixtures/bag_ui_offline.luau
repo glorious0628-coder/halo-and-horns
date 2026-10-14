@@ -441,6 +441,23 @@ if Config.Loot.Items.Herb and Config.Loot.Items.Herb.Source then
 	for _, c in herb do if c.Key == "I:Herb" then hc = c end end
 	local hv = detail(hc)
 	check(hc and lineWith(hv, "Sells for") == nil and lineWith(hv, "×3") ~= nil, "a gathered material shows no sell price (the sell-all skips it)")
+	-- artisan contract ② (10/14): with the server's SellItem it sells one at a time at the anvil
+	local function acts(view)
+		local out = {}
+		for _, a in view.Actions do out[a.Id] = a.Enabled end
+		return out
+	end
+	local near = detail(hc, { SellOn = true, Near = true })
+	local a1 = acts(near)
+	check(lineWith(near, "Sells for") ~= nil and a1.SellOne == true and a1.SellAll == true, "SellItem + at the anvil: price, [Sell 1] / [Sell all] on")
+	local far = detail(hc, { SellOn = true, Near = false })
+	local a2 = acts(far)
+	check(lineWith(far, "Forge's anvil") ~= nil and a2.SellOne == false and a2.SellAll == false, "away from the anvil: the where line, the buttons off")
+	local busy = acts(detail(hc, { SellOn = true, Near = true, Pending = { Kind = "Sell" } }))
+	check(busy.SellOne == false and busy.SellAll == false, "a request waiting: the buttons off")
+	check(BagUI.SellPlan(hc, Config.Loot.Items.Herb, { SellOn = false, Near = true }) == nil
+		and BagUI.SellPlan(byKey["I:Jelly"], Config.Loot.Items.Jelly, { SellOn = true, Near = true }) == nil,
+		"no SellItem remote, or a monster material: no sell buttons")
 else
 	check(false, "Config.Loot.Items.Herb with a Source (the gather server on main)")
 end
