@@ -91,6 +91,16 @@ n, b = L.GoalTiers(1, 0, 0, "Horns", nil)
 check(b == "Big goal: Win the Crown for the Legion", "Legion: its own crown line", b)
 n, b = L.GoalTiers(3, 0, 0, "Neutral", nil)
 check(b == nil and n ~= nil, "the Artisan Guild: no crown line (Next still)", tostring(b))
+-- 최종 검수 10/14 MINOR: no crown line for Neutral / None / no side on purpose, not by a format error
+local bigWords = G.Text.Big
+G.Text.Big = "Big goal"
+local _, bn = L.GoalTiers(3, 0, 0, "Neutral", nil)
+local _, bx = L.GoalTiers(3, 0, 0, "None", nil)
+local _, bz = L.GoalTiers(3, 0, 0, nil, nil)
+local _, bh = L.GoalTiers(3, 0, 0, "Halo", nil)
+check(bn == nil and bx == nil and bz == nil and bh == "Big goal", "Neutral / None / no side: no crown line even when the words need no side",
+	tostring(bn) .. "/" .. tostring(bx) .. "/" .. tostring(bz) .. "/" .. tostring(bh))
+G.Text.Big = bigWords
 n = L.GoalTiers(3, 0, 0, "Halo", { NextGoal = true, GoalKind = "SkillIron" })
 check(n == string.format("Next: Lv %d · Goblin Woods", woods), "the tracker says Lv5 skill + iron: Next = the woods", n)
 n = L.GoalTiers(3, 0, 0, "Halo", { NextGoal = true, GoalKind = "IronLevel" })
@@ -266,6 +276,8 @@ MUTATIONS = [
     ("HUD", "learned skills shown", "and i > skillSlots and", "and"),
     ("HUD", "the farthest step", "(best == nil or s.At < best.At)", "(best == nil or s.At > best.At)"),
     ("HUD", "phones show all tiers", "(not IS_TOUCH or (tonumber(G.TouchTiers) or 1) >= 2)", "true"),
+    ("HUD", "Neutral leans on a format error", "local big = type(sideWord) == \"string\" and fmt(W.Big, sideWord) or nil",
+     "local big = fmt(W.Big, W[faction])"),
     ("HUD", "the switch ignored", 'if type(G) ~= "table" or G.Enabled ~= true then return nil, nil end',
      'if type(G) ~= "table" then return nil, nil end'),
     ("DS", "spending counts", "and new[k] > old[k] then got[k]", "then got[k]"),
@@ -320,6 +332,9 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("the tracker's room on small PC windows counts the tiers",
          "+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) + T.Gap) * 2 or 0)" in h),
         ("the tiers sit under the progress line (LayoutOrder 4-5)", "LayoutOrder = 2 + i," in h),
+        # 최종 검수 10/14 MINOR: the small-PC room counts ONE line per tier -> a tier never wraps to a second line
+        ("the tiers stay one line (the room counts one line each)",
+         "AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd," in h),
         ("the KO screen draws the Got labels", 'S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i)' in ds),
         ("the KO screen paints the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)" in ds),
         ("the run's attributes are watched", re.search(r'for _, k in \{ "Level", "XP", "CarriedGold", "BankGold", "Honor", "Infamy", '
@@ -331,6 +346,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
 
 
 STATIC_MUTATIONS = [
+    ("HUD", "a tier wraps to two lines", "TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd,", "TextWrapped = true,"),
     ("HUD", "no tier refresh with the tracker", "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n", "\tt.Frame.Visible = label ~= nil\n"),
     ("FP", "no room for the lines", "areaH = math.max(1, areaH - chH)", "areaH = math.max(1, areaH)"),
     ("DS", "the KO screen ignores the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)", "DeathScreen.Lines(S.Data, left)"),
