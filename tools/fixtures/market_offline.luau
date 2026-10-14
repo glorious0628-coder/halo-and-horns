@@ -774,6 +774,118 @@ runGroup("join check", function()
 		"an In id in Done: never delivered or refunded twice", show({ d.Market.In, d.Items, d.BankGold }))
 end)
 
+------------------------------------------------------------------ 장인 ③ (최종 검수 10/14): the live kill switch
+runGroup("kill switch", function()
+	local mem, stores = {}, {}
+	local a = marketWorld({ Mem = mem, Stores = stores })
+	local D = a.Config.Switches.Defs.Market
+	check(type(D) == "table" and D.Type == "Bool" and D.Default == true, "Config.Switches.Defs.Market: a Bool, on by default", show(D))
+	local b = marketWorld({ Mem = mem, Stores = stores })
+	local live = { Market = true }
+	for _, w in { a, b } do
+		w.Reg.SwitchService = { On = function(k) return live[k] ~= false end }
+	end
+	local s, sd = hero(a, 70, { BankGold = 0 })
+	local buyer, bd = hero(b, 71, { BankGold = 500, Items = {} })
+	local id = listJelly(a, s, 10, 5)
+	check(id ~= nil and sd.Items.Jelly == 20, "switch on: listed", show(sd.Market.Out))
+	live.Market = false
+	local before = count(sd.Market.Out)
+	a.Gap = 6.1
+	local id2 = listJelly(a, s, 5, 5)
+	check(id2 == nil and count(sd.Market.Out) == before and sd.Items.Jelly == 20, "switch off: no new listing, nothing taken", show(sd.Market.Out))
+	b:Remote("MarketBuy", buyer, id, 5)
+	check(next(bd.Market.In) == nil and bd.BankGold == 500 and ledgerOf(a, id).St == "Open", "switch off: no purchase, no gold taken", show(bd.Market))
+	local n0 = #b.Fired
+	b:Remote("MarketIndex", buyer)
+	check(#fired(b, "MarketIndex", buyer, n0) == 0, "switch off: no index sent", "")
+	b:Remote("PackWeapon", buyer, 4)
+	check(bit32.btest(bd.WeaponOwnedMask, 8) == false and (bd.Spares["4:2"] or 0) == 1, "switch off: no packing", show(bd.Spares))
+	-- a trade made while on still settles while off
+	live.Market = true
+	b:Remote("MarketBuy", buyer, id, 5)
+	check(bd.Items.Jelly == 10 and ledgerOf(a, id).St == "Sold", "on again: bought", show(bd.Items))
+	live.Market = false
+	a:Tick(a.Config.Market.PollSeconds)
+	check(sd.BankGold == 47, "off: the seller is still paid at the poll (50 - 7%)", sd.BankGold)
+	-- no switch service (or a failed read): on
+	local c = marketWorld()
+	c.Reg.SwitchService = { On = function() error("offline: the switch board failed") end }
+	local q, qd = hero(c, 72)
+	check(listJelly(c, q, 3, 5) ~= nil, "a failed switch read counts as on (the build switch decides)", show(qd.Market.Out))
+	c.Warnings = {}
+	-- the build switch still wins: Features.Market off = off whatever the live switch says
+	local f = marketWorld({ On = false })
+	f.Reg.SwitchService = { On = function() return true end }
+	local r, rd = hero(f, 73)
+	check(listJelly(f, r, 3, 5) == nil and rd.Items.Jelly == 30, "Features.Market off: off, whatever the live switch", show(rd.Market.Out))
+end)
+
+------------------------------------------------------------------ 장인 ③: a server stops between the steps (the real flow, then a new server)
+runGroup("server stops", function()
+	local mem, stores = {}, {}
+	local a = marketWorld({ Mem = mem, Stores = stores })
+	local s, sd = hero(a, 80, { BankGold = 0 })
+	local id = listJelly(a, s, 10, 5)
+	check(id and sd.Items.Jelly == 20 and ledgerOf(a, id).St == "Open" and a.Saved[80] and a.Saved[80].Market.Out[id] ~= nil,
+		"listed: 10 Jelly out, the save written before it counts", show({ id, a.Saved[80] and a.Saved[80].Market.Out }))
+	-- server a stops: the seller's next server reads that save
+	local b = marketWorld({ Mem = mem, Stores = stores })
+	local s2, sd2 = hero(b, 80, deepCopy(a.Saved[80]))
+	b:Tick(1)
+	check(sd2.Items.Jelly == 20 and sd2.Market.Out[id].St == "Open" and ledgerOf(b, id).St == "Open",
+		"the next server: still listed, no Jelly back (nothing doubled)", show({ sd2.Items, sd2.Market.Out[id] }))
+	-- a buyer on server c buys; c stops right after
+	local c = marketWorld({ Mem = mem, Stores = stores })
+	local buyer, bd = hero(c, 81, { BankGold = 100, Items = {} })
+	c:Remote("MarketBuy", buyer, id, 5)
+	check(bd.Items.Jelly == 10 and bd.BankGold == 50 and ledgerOf(c, id).St == "Sold" and c.Saved[81] ~= nil,
+		"bought on c (saved)", show({ bd.Items, bd.BankGold }))
+	local bSaved = deepCopy(c.Saved[81])
+	-- the seller's server b stops before its poll: the sale is paid on the next server, once
+	local sBefore = deepCopy(sd2)
+	local e = marketWorld({ Mem = mem, Stores = stores })
+	local s3, sd3 = hero(e, 80, sBefore)
+	e:Tick(1)
+	check(sd3.BankGold == 47 and sd3.Market.Out[id].St == "Paid" and table.find(sd3.Market.Done, id) ~= nil,
+		"the seller on server e: paid 47 once (50 - 7%)", show({ sd3.BankGold, sd3.Market.Out[id] }))
+	e:Tick(e.Config.Market.PollSeconds)
+	e:Tick(e.Config.Market.LedgerSeconds)
+	check(sd3.BankGold == 47, "later polls pay nothing more", sd3.BankGold)
+	-- e stops after its save: a rejoin is never paid twice
+	local g = marketWorld({ Mem = mem, Stores = stores })
+	local s4, sd4 = hero(g, 80, deepCopy(e.Saved[80] or sd3))
+	g:Tick(1)
+	check(sd4.BankGold == 47, "a rejoin after the payment: nothing more", sd4.BankGold)
+	-- the buyer back on server h: the Jelly stays delivered once
+	local h = marketWorld({ Mem = mem, Stores = stores })
+	local b2, bd2 = hero(h, 81, bSaved)
+	h:Tick(1)
+	check(bd2.Items.Jelly == 10 and bd2.BankGold == 50 and next(bd2.Market.In) == nil, "the buyer's rejoin: 10 Jelly once, no refund",
+		show({ bd2.Items, bd2.BankGold, bd2.Market.In }))
+end)
+
+------------------------------------------------------------------ 장인 ③: the spare path (UnpackSpare) with the switches
+runGroup("unpack spare", function()
+	-- a crafted spare can be put in the hand with the market off but crafting on; with both off nothing moves
+	local craftOnly = marketWorld({ On = false, EditConfig = function(c) c.Features.Crafting = true end })
+	local p, d = hero(craftOnly, 90, { WeaponOwnedMask = 7, Spares = { ["4:2"] = 1 } })
+	craftOnly:Remote("UnpackSpare", p, "4:2")
+	check(bit32.btest(d.WeaponOwnedMask, 8) and d.WeaponEnhance[4] == 2 and (d.Spares["4:2"] or 0) == 0,
+		"market off, crafting on: UnpackSpare = tier 4 owned at +2", show({ d.WeaponOwnedMask, d.Spares }))
+	local none = marketWorld({ On = false })
+	local q, e = hero(none, 91, { WeaponOwnedMask = 7, Spares = { ["4:2"] = 1 } })
+	none:Remote("UnpackSpare", q, "4:2")
+	check(not bit32.btest(e.WeaponOwnedMask, 8) and e.Spares["4:2"] == 1, "both off: nothing moves", show({ e.WeaponOwnedMask, e.Spares }))
+	local on = marketWorld()
+	local r, f = hero(on, 92, { WeaponOwnedMask = 15, Spares = { ["4:2"] = 1 } })
+	on:Remote("UnpackSpare", r, "4:2")
+	check(f.Spares["4:2"] == 1 and f.WeaponEnhance[4] ~= 2, "a tier owned already: the spare stays", show({ f.Spares, f.WeaponEnhance }))
+	on:Remote("UnpackSpare", r, "9:9")
+	on:Remote("UnpackSpare", r, "nope")
+	check(f.Spares["4:2"] == 1, "a bad key / a spare not held: nothing", show(f.Spares))
+end)
+
 ------------------------------------------------------------------ review 10/14: the duplication races (BLOCK 1 / 2, FIX)
 runGroup("races", function()
 	-- BLOCK 1: another session settles my Pend listing (tombstone) while this server's listing write is on its way

@@ -5414,6 +5414,9 @@ Config.Switches = {
 		PioneerTitle = { Type = "Bool", Default = true, Unread = false },
 		-- A23-178: off = no new village fund gifts (the week's sums and the town lights stay)
 		VillageFund = { Type = "Bool", Default = true },
+		-- 장인 ③ (최종 검수 10/14): the market's kill switch on top of Config.Features.Market: off = no browsing, listing,
+		-- buying or packing (what was already traded still settles: deliveries, payouts, refunds, the join check)
+		Market = { Type = "Bool", Default = true },
 	},
 }
 

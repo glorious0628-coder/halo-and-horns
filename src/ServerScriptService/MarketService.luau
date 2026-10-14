@@ -62,8 +62,13 @@ local function warnOnce(what, err)
 	Util.Warn(TAG, what .. ": " .. tostring(err))
 end
 
+-- Config.Features.Market (the build) AND the live switch Market (SwitchService; no switch service or a failed read = on)
 local function switchOn()
-	return type(Config.FeatureOn) == "function" and Config.FeatureOn("Market") == true
+	if not (type(Config.FeatureOn) == "function" and Config.FeatureOn("Market") == true) then return false end
+	local sw = S and S.SwitchService
+	if type(sw) ~= "table" or type(sw.On) ~= "function" then return true end
+	local ok, value = pcall(sw.On, "Market")
+	return not ok or value ~= false
 end
 
 -- the saves are real (not Studio's memory mode): nothing in the market works without them

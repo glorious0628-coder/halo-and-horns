@@ -34,6 +34,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # 장인 ③ (2026-10-14): the live kill switch
+    ("kill switch: the live switch ignored", X, "\tlocal ok, value = pcall(sw.On, \"Market\")\n\treturn not ok or value ~= false\n", "\treturn true\n"),
+    ("kill switch: the build switch ignored", X, "\tif not (type(Config.FeatureOn) == \"function\" and Config.FeatureOn(\"Market\") == true) then return false end\n", ""),
+    ("kill switch: a failed read is off", X, "\treturn not ok or value ~= false\n", "\treturn ok and value ~= false\n"),
     # bag slots (2026-10-14)
     ("bag: a market buy ignores the slots", X, "\t\tif have < 1 and def and counts[def.Kind] and not Config.BagHasRoom(data) then return false end\n", ""),
     # A23-186: the joke weapons are never traded

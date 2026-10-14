@@ -74,7 +74,7 @@ runGroup("environments", function()
 	local keys = {}
 	for k in C.Switches.Defs do table.insert(keys, k) end
 	table.sort(keys)
-	check(table.concat(keys, ",") == "CrownWar,DayCycle,Goose,Halloween,PassSales,PioneerTitle,VillageFund,Weather", "the listed switches (A23-105 added DayCycle and Weather, 2-A ⑦ PioneerTitle, A23-178 VillageFund)", table.concat(keys, ","))
+	check(table.concat(keys, ",") == "CrownWar,DayCycle,Goose,Halloween,Market,PassSales,PioneerTitle,VillageFund,Weather", "the listed switches (A23-105 added DayCycle and Weather, 2-A ⑦ PioneerTitle, A23-178 VillageFund)", table.concat(keys, ","))
 end)
 
 ------------------------------------------------------------------ the error record
