@@ -89,6 +89,7 @@ setfenv(ufn, setmetatable({ game = cfgEnv.game, warn = function() end, Random = 
 local Util = ufn()
 -- the passes the user made (test ids)
 Config.GamePasses.XP2.Id, Config.GamePasses.Stickers.Id, Config.GamePasses.Bubbles.Id = 1001, 1004, 1005
+Config.GamePasses.Gold2.Id = 0 -- 10/14: Config holds the real pass ids now; this card plays the pass not sold yet
 Config.Looks.HaloIce.PassId = 2001
 
 local ATTR = { Faction = "Halo", PassVIP = true, LooksOwned = "" }
