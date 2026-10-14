@@ -13,6 +13,8 @@
 - PBR 시트: pbr_gate.py 512/2048 → art/review/design/pbr_gate_hd_1014/r → pbr_gate_sheet.py → 같은 폴더 jpg → 디자인 검수.
 - **10:35 받기·시트 끝:** GLB 36개 전부 디스크(소품 33 + 사람 3). PBR 시트 33장 + _overview_33_q34_bottom.jpg → 디자인 검수에 보냄. 내 걱정: Basin 아래 물 보임, A_Bowl 아래 틈, SilverBucket 아래 흐림. 잔액 18,375.
 - **기다림:** 디자인 검수 판정, 최종 검수 '단순 14' 이름·폴리곤 목록, RoundTree_F·꽃 3 새 2D. Chrome 탭 199232614 열림(window.__fill/__prep/__go2/__pump = 새로고침하면 다시 정의).
+- **10:40 보류(최종 검수):** ④ 화분·꽃 = 2D 다시 검수 중(Daisy_Pot·Rose_Bowl·A_Bowl 등 떨어짐) — 이미 20개 다 누른 뒤 메시지 받음, 이름·id 보고함. 단순 16(목록은 받음: 8000 = SignBakery·SignFlower·SignPotion·PotionCrate·CandleCrate·SteppingStone·BenchB·NoticeBoard / 12000 = Flagpole_1·GuardPost·ChimneyLantern·DomeBrick·Greenhouse·Woodpile·BreadBasket·CafeTable)도 보류 — 최종 검수가 다시 줄 때까지 안 누름. 누르지 말 것 목록: JuiceStand·WeatherVane·Easel·BellFrame·Clothesline·RackShieldSword·Halo_Statue·FlowerCart·FruitStall·BreadDisplay·PotionDisplay·RoseArch·RoseTrellis·SunflowerBed·VegGarden·난간 E/F/A/B/D.
+- **난간 합친 판 통과 취소 → v2(Codex, 0점):** 지시문 build/codex_jobs/balustrade_v2/task.md → 결과 build/tripo_parts/HaloVar4_Balustrade_C_tripo_v2.glb + art/review/final/balustrade_v2_overlay_2026-10-14.jpg + build/tripo_parts/measure_2d.md. 끝나면 내가 확인 → 최종 검수.
 - 다음: 최종 검수 '전달함, 시작' 뒤 Chrome(Tripo) 큐 — JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) → 단순 14 → 분수 부품 → 나무 부품. 설정 = HD 탭, 4K('55'), 조명 제거, PBR, 삼각형.
 
 
