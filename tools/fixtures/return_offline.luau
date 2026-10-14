@@ -327,6 +327,11 @@ local BADGE_IDS = { ChoseSide = 101, FirstSlime = 102, LostLunchbox = 103, Stron
 local function withBadges(c)
 	for k, v in BADGE_IDS do c.Badges.Ids[k] = v end
 end
+-- 2-A ⑦: Halloween2026 left the shipped list; ReturnService still knows the key for a later season list, tested here
+local function withSeasonBadge(c)
+	withBadges(c)
+	table.insert(c.Badges.Order, "Halloween2026")
+end
 
 runGroup("badges", function()
 	local w0 = retWorld()
@@ -376,8 +381,9 @@ runGroup("badges", function()
 	check(table.find(w.Badges, "1:107") ~= nil, "faction rank 2", table.concat(w.Badges, ","))
 	w.Reg.LootService.ItemsGranted:Fire(p, { { Id = "Candy", N = 2 } })
 	w:RunSpawned()
-	check(table.find(w.Badges, "1:108") ~= nil, "candy during the 2026 season: Halloween 2026", table.concat(w.Badges, ","))
-	check(#w.Badges == 8, "all 8, each once", #w.Badges)
+	-- gameplay plan 2-A ⑦: Halloween2026 left Config.Badges.Order (the season is hidden), so even with an id set candy asks nothing
+	check(table.find(w.Badges, "1:108") == nil, "candy: no Halloween 2026 badge (not in Config.Badges.Order)", table.concat(w.Badges, ","))
+	check(#w.Badges == 7, "all 7, each once", #w.Badges)
 	-- an old save gets every badge it already earned at the join; a failure is tried again later
 	local w2 = retWorld({ EditConfig = withBadges })
 	w2.BadgeFail = true
@@ -443,8 +449,14 @@ runGroup("badges", function()
 	local stay = hero(w7, 8)
 	check(w7.Reg.ReturnService.DebugRetryCount() >= 1, "a player still here does get the retry entry", tostring(w7.Reg.ReturnService.DebugRetryCount()))
 	local _67 = { s6, stay }
+	-- a season list (Halloween2026 back in Order): candy during the season opens it
+	local w4 = retWorld({ EditConfig = withSeasonBadge })
+	local h4 = hero(w4, 4)
+	w4.Reg.LootService.ItemsGranted:Fire(h4, { { Id = "Candy", N = 1 } })
+	w4:RunSpawned()
+	check(table.find(w4.Badges, "4:108") ~= nil, "a season list: candy during the season opens Halloween 2026", table.concat(w4.Badges, ","))
 	-- after the season: candy no longer opens Halloween 2026
-	local w3 = retWorld({ EditConfig = withBadges, Time = w.Config.Halloween.EndsAt + 100 })
+	local w3 = retWorld({ EditConfig = withSeasonBadge, Time = w.Config.Halloween.EndsAt + 100 })
 	local r = hero(w3, 3)
 	w3.Reg.LootService.ItemsGranted:Fire(r, { { Id = "Candy", N = 1 } })
 	w3:RunSpawned()
