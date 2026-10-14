@@ -6389,6 +6389,13 @@ Config.Audio.Ambient = {
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
 
+-- 최종 검수 10/14 (gameplay plan 3, bag slot upgrade as a quest reward): the bag's slots per tab. The owner's attribute
+-- BagSlots (game dev 2: saved, only grows, 8 -> 12 -> 16 by two quest rewards Reward.BagSlots = Step); no attribute =
+-- Default. The bag (game dev 1) draws the open slots, then locked ones up to Max (what quests can still add) and makes the
+-- new slots shine once; a thing is never hidden (more things than slots = all of them shown). Text.Gained = the quest
+-- reward line (the server's notice).
+Config.BagSlots = { Default = 8, Step = 4, Max = 16, Text = { Gained = "+%d bag slots" } }
+
 -- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
 -- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
 -- attribute Attr = "HP,MP," (three entries, "" = empty), c->s Remote(slot 1..3, item key or ""): known keys only, the same

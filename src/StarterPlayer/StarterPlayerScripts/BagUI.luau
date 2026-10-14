@@ -77,6 +77,8 @@ local L = {
 	Narrow = 4, Wide = 8, -- columns (A23-32: 4 <-> 8 or more)
 	TabH = 40, BarH = 40, RowGap = 8, Round = 38, CoinW = 26,
 	WornCap = 18, -- the worn row's word under each slot
+	Shine = { Time = 0.3, Times = 3 }, -- new bag slots: the gold ring blinks 3 times
+	LockedFade = 0.6, -- a locked slot's art transparency
 	WornInset = 6, -- du: the worn row starts this far in, each word reaches this far past its slot (UiSandbox: "Weapo")
 	Big = 84, -- the detail's slot
 	BtnH = 40, QuickW = 46,
@@ -113,6 +115,8 @@ local S = {
 	Pending = nil, -- { Kind = "Use" | "Equip", SentAt, ReadyAt, Item?, Count?, Tier?, WeaponTier?, Answered? }
 	ReadyAt = {}, -- [remote] = os.clock() when the next send is allowed
 	Note = nil, -- one status line (a timeout)
+	SlotsLast = nil, -- the last BagSlots seen (Start); Flash = { From, To }: slots that came since, shine at the next draw
+	Flash = nil,
 	Result = nil, ResultAt = -math.huge, -- the last scroll result Panels got (Panels.LastEnhance)
 	Shown = {}, -- [tab] = true: shown since the window opened (its new things count as seen when it is left)
 }
@@ -954,6 +958,54 @@ local function drawWorn(parent, all, cols)
 	return L.Cell + L.WornCap + L.RowGap
 end
 
+-- 최종 검수 10/14 bag slots (pure): the owner's BagSlots attribute -> slots per tab (no / odd value = Config default)
+function BagUI.Slots(value)
+	local n = tonumber(value)
+	n = n and n == n and math.floor(n) or nil
+	if n and n >= 1 then return math.min(n, 999) end
+	local cfg = type(Config.BagSlots) == "table" and Config.BagSlots or {}
+	return math.max(1, math.floor(num(cfg.Default, 8)))
+end
+
+-- (pure) a tab's cells: Open = slots (or every thing, when there are more), Empty = open slots without a thing,
+-- Locked = slots quests can still add (up to max), Total = all cells drawn
+function BagUI.SlotPlan(count, slots, maxSlots)
+	count = math.max(0, math.floor(num(count, 0)))
+	slots = math.max(1, math.floor(num(slots, 8)))
+	local open = math.max(slots, count)
+	local locked = math.max(0, math.floor(num(maxSlots, 0)) - open)
+	return { Open = open, Empty = open - count, Locked = locked, Total = open + locked }
+end
+
+-- the slots that came since the last look shine (a gold ring blinking a few times; no tween service = it just shows)
+local function shine(box)
+	local f = Instance.new("Frame")
+	f.Name = "NewSlot"
+	f.BackgroundTransparency = 1
+	f.Position = UDim2.fromOffset(2, 2)
+	f.Size = UDim2.new(1, -4, 1, -4)
+	f.ZIndex = (tonumber(box.ZIndex) or 1) + 5
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0.14, 0)
+	c.Parent = f
+	local st = Instance.new("UIStroke")
+	st.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	st.Color = colorOf("Gold")
+	st.Thickness = 3
+	st.Parent = f
+	f.Parent = box
+	local ok, tweens = pcall(function() return game:GetService("TweenService") end)
+	if ok and tweens then
+		pcall(function()
+			local info = TweenInfo.new(L.Shine.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, L.Shine.Times * 2 - 1, true)
+			tweens:Create(st, info, { Transparency = 1 }):Play()
+		end)
+		task.delay(L.Shine.Time * L.Shine.Times * 2 + 0.1, function()
+			if f.Parent then f:Destroy() end
+		end)
+	end
+end
+
 local function drawGrid(area, all, list, cols)
 	local top = 0
 	if S.Tab == "Gear" then top = drawWorn(area, all, cols) end
@@ -1002,13 +1054,31 @@ local function drawGrid(area, all, list, cols)
 			selectStroke(box)
 		end
 	end
-	-- empty dark slots fill the rows on screen and the last row (no slot limit, A23-32)
-	local h = select(2, BagUI.LayoutSize()) - top
-	local rows = h > L.Cell and math.floor((h + L.Gap) / (L.Cell + L.Gap)) or 6
-	local total = math.max(rows * cols, math.ceil(#list / cols) * cols)
-	for i = #list + 1, total do
-		local box = slot(grid, nil, nil, L.Cell, nil, "Empty")
+	-- 최종 검수 10/14 bag slots: my open slots (BagSlots) as empty dark slots (A23-32: empty slots show), then the slots
+	-- quests can still add, locked (dimmed, the lock glyph); a thing is never hidden
+	local cfg = type(Config.BagSlots) == "table" and Config.BagSlots or {}
+	local slots = BagUI.Slots(attr("BagSlots"))
+	local plan = BagUI.SlotPlan(#list, slots, cfg.Max)
+	local kit = ui()
+	for i = #list + 1, plan.Total do
+		local locked = i > plan.Open
+		local box = slot(grid, nil, nil, L.Cell, nil, locked and "Locked" or "Empty")
 		box.LayoutOrder = i
+		if locked then
+			if box:IsA("ImageButton") or box:IsA("ImageLabel") then box.ImageTransparency = L.LockedFade else box.BackgroundTransparency = L.LockedFade end
+			local lock = kit.ArtImage("GlyphLock", { Name = "Lock", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+				Size = UDim2.fromScale(0.36, 0.36), ImageColor3 = colorOf("Sub"), ImageTransparency = 0.3, ZIndex = (tonumber(box.ZIndex) or 1) + 1 })
+			if lock then lock.Parent = box end
+		end
+	end
+	-- the slots that came since the last look shine once (on whatever tab is open)
+	local fl = S.Flash
+	if fl then
+		S.Flash = nil
+		for _, child in grid:GetChildren() do
+			local order = tonumber(child.LayoutOrder)
+			if order and child:IsA("GuiObject") and order >= fl.From and order <= math.min(fl.To, plan.Open) then shine(child) end
+		end
 	end
 end
 
@@ -1232,10 +1302,10 @@ function BagUI.LayoutSize()
 	return w, h
 end
 
--- columns x rows on screen: a change redraws the grid
+-- the columns: a change redraws the grid (bag slots 10/14: the cells are BagSlots + locked ones, not the rows on screen)
 function BagUI.LayoutSig()
-	local w, h = BagUI.LayoutSize()
-	return tostring(BagUI.Columns(w, isWide())) .. "x" .. tostring(math.floor((h + L.Gap) / (L.Cell + L.Gap)))
+	local w = BagUI.LayoutSize()
+	return tostring(BagUI.Columns(w, isWide()))
 end
 
 -- what the 0.25 s update watches without a data change: the fight tag, a potion's state, the pending request
@@ -1399,7 +1469,7 @@ local function build(parent, kit, arg)
 			end)
 		end
 	end)
-	-- the first real layout / a screen size change: redraw when the columns or the rows on screen change (the body
+	-- the first real layout / a screen size change: redraw when the columns change (the body
 	-- frame stays between builds: the connection goes with the window, cleanup)
 	VIEW.SizeConn = parent:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 		if VIEW.Kit ~= kit then return end
@@ -1463,8 +1533,27 @@ function BagUI.Init(registry)
 	}) == true
 end
 
+-- 최종 검수 10/14 bag slots: BagSlots growing (a quest reward) -> those slots shine at the next draw of the bag
+function BagUI.OnSlots(value)
+	local n = tonumber(value)
+	if not n then return end
+	n = math.floor(n)
+	local last = S.SlotsLast
+	S.SlotsLast = n
+	if type(last) == "number" and n > last then
+		S.Flash = { From = (S.Flash and S.Flash.From or last + 1), To = n }
+	end
+end
+
 function BagUI.Start()
 	pullInventory()
+	BagUI.OnSlots(attr("BagSlots"))
+	pcall(function()
+		LocalPlayer:GetAttributeChangedSignal("BagSlots"):Connect(function()
+			BagUI.OnSlots(attr("BagSlots"))
+			if VIEW.Kit then pcall(BagUI.Redraw) end
+		end)
+	end)
 end
 
 -- offline tests

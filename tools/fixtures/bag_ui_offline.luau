@@ -553,7 +553,8 @@ check(find(root, "WornWeapon").Image == "SlotUncommon" or find(root, "WornWeapon
 local gearCells = cellsIn()
 check(#gearCells == 3, "Gear lists the 3 owned weapons", #gearCells)
 local empties = findAll(root, "^Empty$")
-check(#empties >= 1 and (#gearCells + #empties) % 4 == 0, "empty dark slots fill the rows (4 columns)", #gearCells + #empties)
+check(#empties == 5 and #findAll(root, "^Locked$") == 8, "no BagSlots yet: Config's 8 open slots (5 empty), then 8 locked up to 16",
+	#empties .. " / " .. #findAll(root, "^Locked$"))
 local first = gearCells[1]
 check(first:FindFirstChild("Picked") ~= nil, "the first cell is picked when nothing was")
 local eq = find(root, "Cell_W:2")
@@ -654,7 +655,17 @@ find(root, "Tab_Gear").OnClick()
 local beforeEmpty = #findAll(root, "^Empty$")
 root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 900)
 for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
-check(#findAll(root, "^Empty$") > beforeEmpty, "a taller window fills more rows with empty slots", #findAll(root, "^Empty$"))
+check(#findAll(root, "^Empty$") == beforeEmpty, "a taller window adds no slots (the slots are BagSlots)", #findAll(root, "^Empty$"))
+local function gridCols()
+	for _, ch in find(root, "Grid"):GetChildren() do
+		if ch.FillDirectionMaxCells then return ch.FillDirectionMaxCells end
+	end
+	return nil
+end
+local colsBefore = gridCols()
+root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 160, 900)
+for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
+check(colsBefore == 4 and gridCols() == 3, "a narrower window redraws the grid with fewer columns", tostring(colsBefore) .. " -> " .. tostring(gridCols()))
 root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540)
 for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
 -- opened straight on a scroll's step (arg.Use [+ Tier])
@@ -818,5 +829,46 @@ Bag2.Init({ Panels = { Register = function(id, opts) reg2[id] = opts return true
 local root2 = newObj("Frame", { Name = "FixedBody2", AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540) })
 reg2.Bag.Build(root2, kit, { Tab = "Material" })
 check(find(root2, "Cell_I:Jelly") ~= nil, "a payload Panels got first is taken from Panels (LastInventory)")
+
+------------------------------------------------------------------ 최종 검수 10/14: bag slots 8 -> 12 -> 16 (BagSlots)
+check(BagUI.Slots(nil) == 8 and BagUI.Slots(12) == 12 and BagUI.Slots("x") == 8 and BagUI.Slots(0) == 8 and BagUI.Slots(12.7) == 12
+	and BagUI.Slots(0 / 0) == 8, "BagSlots -> slots per tab; none / odd = Config's 8")
+local sp = BagUI.SlotPlan(3, 8, 16)
+check(sp.Open == 8 and sp.Empty == 5 and sp.Locked == 8 and sp.Total == 16, "3 things, 8 slots: 5 empty + 8 locked up to 16")
+sp = BagUI.SlotPlan(10, 8, 16)
+check(sp.Open == 10 and sp.Empty == 0 and sp.Locked == 6 and sp.Total == 16, "more things than slots: every thing shown, fewer locked")
+sp = BagUI.SlotPlan(3, 16, 16)
+check(sp.Locked == 0 and sp.Total == 16, "all 16: nothing locked")
+sp = BagUI.SlotPlan(20, 16, 16)
+check(sp.Total == 20 and sp.Empty == 0, "20 things in 16 slots: all 20 shown")
+check(string.format(Config.BagSlots.Text.Gained, Config.BagSlots.Step) == "+4 bag slots" and Config.BagSlots.Default == 8
+	and Config.BagSlots.Max == 16, "Config: 8 -> +4 -> 16, the reward line '+4 bag slots'")
+local root3 = newObj("Frame", { Name = "FixedBody3", AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540) })
+reg.Bag.Build(root3, kit, { Tab = "Gear" })
+local things = #findAll(root3, "^Cell_")
+BagUI.OnSlots(8)
+attrs.BagSlots = 12
+BagUI.OnSlots(12)
+check(BagUI._T.S.Flash and BagUI._T.S.Flash.From == 9 and BagUI._T.S.Flash.To == 12, "8 -> 12: slots 9..12 wait to shine")
+BagUI.Redraw()
+check(#findAll(root3, "^Empty$") == 12 - things and #findAll(root3, "^Locked$") == 4, "12 slots: the 4 new ones open, 4 still locked",
+	#findAll(root3, "^Empty$") .. " / " .. #findAll(root3, "^Locked$"))
+local shining = findAll(root3, "^NewSlot$")
+local orders = {}
+for _, f in shining do table.insert(orders, f.Parent.LayoutOrder) end
+table.sort(orders)
+check(#shining == 4 and orders[1] == 9 and orders[4] == 12, "the 4 new slots shine (a gold ring)", table.concat(orders, ","))
+check(BagUI._T.S.Flash == nil, "once: the shine is used up")
+BagUI.Redraw()
+check(#findAll(root3, "^NewSlot$") == 0, "the next draw: no shine")
+BagUI.OnSlots(12)
+check(BagUI._T.S.Flash == nil, "the same value again: nothing new")
+attrs.BagSlots = 16
+BagUI.OnSlots(16)
+BagUI.Redraw()
+check(#findAll(root3, "^Locked$") == 0 and #findAll(root3, "^Empty$") == 16 - things and #findAll(root3, "^NewSlot$") == 4,
+	"16: no locked slot, 13..16 shine")
+attrs.BagSlots = nil
+BagUI.OnSlots(8)
 
 print(string.format("BAG_UI_SUMMARY checks=%d failed=%d", checks, failed))
