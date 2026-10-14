@@ -6637,10 +6637,17 @@ Config.WeaponGrips = {
 -- while a weapon rests (WeaponPose.PoseStep, every frame, every character, this client only). Side: the arm a little out
 -- from the hip so the blade clears the leg; Staff: the forearm a little forward, WalkTilt more at the wrist while
 -- walking; Bow: the left arm a little out. Tuned on Studio photos (UiSandbox / SwordTest)
+-- 최종 검수 10/14 (hold_pose photos, walk_side: the sword's handle axis z -0.13 = the arm swing threw the blade forward;
+-- the staff and the bow crossed the body): Counter = { Arm, Hand, K } - every frame the walk / idle animation's swing of
+-- the holding arm (its shoulder + elbow turn about X, forward / back) is turned back K of the way at its wrist, so the
+-- weapon keeps its resting axis (within +-20 degrees) while the shoulder still swings; the bow's left hand likewise
 Config.HoldPoses = {
-	Side = { RightShoulder = { 0, 0, 8 }, RightElbow = { -10, 0, 0 } },
-	Staff = { RightShoulder = { -6, 0, 6 }, RightElbow = { -25, 0, 0 }, WalkTilt = { RightWrist = { -10, 0, 0 } } },
-	Bow = { LeftShoulder = { 0, 0, -8 }, LeftElbow = { -8, 0, 0 } },
+	Side = { RightShoulder = { 0, 0, 8 }, RightElbow = { -10, 0, 0 },
+		Counter = { Arm = "Right", K = 0.7 } },
+	Staff = { RightShoulder = { -6, 0, 6 }, RightElbow = { -25, 0, 0 },
+		Counter = { Arm = "Right", K = 0.8 } },
+	Bow = { LeftShoulder = { 0, 0, -8 }, LeftElbow = { -8, 0, 0 },
+		Counter = { Arm = "Left", K = 0.8 } },
 }
 
 -- (pure) the grip row of a weapon kind (a kind without a row: the sword's)

@@ -16,9 +16,13 @@
 -- walking), Bow (hanging from the LEFT hand: a local weld "RestBow" on LeftGripAttachment while resting, the right grip off;
 -- an attack gives it back to the right grip / Fx.bowHand). PoseStep adds Config.HoldPoses' joint turns (Motor6D.Transform,
 -- every frame after the animation) to every resting character. Local only; the attack clips are untouched.
+-- 최종 검수 10/14 (walk photos: the swing threw the blade forward, the staff and the bow across the body): the holding
+-- arm's animated swing is turned back at its wrist (Config.HoldPoses Counter, WeaponPose.Counter), and a joint the
+-- animation did not write this frame starts from its last animated value (never our own output again: no build-up).
 -- Public API: WeaponPose.Init(C), WeaponPose.Start(), WeaponPose.Measure(char, model) -> { Right, Left }?,
 -- WeaponPose.ProbeStep(player, now), WeaponPose.Step(dt), WeaponPose.RestStep(now), WeaponPose.Want(kind, attacking),
--- WeaponPose.HoldOf(kind), WeaponPose.PoseFor(kind, walking) -> { [joint] = CFrame }, WeaponPose.PoseStep().
+-- WeaponPose.HoldOf(kind), WeaponPose.PoseFor(kind, walking) -> { [joint] = CFrame }, WeaponPose.PoseStep(),
+-- WeaponPose.Counter(shoulder, elbow, k) -> CFrame, WeaponPose.BaseOf(motor) -> CFrame.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -40,11 +44,13 @@ local T = {
 	RestBow = "RestBow", -- the local left-hand weld of a resting bow (A23-187)
 	Walking = 0.1, -- MoveDirection magnitude that counts as walking (the staff's WalkTilt)
 	MemeLook = "MemeLook", MemeKind = "Sword", -- A23-186: the joke weapons' local look (a Model under the Tool), held like a sword
+	Same = 1e-4, -- a motor still holding our last output (CFrame:FuzzyEq): the animation did not write it this frame
 	-- the Motor6Ds of Config.HoldPoses: joint name -> the R15 part it sits in
 	Joints = { RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm", RightWrist = "RightHand",
 		LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm", LeftWrist = "LeftHand" },
 }
-local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0 }
+local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0,
+	Wrote = setmetatable({}, { __mode = "k" }) } -- motor -> { Out = what we wrote, Base = the animation's value under it }
 
 -- per hand: dHand = the hand's centre to the weapon line, dGrip = its grip attachment to the line (the holding hand: 0 =
 -- the Handle runs through the fist), axis = its held axis (-Z, the knuckle line) against the line, fore = the forearm
@@ -192,7 +198,7 @@ function WeaponPose.PoseFor(kind, walking)
 		out[joint] = out[joint] and out[joint] * cf or cf
 	end
 	for joint, a in pose do
-		if joint ~= "WalkTilt" then add(joint, a) end
+		if joint ~= "WalkTilt" and joint ~= "Counter" then add(joint, a) end
 	end
 	if walking and type(pose.WalkTilt) == "table" then
 		for joint, a in pose.WalkTilt do add(joint, a) end
@@ -298,6 +304,26 @@ function WeaponPose.BowRest(char, tool, handle, rightGrip, rest)
 end
 
 -- A23-187: every frame after the animation, each resting character's joints get Config.HoldPoses' turns on top
+-- (pure) the wrist turn that takes back k of the arm's animated swing: the shoulder's and the elbow's turn about X (the
+-- forward / back swing of the walk / idle animation) summed, then -k of it about X
+function WeaponPose.Counter(shoulder, elbow, k)
+	local function swing(cf)
+		if typeof(cf) ~= "CFrame" then return 0 end
+		local x = cf:ToEulerAnglesXYZ()
+		return x
+	end
+	return CFrame.Angles(-(tonumber(k) or 0) * (swing(shoulder) + swing(elbow)), 0, 0)
+end
+
+-- the animation's value of a motor this frame: its Transform, or - when the Transform is still exactly what we wrote last
+-- frame (the animation does not key that joint) - the base we wrote it over
+function WeaponPose.BaseOf(m)
+	local w = S.Wrote[m]
+	local now = m.Transform
+	if w and now:FuzzyEq(w.Out, T.Same) then return w.Base end
+	return now
+end
+
 function WeaponPose.PoseStep()
 	for _, p in Players:GetPlayers() do
 		local char = p.Character
@@ -306,10 +332,32 @@ function WeaponPose.PoseStep()
 			local hum = char:FindFirstChildOfClass("Humanoid")
 			local walking = hum ~= nil and hum.MoveDirection.Magnitude > T.Walking
 			local kind = WeaponPose.MemeOf(tonumber(p:GetAttribute("WeaponTier"))) and T.MemeKind or tool:GetAttribute("Kind")
-			for joint, cf in WeaponPose.PoseFor(kind, walking) do
-				local part = char:FindFirstChild(T.Joints[joint])
+			local function motor(joint)
+				local part = char:FindFirstChild(T.Joints[joint] or "")
 				local m = part and part:FindFirstChild(joint)
-				if m and m:IsA("Motor6D") then m.Transform = m.Transform * cf end
+				return (m and m:IsA("Motor6D")) and m or nil
+			end
+			local turns = WeaponPose.PoseFor(kind, walking)
+			-- the holding arm's swing taken back at its wrist (Config.HoldPoses Counter)
+			local hold = WeaponPose.HoldOf(kind)
+			local counter = hold and type(Config.HoldPoses) == "table" and type(Config.HoldPoses[hold]) == "table"
+				and Config.HoldPoses[hold].Counter or nil
+			if type(counter) == "table" and (counter.Arm == "Right" or counter.Arm == "Left") then
+				local sh, el = motor(counter.Arm .. "Shoulder"), motor(counter.Arm .. "Elbow")
+				if sh and el then
+					local wrist = counter.Arm .. "Wrist"
+					local back = WeaponPose.Counter(WeaponPose.BaseOf(sh), WeaponPose.BaseOf(el), counter.K)
+					turns[wrist] = turns[wrist] and turns[wrist] * back or back
+				end
+			end
+			for joint, cf in turns do
+				local m = motor(joint)
+				if m then
+					local base = WeaponPose.BaseOf(m)
+					local out = base * cf
+					m.Transform = out
+					S.Wrote[m] = { Out = out, Base = base }
+				end
 			end
 		end
 	end
