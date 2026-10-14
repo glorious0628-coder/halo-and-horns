@@ -12,7 +12,7 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 KIND = {"Paladin": "Sword", "Berserker": "DarkSword", "Blacksmith": "Hammer", "LightMage": "Staff", "DarkMage": "CrookStaff",
         "Alchemist": "FlaskStaff", "Ranger": "Bow", "ShadowHunter": "ShortBow", "PetTamer": "Baton"}
-LENGTH = {1: 3.0, 2: 3.5, 3: 4.0}
+LENGTH = {1: 3.0, 2: 3.5, 3: 4.0, 4: 4.5, 5: 5.0, 6: 5.5, 7: 6.5}
 lerp = lambda a, b, t: a + (b - a) * t
 for p in sorted(glob.glob(os.path.join(ROOT, "art", "models", "tripo", "weapons", "*", "*_HD_fit.json"))):
     m = re.search(r"Weapon_(Halo|Horns|Neutral)_([A-Za-z]+)_T(\d)", p)

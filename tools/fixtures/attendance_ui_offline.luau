@@ -261,19 +261,26 @@ goal = UI.Goal(7, "Halo")
 check("7 days: 14 days = my side's sprout look", goal and goal.Days == 14 and goal.Text == "14 days: Sprout Halo", goal and goal.Text)
 goal = UI.Goal(13, "Horns")
 check("... the Horns' look for a Horn", goal and goal.Text == "14 days: Sprout Horns", goal and goal.Text)
--- final review 10/13 ②: never a reward that does not exist - the 28-day name frame is drawn by no screen yet, the 14-day
--- looks are not the artisans': those milestones are skipped
+-- final review 10/13 ②: never a reward that does not exist - the 14-day looks are not the artisans'. 최종 검수 10/14
+-- (publish4: 27 days showed the 50-day ribbon): the 28-day name frame IS drawn now (NameTagPrefs) -> 28 is a goal while
+-- its ribbon art is in; with no art it is skipped again
 goal = UI.Goal(20, "Neutral")
-check("past 14: the 28-day name frame (not drawn yet) is skipped -> 50 days' title", goal and goal.Days == 50
-	and goal.Text == "50 days: Super Regular title", goal and goal.Text)
-goal = UI.Goal(14, "Halo")
-check("at 14 (Halo): the next real reward is 50 (title + Star Halo)", goal and goal.Text == "50 days: Super Regular title + Star Halo",
-	goal and goal.Text)
+check("past 14: the 28-day name frame with its ribbon", goal and goal.Days == 28 and goal.Text == "28 days: Name frame", goal and goal.Text)
+goal = UI.Goal(27, "Halo")
+check("27 days (the photo): 28 days = the name frame", goal and goal.Days == 28 and goal.Text == "28 days: Name frame", goal and goal.Text)
 goal = UI.Goal(7, "Neutral")
-check("an artisan at 7: no look of its own at 14, no frame at 28 -> 50", goal and goal.Days == 50, goal and goal.Text)
-check("no goal line ever names the frame", not (UI.Goal(20, "Halo").Text):find("frame", 1, true))
+check("an artisan at 7: no look of its own at 14 -> 28's frame", goal and goal.Days == 28, goal and goal.Text)
+local keepId = Config.UIArt.Parts.RibbonDays28.Id
+Config.UIArt.Parts.RibbonDays28.Id = ""
+goal = UI.Goal(20, "Neutral")
+check("no ribbon art: the frame is not promised -> 50 days' title", goal and goal.Days == 50
+	and goal.Text == "50 days: Super Regular title", goal and goal.Text)
+Config.UIArt.Parts.RibbonDays28.Id = keepId
 goal = UI.Goal(28, "Halo")
 check("50 days: the title + my look", goal and goal.Text == "50 days: Super Regular title + Star Halo", goal and goal.Text)
+local zp, zc = UI.Sizes(true), UI.Sizes(false)
+check("a phone's rows are shorter ([Claim] fits), the top row's two lines inside it", zp.CellH < zc.CellH and zp.TopH < zc.TopH
+	and zp.ButtonH < zc.ButtonH and zp.GoalY + zp.GoalH <= zp.TopH and zc.GoalY + zc.GoalH <= zc.TopH and zc.CellH == 128, zp.CellH)
 check("after 100: nothing left", UI.Goal(100, "Halo") == nil and UI.Goal(250, "Horns") == nil)
 
 -- 5) opening by itself

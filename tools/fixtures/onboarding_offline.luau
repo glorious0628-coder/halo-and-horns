@@ -161,6 +161,7 @@ local function fixture(saved, opts)
 		AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end }
 	local registry = { PlayerService = ps, DataService = dataService, MonsterService = monster, ProgressionService = prog,
 		StoryQuestService = { QuestDone = signal() }, -- QuestService listens to the daily intro quest (A23-104)
+		FieldBossService = { SecondsUntil = function() return 0 end }, -- Codex B5: a King Slime is here (the iron drop line shows)
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end,
 			-- A23-68 #1: the accepted mission's move to the meadow (an instant Travel); arriving fires ZoneChanged
@@ -251,8 +252,8 @@ do
 	check(#f.Travels == 0 and f.Data.TutorialStep == 3, "A23-88: nobody moved, still step 3")
 	f:ZoneTo("SlimeMeadow"); f:Kill()
 	check(f.Data.TutorialStep == 3 and f.Data.TutorialKills == 0, "A23-74: the meadow before the Forge credits no kill")
-	check(f.Quest.ForgeGift(f.Player) == true and f.Data.TutorialStep == 2,
-		"A23-74: the gift moves the mission on (standing in the meadow: straight to the hunt)")
+	check(f.Quest.ForgeGift(f.Player) == true and f.Data.TutorialStep == 99 and f.Data.BankGold == 150,
+		"A23-188: the gift IS the first mission: done, +150 gold")
 	-- A23-130 (server text verdicts 2026-10-11): no Otto line (LootService's 'First weapon' line answers), no 'First mission'
 	local otto = 0
 	for _, n in f.Notices do if n == TT.ForgeGift then otto += 1 end end
@@ -260,23 +261,19 @@ do
 	check(f.Quest.ForgeGift(f.Player) == false, "A23-74: no second gift after the Forge step")
 	f = fixture(); f:Choose(); f:Publish(); f:Arm()
 	f:Accept(); f:Publish()
-	check(f.Data.TutorialStep == 1 and f.LastList[1].TutorialStep == 1, "accept did not pin meadow travel")
-	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Travel, "the travel row's ShortName")
-	check(f.LastList[1].CanClaim == false and f.LastList[1].ShowProgress == false, "travel is claimable/fake counter")
-	f:Claim(); check(f.Data.BankGold == 0, "travel guidance paid gold")
+	check(f.Data.TutorialStep == 99 and f.Data.BankGold == 150, "A23-188: an armed accept is the first mission done (+150)")
+	f:Claim(); check(f.Data.BankGold == 150, "A23-188: a [Claim] after it pays nothing more")
 	check(#f.Spawned == 0 and f.Data.TutorialKills == 0, "a personal town slime was spawned/credited")
-	check(f.LastList[1].TutorialStep == 1 and f.LastList[1].CanClaim == false, "travel is not pinned")
-	f:ZoneTo("SlimeMeadow"); check(f.LastList[1].Target == 5 and f.LastList[1].Progress == 0, "meadow entry does not show hunt")
-	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Quest, "the first mission row's ShortName ('Supply road')")
+	f:ZoneTo("SlimeMeadow"); f:Kill(); check(f.Data.TutorialKills == 0 and f.Data.TutorialStep == 99, "A23-188: no '5 slimes' hunt after it")
 end
 do
 	local f = fixture(saved(0, 0)); f.Zone = "SlimeMeadow"; f:Kill()
 	check(f.Data.TutorialStep == 0 and f.Data.TutorialKills == 0, "direct meadow kill bypassed acceptance")
 	f:ZoneTo("SlimeMeadow"); check(f.Data.TutorialStep == 0, "zone event bypassed acceptance")
-	f:Accept(); check(f.Data.TutorialStep == 2 and f.Data.TutorialKills == 0, "meadow acceptance invented a kill")
-	f:Kill(); check(f.Data.TutorialKills == 1, "first accepted meadow kill was discarded")
+	f:Accept(); check(f.Data.TutorialStep == 99 and f.Data.TutorialKills == 0 and f.Data.BankGold == 150, "A23-188: an armed meadow acceptance: done (+150), no kill")
+	f:Kill(); check(f.Data.TutorialKills == 0, "A23-188: no first-mission kill count after it")
 	local g = fixture(saved(1, 0)); g:Kill()
-	check(g.Data.TutorialStep == 2 and g.Data.TutorialKills == 1, "kill before ZoneChanged was discarded")
+	check(g.Data.TutorialStep == 99 and g.Data.TutorialKills == 0 and g.Data.BankGold == 150, "A23-188: an old step-1 save is done at the join (+150)")
 end
 do
 	local f = fixture(); f.Alive = false; f:Choose(); f:Publish()
@@ -288,61 +285,38 @@ do
 end
 do
 	local f = fixture(saved(2, 0)); f:Kill("Slime", true); f:Kill("Slime", false, "GoblinWoods"); f:Kill("Goblin", false)
-	check(f.Data.TutorialKills == 0, "wrong/personal monster counted")
-	f:Kill("BigSlime"); check(f.Data.TutorialKills == 1, "meadow BigSlime contribution did not count")
+	check(f.Data.TutorialKills == 0 and f.Data.TutorialStep == 99 and f.Data.BankGold == 150, "A23-188: an old hunt save is done at the join (+150)")
+	f:Kill("BigSlime"); check(f.Data.TutorialKills == 0, "A23-188: no first-mission kill count any more")
 end
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
 	check(cfg.Tutorial.QuestRewardGold == 150, "A23-3 first mission reward is not 150 gold")
 	check(cfg.Tutorial.QuestRewardGold >= cfg.Weapons[2].Price, "first mission reward cannot afford the wood weapon")
 end
+-- A23-188: the "5 slimes" mission is gone; an old save in it (any count) is done at the join, paid once
 for _, count in { 4, 5 } do
-	local f = fixture(saved(2, 0)); for _ = 1, count do f:Kill() end
+	local f = fixture(saved(2, count))
 	local reward = f.Config.Tutorial.QuestRewardGold
-	check(f.Data.TutorialKills == count, "kill counter mismatch")
-	f:Rejoin(); check(f.Data.TutorialKills == count and f.LastList[1].Progress == count, "save/rejoin lost partial or ready progress")
-	check(f.Data.TutorialStep == 2, "rejoin prematurely claimed reward")
-	local before = f.Data.BankGold; f:Claim()
-	if count == 4 then
-		check(f.Data.BankGold == before and f.Data.TutorialStep == 2, "incomplete quest paid")
-	else
-		check(f.Data.BankGold == before + reward and f.Data.TutorialStep == 99, "completed reward missing")
-		f:Claim(); check(f.Data.BankGold == before + reward, "duplicate request paid twice")
-		f:Rejoin(); f:Claim(); check(f.Data.BankGold == before + reward, "claimed reward paid again after reconnect")
-		check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "Forge") ~= nil, "blacksmith followup missing")
-	end
+	check(f.Data.TutorialStep == 99 and f.Data.BankGold == reward, "A23-188: an old " .. count .. "/5 save is done at the join (+150)")
+	f:Claim(); check(f.Data.BankGold == reward, "duplicate request paid twice")
+	f:Rejoin(); f:Claim(); check(f.Data.BankGold == reward, "claimed reward paid again after reconnect")
+	check(f.LastList[1].CanClaim == false, "the row after it is not claimable")
 end
--- A23-34: an anvil visit before the claim does not count for M1_1 (the first weapon waits for a visit with the jelly)
+-- A23-188: nothing clears the anvil visit any more (no second Forge trip); a bare-handed old save gets the weapon at the join
 do
 	local initial = saved(2, 5)
 	initial.Version, initial.WeaponTier, initial.WeaponOwnedMask, initial.BlacksmithVisited = 3, 0, 0, true -- bare-handed
 	local f = fixture(initial)
-	check(f.Data.BlacksmithVisited == true and f.Data.WeaponOwnedMask == 0, "fixture: bare-handed, anvil visited before the claim")
-	f:Claim()
 	local T = f.Config.Tutorial.Text
-	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false,
-		"bare-handed: the claim clears an earlier anvil visit (M1_1 waits for a smithy visit after the first mission)")
-	check(f.LastList[1].Text == T.VisitBlacksmith, "bare-handed: the pinned row promises the first weapon", f.LastList[1].Text)
-	check(f.LastList[1].ShortName == f.Config.Tutorial.ShortNames.Forge, "the forge row's ShortName")
-	local last = f.Notices[#f.Notices]
-	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)), "bare-handed: the Claimed line", last)
-end
--- A23-74: the first weapon came at the Forge step, so every claim clears the earlier visit (M1_1 = a new visit with the
--- jelly) and the claim line points to the next weapon; a save that owns a better weapon already gets "check the gear"
-do
-	local initial = saved(2, 5); initial.BlacksmithVisited = true -- Version 2: owns tier 1 after migrate
-	local f = fixture(initial)
-	f:Claim()
-	local T = f.Config.Tutorial.Text
-	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == false and f.Data.WeaponOwnedMask == 1,
-		"A23-74: a tier-1 owner's claim clears the anvil visit too (M1_1 needs a new one)")
-	local last = f.Notices[#f.Notices]
-	check(last == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)),
-		"A23-130: a tier-1 owner gets the same reward-only line", last)
+	-- (the first weapon itself comes from LootService.GrantFirstWeapon, not in this fixture: tools/test_weapon_first.py)
+	check(f.Data.TutorialStep == 99 and f.Data.BlacksmithVisited == true,
+		"bare-handed old save: done at the join, the visit kept")
+	local paid = 0
+	for _, n in f.Notices do if n == string.format(T.Claimed, tostring(f.Config.Tutorial.QuestRewardGold)) then paid += 1 end end
+	check(paid == 1, "bare-handed: the Claimed line once", tostring(paid))
 	local h = saved(2, 5); h.Version, h.WeaponTier, h.WeaponOwnedMask, h.BlacksmithVisited = 3, 2, 3, true
 	local k = fixture(h)
-	k:Claim()
-	check(k.Data.BlacksmithVisited == false and k.Notices[#k.Notices] == string.format(T.Claimed, tostring(k.Config.Tutorial.QuestRewardGold)),
+	check(k.Data.BlacksmithVisited == true and k.Notices[#k.Notices] == string.format(T.Claimed, tostring(k.Config.Tutorial.QuestRewardGold)),
 		"A23-130: a save that owns the tier-2 weapon already: the same reward-only line", k.Notices[#k.Notices])
 	local g = fixture(saved(99, 5)) -- step 99, tier 1 owned, no visit yet: the row has no first-weapon promise
 	check(g.LastList[1].Text == T.VisitBlacksmithArmed, "a tier-1 owner's pinned row: 'check the weapons'", g.LastList[1].Text)
@@ -373,7 +347,7 @@ do
 	f:ZoneTo("SlimeMeadow"); f:Kill()
 	check(f.Data.TutorialStep == 0 and f.Data.TutorialKills == 0, "respawn/kill bypassed welcome acceptance")
 	f:Accept(); f:Kill()
-	check(f.Data.TutorialStep == 2 and f.Data.TutorialKills == 1, "accepted meadow combat did not count1/5")
+	check(f.Data.TutorialStep == 99 and f.Data.TutorialKills == 0, "A23-188: an armed accept is done at once, no kill count")
 	local g = fixture(); g.Zone = "SlimeMeadow"; g:Choose(); g:Publish()
 	check(g.Data.TutorialStep == 0 and #g.Spawned == 0, "class choice in meadow bypassed dialogue")
 	-- A23-74: bare-handed, the weapon comes first even when the acceptance happens in the meadow (no kill credited)
@@ -391,11 +365,11 @@ for _, faction in { "Halo", "Horns", "Neutral" } do
 	check(f.Panels[1] == "Welcome" and f.Data.TutorialStep == 0, faction .. " guide did not open pending")
 	local beforeGold = f.Data.BankGold
 	f:Accept(); f:Accept(); f:Request()
-	check(f.Data.TutorialStep == 1 and f.Data.TutorialKills == 0 and f.Data.BankGold == beforeGold,
-		faction .. " acceptance invented progress/reward")
+	check(f.Data.TutorialStep == 99 and f.Data.TutorialKills == 0 and f.Data.BankGold == beforeGold + 150,
+		faction .. " A23-188: an armed acceptance is the first mission done, paid once (+150)")
 	check(#f.Panels == 1, faction .. " accepted dialogue re-opened")
 	local record = f:SaveAndRejoin()
-	check(record.TutorialStep == 1 and f.Data.TutorialStep == 1 and #f.Panels == 1,
+	check(record.TutorialStep == 99 and f.Data.TutorialStep == 99 and #f.Panels == 1 and f.Data.BankGold == beforeGold + 150,
 		faction .. " accepted progress did not survive reload")
 end
 do
@@ -426,7 +400,8 @@ do
 end
 for _, step in { 1, 2, 3, 99 } do
 	local f = fixture(saved(step, 4)); f:Request(); f:Accept(); f:Publish()
-	check(f.Data.TutorialStep == step and f.Data.TutorialKills == 4 and #f.Panels == 0,
+	local want = (step == 1 or step == 2) and 99 or step -- A23-188: the old travel / hunt steps are done at the join
+	check(f.Data.TutorialStep == want and f.Data.TutorialKills == 4 and #f.Panels == 0,
 		"existing accepted/completed save was reopened or reset")
 	-- A23-88: no step asks for a trip any more (the row's tap at the Forge step is the client's path light)
 	local trips = 0
@@ -852,107 +827,29 @@ do
 	end
 	check(gone, "A23-130 the old start / ready / thank-you lines are gone from Config.Tutorial.Text")
 end
+-- A23-188: no "5 slimes" mission, so no F10-4 timer: an old save in it (any count) is paid at the join, once, and saved
 do
-	local function lines(f)
-		local gold = tostring(f.Config.Tutorial.QuestRewardGold)
-		-- A23-130: the safety net and a [받기] say the same reward-only line
-		local line = string.format(f.Config.Tutorial.Text.Claimed, gold)
-		return line, line
-	end
 	local function count(f, text)
 		local n = 0
 		for _, message in f.Notices do if message == text then n += 1 end end
 		return n
 	end
-	local function state(f)
-		local auto, manual = lines(f)
-		return " [step " .. tostring(f.Data.TutorialStep) .. ", kills " .. tostring(f.Data.TutorialKills) .. ", bank "
-			.. tostring(f.Data.BankGold) .. ", auto lines " .. count(f, auto) .. ", claimed lines " .. count(f, manual) .. "]"
+	for _, kills in { 0, 4, 5 } do
+		local f = fixture(saved(2, kills))
+		local line = string.format(f.Config.Tutorial.Text.Claimed, tostring(f.Config.Tutorial.QuestRewardGold))
+		check(f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold and count(f, line) == 1,
+			"A23-188: an old " .. kills .. "/5 save is paid at the join with the reward line, once")
+		f:Advance(f.Config.Tutorial.AutoClaimSeconds * 3); f:Claim()
+		check(f.Data.BankGold == f.Config.Tutorial.QuestRewardGold and count(f, line) == 1, "A23-188: later ticks and a [받기] pay nothing more")
+		local record = f:SaveAndRejoin()
+		check(record.TutorialStep == 99 and record.BankGold == f.Config.Tutorial.QuestRewardGold and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold,
+			"A23-188: saved; a rejoin pays nothing more")
 	end
-	local function unpaid(f) return f.Data.TutorialStep == 2 and f.Data.BankGold == 0 end
-	local function paidOnce(f)
-		return f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold and count(f, (lines(f))) == 1
-	end
-
-	-- 1. 4/5 never starts it; at 5/5 it pays exactly AutoClaimSeconds later, once, with Text.Claimed
-	local f = fixture(saved(2, 0))
-	local AUTO = f.Config.Tutorial.AutoClaimSeconds
-	for _ = 1, 4 do f:Kill() end
-	f:Advance(AUTO * 3)
-	check(unpaid(f) and f.Data.TutorialKills == 4, "F10-4 4/5 kills are never auto-claimed (180 s)" .. state(f))
-	f:Kill() -- 5/5: the timer starts on the next tutorial tick (same clock)
-	f:Advance(AUTO - 1)
-	check(unpaid(f) and f.Data.TutorialKills == 5, "F10-4 no auto-claim before AutoClaimSeconds (59 s after 5/5)" .. state(f))
-	check(f.LastList[1].CanClaim == true, "F10-4 the [받기] row stays claimable while the safety net waits")
-	f:Advance(1)
-	check(paidOnce(f, true), "F10-4 at AutoClaimSeconds the safety net pays QuestRewardGold once with the reward line" .. state(f))
-	local autoText = lines(f)
-	local entry = nil
-	for _, e in f.NoticeLog do if e.Text == autoText then entry = e end end
-	check(entry ~= nil and entry.Player == f.Player and entry.Kind == "reward", "F10-4 the auto-claim line is a reward notice to that player")
-	f:Advance(AUTO * 3); f:Claim()
-	check(paidOnce(f, true), "F10-4 the auto-claim pays once (later ticks and a late [받기] pay nothing)" .. state(f))
-	check(f.LastList[1].CanClaim == false and string.find(f.LastList[1].Text, "Forge") ~= nil,
-		"F10-4 after the auto-claim the pinned row moves on to the blacksmith like a manual claim")
-	local record = f:SaveAndRejoin()
-	check(record.TutorialStep == 99 and record.BankGold == f.Config.Tutorial.QuestRewardGold,
-		"F10-4 the auto-claimed step and gold are saved")
-	f:Advance(AUTO * 2); f:Claim()
-	check(paidOnce(f, true), "F10-4 a rejoin after the auto-claim pays nothing more" .. state(f))
-
-	-- 2. a manual claim first: the normal Claimed line, and the safety net never pays afterwards
-	f = fixture(saved(2, 4)); f:Kill()
-	f:Advance(30); f:Claim()
-	check(paidOnce(f, false), "F10-4 a [받기] before the timer pays once (the reward line)" .. state(f))
-	f:Advance(AUTO * 3)
-	check(paidOnce(f, false), "F10-4 after a manual claim the safety net never pays" .. state(f))
-	-- white-box: the claim also clears the timer (a later 5/5 at step 2 counts from 0, not from the first 5/5)
-	f.Services.PlayerService.SetStat(f.Player, "TutorialStep", 2)
-	f.Services.PlayerService.SetStat(f.Player, "BankGold", 0)
-	f:Publish() -- the next tutorial tick (same clock) starts the timer
-	f:Advance(AUTO - 1)
-	check(f.Data.TutorialStep == 2 and f.Data.BankGold == 0, "F10-4 a manual claim clears the timer" .. state(f))
-	f:Advance(1)
-	check(f.Data.TutorialStep == 99 and f.Data.BankGold == f.Config.Tutorial.QuestRewardGold,
-		"F10-4 a fresh timer after a manual claim still runs" .. state(f))
-
-	-- 3. kills < 5 reset the timer
-	f = fixture(saved(2, 5)) -- 5/5 on load: the timer starts at PlayerReady
-	f:Advance(50)
-	f.Services.PlayerService.SetStat(f.Player, "TutorialKills", 4); f:Advance(1)
-	check(unpaid(f), "F10-4 kills < 5 stop the safety net" .. state(f))
-	f.Services.PlayerService.SetStat(f.Player, "TutorialKills", 5); f:Advance(1) -- the timer starts again here
-	f:Advance(AUTO - 1)
-	check(unpaid(f), "F10-4 kills < 5 reset the timer (no auto-claim 59 s after 5/5 again, 111 s after the first)" .. state(f))
-	f:Advance(1)
-	check(paidOnce(f, true), "F10-4 after a reset the safety net pays AutoClaimSeconds after 5/5 again" .. state(f))
-
-	-- 4. leaving clears the timer (white-box: the same Player object seen again by the tutorial loop starts from 0)
-	f = fixture(saved(2, 5))
-	f:Advance(50)
-	f.Services.PlayerService.PlayerLeaving:Fire(f.Player); f:Advance(1) -- the loop sees the player again: new timer
-	f:Advance(AUTO - 1)
-	check(unpaid(f), "F10-4 PlayerLeaving clears the timer (no auto-claim 59 s after it, 110 s after 5/5)" .. state(f))
-	f:Advance(1)
-	check(paidOnce(f, true), "F10-4 a player seen again after PlayerLeaving gets a fresh timer" .. state(f))
-
-	-- 5. a rejoin starts the timer again (an unclaimed 5/5 is saved; leaving pays nothing)
-	f = fixture(saved(2, 4)); f:Kill()
-	f:Advance(50)
-	f:Rejoin()
-	check(unpaid(f) and f.Data.TutorialKills == 5, "F10-4 leaving with an unclaimed 5/5 pays nothing and keeps 5/5" .. state(f))
-	f:Advance(AUTO - 1)
-	check(unpaid(f), "F10-4 after a rejoin the timer starts again (no auto-claim 59 s after the rejoin)" .. state(f))
-	f:Advance(1)
-	check(paidOnce(f, true), "F10-4 after a rejoin the safety net pays AutoClaimSeconds after the rejoin" .. state(f))
-
-	-- 6. only step 2 is ever auto-claimed (pending, travel and finished missions with 5 saved kills)
-	for _, step in { 0, 1, 99 } do
+	for _, step in { 0, 99 } do
 		local g = fixture(saved(step, 5))
 		local bank = g.Data.BankGold
-		g:Advance(AUTO * 3)
-		check(g.Data.TutorialStep == step and g.Data.BankGold == bank and count(g, (lines(g))) == 0,
-			"F10-4 the safety net never pays outside step 2 (step " .. step .. ")" .. state(g))
+		g:Advance(g.Config.Tutorial.AutoClaimSeconds * 3)
+		check(g.Data.TutorialStep == step and g.Data.BankGold == bank, "A23-188: nothing is paid at step " .. step)
 	end
 end
 -- A23-88 (replaces A23-68 #1 / A23-74's trips): nothing moves the player; #4: until the first [Claim] every other quest
@@ -964,13 +861,19 @@ do
 		"A23-88 Config.Tutorial: no accept trip, respawn in the meadow, fold the other rows")
 	local before = #f.Delayed
 	f:Accept(); f:Publish()
-	check(f.Data.TutorialStep == 1 and #f.Travels == 0, "A23-88 accept: step 1, nobody moved")
-	check(#f.FxLog == 0 and f.Player:GetAttribute("MoveLockUntil") == nil and #f.Delayed == before,
-		"A23-88 accept: no Fx Travel, no lock, nothing delayed (the pad / the map is the lesson)")
-	check(f.LastList[1].Text == T.Text.Travel and f.LastList[1].ShortName == T.ShortNames.Travel, "A23-88: the row says 'Travel to Squishy Meadow - the glowing pad (or Map)'",
-		tostring(f.LastList[1].Text))
+	check(f.Data.TutorialStep == 99 and #f.Travels == 0 and #f.FxLog == 0 and f.Player:GetAttribute("MoveLockUntil") == nil and #f.Delayed == before,
+		"A23-188: an armed accept is the first mission done; nobody moved, no lock, nothing delayed")
+	local stillFolded = 0
+	for _, row in f.LastList do if row.Folded ~= nil then stillFolded += 1 end end
+	check(stillFolded == 0, "A23-68 #4: after the first mission nothing is folded")
+	-- A23-188: bare-handed: [Accept] -> walk to the Forge (the other rows folded) -> the gift = the mission done
+	local w = fixture(); w:Choose(); w:Publish()
+	local wBefore = #w.Delayed
+	w:Accept(); w:Publish()
+	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore and #w.FxLog == 0 and w.Player:GetAttribute("MoveLockUntil") == nil
+		and w.LastList[1].Text == T.Text.Forge, "A23-88: the Forge step: 'Go to Otto's Forge', no trip, no lock")
 	local folded, open = 0, 0
-	for _, row in f.LastList do
+	for _, row in w.LastList do
 		if row.Id == "tutorial" then
 			if row.Folded ~= nil then open = -99 end
 		elseif row.Folded == true then
@@ -979,33 +882,13 @@ do
 			open += 1
 		end
 	end
-	check(folded == f.Config.Quests.Slots and open == 0, "A23-68 #4: before the first claim every other row is folded")
-	f:ZoneTo("SlimeMeadow") -- the player's own travel (the pad, Map -> Travel) or a walk lands in the meadow
-	check(f.Data.TutorialStep == 2 and f.LastList[1].Target == 5, "A23-88: arriving in the meadow starts the first mission's hunt (step 2)")
-	for _ = 1, 5 do f:Kill() end
-	f:Claim()
-	check(f.Data.TutorialStep == 99, "A23-68: the first mission is claimed")
-	local stillFolded = 0
-	for _, row in f.LastList do if row.Folded ~= nil then stillFolded += 1 end end
-	check(stillFolded == 0, "A23-68 #4: after the first claim nothing is folded")
-	local m = fixture(); m:Choose(); m.Zone = "SlimeMeadow"; m:Publish(); m:Arm()
-	local mBefore = #m.Delayed
-	m:Accept(); m:Publish()
-	check(m.Data.TutorialStep == 2 and #m.Delayed == mBefore and #m.FxLog == 0 and m.Player:GetAttribute("MoveLockUntil") == nil,
-		"A23-68: accepting in the meadow moves nobody (no fade, no lock)")
-	-- A23-74 / A23-88: bare-handed: [Accept] -> walk to the Forge -> the gift -> travel to the meadow -> the hunt
-	local w = fixture(); w:Choose(); w:Publish()
-	local wBefore = #w.Delayed
-	w:Accept(); w:Publish()
-	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore and #w.FxLog == 0 and w.Player:GetAttribute("MoveLockUntil") == nil
-		and w.LastList[1].Text == T.Text.Forge, "A23-88: the Forge step: 'Go to Otto's Forge', no trip, no lock")
-	check(w.Quest.ForgeGift(w.Player) == true and w.Data.TutorialStep == 1 and #w.FxLog == 0 and #w.Delayed == wBefore,
-		"A23-88: the gift: step 1, no meadow trip (the Stronger! moment, then the pad lesson)")
+	check(folded == w.Config.Quests.Slots and open == 0, "A23-68 #4: before the first mission is done every other row is folded")
+	check(w.Quest.ForgeGift(w.Player) == true and w.Data.TutorialStep == 99 and w.Data.BankGold == 150 and #w.FxLog == 0 and #w.Delayed == wBefore,
+		"A23-188: the gift = the mission done (+150), no meadow trip")
 	w:Publish()
-	check(w.LastList[1].Text == T.Text.Travel and w.Data.TutorialStep == 1, "A23-88: the row now teaches the travel pad", tostring(w.LastList[1].Text))
-	w:ZoneTo("SlimeMeadow")
-	check(w.Zone == "SlimeMeadow" and w.Data.TutorialStep == 2 and w.LastList[1].Target == 5,
-		"A23-88: arriving in the meadow by the pad / the map / a walk starts the hunt (step 2)")
+	local unfolded = 0
+	for _, row in w.LastList do if row.Folded ~= nil then unfolded += 1 end end
+	check(unfolded == 0, "A23-68 #4: after it nothing is folded")
 	-- PlayerService.respawnZoneId: the meadow entrance while the first mission runs, else home
 	local function cut(source, header)
 		local a = assert(string.find(source, header, 1, true), header)

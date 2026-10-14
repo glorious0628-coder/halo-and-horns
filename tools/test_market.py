@@ -201,7 +201,7 @@ def static() -> tuple[int, list[str]]:
     strings = re.findall(r'"([^"\n]*)"', strip_comments(section))
     check(not any(re.search("[가-힣]", s) for s in strings), "the market section's game text is English only")
     story = read(SSS / "StoryQuestService.luau")
-    check("if req.Feature and not Config.FeatureOn(req.Feature) then return false end" in story,
+    check("if type(req.Feature) == \"string\" and not Config.FeatureOn(req.Feature) then return false end" in story,
           "StoryQuestService: Requires.Feature waits for the switch (the market quests)")
     doc = ROOT / "docs/design/market_server_2026-10-13.md"
     check(doc.is_file(), "the server design doc exists")
