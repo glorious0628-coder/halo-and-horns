@@ -1,6 +1,14 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/15 밤 — 자세 2·화면 글 중앙 표 2·스킬 과제·동료 살리기·거위 칩 (push, 최신)
+## 10/15 밤 늦게 — 첫 사냥 힌트·T2 체감·Hero 스탯 화면 (push, 최신; 세션 clear 전)
+- **dev1-first-hunt-hint 4681edff** (7번째 묶음): Config.Nudges.AttackHint = true + AttackHunt { M1_1 1단계, M1_2; Range 10; Idle 5 }, FirstSteps HINT.Hunting(퀘스트 줄 Story.St), 공격하면 그 세션엔 끝(HINT.Hit). test_first_steps 60·34/34.
+- **dev1-t2-feel 14e46874**: HUD.WeaponUpLine 'Power A → B · Slime: N hits → M hits'(Config.Power.Text.WeaponUp, SwingHitsToKill), L.TierChanged → L.Pow.TierFrom → 다음 정산 토스트. test_weapon_up_line 7·4/4. (L.Pow 표는 한 줄 유지: test_first_weapon이 그 줄을 자름.)
+- **dev1-hero-stats cfd5f08a** (7번째 묶음): CharacterUI.StatPanel/HuntBar/StatAction/DrawPanel/DrawHunt, 글 Config.Stats.Text. StatPoints 꺼짐 = 숨김. HuntFame 속성 = 개발 2 dev2-huntfame-attr f56045ce. test_character_ui 183·97/97. 스위치 켜고 사진은 아직.
+- 번역 안쪽 조각: 원인 = 임시 표 줄(최종 검수 정리). fix/goose-words에 FormatByKey 실패 Studio 경고. 시험 패턴 2개(goal_chips·first_look)는 최종 검수가 fix/test-patterns d0dba09f로 고침.
+- 작업 폴더: wt_dev1c = fix/goose-words(체크아웃만), wt_dev1b = dev1-revive, wt_dev1merge = fix/client-text-central-2.
+- 큐: 비었음. 주간 사용량 50% → 최종 검수 지시로 세션 clear. 다음 일은 새 메시지로.
+
+## 10/15 밤 — 자세 2·화면 글 중앙 표 2·스킬 과제·동료 살리기·거위 칩 (push)
 - **dev1-hold-pose-2 526fc28d** (5번째 묶음, 사진 통과): 무기 든 팔 Animate 흔들림 감쇠(Config.HoldPoses Stand/Walk/Run/Air + Damp, Config.HoldMotion In 0.08/InBow 0.06/Out 0.18 smoothstep, 손잡이 Turn↔Rest 같은 시계, toolnone 공격 때도 안 올림, 활 왼손 유지). 핵심: 사용자 아바타 = 관절 업그레이드(AnimationConstraint, Motor6D 꺼짐) → WeaponPose.JointOf. 지팡이 손목 {37,0,-11}, 활 왼손목 {13,0,13}(손 방향 재고 계산). 사진 docs/art/verification_2026-10-15/hold_pose2/. 시험 test_hold_pose2 33·12/12. 스크립트 scratchpad play_hold_pose2.py(카메라 따라가기), probe_pose.py(손 방향), tune_pose.py(execute_luau의 require는 게임 모듈과 다른 사본이라 Config 실시간 조정 안 됨).
 - **fix/client-text-central-2 19845a80** (6번째 묶음): main + 옛 가지 병합, HUD.TXT·BagUI.TXT도 Config.ClientText로, 하드코딩 0. HUD 글 찾던 시험 10개 고침. craft·loot 변이 MISSED는 main에서도 같음(개발 2), costume_physics RETIRED.
 - **dev1-skill-tasks c8bc2c5d**: SkillSlots만으로 잠금, SkillBar.TaskLine/TaskFor(키 번역, 서버 줄과 같은 영어), 스킬책·목표 칩·잠긴 키 토스트에 과제 줄. test_skill_tasks_ui 11·6/6.
