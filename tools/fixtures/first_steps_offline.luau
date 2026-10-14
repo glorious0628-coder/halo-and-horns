@@ -92,7 +92,7 @@ local function setAttrs(t) for k, v in t do player.Attrs[k] = v end end
 
 local remote = { OnClientEvent = { Connect = function(_, fn) W.Handler = fn return {} end } }
 local registry = {
-	HUD = { Hint = function(kind) table.insert(W.Hints, { kind, W.Now }) end },
+	HUD = { Hint = function(kind) table.insert(W.Hints, { kind, W.Now }) end, QuestEntries = function() return W.Entries or {} end },
 	QuestMarker = { Focus = function(m) table.insert(W.Focus, m or false) end },
 	Panels = { Close = function() W.Closed += 1 end },
 	UIKit = { StyleText = function() end },
@@ -239,18 +239,22 @@ local near = monster("Slime", vec(6, 3, 0), nil) -- inside the punch reach (7 + 
 step(7)
 check(#W.Hints == 0 and #W.Focus == 0, "before the first mission: no hints, no marker", #W.Hints .. "/" .. #W.Focus)
 player.Attrs.TutorialStep = 3 -- A23-74: the Forge step comes before the slimes
+W.Entries = { { Id = "M1_1", Story = { St = 2 } } } -- 최종 검수 10/15: M1_1 step 2 (the scroll) is no hunt
 step(7)
-check(#W.Hints == 0 and #W.Focus == 0, "the Forge step (on the way to the first weapon): no hints, no marker", #W.Hints .. "/" .. #W.Focus)
+check(#W.Hints == 0 and #W.Focus == 0, "the Forge step / M1_1's scroll step: no hints, no marker", #W.Hints .. "/" .. #W.Focus)
 player.Attrs.TutorialStep = 1
+W.Entries = { { Id = "M1_1", Story = { St = 1 } } } -- the first hunt: a Slime Prince (A23-188)
 step(4)
 check(#W.Hints == 0, "no attack hint before Idle s", #W.Hints)
 fx("Swing", { UserId = 77 })
-step(4.5)
-check(#W.Hints == 0, "a swing of mine restarts the wait", #W.Hints)
+step(6)
+check(#W.Hints == 0, "after my own attack the hint never comes (it is not needed)", #W.Hints)
+HINT.Hit = false -- (as if a new session on the same hunt)
 fx("Swing", { UserId = 5 })
-step(1)
-check(#W.Hints == 1 and W.Hints[1][1] == "Attack", "Idle s near a monster without my swing -> the attack hint", W.Hints[1] and W.Hints[1][1])
-step(10)
+step(5.5)
+check(#W.Hints == 1 and W.Hints[1][1] == "Attack", "Idle s near a monster without my swing -> the attack hint (others' swings do not count)",
+	W.Hints[1] and W.Hints[1][1])
+step(4.5)
 check(#W.Hints == 1, "the attack hint shows once", #W.Hints)
 -- 검수 10/09: the marker only after 45 s in the meadow without a kill (19.5 s so far)
 check(#W.Focus == 0, "no marker in the first 45 s in the meadow", #W.Focus)
@@ -290,7 +294,7 @@ player.Attrs.TutorialStep = 99
 step(6)
 check(#W.Hints == 1, "after the first mission: no hints", #W.Hints)
 -- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): switched off, the attack hint never shows
-check(REAL_ATTACK_HINT == false, "A23-130: the real Config has the attack hint off (Config.Nudges.AttackHint)",
+check(REAL_ATTACK_HINT == true, "최종 검수 10/15: the real Config has the first-hunt attack hint on (Config.Nudges.AttackHint)",
 	tostring(REAL_ATTACK_HINT))
 do
 	Config.Nudges.AttackHint = false
@@ -354,4 +358,29 @@ do
 	check(not string.find(P.Text, "[\128-\255]"), "plain English", P.Text)
 end
 
+-- 최종 검수 10/15 (Codex B3): the first hunt only - M1_2 counts, a monster past AttackHunt.Range (10) does not, no hunt
+-- row = no hint even in the old first mission
+do
+	Config.Nudges.AttackHint = true
+	HINT.AttackShown, HINT.NearSince, HINT.Hit = false, nil, false
+	player.Attrs.TutorialStep = 99
+	W.Entries = { { Id = "M1_2" } }
+	local had = #W.Hints
+	step(6)
+	check(#W.Hints == had + 1, "M1_2 (the second Slime Prince) is the first hunt too", #W.Hints - had)
+	HINT.AttackShown, HINT.NearSince = false, nil
+	W.Entries = {}
+	player.Attrs.TutorialStep = 1
+	had = #W.Hints
+	step(6)
+	check(#W.Hints == had, "no hunt row: no attack hint (the old slime mission has none now)", #W.Hints - had)
+	for _, m in monsters:GetChildren() do m:Destroy() end
+	root.Position = vec(0, 3, 0) -- (the travel part moved me)
+	monster("Far", vec(12, 3, 0), nil)
+	W.Entries = { { Id = "M1_2" } }
+	HINT.AttackShown, HINT.NearSince = false, nil
+	had = #W.Hints
+	step(6)
+	check(#W.Hints == had, "a monster 12 studs away (past AttackHunt.Range 10): no hint", #W.Hints - had)
+end
 print(string.format("FIRST_STEPS_SUMMARY checks=%d failed=%d", checks, failed))

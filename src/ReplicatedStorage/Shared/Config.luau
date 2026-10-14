@@ -6170,8 +6170,12 @@ Config.Nudges = {
 	-- ("My points 0 · Knights, fill the gauge!" / the tug's "My points · hint") is gone (EventHUD updateGoose, TugSub)
 	GooseSub = false,
 	-- A23-130 sweep (docs/review/less_text_table_2026-10-11.md): the "Click to hit!" / "Tap to hit!" bubble over the attack
-	-- button after 5 s idle near a monster in the first mission (FirstSteps HINT.Step) - the button is on screen already
-	AttackHint = false,
+	-- button after 5 s idle near a monster in the first mission (FirstSteps HINT.Step) - the button is on screen already.
+	-- 최종 검수 10/15 (Codex B3, A23-188): ON again for the first hunt only - the Slime Prince quests (AttackHunt), once
+	AttackHint = true,
+	-- the first hunt (A23-188: M1_1 step 1 + M1_2, the two Slime Princes): a monster within Range studs and no attack of
+	-- mine for Idle s -> the attack button's existing bubble once (no new words); never again after it or after a hit
+	AttackHunt = { Quests = { M1_1 = { [1] = true }, M1_2 = true }, Range = 10, Idle = 5 },
 	-- the weapon merchant's 4 s farewell toast after a manual close ("Nothing you like? Take your time!", Panels WSHOP)
 	ShopFarewell = false,
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)

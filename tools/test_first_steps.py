@@ -43,7 +43,9 @@ MUTATIONS = [
     ("hints on the way to the Forge (A23-74)", "\treturn step >= 1 and step < 99 and step ~= (tonumber(steps.Forge) or 3)\n",
      "\treturn step >= 1 and step < 99\n"),
     ("the Forge walk says the zone", '(data.Spot == "Forge" and TXT.Forge) or ', ""),
-    ("my swing does not restart the wait", "and mine(data) then\n\t\tHINT.NearSince = nil\n", "and mine(data) then\n"),
+    ("my attack does not end the hint", "\t\tHINT.Hit = true -- I attacked: the first-hunt hint is not needed any more\n", ""),
+    ("every step of a listed quest counts (M1_1's scroll step too)", "\t\t\tif want[st] == true then return true end\n", "\t\t\treturn true\n"),
+    ("the hunt range ignored (the old reach)", "HINT.Nearest(root.Position, tonumber(hunt.Range) or HINT.Reach())", "HINT.Nearest(root.Position, 20)"),
     ("the attack hint repeats", "\t\t\t\tHINT.AttackShown = true\n", ""),
     # A23-130: the switch
     ("the attack hint ignores its off switch", " and (Config.Nudges or {}).AttackHint ~= false then", " then"),

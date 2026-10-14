@@ -212,21 +212,42 @@ function HINT.Mark(model)
 	call("QuestMarker", "Focus", model)
 end
 
+-- (pure) 최종 검수 10/15 (Codex B3, A23-188): is one of my quest rows the first hunt (Config.Nudges.AttackHunt.Quests:
+-- an id -> true for every step, or { [step] = true } for those steps; a row's step = its Story.St, 1 when missing)?
+function HINT.Hunting(entries)
+	local hunt = type(Config.Nudges) == "table" and Config.Nudges.AttackHunt or nil
+	local quests = type(hunt) == "table" and hunt.Quests or nil
+	if type(quests) ~= "table" or type(entries) ~= "table" then return false end
+	for _, e in entries do
+		local want = type(e) == "table" and quests[e.Id] or nil
+		if want == true then return true end
+		if type(want) == "table" then
+			local st = type(e.Story) == "table" and tonumber(e.Story.St) or 1
+			if want[st] == true then return true end
+		end
+	end
+	return false
+end
+
 function HINT.Step(now)
-	if not firstMission() then
+	local okE, entries = call("HUD", "QuestEntries") -- (call = pcall: ok, then the rows)
+	local hunting = not HINT.AttackShown and not HINT.Hit and okE == true and HINT.Hunting(entries)
+	if not firstMission() and not hunting then
 		HINT.NearSince = nil
 		if HINT.Marked then HINT.Mark(nil) end
 		return
 	end
 	local root = myRoot()
 	if not root then return end
-	-- the attack hint: Idle s within reach without a swing of mine (a swing restarts the wait); A23-130: off while
-	-- Config.Nudges.AttackHint = false
-	if not HINT.AttackShown and (Config.Nudges or {}).AttackHint ~= false then
-		local _, d = HINT.Nearest(root.Position, HINT.Reach())
+	-- the attack hint (최종 검수 10/15: the first hunt only): a monster within AttackHunt.Range studs and no swing of mine
+	-- for AttackHunt.Idle s (a swing restarts the wait and ends the hint for good: HINT.Hit) -> the attack button's own
+	-- bubble once (HUD.Hint "Attack": "Click to hit!" / "Tap to hit!", no new words)
+	local hunt = type(Config.Nudges) == "table" and type(Config.Nudges.AttackHunt) == "table" and Config.Nudges.AttackHunt or {}
+	if hunting and (Config.Nudges or {}).AttackHint ~= false then
+		local _, d = HINT.Nearest(root.Position, tonumber(hunt.Range) or HINT.Reach())
 		if d < math.huge then
 			HINT.NearSince = HINT.NearSince or now
-			if now - HINT.NearSince >= HINT.Idle then
+			if now - HINT.NearSince >= (tonumber(hunt.Idle) or HINT.Idle) then
 				HINT.AttackShown = true
 				call("HUD", "Hint", "Attack")
 			end
@@ -234,6 +255,7 @@ function HINT.Step(now)
 			HINT.NearSince = nil
 		end
 	end
+	if not firstMission() then return end
 	-- the marker over the nearest monster, in the meadow, until my first kill
 	if HINT.Killed or attr("ZoneId", "") ~= "SlimeMeadow" then
 		if HINT.Marked then HINT.Mark(nil) end
@@ -259,6 +281,7 @@ function FirstSteps.OnFx(kind, data)
 		TRAVEL.Finish(TRAVEL.Token, true)
 	elseif (kind == "Swing" or kind == "Release" or kind == "Skill") and mine(data) then
 		HINT.NearSince = nil
+		HINT.Hit = true -- I attacked: the first-hunt hint is not needed any more
 	elseif kind == "Reward" then -- sent only to the killer (ProgressionService)
 		HINT.Kill()
 	end
