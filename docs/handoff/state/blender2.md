@@ -11,6 +11,8 @@
 - **10:20 화분·꽃 20개 생성(④, 최종 검수 큐 추가):** 그릇 7(Daisy_Pot 8000, 나머지 12000)·잎 6(12000)·공유 꽃 7(8000). 합계 오늘 33개 = 1,815점, 잔액 20,190 → 18,375. id는 records <이름>_web2_hd, 목록 scratchpad hd_q.txt.
 - **로컬 네트워크 허용됨(사용자) → 받기 됨:** 페이지 window.__pump()(assets API → model_url fetch → 127.0.0.1:8765 recv3.py) → art/models/tripo/web/<이름>_HD_pbr_src.glb. 10:19 26개 받음(JuiceMan·MailBoy·OldSailor + 소품 23). 사람 3 = records '통짜 HD, 사용자 방식 아님'. 나머지 10개는 Tripo에서 도는 중 → 끝나면 __pump() 다시.
 - PBR 시트: pbr_gate.py 512/2048 → art/review/design/pbr_gate_hd_1014/r → pbr_gate_sheet.py → 같은 폴더 jpg → 디자인 검수.
+- **10:35 받기·시트 끝:** GLB 36개 전부 디스크(소품 33 + 사람 3). PBR 시트 33장 + _overview_33_q34_bottom.jpg → 디자인 검수에 보냄. 내 걱정: Basin 아래 물 보임, A_Bowl 아래 틈, SilverBucket 아래 흐림. 잔액 18,375.
+- **기다림:** 디자인 검수 판정, 최종 검수 '단순 14' 이름·폴리곤 목록, RoundTree_F·꽃 3 새 2D. Chrome 탭 199232614 열림(window.__fill/__prep/__go2/__pump = 새로고침하면 다시 정의).
 - 다음: 최종 검수 '전달함, 시작' 뒤 Chrome(Tripo) 큐 — JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) → 단순 14 → 분수 부품 → 나무 부품. 설정 = HD 탭, 4K('55'), 조명 제거, PBR, 삼각형.
 
 
