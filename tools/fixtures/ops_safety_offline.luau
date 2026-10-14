@@ -32,6 +32,14 @@ end
 local function startSwitches(w, extra)
 	w:Service("SwitchService", SWITCH_SOURCE)
 	w:InitStart({ "SwitchService" })
+	-- ⑥: a non-Studio test world is a Dev place: the start's one Env line is counted here and kept out of the warnings
+	w.EnvWarned = 0
+	for i = #w.Warnings, 1, -1 do
+		if string.find(w.Warnings[i], "Env: place", 1, true) then
+			w.EnvWarned += 1
+			table.remove(w.Warnings, i)
+		end
+	end
 	return w.Reg.SwitchService
 end
 
@@ -65,6 +73,22 @@ runGroup("environments", function()
 	C.Env.Names[w.Game.PlaceId] = nil
 	C.Env.Names[12345] = "Live"
 	check(C.EnvName() == "Dev", "another place's name does not count", C.EnvName())
+	-- ⑥ (최종 검수 10/14): Config.Env.Places = the Beta / Live ids (0 = not made yet)
+	check(type(C.Env.Places) == "table" and C.Env.Places.Beta == 0 and C.Env.Places.Live == 0, "Env.Places: Beta / Live waiting (0)", show(C.Env.Places))
+	check(C.EnvWarning(false) ~= nil and string.find(C.EnvWarning(false), "Dev", 1, true) ~= nil and C.EnvWarning(true) == nil,
+		"a live server on a Dev place: one warning line; Studio: none", tostring(C.EnvWarning(false)))
+	C.Env.Places.Live = w.Game.PlaceId
+	check(C.EnvName() == "Live" and C.StoreName("X") == "X_Live" and C.EnvWarning(false) == nil, "Places.Live = this place: Live, no warning", C.EnvName())
+	C.Env.Places.Live, C.Env.Places.Beta = 0, w.Game.PlaceId
+	check(C.EnvName() == "Beta", "Places.Beta = this place: Beta", C.EnvName())
+	C.Env.Places.Beta = 0
+	check(C.EnvName() == "Dev", "both 0 again: Dev", C.EnvName())
+	local live = opsWorld({ Studio = false })
+	startSwitches(live)
+	local studio = opsWorld({ Studio = true })
+	startSwitches(studio)
+	check(live.EnvWarned == 1 and studio.EnvWarned == 0, "SwitchService.Start: a live server on a Dev place warns once; Studio never",
+		show({ live.EnvWarned, studio.EnvWarned }))
 	w.Game.PlaceId = 12345
 	check(C.EnvName() == "Live", "the place id decides", C.EnvName())
 	w.Game.PlaceId = "x"

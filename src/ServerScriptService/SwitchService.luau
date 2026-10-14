@@ -144,6 +144,11 @@ function SwitchService.Init(registry)
 end
 
 function SwitchService.Start()
+	-- ⑥ (최종 검수 10/14): a live server on a Dev place id says so once (its saves go to the Dev store names)
+	if type(Config.EnvWarning) == "function" then
+		local okW, line = pcall(Config.EnvWarning, RunService:IsStudio())
+		if okW and type(line) == "string" then Util.Warn(TAG, line) end
+	end
 	for key, def in defs() do
 		VALUES[key] = fallback(def)
 		publish(key)

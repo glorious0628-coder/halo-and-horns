@@ -5372,13 +5372,28 @@ Config.BuildLabel = "private-test 2026.10.16" -- shown in the settings footer (b
 -- (docs/design/launch_ops_checklist.md); every other place (the dev place, Studio) is "Dev". Config.StoreName(base) is the
 -- DataStore name of a store in this environment: Dev keeps the names that already exist (nothing moves), Beta and Live get
 -- "_Beta" / "_Live" appended so a test never touches the real saves, rankings or the supporter list.
-Config.Env = { Default = "Dev", Names = {} }
+-- 최종 검수 10/14 ⑥: Places = the Beta / Live place ids (0 = not made yet; the Live one comes from the user at launch). A place
+-- id there (or in Names, [id] = "Beta" | "Live") names the environment; anything else is Dev (its own store names).
+-- Config.EnvWarning: a live (non-Studio) server on a Dev place id says so once in the log (SwitchService.Start)
+Config.Env = { Default = "Dev", Names = {}, Places = { Beta = 0, Live = 0 } }
 
 function Config.EnvName()
 	local ok, id = pcall(function() return game.PlaceId end)
-	local name = ok and type(id) == "number" and Config.Env.Names[id] or nil
+	if not ok or type(id) ~= "number" or id <= 0 then return Config.Env.Default end
+	local name = Config.Env.Names[id]
 	if name == "Beta" or name == "Live" then return name end
+	local places = type(Config.Env.Places) == "table" and Config.Env.Places or {}
+	for _, env in { "Live", "Beta" } do
+		if tonumber(places[env]) == id then return env end
+	end
 	return Config.Env.Default
+end
+
+-- a warning line (nil = fine): a server that is not Studio but runs as Dev (its place id is not Config.Env.Places Beta / Live)
+function Config.EnvWarning(isStudio)
+	if isStudio == true or Config.EnvName() ~= "Dev" then return nil end
+	local ok, id = pcall(function() return game.PlaceId end)
+	return string.format("Env: place %s is not Config.Env.Places Beta / Live: the Dev store names are used", tostring(ok and id or "?"))
 end
 
 function Config.StoreName(base)
