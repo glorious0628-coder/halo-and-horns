@@ -1,5 +1,7 @@
 # 출시 계획 (2026-10-04 사용자 확정, 2026-10-05 갱신)
 
+> **10/14 md 정리(사용자):** 261 → 163개. 여기 언급된 옛 문서(beta_board·firefly_prompt_pack·skills_weapons_pets·text_rewrite·visual_direction·HANDOFF_CODEX·docs/vendor/tripo_api 등)는 지움 — 내용은 git 역사(커밋 "md 정리 10/14" 이전)에 있음. 지금 계획 = `docs/design/gameplay_plan_2026-10-14.md`.
+
 이 문서의 우선순위가 `docs/HANDOFF_CODEX.md` "다음에 할 일" 순서보다 먼저다. 전체 규칙 순서는 `AGENTS.md` "Which rule wins"를 따른다. 핵심 조건은 `docs/GDD.md` §0("모든 행동이 천사 아니면 악마 쪽으로 기운다")이다.
 
 ## 현재 진행 순서 — 사용자 확정 (2026-10-05, 2026-10-09 장소·UI 순서 보강)

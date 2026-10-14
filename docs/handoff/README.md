@@ -7,7 +7,7 @@
 2. `docs/SPEC_ADDENDUM.md` 맨 위 — 사용자 결정, 번호가 클수록 새것(지금 A23-163).
 3. `docs/handoff/role_prompts/README.md` — 지금 세션 표(누가 무엇을, 모델·노력). 자기 역할 파일(`role_prompts/0N_*.md`)과 `state/<역할>.md`.
 4. `docs/design/six_week_plan_2026-10-13.md` — 12/15까지 주별 목표와 세션별 몫, 시험 셋, 디자인 마감표.
-5. `docs/design/gameplay_plan_2026-10-13.md` — 일 목록(번호 #). 날짜는 six_week_plan이 대신한다.
+5. `docs/design/gameplay_plan_2026-10-14.md` — 일 목록(번호 #). 날짜는 six_week_plan이 대신한다.
 6. `docs/handoff/state/review.md` 맨 아래 — 최종 검수의 지금 상태·기다리는 것.
 
 ## 지금 숫자 (10/13 밤)
