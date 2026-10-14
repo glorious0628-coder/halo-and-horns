@@ -14,6 +14,7 @@ Net.Names = {
 	"UseItem", -- (itemId, tier [, toTier]) A23-12 enhance / transfer scroll on owned weapons
 	"EquipWeapon", -- (tier) equip an owned weapon from the item list (drops / legendary)
 	"SellMaterials", -- no arguments; sells every material at the blacksmith anvil
+	"SellItem", -- (itemId, n) artisan min ②: n of one gathered / crafted material (a Source item) at the Forge anvil (LootService)
 	"SetAnnounceName", -- (hide: boolean) P5: hide my name in server-wide chat announcements
 	"SetTitle", -- (id: string <= 32, owned Config.TitleDefs id or "" = automatic) BB16 nametag title
 	"GhostHold", -- no arguments: A23-18 the robbed victim holds the thief's grudge sack (+2 s, 3 s cooldown)
@@ -86,9 +87,29 @@ Net.Names = {
 	-- s->c owner only, one per moment: { Event = "Card" | "Silver" | "Holo" | "Golden" | "Page" | "Glow", Kind?, Stage?,
 	-- Card? = { Kills, Golden, Stage, First }, Gold, XP (added), Title?, Page?, Key, Args, Text, Debug? }
 	"CodexUp",
+	-- 게임성 개발 2 (2026-10-14) A23-178 the village fund (VillageFundService, docs/design/village_fund_server_2026-10-14.md):
+	"FundGive", -- c->s, no arguments (anything sent is ignored): one gift of Config.VillageFund.Step at my side's fountain
+	-- s->c owner only { Faction, Today, PerDay, Step, Gold, Can, Why?, Week, Sum, Goals, Level }: after the fountain prompt
+	-- and after every gift (Why = "Poor" | "Full" | "Closed" when Can is false)
+	"FundOpen",
+	-- 게임성 개발 2 (2026-10-13) C-5 / C-7 the player market (MarketService; docs/design/market_server_2026-10-13.md,
+	-- MarketWindow contract docs/design/market_window_2026-10-12.md §6). MarketIndex / MarketMine go both ways (c->s ask, s->c
+	-- answer); MarketPage answers MarketBrowse
+	"MarketIndex", -- c->s () | s->c { Rows = { { Key, Low, Count } }, At, Gate = { Buy, List, ListIn } }
+	"MarketBrowse", -- c->s (key "I:<id>" | "W:T:P", page 1..)
+	"MarketPage", -- s->c { Key, Page, Pages, Rows = { { Id, Price (one unit), N, Plus, Left } }, Ref, Min, Max }
+	"MarketMine", -- c->s () | s->c { Rows = { { Id, Key, N, Plus, Price, State, Left, Paid } }, Waiting, Today, Gate }
+	"MarketList", -- c->s (kind "I" | "W", id = item id | spare "T:P", n, price of one unit)
+	"MarketBuy", -- c->s (listing id, price of one unit as shown): buys the whole row (N x price)
+	"MarketCancel", -- c->s (listing id)
+	"PackWeapon", -- c->s (tier): an owned weapon (not in hand, not tier 1) -> a spare "T:P"
+	"UnpackSpare", -- c->s (spare key "T:P"): a spare of a tier I do not own -> owned
 }
 
 Net.GameStateDefaults = {
+	-- A23-178 VillageFundService: this week's fund sums (every server, + this server's unsaved) and the town light level
+	-- (0 none, 1 lanterns, 2 lanterns + night fireworks); FundWeek = Config.WeekIndex of the sums
+	FundWeek = 0, FundHalo = 0, FundHorns = 0, FundLevelHalo = 0, FundLevelHorns = 0,
 	-- WarService
 	WarHaloScore = 0, WarHornsScore = 0, WarRoundEndsAt = 0, WarMode = "Idle", WarBlessing = "None",
 	-- FactionService

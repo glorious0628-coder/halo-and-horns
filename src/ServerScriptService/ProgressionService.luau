@@ -193,7 +193,9 @@ end
 -- the amount before the pass (the caller's multipliers already in); handles level-ups. A23-75: x2 with the 2x XP
 -- pass (A23-167: or in the first minutes, XPBoost), then at most `cap` when given (A23-27's one-level cap holds with the
 -- pass too). Returns the XP added (0 = none)
-function M.AddXP(player, amount, cap)
+-- source (optional): "Monster" for a kill's XP (Codex B6: the test board splits hunting XP from quest / daily XP); it rides
+-- on XPEarned
+function M.AddXP(player, amount, cap, source)
 	amount = math.floor(num(amount))
 	if amount <= 0 then return 0 end
 	local data = getData(player)
@@ -238,7 +240,7 @@ function M.AddXP(player, amount, cap)
 		})
 		M.LeveledUp:Fire(player, level)
 	end
-	M.XPEarned:Fire(player, amount)
+	M.XPEarned:Fire(player, amount, source)
 	return amount
 end
 
@@ -436,8 +438,8 @@ function M.TryRebirth(player, factionId)
 	if type(factionId) ~= "string" or not REBIRTH_TARGETS[factionId] then
 		return false, nil
 	end
-	if not Config.Pickable(factionId) then -- A23-57: the artisan guild is off for the beta (refused + one log line)
-		Util.Warn(TAG, ("%s asked to be reborn into the artisan guild, off for the beta (A23-57)"):format(player.Name))
+	if not Config.Pickable(factionId) then -- A23-57: the artisan guild is off until the artisan update (refused + one log line)
+		Util.Warn(TAG, ("%s asked to be reborn into the artisan guild, off until the artisan update (A23-57; in the beta, A23-162)"):format(player.Name))
 		return false, nil
 	end
 	local data = getData(player)
@@ -529,7 +531,7 @@ local function onMonsterKilled(player, info)
 		if level < capBelow then cap = math.floor(Config.XPToNext(level)) end
 	end
 	gold = M.AddCarriedGold(player, gold, "Monster") -- A23-75: what was added (2x Gold / 2x XP), shown below
-	xp = M.AddXP(player, xp, cap)
+	xp = M.AddXP(player, xp, cap, "Monster")
 	S.PlayerService.AddStat(player, "TotalKills", 1)
 	local pos = info.Position
 	if typeof(pos) ~= "Vector3" then

@@ -1123,6 +1123,16 @@ function CombatService.Swing(player, isManual, hint)
 	local hits = {}
 	local totalDealt, monstersHit, playersHit = 0, 0, 0
 
+	-- A23-186: a joke weapon's hit (Config.WeaponMemes): its key rides on the Swing Fx, the Pan shoves further
+	local memeKey, meme = nil, nil
+	if not w.Unarmed then
+		local wdef = Config.Weapons[math.floor(tonumber(player:GetAttribute("WeaponTier")) or 0)]
+		memeKey = type(wdef) == "table" and type(wdef.Meme) == "string" and wdef.Meme or nil
+		meme = memeKey and type(Config.WeaponMemes) == "table" and Config.WeaponMemes[memeKey] or nil
+		if type(meme) ~= "table" then memeKey, meme = nil, nil end
+	end
+	local memePush = meme and math.max(0, tonumber(meme.Push) or 0) or 0
+
 	-- 3. monsters: 50% of the normal hit right away (crit rolled per target)
 	if #monsters > 0 then
 		local base = CombatService.ComputeMonsterHit(player, false, w)
@@ -1135,7 +1145,7 @@ function CombatService.Swing(player, isManual, hint)
 				local killed, applied = damageMonster(rec, dealt, player, crit, nil, isManual)
 				if killed or applied > 0 then -- 0 = refused by MonsterService (owner / zone rules): not a hit
 					if not killed then
-						shoveLater("Swing", c.Id, rec, pos, crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING, player, w.Style) -- A15
+						shoveLater("Swing", c.Id, rec, pos, (crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING) + memePush, player, w.Style) -- A15
 					end
 					table.insert(hits, { P = m.Pos, A = dealt, C = crit, K = "M" }) -- the number shows the hit as dealt
 					totalDealt += applied -- CR-M10: lifesteal counts real damage only
@@ -1207,6 +1217,7 @@ function CombatService.Swing(player, isManual, hint)
 			Targets = targets,
 			Hits = hits,
 			Manual = isManual, -- A15: clients kick the camera on manual hits only
+			Meme = memeKey, -- A23-186: "Pan" / "Chicken" = Config.WeaponMemes (its sound / particle on the Hits); nil = none
 		})
 	end
 end

@@ -35,6 +35,7 @@ local STATE = {
 
 LootService.ItemsGranted = Util.Signal.new() -- (player, { { Id = itemId, N = n } ... })
 LootService.Enhanced = Util.Signal.new() -- (player, tier, before, after, success, itemId) (itemId: BB10 장인 명성)
+LootService.MaterialSold = Util.Signal.new() -- (player, itemId, n) artisan min ②: SellItem sold a gathered / crafted material
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -193,10 +194,16 @@ local function publish(player, data)
 	end)
 end
 
-local function addItem(player, data, id, n)
+local function addItem(player, data, id, n, anySlot)
 	local def = LOOT.Items[id]
 	if not def or n <= 0 then return 0 end
 	local have = math.floor(num(data.Items[id]))
+	-- bag slots (10/14): a NEW kind needs a free slot (a kind already held stacks to ItemCap). anySlot (a quest / story
+	-- reward, 최종 검수 10/14) skips it: a reward always goes in, even past the slots (only picking up a new kind stops)
+	if have < 1 and not anySlot and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then
+		fullNotice(player, "Bag", Config.BagSlots.Text.Full)
+		return 0
+	end
 	local room = math.max(0, LOOT.ItemCap - have)
 	local given = math.clamp(n, 0, room)
 	if given < n then
@@ -362,7 +369,17 @@ local function weaponPity(player, data, info, gained)
 			local key = "T" .. tier
 			local have = math.max(0, num(data.WeaponPity[key])) + adds[tier]
 			data.WeaponPity[key] = have
-			if have >= num(pity.At[tier]) then grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip) end
+			if have >= num(pity.At[tier]) then
+				-- review 10/14 BLOCK 3: the counter starts over once it pays (else a weapon packed for the market would be
+				-- paid again on the next kill, again and again)
+				data.WeaponPity[key] = 0
+				-- review 10/14b: once a tier ever (LootFlags "Pity<tier>"), whatever an older save holds
+				local flag = "Pity" .. tier
+				if data.LootFlags[flag] ~= true then
+					data.LootFlags[flag] = true
+					grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip)
+				end
+			end
 		end
 	end
 end
@@ -406,7 +423,8 @@ end
 
 -- E6 (story_depth 6-1) / A23-46: a quest reward of `n` (1..99) of one Config.Loot.Items id or potion kind ("HP" /
 -- "MP"), through the same caps and full notices as drops. Returns how many were given (0 for a bad id / n or no data).
-function LootService.GrantItem(player, id, n)
+-- source "Reward" (a quest / story reward, 최종 검수 10/14): never refused for bag slots (the item cap still counts)
+function LootService.GrantItem(player, id, n, source)
 	local data = getData(player)
 	n = math.floor(num(n))
 	if not data or type(id) ~= "string" or n < 1 or n > 99 then return 0 end
@@ -417,7 +435,7 @@ function LootService.GrantItem(player, id, n)
 		return #gained
 	end
 	if not LOOT.Items[id] then return 0 end
-	local given = addItem(player, data, id, n)
+	local given = addItem(player, data, id, n, source == "Reward")
 	if given > 0 then publish(player, data) end
 	return given
 end
@@ -716,6 +734,31 @@ local function onSellMaterials(player, ...)
 	notify(player, Config.Plural(string.format(TXT.SellDone, count, tostring(gold))), "good")
 end
 
+-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): n of ONE gathered / crafted material (an item with a Source,
+-- which the sell-all keeps for crafting) at the Forge anvil. Args (itemId: string, n: whole 1..what I have); anything else
+-- = nothing. Removed before paying (a repeated request cannot pay twice); Sell x n carried gold ("Sale"); MaterialSold.
+local function onSellItem(player, ...)
+	if select("#", ...) ~= 2 or not ready(player, "SellItem") then return end
+	local id, n = ...
+	if type(id) ~= "string" or #id > 32 or type(n) ~= "number" or n ~= n or n ~= math.floor(n) or n < 1 or n > LOOT.ItemCap then return end
+	local def = LOOT.Items[id]
+	if type(def) ~= "table" or def.Kind ~= "Material" or def.Source == nil or num(def.Sell) <= 0 then return end
+	if S.ShopService.CanBuyWeapon(player) ~= true then notify(player, TXT.SellFar, "bad"); return end -- the anvil (12 studs)
+	local data = getData(player)
+	if not data then return end
+	ensureTables(data)
+	local have = math.floor(num(data.Items[id]))
+	if have < n then notify(player, TXT.SellItemNone, "bad"); return end
+	data.Items[id] = have - n > 0 and have - n or nil
+	local gold = n * math.floor(num(def.Sell))
+	publish(player, data)
+	S.ProgressionService.AddCarriedGold(player, gold, "Sale")
+	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
+	S.PlayerService.MarkActive(player)
+	notify(player, string.format(TXT.SellItemDone, n, tostring(def.Name or id), tostring(gold)), "good")
+	LootService.MaterialSold:Fire(player, id, n)
+end
+
 ------------------------------------------------------------------ A23-28 weapon level rule
 -- the level went down (rebirth / Lv5+ free class change) or the save holds an equipped weapon above the level: equip
 -- the best owned weapon usable now (ownership and +N untouched) and say so in one line
@@ -781,6 +824,10 @@ function LootService.Start()
 	Net.Get("SellMaterials").OnServerEvent:Connect(function(player, ...)
 		local ok, err = pcall(onSellMaterials, player, ...)
 		if not ok then Util.Warn(TAG, "SellMaterials: " .. tostring(err)) end
+	end)
+	Net.Get("SellItem").OnServerEvent:Connect(function(player, ...)
+		local ok, err = pcall(onSellItem, player, ...)
+		if not ok then Util.Warn(TAG, "SellItem: " .. tostring(err)) end
 	end)
 	S.MonsterService.MonsterKilled:Connect(function(player, info)
 		local ok, err = pcall(LootService.RollKill, player, info)
@@ -886,6 +933,8 @@ local function spareFits(data, key)
 	for _, n in spares do
 		sum += math.max(0, math.floor(num(n)))
 	end
+	-- bag slots (10/14): a new spare key needs a free slot
+	if math.floor(num(spares[key])) < 1 and Config.BagSlots.Counts.Spare and not Config.BagHasRoom(data) then return false end
 	return math.floor(num(spares[key])) < Config.SaveV4.SpareKeyMax and sum < Config.SaveV4.SpareSum
 end
 
@@ -906,6 +955,101 @@ function LootService.AddSpare(player, tier, plus)
 	data.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1
 	publish(player, data)
 	return true
+end
+
+-- bag slots (10/14): +n slots (a quest reward), never past Config.BagSlots.Max; returns how many were really added.
+-- data.BagSlots only grows (SetStat mirrors the BagSlots attribute)
+function LootService.AddBagSlots(player, n)
+	local data = getData(player)
+	n = math.floor(num(n))
+	if not data or n < 1 then return 0 end
+	local before = Config.BagSlotsOf(data)
+	local after = math.min(Config.BagSlots.Max, before + n)
+	if after <= before then return 0 end
+	S.PlayerService.SetStat(player, "BagSlots", after)
+	return after - before
+end
+
+-- C-5 market (게임성 개발 2, 2026-10-13): takes `n` spares of tier +plus; false = not that many (nothing taken)
+function LootService.TakeSpare(player, tier, plus, n)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	n = math.floor(num(n, 1))
+	if not data or n < 1 or type(data.Spares) ~= "table" then return false end
+	local have = math.max(0, math.floor(num(data.Spares[key])))
+	if have < n then return false end
+	data.Spares[key] = have > n and have - n or nil
+	publish(player, data)
+	return true
+end
+
+-- C-5 market: a weapon bought (tier +plus). A tier not owned yet becomes owned with that +N ("Owned"); a tier owned
+-- already (a drop came in between) becomes a Spare ("Spare"); nil = a bad tier / plus, no data or no room
+function LootService.GrantMarketWeapon(player, tier, plus)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	if not data then return nil end
+	ensureTables(data)
+	if owns(data, tier) then
+		return LootService.AddSpare(player, tier, plus) and "Spare" or nil
+	end
+	data.WeaponEnhance[tier] = plus
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
+	if not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end
+	publish(player, data)
+	return "Owned"
+end
+
+-- C-5 market (the bag's buttons): an owned weapon -> a Spare "T:P" with its +N (the tier is not owned any more, its +N
+-- 0). Never the weapon in hand or tier 1 (the guild's gift). true = done; else a Config.Market.Text refusal key
+function LootService.PackWeapon(player, tier)
+	local data = getData(player)
+	if not data or type(tier) ~= "number" or tier < 2 or not owns(data, tier) then return "NoItem" end
+	if math.floor(num(data.WeaponTier, 0)) == tier then return "InHand" end
+	ensureTables(data)
+	local plus = enhanceOf(data, tier)
+	local key = spareKey(tier, plus)
+	if not key or not spareFits(data, key) then return "CantReceive" end
+	data.WeaponEnhance[tier] = 0
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.band(math.floor(num(data.WeaponOwnedMask, 0)), bit32.bnot(bit32.lshift(1, tier - 1))))
+	if type(data.Spares) ~= "table" then data.Spares = {} end
+	data.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1
+	publish(player, data)
+	return true
+end
+
+-- C-5 market: a Spare tier +plus -> owned with that +N (only a tier not owned). true = done; else a refusal key
+function LootService.UnpackSpare(player, tier, plus)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	if not data or type(data.Spares) ~= "table" or math.floor(num(data.Spares[key])) < 1 then return "NoItem" end
+	if owns(data, tier) then return "Owned" end
+	LootService.TakeSpare(player, tier, plus, 1)
+	return LootService.GrantMarketWeapon(player, tier, plus) == "Owned" or "NoItem"
+end
+
+-- 장인 ② (N0's end): the best spare weapon (by Damage, usable at this level, a tier not owned yet, never a joke weapon)
+-- that beats the weapon held is unpacked (UnpackSpare: owned with its +N) and put in the hand. Returns its tier, or nil
+function LootService.EquipBestSpare(player)
+	local data = getData(player)
+	if not data or type(data.Spares) ~= "table" then return nil end
+	local held = Config.Weapons[math.floor(num(data.WeaponTier, 0))]
+	local bestDamage = type(held) == "table" and num(held.Damage) or 0
+	local best, bestPlus = nil, 0
+	for key, c in data.Spares do
+		local t, p = string.match(tostring(key), "^(%d+):(%d+)$")
+		local tier, plus = tonumber(t), tonumber(p)
+		local def = tier and Config.Weapons[tier] or nil
+		if def and not def.Meme and math.floor(num(c)) >= 1 and not owns(data, tier) and Config.WeaponUsable(tier, num(data.Level, 1))
+			and (num(def.Damage) > bestDamage or (best == tier and plus > bestPlus)) then
+			best, bestPlus, bestDamage = tier, plus, num(def.Damage)
+		end
+	end
+	if not best or LootService.UnpackSpare(player, best, bestPlus) ~= true then return nil end
+	S.PlayerService.SetStat(player, "WeaponTier", best)
+	Net.Fx(player, "Upgrade", { Tier = best })
+	publish(player, data)
+	return best
 end
 
 -- re-mirror the owner's items / per-tier +N (Inventory remote) and the equipped WeaponEnhance attribute; for other

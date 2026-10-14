@@ -56,7 +56,11 @@ local LAYOUT_EVERY = 2
 -- art layout (logical px at UIScale 1)
 local L = {
 	PillH = 28, -- goose countdown / kaiju pills
-	IconW = 30, IconH = 34, -- goose icon sticking out of the pill's left end (mockup)
+	IconW = 30, IconH = 34, -- the tug bar's goose icon (sticking out of its left end, mockup)
+	-- 최종 검수 10/14 (user: "오리가 낑김" - the chip's goose was cut by its left rim): the goose chip's icon INSIDE the chip,
+	-- Left / Right inner padding, the icon = the chip's height x IconK, Gap before the words, the chip PlusH taller than a
+	-- pill, as wide as its whole line needs (never narrower than GOOSE_CHIP_W) - SQ.FitGoose / SQ.GooseNeed
+	GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.75, PlusH = 4 },
 	StripGap = 6, -- gap under HUD's war meter
 	SubHTouch = 15, -- tug hint line on touch (15 logical = 11 real px at UIScale 0.75)
 	TugSide = 74, -- rescue / poach label width inside the tug bar (at the full STRIP_W; scales with the strip, CR-L36)
@@ -135,6 +139,21 @@ local TXT = {
 	ArrowRevenge = "Revenge",
 	UnknownName = "???",
 }
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+function L.Tx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 
 ----------------------------------------------------------------- state
 local ui = {}
@@ -497,24 +516,24 @@ local function build()
 		Name = "GooseChip",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.fromScale(0.5, 0),
-		Size = UDim2.fromOffset(GOOSE_CHIP_W, L.PillH),
+		Size = UDim2.fromOffset(GOOSE_CHIP_W, L.PillH + L.GooseChip.PlusH),
 		Visible = false,
 		ZIndex = 3,
 	}, { CornerRadius = UDim.new(0.5, 0) }, ui.Strip)
-	local gooseIcon = Art.image("IconGoose", {
+	ui.GooseIcon = Art.image("IconGoose", {
 		Name = "GooseIcon",
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, -6, 0.5, -1),
-		Size = UDim2.fromOffset(L.IconW, L.IconH),
+		Position = UDim2.new(0, L.GooseChip.Left, 0.5, 0),
+		Size = UDim2.fromOffset(L.IconW, L.IconW),
 		ZIndex = 5,
 	}, ui.GooseChip)
-	local chipTextX = gooseIcon and 28 or 12
 	ui.GooseChipText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(chipTextX, 1),
-		Size = UDim2.new(1, -chipTextX - 12, 1, -2), -- the line's whole height: 18 px phone line, 14 px phone text
+		Position = UDim2.fromOffset(L.GooseChip.Left, 1),
+		Size = UDim2.new(1, -L.GooseChip.Left - L.GooseChip.Right, 1, -2), -- the line's whole height
 		ZIndex = 4,
 	}, 16, ui.GooseChip)
+	SQ.FitGoose(L.PillH + L.GooseChip.PlusH)
 	if not Art.On then ui.GooseChipText.TextColor3 = GOLD end
 
 	-- goose tug-of-war: navy BarTrack capsule, gold rescue fill over the red poach fill. As wide as the strip, which
@@ -1101,12 +1120,51 @@ function SQ.update()
 	setVisible(btn, true)
 end
 
+-- the goose chip's insides for its height h (du): icon h x IconK at Left, the words after it + Gap up to Right.
+-- -> the room the chip keeps around its words (du)
+function SQ.FitGoose(h)
+	local G = L.GooseChip
+	local icon, label = ui.GooseIcon, ui.GooseChipText
+	local iw = icon and math.max(8, math.floor((tonumber(h) or L.PillH) * G.IconK + 0.5)) or 0
+	if icon then
+		local size, pos = UDim2.fromOffset(iw, iw), UDim2.new(0, G.Left, 0.5, 0)
+		if icon.Size ~= size then icon.Size = size end
+		if icon.Position ~= pos then icon.Position = pos end
+	end
+	local x = G.Left + (icon and (iw + G.Gap) or 0)
+	if label then
+		local pos, size = UDim2.fromOffset(x, 1), UDim2.new(1, -(x + G.Right), 1, -2)
+		if label.Position ~= pos then label.Position = pos end
+		if label.Size ~= size then label.Size = size end
+	end
+	return x + G.Right
+end
+
+-- the goose chip's width (du) for its whole line ("Golden Goose 3:43") at height h: never narrower than GOOSE_CHIP_W
+function SQ.GooseNeed(h)
+	local G = L.GooseChip
+	local room = G.Left + (ui.GooseIcon and (math.max(8, math.floor((tonumber(h) or L.PillH) * G.IconK + 0.5)) + G.Gap) or 0) + G.Right
+	local label, kit = ui.GooseChipText, C and C.UIKit
+	local text = SQ.FullLine or (label and label.Text) or ""
+	if not (label and text ~= "" and type(kit) == "table" and type(kit.MeasureText) == "function") then return GOOSE_CHIP_W end
+	-- 최종 검수 10/14 (publish4: PC showed "Goose 3:35" with room to spare): SQ.chipLine fits the line at the text
+	-- floor in SCREEN px (UITextSizeConstraint ignores UIScale), so the chip asks for that width back in du (/ scale);
+	-- measured in du before, a PC at UIScale 0.8 got a chip 20% too narrow and always the short line
+	local s = currentScale()
+	local c = label:FindFirstChildOfClass("UITextSizeConstraint")
+	local size = math.max(label.TextSize * s, c and c.MinTextSize or 0)
+	local ok, _, w = pcall(kit.MeasureText, (string.gsub(text, "%d", "0")), size, label.FontFace, 100000)
+	if not (ok and type(w) == "number" and w > 0) then return GOOSE_CHIP_W end
+	return math.max(GOOSE_CHIP_W, math.ceil(room + w / s + 2))
+end
+
 -- A23-145 (phone photos 10/13): "Golden Goose 117:23" lost its time on a phone (the text floor is bigger than the
 -- chip): the longest line that fits the chip at its smallest text size - "Golden Goose 1:57:23" -> "Goose 1:57:23" ->
 -- "1:57:23" (the goose icon says what)
 function SQ.chipLine(seconds)
 	local t = Util.FormatTime(seconds)
-	local lines = { string.format(TXT.GooseNext, t), string.format(TXT.GooseNextShort, t), t }
+	local lines = { L.Tx(TXT, "GooseNext", t), L.Tx(TXT, "GooseNextShort", t), t }
+	SQ.FullLine = lines[1] -- the chip's width asks for the whole line (SQ.GooseNeed)
 	local label, kit = ui.GooseChipText, C and C.UIKit
 	if not (label and type(kit) == "table" and type(kit.MeasureText) == "function") then return lines[1] end
 	local c = label:FindFirstChildOfClass("UITextSizeConstraint")
@@ -1165,8 +1223,8 @@ local function updateGoose(now)
 			setVisible(ui.TugRight, not b.Coop)
 			ui.TugLeft.Size = UDim2.fromScale(b.Fill, 1)
 			setVisible(ui.TugLeft, b.Fill > 0.001)
-			setText(ui.TugLeftText, b.Coop and string.format(TXT.EggCoop, b.Left, b.Right) or string.format(TXT.EggScore, b.Left))
-			setText(ui.TugRightText, b.Coop and "" or string.format(TXT.EggScore, b.Right))
+			setText(ui.TugLeftText, b.Coop and L.Tx(TXT, "EggCoop", b.Left, b.Right) or L.Tx(TXT, "EggScore", b.Left))
+			setText(ui.TugRightText, b.Coop and "" or L.Tx(TXT, "EggScore", b.Right))
 			setText(ui.TugCenterText, Util.FormatTime(b.Seconds))
 			local clock = b.Overtime and GOLD or ui.TugCenterInk
 			if clock and ui.TugCenterText.TextColor3 ~= clock then ui.TugCenterText.TextColor3 = clock end
@@ -1204,7 +1262,7 @@ local function updateGoose(now)
 			elseif faction == "Neutral" then
 				coopSub = TXT.HintNeutral
 			else
-				coopSub = string.format(TXT.MyCount, mine)
+				coopSub = L.Tx(TXT, "MyCount", mine)
 			end
 			setText(ui.TugSub, coopSub)
 			return
@@ -1218,18 +1276,18 @@ local function updateGoose(now)
 		-- rescue (gold) grows from the left over the full-width poach (red) capsule
 		ui.TugLeft.Size = UDim2.fromScale(frac, 1)
 		setVisible(ui.TugLeft, frac > 0.001)
-		setText(ui.TugLeftText, string.format(TXT.Rescue, math.floor(rescue)))
-		setText(ui.TugRightText, string.format(TXT.Poach, math.floor(poach)))
-		setText(ui.TugCenterText, string.format(TXT.GooseTitle, timeLeft))
+		setText(ui.TugLeftText, L.Tx(TXT, "Rescue", math.floor(rescue)))
+		setText(ui.TugRightText, L.Tx(TXT, "Poach", math.floor(poach)))
+		setText(ui.TugCenterText, L.Tx(TXT, "GooseTitle", timeLeft))
 		local sub
 		if faction == "Halo" then
-			sub = string.format(TXT.MyCount, mine) .. " · " .. TXT.HintHalo
+			sub = L.Tx(TXT, "MyCount", mine) .. " · " .. TXT.HintHalo
 		elseif faction == "Horns" then
-			sub = string.format(TXT.MyCount, mine) .. " · " .. TXT.HintHorns
+			sub = L.Tx(TXT, "MyCount", mine) .. " · " .. TXT.HintHorns
 		elseif faction == "Neutral" then
 			sub = TXT.HintNeutral
 		else
-			sub = string.format(TXT.MyCount, mine)
+			sub = L.Tx(TXT, "MyCount", mine)
 		end
 		setText(ui.TugSub, sub)
 	else
@@ -1435,13 +1493,13 @@ local function updateKaiju(now)
 	local endsAt = num(gsAttr("KaijuEndsAt", 0))
 	if phase == "Active" then
 		setVisible(ui.KaijuChip, true)
-		setText(ui.KaijuChipText, string.format(TXT.KaijuChip, kaijuName(L.KaijuNameMax), Util.FormatTime(endsAt - now)))
+		setText(ui.KaijuChipText, L.Tx(TXT, "KaijuChip", kaijuName(L.KaijuNameMax), Util.FormatTime(endsAt - now)))
 	else
 		setVisible(ui.KaijuChip, false)
 	end
 	if phase == "Siren" then
 		local left = math.max(0, math.ceil(endsAt - now))
-		local text = safeFormat(Config.Story.KaijuSiren, kaijuName()) .. "  " .. string.format(TXT.SirenLeft, left)
+		local text = safeFormat(Config.Story.KaijuSiren, kaijuName()) .. "  " .. L.Tx(TXT, "SirenLeft", left)
 		setText(ui.SirenText, text)
 		setVisible(ui.Siren, true)
 	else
@@ -1465,17 +1523,17 @@ local function updatePersonal(now)
 	local sack = num(myAttr("SackGold", 0))
 	if sack > 0 then
 		local secs = math.max(0, math.ceil(num(myAttr("SackSeconds", 0))))
-		text = string.format(TXT.Sack, Util.FormatNumber(sack), secs)
+		text = L.Tx(TXT, "Sack", Util.FormatNumber(sack), secs)
 		color = ink.Sack
 	elseif myAttr("KaijuState", "None") == "Active" then
 		local endsAt = 0
 		if num(gsAttr("KaijuUserId", 0)) == LocalPlayer.UserId then endsAt = num(gsAttr("KaijuEndsAt", 0)) end
-		text = string.format(TXT.KaijuSelf, Util.FormatTime(endsAt - now))
+		text = L.Tx(TXT, "KaijuSelf", Util.FormatTime(endsAt - now))
 		color = ink.Kaiju
 	else
 		local target, untilT = revengeTarget(now)
 		if target then
-			text = string.format(TXT.Revenge, Util.PlayerDisplayName(target), Util.FormatTime(untilT - now))
+			text = L.Tx(TXT, "Revenge", Util.PlayerDisplayName(target), Util.FormatTime(untilT - now))
 			color = ink.Revenge
 		end
 	end
@@ -1518,7 +1576,7 @@ end
 local function luckData()
 	local events = math.max(0, math.floor(num(myAttr("LuckEvents", 0))))
 	local pct = Util.FormatPercent(Config.RareChance(events))
-	local line1 = string.format(TXT.Luck, pct)
+	local line1 = L.Tx(TXT, "Luck", pct)
 	local need = math.floor(num(Config.Goose and Config.Goose.CheerStarsForRare))
 	if need <= 0 then need = 5 end
 	local stars = math.max(0, math.floor(num(myAttr("CheerStars", 0))))
@@ -1527,7 +1585,7 @@ end
 
 -- "응원별 ★★☆☆☆ (2/5)"
 local function cheerText(stars, need, filled)
-	return string.format(TXT.Cheer, string.rep("★", filled) .. string.rep("☆", need - filled), stars, need)
+	return L.Tx(TXT, "Cheer", string.rep("★", filled) .. string.rep("☆", need - filled), stars, need)
 end
 
 local function updateLuck()
@@ -1535,7 +1593,7 @@ local function updateLuck()
 	setText(ui.LuckLine1, line1)
 	if ui.CheerStars then
 		setStars(filled, need)
-		setText(ui.CheerCount, string.format(TXT.CheerCount, stars, need))
+		setText(ui.CheerCount, L.Tx(TXT, "CheerCount", stars, need))
 	else
 		setText(ui.LuckLine2, cheerText(stars, need, filled))
 	end
@@ -1575,7 +1633,7 @@ local function gatherTargets(now)
 			if p ~= LocalPlayer then
 				local sackGold = num(p:GetAttribute("SackGold"))
 				if sackGold > 0 then
-					local text = string.format(TXT.ArrowSack, Util.FormatNumber(sackGold))
+					local text = L.Tx(TXT, "ArrowSack", Util.FormatNumber(sackGold))
 					local existing = byPlayer[p]
 					if existing then
 						existing.Label = existing.Label .. " · " .. text
@@ -1627,6 +1685,25 @@ function V2.rects()
 	return nil
 end
 
+-- 최종 검수 10/14 (user photo: the goose chip half over the 'Crown War · 9:38' line): the next-event chip never starts
+-- above the drawn bottom of the top-centre HUD (HUD.TopBottom: the war meter with its info line / plate, the chips row)
+-- plus Gap - one column, top to bottom, on PCs and phones. Pure (tools/test_hud_top_overlap.py)
+V2.TopGap = 6
+function V2.EventTop(evY, hudBottom, gap)
+	evY = num(evY)
+	if type(hudBottom) == "number" and hudBottom == hudBottom then
+		return math.max(evY, hudBottom + (tonumber(gap) or V2.TopGap))
+	end
+	return evY
+end
+
+function V2.hudBottom()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.TopBottom) ~= "function" then return nil end
+	local ok, b = pcall(hud.TopBottom)
+	return ok and type(b) == "number" and b or nil
+end
+
 -- the next-event line's top (du): its own row (Rects.event), or the status chip row's when that row is empty (user
 -- 10/13 first look: out of town the goose pill floated a whole empty row under the war meter). chipsShown = HUD's answer
 -- (nil = unknown -> its own row). Pure (tools/test_event_lift.py)
@@ -1638,6 +1715,11 @@ function V2.eventY(rects, chipsShown)
 		return chips.Y
 	end
 	return num(ev.Y)
+end
+
+-- the drawn bottom (du) of the next-event chip while the column places it (QuestMarker keeps the marker under it)
+function EventHUD.TopBottom()
+	return V2.Active and V2.EventBottom or nil
 end
 
 function V2.chipsShown()
@@ -1652,6 +1734,7 @@ function V2.put(inst, anchor, pos, size)
 	if inst.AnchorPoint ~= anchor then inst.AnchorPoint = anchor end
 	if inst.Position ~= pos then inst.Position = pos end
 	if inst.Size ~= size then inst.Size = size end
+	if inst == ui.GooseChip then SQ.FitGoose(size.Y.Offset) end -- the icon and the words follow the chip's height
 end
 
 -- switch to the column: remember the build-time / legacy spot of every moved element (V2.leave puts them back)
@@ -1666,7 +1749,7 @@ function V2.enter()
 		{ Inst = ui.Tug, W = STRIP_W, H = BAR_H, Strip = true, Tail = ui.TugSub, TailH = subH },
 		{ Inst = ui.KaijuChip, W = KAIJU_CHIP_W, H = L.PillH, Strip = true },
 		{ Inst = ui.KingChip, W = L.KingW, H = L.PillH, Strip = true, King = true },
-		{ Inst = ui.GooseChip, W = GOOSE_CHIP_W, H = L.PillH, Strip = true },
+		{ Inst = ui.GooseChip, W = GOOSE_CHIP_W, H = L.PillH + L.GooseChip.PlusH, Strip = true, Goose = true },
 	}
 	V2.Saved = {}
 	for _, inst in { ui.Strip, ui.Personal, ui.Siren, ui.SirenText, ui.Tug, ui.TugSub, ui.KaijuChip, ui.KingChip,
@@ -1752,12 +1835,15 @@ function V2.stack()
 		elseif goose then
 			eventInst = ui.GooseChip
 		end
+		local evH = num(ev.H) + (eventInst == ui.GooseChip and L.GooseChip.PlusH or 0)
 		local natural = eventInst == ui.KingChip
-			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or GOOSE_CHIP_W
+			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or SQ.GooseNeed(evH)
+		V2.EventBottom = nil
 		if eventInst then
-			local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y
+			local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)
 			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(evY - top + 0.5)),
-				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))
+				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(evH + 0.5)))
+			V2.EventBottom = evY + evH
 		end
 		setVisible(ui.KingChip, eventInst == ui.KingChip)
 		setVisible(ui.GooseChip, eventInst == ui.GooseChip)
@@ -1768,6 +1854,7 @@ function V2.stack()
 		if ev and (inst == ui.KingChip or inst == ui.GooseChip) then continue end -- the event line owns them
 		local w = row.W
 		if row.King then w = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text)) end
+		if row.Goose then w = SQ.GooseNeed(row.H) end
 		w = math.floor(math.min(w, col.W) + 0.5)
 		local h = row.H
 		if row.Flex then h = math.floor(math.min(row.H, bottom - y)) end
@@ -2005,6 +2092,7 @@ end
 ----------------------------------------------------------------- public API
 function EventHUD.Init(registry)
 	C = registry
+	pcall(function() C.UIKit.L10n.Register("EventHUD.TXT", TXT) end) -- 10/14: the words' keys "EventHUD.TXT.<key>" (trx)
 end
 
 -- logical y (MainGui UIScale units) of the event strip's bottom, or nil before the first layout. HUD's status chips

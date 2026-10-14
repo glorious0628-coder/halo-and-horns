@@ -44,6 +44,22 @@ local function passWorld(opts)
 		local mine = w.Owns[userId]
 		return mine ~= nil and mine[passId] == true
 	end
+	-- A23-182: subscriptions (GetUserSubscriptionStatusAsync answers per user and api id; opts.SubFail = every ask errors)
+	w.Subs, w.SubAsks = opts.Subs or {}, {}
+	function mp.GetUserSubscriptionStatusAsync(_, player, apiId)
+		table.insert(w.SubAsks, { UserId = player.UserId, Id = apiId })
+		if opts.SubFail then error("offline subscription failure") end
+		if (w.SubFailTimes or 0) > 0 then -- the next N asks error (최종 검수 10/14 ①: the retry)
+			w.SubFailTimes -= 1
+			error("offline subscription failure")
+		end
+		local mine = w.Subs[player.UserId]
+		return { IsSubscribed = mine ~= nil and mine[apiId] == true, IsRenewing = true }
+	end
+	local subSig = rbxSignal(w.Warnings)
+	subSig.__kind = "RBXScriptSignal"
+	w.Players.UserSubscriptionStatusChanged = subSig
+	w.SubChanged = subSig
 	w.Services.MarketplaceService = mp
 	w.Market = mp
 
@@ -228,7 +244,7 @@ runGroup("config", function()
 	-- the save fields (additive, Version 3)
 	local D = C0.Data.Defaults
 	check(type(D.Looks) == "table" and type(D.Looks.Owned) == "table" and D.Looks.On == "" and type(D.PassSeen) == "table"
-		and C0.Data.Version == 5, "save: Looks { Owned, On } + PassSeen (additive; Version 5 = A23-153's codex (C1's tier 9 made it 4))")
+		and C0.Data.Version == 6, "save: Looks { Owned, On } + PassSeen (additive; Version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9))")
 	local looks, seen = C0.SanitizeLooks({ Owned = { HaloSprout = 1790000000, Nope = 5, HornsSprout = "x", HaloStarlight = -1,
 		HaloPlatinum = 0 / 0 }, On = "Nope" }, { XP2 = true, VIP = "yes", HaloIce = false, Junk = true })
 	check(looks.Owned.HaloSprout == 1790000000 and looks.Owned.Nope == nil and looks.Owned.HornsSprout == nil
@@ -1040,6 +1056,79 @@ runGroup("bubbles", function()
 end)
 
 ------------------------------------------------------------------ A23-167 the first minutes x2 XP (게임성 개발 2, 2026-10-14)
+------------------------------------------------------------------ A23-182 the Fast Travel subscription (2026-10-14)
+runGroup("subscription", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local S0 = C.Subscriptions.FastTravel
+	check(S0.Id == 118606392447792 and S0.Attr == "SubFastTravel", "Config.Subscriptions.FastTravel: the Creator Hub id, attribute SubFastTravel", show(S0))
+	local info = C.SubscriptionInfo.FastTravel
+	check(info.Name == "Fast Travel" and info.Line == "Teleport to any zone you have unlocked from the menu. No stats are for sale."
+		and info.Price == 149 and info.Attr == "SubFastTravel" and info.Icon == "IconTravel" and info.Id == "EXP-118606392447792",
+		"Config.SubscriptionInfo.FastTravel: the shop card's keys, its Id made from Config.Subscriptions", show(info))
+	check(C.PassInfo == nil or C.PassInfo.FastTravel == nil, "not a pass (PassInfo has no FastTravel)", "")
+	local API = "EXP-118606392447792"
+	local w = passWorld({ Subs = { [2] = { [API] = true } } })
+	check(w.Ms.SubscriptionApiId("FastTravel") == API, "the api id is EXP-<id>", tostring(w.Ms.SubscriptionApiId("FastTravel")))
+	local a = w:Join(1)
+	local b = w:Join(2)
+	check(a:GetAttribute("SubFastTravel") == false and not w.Ms.HasSub(a, "FastTravel"), "not subscribed: SubFastTravel false", "")
+	check(b:GetAttribute("SubFastTravel") == true and w.Ms.HasSub(b, "FastTravel") == true, "subscribed: SubFastTravel true", "")
+	local asked = 0
+	for _, x in w.SubAsks do if x.Id == API then asked += 1 end end
+	check(asked == 2, "one ask a join, with the api id", show(w.SubAsks))
+	-- bought during the session: Roblox's signal -> asked again
+	w.Subs[1] = { [API] = true }
+	w.SubChanged:Fire(a, "EXP-999")
+	check(a:GetAttribute("SubFastTravel") == false, "another subscription's change: nothing", "")
+	w.SubChanged:Fire(a, API)
+	check(a:GetAttribute("SubFastTravel") == true and w.Ms.HasSub(a, "FastTravel") == true, "its change: asked again, now on", "")
+	-- ended: off again at the next answer
+	w.Subs[2] = {}
+	w.SubChanged:Fire(b, API)
+	check(b:GetAttribute("SubFastTravel") == false and not w.Ms.HasSub(b, "FastTravel"), "ended: off", "")
+	w:Leave(a)
+	check(not w.Ms.HasSub(a, "FastTravel"), "a player who left: nothing kept", "")
+	-- Roblox fails (or Studio): not subscribed, no warning
+	local f = passWorld({ SubFail = true, Subs = { [3] = { [API] = true } } })
+	local c = f:Join(3)
+	check(c:GetAttribute("SubFastTravel") == false and not f.Ms.HasSub(c, "FastTravel") and #f.Warnings == 0, "a failing ask: off, no warning",
+		table.concat(f.Warnings, " | "))
+	-- Id 0 = off: never asked
+	local z = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = 0 end, Subs = { [4] = { [API] = true } } })
+	local e = z:Join(4)
+	check(#z.SubAsks == 0 and e:GetAttribute("SubFastTravel") == false and z.Ms.SubscriptionApiId("FastTravel") == nil, "Id 0: never asked, off", "")
+	-- a string id is used as it is
+	local s = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = "EXP-42" end, Subs = { [5] = { ["EXP-42"] = true } } })
+	local g = s:Join(5)
+	check(g:GetAttribute("SubFastTravel") == true, "a string id EXP-42 is asked as it is", show(s.SubAsks))
+	-- 최종 검수 10/14 ①: a failing ask is tried again; the last answer is saved and counts when every try fails
+	local r = passWorld({ Subs = { [6] = { [API] = true } } })
+	r.SubFailTimes = 1
+	local h = r:Join(6)
+	local asks = 0
+	for _, x in r.SubAsks do if x.Id == API then asks += 1 end end
+	check(h:GetAttribute("SubFastTravel") == true and r.Ms.HasSub(h, "FastTravel") == true and asks == 2,
+		"the first ask fails, the second says yes: on", show({ asks, h:GetAttribute("SubFastTravel") }))
+	check(r.Data[h].PassSeen["Sub:FastTravel"] == true, "Roblox's yes is saved (PassSeen Sub:FastTravel)", show(r.Data[h].PassSeen))
+	r.SubFailTimes = 2
+	local h2 = r:Join(7)
+	check(h2:GetAttribute("SubFastTravel") == false and r.Data[h2].PassSeen["Sub:FastTravel"] == false, "two fails then a no: off, the no saved", show(r.Data[h2].PassSeen))
+	local x = passWorld({ SubFail = true })
+	local k = x:Join(8, { Data = { PassSeen = { ["Sub:FastTravel"] = true } } })
+	local tries = 0
+	for _, y in x.SubAsks do if y.Id == API then tries += 1 end end
+	check(k:GetAttribute("SubFastTravel") == true and x.Ms.HasSub(k, "FastTravel") == true and tries == x.Config.PassBoost.CheckTries,
+		"every try fails (3): the saved yes counts", show({ tries, k:GetAttribute("SubFastTravel") }))
+	local k2 = x:Join(9, { Data = { PassSeen = { ["Sub:FastTravel"] = false } } })
+	check(k2:GetAttribute("SubFastTravel") == false and not x.Ms.HasSub(k2, "FastTravel"), "every try fails, a saved no: off", "")
+	local z2 = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = 0 end })
+	local k3 = z2:Join(10, { Data = { PassSeen = { ["Sub:FastTravel"] = true } } })
+	check(k3:GetAttribute("SubFastTravel") == false and not z2.Ms.HasSub(k3, "FastTravel"), "Id 0 (off): a saved yes never counts", "")
+	local _, seen = x.Config.SanitizeLooks(nil, { ["Sub:FastTravel"] = true, ["Sub:Nope"] = true, Sub = true, ["Sub:"] = false })
+	check(seen["Sub:FastTravel"] == true and seen["Sub:Nope"] == nil and seen.Sub == nil and seen["Sub:"] == nil,
+		"the save keeps Sub:<a Config.Subscriptions key> only", show(seen))
+end)
+
 runGroup("A23-167 first minutes 2x XP", function()
 	local E = C0.EarlyXP
 	check(type(E) == "table" and E.Enabled == true and E.Seconds == 600 and E.Mult == 2,

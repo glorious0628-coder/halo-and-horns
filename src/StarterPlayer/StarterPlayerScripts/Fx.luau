@@ -1033,6 +1033,7 @@ local function buildPool()
 		})
 		local gui = Instance.new("BillboardGui")
 		gui.Name = "Number"
+		gui.AutoLocalize = false -- A23-179: numbers stay as they are (spawnNumber turns it on for a loot line's words)
 		gui.Adornee = part
 		gui.AlwaysOnTop = true
 		gui.LightInfluence = 0
@@ -1123,6 +1124,7 @@ local function spawnNumber(worldPos, text, color, scale, pop, merge, look)
 	e.Life = look and math.clamp(asNum(look.Life, NUMBER_LIFE), 0.5, 4) or nil
 	e.Wide = look and math.clamp(asNum(look.Wide, 1), 1, 3) or nil
 	e.Gui.SizeOffset = Vector2.new(0, look and math.clamp(asNum(look.Stack, 0), 0, 8) or 0)
+	e.Gui.AutoLocalize = look ~= nil -- A23-179: a loot line (item words) is translated, a number is not
 	e.Part.CFrame = CFrame.new(worldPos)
 	e.Label.Text = tostring(text or "")
 	e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE
@@ -1169,6 +1171,7 @@ end
 -- style = { Key, Prefix?, Suffix?, Color, Scale, Pop?, Crit? }
 local function showAmount(worldPos, amount, style)
 	if typeof(worldPos) ~= "Vector3" or not nearCamera(worldPos) then return end
+	if MOTION.IsDamageKey(style.Key) and not MOTION.DamageNumbersOn() then return end -- 2-C #9 Settings DmgNum
 	amount = asNum(amount, 0)
 	local ok, err = pcall(function()
 		ensurePool()
@@ -3925,6 +3928,42 @@ Feel.MonsterAttr.AlertAt = Feel.onMonsterAlert
 -- other players' Swing numbers are shown only for crits (protects the MaxDamagePopups pool).
 -- feel (A14-4, my hits): { Stop = hit-stop of my attack motion (Warrior: the hits show on its contact frame; Mage /
 -- Archer clips are already recovering when the projectile lands), Kick = camera kick (manual swings; crits always) }
+-- A23-186: a joke weapon's hit (Fx "Swing" Meme = a Config.WeaponMemes key): its sound once, its particle on each hit;
+-- an empty SoundId / ParticleId = nothing (the assets are not made yet)
+function Feel.memeHits(key, hits)
+	local def = type(key) == "string" and type(Config.WeaponMemes) == "table" and Config.WeaponMemes[key] or nil
+	if type(def) ~= "table" or type(hits) ~= "table" then return 0 end
+	local n = 0
+	for _, h in hits do
+		local p = type(h) == "table" and asVec(h.P) or nil
+		if p then
+			n += 1
+			if n == 1 and type(def.SoundId) == "string" and def.SoundId ~= "" then
+				local s = Instance.new("Sound")
+				s.Name = "Fx_Meme" .. key
+				s.SoundId = def.SoundId
+				s.Volume = 0.6 * math.clamp(tonumber(MOTION.Pref("Sfx", 1)) or 1, 0, 1)
+				s.Parent = SoundService
+				SoundService:PlayLocalSound(s)
+				Debris:AddItem(s, 3)
+			end
+			if type(def.ParticleId) == "string" and def.ParticleId ~= "" then
+				local a = Instance.new("Attachment")
+				a.WorldPosition = p
+				a.Parent = workspace.Terrain
+				local e = Instance.new("ParticleEmitter")
+				e.Texture = def.ParticleId
+				e.Rate, e.Lifetime, e.Speed = 0, NumberRange.new(0.5, 0.9), NumberRange.new(4, 8)
+				e.SpreadAngle = Vector2.new(180, 180)
+				e.Parent = a
+				e:Emit(8)
+				Debris:AddItem(a, 1.5)
+			end
+		end
+	end
+	return n
+end
+
 local function showHits(hits, own, fromRelease, feel)
 	if type(hits) ~= "table" then return end
 	local scaleMult = own and 1 or 0.85
@@ -4032,6 +4071,7 @@ handlers.Swing = function(data)
 	local color = factionColor(data.Faction)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
+	if data.Meme ~= nil then pcall(Feel.memeHits, data.Meme, hits) end -- A23-186: Bonk / Squeak + Feathers
 	-- my manual hits: hit-stop / camera kick; auto-combat hits stay quiet (A23-1: no shake, no hit-stop)
 	local style = asStr(data.Style, "")
 	local punch = style == "Punch" or style == "PetHeadbutt" -- A23-34 / A23-39 (the pet itself comes with PET-3)
@@ -4187,7 +4227,7 @@ handlers.Release = function(data)
 			showHits(data.Hits, own, true, data.Auto ~= true and { Stop = classId == "Warrior", Kick = true } or nil)
 			local total = asNum(data.Total, 0)
 			local top = pos + Vector3.new(0, 6, 0)
-			if total > 0 then
+			if total > 0 and MOTION.DamageNumbersOn() then
 				-- A9-2: my Release numbers pop (PopScale -> 1 in PopTime)
 				Fx.ShowNumber(top, Util.FormatNumber(total), own and COLOR_GOLD or WHITE, HUGE_SCALE, { Pop = own })
 			end
@@ -4635,6 +4675,18 @@ function MOTION.EdgeStep()
 	end
 end
 
+-- 2-C #9 (최종 검수 10/14): the Settings row "Damage numbers" (DmgNum "All" | "Off") - saved since BB2 but never read
+-- until now. Off hides every damage number (my hits M / PvP P, the Release total, the hits I take H); gold / XP / loot
+-- lines (G, RG, RX, ShowNumber gold) stay
+MOTION.DamageKeys = { M = true, P = true, H = true }
+function MOTION.IsDamageKey(key)
+	return type(key) == "string" and MOTION.DamageKeys[string.sub(key, 1, 1)] == true
+end
+
+function MOTION.DamageNumbersOn()
+	return MOTION.Pref("DmgNum", "All") ~= "Off"
+end
+
 function MOTION.ShakeAllowed()
 	if MOTION.Pref("Shake", true) == false then return false end
 	local ok, reduced = pcall(function() return game:GetService("GuiService").ReducedMotionEnabled end)
@@ -4664,6 +4716,14 @@ function Fx.PlaySound(name)
 		s.Volume = (SOUND_VOLUME[name] or 0.5) * math.clamp(mult, 0, 1)
 		SoundService:PlayLocalSound(s)
 	end)
+end
+
+-- 최종 검수 10/14: is a class attack clip running on this character right now? (WeaponPose.RestStep: the sword is raised
+-- only while attacking)
+function Fx.AttackPlaying(char)
+	local st = char and Feel.Chars[char]
+	local attack = st and Feel.Active[st] and st.Layers and st.Layers.Attack
+	return attack ~= nil and attack.Clip ~= nil
 end
 
 -- opts (optional, addendum A9-2): { Pop = true } scales the number PopScale -> 1 in PopTime. Plain text never merges.

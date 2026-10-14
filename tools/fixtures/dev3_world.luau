@@ -68,7 +68,7 @@ local function dev3World(o)
 	end
 
 	local loot = { ItemsGranted = Signal.new(), Enhanced = Signal.new() }
-	function loot.GrantItem(p, id, n)
+	function loot.GrantItem(p, id, n, source) -- source: "Reward" = a reward (fits a full bag; Src on w.Grants)
 		if w.LootFails then error("offline loot failure") end
 		local d = w.Data[p]
 		if not d or type(id) ~= "string" or n < 1 or n > 99 then return 0 end
@@ -77,7 +77,7 @@ local function dev3World(o)
 			local have = tonumber(d[key]) or 0
 			local give = math.clamp(n, 0, C.Vitals.PotionInventoryCap - have)
 			if give > 0 then ps.SetStat(p, key, have + give) end
-			table.insert(w.Grants, { P = p, Id = id, N = give })
+			table.insert(w.Grants, { P = p, Id = id, N = give, Src = source })
 			return give
 		end
 		if not C.Loot.Items[id] then return 0 end
@@ -85,7 +85,7 @@ local function dev3World(o)
 		local have = tonumber(d.Items[id]) or 0
 		local give = math.clamp(n, 0, C.Loot.ItemCap - have)
 		if give > 0 then d.Items[id] = have + give end
-		table.insert(w.Grants, { P = p, Id = id, N = give })
+		table.insert(w.Grants, { P = p, Id = id, N = give, Src = source })
 		return give
 	end
 	function loot.TakeItem(p, id, n)

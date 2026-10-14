@@ -15,8 +15,19 @@
 --            one line on it (PC "Press Q", phones "Tap the new button" - C.HUD.Hint) and the SkillLearn sound (PowerUp
 --            until that file exists). Replaces A23-68 #2's "Try your skill!" after the first kill
 --   input  : a press = SkillBar.Use(slot): one press, one cast. Inside the 0.5 s gap between casts one press waits in
---            line (white rim) and goes when the gap ends. Refused here (locked, cooling, MP) -> the button shakes and a
---            short word floats up. Q goes through HUD.Release (the live Release remote) until SkillService's UseSkill
+--            line (white rim) and goes when the gap ends. Gated here (see below) -> nothing is sent and nothing is said;
+--            before A23-180 the button shook and a
+--            short word floats up. A23-180 (user 10/14: "스킬 거절 알림을 왜 해? 서버가 거절을 안 하게 해야지"): no
+--            refusal words and no shake any more. This screen gates first (SkillBar.Gate): a slot not learned, MP below
+--            the cost, more than Config.Skills.PressBuffer (0.35 s) of cooldown left, or the Hop slot while I carry
+--            something (the grudge sack SackGold, a kaiju KaijuState Siren / Active, a goose egg EggCarry) = the button
+--            is dimmed and a press (button or key) sends nothing; a press with PressBuffer s or less left goes (the
+--            server holds it until the cooldown ends). The server casts at the air when no monster is there and answers
+--            only "Queued" (Fx "SkillPress").
+--   hop    : 2-C #8 prep (SKL-3 X Hop: archer X, tamer Big Boing; Config.Skills.XEnabled off until 10/20): the server's
+--            Fx "Hop" { To, T } to the caster -> this client moves my own character to To (its ground height) along a low
+--            arc over T s (the server allowed that one move: ZoneService.AllowMove); a far / broken To or a dead / new
+--            character = no move. Q goes through HUD.Release (the live Release remote) until SkillService's UseSkill
 --            remote exists; Z / X fire UseSkill(slot) (SKL-2). HUD's key dispatch sends SkillQ / SkillZ / SkillX here.
 --   Studio : the local attribute SkillBarPreview = true shows Z / X with their flags off (UiSandbox captures only)
 -- Presentation + input only: the server decides every cast (MP, cooldown, targets).
@@ -60,9 +71,8 @@ local T = {
 	Disc = "BtnSpecial", -- the approved skill disc (BtnSkill art)
 	Rim = { Halo = "BtnSkillHalo", Horns = "BtnSkillHorns", Neutral = "BtnSkillNeutral" }, -- faction rims when drawn
 	Sweep = 0.4, -- transparency of the cooldown shade
-	Shake = { 7, -6, 4, -2, 0 }, -- degrees, one step each
-	ShakeStep = 0.035,
-	FloatTime = 0.7, -- s: the refusal word floats up and fades
+	PressBuffer = 0.35, -- s: a press this close to the cooldown's end still goes (Config.Skills.PressBuffer wins)
+	Heavy = { Siren = true, Active = true }, -- kaiju states that block the Hop (SkillService TUNE.Kaiju)
 	Flash = 0.28, -- s: the ready flash
 	MinTap = 60, -- du (HudLayout MIN_TAP; the rects are already >= it on touch)
 }
@@ -84,9 +94,6 @@ local COL = {
 local TXT = {
 	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
 	Level = "Lv %d",
-	Unlock = "Unlocks at Lv %d",
-	NeedMP = "Not enough MP",
-	Wait = "Not yet",
 	NewSkill = "New skill! %s", -- A23-71 the learn moment
 	LearnKey = "Press %s",
 	LearnTouch = "Tap the new button",
@@ -95,6 +102,21 @@ local TXT = {
 	KeysTip = "Tip: You can change your keys in Settings!",
 	KeysTipGo = "Open Settings",
 }
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+local function trx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1,
@@ -113,6 +135,8 @@ local S = {
 	lastWarnAt = -math.huge,
 }
 local ui = {} -- root, buttons = { [slot] = b }
+-- HOP = the X hop move (Live = the running hop)
+local HOP = { MaxDist = 16, Arc = 0.15, ArcMin = 0.8, ArcMax = 2, TMin = 0.1, TMax = 0.6, Ray = 12, Live = nil }
 local acc = { Tick = 0 }
 
 ----------------------------------------------------------------- helpers
@@ -203,6 +227,7 @@ local function defOf(slot)
 		MP = tonumber(def and def.MP) or (slot == "Q" and tonumber(basic.ManaCost) or 0) or 0,
 		CD = tonumber(def and def.CD) or (slot == "Q" and tonumber(basic.Cooldown) or 3) or 3,
 		Name = def and def.NameEn or nil,
+		Hop = def ~= nil and def.Shape == "Hop", -- A23-180: the slot the carried things block
 	}
 	-- X: the faction's own name (Guardian Roar / Rage Roar ...)
 	local fx = def and type(def[faction]) == "table" and def[faction] or nil
@@ -354,6 +379,7 @@ local function buildButton(slot)
 	b.Seconds = smallLabel({
 		Name = "Seconds", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(0.7, 0.42), TextScaled = true, ZIndex = 6, Visible = false, Parent = face,
+		AutoLocalize = false, -- A23-179: seconds only
 	}, "Number")
 
 	-- locked: lock glyph (+ "Lv N"); without the GlyphLock art a code lock (white body + shackle ring, IMG-R4, review
@@ -421,10 +447,6 @@ local function buildButton(slot)
 	b.RingStroke = b.Ring:FindFirstChild("Stroke")
 
 	-- the refusal word above the button
-	b.Word = smallLabel({
-		Name = "Word", Text = "", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.fromScale(0.5, -0.05),
-		Size = UDim2.fromScale(1.6, 0.3), TextScaled = true, ZIndex = 10, Visible = false, Parent = holder,
-	}, "NameTag")
 	ui.buttons[slot] = b
 	return b
 end
@@ -463,8 +485,27 @@ local function stateOf(slot)
 		Left = left,
 		Frac = def.CD > 0 and math.clamp(left / def.CD, 0, 1) or 0,
 		MPShort = num("Mana", 0) < def.MP,
+		-- A23-180: the Hop slot while I carry something (the server would not hop)
+		Heavy = def.Hop == true and (num("SackGold", 0) > 0 or T.Heavy[attr("KaijuState", "None")] == true
+			or num("EggCarry", 0) > 0),
 		Def = def,
 	}
+end
+
+-- A23-180 (pure): may a press of a slot in state `st` go to the server? -> true, or false + why ("Locked", "MP",
+-- "Cooldown" = more than `buffer` s left, "Heavy"). Nothing is shown for a false
+function SkillBar.Gate(st, buffer)
+	if type(st) ~= "table" then return false, "Locked" end
+	if st.Locked then return false, "Locked" end
+	if st.MPShort then return false, "MP" end
+	if st.Heavy then return false, "Heavy" end
+	if (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then return false, "Cooldown" end
+	return true
+end
+
+local function pressBuffer()
+	local v = tonumber(skills().PressBuffer)
+	return (v and v >= 0) and v or T.PressBuffer
 end
 
 local function paintButton(b)
@@ -487,12 +528,14 @@ local function paintButton(b)
 	end
 	if st.Locked then setSweep(b, 1) end -- the face stays shaded while locked (the 10 Hz tick leaves it alone)
 	-- MP short: the whole button dims (A23-60: no MP number on it)
-	if b.Disc and b.Disc:IsA("ImageLabel") then b.Disc.ImageColor3 = (st.MPShort and not st.Locked) and COL.Dim or COL.White end
-	if b.Lock then b.Lock.Visible = st.Locked end
-	if b.LockText then
-		b.LockText.Visible = st.Locked
-		b.LockText.Text = string.format(TXT.Level, st.Unlock)
+	-- A23-180: carrying something dims the Hop slot the same way
+	local dim = (st.MPShort or st.Heavy) and not st.Locked
+	if b.Disc and b.Disc:IsA("ImageLabel") then b.Disc.ImageColor3 = dim and COL.Dim or COL.White end
+	if b.Icon and dim then
+		if b.Icon:IsA("ImageLabel") then b.Icon.ImageColor3 = COL.Dim elseif b.Icon:IsA("TextLabel") then b.Icon.TextColor3 = COL.Dim end
 	end
+	if b.Lock then b.Lock.Visible = st.Locked end
+	if b.LockText then b.LockText.Visible = false end -- A23-180: the lock picture only, no words
 	if b.PillText then b.PillText.Text = st.Def.Name end
 	if b.Pill then b.Pill.Visible = not st.Locked end
 	if b.Key then
@@ -563,36 +606,6 @@ local function refreshAll()
 end
 
 ----------------------------------------------------------------- refusals / queue
-local function shake(b, word)
-	local h = b.Holder
-	b.ShakeToken = (b.ShakeToken or 0) + 1
-	local token = b.ShakeToken
-	task.spawn(function()
-		for _, deg in T.Shake do
-			if b.ShakeToken ~= token then return end
-			h.Rotation = deg
-			task.wait(T.ShakeStep)
-		end
-	end)
-	if word and word ~= "" then
-		local w = b.Word
-		w.Text = word
-		w.Visible = true
-		w.TextTransparency = 0
-		w.Position = UDim2.fromScale(0.5, -0.05)
-		local info = TweenInfo.new(T.FloatTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-		TweenService:Create(w, info, { Position = UDim2.fromScale(0.5, -0.35), TextTransparency = 1 }):Play()
-		local stroke = w:FindFirstChildWhichIsA("UIStroke")
-		if stroke then
-			stroke.Transparency = 0
-			TweenService:Create(stroke, info, { Transparency = 1 }):Play()
-		end
-		task.delay(T.FloatTime, function()
-			if b.ShakeToken == token then w.Visible = false end
-		end)
-	end
-end
-
 local function showQueue(slot, on)
 	for s, b in ui.buttons do
 		if b.RingStroke then
@@ -656,14 +669,13 @@ local function placeAll()
 	-- the words / pills keep a readable size on every UIScale (UIKit text styles floor them)
 	local s = guiScale()
 	for _, b in ui.buttons do
-		if b.Word then b.Word.Size = UDim2.new(1.6, 0, 0, math.ceil(14 / s)) end
 	end
 end
 
 ----------------------------------------------------------------- A23-71 learn moment
 function LEARN.Show(b, st)
 	local slot = b.Slot
-	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, string.format(TXT.NewSkill, st.Def.Name), LEARN.Banner) end
+	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, trx(TXT, "NewSkill", st.Def.Name), LEARN.Banner) end
 	-- the button pops in (no bounce with 'Screen shake' off)
 	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
 	if not reduced then
@@ -679,7 +691,7 @@ function LEARN.Show(b, st)
 		local kb = C and C.Keybinds
 		local ok, label = false, nil
 		if type(kb) == "table" and type(kb.Label) == "function" then ok, label = pcall(kb.Label, T.Action[slot]) end
-		line = string.format(TXT.LearnKey, (ok and type(label) == "string" and label ~= "") and label or slot)
+		line = trx(TXT, "LearnKey", (ok and type(label) == "string" and label ~= "") and label or slot)
 	end
 	LEARN.HintWait[slot] = line
 	task.delay(LEARN.HintAfter, LEARN.LateHint, slot)
@@ -725,7 +737,7 @@ end
 function LEARN.Tell(level)
 	if os.clock() - LEARN.TellAt < LEARN.TellGap then return end
 	LEARN.TellAt = os.clock()
-	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, string.format(TXT.Later, level), "info", 2.5) end
+	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, trx(TXT, "Later", level), "info", 2.5) end
 end
 
 ----------------------------------------------------------------- public API
@@ -761,20 +773,9 @@ function SkillBar.Use(slot)
 	end
 	local st = stateOf(slot)
 	b.State = st
-	if st.Locked then
-		shake(b, string.format(TXT.Unlock, st.Unlock))
-		return false
-	end
-	if st.Left > 0.05 then
-		shake(b, TXT.Wait)
-		return false
-	end
-	if st.MPShort then
-		shake(b, TXT.NeedMP)
-		local audio = C and C.Audio -- the 'no' sound once Audio.luau exists (quality ideas ①)
-		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "No") end
-		return false
-	end
+	-- A23-180: the screen gates first and says nothing (no shake, no word, no sound); a cooldown with PressBuffer s or
+	-- less left still goes - the server holds that press until the cooldown ends
+	if not SkillBar.Gate(st, pressBuffer()) then return false end
 	if os.clock() < S.gapUntil then
 		-- inside the gap between casts: this press waits in line (the newest one wins)
 		S.queued = slot
@@ -786,6 +787,66 @@ function SkillBar.Use(slot)
 	return true
 end
 
+-- 2-C #8 prep (pure): the landing height - To's ground plus how high my root stood over the ground I left (the
+-- server's To keeps my root height on flat ground); no ground under one of them = To as it is
+function SkillBar.HopLanding(from, to, groundFrom, groundTo)
+	if type(groundFrom) == "number" and type(groundTo) == "number" then
+		return Vector3.new(to.X, groundTo + math.clamp(from.Y - groundFrom, 0, 6), to.Z)
+	end
+	return to
+end
+
+-- (pure) the point at a (0..1) along a low arc from -> to, height h at the middle
+function SkillBar.HopPoint(from, to, a, h)
+	a = math.clamp(a, 0, 1)
+	return Vector3.new(from.X + (to.X - from.X) * a, from.Y + (to.Y - from.Y) * a + 4 * h * a * (1 - a),
+		from.Z + (to.Z - from.Z) * a)
+end
+
+local function groundY(pos, char)
+	local ok, hit = pcall(function()
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Exclude
+		params.FilterDescendantsInstances = { char }
+		return workspace:Raycast(pos + Vector3.new(0, HOP.Ray / 2, 0), Vector3.new(0, -HOP.Ray * 1.5, 0), params)
+	end)
+	return (ok and hit) and hit.Position.Y or nil
+end
+
+-- the server's Fx "Hop" { To, T }: my client moves my character there -> true when a hop started
+function SkillBar.OnHop(data)
+	if type(data) ~= "table" or typeof(data.To) ~= "Vector3" then return false end
+	local char = LocalPlayer.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not (root and hum and hum.Health > 0) then return false end
+	local from = root.Position
+	local flat = Vector3.new(data.To.X - from.X, 0, data.To.Z - from.Z).Magnitude
+	if flat < 0.5 or flat > HOP.MaxDist then return false end
+	local to = SkillBar.HopLanding(from, data.To, groundY(from, char), groundY(data.To, char))
+	local t = math.clamp(tonumber(data.T) or 0.25, HOP.TMin, HOP.TMax)
+	HOP.Live = { Char = char, Root = root, Hum = hum, From = from, To = to, Start = os.clock(), T = t,
+		H = math.clamp(flat * HOP.Arc, HOP.ArcMin, HOP.ArcMax) }
+	return true
+end
+
+-- one frame of the running hop (Heartbeat): the root follows the arc, keeps its facing; it ends at To, still
+function SkillBar.HopStep(now)
+	local h = HOP.Live
+	if not h then return end
+	if LocalPlayer.Character ~= h.Char or not h.Root.Parent or h.Hum.Health <= 0 then
+		HOP.Live = nil
+		return
+	end
+	local a = math.clamp((now - h.Start) / h.T, 0, 1)
+	local p = SkillBar.HopPoint(h.From, h.To, a, h.H)
+	h.Root.CFrame = h.Root.CFrame.Rotation + p
+	if a >= 1 then
+		h.Root.AssemblyLinearVelocity = Vector3.zero
+		HOP.Live = nil
+	end
+end
+
 function SkillBar.Relayout()
 	if not S.built then return end
 	guard(placeAll, "layout")
@@ -793,6 +854,7 @@ end
 
 function SkillBar.Init(registry)
 	C = registry
+	pcall(function() C.UIKit.L10n.Register("SkillBar.TXT", TXT) end) -- 10/14: the words' keys "SkillBar.TXT.<key>" (trx)
 end
 
 function SkillBar.Start()
@@ -829,6 +891,23 @@ function SkillBar.Start()
 	end
 	UIKit.OnAttr({ "Mana", "MaxMana", "Level", "Class", "ClassChosen", "Faction", "SkillReadyAt", "SkillReadyAtZ",
 		"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }, refreshAll)
+	UIKit.OnAttr({ "SackGold", "KaijuState", "EggCarry" }, refreshAll) -- A23-180: what blocks the Hop slot
+	-- 2-C #8: the server's press answers and the X hop (Fx; the Remotes folder comes from the server)
+	task.spawn(function()
+		local okFx, fx = pcall(function()
+			local folder = ReplicatedStorage:WaitForChild("Remotes", 30)
+			return folder and folder:WaitForChild("Fx", 30)
+		end)
+		if not (okFx and typeof(fx) == "Instance" and fx:IsA("RemoteEvent")) then return end
+		fx.OnClientEvent:Connect(function(kind, data)
+			if kind == "Hop" then -- A23-180: "SkillPress" now only says "Queued" (the client's own line shows that)
+				guard(function() SkillBar.OnHop(data) end, "hop")
+			end
+		end)
+	end)
+	RunService.Heartbeat:Connect(function()
+		if HOP.Live then guard(function() SkillBar.HopStep(os.clock()) end, "hop step") end
+	end)
 	RunService.Heartbeat:Connect(function(dt)
 		acc.Tick += dt
 		if acc.Tick < T.Tick then return end
@@ -860,5 +939,6 @@ function SkillBar.Start()
 end
 
 SkillBar.Learn = LEARN -- test aid
+SkillBar._T = { HOP = HOP, S = S, ui = ui, StateOf = stateOf } -- tools/test_skill_press.py
 
 return SkillBar

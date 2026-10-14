@@ -7,12 +7,13 @@ Config.Game = {
 	MaxPlayers = 20, -- documentation only; set in Studio Game Settings
 }
 
--- feature switches. A23-57 (user 2026-10-06): NeutralFaction = the artisan guild as a faction a player can newly pick;
--- off for the beta (the artisan update brings it back). Off: no new Neutral pick at the faction picker, the altar or a
+-- feature switches. A23-57 (user 2026-10-06): NeutralFaction = the artisan guild as a faction a player can newly pick.
+-- A23-162 (10/13): the Artisan Guild is IN the 12/15 beta; the switch stays off until the artisan minimum (gameplay_plan
+-- 2-B, decided with the market on 11/06) is ready. Off: no new Neutral pick at the faction picker, the altar or a
 -- rebirth (Config.Pickable), its own sub quests are not offered; saves that are Neutral already stay as they are.
 -- Code and data stay; game dev 1's faction picker reads the switch for its cards.
--- Market = the trading market (RELEASE_PLAN: after the full launch). 검수 2026-10-07: no "coming soon" signs for things
--- the beta does not have (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
+-- Market = the trading market (gameplay_plan 2-B: comes with the artisans, decided 11/06; A23-127 their goods reach the
+-- fighters through it). 검수 2026-10-07: no "coming soon" signs for things the game does not have yet (confusing for kids). Off: the world map shows no Market landmark. While NeutralFaction is off
 -- the world map calls the Crossroads anvil spot "Forge" (the weapon shop) instead of "Artisan Guild".
 -- StatPoints (A23-69, user 2026-10-07 "베타에 넣는다, 끌 수 있게"): the stat points (Config.Stats). Off = every number is
 -- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
@@ -59,8 +60,9 @@ function Config.Plural(text)
 	return text
 end
 
--- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-1): words of the shared L10n module. Join = the
--- separator of a list message { Join = { msg, ... } } (reward lists), key "Config.L10n.Join"
+-- the shared L10n words (contract docs/design/l10n_contract_2026-10-11.md §5-1; its Korean mode was cancelled, A23-146:
+-- the game writes English, Roblox auto-translates, A23-179). Join = the separator of a list message { Join = { msg, ... } }
+-- (reward lists), key "Config.L10n.Join"
 Config.L10n = { Join = " · ", JoinEn = " · " }
 
 ----------------------------------------------------------------- player / data
@@ -131,7 +133,9 @@ Config.Data = {
 	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
 	-- C1 (save v4): 4 = weapon tier 9 (a 9-bit mask, WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).
 	-- A23-153 (save v5): 5 = the monster codex (Codex; DataService.migrate fills it once from KillLog.ByKind).
-	Version = 5,
+	-- A23-186 (save v6): 6 = weapon tiers 10 / 11 (the Forge's joke weapons: an 11-bit mask, WeaponEnhance[10..11]); a v5
+	-- server would read such a mask as corrupted and wipe it, so it must refuse v6 records (CR-L3)
+	Version = 6,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -140,7 +144,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 5,
+		Version = 6,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -253,6 +257,7 @@ Config.Data = {
 		"IntroSeen", -- A23-9
 		"AutoCombatUnlocked", "AutoCombatEnabled", -- A23-1
 		"SkillSlots", -- SKL-2: the SkillBar shows these slots
+		"BagSlots", -- bag slots (game dev 2, 10/14): the bag draws this many open slots
 	},
 }
 
@@ -265,22 +270,32 @@ Config.Levels = {
 	-- ...(target: Lv 10 in about 10-12 minutes of slime hunting; gameplay plan 2026-10-13 1-A #4: 0.5 -> 0.35, the sum to Lv10
 	-- 1,381 -> 962 XP, measured in the 10/17 test)
 	EarlyMult = 0.35,
+	-- 최종 검수 10/14 (Codex B: the Lv10 cliff): from EarlyUntil the bar grows back to the full curve over a few levels
+	-- instead of x3.3 at once (Lv9 227 -> Lv10 753, just when the first-minutes 2x XP ends). Level -> share of the full XP
+	Ramp = { [10] = 0.5, [11] = 0.65, [12] = 0.8, [13] = 0.9 },
 }
 
+-- the XP from `level` to the next: the curve XPBase x level ^ XPExponent, x EarlyMult below EarlyUntil, x Ramp[level]
+-- for the levels just after it, else the full curve (min 1 when a share applies)
 function Config.XPToNext(level)
-	local xp = math.floor(Config.Levels.XPBase * level ^ Config.Levels.XPExponent)
-	if level < Config.Levels.EarlyUntil then
-		xp = math.max(1, math.floor(xp * Config.Levels.EarlyMult)) -- addendum A7-2 (min 1)
+	local L = Config.Levels
+	local xp = math.floor(L.XPBase * level ^ L.XPExponent)
+	local share = nil
+	if level < L.EarlyUntil then
+		share = L.EarlyMult -- addendum A7-2
+	elseif type(L.Ramp) == "table" and type(L.Ramp[level]) == "number" then
+		share = L.Ramp[level]
 	end
+	if share then xp = math.max(1, math.floor(xp * share)) end
 	return xp
 end
 
 ----------------------------------------------------------------- weapons (7 tiers shared by every class)
 -- Damage = normal per-target swing damage at Lv 1 for class Damage multiplier 1.0, BEFORE the 50% immediate rule.
--- Gameplay plan 2026-10-13 1-A #2 (A23-127: weapons come from drops and trades): Buy = false refuses only buying a weapon
--- not owned yet (ShopService, Text.WeaponDropOnly; the Forge hides its buy button). Equip, enhance and sell stay, and
--- MaxSoldTier still bounds the Forge rows (never 0: that closes enhance and sell too)
-Config.WeaponShop = { MaxSoldTier = 3, Buy = false, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+-- A23-186 (user 10/14 "기본 무기는 팔자고 했는데? 5개 정도 팔자"): Otto sells again (Buy = true; Buy = false would refuse
+-- buying a weapon not owned yet, Text.WeaponDropOnly). The Forge rows = tiers 2..MaxSoldTier (tier 1 stays the free M1_1
+-- gift) + every Meme row (Config.WeaponSoldAtForge); MaxSoldTier also bounds enhance / sell rows (never 0)
+Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
 
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
@@ -300,24 +315,64 @@ Config.Weapons = {
 	-- jackpot, never sold at the Forge (WeaponShop.MaxSoldTier), never a commission. Price = the sale-value reference only.
 	-- Color = placeholder until the image team picks the Mythic look.
 	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.2 }, -- C1: 0.3 under T7 (the bigger orb keeps the staff within the avatar's height, A23-133)
+	-- A23-186: the Forge's joke weapons (Meme = their Config.WeaponMemes key). Any class holds them under one name (AnyClass),
+	-- as strong as the Wooden tier 2 (Damage 15), gold only at the Forge: never dropped, never a jackpot, never crafted,
+	-- never a commission; enhanced like any weapon. Never "a better weapon" by their tier number (Config.WeaponAtLeast)
+	{ Tier = 10, Damage = 15, Price = 300, MinLevel = 1, Meme = "Pan", AnyClass = true, Color = Color3.fromRGB(70, 72, 80), Material = Enum.Material.Metal, Length = 3 },
+	{ Tier = 11, Damage = 15, Price = 300, MinLevel = 1, Meme = "Chicken", AnyClass = true, Color = Color3.fromRGB(255, 214, 60), Material = Enum.Material.SmoothPlastic, Length = 3 },
 }
 Config.MaxWeaponTier = #Config.Weapons
+-- A23-186: what a joke weapon's hit adds (CombatService Fx "Swing" Meme = the key; the client plays Sound / Particle,
+-- game dev 1). Push = studs added to the hit monster's usual shove. SoundId / ParticleId = "" until the assets are made
+Config.WeaponMemes = {
+	Pan = { Sound = "Bonk", SoundId = "", Push = 1.5 },
+	Chicken = { Sound = "Squeak", SoundId = "", Particle = "Feathers", ParticleId = "" },
+}
+-- A23-186 the screen side (game dev 1): the Forge row's one line under a joke weapon, and the code-drawn look while the
+-- art is not made (WeaponPose.MemeLook, this client only, over the server's class-shaped model; held like a sword)
+Config.WeaponMemeScreen = {
+	Line = "Just for fun: not stronger, just funny!",
+	Look = {
+		Pan = { Pan = { Size = { 0.25, 1.7, 1.7 }, Color = { 40, 40, 46 } }, Handle = { Size = { 0.25, 1.4, 0.25 }, Color = { 90, 60, 40 } } },
+		Chicken = { Body = { Size = { 0.8, 1.9, 0.8 }, Color = { 255, 214, 60 } }, Comb = { Size = { 0.2, 0.35, 0.45 }, Color = { 220, 40, 40 } },
+			Beak = { Size = { 0.2, 0.2, 0.3 }, Color = { 255, 150, 30 } } },
+	},
+}
+-- A23-186: true for a tier the Forge sells for gold (2..MaxSoldTier and every Meme row; tier 1 is the M1_1 gift)
+function Config.WeaponSoldAtForge(tier)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	if type(def) ~= "table" then return false end
+	if def.Meme then return true end
+	local shop = Config.WeaponShop
+	return tier >= 2 and type(shop) == "table" and tier <= (tonumber(shop.MaxSoldTier) or 0)
+end
+-- A23-186: true when weapon `tier` is at least as strong as weapon `ref` (by Damage; a joke weapon never counts, whatever
+-- its tier number) - "owns an Iron weapon" and the like
+function Config.WeaponAtLeast(tier, ref)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	local r = type(ref) == "number" and Config.Weapons[ref] or nil
+	if type(def) ~= "table" or type(r) ~= "table" or def.Meme then return false end
+	return (tonumber(def.Damage) or 0) >= (tonumber(r.Damage) or 0)
+end
 
 -- display names per class (A23-48: English only); tier 7 is a table keyed by faction. Index = saved tier key: only
 -- ever APPEND tiers. T4-T6 names come from the monsters that drop them (design skills_weapons_pets_2026-10-05 §1 B3).
 Config.WeaponNames = {
 	Warrior = { "Twig", "Wooden Sword", "Iron Sword", "Goblin Thief's Golden Sword", "Old Kingdom Crystal Sword", "Guardian Spirit Sword",
-		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword" },
+		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword",
+		"Frying Pan", "Rubber Chicken" }, -- A23-186: the joke weapons, the same name for every class
 	Mage = { "Dry Staff", "Oak Staff", "Iron Staff", "Goblin Thief's Golden Staff", "Old Kingdom Crystal Staff", "Guardian Spirit Staff",
-		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff" },
+		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff",
+		"Frying Pan", "Rubber Chicken" },
 	Archer = { "Slingshot Bow", "Wooden Bow", "Iron Bow", "Goblin Thief's Golden Bow", "Old Kingdom Crystal Bow", "Guardian Spirit Bow",
-		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow" },
+		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow",
+		"Frying Pan", "Rubber Chicken" },
 }
 
 -- A23-39: the pet tamer (artisan guild Archer, Config.IsTamer) holds taming batons instead of bows (same stats)
 Config.WeaponNames.Tamer = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton",
 	"Old Kingdom Crystal Baton", "Guardian Spirit Baton", { Halo = "Dawn Baton", Horns = "Ruin Baton", None = "Crown Shard Baton" },
-	"Jelly Crown Baton", "Crownforged Baton" }
+	"Jelly Crown Baton", "Crownforged Baton", "Frying Pan", "Rubber Chicken" }
 -- the former English twin is the same tables now (readers of WeaponNamesEn keep working)
 Config.WeaponNamesEn = Config.WeaponNames
 
@@ -343,9 +398,11 @@ Config.WeaponInfo = {
 	{ Grade = "Rare", Source = "Rare drop in the Goblin Woods (your first Goblin Brute always drops it), or a Forge commission" },
 	{ Grade = "Epic", Source = "Rare drop in the Skeleton Ruins (your first Knight or Captain Clatter always drops it), or a Forge commission" },
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
-	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
+	{ Grade = "Legend", Source = "Crafted by artisans" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
 	{ Grade = "Mythic", Source = "Crafted by artisans" },
+	{ Grade = "Common", Source = "A joke weapon from the Forge" }, -- A23-186 Frying Pan
+	{ Grade = "Common", Source = "A joke weapon from the Forge" }, -- A23-186 Rubber Chicken
 }
 
 function Config.WeaponGrade(tier)
@@ -403,6 +460,7 @@ function Config.WeaponArtKey(tier, classId, factionId)
 	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
 	if tier < 1 then return nil end
 	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
+	if Config.Weapons[tier] and Config.Weapons[tier].Meme then return nil end -- A23-186: no icon yet (the slot's code look)
 	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
 	-- A23-39: the pet tamer's batons (icons T1-T6; T7 / T8 keep the Archer keys until they are drawn)
 	if tier <= 6 and Config.IsTamer(classId, factionId) then return "Weapon_Tamer_T" .. tostring(tier) end
@@ -621,6 +679,9 @@ Config.Skills = {
 	ZEnabled = false, XEnabled = false, PvPZX = false,
 	MoveSkills = true, Fields = true, Taunt = true,
 	Order = { "Q", "Z", "X" }, Unlock = { Q = 5, Z = 15, X = 25 }, GlobalGap = 0.5, MPStealCap = 20,
+	-- user 10/14 (SkillService: no refusals): a manual press within PressBuffer s of a cooldown's end is queued (fires
+	-- when it ends); AirReach = how far ahead an air cast (nothing to aim at) shows its move
+	PressBuffer = 0.35, AirReach = 12,
 	Kits = { "Warrior", "Mage", "Archer", "Blacksmith", "Alchemist", "Tamer" },
 	Defs = {
 		Warrior = {
@@ -894,10 +955,10 @@ Config.Factions = {
 			"No PvP: you never attack or get attacked",
 			"No worries about loot, Wanted or Grudge Sacks",
 			"The Crossroads is your home",
-			"Crafting expert (coming soon)",
+			"Crafting expert",
 		},
 		Pitch = "Don't grab it. Shape it and craft it!",
-		Note = "No fight buffs · No PvP · Crafting (coming soon)", -- picker card note (A6); plain text
+		Note = "No fight buffs · No PvP · Crafting", -- picker card note (A6); plain text (the card is open only with NeutralFaction on)
 	},
 	None = {
 		Id = "None", Name = "No Side", Short = "No Side", Emblem = "?",
@@ -1413,6 +1474,65 @@ Config.HuntFame = {
 	},
 }
 Config.Data.Defaults.HuntFame = 0
+
+-- A23-178 (user 2026-10-14 "마을 기금은 좋아"; contract docs/design/village_fund_server_2026-10-14.md): the village fund, a gold
+-- sink with no power. A Halo child gives Step gold at the Halo town fountain ('Share'), a Horns child at the Horns town
+-- fountain ('Show off'); each gift = Points of the own score (Honor / Infamy, shown as Mischief) through
+-- PlayerService.GrantFame (ctx Fund: never on the weekly boards), at most PerDay gifts a KST day (Config.DayIndex, the
+-- attendance day). Neutral / no side: no fund. A side's weekly sum over every server (DataStore Store, key "W<week>",
+-- merged by adding) lights its town: >= Goals.Lanterns = lanterns, >= Goals.Fireworks = lanterns + night fireworks (looks
+-- only; round sparkles, never rays). Spots[side] = nil = that side has no fund yet (Horns until its town is rebuilt,
+-- A23-155). The live switch VillageFund stops new gifts only. Spot Pos = the pool centre; the prompt sits there.
+Config.VillageFund = {
+	Enabled = true,
+	-- 최종 검수 10/14 ② (the first 15 minutes need a place to spend): a child's gifts climb a ladder over their whole
+	-- save, counted from FundGiven: the 1st gift Ladder[1] (200), the 2nd Ladder[2] (500), every one after = Step (1000)
+	Ladder = { 200, 500 },
+	Step = 1000,
+	PerDay = 3,
+	Points = 1,
+	Spots = {
+		-- review 10/14: the spot is the pivot of the model Town_Halo_Fountain3 wherever it stands (today's main place:
+		-- Map/Decor/HaloProps/Cell_0_-9, pivot (34.55, 20, -566), the plaza at Y 20; the stage-6 map moves it to (22, 10, -590),
+		-- halo_fixed_points_v2); Pos = the fallback until the model is found. The prompt sits Lift studs above it and
+		-- reaches Radius studs
+		Halo = { Model = "Town_Halo_Fountain3", Pos = Vector3.new(34.55, 20, -566), Lift = 3, Radius = 16, Zone = "HaloTown" },
+		-- Horns: off until the Horns town is rebuilt (A23-155; final review 10/14)
+	},
+	Goals = { Lanterns = 30000, Fireworks = 100000 }, -- a side's weekly sum (gold); tune after the 10/17~20 test
+	Store = "HaloHorns_VillageFund_v1",
+	FlushSeconds = 60, -- x0.5..1.5: this server's unsaved gifts are added to the week's document
+	ReadSeconds = 60, -- the week's document is read again (the shown sums = stored + this server's unsaved)
+	CloseWait = 20, -- s the close waits for a weekly write still running before it writes the rest
+	Stat = { Halo = "Honor", Horns = "Infamy" },
+	Text = {
+		Halo = { Prompt = "Share gold", Give = "Share %s gold", Done = "You shared %s gold! Honor +%d",
+			Lanterns = "Halo Citadel's lanterns are lit!", Fireworks = "Fireworks over Halo Citadel tonight!" },
+		Horns = { Prompt = "Show off gold", Give = "Show off %s gold", Done = "You showed off %s gold! Mischief +%d",
+			Lanterns = "Horns Den's lanterns are lit!", Fireworks = "Fireworks over Horns Den tonight!" },
+		Title = "Village Fund",
+		Today = "Today %d/%d",
+		Poor = "You need %s gold.",
+		Full = "That's %d for today. Come back tomorrow!",
+		Closed = "The fund is closed right now.",
+	},
+}
+-- the gold of a child's next gift from all the gold they gave before (data.FundGiven): Ladder rungs in turn, then Step
+function Config.VillageFundStep(given)
+	local V = Config.VillageFund
+	local left = math.floor(tonumber(given) or 0)
+	if left ~= left or left < 0 then left = 0 end
+	for _, rung in type(V.Ladder) == "table" and V.Ladder or {} do
+		local n = math.max(1, math.floor(tonumber(rung) or 1))
+		if left < n then return n end
+		left -= n
+	end
+	return math.max(1, math.floor(tonumber(V.Step) or 1000))
+end
+-- the player's fund record (additive keys): the KST day of the last gift, gifts that day, all gold given
+Config.Data.Defaults.FundDay = 0
+Config.Data.Defaults.FundToday = 0
+Config.Data.Defaults.FundGiven = 0
 -- A23-135: kill units toward the next whole personal crown point (WarService.AddKill), additive, kept over rounds and
 -- sessions; a side switch clears it
 Config.Data.Defaults.CrownUnits = 0
@@ -2903,21 +3023,21 @@ Config.Tutorial = {
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 			},
 		},
@@ -2961,6 +3081,8 @@ Config.Tutorial = {
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
 }
+-- Codex B5 (최종 검수 10/14): the King Slime iron line (Buy = false) shows only while a King is here or comes within this many s
+Config.Tutorial.KingSoon = 120
 
 ----------------------------------------------------------------- story quests "부서진 왕관 이야기" (user OK 2026-10-06)
 -- Design: docs/design/quest_chain_2026-10-06.md (decisions 1-8 = recommended). Main = one chain after the first
@@ -3019,7 +3141,7 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
+	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
 		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
 		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
@@ -3071,10 +3193,11 @@ Config.StoryQuests = {
 					Start = "A Slime Prince swallowed a shard! Beat it to free the shard.",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
+					-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet (a trial's Text), not just "0/3"
 					Obj = { Type = "Trials", List = {
-						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3 },
-						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1 },
-						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1 },
+						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3, Text = "Beat slimes with basic attacks %d/%d" },
+						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1, Text = "Hit 2 monsters with one skill" },
+						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1, Text = "Beat a Slime Prince above half HP" },
 					} } },
 				{ Text = "What will you do with the shard?", Panel = true,
 					Lines = { All = { "I saw it all! Now I can fight like you.", "What will you do with me?" } },
@@ -3118,6 +3241,7 @@ Config.StoryQuests = {
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
 			},
+			Reward = { BagSlots = 4 }, -- bag slots 10/14: the first upgrade (12 -> 16), whichever pick
 		},
 		-- SKL-3 (skill_kit §2): practice a new skill right after learning it. Requires.Skill = that skill is learned (its
 		-- switch on and the slot open: Z at Skills.Unlock.Z, X at Unlock.X). SkillHit Slot = only that skill's casts count
@@ -3152,16 +3276,20 @@ Config.StoryQuests = {
 		-- goes to potions
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
-			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } },
+			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
+			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
+			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
+			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
-					GiveItem = { Item = "Enh70", N = 1 }, Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
+					Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
 			Reward = { Gold = 1 },
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The Prince Who Ate the Dust", ShortName = "Slime Princes",
 			Start = "Slime Princes full of shard dust guard their little brothers and sisters.",
-			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } } }, -- A23-188: one more (M1_1 had the first: two in all)
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
@@ -3280,7 +3408,7 @@ Config.StoryQuests = {
 				} },
 				{ Text = "Go to the Goblin Woods", Guide = "GoblinWoods", Obj = { Type = "Enter", Zone = "GoblinWoods" } },
 			},
-			Reward = { Gold = 2, XP = 2 },
+			Reward = { Gold = 2, XP = 2, BagSlots = 4 }, -- bag slots 10/14: the Lv10 upgrade (16 -> 20)
 		},
 		-- 3장 "Grab Club" (story_depth §2 3장 + §5 ③④, quest_chain 3장; A23-56: the whole chapter in the beta). Rewards:
 		-- G1 = { Gold = 1 }, the chapter ends M3_4 / M3_8 = { Gold = 2, XP = 2 } with [Claim]. Echoes of M3_4: Good / A ->
@@ -3427,6 +3555,30 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 1 },
 		},
+		-- 장인 ② (artisan_min_server_2026-10-14 ①, 게임성 개발 2): the guild's first ten minutes - pick, make, sell. Neutral only,
+		-- offered while the guild (NeutralFaction) and the quest's Feature switches are on. Gather / Craft / SellMat count
+		-- GatherService.Gathered, CraftService.Crafted and LootService.MaterialSold. N0 ends with 150 gold and the crafted
+		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only
+		N0 = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" } },
+			Start = "Kit: Pick herbs, mine copper, then make something!",
+			Steps = {
+				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
+					{ Key = "a", Type = "Gather", Item = "Herb", Count = 3 },
+					{ Key = "b", Type = "Gather", Item = "CopperOre", Count = 2 },
+				} } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150, EquipCrafted = true },
+		},
+		N0b = {
+			Kind = "Sub", Title = "Sell to the Smith", ShortName = "Sell harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { Done = { "N0" }, Feature = "Gathering" },
+			Start = "Kit: Extra herbs? Otto pays gold for them!",
+			Steps = { { Text = "Sell harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
+			Reward = { GoldN = 30 },
+		},
 		N1 = {
 			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" }, Level = 5 }, -- A23-71: a skill quest
 			Start = "Kit: Shape with care. Two at once!",
@@ -3444,6 +3596,17 @@ Config.StoryQuests = {
 				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
 			},
 			Reward = { Gold = 1 },
+		},
+		-- 장인 ②: the guild's second town quest (after N2): a real order, two things made, then the Crossroads
+		N4 = {
+			Kind = "Sub", Title = "Guild Order", ShortName = "Guild order", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { Done = { "N2" }, Feature = "Crafting" },
+			Start = "Kit: A real order! Make two things for the Guild.",
+			Steps = {
+				{ Text = "Make things %d/%d", Obj = { Type = "Craft", Count = 2 } },
+				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
+			},
+			Reward = { Gold = 3, XP = 3 },
 		},
 		-- A23-46 town people "they're up to something" (docs/design/town_npc_quests_2026-10-06.md + story_depth §3 / §5-⑥,
 		-- 검수 decisions): open after M2_3 for the town's own side, once each. The rumor turns out to be harmless (the
@@ -4113,6 +4276,8 @@ for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id
 -- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
 -- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
 -- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+-- 장인 ② N0: the line when the crafted weapon goes into the hand at the quest's end
+Config.StoryQuests.Text.CraftEquipped = "%s equipped!"
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 -- gameplay plan 2026-10-13 1-A #2: an Enhance scroll used on a weapon, success or not (LootService useEnhance; M1_1 step 2)
@@ -4320,6 +4485,13 @@ Config.Quests = {
 		-- LostFound / KillCards switch in Config), else the slot is another kind.
 		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 14, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Make a kind or sneaky choice" },
+		-- artisan min ④ (docs/design/artisan_min_server_2026-10-14.md): the guild's own dailies (Neutral only; Gather while
+		-- Config.Features.Gathering is on, Craft while Crafting is on). Gather = one pick at a node (GatherService.Gathered),
+		-- Craft = one finished craft (CraftService.Crafted)
+		{ Id = "Gather", ShortName = "Gathering", Weight = 20, Units = { 6, 8 }, DailyUnits = { 8 }, RewardPerUnit = 3, Faction = "Neutral",
+			NonHunt = true, Text = "Gather %d times" },
+		{ Id = "Craft", ShortName = "Crafting", Weight = 20, Units = { 1, 2 }, DailyUnits = { 2 }, RewardPerUnit = 15, Faction = "Neutral",
+			NonHunt = true, Text = "Craft %d things" },
 	},
 	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
 	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
@@ -4356,6 +4528,8 @@ Config.Quests = {
 			{ Id = "Kill", Weight = 1, Monster = "Slime", Targets = { 12, 15 } }, -- sometimes / on reroll: 슬라임 12~15마리
 			{ Id = "Release", Weight = 3, Targets = { 3, 4, 5 } }, -- 몬스터에게 스킬 3~5번 맞히기
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
+			{ Id = "Gather", Weight = 3, Targets = { 6, 8 } }, -- artisan min ④: the guild (Neutral, Gathering on)
+			{ Id = "Craft", Weight = 2, Targets = { 1, 2 } }, -- artisan min ④: the guild (Neutral, Crafting on)
 		},
 	},
 	-- E12 (quest_volume §3-4, A23-56): the Goblin Woods band Lv10-24 works like Newbie (rows reuse a template Id, exact
@@ -4378,6 +4552,8 @@ Config.Quests = {
 			{ Id = "Hunt", Weight = 0.4, Targets = { 1 } }, -- PvP, Halo (A23-113: rarely drawn: never pushed on a child)
 			{ Id = "Plunder", Weight = 0.4, Targets = { 1 } }, -- PvP, Horns
 			{ Id = "Choice", Weight = 3, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
+			{ Id = "Gather", Weight = 3, Targets = { 8, 10 } }, -- artisan min ④: the guild (Neutral, Gathering on)
+			{ Id = "Craft", Weight = 2, Targets = { 2 } }, -- artisan min ④: the guild (Neutral, Crafting on)
 		},
 	},
 }
@@ -4449,16 +4625,13 @@ function Config.VacationReward(level, days) -- gold, xp for `days` missed days (
 	return math.floor(g * Config.Daily.VacationRate * d + 1e-6), math.floor(x * Config.Daily.VacationRate * d + 1e-6)
 end
 
------------------------------------------------------------------ Robux change tickets ("변경권")
--- Id 0 = Developer Product not created yet -> buy buttons show "상품 준비 중". After publishing, create two
--- consumable Developer Products on create.roblox.com and paste their ids here.
-Config.Products = {
-	ClassTicket = { Id = 0, PriceHint = 49, Kind = "Class", Name = "Class Change Ticket" },
-	FactionTicket = { Id = 0, PriceHint = 79, Kind = "Faction", Name = "Side Change Ticket" },
-}
+----------------------------------------------------------------- change tickets ("변경권")
+-- A23-28 (최종 검수 10/14 ③): no Robux change tickets in the beta. Tickets are earned in play only (the daily chest,
+-- the tamer's free one) and spent on a class / side change; there is no Developer Product and no ProcessReceipt.
+-- Config.ProductByKind stays (always nil) until the client's old shop rows are gone (game dev 1).
+Config.Products = {}
 Config.Tickets = {
-	MaxReceiptsKept = 50,
-	ReceiptWaitSeconds = 15, -- ProcessReceipt waits this long for the buyer's data to load
+	MaxReceiptsKept = 50, -- the old save field ProcessedReceipts is still trimmed to this (DataService)
 }
 
 function Config.ProductByKind(kind)
@@ -4475,11 +4648,11 @@ end
 -- Attr = the Player attribute (true / false) the server keeps while the player owns it. No stat is ever sold (A23-75):
 -- 2x XP / 2x Gold double what is EARNED, and that counts for the level cap and the rankings as it is.
 Config.GamePasses = {
-	XP2 = { Id = 0, Price = 199, Name = "2x XP", Attr = "PassXP2" },
-	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
-	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
-	Stickers = { Id = 0, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
-	Bubbles = { Id = 0, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
+	XP2 = { Id = 2037356271, Price = 199, Name = "2x XP", Attr = "PassXP2" },
+	Gold2 = { Id = 2036360276, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
+	VIP = { Id = 2037986277, Price = 249, Name = "VIP", Attr = "PassVIP" },
+	Stickers = { Id = 2037920281, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
+	Bubbles = { Id = 2038178270, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
 -- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
@@ -4551,6 +4724,7 @@ Config.PassInfo = {
 		PrivateName = "Private Server",
 		PriceF = "%s R$",
 		MonthF = "%s R$ / mo",
+		MonthTextF = "%s / mo", -- a subscription priced by Roblox in the player's money ("$4.99 / mo")
 		Owned = "Owned",
 		Soon = "Coming soon",
 		Off = "Not on sale",
@@ -4558,8 +4732,6 @@ Config.PassInfo = {
 		Wearing = "Wearing",
 		LooksSideF = "Looks for %s",
 		Looks = "Looks",
-		Tickets = "Change Tickets",
-		TicketF = "%s · you have %d",
 		SoonToast = "Not on sale yet. Check back soon!",
 		OffToast = "Not on sale right now. Check back later!",
 		OwnedToast = "You already have this!",
@@ -4612,15 +4784,35 @@ function Config.BubbleSide(key)
 	end
 	return nil
 end
+
+-- A23-182 (user 2026-10-14: 이동 = 월 구독, 패스 아님): Fast Travel = a monthly in-experience subscription. Id = the number
+-- Creator Hub shows (the API gets "EXP-<Id>"; a string Id is used as it is); 0 = off. MonetizationService asks Roblox at
+-- PlayerReady and on Players.UserSubscriptionStatusChanged (GetUserSubscriptionStatusAsync, pcall: a failure / Studio = not
+-- subscribed) and mirrors the answer as the player attribute Attr (the screen reads it). The Travel remote (the menu's
+-- teleport) works only while subscribed; the glowing pads (ZoneService pads, the PvP pads) stay free for everyone.
+Config.Subscriptions = {
+	FastTravel = { Id = 118606392447792, Attr = "SubFastTravel" },
+}
+-- the shop card (game dev 1, fix/fast-travel-pass-ui): Id = the api id ("EXP-<Id>", "" = off: no card) made from
+-- Config.Subscriptions below (one source), Price = R$ a month (set on Creator Hub; shown only), Attr / Icon
+Config.SubscriptionInfo = {
+	FastTravel = { Name = "Fast Travel", Line = "Teleport to any zone you have unlocked from the menu. No stats are for sale.",
+		Price = 149, Attr = "SubFastTravel", Icon = "IconTravel" },
+}
+for key, info in Config.SubscriptionInfo do
+	local id = Config.Subscriptions[key] and Config.Subscriptions[key].Id
+	info.Id = (type(id) == "number" and id > 0) and string.format("EXP-%d", id) or (type(id) == "string" and id ~= "0" and id or "")
+end
+
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
 -- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
 -- comma-separated, in Order); worn: LookOn (an id of the player's own faction, or "").
 Config.Looks = {
-	HaloIce = { Faction = "Halo", PassId = 0, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
-	HaloGold = { Faction = "Halo", PassId = 0, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
-	HornsLava = { Faction = "Horns", PassId = 0, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
-	HornsShadow = { Faction = "Horns", PassId = 0, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
+	HaloIce = { Faction = "Halo", PassId = 2036084293, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
+	HaloGold = { Faction = "Halo", PassId = 2036414290, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
+	HornsLava = { Faction = "Horns", PassId = 2036582289, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
+	HornsShadow = { Faction = "Horns", PassId = 2037344272, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
 	HaloSprout = { Faction = "Halo", Unlock = { Attendance = 14 }, Name = "Sprout Halo", Icon = "LookHaloSprout", Order = 5 },
 	HornsSprout = { Faction = "Horns", Unlock = { Attendance = 14 }, Name = "Sprout Horns", Icon = "LookHornsSprout", Order = 6 },
 	HaloStarlight = { Faction = "Halo", Unlock = { Attendance = 50 }, Name = "Star Halo", Icon = "LookHaloStarlight", Order = 7 },
@@ -4662,7 +4854,10 @@ function Config.SanitizeLooks(looks, seen)
 	local passSeen = {}
 	if type(seen) == "table" then
 		for id, v in seen do
-			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]) then
+			-- "Sub:<key>" = a subscription's last answer (최종 검수 10/14 ①, MonetizationService SUB.Check)
+			local sub = type(id) == "string" and string.match(id, "^Sub:(.+)$") or nil
+			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]
+				or (sub ~= nil and type(Config.Subscriptions) == "table" and Config.Subscriptions[sub] ~= nil)) then
 				passSeen[id] = v
 			end
 		end
@@ -4700,6 +4895,7 @@ Config.Visuals = {
 	SackThresholdsPerLevel = { 10, 40, 120, 300, 800 }, -- sack tier = count of thresholds t with gold >= t * level
 	SackSizes = { 0.8, 1.2, 1.6, 2.1, 2.8 }, -- ball diameter per tier (tier 0 = no sack)
 	NametagMaxDistance = 120,
+	NametagNearDistance = 40, -- 2-C #9: Settings "Other players' name tags" = Nearby only (NameTagPrefs, this client only)
 	MaxDamagePopups = 25,
 	FxCullDistance = 150,
 	GrudgeSackColor = Color3.fromRGB(110, 40, 150),
@@ -5220,7 +5416,8 @@ Config.Settings = {
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
-	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
+	-- A23-179 / A23-146: no Language row (Roblox's auto translation is on, no Korean mode); a saved Lang value is only ignored
+	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
 		Music = "Music", MusicEn = "Music",
@@ -5252,8 +5449,9 @@ Config.Settings = {
 	},
 }
 
--- A23-48 (user 2026-10-06 evening): the game shows English only (UIKit.Lang decides for the modules with KO / EN twins);
--- new window texts are written in English only
+-- A23-48 (user 2026-10-06 evening) / A23-146: we write the game's text in easy English only (no Korean mode, no hand
+-- translation); A23-179 (10/14): Roblox auto-translation is ON for it (AutoLocalize off only for names, number-only labels
+-- and player chat). New window texts are written in English only
 Config.BuildLabel = "private-test 2026.10.16" -- shown in the settings footer (bump with a release)
 
 ----------------------------------------------------------------- environments + ops safety (시스템 점검 1회차, 2026-10-09)
@@ -5297,8 +5495,12 @@ Config.Switches = {
 		Goose = { Type = "Bool", Default = true }, -- no new goose
 		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
 		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
-		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay)
-		PioneerTitle = { Type = "Bool", Default = true },
+		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay). Unread = the
+		-- value until this server's first good read of the board (review 10/14: a new server after the launch, or a
+		-- DataStore outage, must never hand out the title on the Default)
+		PioneerTitle = { Type = "Bool", Default = true, Unread = false },
+		-- A23-178: off = no new village fund gifts (the week's sums and the town lights stay)
+		VillageFund = { Type = "Bool", Default = true },
 	},
 }
 
@@ -5500,7 +5702,7 @@ Config.Loot = {
 	ItemCap = 999, -- per item id
 	FullNoticeSeconds = 300, -- review B7: a "가득 찼어요" notice repeats at most once per item id per 5 minutes
 	GoldenMult = 3, -- golden monsters: every drop chance x3 (capped at 100%)
-	-- Kind: Material (sold at the blacksmith; crafting comes with the full launch), Enhance (+Plus to one owned weapon
+	-- Kind: Material (sold at the blacksmith; the artisans craft with them, A23-162 / 2-B), Enhance (+Plus to one owned weapon
 	-- with Chance), Transfer (with Chance ADDS all of one weapon's +N onto another owned weapon up to MaxEnhance, the
 	-- rest stays on the source; failure keeps both — no enhancement is ever lost)
 	Items = {
@@ -5829,6 +6031,9 @@ Config.Loot = {
 		SellDone = "Sold %d materials! Gold +%s",
 		SellNothing = "No materials to sell.",
 		SellFar = "Sell materials near the Forge anvil.",
+		-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): one gathered / crafted material at a time (SellItem)
+		SellItemDone = "Sold %d %s! Gold +%s", -- (n, item name, gold)
+		SellItemNone = "You don't have that many.",
 	},
 }
 -- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
@@ -6335,6 +6540,44 @@ Config.Audio.Ambient = {
 			Vector3.new(-190, 11, -660), Vector3.new(190, 11, -660) } },
 }
 
+-- 최종 검수 10/14 (gameplay plan 3, bag slot upgrade as a quest reward): ONE number for the whole bag = how many kinds
+-- it holds. A slot = one kind in the grid of a Counts kind (a material / scroll / tonic / treat id, a spare weapon "T:P");
+-- owned weapons, gear and potions never count. The owner's attribute BagSlots (game dev 2: saved data.BagSlots, only
+-- grows 12 -> 16 -> 20 by two quest rewards Reward.BagSlots = Step); no attribute = Default. Full: the server takes no
+-- NEW kind (a kind I have keeps stacking) and says Text.Full; Text.Gained = the quest reward line. The bag (game dev 1)
+-- shows "used / slots" on its bottom line (red when full) and shows every thing it has.
+Config.BagSlots = { Default = 12, Step = 4, Max = 20,
+	Counts = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true, Spare = true },
+	Text = { Gained = "+%d bag slots", Full = "Your bag is full! Sell or use something to make room." } }
+-- (game dev 2, 10/14) the save's slots: data.BagSlots (only grows, by quest rewards Reward.BagSlots), Default..Max
+Config.Data.Defaults.BagSlots = Config.BagSlots.Default
+function Config.BagSlotsOf(data)
+	local B = Config.BagSlots
+	local n = type(data) == "table" and tonumber(data.BagSlots) or nil
+	if n == nil or n ~= n then n = B.Default end
+	return math.clamp(math.floor(n), B.Default, B.Max)
+end
+-- the slots a save uses: every Config.Loot.Items id of a Counts kind it holds (>= 1) and every spare key "T:P" (>= 1)
+-- = one slot each (owned weapons, gear and potions are not in the grid). The bag (BagUI.Used) counts the same way.
+function Config.BagUsed(data)
+	if type(data) ~= "table" then return 0 end
+	local counts, n = Config.BagSlots.Counts, 0
+	for id, c in type(data.Items) == "table" and data.Items or {} do
+		local def = Config.Loot.Items[id]
+		if def and counts[def.Kind] and (tonumber(c) or 0) >= 1 then n += 1 end
+	end
+	if counts.Spare then
+		for _, c in type(data.Spares) == "table" and data.Spares or {} do
+			if (tonumber(c) or 0) >= 1 then n += 1 end
+		end
+	end
+	return n
+end
+-- true when one more KIND fits (a kind already held always stacks)
+function Config.BagHasRoom(data)
+	return Config.BagUsed(data) < Config.BagSlotsOf(data)
+end
+
 -- A23-109 (user 2026-10-10 photo: the two potion circles out, quick slots 1 / 2 / 3 in a row): what a quick slot can hold.
 -- QuickSlots.luau (game dev 1) uses and shows them; the server (game dev 2) saves data.QuickSlots and sends the owner's
 -- attribute Attr = "HP,MP," (three entries, "" = empty), c->s Remote(slot 1..3, item key or ""): known keys only, the same
@@ -6390,16 +6633,37 @@ Config.ClassGrips = {
 -- in CharacterVisuals is gone. The swords follow Roblox's ClassicSword (메인 반영 1 10/13, main_apply/classic_sword:
 -- Tool.Grip (0, 0, -1.5) on its 4-stud handle mesh; side photo: the fist's middle 74% up the hilt from the pommel end,
 -- its top against the guard): 0.75 of our 1.2-stud hilt (the table's first 0.6 left a gap under the guard).
+-- 최종 검수 10/14 (user while playing: from behind the swordsman held the blade straight up over the shoulder like a pole,
+-- the fist on the guard): the swords are held in the MIDDLE of the hilt (Point 0.5: the guard sits above the fist), and
+-- Rest = the turn in the fist while standing / walking (WeaponPose.RestStep fades the default toolnone out, so the arm
+-- hangs): the blade at the side, its tip up and back (130 degrees about the fist's X = 40 degrees back from upright);
+-- an attack clip brings back the plain grip (Turn) and toolnone
+-- A23-187 (user 10/14: our own hold, not Roblox's toolnone arm-forward): the Hold field says how a weapon is carried standing /
+-- walking (WeaponPose: toolnone faded out, the weld turned to Rest, Config.HoldPoses added on top of the walk / idle
+-- animation; an attack clip brings back toolnone and the plain grip): Side = a sword / short tool down at the hip, the
+-- tip back and down 45 degrees (Rest 225 about the fist's X: 0 = forward, 90 = up, 180 = back, 270 = down); Staff = held
+-- upright in one hand, the foot near the ground (Rest 90 = upright), tilted a little while walking; Bow = hanging from
+-- the LEFT hand, the limbs upright along the body (WeaponPose welds it to LeftGripAttachment while resting)
 Config.WeaponGrips = {
-	Sword = { Point = 0.75 },
-	DarkSword = { Point = 0.75 },
-	Bow = { Point = 0.5 },
-	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
-	Staff = { Point = 0.45 },
-	CrookStaff = { Point = 0.45 },
-	FlaskStaff = { Point = 0.45 },
-	Hammer = { Point = 0.3 },
-	Baton = { Point = 0.3 },
+	Sword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
+	DarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
+	Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },
+	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, 0, 0 }, Hold = "Bow" },
+	Staff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	CrookStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	Hammer = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+	Baton = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+}
+
+-- A23-187: the joints' turns (degrees, X / Y / Z of each Motor6D's own frame) added on top of the walk / idle animation
+-- while a weapon rests (WeaponPose.PoseStep, every frame, every character, this client only). Side: the arm a little out
+-- from the hip so the blade clears the leg; Staff: the forearm a little forward, WalkTilt more at the wrist while
+-- walking; Bow: the left arm a little out. Tuned on Studio photos (UiSandbox / SwordTest)
+Config.HoldPoses = {
+	Side = { RightShoulder = { 0, 0, 8 }, RightElbow = { -10, 0, 0 } },
+	Staff = { RightShoulder = { -6, 0, 6 }, RightElbow = { -25, 0, 0 }, WalkTilt = { RightWrist = { -10, 0, 0 } } },
+	Bow = { LeftShoulder = { 0, 0, -8 }, LeftElbow = { -8, 0, 0 } },
 }
 
 -- (pure) the grip row of a weapon kind (a kind without a row: the sword's)
@@ -6410,12 +6674,14 @@ function Config.WeaponGripOf(kind)
 end
 
 -- (pure) the Tool.Grip of a weapon kind whose Handle is len studs long: the grip point (0, (Point - 0.5) x len, 0) on the
--- Handle, turned by Turn. The engine then puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's
--- frame in the fist = CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
-function Config.WeaponGrip(kind, len)
+-- Handle, turned by Turn (mode "Rest" and a row with Rest: turned by Rest - the standing / walking hold). The engine then
+-- puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's frame in the fist =
+-- CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
+function Config.WeaponGrip(kind, len, mode)
 	local row = Config.WeaponGripOf(kind)
 	local point = math.clamp(tonumber(row.Point) or 0.5, 0, 1)
 	local turn = type(row.Turn) == "table" and row.Turn or {}
+	if mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end
 	local angles = CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
 	return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
 end
@@ -7088,7 +7354,8 @@ Config.UIArt = {
 		KeyHintBg = Color3.fromRGB(60, 44, 34),
 		KeyHintText = Color3.fromRGB(255, 255, 255),
 	},
-	-- ART_DIRECTION: Korean labels in Gotham (Korean renders in the fallback font), numbers / Lv / timers in FredokaOne
+	-- ART_DIRECTION: labels in Gotham (Roblox's auto-translated Korean renders in its fallback font, A23-179), numbers / Lv /
+-- timers in FredokaOne
 	Fonts = {
 		Title = Enum.Font.GothamBlack,
 		Body = Enum.Font.GothamBold,
@@ -7182,12 +7449,12 @@ Config.UIArt.FactionPerks = {
 		{ Icon = "IconNoBuff", Text = "No fight buffs" },
 		{ Icon = "IconShieldBlue", Text = "No PvP (safe)" },
 		{ Icon = "IconNoLoot", Text = "No loot or Wanted worries", Short = "No loot or Wanted" },
-		{ Icon = "IconHammer", Text = "Crafting (coming soon)", Short = "Crafting (soon)" },
+		{ Icon = "IconHammer", Text = "Crafting", Short = "Crafting" },
 	},
 }
 
--- E approval: 2026-10-04. Fixed Korean glyphs preserve the approved illustration.
--- English/localized sprites are a separate release item; live fallbacks stay available.
+-- E approval: 2026-10-04 (history). A23-146 / A23-35: no lettering in images any more - every word is a TextLabel from
+-- the text tables, so Roblox auto-translation (A23-179) reads it; live fallbacks stay available.
 -- addendum A1: optional custom visual models in ServerStorage[FolderName] named by monster id or GooseId
 Config.CustomModels = {
 	FolderName = "CustomModels",
@@ -7287,6 +7554,14 @@ Config.NextGoal = {
 -- show tier 1 only (TouchTiers). Steps: Skill = that slot's Config.Skills.Unlock level (Z / X only while their switch
 -- is on, none after a rebirth - like QuestService's next-goal row), Zone = the zone's MinLevel (seasonal zones never),
 -- Rebirth = Config.RebirthLevel. Equal levels: the first row here wins. No clock, no buy word (A23-79).
+-- 최종 검수 10/14 (감사 2 '못 하는 일 숨기기': in the first 10 minutes rows you CANNOT do now showed as much as the
+-- things to do): a quest row whose thing is far away folds out of the HUD lines / tracker (the quest window keeps it),
+-- and comes back by itself in time. Goose = a story step guided to the goose (S1 / GW5 'Join a Golden Egg hunt'):
+-- shown while a hunt runs or the next one (GameState GooseNextAt) is within Window s. War = the rows in WarRows (S2 a
+-- crown war chest): shown while the war is fought (WarMode not Idle) and the round ends within Window s. Check = s
+-- between the HUD's looks (the time passing). Words: none (the row just waits).
+Config.QuestNotNow = { Enabled = true, Window = 3600, Check = 15, GooseGuide = "Goose", WarRows = { S2 = true } }
+
 Config.GoalChips = {
 	Enabled = true,
 	TouchTiers = 1,
@@ -7299,7 +7574,8 @@ Config.GoalChips = {
 	Text = {
 		Next = "Next: %s", Big = "Big goal: %s",
 		FirstSkill = "Lv %d · first skill", Skill = "Lv %d · new skill", Zone = "Lv %d · %s", Rebirth = "Lv %d · Rebirth",
-		Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",
+		-- 최종 검수 10/14 (user photo: 'Big goal: Win the Crown for the…' was cut): short; the side shows as the line's colour
+		Halo = "Win the Crown", Horns = "Win the Crown",
 	},
 }
 
@@ -7415,7 +7691,6 @@ Config.Text = {
 	SwitchDoneTicket = "You joined the %s! (Ticket used, points kept)",
 	SwitchCooldown = "You can switch sides again in %s.",
 	NoTicket = "No change ticket.",
-	TicketSaving = "Still saving. Try again soon.", -- CR-L25: UseTicket returned "Pending"
 	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
@@ -7423,8 +7698,6 @@ Config.Text = {
 	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
-	ClassTicketGot = "You got 1 Class Change Ticket!",
-	FactionTicketGot = "You got 1 Side Change Ticket!",
 	ProductNotReady = "This item isn't ready yet.",
 	-- rebirth
 	RebirthNeed = "You need Lv %d to be reborn.",
@@ -7584,6 +7857,8 @@ Config.Ranking = {
 		OutlawTag = "Outlaw", OutlawTagEn = "Outlaw",
 		OutlawChip = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
 		OutlawChipEn = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
+		OutlawChipShort = "Outlaw", -- the chip on a phone / a narrow PC row (the lock icon says no Auto Battle)
+		OutlawChipShortEn = "Outlaw",
 		RewardChip = "This week's %s #%d: XP and drops +10%% (until Monday)", -- (board name, rank)
 		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
 		OutlawStart = "Outlaw week: no Auto, half rewards, 2x bounty",
@@ -8005,6 +8280,7 @@ Config.Attendance = {
 		Collected = "Days collected: %d",
 		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
 		GoalTitle = "%s title",
+		GoalBorder = "Name frame", -- the 28-day ribbon by my name (NameTagPrefs.BorderOf)
 		Note = "Missed a day? No problem. Nothing resets.",
 		Box = "Weekly Box",
 	},
@@ -8063,6 +8339,12 @@ Config.Analytics.ClientMetrics = {
 	Perf = "Perf", -- the phone / PC frame + memory summary of the last window (Config.Analytics.Perf, system_review 더하기 7)
 }
 Config.Analytics.InviteSources = { "Menu", "PlayerList", "GooseWin", "WarWin" }
+-- 2-C #9 (최종 검수 10/14; A23-79 #3 "거위/왕관전 승리 카드에 [Invite a friend]"): a small win card (Invite.WinCard, game
+-- dev 1) when my side wins the goose game (Fx GooseEnd { Winner } = my faction, within GooseRange studs of the goose) or
+-- a crown war round (GameState WarBlessing = my faction when a round really ends); Seconds on screen; never near a KO, a
+-- failed scroll or the Shop (Invite.CanShow)
+Config.WinCard = { Seconds = 8, GooseRange = 120,
+	Text = { GooseWin = "You won the goose game!", WarWin = "Your side won the crown!", Invite = "Invite a friend" } }
 Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besides Config.GamePasses / Config.Looks ids
 -- review 2026-10-08 (one client must not flood the whole game's analytics budget): ClientMetric calls LOGGED a minute per
 -- player, and the ids logged once a session; every accepted call still fires TelemetryService.ClientMetric (no limit)
@@ -8536,6 +8818,19 @@ Config.ChoiceCard.Screen = {
 	-- the score names on the card (the cards send the stat key; A23-166: Infamy shows as "Mischief", the key stays)
 	Stat = { Honor = "Honor", Infamy = "Mischief" },
 }
+-- A23-178 B (게임성 개발 1, 2026-10-14; contract docs/design/village_fund_server_2026-10-14.md §8): the village fund card's
+-- own extra words (VillageFundUI). Title, Today, the [Give] words, Poor / Full / Closed, the prompt and the notices - and
+-- every number - live in Config.VillageFund.Text (게임성 개발 2); this table is the rest of the card. Lead: %d = points.
+Config.VillageFundScreen = {
+	Lead = { Halo = "Share gold with Halo Citadel. Honor +%d each time.", Horns = "Show off your gold in Horns Den. Mischief +%d each time." },
+	Far = "Walk up to the fountain.", -- [Give] is grey past the fountain's reach (the server takes gifts only inside it)
+	Gold = "Your gold: %s",
+	Close = "Close",
+	Week = "Town this week: %s gold",
+	Marks = "%s %s · %s %s", -- (lanterns word, goal, fireworks word, goal)
+	Lanterns = "Lanterns",
+	Fireworks = "Fireworks",
+}
 -- A23-86 D (content_beyond_10min D): the monster kill record from the first beta day (KillLog.luau). Additive save field
 -- (Version stays 3): KillLog = { Total, M (by hand), A (auto combat), Golden, ByKind = { [monster kind] = n },
 -- ByTier = { ["tier"] = { M, A } } }. The sticker book screen comes 11/04; nothing is paid for it here.
@@ -8941,8 +9236,8 @@ Config.Craft = {
 	StartsPerMinute = 6,
 	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
 	Recipes = {
-		W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 },
-		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Jelly = 10, Petal = 3, CopperOre = 4 }, XP = 20 },
+		-- 장인 ② (최종 검수 10/14): no W1 (tier 1 is the free class weapon); W2 = the first craft, from N0's harvest only
+		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Herb = 3, CopperOre = 2 }, XP = 20 },
 		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }, XP = 60 },
 		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 20, BruteHorn = 10, IronOre = 8, OakLog = 4 }, XP = 150 },
 		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 30, KnightCrest = 12, IronOre = 15, OakLog = 6 }, XP = 400 },
@@ -9263,6 +9558,10 @@ Config.SaveV4 = {
 	MarketDone = 50, -- Market.Done: most finished ids kept
 	MarketIdLen = 40, -- a market row id
 	MarketMaxN = 999, -- items in one market row
+	-- C-5 (MarketService): Pend = an Out row saved before its ledger record (the join check finishes it), Pay = an In row
+	-- paid before the ledger said Sold (the join check delivers or refunds)
+	-- review 10/14: the states an older server knows too (a listing not public yet = Open + Pend, a purchase paid and not
+	-- settled = Sold + Pay: flags keepExtra keeps), so a save loaded by a server from before the market loses no row
 	MarketStates = { Open = true, Sold = true, Cancel = true, Expired = true, Paid = true },
 }
 -- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
@@ -9709,6 +10008,8 @@ for i, page in Config.Codex.Pages do
 end
 Config.Data.Defaults.Codex = {} -- save v5 (the version step: DataService.migrate)
 Config.RateLimits.CodexOpen = 1 -- c->s "CodexOpen" (no arguments): the answer is the "Codex" snapshot
+Config.RateLimits.FundGive = 1 -- A23-178 c->s "FundGive" (no arguments): one village fund gift (VillageFundService)
+Config.RateLimits.SellItem = 0.3 -- artisan min ② c->s "SellItem" (itemId, n): one gathered material kind at the anvil
 Config.PassBoost.GoldSources.Codex = true -- earned gold (the 2x Gold pass doubles it)
 Config.TitleDefs.SlimeScholar = { Name = "Slime Scholar", NameEn = "Slime Scholar", Color = Color3.fromRGB(140, 220, 140) }
 Config.TitleDefs.GoblinScholar = { Name = "Goblin Scholar", NameEn = "Goblin Scholar", Color = Color3.fromRGB(170, 200, 90) }
@@ -9791,6 +10092,150 @@ function Config.CodexFromKillLog(killLog, codex)
 		end
 	end
 	return out
+end
+
+------------------------------------------------------------------ C-5 / C-7 the player market (게임성 개발 2, 2026-10-13)
+-- SPEC A23-127 / A23-133; server design docs/design/market_server_2026-10-13.md; the window MarketWindow.luau (게임성 개발 4,
+-- docs/design/market_window_2026-10-12.md §6). Switch Config.Features.Market (off: no window, no new listing or purchase;
+-- rows already in the market still settle). One market for every server: the ledger (DataStore Store, key "L_<id>" =
+-- { Id, Seller, K, N, Price, At, Exp, St, Buyer?, SoldAt?, Paid? }) is the truth; the MemoryStore maps only list what is
+-- open. Price = gold for ONE unit (a row of N costs N x Price); the seller gets the row's total minus Fee (floored), as bank
+-- gold "Market" (never 2x, A23-133); a refund is "MarketRefund".
+Config.Market = {
+	Store = "HaloHorns_Market_v1", -- the ledger DataStore (Config.StoreName)
+	Maps = "HHMkt_", -- MemoryStore sorted map per market key (":" -> "_"): listing id -> { p, n, x (ends), s (seller) }
+	IndexMap = "HHMktIndex", -- market key -> { L = lowest price, C = open rows } (a hint, rebuilt from the key's map)
+	SoldMap = "HHMktSold", -- seller UserId -> listing ids sold and not paid yet (a hint: the seller's server pays sooner)
+	Hours = 72, -- a listing stays open this long
+	Fee = 0.07, -- A23-183 (user 10/14): 7% of the sale, floored
+	BuyLevel = 5, ListLevel = 10, ListPlaySeconds = 3600, ListAccountDays = 7, -- A23-133 gates
+	OpenMax = 10, -- open listings of one player
+	DayLists = 20, DayBuys = 30, -- a KST day
+	PairDay = 3, -- purchases from the same seller a KST day (alt accounts)
+	PageRows = 50, PageFetch = 200, -- rows a page; rows one map read gives (4 pages)
+	IndexCache = 30, PageCache = 15, -- s a server keeps the index / a key's rows
+	MapTTL = 3600, -- s a map row outlives its listing
+	IndexTTL = 3888000, -- s an index row lives (45 days, the MemoryStore maximum)
+	PollSeconds = 20, -- the owner's server: sold hints, ended listings, retries
+	LedgerSeconds = 300, -- ... and every open listing read from the ledger this often
+	KeepFinished = 86400, -- s a finished row (Paid / Cancel / Expired) stays on the Mine tab
+	-- Config.Loot.Items kinds that can be listed (no HP / MP potions: they are not Items; no quest things, no looks)
+	Kinds = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true },
+	-- the price range of ONE unit: Ref (the Sell tab's first price), Min, Max
+	MaterialRef = 3, MaterialMax = 25, -- a material: Ref = Sell x 3, Min = Sell, Max = Sell x 25
+	TonicRef = 5, -- a tonic / Pet Treat: Ref = Sell x 5
+	Ref = { Enh70 = 300, Enh30 = 800, Enh10 = 2000, Move70 = 400, Move30 = 900, Move10 = 2000 }, -- scrolls
+	PlusRef = 0.3, -- a weapon: Ref = Config.Weapons[tier].Price x (1 + 0.3 x plus); tier 8 (no price) = WeaponRef8
+	WeaponRef8 = 20000,
+	MinMult = 0.2, MaxMult = 5, -- scrolls, tonics, weapons: Min = Ref x 0.2, Max = Ref x 5
+	-- one line per notice / refusal (MarketWindow shows the refusal keys on its buttons: Gate.Buy / Gate.List)
+	Text = {
+		MarketListed = "Listed on the Market.",
+		MarketBought = "Bought %s!", -- (the thing's name)
+		MarketPaid = "Sold on the Market! +%s gold", -- (what the seller got)
+		MarketCancelled = "Listing cancelled. It's back in your bag.",
+		MarketExpired = "A listing ended. It's back in your bag.",
+		-- A23-183 (user 10/14): no player refund / undo exists; a purchase that failed inside (lost the race, cut off) puts the
+		-- gold back by itself and says only this
+		MarketRefund = "Purchase failed.",
+		Checking = "Checking the Market…",
+		NeedLevelBuy = "You can buy from Lv 5.",
+		NeedLevelList = "You can sell from Lv 10.",
+		NeedPlaytime = "You can sell after 1 hour of play.",
+		NeedAccountAge = "You can sell when your account is 7 days old.",
+		PriceChanged = "The price changed.",
+		AlreadySold = "Already sold.",
+		NotEnoughGold = "Not enough gold.",
+		CantReceive = "No room for it.",
+		Owned = "You have this weapon already.",
+		TooMany = "10 listings at once at most.",
+		DayLimit = "That's all for today.",
+		PriceRange = "That price is out of range.",
+		Resting = "The market is resting.",
+		Full = "The market is full.",
+		PairLimit = "Too many trades with them today.",
+		TooFast = "Too fast. Try again.",
+		Off = "The market is closed.",
+		Own = "That's your own listing.",
+		NoItem = "You don't have that.",
+		CantSell = "You can't sell that.",
+		InHand = "Put it away first.",
+	},
+}
+for name, s in { MarketIndex = 1, MarketBrowse = 1, MarketMine = 1, MarketList = 6, MarketBuy = 6, MarketCancel = 6,
+	PackWeapon = 1, UnpackSpare = 1 } do
+	Config.RateLimits[name] = s
+end
+-- A23-133 the market quests (one row each, waiting for the switch): the first purchase (Lv5), the first listing (Lv10),
+-- the first sale paid (after the listing one). Event steps with Past: MarketService tells StoryQuestService.Event
+-- MarketBought / MarketListed / MarketPaid (a player who traded before the quest opened passes at once). Guide = the
+-- window's tab ([Go] opens Market on it: MarketBuy / MarketSell / MarketMine). Rewards = minutes of hunting (proposed;
+-- 최종 검수 sets them).
+Config.StoryQuests.Events.MarketBought = true
+Config.StoryQuests.Events.MarketListed = true
+Config.StoryQuests.Events.MarketPaid = true
+Config.StoryQuests.Defs.MK1 = { Kind = "Sub", Title = "Market Day", ShortName = "Market buy",
+	Requires = { Level = 5, Feature = "Market" },
+	Steps = { { Text = "Buy something at the Market", ShortName = "Buy one", Guide = "MarketBuy",
+		Obj = { Type = "Event", Name = "MarketBought", Past = true } } },
+	Reward = { Gold = 2, XP = 2 } }
+Config.StoryQuests.Defs.MK2 = { Kind = "Sub", Title = "My First Stall", ShortName = "Market sell",
+	Requires = { Level = 10, Feature = "Market" },
+	Steps = { { Text = "List something at the Market", ShortName = "List one", Guide = "MarketSell",
+		Obj = { Type = "Event", Name = "MarketListed", Past = true } } },
+	Reward = { Gold = 2, XP = 2 } }
+Config.StoryQuests.Defs.MK3 = { Kind = "Sub", Title = "Sold!", ShortName = "Market sold",
+	Requires = { Level = 10, Feature = "Market", Done = { "MK2" } },
+	Steps = { { Text = "Sell something at the Market", ShortName = "Get paid", Guide = "MarketMine",
+		Obj = { Type = "Event", Name = "MarketPaid", Past = true } } },
+	Reward = { Gold = 3, XP = 3 } }
+for _, id in { "MK1", "MK2", "MK3" } do table.insert(Config.StoryQuests.Subs, id) end
+
+-- a market key of a thing that may be listed: kind "I" + a Config.Loot.Items id of a tradeable kind -> "I:<id>"; kind "W"
+-- + a spare key "T:P" (tier 2..MaxWeaponTier, plus 0..MaxEnhance, whole numbers) -> "W:T:P"; anything else nil
+function Config.MarketKey(kind, id)
+	if type(id) ~= "string" or #id > 32 then return nil end
+	if kind == "I" then
+		local def = Config.Loot.Items[id]
+		if type(def) == "table" and Config.Market.Kinds[def.Kind] == true then return "I:" .. id end
+		return nil
+	end
+	if kind ~= "W" then return nil end
+	local t, p = string.match(id, "^(%d+):(%d+)$")
+	local tier, plus = tonumber(t), tonumber(p)
+	if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier or plus > Config.Loot.MaxEnhance then return nil end
+	if Config.Weapons[tier].Meme then return nil end -- A23-186: the joke weapons are the Forge's only, never traded
+	return string.format("W:%d:%d", tier, plus)
+end
+
+-- a market key -> { Kind = "I", Id } | { Kind = "W", Tier, Plus } (nil = not a key that may be listed)
+function Config.MarketParse(key)
+	if type(key) ~= "string" then return nil end
+	local id = string.match(key, "^I:(.+)$")
+	if id then return Config.MarketKey("I", id) == key and { Kind = "I", Id = id } or nil end
+	local tp = string.match(key, "^W:(.+)$")
+	if tp and Config.MarketKey("W", tp) == key then
+		local t, p = string.match(tp, "^(%d+):(%d+)$")
+		return { Kind = "W", Tier = tonumber(t), Plus = tonumber(p) }
+	end
+	return nil
+end
+
+-- the price range of one unit of a key: Ref, Min, Max (whole gold, Min >= 1); nil for a key that may not be listed
+function Config.MarketRange(key)
+	local M, info = Config.Market, Config.MarketParse(key)
+	if not info then return nil end
+	if info.Kind == "I" then
+		local def = Config.Loot.Items[info.Id]
+		local sell = math.max(1, math.floor(tonumber(def.Sell) or 1))
+		if def.Kind == "Material" then return sell * M.MaterialRef, sell, sell * M.MaterialMax end
+		local ref = M.Ref[info.Id] or sell * M.TonicRef
+		return ref, math.max(1, math.floor(ref * M.MinMult)), math.floor(ref * M.MaxMult)
+	end
+	local w = Config.Weapons[info.Tier]
+	local base = (w and (tonumber(w.Price) or 0) > 0) and w.Price or M.WeaponRef8
+	local ref = math.floor(base * (1 + M.PlusRef * info.Plus))
+	return ref, math.max(1, math.floor(ref * M.MinMult)), math.floor(ref * M.MaxMult)
 end
 
 -- A23-160 ④ (게임성 개발 2, 10/13): the private test's numbers board (TestMetricsService; docs/design/test_metrics_2026-10-13.md,

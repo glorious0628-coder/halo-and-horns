@@ -11420,6 +11420,45 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "91e6175c-9c4d-437c-ab7e-5b2d0db10748",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_src.glb",
+   "bytes": 11659284,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0864,
+    0.2509,
+    0.9801
+   ],
+   "after_studs": [
+    0.768,
+    0.264,
+    3.0
+   ],
+   "grip": [
+    0.065,
+    0.275
+   ],
+   "pivot_share": 0.17,
+   "tris": 14746,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_Paladin_T2_web_hd_mv4": [
@@ -11456,6 +11495,45 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "0e532da7-04d0-46f3-90aa-a1813eb3917a",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_src.glb",
+   "bytes": 8685568,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0713,
+    0.3143,
+    0.98
+   ],
+   "after_studs": [
+    1.122,
+    0.255,
+    3.5
+   ],
+   "grip": [
+    0.07,
+    0.225
+   ],
+   "pivot_share": 0.147,
+   "tris": 13172,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_Paladin_T3_web_hd_mv4": [
@@ -11492,6 +11570,45 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "04680c24-45d5-41bb-a05a-7e2089f1da62",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_src.glb",
+   "bytes": 9677644,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0753,
+    0.3328,
+    0.9791
+   ],
+   "after_studs": [
+    1.36,
+    0.307,
+    4.0
+   ],
+   "grip": [
+    0.09,
+    0.29
+   ],
+   "pivot_share": 0.19,
+   "tris": 12825,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T1_web_hd_mv4": [
@@ -11532,6 +11649,41 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved -0.03; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "b35be0a2-dcd4-45b5-9a69-f00a4833bf50",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_HD_src.glb",
+   "bytes": 8363476,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0789,
+    0.163,
+    0.9827
+   ],
+   "after_studs": [
+    0.498,
+    0.241,
+    3.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14932,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk2_LightMage_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T2_web_hd_mv4": [
@@ -11569,6 +11721,41 @@
    "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg",
    "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved -0.25; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "188ca818-4b6e-4bf5-930b-090919e6b084",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_HD_src.glb",
+   "bytes": 7878836,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (orb is a faceted gem in 3D, smooth ball in 2D: allowed)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.089,
+    0.2034,
+    0.9808
+   ],
+   "after_studs": [
+    0.726,
+    0.318,
+    3.5
+   ],
+   "pivot_share": 0.45,
+   "tris": 14499,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk2_LightMage_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T3_web_hd_mv4": [
@@ -11609,6 +11796,41 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.33; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "8e757e6d-766b-4d4c-b7c1-f6214e8a9f35",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_HD_src.glb",
+   "bytes": 10685748,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.135,
+    0.263,
+    0.9815
+   ],
+   "after_studs": [
+    1.072,
+    0.55,
+    4.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14391,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk2_LightMage_fit.png"
   }
  ],
  "Weapon_Halo_Ranger_T1_web_hd_mv4": [
@@ -11645,6 +11867,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "0a8d6523-8c59-4ca5-81d0-13b5e2bc1d98",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_HD_src.glb",
+   "bytes": 9703972,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0881,
+    0.1926,
+    0.9818
+   ],
+   "after_studs": [
+    0.588,
+    0.269,
+    3.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 14770,
+   "code_len": 3.1,
+   "check": "art/review/weapon_design/chunk3_Ranger_fit.png"
   }
  ],
  "Weapon_Halo_Ranger_T2_web_hd_mv4": [
@@ -11681,6 +11938,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "3ff5f6ef-c399-40f0-a96f-246e4da59846",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_HD_src.glb",
+   "bytes": 10060016,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0557,
+    0.1688,
+    0.9803
+   ],
+   "after_studs": [
+    0.603,
+    0.199,
+    3.5
+   ],
+   "pivot_share": 0.5,
+   "tris": 13524,
+   "code_len": 3.357,
+   "check": "art/review/weapon_design/chunk3_Ranger_fit.png"
   }
  ],
  "Weapon_Halo_Ranger_T3_web_hd_mv4": [
@@ -11717,6 +12009,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_halo_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "05ccd29a-c7c3-406c-80a3-92dc04b1c072",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_HD_src.glb",
+   "bytes": 12991324,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0706,
+    0.1993,
+    0.9809
+   ],
+   "after_studs": [
+    0.813,
+    0.288,
+    4.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 13912,
+   "code_len": 3.614,
+   "check": "art/review/weapon_design/chunk3_Ranger_fit.png"
   }
  ],
  "Weapon_Horns_Berserker_T1_web_hd_mv4": [
@@ -11753,6 +12080,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "fa2796e9-c493-402e-9251-1b219de9ab72",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_HD_src.glb",
+   "bytes": 11946556,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind sword (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0772,
+    0.2652,
+    0.9827
+   ],
+   "after_studs": [
+    0.81,
+    0.236,
+    3.0
+   ],
+   "pivot_share": 0.155,
+   "tris": 14271,
+   "code_len": 3.85,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_Berserker_T2_web_hd_mv4": [
@@ -11789,6 +12151,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "fedaccca-41e3-4f9c-ac36-05415dce2f7f",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_HD_src.glb",
+   "bytes": 11004288,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind sword (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0806,
+    0.3201,
+    0.9803
+   ],
+   "after_studs": [
+    1.143,
+    0.288,
+    3.5
+   ],
+   "pivot_share": 0.192,
+   "tris": 13660,
+   "code_len": 3.95,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_Berserker_T3_web_hd_mv4": [
@@ -11825,6 +12222,24 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "f5563bc6-c994-4639-b80d-23b244838fe3",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_HD_src.glb",
+   "bytes": 11705188,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "judge_fail",
+   "by": "최종 검수 10/14",
+   "why": "pinhole through the blade groove (see-through = FAIL), art/review/weapon_design/Berserker_T3_pinhole.png",
+   "next": "new HD with A23-174 settings (55)"
   }
  ],
  "Weapon_Horns_DarkMage_T1_web_hd_mv4": [
@@ -11865,6 +12280,41 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved +0.09; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "918a676a-ccc4-4f68-b6ec-293ba9f2e37f",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_HD_src.glb",
+   "bytes": 11983056,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0781,
+    0.1892,
+    0.9813
+   ],
+   "after_studs": [
+    0.578,
+    0.239,
+    3.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14384,
+   "code_len": 3.367,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -11902,6 +12352,41 @@
    "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg",
    "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved -0.43; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "3fcd5f7d-c995-430b-b5d6-6f023f74516f",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_HD_src.glb",
+   "bytes": 11772332,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0876,
+    0.2048,
+    0.9801
+   ],
+   "after_studs": [
+    0.732,
+    0.313,
+    3.5
+   ],
+   "pivot_share": 0.45,
+   "tris": 14510,
+   "code_len": 3.441,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
@@ -11942,6 +12427,41 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.20; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "8168a269-e82f-4b0a-88f7-164cb4746517",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_HD_src.glb",
+   "bytes": 12503504,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0919,
+    0.2303,
+    0.9793
+   ],
+   "after_studs": [
+    0.941,
+    0.376,
+    4.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14488,
+   "code_len": 3.515,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -11978,6 +12498,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "43db4d08-993f-4606-a830-e858518c74dd",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_HD_src.glb",
+   "bytes": 12421940,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0665,
+    0.2158,
+    0.9812
+   ],
+   "after_studs": [
+    0.66,
+    0.203,
+    3.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 14430,
+   "code_len": 2.325,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_ShadowHunter_T2_web_hd_mv4": [
@@ -12014,6 +12569,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "c9c8ae8e-bf6f-44ce-9315-059b0fd13c62",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_HD_src.glb",
+   "bytes": 10142420,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0727,
+    0.2142,
+    0.9807
+   ],
+   "after_studs": [
+    0.765,
+    0.259,
+    3.5
+   ],
+   "pivot_share": 0.5,
+   "tris": 13842,
+   "code_len": 2.518,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_ShadowHunter_T3_web_hd_mv4": [
@@ -12050,6 +12640,41 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "bf09dc34-5793-43c2-bee1-f7101b90baf1",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_HD_src.glb",
+   "bytes": 12563916,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0706,
+    0.2153,
+    0.9789
+   ],
+   "after_studs": [
+    0.88,
+    0.289,
+    4.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 14202,
+   "code_len": 2.711,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_Blacksmith_T1_web_hd_mv4": [
@@ -12086,6 +12711,36 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T1/Weapon_Neutral_Blacksmith_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "035dfbcd-84b2-46ce-9daa-b5e952c58bb5",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T1/Weapon_Neutral_Blacksmith_T1_HD_src.glb",
+   "bytes": 15361172,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind hammer --grip 0.3",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T1/Weapon_Neutral_Blacksmith_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "after_studs": [
+    1.363,
+    0.5,
+    3.0
+   ],
+   "pivot_share": 0.3,
+   "tris": 14364,
+   "code_len": 2.2,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_Blacksmith_T2_web_hd_mv4": [
@@ -12122,6 +12777,18 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "2bb84379-f185-4032-a6a5-92229b59b7fc",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD_src.glb",
+   "bytes": 15639796,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
   }
  ],
  "Weapon_Neutral_Blacksmith_T3_web_hd_mv4": [
@@ -12158,6 +12825,36 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T3/Weapon_Neutral_Blacksmith_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "7d150122-75d7-4068-b231-ca6e809231f8",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T3/Weapon_Neutral_Blacksmith_T3_HD_src.glb",
+   "bytes": 14527332,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind hammer --grip 0.3",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T3/Weapon_Neutral_Blacksmith_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "after_studs": [
+    2.131,
+    0.758,
+    4.0
+   ],
+   "pivot_share": 0.3,
+   "tris": 14330,
+   "code_len": 2.2,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_Alchemist_T1_web_hd_mv4": [
@@ -12198,6 +12895,36 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.38 studs (0.65 H), hand = wrap centre 1.45 studs from the foot (43 %) = GLB origin, wrap moved +0.20; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "36df806f-f036-482a-af02-0b6b8c7441c0",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_HD_src.glb",
+   "bytes": 10962648,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "after_studs": [
+    0.694,
+    0.309,
+    3.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14215,
+   "code_len": 3.367,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_Alchemist_T2_web_hd_mv4": [
@@ -12238,6 +12965,36 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.64 studs (0.70 H), hand = wrap centre 1.57 studs from the foot (43 %) = GLB origin, wrap moved +0.31; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "f1c4bb1c-95f0-416e-bc45-4d32937c3ef9",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_HD_src.glb",
+   "bytes": 11629424,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    0.593,
+    0.48,
+    3.5
+   ],
+   "pivot_share": 0.45,
+   "tris": 14036,
+   "code_len": 3.441,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_Alchemist_T3_web_hd_mv4": [
@@ -12278,6 +13035,36 @@
    "sheet_wrap": "art/review/img4/staff_wrap_moved_1012.jpg",
    "wrap_fill_10_12": "hole under the moved wrap filled with copies of the bare shaft (cross-section matched, every 2nd copy upside down, seams snapped + tapered), not stretched; sheet art/review/img4/staff_fill_copy_1012.jpg",
    "a23_142": "length 3.90 studs (0.75 H), hand = wrap centre 1.68 studs from the foot (43 %) = GLB origin, wrap moved +0.66; table docs/design/weapon_grip_heights_2026-10-12.md"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "a34ecbc0-6ec7-4f44-a37a-71c3319b1e73",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_HD_src.glb",
+   "bytes": 11470304,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "after_studs": [
+    0.741,
+    0.6,
+    4.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14154,
+   "code_len": 3.515,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_PetTamer_T1_web_hd_mv4": [
@@ -12314,6 +13101,36 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T1/Weapon_Neutral_PetTamer_T1_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "cca3d2ec-0746-486a-9c2a-95cb74e4bf0e",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T1/Weapon_Neutral_PetTamer_T1_HD_src.glb",
+   "bytes": 13186144,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind baton --grip 0.3",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T1/Weapon_Neutral_PetTamer_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "after_studs": [
+    0.54,
+    0.499,
+    3.0
+   ],
+   "pivot_share": 0.3,
+   "tris": 14690,
+   "code_len": 2.19,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_PetTamer_T2_web_hd_mv4": [
@@ -12350,6 +13167,36 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T2/Weapon_Neutral_PetTamer_T2_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "e02c0e52-a85b-424d-9ace-88fe01d7c9b1",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T2/Weapon_Neutral_PetTamer_T2_HD_src.glb",
+   "bytes": 10821300,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind baton --grip 0.3",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T2/Weapon_Neutral_PetTamer_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    0.647,
+    0.534,
+    3.5
+   ],
+   "pivot_share": 0.3,
+   "tris": 14362,
+   "code_len": 2.23,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_PetTamer_T3_web_hd_mv4": [
@@ -12386,6 +13233,36 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T3/Weapon_Neutral_PetTamer_T3_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_neutral_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "8aeb1501-55e0-4886-8eaa-a876d9f6b4b2",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T3/Weapon_Neutral_PetTamer_T3_HD_src.glb",
+   "bytes": 11853600,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind baton --grip 0.3",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T3/Weapon_Neutral_PetTamer_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "after_studs": [
+    0.747,
+    0.691,
+    4.0
+   ],
+   "pivot_share": 0.3,
+   "tris": 13613,
+   "code_len": 2.27,
+   "check": "art/review/weapon_design/chunk_Neutral_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_Berserker_final_b_web_hd_mv4": [
@@ -12422,6 +13299,35 @@
    ],
    "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_final_b/Weapon_Horns_Berserker_final_b_TU.glb (+ _C/_N/_R/_M/_MR.png, disk only)",
    "sheet": "art/review/img4/weapons_tu_horns_1012.jpg"
+  },
+  {
+   "event": "web_redownload",
+   "by": "무기 디자인",
+   "at": "2026-10-14 17:14",
+   "points": 0,
+   "account": "Tripo account 2 (Chrome, balance 18375 before/after)",
+   "task": "e0be264f-5fea-4014-8038-53b6a490c65f",
+   "how": "page store current.latest.model_url (tripo_pbr_model_*_meshopt.glb) fetched in the page, posted to a local 127.0.0.1 receiver (no Downloads)",
+   "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_final_b/Weapon_Horns_Berserker_final_b_HD_src.glb",
+   "bytes": 14164456,
+   "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "judge": "최종 검수 10/14: PASS, = Horns warrior T7 'Ruin Sword' slot",
+   "tool": "tools/weapon_hd_fit.py --kind sword",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T7/Weapon_Horns_Berserker_T7_HD_fit.glb",
+   "length_studs": 6.5,
+   "after_studs": [
+    1.977,
+    0.555,
+    6.5
+   ],
+   "pivot_share": 0.17,
+   "tris": 13801,
+   "check": "art/review/weapon_design/Berserker_T7_fit.png"
   }
  ],
  "halo_houses_deco_extras_2026-10-12": [
@@ -16589,6 +17495,173 @@
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "file_bytes": 5666008,
    "note": "통짜 HD, 사용자 방식 아님 (A23-177: people = head/body/props parts) - file kept, not used; generated 10/14 morning, GLB received 10/14 10:19"
+  }
+ ],
+ "Weapon_Horns_Berserker_T3_web_hd_a23_174": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "96d262d9-f7d1-4272-8e76-2bec08e148ca",
+   "balance_after": 18265,
+   "why": "old HD failed: pinhole",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_front.png",
+    "left": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_left.png",
+    "right": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Horns_Berserker_T3_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_HD2_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind sword",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_HD_fit.glb",
+   "note": "fit made before 최종 검수 judged HD2 (sheet art/review/weapon_design/redo_HD2.jpg)"
+  }
+ ],
+ "Weapon_Neutral_Blacksmith_T2_web_hd_a23_174": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "614dca14-6447-445b-a603-e5d44fe70b45",
+   "balance_after": 18210,
+   "why": "old HD failed: both head ends round copper",
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_front.png",
+    "left": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_left.png",
+    "right": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v/Weapon_Neutral_Blacksmith_T2_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD2_src.glb"
+  },
+  {
+   "event": "self_check",
+   "result": "same fault (both ends round copper); 2D right view is not end-on (cap seen from the side) -> 2D side views need a redraw",
+   "sheet": "art/review/weapon_design/Blacksmith_T2_2d_heads.jpg"
+  }
+ ],
+ "Weapon_Neutral_Blacksmith_T2_web_hd_a23_174_v3": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 night",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "653914f6-3ef5-40ba-aa62-dbe1d1116592",
+   "balance_after": 18155,
+   "inputs": {
+    "front": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_front.png",
+    "left": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_left.png",
+    "right": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_right.png",
+    "back": "art/out/s2/weapons_t13_4v_ns/Weapon_Neutral_Blacksmith_T2_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD3_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind hammer --grip 0.3",
+   "out": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    1.472,
+    0.825,
+    3.5
+   ],
+   "pivot_share": 0.3,
+   "tris": 7168,
+   "check": "art/review/weapon_design/new_HD3_fit.png",
+   "sheet": "art/review/weapon_design/redo_HD3_Blacksmith.jpg / meme_HD.jpg"
+  }
+ ],
+ "Weapon_Meme_FryingPan_web_hd_a23_174": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 night",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "80dd528e-8d03-4170-9207-d9952e2d780b",
+   "balance_after": 18100,
+   "inputs": {
+    "front": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_front.png",
+    "left": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_left.png",
+    "right": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_right.png",
+    "back": "art/out/s2/weapons_meme_4v/Weapon_Meme_FryingPan_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Meme_FryingPan/Weapon_Meme_FryingPan_HD_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind meme --grip 0.28",
+   "out": "art/models/tripo/weapons/Weapon_Meme_FryingPan/Weapon_Meme_FryingPan_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    1.611,
+    0.311,
+    3.5
+   ],
+   "pivot_share": 0.28,
+   "tris": 7774,
+   "check": "art/review/weapon_design/new_HD3_fit.png",
+   "sheet": "art/review/weapon_design/redo_HD3_Blacksmith.jpg / meme_HD.jpg"
+  }
+ ],
+ "Weapon_Meme_RubberChicken_web_hd_a23_174": [
+  {
+   "points": 55,
+   "account": "Tripo account 2 (Chrome)",
+   "site": "studio.tripo3d.ai",
+   "by": "무기 디자인",
+   "at": "2026-10-14 night",
+   "mode": "HD multi-view 4 views, ultra mesh, 4K, remove lighting ON, PBR, triangles, polygons 8000 (A23-174)",
+   "approval": "최종 검수 10/14 (user OK A23-187 range)",
+   "event": "web_generation",
+   "task": "84c9bc27-d5f1-41c3-9ace-a11162941382",
+   "balance_after": 18045,
+   "inputs": {
+    "front": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_front.png",
+    "left": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_left.png",
+    "right": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_right.png",
+    "back": "art/out/s2/weapons_meme_4v/Weapon_Meme_RubberChicken_back.png"
+   },
+   "file": "art/models/tripo/weapons/Weapon_Meme_RubberChicken/Weapon_Meme_RubberChicken_HD_src.glb"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "tool": "tools/weapon_hd_fit.py --kind meme --grip 0.15",
+   "out": "art/models/tripo/weapons/Weapon_Meme_RubberChicken/Weapon_Meme_RubberChicken_HD_fit.glb",
+   "length_studs": 3.5,
+   "after_studs": [
+    0.843,
+    0.818,
+    3.5
+   ],
+   "pivot_share": 0.15,
+   "tris": 7610,
+   "check": "art/review/weapon_design/new_HD3_fit.png",
+   "sheet": "art/review/weapon_design/redo_HD3_Blacksmith.jpg / meme_HD.jpg"
   }
  ]
 }

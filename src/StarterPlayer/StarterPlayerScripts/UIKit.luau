@@ -1276,6 +1276,8 @@ local function artText(props, color, outlineColor, outlineTransparency, thicknes
 			p[key] = value
 		end
 	end
+	-- A23-179 (review 10/14): Number = the number font only; a label that holds ONLY numbers says AutoLocalize = false
+	-- itself (a label with words in it - "Lv 10 · Power 424", "Pouch" - is translated)
 	if props.Font == nil then
 		if props.Number then
 			p.Font = artFont("Number", Enum.Font.FredokaOne)
@@ -1323,6 +1325,13 @@ end
 
 -- white text with a dark outline, for the navy card, bars, ribbon and round buttons (Color = ArtColors.GoldText for
 -- gold numbers). Same props as UIKit.InkText.
+-- A23-179: Roblox's automatic translation is on; this keeps one label / button / box as it is (a player's name, a
+-- number, typed text). Returns the object
+function UIKit.NoTranslate(inst)
+	if typeof(inst) == "Instance" then pcall(function() inst.AutoLocalize = false end) end
+	return inst
+end
+
 function UIKit.LightText(props)
 	return artText(props, artColor("Light", Color3.new(1, 1, 1)),
 		artColor("TextOutline", Color3.fromRGB(34, 20, 10)), 0, tonumber(Art.Cfg.OutlineLight) or 1.5)
@@ -1770,8 +1779,9 @@ end
 --    fixed TextSize is raised to it (the caller's own size comes back when the floor drops); a UIKit.FitText label
 --    gets it as its picker minimum instead. Floor and stroke re-run on TextSize / AbsoluteSize / TextBounds /
 --    TextScaled / parent changes and on every UIScale change (applyScale).
---  * Text is never touched. AutoLocalize is switched off game-wide by ClientMain (A23-48 English only: Roblox's
---    automatic translation would show the English text in the player's Roblox language).
+--  * Text is never touched. A23-179 (user 10/14): Roblox's automatic translation is ON (our English is translated for
+--    other languages); only names / numbers / typed text turn AutoLocalize off where they are made (UIKit.NoTranslate,
+--    artText Number = true).
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
 -- Families come from FONT.Sets (A23-48 English only, A23-63): Denk One (Face = "Head") + Montserrat (Face = "Body").
@@ -3544,13 +3554,76 @@ end
 -- a player text from a central table. A table registered through L10n.Register (or a Config table) goes through
 -- L10n.T with its key path (Korean when the player reads Korean); any other table: t[key .. "En"] when a table still
 -- keeps both, else t[key]; extra args format it
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole DRAWN sentences, so a line with a number or a
+-- name - "Next: Lv 5 · first skill", "Power 120 → 150" - stayed English): a keyed sentence with %s / %d goes through the
+-- localization table BY KEY. key = its path ("Config.GoalChips.Text.Next", "CraftWindow.TXT.Power"); the table's Source
+-- for that key is the Roblox form of the English format ("Next: {1}"; tools/l10n_format_keys.py writes the list). Each
+-- argument is formatted here as its own English token would (string.format of that one %d / %.1f / %s), then
+-- Translator:FormatByKey(key, { ... }). An English player, no translator yet, an unknown key or an error = the English
+-- line exactly as before (L10n.T: Config.Plural etc.). Give such a label AutoLocalize = false (it is translated already).
+UIKit.TR = { Translator = nil, English = true, Spec = "%%[-+#0]*%d*%.?%d*[sdifgxXcq]", Pct = "\1" }
+
+-- (pure) the arguments as their English tokens print them: ("Lv %d · %s", 5.0, "Woods") -> { "5", "Woods" }
+function UIKit.TrArgs(fmt, ...)
+	local vals, out = table.pack(...), {}
+	if type(fmt) ~= "string" then return out end
+	local clean = string.gsub(fmt, "%%%%", "")
+	local i = 0
+	for spec in string.gmatch(clean, UIKit.TR.Spec) do
+		i += 1
+		local v = vals[i]
+		local ok, s = pcall(string.format, spec, v)
+		if not ok and type(v) == "number" then ok, s = pcall(string.format, spec, math.floor(v + 0.5)) end
+		out[i] = ok and s or tostring(v)
+	end
+	return out
+end
+
+-- (pure) the localization table's Source form: "Lv %d · %s (100%%)" -> "Lv {1} · {2} (100%)", 2
+function UIKit.TrForm(fmt)
+	if type(fmt) ~= "string" then return "", 0 end
+	local i = 0
+	local s = string.gsub(fmt, "%%%%", UIKit.TR.Pct)
+	s = string.gsub(s, UIKit.TR.Spec, function()
+		i += 1
+		return "{" .. i .. "}"
+	end)
+	s = string.gsub(s, UIKit.TR.Pct, "%%")
+	return s, i
+end
+
+function UIKit.Tr(key, ...)
+	local n = select("#", ...)
+	local tr = UIKit.TR.Translator
+	if tr and n > 0 and not UIKit.TR.English and type(key) == "string" then
+		local fmt = UIKit.L10n.Get(key, "en")
+		if type(fmt) == "string" and fmt ~= key then
+			local ok, out = pcall(tr.FormatByKey, tr, key, UIKit.TrArgs(fmt, ...))
+			if ok and type(out) == "string" and out ~= "" then return out end
+		end
+	end
+	return UIKit.L10n.T(key, n > 0 and { ... } or nil, UIKit.Lang())
+end
+
+-- the player's translator (once, in the background; UIKit.Start): English locale = the English lines as before
+function UIKit.TrStart()
+	local ok, tr = pcall(function()
+		return game:GetService("LocalizationService"):GetTranslatorForPlayerAsync(LocalPlayer)
+	end)
+	if ok and tr then
+		UIKit.TR.Translator = tr
+		UIKit.TR.English = string.sub(string.lower(tostring(tr.LocaleId)), 1, 2) == "en"
+	end
+	return ok
+end
+
 function UIKit.Tx(t, key, ...)
 	if type(t) ~= "table" then return "" end
 	if type(key) == "string" and (t[key] ~= nil or t[key .. "En"] ~= nil) then
 		local path = UIKit.L10n.PathOf(t)
 		if path ~= nil then
-			local args = select("#", ...) > 0 and { ... } or nil
-			return UIKit.L10n.T(path .. "." .. key, args, UIKit.Lang())
+			if select("#", ...) > 0 then return UIKit.Tr(path .. "." .. key, ...) end -- 10/14: by key (translated)
+			return UIKit.L10n.T(path .. "." .. key, nil, UIKit.Lang())
 		end
 	end
 	local s = t[key .. "En"] or t[key]
@@ -4192,6 +4265,7 @@ end
 function UIKit.Start()
 	-- re-read the inset once the top bar has settled (it can be 0 during the first frames)
 	task.delay(1, applyScale)
+	task.spawn(UIKit.TrStart) -- 10/14: the player's translator for UIKit.Tr
 	FONT.Preload()
 	task.spawn(function()
 		local ids = {}

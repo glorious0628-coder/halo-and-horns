@@ -656,7 +656,7 @@ runGroup("config-contract", function()
 	check(CONFIG.RateLimits.SetSettings == 1, "Config.RateLimits.SetSettings = 1", CONFIG.RateLimits.SetSettings)
 	check(deepEq(CONFIG.Data.Defaults.Settings, SETTINGS_DEFAULTS), "Config.Data.Defaults.Settings = the BB2 defaults",
 		show(CONFIG.Data.Defaults.Settings))
-	check(CONFIG.Data.Version == 5, "Config.Data.Version 5 = A23-153's codex (C1's tier 9 made it 4) (the settings blob and A23-69's Stats are additive)", CONFIG.Data.Version)
+	check(CONFIG.Data.Version == 6, "Config.Data.Version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9) (the settings blob and A23-69's Stats are additive)", CONFIG.Data.Version)
 	check(table.find(CONFIG.Data.Mirrored, "Settings") == nil, "Settings is not mirrored to attributes")
 	local ST = CONFIG.Settings or {}
 	local defs = {}
@@ -1039,14 +1039,14 @@ runGroup("dataservice-settings", function()
 	local d1 = f:Load(501)
 	check(d1 ~= nil and deepEq(d1.Settings, SETTINGS_DEFAULTS), "BB2: an old save without Settings loads with the defaults",
 		d1 and show(d1.Settings))
-	check(d1 ~= nil and d1.Version == 5, "a v3 save loads as Version 5 (A23-153)", d1 and d1.Version)
+	check(d1 ~= nil and d1.Version == 6, "a v3 save loads as Version 6 (A23-186)", d1 and d1.Version)
 	local d2 = f:Load(502)
 	check(d2 ~= nil and deepEq(d2.Settings, { V = 4, Keys = { Map = "X", Menu = "" }, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "Near",
 		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow", PvPCards = false, Weather = true, BagWide = false }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
 	local d4 = f:Load(504)
-	check(d4 ~= nil and d4.Version == 5 and deepEq(d4.Settings, SETTINGS_DEFAULTS), "a v2 save migrates to v5 with default Settings",
+	check(d4 ~= nil and d4.Version == 6 and deepEq(d4.Settings, SETTINGS_DEFAULTS), "a v2 save migrates to v6 with default Settings",
 		d4 and show({ d4.Version, d4.Settings }))
 	-- round trip: a changed blob is saved and comes back on the next visit
 	local d, p = f:Load(505)
@@ -1058,7 +1058,7 @@ runGroup("dataservice-settings", function()
 		check(row and deepEq(row.Settings, d.Settings), "the saved row holds the settings", row and show(row.Settings))
 		local again = dataWorld(deepCopy(f.Rows))
 		local back = again:Load(505)
-		check(back ~= nil and deepEq(back.Settings, d.Settings) and back.Version == 5, "the next visit (another server) loads the same settings",
+		check(back ~= nil and deepEq(back.Settings, d.Settings) and back.Version == 6, "the next visit (another server) loads the same settings",
 			back and show(back.Settings))
 	end
 end)

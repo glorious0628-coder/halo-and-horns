@@ -49,7 +49,7 @@ end
 -- A23-57: a request for the switched-off artisan guild is refused like any invalid one, with a log line
 local function logNeutralRefused(player, factionId)
 	if factionId == "Neutral" and not Config.FeatureOn("NeutralFaction") then
-		warnThrottled("neutral", ("%s asked for the artisan guild, off for the beta (A23-57)"):format(player.Name))
+		warnThrottled("neutral", ("%s asked for the artisan guild, off until the artisan update (A23-57; in the beta, A23-162)"):format(player.Name))
 	end
 end
 
@@ -354,10 +354,9 @@ local function onSwitchFaction(player, a, b)
 	local atStake = scoreKey ~= nil and statNum(player, scoreKey) > 0
 	local ticketUsed = false
 	if useTicket and lostScore and atStake then
-		local okTicket, why = S.MonetizationService.UseTicket(player, "Faction")
+		local okTicket = S.MonetizationService.UseTicket(player, "Faction")
 		if not okTicket then
-			-- CR-L25: a purchase still being saved is not "no ticket"
-			notify(player, why == "Pending" and "TicketSaving" or "NoTicket", "bad")
+			notify(player, "NoTicket", "bad")
 			return
 		end
 		ticketUsed = true

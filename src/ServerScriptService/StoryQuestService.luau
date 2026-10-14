@@ -240,7 +240,8 @@ end
 
 local function ownsIron(player)
 	local mask = math.floor(num(player:GetAttribute("WeaponOwnedMask"), 1))
-	return bit32.btest(mask, bit32.lshift(1, 2)) or num(player:GetAttribute("WeaponTier"), 1) >= 3
+	-- A23-186: the equipped weapon counts when it is at least Iron by strength (a joke weapon's tier 10 / 11 never does)
+	return bit32.btest(mask, bit32.lshift(1, 2)) or Config.WeaponAtLeast(math.floor(num(player:GetAttribute("WeaponTier"), 1)), 3)
 end
 
 local function stateTrue(player, key)
@@ -325,6 +326,20 @@ local function eventAmount(player, obj, ev)
 		return 0
 	elseif ev.Kind == "Goose" then
 		return t == "Goose" and 1 or 0
+	elseif ev.Kind == "Gather" then -- 장인 ②: a pick at a gathering node (Item / Node = only that one)
+		if t ~= "Gather" then return 0 end
+		if obj.Item and ev.Item ~= obj.Item then return 0 end
+		if obj.Node and ev.Node ~= obj.Node then return 0 end
+		return math.max(0, math.floor(num(ev.N)))
+	elseif ev.Kind == "Craft" then -- 장인 ②: a finished craft (Role / Kind = only that role's / kind of recipe)
+		if t ~= "Craft" then return 0 end
+		local r = type(Config.Craft) == "table" and type(Config.Craft.Recipes) == "table" and Config.Craft.Recipes[ev.Recipe] or nil
+		if type(r) ~= "table" then return 0 end
+		if obj.Role and r.Role ~= obj.Role then return 0 end
+		if obj.Kind and r.Kind ~= obj.Kind then return 0 end
+		return 1
+	elseif ev.Kind == "SellMat" then -- 장인 ②: gathered materials sold at the Forge (SellItem)
+		return t == "SellMat" and math.max(0, math.floor(num(ev.N))) or 0
 	end
 	return 0
 end
@@ -340,7 +355,7 @@ end
 local function grantItem(player, id, n)
 	local loot = S.LootService
 	if type(id) ~= "string" or type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return nil end
-	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)))
+	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)), "Reward") -- a reward fits a full bag (10/14)
 	if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 	local given = ok and math.floor(num(res)) or 0
 	if given <= 0 then return nil end
@@ -392,6 +407,11 @@ local function complete(player, data, id)
 	end
 	-- A23-130: the reward line only, with the QuestDone sound (def.Finish lore lines are not sent)
 	notify(player, msg, "reward", "QuestDone")
+	-- bag slots (10/14): Reward.BagSlots = +n slots and one line ("+4 bag slots")
+	if type(def.Reward) == "table" and num(def.Reward.BagSlots) > 0 and S.LootService and type(S.LootService.AddBagSlots) == "function" then
+		local ok, added = pcall(S.LootService.AddBagSlots, player, def.Reward.BagSlots)
+		if ok and num(added) > 0 then notify(player, string.format(Config.BagSlots.Text.Gained, added), "reward", "None") end
+	end
 	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
 	if type(def.Reward) == "table" and def.Reward.Item then
 		local line = grantItem(player, def.Reward.Item, def.Reward.N)
@@ -407,10 +427,33 @@ local function complete(player, data, id)
 		if not ok then Util.Warn(TAG, "TitleService.Grant: " .. tostring(new)) end
 		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward", "RankUp") end
 	end
+	-- 장인 ② N0: the weapon just crafted (a spare) goes into the hand when it is better than the one held
+	if r and r.EquipCrafted == true and S.LootService and type(S.LootService.EquipBestSpare) == "function" then
+		local ok, tier = pcall(S.LootService.EquipBestSpare, player)
+		if not ok then Util.Warn(TAG, "EquipBestSpare: " .. tostring(tier)) end
+		if ok and type(tier) == "number" then
+			notify(player, string.format(TXT.CraftEquipped, Config.WeaponName(tier, player:GetAttribute("Class"), faction(player))), "reward", "Equip")
+		end
+	end
 	-- A23-34: the blacksmith's free first weapon after the story lines (1-A #2: normally paid at the visit already)
 	giveWeapon(player, def)
 	dirty(player)
 	StoryQuestService.QuestDone:Fire(player, id)
+end
+
+-- bag slots (10/14): a save that finished its Reward.BagSlots quests before the slots existed gets them at the join
+-- (silently; the slots only grow, never past Config.BagSlots.Max)
+function StoryQuestService.CatchUpBagSlots(player, data)
+	local loot = S.LootService
+	if type(loot) ~= "table" or type(loot.AddBagSlots) ~= "function" then return end
+	local want = Config.BagSlots.Default
+	for id in story(data).Done do
+		local def = DEFS[id]
+		if def and type(def.Reward) == "table" then want += math.max(0, math.floor(num(def.Reward.BagSlots))) end
+	end
+	want = math.min(want, Config.BagSlots.Max)
+	local have = Config.BagSlotsOf(data)
+	if want > have then loot.AddBagSlots(player, want - have) end
 end
 
 -- A23-110: nothing of potions yet: no stock, no potion ever bought or drunk (the King's Hop is for those saves only)
@@ -588,10 +631,16 @@ local function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
 	if def.Factions and not def.Factions[faction(player)] then return false end
-	-- A23-57: the artisan guild's own quests wait for its switch (a save that is Neutral already keeps what it has)
+	-- A23-57: the artisan guild's own quests are not OFFERED while its switch is off; a quest a Neutral save already took or
+	-- finished stays (this check gates new offers only: the caller skips Done / taken ids first)
 	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
+	-- C-5 (게임성 개발 2): Feature = the quest waits for its Config.Features switch (the market quests)
+	if type(req.Feature) == "string" and not Config.FeatureOn(req.Feature) then return false end
+	for _, f in type(req.Feature) == "table" and req.Feature or {} do -- 장인 ②: every switch of a list
+		if not Config.FeatureOn(f) then return false end
+	end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
 	-- A23-70: TutorialDone = the first mission is claimed (TutorialStep 99); NotDone = none of these quests is done yet
 	if req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end
@@ -654,6 +703,9 @@ local function refresh(player)
 			end
 		end
 		changed = true
+		-- bag slots (10/14): a skipped quest with Reward.BagSlots still gives its slots (the bag is not a past reward)
+		local okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)
+		if not okBag then Util.Warn(TAG, "CatchUpBagSlots: " .. tostring(errBag)) end
 	end
 	st.First.Migrated = true
 	-- A23-113: first meetings (Config.StoryQuests.Meetings: what the player holds, the size scale on their own body) leave a saved flag
@@ -900,12 +952,24 @@ local function rowFor(player, data, id, track)
 		text = string.format(TXT.Claim, def.Title)
 		progress, target = 1, 1
 	elseif obj.Type == "Trials" then
-		local done = 0
+		local done, first = 0, nil
 		for _, sub in obj.List do
-			if num(track.T[sub.Key]) >= sub.Count then done += 1 end
+			if num(track.T[sub.Key]) >= sub.Count then
+				done += 1
+			elseif first == nil and type(sub.Text) == "string" then
+				first = sub
+			end
 		end
-		text = string.format(step.Text, done)
-		progress, target = done, #obj.List
+		if first then
+			-- Codex B1: the first trial not done yet, in its own words and numbers ("Beat slimes with basic attacks 1/3")
+			progress, target = math.floor(num(track.T[first.Key])), first.Count
+			template = first.Text
+			local okF, f = pcall(string.format, first.Text, progress, target)
+			text = okF and f or first.Text
+		else
+			text = string.format(step.Text, done)
+			progress, target = done, #obj.List
+		end
 	elseif obj.Type == "Level" then
 		text = string.format(step.Text, math.floor(num(data.Level, 1)))
 	elseif obj.Type == "Near" and num(obj.Stay) > 0 then
@@ -1133,7 +1197,7 @@ local function payChoice(player, obj, side)
 	local id = r.Item or r.Potion
 	local loot = S.LootService
 	if type(id) == "string" and type(loot) == "table" and type(loot.GrantItem) == "function" then
-		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)))
+		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)), "Reward") -- a reward fits a full bag (10/14)
 		if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 		local given = ok and math.floor(num(res)) or 0
 		if given > 0 then
@@ -1291,6 +1355,23 @@ function StoryQuestService.Start()
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
 	connect("GooseService", "GooseFinished", onGooseFinished)
+	-- 장인 ②: the guild's steps (looked up softly: a world without these services connects nothing, with no warning)
+	for _, hook in {
+		{ "GatherService", "Gathered", function(player, item, n, node) feed(player, { Kind = "Gather", Item = item, N = n, Node = node }) end },
+		{ "CraftService", "Crafted", function(player, recipeId) feed(player, { Kind = "Craft", Recipe = recipeId }) end },
+		{ "LootService", "MaterialSold", function(player, id, n) feed(player, { Kind = "SellMat", Item = id, N = n }) end },
+	} do
+		local svc = S[hook[1]]
+		local sig = type(svc) == "table" and svc[hook[2]] or nil
+		if type(sig) == "table" and type(sig.Connect) == "function" then
+			local fn = hook[3]
+			sig:Connect(function(player, ...)
+				if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
+				local ok, err = pcall(fn, player, ...)
+				if not ok then Util.Warn(TAG, hook[2] .. ": " .. tostring(err)) end
+			end)
+		end
+	end
 	-- A23-113: a PvP KO that took gold into a Grudge Sack is the first meeting with the sack, for the thief and for the victim
 	-- (looked up softly like the card hooks below: a world without PvPService connects nothing, with no warning)
 	local pvp = S.PvPService
@@ -1310,6 +1391,8 @@ function StoryQuestService.Start()
 			publishTownPick(player, story(data)) -- A23-64 ①: TownPick from the save (sanitize backfilled it)
 			local okGift, errGift = pcall(StoryQuestService.RetryGifts, player) -- a step gift that gave nothing, again
 			if not okGift then Util.Warn(TAG, "RetryGifts: " .. tostring(errGift)) end
+			local okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)
+			if not okBag then Util.Warn(TAG, "CatchUpBagSlots: " .. tostring(errBag)) end
 		end
 		pcall(refresh, player)
 	end)

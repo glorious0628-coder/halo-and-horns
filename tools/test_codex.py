@@ -45,9 +45,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # --- config
-    ("config: the version stays 4", C, "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 5,",
-     "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 4,"),
-    ("config: the default record stays 4", C, "\tDefaults = {\n\t\tVersion = 5,", "\tDefaults = {\n\t\tVersion = 4,"),
+    ("config: the version stays 4", C, "so it must refuse v6 records (CR-L3)\n\tVersion = 6,",
+     "so it must refuse v6 records (CR-L3)\n\tVersion = 4,"),
+    ("config: the default record stays 4", C, "\tDefaults = {\n\t\tVersion = 6,", "\tDefaults = {\n\t\tVersion = 4,"),
     ("config: no Codex default", C, "Config.Data.Defaults.Codex = {} -- save v5", "Config.Data.Defaults.CodexX = {} -- save v5"),
     ("config: Silver at 50", C, "\tSteps = { 1, 100, 1000 }, -- kills", "\tSteps = { 1, 50, 1000 }, -- kills"),
     ("service: bosses on the normal rewards", X, "\t\tlocal mults = boss and X.Reward.BossStage or X.Reward.Stage\n",
@@ -71,7 +71,7 @@ MUTATIONS = [
     ("repair: no kill ceiling", C, "\t\t\tlocal kills = int(e.Kills, Config.Codex.MaxKills)\n", "\t\t\tlocal kills = int(e.Kills, math.huge)\n"),
     # --- the v5 step
     ("v5 step: no fill from the kill record", D, "\t\tif Config.CodexFromKillLog then d.Codex = Config.CodexFromKillLog(d.KillLog, d.Codex) end\n", ""),
-    ("v5 step: the version stays", D, "\t\td.Version = 5\n", ""),
+    ("v5 / v6 steps: the version stays (A23-186: the v6 step is the last)", D, "\t\td.Version = 6\n", ""),
     ("v5 step: runs on every load", D, "\tif (tonumber(d.Version) or 1) < 5 then\n", "\tif true then\n"),
     ("v5 step: no repair at load", D, "\tif Config.SanitizeCodex then d.Codex = Config.SanitizeCodex(d.Codex) end\n", ""),
     ("fill: a smaller kill record wins", C, "\t\t\telseif e.Kills < n then\n", "\t\t\telse\n"),

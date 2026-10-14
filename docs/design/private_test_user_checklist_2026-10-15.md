@@ -18,6 +18,7 @@ Creator Hub(create.roblox.com) → 만들기 → 체험 "Halo & Horns"(장소 81
 | 7 | Gold Halo | 99 | (6과 같은 글) |
 | 8 | Lava Horns | 99 | (6과 같은 글) |
 | 9 | Shadow Horns | 99 | (6과 같은 글) |
+| 10 | Fast Travel (**구독**, 패스 아님: 수익 창출 → 구독 → 월, 가장 낮은 가격 등급) | 월 | Teleport to any zone you have unlocked from the menu, every month. No stats are for sale. |
 
 - 만든 뒤 **패스 9개의 ID 숫자**(주소 끝 숫자)를 이름과 함께 저에게 보내 주세요. → 개발 2가 `Config.GamePasses`·치장 Looks 표에 넣고 동결판에 포함합니다(10/15 18:00 전이면 좋음, 늦으면 10/16 오전).
 - **판매 켜기(On Sale)는 지금 켜 두세요.** 시험 동안 초대한 사람만 들어오고, 패스마다 한 번씩 사 보고 다시 접속해 혜택이 남는지 봅니다(A23-156 ③). 실제 로벅스가 듭니다(작은 금액).
@@ -28,6 +29,7 @@ Creator Hub(create.roblox.com) → 만들기 → 체험 "Halo & Horns"(장소 81
 1. 메인 반영 1이 그날 main을 메인 Studio에 넣고 저장까지 끝내면 제가 알립니다(동결은 없음, A23-161). 그 전에는 게시하지 마세요.
 2. 저장: Studio 메인 창 → **File → 새 이름으로 활성 로컬 파일 저장** → `build\GoodEvil.rbxlx`, 형식 **Roblox XML 플레이스 파일(*.rbxlx)** 덮어쓰기 → 저에게 "저장했어"(메인 반영 1이 확인·place push). Ctrl+S는 클라우드/.rbxl로 가서 우리 파일이 안 바뀝니다(10/13 밤 확인).
 3. 게시: **Alt+P**(File → Publish to Roblox, 같은 체험·같은 장소 81671223175574로). Ctrl+S는 게시가 아닙니다. 다른 체험을 새로 만들지 않습니다.
+   - **이번 판은 저장 형식이 v6로 바뀐 판(무기 상점 A23-186)이에요.** 게시하자마자 Creator Hub → 체험 → **서버(Servers) → 모든 서버 종료(Shut Down All Servers)**를 한 번 눌러 주세요. 옛 판 서버가 남으면 그 서버로 들어온 사람의 저장이 열리지 않아요(옛 서버는 새 저장을 거절함).
 4. Creator Hub → 체험 → **접근 권한(Access)** = **비공개(Private)** 그대로 두고, 시험할 친구는 **협력자(Collaborators)** 또는 친구 초대로 넣습니다(비공개 체험은 초대·협력자만 들어감).
 5. Creator Hub → 체험 → 기본 설정 → **API 서비스 접근(Enable Studio Access to API Services)** 켜짐 확인(저장·Health 기록이 쌓이려면 필요).
 6. 저에게 "게시함" 한 줄. → 개발 2가 만든 **시험용 스위치 하나**(Z 스킬 켬·거위 10분·패스 판매 켬, A23-156)는 코드 안 값이라 사용자가 만질 것 없음. 시험 뒤 되돌리는 것도 코드.
@@ -35,4 +37,4 @@ Creator Hub(create.roblox.com) → 만들기 → 체험 "Halo & Horns"(장소 81
 
 ## 사용자가 안 해도 되는 것
 - 패스 ID를 코드에 넣기, 스위치 켜고 끄기, 서버 기록 읽기, place 커밋 — 전부 세션 몫. (저장 Save As만 사용자: 화면 제어 팝업을 안 쓰기로 함, 10/13 밤)
-- 게시 뒤 "모든 서버 종료"는 저장 형식이 바뀐 판을 올릴 때만 제가 따로 부탁드립니다.
+- 게시 뒤 "모든 서버 종료"는 저장 형식이 바뀐 판을 올릴 때만 해요. 10/16 게시판은 v6라서 위 3번 아래 줄대로 한 번 해야 해요(개발 2, 10/14).

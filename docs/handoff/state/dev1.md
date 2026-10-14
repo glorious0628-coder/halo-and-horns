@@ -1,6 +1,127 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 낮 — 무기 상점 창 dev1-weapon-shop 3eb69150 (push, 최신)
+- dev2-weapon-shop 위 + dev1-hold-pose 합침. WSHOP.CatalogTiers(1·2·3·10·11), WSHOP.IsMeme, Offer가 밈 줄 허용, Config.WeaponMemeScreen{Line, Look}; WeaponPose.MemeOf/MemeLook(코드 팬·닭, 서버 모양 로컬 숨김, 칼 자세); Fx Feel.memeHits(SoundId·ParticleId 빈칸 = 없음). test_weapon_shop_meme 10·9/9.
+- 남은 큐: fix/client-text-central을 병합된 main 위로 다시 올리기(tr-first10·format-keys·hide-not-now·bag-slots·war-bar 등이 main에 들어간 뒤; 그때 HUD·BagUI 표도 옮김). 그 전엔 대기.
+
+## 10/15 아침 — 번역 체인·숨기기·쥐는 자세 (push)
+- 병합 순서(최종 검수): small-ui·war-bar·goal-chip → **fix/tr-first10** (첫 10분 문장 키, ui-tr 포함) → **fix/format-keys-modules** (모듈 표도 format_keys, '% ' 공백 형식 아님) → **fix/hide-not-now** (Config.QuestNotNow: 거위·S2 줄 1시간 규칙, 상점 티켓 칸 삭제) → **dev1-hold-pose** c94c5a60 (A23-187) → 맨 뒤 **fix/client-text-central** a49a16f7 (Config.ClientText.<모듈>, HUD·BagUI는 그 가지들 병합 뒤 옮김 → 그때 tr-first10 위로 다시 올리기).
+- 시험 습관: 종료 코드만 보지 말 것(실패인데 exit 0인 시험 많음) → scratchpad sweep.sh는 Status: failed / N failing도 잡음. 무거운 전체 시험은 가지당 한 번, 변이는 바뀐 모듈만(최종 검수 요청: PC 부하).
+- 작업 폴더: wt_dev1merge(전체), wt_dev1b·wt_dev1c(sparse: src/tools/docs/design, build는 ../Game/build 연결).
+- 쥐는 자세: Config.WeaponGrips Rest+Hold(Side/Staff/Bow), Config.HoldPoses, WeaponPose.BowRest/PoseStep. 사진 docs/art/verification_2026-10-14/hold_pose/ (시험 Studio = build/HoldTest_1014.rbxlx 복사본, 사진 스크립트 scratchpad play_hold_pose.py; Studio 창이 최소화면 흰 사진 → ShowWindow 복원).
+- 다음: 무기 상점 창(A23-186: dev2-weapon-shop 3ce1b9ac — WeaponSoldAtForge, UpgradeWeapon(tier), 밈 10/11, Config.WeaponMemes 소리·입자, Fx Swing Meme) → client-text-central 다시 올리기.
+
+## 10/15 새벽 — 사용자 지적 3건 + 번역 키 (push)
+- **fix/war-bar-no-text 7ac4589b**: 왕관전 막대 아래 줄 전부 삭제(A23-130), 시간 숫자만 막대 안 가운데(ui.warTime, 번역 끔), 판 = 막대만, HUD.TopBottom = 판·막대·방패. 거위 칩 아이콘 안쪽(L.GooseChip Left 10/Right 12/Gap 6/IconK 0.75/PlusH 4, SQ.FitGoose·SQ.GooseNeed). test_hud_top_overlap 14·21/21, crown_points·auto_translate 갱신. 사진 때 숫자와 왕관 끝 겹침 확인.
+- **fix/goal-chip-two-lines b0e8081b**: 목표 칩 2·3층 줄바꿈(최대 2줄, L.FitTierHeight = TextBounds/scale), 자리 계산 1+2줄, Config.GoalChips.Text.Halo/Horns = "Win the Crown", 3층 색 = 진영 색. test_goal_chips 52·25/25.
+- **fix/ui-tr 965d5f28**: UIKit.Tr(key, ...)·TrArgs·TrForm·TrStart, Tx(인자 있음) → Tr. tools/l10n_format_keys.py → Game/build/l10n/format_keys.json/.csv(338). test_ui_tr 26·9/9, test_l10n 정적 갱신.
+- 남은 큐: 화면 모듈 하드코딩 글 394개 → 중앙 표(+ string.format 직접 쓰는 곳 Tr로), 장인 ⑤(개발 2 기다림). a23_14 확인 못 함(느림).
+
+## 10/14 밤 23 — 작은 화면 묶음 fix/small-ui-batch b5b2def2 (2-C #9, push)
+- ① 연출 건너뛰기: 할 것 없음(Intro Skip+Enter, 제작 [Skip], 강화 즉시, 진영 변신 연출 없음). ② HUD 칩 Outlaw(Config.Ranking.Text.OutlawChip). ③ NameTagPrefs.BorderOf/FitBorder: RibbonDays28을 이름 오른쪽에(테두리 그림 없음). ④ Invite.GooseWin/WarWin/WinCard(PanelCard+BtnSecondary, Config.WinCard, 8초); 왕관전은 WarRoundEndsAt 휴리스틱. ⑤ MiniMap.PitOf/PitPosts, 두 지도에 PvPArea 극한 빨강, 월드에 내 화면만 빨간 기둥(PitEdgeLocal).
+- test_small_ui 22·23/23; settings_apply·halloween_hidden 고친 뒤 통과. place_english = worktree에 place 없음. a23_14 결과 확인 남음.
+- 목록: 왕관전 라운드 끝 신호(개발 2), 28일 테두리 그림(디자인).
+
+## 10/14 밤 22 — 가방 칸 정정 fix/bag-slots-with-sell d417e164 (push)
+- 최종 검수 정정: 가방 전체 종류 수 하나. Config.BagSlots { Default 12, Step 4, Max 20, Counts(Material·Enhance·Transfer·Tonic·Treat·Spare), Text.Gained, Text.Full }. BagUI.Used(cells), 아래 줄 IconBag + 'n / N'(가득 = 빨강, 늘면 금테 깜빡 shine). 격자·LayoutSig는 원래대로(잠긴 칸 없음). test_bag_ui 211·99/99. fix/bag-slots-ui 965cdf95는 버림.
+- dev2-market 0af19d16(UnpackSpare = 거래소 또는 Crafting) 위 market-no-refund + artisan-unpack 합쳐 시험 통과. 최종 검수: 안 팔린 판매 글 [Cancel] 그대로.
+- 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests).
+
+## 10/14 밤 21 — 거래소 수수료 + 가방 칸 (push)
+- **fix/market-no-refund 66464a64** (A23-183): 창에 환불·되돌리기 없음 확인. MarketWindow.FeeRate = Config.Market.Fee(개발 2), 없거나 이상하면 L.Fee 0.07. 안 팔린 판매 글 [Cancel]은 남김(최종 검수에 확인 부탁). test_market_window 167·66/66.
+- **fix/bag-slots-ui 965cdf95**: Config.BagSlots { Default 8, Step 4, Max 16, Text.Gained "+%d bag slots" }. BagUI.Slots(속성 BagSlots) / SlotPlan(순수): 빈 칸 → Max까지 잠긴 칸(GlyphLock), 물건은 안 숨김; BagUI.OnSlots(Start 속성 신호) → 늘어난 칸 S.Flash → 다음 그림에서 금테 깜빡(shine). LayoutSig = 열 수만. test_bag_ui 208·96/96. dev1-artisan-sell과 BagUI.Start 충돌 → 합친 판 fix/bag-slots-with-sell c09a3ef3(212·99/99).
+- 걱정 전달: 서버가 탭당 8칸을 진짜 막으면 재료 탭이 금방 참.
+- 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests 없음).
+
+## 10/14 밤 20 — dev1-artisan-unpack 47e7bc66 (장인 ③, push)
+- CraftWindow.SparePlan(순수: 레시피 단계의 여분 "T:P" → 가장 높은 +N·개수·이미 가짐) + Detail: "Power A → B"(Config.CombatPowerOf, PowerDiff 색, 레벨로 못 쓰면 없음), "In your bag ×N", 가짐 = 줄만, 아니면 [Use it] → UnpackSpare → 비트 오면 EquipWeapon(레벨 되면), 3초 = 버튼 다시. Net.Names에 UnpackSpare 없으면 꺼짐(먼저 병합 가능). test_craft_window 158·59/59.
+- 개발 2에 관찰 전달(최종 검수 경유): dev2-market UnpackSpare가 거래소 스위치 꺼지면 안 됨 → 제작만 켜면 못 씀.
+- 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests 없음).
+
+## 10/14 밤 19 — fix/shop-price-live 503293ac (2-C #10, push)
+- ShopUI: 공유 읽기 PRICE.Ask(키마다 한 번, pcall, 캐시; 실패·없음 = false 기억; 첫 답 = 열린 상점 다시 그림 PRICE.Refresh = refreshAll). LivePrice(id, GamePass/Product, Config 가격) = GetProductInfo PriceInRobux → 패스 카드·모양·직업/진영 표. SubPrice("EXP-…") = GetSubscriptionProductInfoAsync: DisplayPrice 글(새 Config MonthTextF "%s / mo") 먼저, 없으면 PriceInRobux(MonthF), 없으면 Config. 구독 정보 칸 이름은 문서에 없어 추측 → 게시판 Play에서 확인.
+- main을 한 번 병합(a77b0a21; 구독 카드가 main에만). 새 test_shop_price 32·19/19, shop_ui 변이 글 한 줄(모양 줄) 맞춤 11/11, passes·fast_travel_ui·english·shop_layout 통과.
+- 다음: 장인 ③⑤(개발 2 서버 가지 기다림). Hop MINOR 2개(지붕 맞는 땅 레이, 서버 확인 시작점 호)는 X 켜기 전.
+
+## 10/14 밤 18 — fix/translate-overflow a61c7fda (push)
+- HUD L.GoalGuard(TextFits false → L.GuardStep 1씩, 바닥 max(GoalMin, 스타일 바닥)), FactionPicker 혜택 줄 setTextRange(MIN_TEXT, size), DeathScreen 줄·상자 AutomaticSize Y. FitText·ClassPicker·버튼(TextScaled)은 이미 그린 글 기준. 남은 위험: 키트 버튼 12px 바닥보다 긴 단어. 새 test_translate_overflow 18·7/7.
+- Fast Travel 합친 판(+dev2-pass-ids-2 1eb7399e) 통과; test_shop_ui 'ID 없는 패스' 검사 실패는 개발 2 가지만으로도 같음 → 개발 2에 부탁.
+- 대기 병합: sword-hold fe4665f9, fast-travel-pass-ui ca659495, dev1-artisan-sell 651e54e1, translate-overflow a61c7fda.
+
+## 10/14 밤 17 — 검 쥐기 끝: fix/sword-hold fe4665f9 (병합 가능, 최신)
+- 엔진 사진 2판(시험 Studio SwordTest = build/GoodEvil.rbxlx 복사본, 스크래치 스크립트 play_sword_hold.py; 메인 안 건드림): docs/art/verification_2026-10-14/sword_hold/(1판: Tool.Grip 바꿔도 서버 RightGrip 용접 안 바뀜 → 날 앞으로 수평), sword_hold2/(2판: 용접 C1 직접 → 날 @몸통 (0,0.72,0.69) 위·뒤 44°, 팔 내림, 손잡이 가운데).
+- 고침 3커밋: ad40b932(Point 0.5, Rest {130,0,0}, RestStep toolnone 0.001) → fb3942ba(RightGrip 용접 C1 로컬로 돌림) → fe4665f9(공격 갈 땐 toolnone 바로, 검사 0.05초). test_tool_grip·weapon_motion 269 통과.
+- 남은 확인: 마지막 커밋(공격 즉시 전환)은 엔진 사진 없음 → 메인 반영 1 사진 때 공격 한 장.
+
+## 10/14 밤 16 — Fast Travel 구독 화면 + 장인 ② 가방 팔기 (push, 최신)
+- **fix/fast-travel-pass-ui ca659495** (A23-182, 월 구독): Panels.TravelOn() = 속성 SubFastTravel == true; Panels.Open("Travel") 막음, 메뉴 Travel 줄 뺌, HUD 타일 숨김(속성 바뀌면 펼침 다시), 스킬북 [Where to hunt] 숨김. ShopUI.SubCards(): Config.SubscriptionInfo.FastTravel { Id "EXP-…" 문자열, Name, Line, Price, Attr?, Icon? } → 카드 한 장, PromptSubscriptionPurchase, 구독 중 Owned. 새 test_fast_travel_ui 16·11/11, skill_book 68·33/33. Config.SubscriptionInfo·SubFastTravel·서버 Travel 거절 = 개발 2.
+- **dev1-artisan-sell 651e54e1** (계약 ②): BagUI.SellPlan + [Sell 1]·[Sell all] → SellItem(itemId, n), 모루 프롬프트(Config.WeaponShop.PromptName) PromptShown일 때만 켬, Net에 SellItem 없으면 안 보임. test_bag_ui 198·91/91. 개발 2 dev2-artisan-sell과 같이 병합.
+- 기다림: 검 사진 화면 사용 '전달함, 시작', 장인 ③(dev2-market UnpackSpare push) ⑤(목표 Gather/Craft/SellMat).
+
+## 10/14 밤 15 — 사용자 플레이 지적 2개 (코드 push, 검 사진 기다림, 최신)
+- **fix/hud-top-overlap 77d8b04b**: HUD.TopBottom()(전쟁 막대+판+정보 줄+보이는 칩 줄의 실제 그린 아래 끝, du) → EventHUD 거위/호박왕 칩 = max(자기 줄, 그 아래 끝+6)(V2.EventTop, 매 틱), EventHUD.TopBottom() = 칩 아래 끝 → QuestMarker '위 금지 띠'(QuestMarker.TopLimit: 아래 끝들 + 8 + 아이콘 반) 아래로 화면 안 마커 클램프·가장자리 트랙 시작. 새 test_hud_top_overlap 12·11/11, first_look 정적 글귀 갱신. walk_forge_client는 main도 같은 정적 실패(내 것 아님).
+- **fix/sword-hold ad40b932**: 칼·어둠 검 Point 0.75 → 0.5, Rest = {130,0,0}(Config.WeaponGrip(kind, len, "Rest")); WeaponPose.RestStep(0.1초, 모든 캐릭터): 공격 클립 없으면(Fx.AttackPlaying) toolnone 트랙(ToolNoneAnim) 가중치 0.001 + Grip Rest, 공격 중이면 1 + 원래 Grip. test_tool_grip(새 검사 5·변이 8), weapon_motion 269(칼 검사 가운데 이상) 등 통과. **엔진 사진 4장 대기**: 최종 검수에 화면 사용 요청(시험 Studio 새 창 = build/GoodEvil.rbxlx 복사본 SwordTest, 메인 금지). 볼 것: 실제 대기 손 방향에서 날이 위·뒤인지, toolnone 0이 팔을 내리는지, Grip 바뀔 때 튐.
+- 장인 화면 ①②⑤는 개발 2 서버 가지 기다림(dev2-artisan-sell은 worktree에 있음, push 아직).
+
+## 10/14 밤 14 — 장인 화면 시작: fix/market-window-3 65835d8a (다 됨·push, 최신)
+- 계약 docs/design/artisan_min_server_2026-10-14.md. 화면 몫 5개 중 ③(거래소 창 고장 3개)부터: TimeText 한 시간 이상 = TXT.Hours "1h 05m"(65초 "1:05"와 안 겹침), 내 목록 Sold 줄 값 = Fee 뺀 받는 값(You get과 같은 계산), 팔기 목록에서 T1 여분(W:1:*) 뺌. test_market_window 166·63/63(새 검사 1·변이 3), english, l10n, auto_translate 통과.
+- ④ 확인만: FactionPicker는 모듈 로드 때 Config.Features.NeutralFaction을 읽어 켜져 있으면 Soon 카드 대신 장인 카드(자동). 실시간 스위치 아님(게시 필요) — 손 안 댐.
+- 기다림(서버 가지): ② SellItem 가방 [Sell]·'Sells for' 줄, ③ UnpackSpare 제작 창 [Equip]·Power A→B, ① 목표 Gather/Craft/SellMat 추적기·퀘스트 창. 개발 2에 기대 이름 보냄.
+- 대기 병합: fix/settings-apply 7ab6e07e, fix/skill-press-gate 097d69c2, fix/market-window-3 65835d8a(서로·main 깨끗).
+
+## 10/14 밤 13 — fix/skill-press-gate 097d69c2 (다 됨·push, 최신)
+- A23-180(사용자 "서버가 거절을 안 하게 해야지"; 서버 개발 2 fix/skill-no-reject 5bd777c5). SkillBar: 거절 글·흔들기·떠오르는 말 라벨·OnPress·skillWord·No 소리 전부 삭제. 새 순수 SkillBar.Gate(st, buffer): 안 배움 / MP 부족 / 재사용 > PressBuffer(Config.Skills.PressBuffer, 없으면 0.35) / Hop 칸(Shape Hop)에서 짐(SackGold>0, KaijuState Siren·Active, EggCarry>0) → 안 보냄·말 없음; 0.35초 이하 남음 → 보냄. 짐이면 Hop 칸 흐림(MP 부족처럼), SackGold·KaijuState·EggCarry 바뀌면 다시 칠함. 잠금 그림 옆 'Lv N' 글 숨김. Config.Skills.Text NotReady·NotNow 삭제. SkillPress Fx는 이제 아무것도 안 그림(Hop Fx는 그대로).
+- 남긴 것: 첫 스킬 전 스킬 키 → "Skills come at Lv N" 토스트(A23-71 LEARN.Tell, test_skill_learn이 지킴) — 버튼 거절 글이 아니라 배우기 안내라 둠(최종 검수 판단 대기).
+- 시험: test_skill_press 31·18/18(새로 씀: 게이트 4조건, 0.35 경계, 짐 3종, 말·소리 없음, 서버 답 무표시), skill_learn 27/27, skills, skills_x, skill_fx 109·18/18, skill_book 67·32/32, skill_signals, hud_layout, phone_first10, english, l10n, first_ko, story_text 통과. fix/skill-no-reject와 합친 임시판에서 skill_press·skills·skill_learn 통과. main·서버 가지 merge-tree 깨끗.
+
+## 10/14 밤 12 — fix/settings-apply 7ab6e07e (다 됨·push, 최신)
+- 병합됨: skill-press-reject(0783dbbd), auto-translate-on(bcde9e91), 마을 기금(e35d32b9).
+- fix/settings-apply = fe85439a(연결) + be336a32(설정 창 두 줄) + 1d04f52c(NameTagPrefs 강한 표 + ApplyAll 때 각 플레이어 Head Nametag 다시 찾기) + main 병합 9345953f + 8c60718e 자동 번역 후속 + main 병합 7ab6e07e(ClientMain ORDER: ChatTags, NameTagPrefs … VillageFundUI 둘 다).
+- 8c60718e: UIKit artText Number = 글꼴만(번역 끄기 규칙 삭제) → 숫자만 라벨에 AutoLocalize=false 명시(HUD 버튼 개수·레벨·두 점수·타이머, 출석 개수·원판, 물약 개수, Tab 숫자 칸); Power·보상·바 글 등 글자 섞인 줄은 번역. 이름표 Line1 = 이름만(끔) + 자식 TextLabel "Title"(번역, 클라 ShopUI CROWN.Fit이 왕관 왼쪽에 놓고 VipPad로 칭호+왕관+이름 한 덩어리 가운데; VipPad는 이제 늘 있음). 캐릭터 창 닉네임 끔. 시장 입력칸 끄기 되돌림(TextBox 입력 글은 Roblox가 번역 안 한다고 알고 있음 — 확인 못 함; placeholder는 번역).
+- 시험: test_settings_apply 26·16/16, test_auto_translate 21·13/13, village_fund_ui 74·29/29, village_fund, ranking, character_ui 175·94/94, market_window 165·60/60, attendance_ui 30/30, shop_ui 11/11, hud_layout, english, l10n, beta_basics, phone_first10, supporter_board, place_english 통과; rank_marks 117/117(glb 거짓 10).
+- ⑤ 확인만: PvPService 924 수배 판·EventHUD 1438처럼 이름 낀 format 문장은 통째로 한 문자열이라 Roblox 자동 번역이 이름까지 바꿀 수 있음(자리표시 보존은 Translator:FormatByKey + 표 키를 쓸 때만이라고 알고 있음 — 실제 확인 못 함).
+- **X 켜기 전에 고칠 Hop MINOR 2(최종 검수 반박 검토):** ① SkillBar 844 Hop 땅 레이가 머리 위 차양(지붕)에 맞을 수 있음 → 아래로만 쏘거나 위 시작점 낮추기 ② 861 호가 서버가 확인한 출발점이 아니라 지금 위치에서 시작·벽 통과 가능 → 서버 From(없으면 Fx "Skill" From)에서 시작.
+- 다음: fix/skill-press-gate(A23-180: 거절 글·흔들기 빼기, 화면이 먼저 막기).
+
+## 10/14 밤 11 — 마을 기금 검토 고침 + 자동 번역 추가분 (다 됨·push, 최신)
+- **dev1-village-fund 23660dc6** = 1e68b071(검토 고침) + origin/main 병합(merge-tree가 Config 충돌로 봐서; 실제 merge는 자동). 고침: FIX 1 S.Prompts 강한 표 + 진영 바뀔 때 월드 FundPrompt 다시 consider; MINOR ① cardCtx(KO → Closed, Radius 밖 → 새 Screen.Far "Walk up to the fountain.") [Give] 흐림, 폴마다 다시 그림; ② Lead 'Halo Citadel'/'Horns Den'; 개발 2 07ca5b92 따라 분수 자리 = Workspace.VillageFund.FundSpot_<진영> 위치 − Lift(없으면 Config Pos), 자리가 움직이면 등불 다시 지음. 시험 village_fund_ui 74·29/29.
+- **개발 2 dev2-village-fund 07ca5b92는 main과 Config 충돌**(Switches PioneerTitle Unread 줄 옆 VillageFund 스위치) → 개발 2에 main 병합 부탁함(풀이: main 줄 그대로 + VillageFund 2줄). 임시판으로 풀어 돌림: village_fund 114/114, village_fund_ui 74·29/29(진짜 Config), english 통과.
+- **fix/auto-translate-on 292d184b** = 70cd9694 + Config.Settings.Order "Lang" 뺌(설정 창은 원래 Lang 줄 없음) + FactionPicker Crafting 변형·NEUTRAL_NOTE 사본 삭제(Config에서만, 비면 줄 없음). test_auto_translate 17·10/10.
+- 설정 창 줄: **fix/settings-apply be336a32** = SettingsUI에 피해 숫자(All/Off)·남 이름표(All→Near→Off) 줄 추가, test_settings_apply 25·14/14, character_ui·quest_window·keys_settings·audio·phone_text·english 통과. dev1-village-fund와 ClientMain ORDER 한 줄 충돌(먼저 안 들어간 쪽에 main 병합).
+- 대기 3개: fix/auto-translate-on 292d184b, dev1-village-fund 23660dc6(+개발 2 main 병합), fix/settings-apply be336a32. 다음: 패스 ID 오면 2-C #10.
+
+## 10/14 밤 10 — fix/auto-translate-on 70cd9694 (급함, 다 됨·push, 최신)
+- SPEC A23-179(사용자 "누가 자동 번역까지 끄래"): ClientMain의 전체 AutoLocalize=false watcher(69f1fe45) 삭제 → Roblox 자동 번역 켜짐.
+- 끈 채로 둔 것(만드는 곳에서만): 이름표 Line1("[칭호] 이름", CharacterVisuals; Line2·3은 번역), Tab 목록 PlayerName, 후원자 판 이름 줄, UIKit artText Number=true(숫자 라벨 전부, 호출자가 AutoLocalize 주면 그 값), 피해 숫자 풀(전리품 줄은 번역: e.Gui.AutoLocalize = look ~= nil), 스킬 초, 입력칸(닉네임·시장). 새 UIKit.NoTranslate(inst). 채팅 말풍선은 Roblox TextChatService 것이라 해당 없음.
+- 운명의 제단 프롬프트: 저장된 place에 AutoLocalize=false가 1개 남아 있어(rbxlx 유일) MapBuilder가 이제 true로 씀(지우기만 하면 place 값이 남음).
+- 시험: 새 test_auto_translate 14·7/7(전체 끄기 없음, DescendantAdded 안 끄기 없음, false는 허용 목록 9곳만, 필수 자리 11개), test_place_english 검사 2개 새 규칙으로, market_window 165·60/60, nickname 790, supporter_board, english, l10n, story_text, skill_learn, skill_fx, king_drop, hud_layout, phone_first10, fit_text, beta_basics, keys_settings, grudge, ranking, loot, golden_egg, goose_square, class_grips_server 통과; rank_marks 117/117(정적 10 = 성긴 worktree glb 없음, 거짓). luau-compile 바꾼 10파일 OK. 기다리는 가지 모두와 merge-tree 깨끗.
+- ⑤ 번역으로 글이 길어질 때 넘칠 곳(목록만):
+  1. **FitText·HUD L.FitGoal·L.TextLines·MeasureRenderedText는 TextService로 영어 원문을 잼** → 번역문이 길면 '맞춤' 라벨도 넘침(메뉴 칸 이름 FitMinPx 8, 퀘스트 목표 2줄, Faction/ClassPicker 카드). TextScaled 라벨은 실제 그린 글 기준이라 안전.
+  2. DeathScreen 줄: TextWrapped + 높이 size+8 고정 → 번역이 두 줄이면 다음 줄과 겹침(박스 높이 합은 줄마다 한 줄 기준).
+  3. HUD 목표 칩 2·3층: 한 줄 + "..." → 긴 번역은 잘림.
+  4. Panels 키트 버튼(ArtTextButton TextScaled, 바닥 12px): 좁은 버튼(마을 기금 190du, 출석 Claim, 상점 Buy)에서 긴 단어는 12px에서도 넘칠 수 있음.
+  5. TextTruncate 라벨(CharacterUI, PetWindow, PlayerListUI, Panels 일부): 넘치진 않고 잘림.
+  6. 자동 번역은 string.format으로 만든 문장(숫자·이름 낀 줄)은 통째로 한 항목 → Creator Hub에 숫자별 항목이 쌓일 수 있음(번역 안 될 수 있음).
+
+## 10/14 밤 9 — fix/settings-apply fe85439a (다 됨·push, 최신)
+- 계획 2-C #9 앞 두 개. 확인: 설정 DmgNum(All/Off)·Tags(All/Near/Off)는 저장만 되고 클라 어디서도 안 읽었음(Settings.luau 말고 0곳).
+- 피해 숫자: Fx MOTION.DamageNumbersOn()(Settings DmgNum, 기본 All) + MOTION.IsDamageKey(M 내 타격·P PvP·H 받은 피해) → showAmount 맨 앞에서 Off면 안 그림, Release 합계(ShowNumber)도. 골드·XP·전리품(G·RG·RX) 그대로.
+- 남 이름표: 새 모듈 NameTagPrefs(ClientMain ChatTags 뒤): 서버 CharacterVisuals의 머리 "Nametag" 중 남의 것만(PlayerToHideFrom ~= 나) All = MaxDistance 120(Config.Visuals.NametagMaxDistance), Near = 새 Config.Visuals.NametagNearDistance 40, Off = Enabled false; 나중에 다시 만든 이름표·새 플레이어·설정 바꿈 바로 적용, 유령 글 등 다른 billboard 안 건드림.
+- 시험: 새 test_settings_apply 23·12/12(+정적 3), fx_edges, skill_fx 109·18/18, skill_signals, hit_ring, king_drop, weapon_motion 269, keys_settings, english, l10n 통과; luau-compile Fx·NameTagPrefs·HUD OK.
+- 병합 주의: dev1-village-fund와 ClientMain ORDER 한 줄 충돌(둘 다 모듈 추가) → 마을 기금 먼저 병합되면 내가 이 가지에 origin/main 병합해 한 줄 풀기. main·skill-press-reject와는 깨끗.
+
+## 10/14 밤 8 — fix/skill-press-reject 3468b49c (다 됨·push, 최신)
+- 81e1d003 위 3468b49c = 최종 검수 MINOR 2개(목표 칩): ① HUD L.GoalTiers Big 줄은 Halo/Horns 글이 있을 때만(Neutral/None/nil 명시로 없음) ② 칩 2·3층 TextWrapped=false + TextTruncate AtEnd(작은 PC 방 계산이 한 줄씩이라 두 줄로 밀리지 않음, 긴 줄은 "...").
+- 시험: goal_chips 52·21/21(새 검사 1 + 돌연변이 2: format 에러 기대기, 두 줄 감기), hud_layout, hud_reveal, quest_lines, phone_first10, phone_text, first_look, comeback_client, fit_text, english, l10n, skill_press, skill_learn 통과.
+
+## 10/14 밤 7 — fix/skill-press-reject 81e1d003
+- 계획 2-C #8. 확인: 서버 SkillService.press가 Fx "SkillPress" { Slot, Result }를 이미 보내는데 클라에 받는 곳이 없었음 → 서버만 아는 거절(NoTarget·CantHop·TooHeavy·서버 쪽 Cooldown/NoMP·Locked)은 화면에 아무 표시 없었음. 서버 필드 바꿀 것 없음.
+- 고침(SkillBar): Fx 받기 → 버튼 흔들기 + 짧은 말(Config.Skills.Text: NoTarget, CantHop, TooHeavy, 새 NotReady "Not ready", NoMP + No 소리, 새 NotNow "Not now" / 레벨 아래면 "Unlocks at Lv N"), Queued·모르는 값 = 없음, 거절된 칸의 줄 선 누름 지움. 클라 자기 거절 글(옛 TXT "Not yet"/"Not enough MP")도 Config.Skills.Text로.
+- Hop 준비(X 켜기 아님): Fx "Hop" { To, T } → 내 캐릭터를 낮은 호로 To까지(T초, 0.1~0.6), 땅 높이 맞춤(레이캐스트, 오르막), 방향 유지, 끝나면 멈춤; 16스터드 넘음·깨진 값·KO·새 캐릭터 = 안 움직임.
+- 시험: 새 test_skill_press 26·15/15 + 정적 2, skill_learn 38·27/27, skills 151, skills_x 167, skill_kit, skill_fx 109·18/18, skill_book 67·32/32, skill_signals 142, english, l10n, story_text, hud_layout, phone_first10 = 0 failing·MISSED 0. main·dev1-village-fund와 merge-tree 깨끗.
+
 ## 10/14 밤 6 — dev1-village-fund 864cf867 (다 됨·push, 최신)
+- 합친 판(864cf867 + dev2-village-fund 04ef28c7 + main) 시험 통과: village_fund_ui 61·23/23(진짜 Config), village_fund 99/99, english, l10n, story_text, choice_card_ui, place_english → 최종 검수에 같이 병합 요청함.
 - 개발 2 메시지(실제 서버 모양)에 맞춘 위 커밋 864cf867(f9afc184 위): Net.luau 뺌(개발 2가 FundGive/FundOpen + GameStateDefaults 넣음), 속성 = GameState 폴더, state Why("Poor"/"Full"/"Closed")·Can·Sum(막대; Week = 주 번호), 서버 글 Text.Title/Today/[side].Give/Poor(%s Step)/Full(%d PerDay)/Closed 사용, Config.VillageFundScreen은 Lead·Gold·Close·Week·Marks·Lanterns·Fireworks만, 프롬프트 ActionKey/ObjectKey Config 경로 → ActionText/ObjectText.
 - 시험 test_village_fund_ui 61·23/23 + 정적 8(Net 이름은 '많아야 1번'), english, l10n, story_text, place_english 통과. 개발 2 dev2-village-fund push 기다림 → 합친 판 시험 → 최종 검수 같이 병합.
 

@@ -281,12 +281,13 @@ local function newRow(i)
 			TextSize = T.Text,
 			TextXAlignment = Enum.TextXAlignment.Right,
 			Text = TXT.Missing,
-			Number = true,
+			Number = true, AutoLocalize = false,
 			Parent = parent,
 		})
 	end)
 	local name = k.LightText({
 		Name = "PlayerName",
+		AutoLocalize = false, -- A23-179: a player's name stays as it is
 		Position = UDim2.fromOffset(nameX(), 0),
 		Size = UDim2.new(1, -(nameX() + used), 1, 0),
 		TextSize = T.Text,

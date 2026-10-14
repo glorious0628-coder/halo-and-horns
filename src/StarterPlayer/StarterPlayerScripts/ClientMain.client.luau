@@ -9,23 +9,13 @@ do
 		if not ok then warn("[ClientMain] ApplyTestServer failed: " .. tostring(err)) end
 	end
 end
--- A23-48 English only (검수 2026-10-07): Roblox's automatic translation would show our English text in the player's
--- Roblox language (a Korean account sees Korean). Every GUI object under PlayerGui and in the world gets
--- AutoLocalize = false as it appears (server-made signs and name tags too: translation happens on this client).
--- ProximityPrompts too (검수 audit 2026-10-08: they are no GuiBase2d, so "Switch side" / "Open" still translated).
-do
-	local function off(inst)
-		if inst:IsA("GuiBase2d") or inst:IsA("ProximityPrompt") then inst.AutoLocalize = false end
-	end
-	local function watch(root)
-		root.DescendantAdded:Connect(off)
-		for _, d in root:GetDescendants() do off(d) end
-	end
-	watch(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
-	task.spawn(watch, workspace)
-end
+-- A23-179 (user 10/14: "개발을 영어로 하자고 했지 누가 자동 번역까지 끄래"): Roblox's automatic translation is ON. We
+-- write English (A23-48); Roblox translates it for players in other languages (Creator Hub localization). The old
+-- game-wide AutoLocalize = false watcher (10/07, 69f1fe45) is gone. Only what must stay as it is turns it off where
+-- it is made: player names (nametag line 1, the Tab list, the supporter board), number-only labels (UIKit
+-- LightText / artText Number = true, damage numbers, the skill seconds) and what players type (TextBoxes).
 
-local ORDER = { "CameraFollow", "UIKit", "GearSlots", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "DeathScreen", "Panels", "SettingsUI", "ShopUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "ChatTags", "Invite", "Passes", "SupporterBoard", "PauseCard", "ComeBack", "KingDiary", "AttendanceUI", "CodexUI", "ChoiceCardUI", "PetWindow", "SkillBook", "QuestBook", "BagUI", "CharacterUI", "HeroPreview", "GatherView", "CraftView", "CraftWindow", "MarketWindow", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "BubbleUI", "StickerUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "StoryNpcs", "TownReact", "LightCap", "FirstSteps", "FountainFx", "EggFx", "WeatherFx", "SkillBar", "QuickSlots", "BuffBar", "WeaponPose", "LandShadow", "SkillFx", "Audio" }
+local ORDER = { "CameraFollow", "UIKit", "GearSlots", "Settings", "Keybinds", "Fx", "VitalsUI", "HUD", "EventHUD", "DeathScreen", "Panels", "SettingsUI", "ShopUI", "Intro", "FactionPicker", "ClassPicker", "WorldMap", "MonsterMotion", "Announce", "ChatTags", "NameTagPrefs", "Invite", "Passes", "SupporterBoard", "PauseCard", "ComeBack", "KingDiary", "AttendanceUI", "CodexUI", "ChoiceCardUI", "VillageFundUI", "PetWindow", "SkillBook", "QuestBook", "BagUI", "CharacterUI", "HeroPreview", "GatherView", "CraftView", "CraftWindow", "MarketWindow", "GrudgeGhost", "ZoneLook", "MiniMap", "PlayerListUI", "BubbleUI", "StickerUI", "MonsterLabels", "PetFollow", "QuestTarget", "QuestMarker", "StoryNpcs", "TownReact", "LightCap", "FirstSteps", "FountainFx", "EggFx", "WeatherFx", "SkillBar", "QuickSlots", "BuffBar", "WeaponPose", "LandShadow", "SkillFx", "Audio" }
 
 local C = {}
 for _, name in ORDER do

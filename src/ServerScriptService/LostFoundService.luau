@@ -230,7 +230,7 @@ local function pay(player, reward)
 		local want = reward.Bag[id]
 		if want > 0 then
 			local given = 0
-			local ok, res = pcall(S.LootService.GrantItem, player, id, want)
+			local ok, res = pcall(S.LootService.GrantItem, player, id, want, "Reward") -- a reward fits a full bag (10/14)
 			if ok then
 				given = math.clamp(math.floor(num(res)), 0, want)
 			else

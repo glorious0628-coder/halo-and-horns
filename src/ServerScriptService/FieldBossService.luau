@@ -264,7 +264,7 @@ local function extraOne(key, c, player, sides)
 	row.Owed = math.min(max, row.Owed) -- a broken save never banks more than Max
 	if row.Owed <= 0 then return end
 	local n = math.max(1, math.floor(num(W.N, 1)))
-	local ok, got = pcall(S.LootService.GrantItem, player, W.Item, n)
+	local ok, got = pcall(S.LootService.GrantItem, player, W.Item, n, "Reward") -- a reward fits a full bag (10/14)
 	if not ok then
 		warnThrottled("weekly", got)
 		return
@@ -382,6 +382,15 @@ local function tickOne(key, now)
 end
 
 ------------------------------------------------------------------ public
+-- seconds until field boss `key` can be met: 0 = here now (or due, waiting for a hunter), nil = off / unknown
+function FieldBossService.SecondsUntil(key)
+	local b = B[key]
+	if not b or cfg(key).Enabled == false then return nil end
+	if b.Rec ~= nil and b.Rec.Alive == true then return 0 end
+	if num(b.NextAt) <= 0 then return nil end
+	return math.max(0, num(b.NextAt) - Util.Now())
+end
+
 function FieldBossService.IsActive(key)
 	local b = B[key]
 	return b ~= nil and b.Rec ~= nil and b.Rec.Alive == true

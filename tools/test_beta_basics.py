@@ -125,6 +125,12 @@ MUTATIONS = [
      "os.time() < beta.PioneerUntil and pioneerSwitchOn())", "os.time() < beta.PioneerUntil)"),
     ("a failing switchboard ends the grants", "TITLE_SOURCE",
      "return not ok or on ~= false", "return ok and on ~= false"),
+    # review 10/14: the switch turning on after the first read grants the children already in game
+    ("the switch turning on grants nobody", "TITLE_SOURCE",
+     "\t\t\tif key ~= \"PioneerTitle\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
+    ("the switch grant ignores the date", "TITLE_SOURCE",
+     "\tlocal pioneer = data.BetaPioneer == true\n\t\tor (beta.GrantPioneer == true and os.time() < beta.PioneerUntil",
+     "\tlocal pioneer = data.BetaPioneer == true\n\t\tor (beta.GrantPioneer == true"),
     ("first grant auto-selects the pioneer title again", "TITLE_SOURCE",
      'if pioneer then TitleService.Grant(player, "BetaPioneer") end',
      'if pioneer and TitleService.Grant(player, "BetaPioneer") and data.TitleSel == "" then S.PlayerService.SetStat(player, "TitleSel", "BetaPioneer") end'),

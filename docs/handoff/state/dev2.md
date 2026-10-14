@@ -1,4 +1,60 @@
-# 게임성 개발 2 — 상태 (2026-10-14 낮, 패스 ID 시험 고침 push 뒤)
+# 게임성 개발 2 — 상태 (2026-10-14 한밤, 첫 흐름 A23-188 보고)
+
+## 지금 (10/14 한밤)
+- **main 병합됨:** artisan-sell, bag-slots, bag-reward(6곳 포함 77699c57), sub-retry, fund-ladder, no-ticket, first-hit, weapon-shop(v6), market, stale-text.
+- **push·보고, 병합 대기:**
+
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-artisan-quests | 4ee3c50d | 장인 ②: 목표 Gather·Craft·SellMat, N0(약초 3 + 구리 2 → 제작 → 150골드 + 만든 무기 장착 EquipBestSpare)·N0b(5개 팔기 → 30)·N4(N2 뒤 제작 2 → 교차로), W1 레시피 삭제, W2 = 약초 3 + 구리 2 | town_quests 1058/251, craft 186, craft_window 158/59 |
+| dev2-xp-ramp | 3a0808fc | Config.Levels.Ramp {10 = 0.5, 11 = 0.65, 12 = 0.8, 13 = 0.9}, 새 시험 test_xp_ladder | 13 / 5 |
+| dev2-first10-b | e5915e58 | Codex B1(Trials 줄 = 첫 미완 시험 글), B5(King 줄은 King 120초 안일 때만, FieldBossService.SecondsUntil), B6(XPEarned source, 숫자판 XP[Lv5/Lv10] 사냥/그 밖) | town_quests·next_goal·test_metrics·health 변이 |
+| dev2-first-flow | 0ec2dadc | A23-188: 첫 임무 = 대장간 방문(T1 + 150골드 finishFirst), 옛 1·2단계 저장 = 접속 때 끝, M1_1 = Prince 1 → 주문서 쓰기, M1_2 Prince 1, 숫자판 Weapon = T1 | weapon_first 113/52, unarmed 261/77, onboarding 842 |
+
+- 큐(최종 검수 10/14): 장인 ③ 거래소 실시간 끄기 키 Switches.Defs.Market + 단계별 서버 죽이기 시험 + 거래소 퀘스트 → ④ 작업대 3개(교차로 길드 마당, MapBuilder, CraftStation 태그) → ⑤ 연금 소모품 → ⑥ Gear 켜기 + 전투력 → ⑦ 새 기능 끄기 키 묶음 → 운영(Env.Names Beta/Live, 배지 7 ID, TestServer 되돌리기).
+- 규칙(최종 검수 10/14): 전체 시험은 가지당 한 번(4개 동시), 변이는 바뀐 시험만. 큐가 비면 상태 파일 push 뒤 clear_session("self").
+- 주의: main의 unarmed_start 변이 2개('join-time gift' 패턴 2번) — weapon-shop 가지에서 고쳐 main에 있음. skill_learn 'no banner' NOT APPLIED = 개발 1 몫(클라이언트).
+- worktree: ../wt_aq, ../wt_xp, ../wt_f10, ../wt_flow (+ 병합 끝난 wt_artisan·wt_bag·wt_subretry·wt_fundl·wt_ticket·wt_wshop·wt_tmpm은 지워도 됨).
+- 스크래치 도구: sweep.py(`<wt> <out> [--jobs N]`), only_mut.py(`<wt> <test.py> "이름|이름"`), keephead.py(충돌 = 우리 쪽).
+
+
+## 앞서 (10/14 늦은 밤)
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-artisan-sell | 828f3bed | 장인 ①: 채집 재료 판매 SellItem(상점 근처, 골드 "Sale") + 길드 일일 Gather/Craft(Neutral, 스위치 따라) | loot 666/142, a23_14 329, gamepass 232/116. main 합친 트리 = 원래 실패만 |
+| dev2-bag-slots | 0418d411 | 가방 칸 12→16→20(BagSlots 저장·속성, Lunch1·M2_7 +4, 접속·장 건너뛰기 따라잡기), 새 종류만 칸 검사, 제작·거래소도 빈 칸 확인. 개발 1 표 d417e164 + main 합침 | loot 654/144, market 179/87, craft 189/118, town_quests 1043/248 |
+| dev2-bag-reward | 4425b0fb | bag-slots 위: 퀘스트·이야기 보상은 가득 차도 들어감(GrantItem source "Reward") | loot 658, town_quests 1044, 새 변이 3 |
+| dev2-sub-retry | 6dd30322 | 큐 ①: 구독 확인 3번 재시도 + 마지막 답 PassSeen["Sub:<key>"] | gamepass 255/130 |
+| dev2-fund-ladder | 535cc107 | 큐 ②: 마을 기금 200 → 500 → 1,000(FundGiven으로 셈) | village_fund 127/52 |
+| dev2-no-ticket | 1a497ec9 | 큐 ③: Robux 바꾸기 티켓 판매 삭제(ProcessReceipt 등), 게임 안 티켓은 그대로 | gamepass 248/126, notify_sound 70/61 |
+| dev2-weapon-shop | (시험 중) | A23-186: Buy = true, 밈 무기 T10 Frying Pan·T11 Rubber Chicken(Meme, AnyClass, 15, 300골드), 세이브 v6, WeaponAtLeast(철 무기 판정), 맞힘 Fx Meme 키 + 팬 밀침 +1.5, 거래소·팩 제외 | 전체 sweep·변이 도는 중 |
+- 큐 ④ 확인: N0·N0b는 main에 없음(장인 ②에서 Neutral 전용 Requires TutorialDone으로). 중립 Lv1~5 줄은 1장 메인 + S0·Lunch1·Pet1·S4로 비지 않음.
+- 최종 검수에게 물은 것: 출석·게시판·필드 보스·피니셔·분실물·ChoiceCard 보상도 "Reward"(칸 무시)로 할지.
+- 다음(최종 검수 큐 순서): 무기 상점 보고 → 장인 ②(목표 Gather·Craft·SellMat + N0/N0b/N4, W2 레시피 채집 재료만) → ③ 거래소 끄기 키·죽이기 시험 → ④ 작업대 3개 → ⑤ 연금 소모품 → ⑥ Gear 켜기 → ⑦ 끄기 키 묶음.
+- worktree: ../wt_artisan, ../wt_bag(dev2-bag-reward), ../wt_subretry, ../wt_fundl, ../wt_ticket, ../wt_wshop, ../wt_tmpm(합친 트리 시험용, 지워도 됨).
+- 스크래치 도구: sweep.py(전체 시험), only_mut.py(`<wt> <test.py> "이름|이름"` 변이 몇 개만).
+
+
+## 지금 (10/14 저녁)
+| 가지 | tip | 무엇 | 어디까지 |
+|---|---|---|---|
+| dev2-weapon-luck | ba755029 | 2-A ⑤ 무기 운(첫 브루트 T4·첫 기사/Clatter T5·운 카운터·숲 서브 GW9·GW10) + 변이 고침(황금 배수 줄 겹침, 새 변이 8) | **main 병합됨(d05f09c8)**. loot 630 / 134·commission 77 / 46·town_quests 1036 / 241 |
+| dev2-launch-dates | 8b04abec | 2-A ⑦ 날짜 값(PioneerUntil 2100, 스위치 PioneerTitle, 배지 7개) + WIP 마무리(시험 3개 고침) | 최종 검수 병합 진행. return 245 / 121·beta_basics 232 / 35 |
+| dev2-village-fund | e30da8fa | A23-178 B 마을 기금 서버(VillageFundService, 계약 `docs/design/village_fund_server_2026-10-14.md`), launch-dates 합침 위. Net 이름 FundGive·FundOpen + GameState 기본값 = 이 가지(개발 1 dev1-village-fund 864cf867은 Net 안 건드림) | 반박 검토 FIX 1 + MINOR 2 고침 보고함(분수 모델 `Town_Halo_Fountain3` 피벗 = 자리, 대체 Pos (34.55, 20, -566); 닫힐 때 도는 쓰기 기다림; 첫 읽기 성공 전 단계 글 없음). test_village_fund 114 / 46. 개척자 스위치 병합 뒤 main 합침(스위치 줄 둘 다), 전체 197 = 원래 실패만. **main 병합됨(e35d32b9)** |
+| dev2-stats3 | f1aeeb48 | 2-A ⑧ 스탯 2단계를 main 위로(옛 dev2-stats2 91a7dd8d, 리베이스 없음) + 장비 배수와 곱하기 + CombatPowerOf 레벨·스탯 덮어쓰기 + main 합침 1번. 스위치 꺼짐 | 보고함. stat_service 70 / 37·stats 77 / 46·gear_slots 203 / 109. main 합친 뒤 전체 196개 = 원래 실패 8개만(costume_physics·halloween·metrics_board·place_english·rank_marks·skeleton_ground·skin_binding_studio·walk_forge_client) |
+| dev2-gold-sinks | 8f53be76 | 2-A ⑥ 안 → 사용자 A23-178: 마을 기금(B)만, 주문서 구매(A) 안 함(소모품 = 연금술사) | 끝 |
+| fix/pioneer-switch-ready | cd7e3331 | launch-dates 2차 검토 FIX: 스위치 정의 `Unread`(첫 읽기 성공 전 값), PioneerTitle Unread = false + `SwitchService.HasRead()`; TitleService가 Changed(켬) 때 접속 중인 아이에게 다시 줌 | **main 병합됨(0783dbbd)** |
+| dev2-stale-text | 6637e536 | 2-C #12 낡은 글(S): 장인 길드 베타 포함(A23-162)·자동 번역 켬(A23-179)에 맞춰 Config 10곳(화면 글 3: Legend 출처, 장인 카드 'Crafting') + 서버 로그 2곳 | 보고함. 전체 = 원래 실패만. 개발 1 몫 4개 넘김(설정 Lang 줄, FactionPicker 직접 쓴 글, 제단 AutoLocalize, TextKo/L10n 잔재) |
+| fix/skill-no-reject | 5bd777c5 | 사용자 10/14 '서버가 거절을 안 하게': 대상 없음 = 허공 쓰기(Fx Air, MP·재사용·간격·피해·셈 없음), 재사용 ≤ PressBuffer 0.35초 = Queued, 나머지 조용히 false, SkillPress = Queued만 | 보고함. skills 162 / 100, skills_x 167 / 93, 전체 196 = 원래 실패만 |
+- 스탯 가지(stats3)는 '큰 병합 하루 하나' 규칙으로 10/15 검토.
+- **장인 길드 최소판(사용자 10/14 '중립 애들 작업도', 2-B 11/06 판정 취소):** 계약 `docs/design/artisan_min_server_2026-10-14.md` 보고함 → 최종 검수 OK 기다림. OK 뒤 순서: ① SellItem(채집 재료 판매)+일일 채집·제작 2줄+N1/N2 막힘 고침 → ② 퀘스트 목표 Gather·Craft·SellMat + N0/N0b/N4 → ③ 거래소 dev2-market main 합치기+끄기 키+죽이기 시험+UnpackSpare → ④ 작업대 3개 → 스위치 켜기 시험. 최종 검수 OK(결정: W1 레시피 뺌·첫 제작 = 채집 재료만의 W2·N0 끝 150골드 + 자동 장착, 장인 마을 2단계는 빛→뿔→장인 순서 때).
+  - 진행: **dev2-market** = ../wt_market, main 합침 6495d64e(로컬, push 전; market 161 / 72/72, 전체 시험 도는 중) → push·보고.
+  - **dev2-artisan-sell**(① 판매 SellItem + 일일 Gather/Craft + N1/N2 주석) = ../wt_artisan, 커밋 전(loot 666, a23_14 329 통과; 변이 고침 2개 뒤 다시).
+  - 그 뒤 대기열(최종 검수 10/14 밤): A23-181 같이 잡은 몹 사냥 명예·처치 수 = 첫 타격자 한 명(MonsterService 첫 타격 기록 없음 → 추가, S) → A23-182 Travel 원격 = 새 패스 FastTravel(149 R$, ID 0) 전용·발판은 무료(S) → 장인 ②~④ → ⑤ 연금 소모품 ⑥ Gear 켜기 ⑦ 새 기능 끄기 키 묶음. 운영 메모(나중): Env.Names Beta/Live, 배지 7 ID, TestServer 되돌리기.
+- worktree: ../wt_wluck, ../wt_dates, ../wt_vfund, ../wt_stats3, ../wt_pioneer, ../wt_stale, ../wt_skill (+ 옛 것). 시험 실행기는 스크래치 sweep.py(세션마다 다시 만듦: `<wt> <out> [--jobs N] [--mut] [이름…]`).
+- **다음:** 10/15 패스 ID 9개 오면 그것 먼저 = origin/main 위 새 가지 dev2-pass-ids-2(9b90130c는 main에 있음)에 `py tools/set_pass_ids.py …` 커밋 1개 → test_gamepass(변이)·passes·pass_text·shop_layout·health → 보고. 그 밖엔 최종 검수가 정함.
+- 주의: worktree에서 git이 쓴 파일(merge·checkout·apply)은 CRLF가 될 수 있음 → first_ko_king 'LF tabs' 정적 검사가 잡음. 커밋 전 바꾼 파일 LF 확인.
+- 숲 서브 GW9·GW10은 영·한 대본(`docs/script/`)에 아직 없음 → ⑬ 때.
 
 서버 전용·Studio 금지·main에 코드 push 금지(최종 검수가 병합). 보고처 = '최종 검수'(list_sessions, send_message). 덩어리마다 한 번.
 읽는 순서: `docs/handoff/README.md`(새 입구) → `role_prompts/03_dev2.md` → 이 파일 → `docs/design/six_week_plan_2026-10-13.md`(주별 몫).

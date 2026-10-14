@@ -1471,7 +1471,7 @@ function NICK.Build()
 	u.Current = UIKit.InkText({ Name = "CurrentName", Parent = u.Body,
 		Text = "Current name: " .. Util.PlayerDisplayName(player), Outline = false })
 	u.InputArt = UIKit.ArtFrame("InputField", { Name = "InputFrame", Parent = u.Body })
-	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt,
+	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt, AutoLocalize = false, -- A23-179 typed
 		BackgroundTransparency = 1, BorderSizePixel = 0, ClearTextOnFocus = false, MultiLine = false,
 		Text = NICK.Draft, PlaceholderText = "StarKnight", RichText = false,
 		TextColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText,
@@ -1609,6 +1609,11 @@ BUILDERS.Menu = function(parent)
 	end
 	table.sort(extra, function(a, b) return a.Id < b.Id end)
 	for i, e in extra do table.insert(entries, 2 + i, e) end
+	if not Panels.TravelOn() then -- A23-182: the Travel window is Fast Travel (subscribers only)
+		for i = #entries, 1, -1 do
+			if entries[i].Id == "Travel" then table.remove(entries, i) end
+		end
+	end
 	if not FRAME.TicketsOnSale() then -- 검수 2026-10-07: no "Coming soon" shop for kids until a ticket is on sale
 		for i = #entries, 1, -1 do
 			if entries[i].Id == "Shop" then table.remove(entries, i) end
@@ -2139,6 +2144,27 @@ end
 -- A23-127 (plan 10/13 §1-A #2): the Forge sells weapons only while Config.WeaponShop.Buy ~= false (게임성 개발 2's switch;
 -- MaxSoldTier still lists the tiers, so enhancing / selling / equipping stay). Off: a weapon I do not own shows where it
 -- comes from (Config.WeaponSource) and no buttons; an owned one keeps [Equip] / [Sell]
+-- A23-186: the Forge's rows = tiers 1..MaxSoldTier, then every joke weapon it sells (Config.WeaponSoldAtForge + Meme)
+function WSHOP.CatalogTiers()
+	local cap = WSHOP.CatalogLimit()
+	if not cap then return {} end
+	local out = {}
+	for tier = 1, cap do table.insert(out, tier) end
+	for tier = cap + 1, Config.MaxWeaponTier do
+		local def = Config.Weapons[tier]
+		if type(def) == "table" and def.Meme and type(Config.WeaponSoldAtForge) == "function" and Config.WeaponSoldAtForge(tier) then
+			table.insert(out, tier)
+		end
+	end
+	return out
+end
+
+-- A23-186: a joke weapon row (its tier sold at the Forge as a Meme)
+function WSHOP.IsMeme(tier)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	return type(def) == "table" and def.Meme ~= nil
+end
+
 function WSHOP.Sells()
 	local shop = Config.WeaponShop
 	return not (type(shop) == "table" and shop.Buy == false)
@@ -2159,7 +2185,9 @@ function WSHOP.Offer(selectedTier)
 	local cap = WSHOP.CatalogLimit()
 	if not cap then return nil, T.WeaponInvalid end
 	if not WSHOP.Finite(selectedTier) or selectedTier ~= math.floor(selectedTier)
-		or selectedTier < 1 or selectedTier > cap then return nil, T.WeaponUnavailable end
+		or selectedTier < 1 or (selectedTier > cap and not table.find(WSHOP.CatalogTiers(), selectedTier)) then
+		return nil, T.WeaponUnavailable
+	end
 	-- A23-34: 0 = bare hands / nothing owned yet (tier 1 is owned only after the M1_1 gift)
 	local tier, level, ownedMask = attr("WeaponTier", 0), attr("Level"), attr("WeaponOwnedMask", 0)
 	if not WSHOP.Finite(tier) or tier ~= math.floor(tier) or tier < 0 or tier > Config.MaxWeaponTier
@@ -2919,12 +2947,16 @@ BUILDERS.WeaponShop = function(parent)
 		fire(action == "Sell" and "SellWeapon" or "UpgradeWeapon", tier)
 	end
 	local cap = WSHOP.CatalogLimit()
-	for tier = 1, cap or 0 do
+	local _ = cap
+	for _, tier in WSHOP.CatalogTiers() do
 		local row = addColumn(details, 1, 0, 5)
 		row.Name = "WeaponTier" .. tostring(tier)
 		local ui = {
 			Tier = tier,
 			Name = addText(row, "", { Size = 22, Color = theme.Gold, Font = theme.Font }),
+			-- A23-186: a joke weapon says so (Config.WeaponMemeScreen.Line)
+			Meme = WSHOP.IsMeme(tier) and addText(row, (Config.WeaponMemeScreen or {}).Line or "", { Name = "MemeLine", Size = 16,
+				Color = theme.SubText }) or nil,
 			Price = addText(row, "", { Size = 16 }),
 			Effect = addText(row, "", { Size = 16, Color = theme.Good or theme.Text }),
 			Sale = addText(row, "", { Size = 16, Color = theme.SubText }),
@@ -3515,6 +3547,12 @@ local function queueRebuild(keep)
 end
 ITEMS.Rebuild = queueRebuild
 
+-- A23-182 (user 10/14, 정정: a monthly subscription): the Travel window is Fast Travel - only for a subscriber (the
+-- server's attribute SubFastTravel); everyone else walks or uses the glowing pads (A23-88). Every way in asks this
+function Panels.TravelOn()
+	return player:GetAttribute("SubFastTravel") == true
+end
+
 -- BB5: callers that open a window which may not exist yet (e.g. "Character" before BB8) check first
 function Panels.Has(id)
 	return type(id) == "string" and BUILDERS[id] ~= nil
@@ -3598,6 +3636,7 @@ function Panels.Open(id, arg)
 		return
 	end
 	if id == "Vacation" and FRAME.VacationPopup() then return end
+	if id == "Travel" and not Panels.TravelOn() then return end -- A23-182: Fast Travel subscribers only
 	if id == "Welcome" then
 		local step = player:GetAttribute("TutorialStep")
 		if type(step) == "number" and step ~= 0 then WELCOME.PendingOpen = false; return end

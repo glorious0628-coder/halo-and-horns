@@ -30,7 +30,8 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-14/offline_comeback_client_2026-10-14.json"
-CUTS = [("function L.EarlyXPLeft()", "\nend\n"), ("function L.BoostText(xp, gold, early)", "\nend\n")]
+CUTS = [("function L.Tx(t, key, ...)", "\nend\n"), ("function L.EarlyXPLeft()", "\nend\n"),
+        ("function L.BoostText(xp, gold, early)", "\nend\n")]  # L.Tx: the words by key (10/14; UIKit absent = string.format)
 
 FIXTURE = r'''
 local checks, failed = 0, 0
@@ -100,7 +101,7 @@ MUTATIONS = [
     ("the XP pass shows the minutes too", "\tif xp then return TXT.BoostXP end\n", ""),
     ("the Gold pass hides the first minutes", "return (xp or first) and TXT.BoostBoth or TXT.BoostGold",
      "return xp and TXT.BoostBoth or TXT.BoostGold"),
-    ("no chip in the first minutes", "return first and string.format(TXT.EarlyXP, early) or nil", "return nil"),
+    ("no chip in the first minutes", "return first and L.Tx(TXT, \"EarlyXP\", early) or nil", "return nil"),
 ]
 
 

@@ -20,6 +20,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SocialService = game:GetService("SocialService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared:WaitForChild("Config"))
 local Net = require(Shared:WaitForChild("Net"))
 local Util = require(Shared:WaitForChild("Util"))
 
@@ -34,6 +35,8 @@ local T = {
 	ShopWindow = "Shop", -- the Panels window that sells passes (ShopUI): no invite while it is open
 	Remote = "GoToFriend", -- the server's "take me to my friend" (게임성 개발 2)
 	ToastSeconds = 5,
+	-- 2-C #9 the win card (Config.WinCard): approved PanelCard + BtnSecondary, bottom middle above the skill bar
+	Card = { W = 320, H = 118, Bottom = 190, Z = 40, BtnW = 240, BtnH = 46, LineH = 34, RoundGrace = 3 },
 	-- game text: English only (A23-48), short and easy
 	Text = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" },
 }
@@ -111,6 +114,60 @@ end
 -- the failed-scroll clock (Fx "Enhance" { Success = false } comes to me only)
 function Invite.OnFx(kind, data)
 	if kind == "Enhance" and type(data) == "table" and data.Success == false then S.FailAt = os.clock() end
+	if kind == "GooseEnd" then
+		local root = LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+		local source = Invite.GooseWin(data, LocalPlayer and LocalPlayer:GetAttribute("Faction"), root and root.Position)
+		if source then Invite.WinCard(source) end
+	end
+end
+
+-- (pure) the goose game's end (Fx GooseEnd { Pos, Winner, Coop }): my faction won and I was near the goose -> "GooseWin"
+function Invite.GooseWin(data, faction, myPos)
+	local cfg = type(Config.WinCard) == "table" and Config.WinCard or {}
+	if type(data) ~= "table" or (faction ~= "Halo" and faction ~= "Horns") or data.Winner ~= faction then return nil end
+	if typeof(data.Pos) ~= "Vector3" or typeof(myPos) ~= "Vector3" then return nil end
+	if (data.Pos - myPos).Magnitude > (tonumber(cfg.GooseRange) or 120) then return nil end
+	return "GooseWin"
+end
+
+-- (pure) a crown war round really ended (WarRoundEndsAt moved on while the old end was due: the switch-off case pushes
+-- a future end without ending) with my side's blessing, in a fought round (WarMode not "Idle") -> "WarWin"
+function Invite.WarWin(oldEndsAt, now, blessing, faction, mode)
+	if (faction ~= "Halo" and faction ~= "Horns") or blessing ~= faction or mode == "Idle" then return nil end
+	oldEndsAt, now = tonumber(oldEndsAt), tonumber(now)
+	if not (oldEndsAt and now) or oldEndsAt <= 0 or oldEndsAt > now + T.Card.RoundGrace then return nil end
+	return "WarWin"
+end
+
+-- the win card: the win line + [Invite a friend] (Prompt with the source) for Config.WinCard.Seconds; one at a time;
+-- only while Invite.CanShow() (no KO, failed scroll or Shop near it). -> the card or nil
+function Invite.WinCard(source)
+	local cfg = type(Config.WinCard) == "table" and Config.WinCard or nil
+	local k = C and C.UIKit
+	local text = cfg and type(cfg.Text) == "table" and cfg.Text or {}
+	if not cfg or type(k) ~= "table" or not k.Gui or type(text[source]) ~= "string" then return nil end
+	if not Invite.CanShow() then return nil end
+	if S.Card and S.Card.Parent then S.Card:Destroy() end
+	local D = T.Card
+	local card = k.ArtFrame("PanelCard", { Name = "WinCard", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -D.Bottom),
+		Size = UDim2.fromOffset(D.W, D.H), ZIndex = D.Z })
+	if not card then return nil end
+	local line = k.StyledLabel({ Name = "Line", Text = text[source], AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 10),
+		Size = UDim2.new(1, -24, 0, D.LineH), TextXAlignment = Enum.TextXAlignment.Center, ZIndex = D.Z + 1 }, "Title")
+	if line then line.Parent = card end
+	local btn = k.ArtTextButton("BtnSecondary", { Name = "Invite", Text = text.Invite or "", AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.new(0.5, 0, 1, -12), Size = UDim2.fromOffset(D.BtnW, D.BtnH), ZIndex = D.Z + 1 }, function()
+		if card.Parent then card:Destroy() end
+		task.spawn(Invite.Prompt, source)
+	end)
+	if btn then btn.Parent = card end
+	card.Parent = k.Gui
+	S.Card = card
+	Invite.Seen(source)
+	task.delay(tonumber(cfg.Seconds) or 8, function()
+		if card.Parent then card:Destroy() end
+	end)
+	return card
 end
 
 local function onPlayerAdded(player)
@@ -145,6 +202,22 @@ function Invite.Start()
 			end)
 		end)
 		if not ok then Util.Warn(TAG, "Fx hookup failed: " .. tostring(err)) end
+	end)
+	task.spawn(function() -- 2-C #9: a crown war round my side won -> the win card
+		local ok, err = pcall(function()
+			local gs = Net.GameState()
+			local last = gs:GetAttribute("WarRoundEndsAt")
+			gs:GetAttributeChangedSignal("WarRoundEndsAt"):Connect(function()
+				local old = last
+				last = gs:GetAttribute("WarRoundEndsAt")
+				task.defer(function()
+					local source = Invite.WarWin(old, workspace:GetServerTimeNow(), gs:GetAttribute("WarBlessing"),
+						LocalPlayer:GetAttribute("Faction"), gs:GetAttribute("WarMode"))
+					if source then pcall(Invite.WinCard, source) end
+				end)
+			end)
+		end)
+		if not ok then Util.Warn(TAG, "war hookup failed: " .. tostring(err)) end
 	end)
 end
 

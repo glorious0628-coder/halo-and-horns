@@ -1,0 +1,7 @@
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+TutorialStep 99

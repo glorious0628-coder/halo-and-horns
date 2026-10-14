@@ -1,0 +1,425 @@
+{
+ "note": "무기 디자인 10/14: every GLB = 1 unit 1 stud, origin = grip point, +Y = tip/head, front = -Z; code_len = what CharacterVisuals holds (개발 1 sizes the MeshPart). Upload = 메인 반영 1 (최종 검수 OK). GLBs are disk only.",
+ "weapons": [
+  {
+   "name": "Weapon_Halo_LightMage_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_LightMage_T1/Weapon_Halo_LightMage_T1_HD_fit.glb",
+   "mb": 8.6,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14932,
+   "size_studs": [
+    0.498,
+    0.241,
+    3.0
+   ],
+   "code_len": 3.367
+  },
+  {
+   "name": "Weapon_Halo_LightMage_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_LightMage_T2/Weapon_Halo_LightMage_T2_HD_fit.glb",
+   "mb": 8.2,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14499,
+   "size_studs": [
+    0.726,
+    0.318,
+    3.5
+   ],
+   "code_len": 3.441
+  },
+  {
+   "name": "Weapon_Halo_LightMage_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_LightMage_T3/Weapon_Halo_LightMage_T3_HD_fit.glb",
+   "mb": 11.0,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14391,
+   "size_studs": [
+    1.072,
+    0.55,
+    4.0
+   ],
+   "code_len": 3.515
+  },
+  {
+   "name": "Weapon_Halo_Paladin_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_fit.glb",
+   "mb": 11.9,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.17,
+   "tris": 14746,
+   "size_studs": [
+    0.768,
+    0.264,
+    3.0
+   ],
+   "code_len": 3.85
+  },
+  {
+   "name": "Weapon_Halo_Paladin_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_fit.glb",
+   "mb": 9.0,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.147,
+   "tris": 13172,
+   "size_studs": [
+    1.122,
+    0.255,
+    3.5
+   ],
+   "code_len": 3.95
+  },
+  {
+   "name": "Weapon_Halo_Paladin_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_fit.glb",
+   "mb": 9.9,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.19,
+   "tris": 12825,
+   "size_studs": [
+    1.36,
+    0.307,
+    4.0
+   ],
+   "code_len": 4.05
+  },
+  {
+   "name": "Weapon_Halo_Ranger_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_Ranger_T1/Weapon_Halo_Ranger_T1_HD_fit.glb",
+   "mb": 10.0,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.5,
+   "tris": 14770,
+   "size_studs": [
+    0.588,
+    0.269,
+    3.0
+   ],
+   "code_len": 3.1
+  },
+  {
+   "name": "Weapon_Halo_Ranger_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_Ranger_T2/Weapon_Halo_Ranger_T2_HD_fit.glb",
+   "mb": 10.3,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.5,
+   "tris": 13524,
+   "size_studs": [
+    0.603,
+    0.199,
+    3.5
+   ],
+   "code_len": 3.357
+  },
+  {
+   "name": "Weapon_Halo_Ranger_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Halo_Ranger_T3/Weapon_Halo_Ranger_T3_HD_fit.glb",
+   "mb": 13.3,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.5,
+   "tris": 13912,
+   "size_studs": [
+    0.813,
+    0.288,
+    4.0
+   ],
+   "code_len": 3.614
+  },
+  {
+   "name": "Weapon_Horns_Berserker_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_HD_fit.glb",
+   "mb": 12.2,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.155,
+   "tris": 14271,
+   "size_studs": [
+    0.81,
+    0.236,
+    3.0
+   ],
+   "code_len": 3.85
+  },
+  {
+   "name": "Weapon_Horns_Berserker_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_HD_fit.glb",
+   "mb": 11.3,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.192,
+   "tris": 13660,
+   "size_studs": [
+    1.143,
+    0.288,
+    3.5
+   ],
+   "code_len": 3.95
+  },
+  {
+   "name": "Weapon_Horns_Berserker_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_HD_fit.glb",
+   "mb": 10.7,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.172,
+   "tris": 6852,
+   "size_studs": [
+    1.432,
+    0.338,
+    4.0
+   ],
+   "code_len": 4.05
+  },
+  {
+   "name": "Weapon_Horns_Berserker_T7",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_Berserker_T7/Weapon_Horns_Berserker_T7_HD_fit.glb",
+   "mb": 14.4,
+   "length_studs": 6.5,
+   "pivot_share_from_bottom": 0.17,
+   "tris": 13801,
+   "size_studs": [
+    1.977,
+    0.555,
+    6.5
+   ],
+   "code_len": 4.55
+  },
+  {
+   "name": "Weapon_Horns_DarkMage_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_HD_fit.glb",
+   "mb": 12.2,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14384,
+   "size_studs": [
+    0.578,
+    0.239,
+    3.0
+   ],
+   "code_len": 3.367
+  },
+  {
+   "name": "Weapon_Horns_DarkMage_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_HD_fit.glb",
+   "mb": 12.0,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14510,
+   "size_studs": [
+    0.732,
+    0.313,
+    3.5
+   ],
+   "code_len": 3.441
+  },
+  {
+   "name": "Weapon_Horns_DarkMage_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_HD_fit.glb",
+   "mb": 12.8,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14488,
+   "size_studs": [
+    0.941,
+    0.376,
+    4.0
+   ],
+   "code_len": 3.515
+  },
+  {
+   "name": "Weapon_Horns_ShadowHunter_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_HD_fit.glb",
+   "mb": 12.7,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.5,
+   "tris": 14430,
+   "size_studs": [
+    0.66,
+    0.203,
+    3.0
+   ],
+   "code_len": 2.325
+  },
+  {
+   "name": "Weapon_Horns_ShadowHunter_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_HD_fit.glb",
+   "mb": 10.4,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.5,
+   "tris": 13842,
+   "size_studs": [
+    0.765,
+    0.259,
+    3.5
+   ],
+   "code_len": 2.518
+  },
+  {
+   "name": "Weapon_Horns_ShadowHunter_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_HD_fit.glb",
+   "mb": 12.8,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.5,
+   "tris": 14202,
+   "size_studs": [
+    0.88,
+    0.289,
+    4.0
+   ],
+   "code_len": 2.711
+  },
+  {
+   "name": "Weapon_Meme_FryingPan",
+   "glb": "art/models/tripo/weapons/Weapon_Meme_FryingPan/Weapon_Meme_FryingPan_HD_fit.glb",
+   "mb": 5.5,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.28,
+   "tris": 7774,
+   "size_studs": [
+    1.611,
+    0.311,
+    3.5
+   ],
+   "code_len": null
+  },
+  {
+   "name": "Weapon_Meme_RubberChicken",
+   "glb": "art/models/tripo/weapons/Weapon_Meme_RubberChicken/Weapon_Meme_RubberChicken_HD_fit.glb",
+   "mb": 4.6,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.15,
+   "tris": 7610,
+   "size_studs": [
+    0.843,
+    0.818,
+    3.5
+   ],
+   "code_len": null
+  },
+  {
+   "name": "Weapon_Neutral_Alchemist_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T1/Weapon_Neutral_Alchemist_T1_HD_fit.glb",
+   "mb": 11.2,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14215,
+   "size_studs": [
+    0.694,
+    0.309,
+    3.0
+   ],
+   "code_len": 3.367
+  },
+  {
+   "name": "Weapon_Neutral_Alchemist_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T2/Weapon_Neutral_Alchemist_T2_HD_fit.glb",
+   "mb": 11.9,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14036,
+   "size_studs": [
+    0.593,
+    0.48,
+    3.5
+   ],
+   "code_len": 3.441
+  },
+  {
+   "name": "Weapon_Neutral_Alchemist_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_Alchemist_T3/Weapon_Neutral_Alchemist_T3_HD_fit.glb",
+   "mb": 11.7,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.45,
+   "tris": 14154,
+   "size_studs": [
+    0.741,
+    0.6,
+    4.0
+   ],
+   "code_len": 3.515
+  },
+  {
+   "name": "Weapon_Neutral_Blacksmith_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T1/Weapon_Neutral_Blacksmith_T1_HD_fit.glb",
+   "mb": 15.6,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.3,
+   "tris": 14364,
+   "size_studs": [
+    1.363,
+    0.5,
+    3.0
+   ],
+   "code_len": 2.2
+  },
+  {
+   "name": "Weapon_Neutral_Blacksmith_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T2/Weapon_Neutral_Blacksmith_T2_HD_fit.glb",
+   "mb": 15.0,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.3,
+   "tris": 7168,
+   "size_studs": [
+    1.472,
+    0.825,
+    3.5
+   ],
+   "code_len": 2.2
+  },
+  {
+   "name": "Weapon_Neutral_Blacksmith_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_Blacksmith_T3/Weapon_Neutral_Blacksmith_T3_HD_fit.glb",
+   "mb": 14.8,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.3,
+   "tris": 14330,
+   "size_studs": [
+    2.131,
+    0.758,
+    4.0
+   ],
+   "code_len": 2.2
+  },
+  {
+   "name": "Weapon_Neutral_PetTamer_T1",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T1/Weapon_Neutral_PetTamer_T1_HD_fit.glb",
+   "mb": 13.5,
+   "length_studs": 3.0,
+   "pivot_share_from_bottom": 0.3,
+   "tris": 14690,
+   "size_studs": [
+    0.54,
+    0.499,
+    3.0
+   ],
+   "code_len": 2.19
+  },
+  {
+   "name": "Weapon_Neutral_PetTamer_T2",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T2/Weapon_Neutral_PetTamer_T2_HD_fit.glb",
+   "mb": 11.1,
+   "length_studs": 3.5,
+   "pivot_share_from_bottom": 0.3,
+   "tris": 14362,
+   "size_studs": [
+    0.647,
+    0.534,
+    3.5
+   ],
+   "code_len": 2.23
+  },
+  {
+   "name": "Weapon_Neutral_PetTamer_T3",
+   "glb": "art/models/tripo/weapons/Weapon_Neutral_PetTamer_T3/Weapon_Neutral_PetTamer_T3_HD_fit.glb",
+   "mb": 12.1,
+   "length_studs": 4.0,
+   "pivot_share_from_bottom": 0.3,
+   "tris": 13613,
+   "size_studs": [
+    0.747,
+    0.691,
+    4.0
+   ],
+   "code_len": 2.27
+  }
+ ]
+}

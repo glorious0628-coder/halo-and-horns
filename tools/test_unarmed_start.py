@@ -71,6 +71,17 @@ REFRESH_LINE = "\tif type(story) == \"table\" and type(story.Refresh) == \"funct
 OPEN_LINE = "\tNet.Get(\"OpenPanel\"):FireClient(player, \"WeaponShop\")\n"
 
 MUTATIONS = [
+    # A23-186: Otto sells 5 (3 normal + 2 joke weapons)
+    ("A23-186: the Forge sells no joke weapon", "SHOP_SOURCE", "\tif selectedTier > saleLimit and not Config.WeaponSoldAtForge(selectedTier) then -- A23-186: + the joke weapons\n",
+     "\tif selectedTier > saleLimit then\n"),
+    ("A23-186: every tier sold", "CONFIG_SOURCE", "\tif def.Meme then return true end\n\tlocal shop = Config.WeaponShop\n\treturn tier >= 2 and",
+     "\tif def.Meme then return true end\n\tlocal shop = Config.WeaponShop\n\treturn tier >= 1 and"),
+    ("A23-186: a joke weapon counts as Iron", "CONFIG_SOURCE", "or type(r) ~= \"table\" or def.Meme then return false end", "or type(r) ~= \"table\" then return false end"),
+    ("A23-186: no v6 migration step", "DATA_SOURCE", "\t\tif type(d.WeaponTier) == \"number\" and d.WeaponTier > v5Tiers then d.WeaponTier = -1 end\n", ""),
+    ("A23-186: the Pan is strong", "CONFIG_SOURCE", "{ Tier = 10, Damage = 15, Price = 300,", "{ Tier = 10, Damage = 88, Price = 300,"),
+    ("A23-186: no Meme on the Swing Fx", "COMBAT_SOURCE", "\t\t\tMeme = memeKey, -- A23-186", "\t\t\tMeme = nil, -- A23-186"),
+    ("A23-186: no Pan push", "COMBAT_SOURCE", "(crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING) + memePush, player", "(crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING), player"),
+    ("A23-186: the Chicken has another name for a Mage", "CONFIG_SOURCE", "\"Crownforged Staff\",\n\t\t\"Frying Pan\", \"Rubber Chicken\" },", "\"Crownforged Staff\",\n\t\t\"Frying Pan\", \"Rubber Staff\" },"),
     # --- Config: save defaults, damage, power, best weapon, names, the punch profile
     ("new players start with tier 1 again", C, "\t\tWeaponTier = 0,\n", "\t\tWeaponTier = 1,\n"),
     ("new players own tier 1 again", C, "\t\tWeaponOwnedMask = 0, -- tier N", "\t\tWeaponOwnedMask = 1, -- tier N"),
@@ -180,9 +191,10 @@ MUTATIONS = [
      "ensureTables(data)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), "
      "bit32.lshift(1, tier - 1)))",
      "ensureTables(data)\n\tdata.WeaponOwnedMask = bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1))"),
-    ("a join-time gift is never noted", L, "\tif not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end\n", ""),
-    ("the gift is noted twice in a session", L, "if not STATE.Watching[player] then Config.NoteGained",
-     "if true then Config.NoteGained"),
+    ("a join-time gift is never noted", L, "the mask watcher is not there yet\n\tif not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end\n",
+     "the mask watcher is not there yet\n"),
+    ("the gift is noted twice in a session", L, "the mask watcher is not there yet\n\tif not STATE.Watching[player] then Config.NoteGained",
+     "the mask watcher is not there yet\n\tif true then Config.NoteGained"),
     ("a level reset drops a weapon owner to bare hands", L,
      "\tif best == 0 then\n\t\t-- A23-34: a weapon owner never goes back", "\tif false then\n\t\t-- A23-34: a weapon owner never goes back"),
     ("join safety net off", L, "and story.Done.M1_1 == true then", "and false then"),
@@ -237,9 +249,9 @@ def static() -> tuple[int, list[str]]:
     story = read(SSS / "StoryQuestService.luau")
     check("function StoryQuestService.Refresh(player)" in story, "StoryQuestService.Refresh is public (the anvil runs it)")
     quest = read(SSS / "QuestService.luau")
-    # A23-74: the first weapon comes at the Forge step, so every claim clears the earlier visit (M1_1 needs a new one)
-    check('\tS.PlayerService.SetStat(player, "BlacksmithVisited", false)\n\tsetStep(player, TUT_DONE)' in quest,
-          "the first-mission claim always clears an earlier anvil visit (behavior: test_weapon_first)")
+    # A23-188: the first mission IS the Forge visit; nothing clears the visit any more (no second Forge trip)
+    check('"BlacksmithVisited", false' not in quest and "function finishFirst(player)" in quest,
+          "the first mission never clears the anvil visit (A23-188; behavior: test_weapon_first)")
     # A23-130 (user 2026-10-11): the claim line is the reward only for every save (no armed / auto variants)
     check("TUT_MESSAGES.ClaimedArmed" not in quest and "TUT_MESSAGES.AutoClaimed" not in quest
           and "hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith" in quest,

@@ -1,0 +1,18 @@
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=0 AttendReady=true
+fired AcceptTutorial
+TutorialStep 99
+state: DataLoaded=true Faction=Halo ClassChosen=true TutorialStep=99 AttendReady=true
+saved pc_01_town
+B: Menu
+fold: fold lines 1 | y-47: Shop Invite Attendance News Diary Travel Help Settings  || row: Bag,Map,Character,Skills,Pet,Ranking,Codex || cut names: none || names: Bag 9.6px room 21.1; Map 9.6px room 19.1; Lv 2 9.6px room 21.6; Lv 5 9.6px room 21.6; Get pet 8.8px room 6.1; Story 1 9.6px room 7.6; Monsters 6.4px room 9.1; Menu 9.6px room 10.0; Shop 9.6px room 13.5; Invite 9.6px room 10.0; Gifts 9.6px room 15.5; News 9.6px room 10.5; Diary 9.6px room 12.0; Travel 9.6px room 9.0; Help 9.6px room 15.5; Settings 6.4px room 10.0
+saved pc_02_fold_open
+B: Menu
+moved to 430, 0, 0
+chips: WarMeter y=-46 h=41 | StatusChips y=2 h=14 | GooseChip y=19 h=14
+saved pc_03_out_of_town
+play stopped

@@ -311,7 +311,8 @@ local function newWorld(opts)
 	ps.AddStat = real.AddStat
 	w.PS = ps
 
-	local registry = { PlayerService = ps, DataService = ds }
+	-- opts.Switch = a SwitchService double present before TitleService.Start (it connects to Changed there)
+	local registry = { PlayerService = ps, DataService = ds, SwitchService = opts.Switch }
 	local justice = execute("JusticeService", JUSTICE_SOURCE, newEnv())
 	local title = execute("TitleService", TITLE_SOURCE, newEnv())
 	w.Justice, w.Title, w.Registry = justice, title, registry
@@ -508,7 +509,17 @@ runGroup("power-monotonic", function()
 	check(enhBad == 0, "+0 -> +10 always raises the number (every weapon, every level)", enhBad)
 	-- weapons sorted by Config.Weapons[t].Damage (ties keep the tier order)
 	local byDamage = {}
-	for t = 1, C.MaxWeaponTier do table.insert(byDamage, t) end
+	-- A23-186: the joke weapons (Meme, tiers 10 / 11) are Wooden's copies, checked apart below
+	for t = 1, C.MaxWeaponTier do if not C.Weapons[t].Meme then table.insert(byDamage, t) end end
+	local memeBad = 0
+	for t = 1, C.MaxWeaponTier do
+		if C.Weapons[t].Meme then
+			for _, level in { 1, 30, 100 } do
+				if C.CombatPower(level, t, 3) ~= C.CombatPower(level, 2, 3) then memeBad += 1 end
+			end
+		end
+	end
+	check(memeBad == 0, "A23-186: a joke weapon's number is the Wooden weapon's (Damage 15)", memeBad)
 	table.sort(byDamage, function(a, b)
 		local da, db = C.Weapons[a].Damage, C.Weapons[b].Damage
 		if da ~= db then return da < db end
@@ -870,7 +881,7 @@ runGroup("title-config", function()
 	check(type(D.Titles) == "table" and next(D.Titles) == nil, "Data.Defaults.Titles = {}", show(D.Titles))
 	check(D.TitleSel == "", "Data.Defaults.TitleSel = \"\"", show(D.TitleSel))
 	check(D.BetaPioneer == false, "legacy Data.Defaults.BetaPioneer kept as false (migrated by TitleService)", show(D.BetaPioneer))
-	check(C.Data.Version == 5, "Data.Version is 5 = A23-153's codex (C1's tier 9 made it 4) (the title fields and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 6, "Data.Version is 6 = A23-186's joke weapons (5 = A23-153's codex) (the title fields and A23-69's Stats are additive)", C.Data.Version)
 	local mirrored = {}
 	for _, k in C.Data.Mirrored do mirrored[k] = true end
 	check(mirrored.TitleSel == true, "TitleSel is mirrored (attribute for nametag / HUD)")
@@ -980,6 +991,26 @@ runGroup("title-pioneer", function()
 	wn.Registry.SwitchService = { On = function() return true end }
 	local _, don = wn:Join(9263)
 	check(don.Titles.BetaPioneer ~= nil, "switch PioneerTitle on: granted", show(don.Titles))
+	-- review 10/14: the switch is off until the server's first good read; when the read turns it on, every child already
+	-- in game gets the title then (and a later off -> nobody new)
+	local swOn = false
+	local sig = rbxSignal({})
+	local wr = newWorld({ Time = UNTIL - 86400, Switch = { On = function(key) return key ~= "PioneerTitle" or swOn end,
+		Changed = sig } })
+	local pr, dr = wr:Join(9264)
+	check(next(dr.Titles) == nil and pr:GetAttribute("TitlesOwned") == "", "before the first read (switch off): no title at the join",
+		show(dr.Titles))
+	swOn = true
+	sig:Fire("PioneerTitle", true)
+	check(dr.Titles.BetaPioneer ~= nil and pr:GetAttribute("TitlesOwned") == "BetaPioneer",
+		"the read turns it on: the child already in game gets it", show(dr.Titles))
+	sig:Fire("PioneerTitle", true)
+	sig:Fire("Goose", true)
+	check(wr.Warnings[1] == nil, "a second on / another switch: nothing (no warning)", table.concat(wr.Warnings, " | "))
+	local wl = newWorld({ Time = UNTIL + 86400, Switch = { On = function() return true end, Changed = rbxSignal({}) } })
+	local _, dl = wl:Join(9265)
+	wl.Registry.SwitchService.Changed:Fire("PioneerTitle", true)
+	check(next(dl.Titles) == nil, "after PioneerUntil: the switch turning on gives nothing", show(dl.Titles))
 	-- a newly granted pioneer title never replaces another selected title
 	local wg = newWorld({ Time = UNTIL - 86400 })
 	wg.Rows[wg:Key(9240)] = row({ Titles = { GrayLegend = 1780000000 }, TitleSel = "GrayLegend" })

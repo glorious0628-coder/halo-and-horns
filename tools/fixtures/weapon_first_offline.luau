@@ -131,6 +131,16 @@ local function forgeWorld()
 end
 
 local function step(p) return p:GetAttribute("TutorialStep") end
+local function DEFS_COUNT(w, id) return w.Config.StoryQuests.Defs[id].Steps[1].Obj.Count end
+-- A23-188: the story hears kills (M1_1's Slime Prince): StoryQuestService.Start with the signals this world lacks
+local function startStory(w)
+	local reg = w.Registry
+	reg.GooseService = reg.GooseService or {}
+	reg.GooseService.GooseFinished = reg.GooseService.GooseFinished or w.Util.Signal.new()
+	reg.ZoneService.ZoneChanged = reg.ZoneService.ZoneChanged or w.Util.Signal.new()
+	w.Story.Start()
+	w.Warnings = {}
+end
 local function flat(a, b) return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2) end
 local function rootOf(p) return p.Character and p.Character:FindFirstChild("HumanoidRootPart") end
 local function count(list, text)
@@ -160,8 +170,8 @@ runGroup("config", function()
 		"A23-88: Forge = { Near = 24 } only; no landing, no trip delay, no accept trip", show(F))
 	for _, side in { "Halo", "Horns", "Neutral" } do
 		local line = TC.Welcome[side].Lines[1]
-		check(string.find(line, "First, get a weapon", 1, true) == 1 and string.find(line, "5 slimes", 1, true) ~= nil
-			and not string.find(line, "fists", 1, true), side .. ": page 1 = the weapon first, then 5 slimes", line)
+		check(line == "First, go to Otto's Forge and get your weapon!" and not string.find(line, "slimes", 1, true),
+			side .. ": page 1 = the Forge (A23-188: no '5 slimes' mission)", line)
 	end
 	check(TC.Text.Forge == "Go to Otto's Forge in the Crossroads" and TC.ShortNames.Forge == "To the Forge" and #TC.ShortNames.Forge <= 14,
 		"the Forge row: text + phone ShortName", show({ TC.Text.Forge, TC.ShortNames.Forge }))
@@ -176,8 +186,10 @@ runGroup("config", function()
 	check(TC.Text.Claimed == "+%s gold" and TC.Text.AutoClaimed == nil and TC.Text.ClaimedArmed == nil,
 		"A23-130: one claim line, the reward only", show({ TC.Text.Claimed, TC.Text.AutoClaimed }))
 	local M11 = C.StoryQuests.Defs.M1_1
-	check(M11.GiveWeapon == 1 and M11.Reward and M11.Reward.Gold == 1 and M11.Steps[1].Obj.Key == "BlacksmithVisited",
-		"M1_1: the visit with the jelly, Gold 1, the gift kept as the safety net", show({ M11.GiveWeapon, M11.Reward }))
+	check(M11.GiveWeapon == 1 and M11.Reward and M11.Reward.Gold == 1 and M11.Steps[1].Obj.Kind == "BigSlime" and M11.Steps[1].Obj.Count == 1
+		and M11.Steps[2].Obj.Name == "ScrollUsed" and M11.Steps[2].GiveItem == nil,
+		"M1_1 (A23-188): a Slime Prince, then the scroll used (no visit, no Forge scroll), Gold 1, the gift kept as the safety net",
+		show({ M11.GiveWeapon, M11.Reward }))
 	local order = {}
 	for i, name in C.Analytics.Steps do order[name] = i end
 	check(order.FirstMissionAccept < order.ForgeArrive and order.ForgeArrive < order.FirstWeapon
@@ -226,87 +238,100 @@ runGroup("weapon first", function()
 		show({ step(p), d.TutorialKills }))
 	w:Walk(p, "Crossroads")
 	rootOf(p).Position = vec(39, 3, 37)
-	-- the anvil prompt: Otto's line, the first weapon in hand, no shop window, the mission goes on
+	-- the anvil prompt: the first weapon in hand, no shop window, and the first mission is done (A23-188: it IS the visit)
 	local n1, f1 = #w.Notices, #w.Fired
 	w:Press(p)
 	local said = w:NoticesFor(p, n1)
 	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BlacksmithVisited == true, "the gift: tier 1 owned and equipped, the visit counted",
 		show({ d.WeaponTier, d.WeaponOwnedMask, d.BlacksmithVisited }))
-	-- A23-130 (server text verdicts 2026-10-11): no Otto line, the weapon line alone
-	check(#said == 1 and firstLines({ said[1] }) == 1 and string.find(said[1], w.Config.WeaponName(1, "Warrior", "Halo"), 1, true) ~= nil,
-		"the first weapon line only: 'First weapon: [Twig]!' (no Otto line)", show(said))
+	-- A23-130: no Otto line; the weapon line, then the mission's reward line
+	check(#said == 2 and firstLines({ said[1] }) == 1 and string.find(said[1], w.Config.WeaponName(1, "Warrior", "Halo"), 1, true) ~= nil
+		and said[2] == string.format(T.Text.Claimed, "150"), "the first weapon line, then '+150 gold' (A23-188: the first mission done)", show(said))
 	check(w:Panels(p, "WeaponShop", f1) == 0, "no weapon window at the gift (the Stronger! moment)", w:Panels(p, "WeaponShop", f1))
-	check(step(p) == T.Steps.Guide, "the mission goes on: step 1", step(p))
-	-- A23-88: "Travel to the Squishy Meadow": nothing moves the player; the pad / the map / a walk end the step
+	check(step(p) == 99 and d.BankGold == 150 and d.BlacksmithVisited == true,
+		"A23-188: the visit finishes the first mission: step 99, 150 gold, the visit kept (no second Forge trip)", show({ step(p), d.BankGold }))
+	-- nothing moves the player; no travel step, no "5 slimes" hunt
 	local fx1 = #w.Fx
 	w:Advance(10)
-	check(#w:FxFor(p, "Travel", fx1) == 0 and #w.Travels == 0 and step(p) == T.Steps.Guide, "10 s after the gift: no automatic trip, still step 1",
-		show({ #w:FxFor(p, "Travel", fx1), #w.Travels, step(p) }))
-	local grow = (w:Rows(p) or {})[1] or {}
-	check(grow.Text == T.Text.Travel and grow.ShortName == T.ShortNames.Travel and grow.TutorialStep == 1 and grow.CanClaim == false,
-		"the step-1 row teaches the pad / the map", show(grow))
-	-- the player's own travel (the pad and Map -> Travel both call ZoneService.Travel) lands in the meadow: the hunt
-	local nHunt = #w.Notices
-	w.Registry.ZoneService.Travel(p, "SlimeMeadow", false)
-	w:Flush()
-	check(w.ZoneOf[p] == "SlimeMeadow" and step(p) == T.Steps.Quest, "the travel pad / the map: the hunt (step 2)", show({ w.ZoneOf[p], step(p) }))
-	-- A23-130 (user 2026-10-11 "삭제해 달랬는데 아직 있네"): the hunt starts without a line, 5/5 too; the row keeps the mission
-	check(#w:NoticesFor(p, nHunt) == 0, "A23-130: no 'First mission: ...' line when the hunt starts", show(w:NoticesFor(p, nHunt)))
-	for _ = 1, 4 do w:Drop(p, "Slime") end
-	w:Flush()
-	local row4 = ((w:Rows(p) or {})[1] or {}).Text
-	local nReady = #w.Notices
-	w:Drop(p, "Slime")
-	w:Flush()
-	check(d.TutorialKills == 5, "5 slimes with the weapon", d.TutorialKills)
-	check(#w:NoticesFor(p, nReady) == 0, "A23-130: no 'Press [Claim]' line at 5/5", show(w:NoticesFor(p, nReady)))
-	local row5 = (w:Rows(p) or {})[1] or {}
-	check(type(row4) == "string" and row5.Text == row4 and row5.CanClaim == true and row5.Progress == 5
-		and not string.find(row5.Text, "Claim", 1, true), "A23-130: at 5/5 the row keeps the mission line (its [Claim] shows it)",
-		show({ row4, row5.Text, row5.Progress }))
-	-- the claim: 150 gold, the visit cleared, the next-weapon line
-	local n2 = #w.Notices
+	check(#w:FxFor(p, "Travel", fx1) == 0 and #w.Travels == 0 and step(p) == 99, "10 s after the gift: no automatic trip, done", show({ #w.Travels, step(p) }))
+	w:Press(p)
+	check(d.BankGold == 150, "a second visit pays nothing more", d.BankGold)
 	w:ClaimFirst(p)
-	check(step(p) == 99 and d.BankGold == 150 and d.BlacksmithVisited == false, "the claim: 150 gold, the forge visit cleared",
-		show({ step(p), d.BankGold, d.BlacksmithVisited }))
-	check(count(w:NoticesFor(p, n2), string.format(T.Text.Claimed, "150")) == 1, "the claim line: +150 gold (A23-130)",
-		show(w:NoticesFor(p, n2)))
-	-- M1_1: the jelly to Otto (a new visit). Gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon is sold any more, so the
-	-- visit opens step 2 with Otto's one Enhance Scroll, and a scroll used on the weapon finishes M1_1
+	check(d.BankGold == 150, "an old client's [Claim] pays nothing more", d.BankGold)
+	-- M1_1 (A23-188): a Slime Prince in the meadow (the first drops the T2 weapon + the Enhance Scroll), then the scroll used
+	startStory(w)
 	w.Story.Refresh(p)
 	local st = d.Story
-	check(st.Main.Id == "M1_1" and not st.Done.M1_1, "M1_1 waits for a new visit (the first one was before the claim)", show(st.Main))
+	check(st.Main.Id == "M1_1" and st.Main.St == 1 and not st.Done.M1_1, "M1_1 starts at once: 'Beat a Slime Prince'", show(st.Main))
+	local M11 = w.Config.StoryQuests.Defs.M1_1
+	check(M11.Steps[1].Obj.Type == "Kill" and M11.Steps[1].Obj.Kind == "BigSlime" and M11.Steps[1].Guide == "SlimeMeadow",
+		"step 1 sends the player to the meadow (no 'show the jelly' trip)", show(M11.Steps[1]))
+	local LT = w.Config.Loot
+	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
+	w:Walk(p, "SlimeMeadow")
+	for _ = 1, 5 do w:Drop(p, "Slime") end
+	check(d.TutorialKills == 0 and step(p) == 99 and d.BankGold == 150, "meadow slimes: no '5 slimes' mission any more", show({ d.TutorialKills, d.BankGold }))
+	w:Drop(p, "BigSlime")
+	w:Flush()
+	check(st.Main.Id == "M1_1" and st.Main.St == 2 and scrolls() >= 1 and bit32.btest(d.WeaponOwnedMask, 2),
+		"the first Slime Prince: the T2 weapon + the scroll; M1_1 step 2 'Use the Enhance Scroll'", show({ st.Main, scrolls(), d.WeaponOwnedMask }))
+	local had = scrolls()
+	local n5 = #w.Notices
+	w:Remote(p, "UseItem", "Enh70", 1)
+	check(st.Done.M1_1 == true and scrolls() == had - 1, "the scroll used from the bag right there finishes M1_1", show({ st.Done.M1_1, scrolls() }))
+	local lines = w:NoticesFor(p, n5)
+	local done = false
+	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
+	check(done and d.BankGold > 150, "M1_1's reward line and a little gold (Reward Gold 1)", show(lines))
+	w.Story.Refresh(p)
+	check(st.Main.Id == "M1_2" and DEFS_COUNT(w, "M1_2") == 1, "then M1_2: one more Slime Prince (two in all)", show(st.Main))
+end)
+
+------------------------------------------------------------------ 2b. a step's gift (GiveItem: given once when the step opens, tried again at a join)
+runGroup("step gift", function()
+	local w = forgeWorld()
+	local T = w.Config.Tutorial
+	-- no step ships a GiveItem since A23-188; the engine keeps it (a test-only gift on M1_1 step 2)
+	w.Config.StoryQuests.Defs.M1_1.Steps[2].GiveItem = { Item = "Enh70", N = 1 }
+	local p, d = w:Newbie(2)
+	w:Accept(p)
+	w:Walk(p, "Crossroads")
+	rootOf(p).Position = vec(39, 3, 37)
+	w:Press(p)
+	startStory(w)
+	w.Story.Refresh(p)
+	local st = d.Story
 	local LT = w.Config.Loot
 	local scrollName = LT.Items.Enh70.Name
 	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
-	local had = scrolls()
 	-- 최종 검수 10/13 review: the gift can give nothing because of a failure (here: GrantItem throws) - then it is not marked
 	-- given and the next join tries again; a FULL stack stays marked (no "full" line every join)
-	local n3, f3 = #w.Notices, #w.Fired
 	local lootSvc = w.Registry.LootService
 	local grantItem, asked = lootSvc.GrantItem, {}
 	lootSvc.GrantItem = function(pl, id, n)
 		table.insert(asked, id)
 		error("offline GrantItem failure")
 	end
-	w:Press(p)
+	w:Walk(p, "SlimeMeadow")
+	local n3 = #w.Notices
+	w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "BigSlime", Golden = false, Position = vec(0, 0, 0), ZoneId = "SlimeMeadow" })
+	w:Flush()
 	lootSvc.GrantItem = grantItem
 	w.Warnings = {} -- the expected GrantItem warning
-	check(#asked == 1 and asked[1] == "Enh70", "the step opening asks for Otto's scroll once (it fails here)", show(asked))
-	check(not st.Done.M1_1 and st.Main.Id == "M1_1" and st.Main.St == 2 and w:Panels(p, "WeaponShop", f3) == 1,
-		"the visit passes step 1: step 2 'Use the Enhance Scroll' opens, the Forge window opens", show({ st.Main, st.Done.M1_1 }))
-	check(st.First.GiveM1_12 == nil and scrolls() == had and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 0,
+	local had = scrolls()
+	check(#asked == 1 and asked[1] == "Enh70" and st.Main.Id == "M1_1" and st.Main.St == 2, "the step opening asks for the gift once (it fails here)",
+		show({ asked, st.Main }))
+	check(st.First.GiveM1_12 == nil and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 0,
 		"a gift that failed is not marked given and shows no '+item' line", show({ st.First.GiveM1_12, w:NoticesFor(p, n3) }))
 	local n3b = #w.Notices
 	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
 	w:Flush()
 	check(scrolls() == had + 1 and st.First.GiveM1_12 == true and count(w:NoticesFor(p, n3b), string.format(LT.Text.Got, scrollName)) == 1,
-		"the next join (RetryGifts) gives Otto's one Enhance Scroll with one '+item' line", show({ had, scrolls(), w:NoticesFor(p, n3b) }))
-	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
+		"the next join (RetryGifts) gives it with one '+item' line", show({ had, scrolls(), w:NoticesFor(p, n3b) }))
+	w.Story.RetryGifts(p)
 	w:Flush()
-	check(scrolls() == had + 1, "another join gives no second scroll", show({ had, scrolls() }))
+	check(scrolls() == had + 1, "another join gives no second one", show({ had, scrolls() }))
 	-- a full stack: nothing given, but it stays marked (the player holds scrolls), so later joins ask nothing
-	local keep = scrolls()
 	st.First.GiveM1_12 = nil
 	d.Items.Enh70 = LT.ItemCap
 	asked = {}
@@ -320,23 +345,7 @@ runGroup("weapon first", function()
 	lootSvc.GrantItem = grantItem
 	check(#asked == 1 and st.First.GiveM1_12 == true and d.Items.Enh70 == LT.ItemCap,
 		"a full stack: asked once, then marked given (no retry, no repeated 'full' line)", show({ asked, st.First.GiveM1_12 }))
-	d.Items.Enh70 = keep
-	local n4 = #w.Notices
-	w:Buy(p, 2)
-	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BankGold >= 150
-		and count(w:NoticesFor(p, n4), w.Config.Text.WeaponDropOnly) == 1,
-		"WeaponShop.Buy = false: buying the tier-2 weapon is refused with one line, no gold spent", show({ d.WeaponTier, d.BankGold, w:NoticesFor(p, n4) }))
-	w:Press(p)
-	check(scrolls() == had + 1 and st.Main.St == 2, "a second visit gives no second scroll", show({ scrolls(), st.Main }))
-	local n5 = #w.Notices
-	w:Remote(p, "UseItem", "Enh70", 1)
-	check(st.Done.M1_1 == true and scrolls() == had, "the scroll used on the weapon (success or not) finishes M1_1", show({ st.Done.M1_1, scrolls() }))
-	local lines = w:NoticesFor(p, n5)
-	local done = false
-	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
-	check(done and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
-		"M1_1's reward line (A23-130: no Otto lines); no second weapon (the gift is only the safety net)", show(lines))
-	check(d.BankGold > 150, "M1_1 pays a little gold (Reward Gold 1)", d.BankGold)
+	local _ = T
 end)
 
 ------------------------------------------------------------------ 3. the forge walk (A23-88): nothing moves, the arrival is a metric
@@ -400,8 +409,8 @@ runGroup("forge walk", function()
 	check(step(p2) == 3, "setup: the Forge step with the anvil there", step(p2))
 	w2.ShopClosed = true
 	w2:QuestTick()
-	check(step(p2) == 1 and d2.WeaponTier == 1 and d2.WeaponOwnedMask == 1 and firstLines(w2:NoticesFor(p2)) == 1,
-		"no anvil at the Forge step: the first weapon at once (Power 0 → N), then step 1", show({ step(p2), d2.WeaponTier }))
+	check(step(p2) == 99 and d2.WeaponTier == 1 and d2.WeaponOwnedMask == 1 and firstLines(w2:NoticesFor(p2)) == 1 and d2.BankGold == 150,
+		"no anvil at the Forge step: the first weapon at once (Power 0 → N), the mission done (+150, A23-188)", show({ step(p2), d2.WeaponTier }))
 	-- the row's tap (RequestTutorial) at the Forge step: nothing is asked for (the client's beam / path light leads)
 	local w7 = forgeWorld()
 	local p7 = w7:Newbie(7)
@@ -435,8 +444,8 @@ runGroup("gift", function()
 	local old, od = w:Newbie(1, { Tier = 1, Mask = 1 })
 	local fx0 = #w.Fx
 	w:Accept(old)
-	check(step(old) == T.Steps.Guide and #w:FxFor(old, "Travel", fx0) == 0 and #w.Travels == 0, "owns tier 1: [Accept] -> step 1, no trip",
-		show({ step(old), #w:FxFor(old, "Travel", fx0) }))
+	check(step(old) == 99 and od.BankGold == 150 and #w:FxFor(old, "Travel", fx0) == 0 and #w.Travels == 0,
+		"owns tier 1: [Accept] -> the mission done at once (+150, A23-188), no trip", show({ step(old), od.BankGold }))
 	-- the anvil at the welcome step / after the first mission: the usual shop, no gift, the step kept
 	local p0, d0 = w:Newbie(2)
 	local f0 = #w.Fired
@@ -462,7 +471,7 @@ runGroup("gift", function()
 	w2:Press(p2)
 	local fx2 = #w2.Fx
 	w2:Walk(p2, "SlimeMeadow")
-	check(step(p2) == 2, "walking in after the gift starts the hunt", step(p2))
+	check(step(p2) == 99, "A23-188: no hunt step after the gift (the mission was the visit)", step(p2))
 	w2:Advance(10)
 	check(#w2:FxFor(p2, "Travel", fx2) == 0 and #w2.Travels == 0, "and nothing ever moved them", #w2:FxFor(p2, "Travel", fx2))
 	-- the gift once: a second press at step 1 opens the shop, gives nothing more
@@ -473,7 +482,7 @@ runGroup("gift", function()
 	local n5, f5 = #w5.Notices, #w5.Fired
 	w5:Press(p5)
 	local again = w5:NoticesFor(p5, n5)
-	check(step(p5) == 1 and d5.WeaponOwnedMask == 1 and count(again, w5.Config.Tutorial.Text.ForgeGift) == 0
+	check(step(p5) == 99 and d5.WeaponOwnedMask == 1 and d5.BankGold == 150 and count(again, w5.Config.Tutorial.Text.ForgeGift) == 0
 		and firstLines(again) == 0 and w5:Panels(p5, "WeaponShop", f5) == 1,
 		"a second press: the shop, no second gift", show({ step(p5), again }))
 end)
@@ -486,21 +495,21 @@ runGroup("no anvil / held weapon", function()
 	local p, d = w:Newbie(1)
 	local fx0 = #w.Fx
 	w:Accept(p)
-	check(step(p) == 1 and d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(p)) == 1,
-		"no anvil at [Accept]: the first weapon at once, step 1 (never stuck at the Forge step)", show({ step(p), d.WeaponTier }))
+	check(step(p) == 99 and d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(p)) == 1 and d.BankGold == 150,
+		"no anvil at [Accept]: the first weapon at once, the mission done (never stuck at the Forge step)", show({ step(p), d.WeaponTier }))
 	check(#w:FxFor(p, "Travel", fx0) == 0, "and no trip (A23-88)", #w:FxFor(p, "Travel", fx0))
 	-- a save waiting at the Forge step when the shop is closed: the join gives the weapon and moves on
 	local q, e = w:Newbie(2, { Tutorial = 3 })
-	check(step(q) == 1 and e.WeaponTier == 1 and e.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(q)) == 1,
-		"a Forge-step save with no anvil: the weapon at the join, then step 1", show({ step(q), e.WeaponTier }))
+	check(step(q) == 99 and e.WeaponTier == 1 and e.WeaponOwnedMask == 1 and firstLines(w:NoticesFor(q)) == 1 and e.BankGold == 150,
+		"a Forge-step save with no anvil: the weapon at the join, the mission done", show({ step(q), e.WeaponTier }))
 	-- holding a weapon already (tier 2 bought, no tier 1): [Accept] hunts at once like an old save; nothing is given now
 	-- (M1_1 hands the first weapon over later, into the bag)
 	local w2 = forgeWorld()
 	local h, hd = w2:Newbie(3, { Tier = 2, Mask = 2 })
 	local fx1 = #w2.Fx
 	w2:Accept(h)
-	check(step(h) == 1 and #w2:FxFor(h, "Travel", fx1) == 0 and hd.WeaponOwnedMask == 2 and hd.WeaponTier == 2,
-		"holding tier 2 (no tier 1): [Accept] -> step 1, no trip, no Forge step, nothing given yet",
+	check(step(h) == 99 and #w2:FxFor(h, "Travel", fx1) == 0 and hd.WeaponOwnedMask == 2 and hd.WeaponTier == 2 and hd.BankGold == 150,
+		"holding tier 2 (no tier 1): [Accept] -> done (+150), no trip, no Forge step, nothing given yet",
 		show({ step(h), hd.WeaponOwnedMask, #w2:FxFor(h, "Travel", fx1) }))
 	w2:QuestTick()
 	check(hd.WeaponOwnedMask == 2, "and no late gift either (the same rule for both)", hd.WeaponOwnedMask)
@@ -509,8 +518,8 @@ runGroup("no anvil / held weapon", function()
 	local o, od = w2:Newbie(4, { Tier = 0, Mask = 1 })
 	local fx2 = #w2.Fx
 	w2:Accept(o)
-	check(step(o) == 1 and #w2:FxFor(o, "Travel", fx2) == 0 and od.WeaponOwnedMask == 1,
-		"owns tier 1, holds nothing: [Accept] -> step 1, no trip (no Forge step)",
+	check(step(o) == 99 and #w2:FxFor(o, "Travel", fx2) == 0 and od.WeaponOwnedMask == 1,
+		"owns tier 1, holds nothing: [Accept] -> done, no trip (no Forge step)",
 		show({ step(o), od.WeaponOwnedMask, #w2:FxFor(o, "Travel", fx2) }))
 end)
 
@@ -519,7 +528,8 @@ runGroup("old saves", function()
 	local w = forgeWorld()
 	for i, s in { 1, 2, 99 } do
 		local p, d = w:Newbie(10 + i, { Tutorial = s, Zone = s == 2 and "SlimeMeadow" or "HaloTown" })
-		check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and step(p) == s, "step " .. s .. " bare-handed: the gift at the join",
+		-- A23-188: a save at the old steps 1 / 2 (the travel / the "5 slimes" hunt) is done at the join
+		check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and step(p) == 99, "step " .. s .. " bare-handed: the gift at the join (A23-188: done)",
 			show({ d.WeaponTier, d.WeaponOwnedMask, step(p) }))
 		check(firstLines(w:NoticesFor(p)) == 1, "step " .. s .. ": 'You got your first weapon' once", show(w:NoticesFor(p)))
 		w:QuestTick()
@@ -558,30 +568,26 @@ end)
 
 ------------------------------------------------------------------ 6. the claim: the visit cleared, the right line
 runGroup("claim", function()
+	-- A23-188: the old "5 slimes" mission is gone; a save in it (step 1 / 2, any kills) is done at the join with the same
+	-- reward-only line, the Forge visit kept (no second Forge trip any more), once
 	local w = forgeWorld()
 	local T = w.Config.Tutorial
 	local cases = {
-		-- A23-130 (user 2026-10-11): the same reward-only line for every save
-		{ Id = 1, Tier = 1, Mask = 1, Line = T.Text.Claimed, Name = "tier 1 only: +150 gold" },
-		{ Id = 2, Tier = 2, Mask = 3, Line = T.Text.Claimed, Name = "tier 2 owned: +150 gold" },
-		{ Id = 3, Tier = 8, Mask = 129, Line = T.Text.Claimed, Name = "the jackpot owned: +150 gold" },
+		{ Id = 1, Tier = 1, Mask = 1, Step = 2, Kills = 5, Name = "a save at 5/5 (tier 1)" },
+		{ Id = 2, Tier = 2, Mask = 3, Step = 2, Kills = 2, Name = "a save at 2/5 (tier 2 owned)" },
+		{ Id = 3, Tier = 8, Mask = 129, Step = 1, Kills = 0, Name = "a save on the way to the meadow (the jackpot owned)" },
 	}
 	for _, c in cases do
-		local p, d = w:Newbie(c.Id, { Tutorial = 2, Tier = c.Tier, Mask = c.Mask, Zone = "SlimeMeadow",
-			Data = { TutorialKills = 5, BlacksmithVisited = true } })
 		local n = #w.Notices
+		local p, d = w:Newbie(c.Id, { Tutorial = c.Step, Tier = c.Tier, Mask = c.Mask, Zone = "SlimeMeadow",
+			Data = { TutorialKills = c.Kills, BlacksmithVisited = true } })
+		w:QuestTick()
+		check(step(p) == 99 and d.BankGold == 150 and d.BlacksmithVisited == true and count(w:NoticesFor(p, n), string.format(T.Text.Claimed, "150")) == 1,
+			c.Name .. ": done at the join, +150 gold once, the visit kept", show({ step(p), d.BankGold, w:NoticesFor(p, n) }))
 		w:ClaimFirst(p)
-		check(step(p) == 99 and d.BlacksmithVisited == false and count(w:NoticesFor(p, n), string.format(c.Line, "150")) == 1,
-			c.Name .. " (the visit cleared)", show(w:NoticesFor(p, n)))
+		w:QuestTick()
+		check(d.BankGold == 150, c.Name .. ": a [Claim] after it pays nothing more", d.BankGold)
 	end
-	-- the F10-4 safety net pays with the same reward-only line
-	local p, d = w:Newbie(9, { Tutorial = 2, Tier = 1, Mask = 1, Zone = "SlimeMeadow", Data = { TutorialKills = 5 } })
-	local n = #w.Notices
-	w:QuestTick()
-	w:Advance(T.AutoClaimSeconds + 1)
-	w:QuestTick()
-	check(step(p) == 99 and d.BankGold == 150 and count(w:NoticesFor(p, n), string.format(T.Text.Claimed, "150")) == 1
-		and #w:NoticesFor(p, n) == 1, "the auto claim: the same +150 gold line, nothing else", show(w:NoticesFor(p, n)))
 end)
 
 ------------------------------------------------------------------ 7. the save keeps the Forge step

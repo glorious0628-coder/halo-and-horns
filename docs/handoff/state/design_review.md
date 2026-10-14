@@ -1,7 +1,17 @@
-# 디자인 검수 — 상태 (2026-10-14 오후, 부품 2D 판정 ①②③)
+# 디자인 검수 — 상태 (2026-10-14 낮, ⛔ 멈춤)
+
+## ⛔ 지금 (맨 위 = 이것부터)
+- **전부 멈춤(사용자 지시, 최종 검수 전달; 원래 계획 A23-163: 디자인 검수는 10/27부터).** 진행 중이던 판정 일은 취소. 다시 열 때 최종 검수가 범위를 줌.
+- **멈출 때 상태:** 부품 2D ①②③ = 최종 확정(14 통과, RoundTree_F Trunk·Canopy 떨어짐). ④ 화분·꽃 = 최종 확정(그릇 7·잎 6·꽃 7 통과, PotF_Vines·Tulip 2 떨어짐, 꽃 5종 줄기 끝 고친 판 통과, BushPot 노란 꽃 뺌). 그 뒤 최종 검수가 2D 추가 떨어짐: Daisy_Pot·Rose_Bowl·PotA_Bowl·Planter_A_Box·VegGarden_Bed. HD PBR 33 = 내 첫 판정만(통과 29, 떨어짐 Daisy_Pot·Rose_Bowl·PotA_Bowl·Fountain3_Top; `art/review/design/pbr_gate_hd_1014_dr/verdict_1014.md`), 최종 검수 두 번째 판정 없음 → 다시 열면 그대로 이어서 보거나 새로 봄. Fountain3_Top 2D 다시 그리기 요청은 최종 검수가 취소함(이미지 생성 2 state 10/20 목록에 메모만 있음). 멈춘 동안 판정·다른 세션에 일 보내기 금지.
+- **새 판정 방법(최종 검수 10/14, 사용자가 Daisy_Pot 지적):** 모든 부품 2D는 **원래 통짜 4면을 같은 줄 맨 위**에 놓고 표로 ① 비율(높이/폭) ② 대칭·개수(기둥·창·꽃잎) ③ 잘라낸 자국(100% 확대, 가장자리) ④ 둥글지 않은데 4면 같음(앞 1장 복사는 돌려도 같은 둥근 부품만). 합칠 물건(난간 등)은 합친 판을 2D와 같은 각도로 겹쳐 봄. 'PBR 때 확인'으로 넘기지 말 것(점수 쓴 뒤). PBR 그릇류 비율은 2D와 같은 카메라 높이(윗면 타원 맞춤)로 렌더해 비교.
+- 판정 표는 최종 검수에게(최종 검수 = 게임성 중심).
+
+## (이전) 10/14 오후 기록
 
 ## 10/14 오후 (맨 위 = 이것부터)
 - 최종 검수 지시(새 세션, Opus 5.5): 내 몫 = ① 이미지 생성 2 부품 2D 판정 ② 손보기 2 HD PBR 판정 ③ 이미지 생성 3 WorldKit 낮·밤 사진. Tripo = HD 한 번에(A23-174~177), 사람도 머리·몸·소품 부품. Bright 부품 = 사용자 OK(판정 불필요).
+- **판정 방법 바뀜(최종 검수 10/14, 사용자 Daisy_Pot 지적):** 모든 부품 2D = 원래 통짜 4면을 같은 줄 맨 위에 두고 표 ① 비율(높이/폭) ② 대칭·개수(기둥·창·꽃잎) ③ 잘라낸 자국(100%, 가장자리) ④ 둥글지 않은데 4면 같음. 합칠 물건은 합친 판을 2D와 같은 각도로 겹쳐 봄. 최종 검수 = 게임성 중심, 판정 표는 그대로 최종 검수에. 2D 추가 떨어짐(최종 검수): Daisy_Pot·Rose_Bowl·PotA_Bowl·Planter_A_Box·VegGarden_Bed.
+- **HD PBR 33 첫 판정(06b8e2e, `art/review/design/pbr_gate_hd_1014_dr/verdict_1014.md`):** 통과 29, 떨어짐 4 = Daisy_Pot(비침 틈+기둥 비대칭)·Rose_Bowl·PotA_Bowl·Fountain3_Top(공 1.4배; 2D 다시는 내가 이미지 생성 2에 보냄). 그릇류 비율은 2D와 같은 카메라 높이로 맞춰 잼: `scratchpad elev.py`(Blender workbench, e 0~35°) → 윗면 타원(물·흙) 비율이 맞는 e에서 전체 높이/폭 비교(-3~+7%). 최종 검수 두 번째 판정 대기.
 - **④ 최종 검수 두 번째 판정 = 내 표 그대로 확정**(통과 그릇 7·잎 6·꽃 7 + 줄기 끝 5 → 손보기 2 HD 큐). BushPot 노란 꽃 4개 = 뺌(최종 검수 결정, 이미지 생성 2에 전함).
 - **④ 꽃 5종 줄기 끝 지움(d56e7fd) = 통과**(100% 확인; PinkRose 아래 지운 자리 아주 옅은 1px 테두리 — 배경과 거의 같아 Tripo엔 상관없음). 대기: PotF_Vines·Tulip 2·나무 F 2 다시 그림(Codex 11:41~).
 - **④ 화분·꽃(이미지 생성 2, 939e5b3) 내 판정:** 통과 = 그릇·잎 대부분(Daisy Pot 8각·Leaves, Rose Bowl·Leaves, PotF Vase, PotA·PotC, 나무·은 양동이, BushPot Leaves(4면 다 다름, 맞음), NEW_FlowerBush Leaves), RedBud·RoseBud(꽃받침 둘레 고름). **떨어짐 = PotF_Vines(아치 ×4, F_Canopy와 같은 경우), TulipWhite·TulipBlue(잎 2장이 한 판 ×4 → 옆은 잎이 겹친 모습이어야)**. **고쳐서 통과 = WhiteDaisy·Lilac·RedDaisy·Blue5·PinkRose 앞면 아래 줄기 끝**(옆·뒤는 줄기가 곧장 뒤로 → 앞에선 안 보여야; PIL로 지우기). 시트 `art/review/design/parts2d_1014/b4_*.jpg`. BushPot 노란 꽃 빼기 = 찬성, 결정은 최종 검수.

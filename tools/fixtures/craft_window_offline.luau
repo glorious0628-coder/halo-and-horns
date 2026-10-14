@@ -36,6 +36,10 @@ cfgEnv.workspace = { GetServerTimeNow = function() return 1790000000 end }
 local fn = assert(loadstring(CONFIG_SOURCE, "=Config"))
 setfenv(fn, cfgEnv)
 local Config = fn()
+-- 장인 ② (게임성 개발 2, 10/14): the shipped W1 is gone (tier 1 = the free class weapon); the window's groups keep a test-only
+-- W1 with its old numbers, and W2 is the first craft from N0's harvest (3 herbs + 2 copper)
+assert(Config.Craft.Recipes.W1 == nil, "the shipped W1 is gone (장인 ②)")
+Config.Craft.Recipes.W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 }
 Config.Features.Crafting = true
 -- test-only recipes: an alchemist item (Kind Item, x2) and a gear row (no names yet: hidden)
 Config.Craft.Recipes.ZTestItem = { Role = "Alch", Kind = "Item", Item = "Jelly", N = 2, Lv = 1, Gold = 5, Mats = { Petal = 1 }, XP = 5 }
@@ -195,7 +199,7 @@ local game = { GetService = function(_, n)
 	if n == "CollectionService" then return CS end
 	return nil
 end }
-local mods = { Config = Config, Util = Util, L10n = L10n }
+local mods = { Config = Config, Util = Util, L10n = L10n, Net = { Names = { "CraftStart" } } } -- UnpackSpare added in §contract ③
 
 local env = setmetatable(table.clone(base), { __index = getfenv() })
 env.game, env.Instance, env.workspace = game, Instance, ws
@@ -265,7 +269,7 @@ local UIKit = {
 		return f, function(x) barFraction = x end, nil
 	end,
 	ItemIcon = function(id, props)
-		if id == "Petal" then return nil end -- an item whose icon is not drawn yet
+		if id == "Petal" or id == "Herb" then return nil end -- items whose icon is not drawn yet (Herb: W2's first material, 장인 ②)
 		local o = artObj("ImageLabel", "Icon:" .. tostring(id), props)
 		o.ItemId = id
 		return o
@@ -363,7 +367,7 @@ check(#CraftWindow.Entries(ctxOf({ Faction = "Halo" })) == 0, "nothing for a non
 local w2 = entry(list, "W2")
 local mats = {}
 for _, m in w2.Mats do table.insert(mats, m.Id .. "=" .. m.Have .. "/" .. m.Need .. (m.Short and "!" or "")) end
-check(table.concat(mats, " ") == "Jelly=12/10 Petal=1/3! CopperOre=4/4", "materials in the loot order with have / need, short marked",
+check(table.concat(mats, " ") == "Herb=0/3! CopperOre=4/2", "materials in the loot order with have / need, short marked",
 	table.concat(mats, " "))
 check(w2.MatsShort and not w2.Ready and not w2.Locked, "a short material: not ready")
 local w1 = entry(list, "W1")
@@ -418,7 +422,7 @@ check(lineWith(w5v, "Use from Lv 20") ~= nil, "a weapon above my hunting level s
 local w2v = CraftWindow.Detail(w2, ctxOf())
 check(w2v.Status and w2v.Status.Text == K.Text.NeedMats and w2v.Status.Color == "Bad" and not w2v.Action.Enabled,
 	"short materials: the server's own notice text, Forge off", w2v.Status and w2v.Status.Text)
-check(w2v.Mats[2].Text == "1 / 3" and w2v.Mats[2].Short and not w2v.Mats[1].Short, "each material: have / need, short in red")
+check(w2v.Mats[1].Text == "0 / 3" and w2v.Mats[1].Short and not w2v.Mats[2].Short, "each material: have / need, short in red")
 v = CraftWindow.Detail(entry(CraftWindow.Entries(ctxOf({ Info = { Role = "Smith", Lv = 1, Made = { W1 = 2 } } })), "W1"), ctxOf())
 check(lineWith(v, "Made 2") ~= nil, "how many I made (CraftInfo.Made)")
 v = CraftWindow.Detail(w1, ctxOf({ Pending = true }))
@@ -452,7 +456,7 @@ check(find(find(root, "Row_W6"), "Lv").TextScaled == true and find(find(find(roo
 	and find(find(root, "Mat_Jelly"), "Name").TextScaled == true, "the row's level and a material's name shrink to fit (UiSandbox 10/12: \"Lv 20\" ran into the name)")
 find(root, "Row_W2").OnActivate()
 check(T.S.Sel == "W2" and find(find(root, "Row_W2"), "Picked") ~= nil and find(root, "Forge").Enabled == false, "a tap picks a row; W2 is short -> Forge off")
-check(find(find(root, "Mat_Petal"), "Letter") ~= nil and find(find(root, "Mat_Petal"), "Count").Text == "1 / 3",
+check(find(find(root, "Mat_Herb"), "Letter") ~= nil and find(find(root, "Mat_Herb"), "Count").Text == "0 / 3",
 	"a material without icon art shows its letter; its count line")
 check(find(root, "Status").Text == K.Text.NeedMats, "the reason under the cost")
 find(root, "Forge").OnClick()
@@ -529,9 +533,9 @@ fireAttr("AutoCombatEnabled")
 check(find(root, "Status") == nil, "auto combat off again: on")
 -- new materials (the Inventory push through Panels) redraw in the update
 find(root, "Row_W2").OnActivate()
-inventory = { Items = { Jelly = 12, Petal = 3, CopperOre = 4 } }
+inventory = { Items = { Jelly = 12, Petal = 1, Herb = 3, CopperOre = 4 } }
 update()
-check(find(root, "Forge").Enabled == true and find(find(root, "Mat_Petal"), "Count").Text == "3 / 3", "new petals: W2 ready in place")
+check(find(root, "Forge").Enabled == true and find(find(root, "Mat_Herb"), "Count").Text == "3 / 3", "new herbs: W2 ready in place")
 -- gold
 attrs.BankGold, attrs.CarriedGold = 0, 20
 fireAttr("BankGold")
@@ -686,5 +690,93 @@ fireAttr("Class")
 check(find(root, "Tabs").Visible == false and find(root, "Fam_Slime") == nil, "a blacksmith: no tabs (research is the tamer's)")
 close()
 Config.Features.Research = false
+
+------------------------------------------------------------------ artisan contract ③: a made weapon -> [Use it]
+do
+	local w3 = entry(CraftWindow.Entries(ctxOf({ Level = 50 })), "W3")
+	local sp = { ["3:0"] = 1, ["3:2"] = 1, ["4:0"] = 5, bad = 3, ["3:1"] = 0 }
+	local function pw(t, p) return 100 + t * 10 + p end
+	local c3 = ctxOf({ Level = 50, UnpackOn = true, Spares = sp, Mask = 1, PowerNow = 100, Power = pw })
+	local plan = CraftWindow.SparePlan(w3, c3)
+	check(plan and plan.Key == "3:2" and plan.Plus == 2 and plan.Count == 2 and plan.Owned == false and plan.Use == true,
+		"③ the best +N of the recipe's tier, all of its spares counted (0 / odd keys / other tiers not)", plan and plan.Key)
+	check(CraftWindow.SparePlan(w3, ctxOf({ Level = 50, UnpackOn = false, Spares = sp })) == nil,
+		"③ no UnpackSpare on the server: no spare line, no button")
+	check(CraftWindow.SparePlan(w3, ctxOf({ Level = 50, UnpackOn = true, Spares = { ["4:0"] = 5 } })) == nil
+		and CraftWindow.SparePlan(entry(CraftWindow.Entries(ctxOf()), "W1") and { Kind = "Item" }, c3) == nil,
+		"③ no spare of this tier / not a weapon: nothing")
+	local v3 = CraftWindow.Detail(w3, c3)
+	check(v3.Use and v3.Use.Text == TXT.Use and v3.Use.Enabled == true and v3.Use.Key == "3:2", "③ [Use it] for a made weapon I don't own")
+	check(lineWith(v3, "In your bag ×2") ~= nil, "③ how many wait in the bag")
+	local p = lineWith(v3, "Power 100 → 132")
+	check(p ~= nil and p.Color == "Good", "③ Power now → with it (+N of the best spare), green when up", p and p.Text)
+	check(lineWith(v3, "Attack " .. Util.FormatInt(math.floor(Config.WeaponDamage(3, 50, 2)))) ~= nil, "③ the attack counts the spare's +N")
+	local down = CraftWindow.Detail(w3, ctxOf({ Level = 50, UnpackOn = true, Spares = sp, Mask = 1, PowerNow = 500, Power = pw }))
+	check(lineWith(down, "Power 500 → 132") and lineWith(down, "Power 500 → 132").Color == "Bad", "③ red when it is weaker")
+	local same = CraftWindow.Detail(w3, ctxOf({ Level = 50, PowerNow = 130, Power = pw }))
+	check(lineWith(same, "Power 130 → 130") and lineWith(same, "Power 130 → 130").Color == "Sub" and same.Use == nil,
+		"③ no spare: Power with a +0 one, grey when equal, no button")
+	local min3 = math.floor(tonumber(Config.Weapons[3].MinLevel) or 1)
+	if min3 > 1 then
+		local low = CraftWindow.Detail(w3, ctxOf({ Level = 1, UnpackOn = true, Spares = sp, Mask = 1, PowerNow = 100, Power = pw }))
+		check(lineWith(low, "Power") == nil and lineWith(low, "Use from") ~= nil, "③ a weapon my level can't use: no power line")
+	end
+	local owned = CraftWindow.Detail(w3, ctxOf({ Level = 50, UnpackOn = true, Spares = sp, Mask = 1 + 4 }))
+	local ownedPlan = CraftWindow.SparePlan(w3, ctxOf({ Level = 50, UnpackOn = true, Spares = sp, Mask = 1 + 4 }))
+	check(owned.Use == nil and lineWith(owned, TXT.SpareOwned) ~= nil and ownedPlan.Owned == true and ownedPlan.Use == false, "③ I own the tier already: a line, no button (the server says Owned)")
+	local busy = CraftWindow.Detail(w3, ctxOf({ Level = 50, UnpackOn = true, Spares = sp, Mask = 1, Unpacking = true }))
+	check(busy.Use and busy.Use.Text == TXT.Checking and busy.Use.Enabled == false, "③ one at a time: Checking…, off")
+
+	-- the window
+	table.insert(mods.Net.Names, "UnpackSpare")
+	attrs.Level, attrs.WeaponOwnedMask = 50, 1
+	inventory = { Items = { Jelly = 12, Petal = 1, CopperOre = 4 }, Spares = { ["2:1"] = 1 } }
+	fired = {}
+	open(nil)
+	find(root, "Row_W2").OnActivate()
+	local use = find(root, "Use")
+	check(use and use.Text == TXT.Use and use.Enabled == true and use.Color == "free" and find(root, "Forge") ~= nil,
+		"③ the window: [Use it] under the start button", use and use.Text)
+	use.OnClick()
+	check(#fired == 1 and fired[1][1] == "UnpackSpare" and fired[1][2] == "2:1", "③ [Use it] sends UnpackSpare(\"T:P\")",
+		fired[1] and fired[1][1])
+	check(find(root, "Use").Text == TXT.Checking and find(root, "Use").Enabled == false, "③ waiting: Checking…, off")
+	find(root, "Use").OnClick()
+	check(#fired == 1, "③ a second press while it waits sends nothing")
+	CLOCK += 0.5
+	CraftWindow.WatchUnpack()
+	check(#fired == 1 and T.S.Unpack ~= nil, "③ no weapon bit yet: still waiting")
+	attrs.WeaponOwnedMask = 3
+	inventory = { Items = { Jelly = 12, Petal = 1, CopperOre = 4 }, Spares = {} }
+	CraftWindow.WatchUnpack()
+	check(#fired == 2 and fired[2][1] == "EquipWeapon" and fired[2][2] == 2 and T.S.Unpack == nil,
+		"③ the bit came: the weapon is worn (EquipWeapon)", fired[2] and fired[2][1])
+	check(find(root, "Use") == nil, "③ the spare is gone: no button")
+	-- no answer: the button comes back, nothing worn
+	attrs.WeaponOwnedMask = 1
+	inventory = { Items = { Jelly = 12, Petal = 1, CopperOre = 4 }, Spares = { ["2:0"] = 2 } }
+	CraftWindow.Redraw()
+	fired = {}
+	find(root, "Use").OnClick()
+	CLOCK += 3.1
+	CraftWindow.WatchUnpack()
+	check(#fired == 1 and T.S.Unpack == nil and find(root, "Use").Enabled == true, "③ no answer in 3 s: the button again, nothing worn")
+	-- a level too low to use it: made mine, not worn
+	attrs.Level = 1
+	fired = {}
+	CraftWindow.Redraw()
+	if min3 > 1 then
+		find(root, "Row_W3").OnActivate()
+		inventory.Spares = { ["3:0"] = 1 }
+		CraftWindow.Redraw()
+		find(root, "Use").OnClick()
+		attrs.WeaponOwnedMask = 1 + 4
+		CraftWindow.WatchUnpack()
+		check(#fired == 1 and fired[1][1] == "UnpackSpare", "③ my level can't use it yet: made mine, not worn")
+	end
+	close()
+	attrs.Level, attrs.WeaponOwnedMask = 1, nil
+	table.remove(mods.Net.Names)
+end
 
 print(string.format("CRAFT_WINDOW_SUMMARY checks=%d failed=%d", checks, failed))

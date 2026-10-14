@@ -441,6 +441,23 @@ if Config.Loot.Items.Herb and Config.Loot.Items.Herb.Source then
 	for _, c in herb do if c.Key == "I:Herb" then hc = c end end
 	local hv = detail(hc)
 	check(hc and lineWith(hv, "Sells for") == nil and lineWith(hv, "×3") ~= nil, "a gathered material shows no sell price (the sell-all skips it)")
+	-- artisan contract ② (10/14): with the server's SellItem it sells one at a time at the anvil
+	local function acts(view)
+		local out = {}
+		for _, a in view.Actions do out[a.Id] = a.Enabled end
+		return out
+	end
+	local near = detail(hc, { SellOn = true, Near = true })
+	local a1 = acts(near)
+	check(lineWith(near, "Sells for") ~= nil and a1.SellOne == true and a1.SellAll == true, "SellItem + at the anvil: price, [Sell 1] / [Sell all] on")
+	local far = detail(hc, { SellOn = true, Near = false })
+	local a2 = acts(far)
+	check(lineWith(far, "Forge's anvil") ~= nil and a2.SellOne == false and a2.SellAll == false, "away from the anvil: the where line, the buttons off")
+	local busy = acts(detail(hc, { SellOn = true, Near = true, Pending = { Kind = "Sell" } }))
+	check(busy.SellOne == false and busy.SellAll == false, "a request waiting: the buttons off")
+	check(BagUI.SellPlan(hc, Config.Loot.Items.Herb, { SellOn = false, Near = true }) == nil
+		and BagUI.SellPlan(byKey["I:Jelly"], Config.Loot.Items.Jelly, { SellOn = true, Near = true }) == nil,
+		"no SellItem remote, or a monster material: no sell buttons")
 else
 	check(false, "Config.Loot.Items.Herb with a Source (the gather server on main)")
 end
@@ -655,6 +672,16 @@ local beforeEmpty = #findAll(root, "^Empty$")
 root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 900)
 for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
 check(#findAll(root, "^Empty$") > beforeEmpty, "a taller window fills more rows with empty slots", #findAll(root, "^Empty$"))
+local function gridCols()
+	for _, ch in find(root, "Grid"):GetChildren() do
+		if ch.FillDirectionMaxCells then return ch.FillDirectionMaxCells end
+	end
+	return nil
+end
+local colsBefore = gridCols()
+root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 160, 900)
+for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
+check(colsBefore == 4 and gridCols() == 3, "a narrower window redraws the grid with fewer columns", tostring(colsBefore) .. " -> " .. tostring(gridCols()))
 root.AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540)
 for _, r in signals do if r.Live and r.Obj == root and r.Prop == "AbsoluteSize" then r.Fn() end end
 -- opened straight on a scroll's step (arg.Use [+ Tier])
@@ -818,5 +845,44 @@ Bag2.Init({ Panels = { Register = function(id, opts) reg2[id] = opts return true
 local root2 = newObj("Frame", { Name = "FixedBody2", AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540) })
 reg2.Bag.Build(root2, kit, { Tab = "Material" })
 check(find(root2, "Cell_I:Jelly") ~= nil, "a payload Panels got first is taken from Panels (LastInventory)")
+
+------------------------------------------------------------------ 최종 검수 10/14: bag slots 12 -> 16 -> 20 (BagSlots, the whole bag)
+check(BagUI.Slots(nil) == 12 and BagUI.Slots(16) == 16 and BagUI.Slots("x") == 12 and BagUI.Slots(0) == 12 and BagUI.Slots(16.7) == 16
+	and BagUI.Slots(0 / 0) == 12, "BagSlots -> the bag's slots; none / odd = Config's 12")
+check(BagUI.Used({ { Kind = "Material", Count = 3 }, { Kind = "Enhance", Count = 1 }, { Kind = "Transfer", Count = 2 },
+	{ Kind = "Tonic", Count = 1 }, { Kind = "Treat", Count = 4 }, { Kind = "Spare", Count = 1 }, { Kind = "Weapon", Count = 1 },
+	{ Kind = "Potion", Count = 5 }, { Kind = "Armor", Count = 1 }, { Kind = "Material", Count = 0 } }) == 6,
+	"a slot = one kind of material / scroll / tonic / treat / spare weapon (owned weapons, gear, potions, 0 left: not)")
+check(string.format(Config.BagSlots.Text.Gained, Config.BagSlots.Step) == "+4 bag slots" and Config.BagSlots.Default == 12
+	and Config.BagSlots.Max == 20 and type(Config.BagSlots.Text.Full) == "string" and #Config.BagSlots.Text.Full > 0,
+	"Config: 12 -> +4 -> 20, the reward line '+4 bag slots', a 'full' line for the server")
+local root3 = newObj("Frame", { Name = "FixedBody3", AbsoluteSize = vec(BagUI.WindowWidth(false) - 36, 540) })
+reg.Bag.Build(root3, kit, { Tab = "Material" })
+local used = BagUI.Used(BagUI.Cells(BagUI._T.Context()))
+local slotsLabel = find(root3, "Slots")
+check(used >= 1 and slotsLabel and slotsLabel.Text == string.format("%d / %d", used, 12) and slotsLabel.TextColor3 ~= "bad"
+	and find(root3, "SlotsIcon") ~= nil, "the bottom line: the bag icon + 'used / 12' (no BagSlots yet)", slotsLabel and slotsLabel.Text)
+check(#findAll(root3, "^Locked$") == 0 and #findAll(root3, "^Empty$") >= 1, "the grid shows every thing + empty slots, nothing locked")
+local slotsRight = 140 + 26 + 4 + 74
+check(BagUI.WindowWidth(false) - 36 - (2 * 38 + 16 + 90) >= slotsRight, "the count stays left of the sort name in the narrow bag")
+BagUI.OnSlots(12)
+attrs.BagSlots = used
+BagUI.OnSlots(used)
+check(BagUI._T.S.Flash == nil, "fewer / the same slots: nothing shines")
+BagUI.Redraw()
+check(find(root3, "Slots").Text == string.format("%d / %d", used, used) and find(root3, "Slots").TextColor3 == "bad",
+	"full (used = slots): the count in red", find(root3, "Slots").TextColor3)
+attrs.BagSlots = used + 4
+BagUI.OnSlots(used + 4)
+check(BagUI._T.S.Flash == true, "BagSlots grew: the count waits to shine")
+BagUI.Redraw()
+check(find(find(root3, "Slots"), "NewSlot") ~= nil and BagUI._T.S.Flash == nil and find(root3, "Slots").TextColor3 ~= "bad",
+	"+4: the count shines once (gold ring), not red")
+BagUI.Redraw()
+check(find(find(root3, "Slots"), "NewSlot") == nil, "the next draw: no shine")
+BagUI.OnSlots(used + 4)
+check(BagUI._T.S.Flash == nil, "the same value again: nothing shines")
+attrs.BagSlots = nil
+BagUI.OnSlots(12)
 
 print(string.format("BAG_UI_SUMMARY checks=%d failed=%d", checks, failed))

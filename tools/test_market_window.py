@@ -7,7 +7,7 @@ the test, a recording Instance tree with TextBox events, Panels, UIKit and the k
 inside the fixture). Checks: off = no menu entry, Open does nothing, nothing drawn; no remotes = Resting and nothing sent
 (also while one of the six is missing); Buy (kinds, search by name, index rows, page rows with time left, pages, [Buy] once +
 Checking…, Gate.Buy's key text, an owned weapon tier off, my class's weapon names); Sell (only sellable kinds + spares,
-MarketBrowse on pick, hint rows, count - / + / All, price box numbers only and clamped Min..Max, You get = price - 10%,
+MarketBrowse on pick, hint rows, count - / + / All, price box numbers only and clamped Min..Max, You get = price - 7% (A23-183; Config.Market.Fee when the server branch has it),
 MarketList for "I" and "W", Gate.List / Wait); Mine (states, Cancel, Paid, Waiting, Today, the dot); the request
 intervals (Config.RateLimits wins, margin, Index 30 s, 3 s re-request); the open arg Tab once (a rebuild keeps my tab).
 Static: ClientMain order, no Enum.KeyCode, no gate computed by the client, remotes by name only, no hard-coded English
@@ -48,6 +48,9 @@ BINARY = find_binary()
 SENDS = ["MarketBrowse", "MarketBuy", "MarketCancel", "MarketIndex", "MarketList", "MarketMine"]
 
 MUTATIONS = [
+    ("WIN", "a sold row shows the price before the cut", 'if r.State == "Sold" then shown = select(2, MarketWindow.Fee(r.Price)) end', ""),
+    ("WIN", "tier-1 spares on the sell list", "if t and tonumber(t) <= 1 then t = nil end", ""),
+    ("WIN", "hours look like minutes again", 'return tx(TXT, "Hours", sec // 3600, (sec % 3600) // 60)', 'return string.format("%d:%02d", sec // 3600, (sec % 3600) // 60)'),
     ("WIN", "the menu entry shows while the switch is off", "Menu = function() return MarketWindow.On() and tx(TXT, \"Menu\") or nil end",
      "Menu = function() return tx(TXT, \"Menu\") end"),
     ("WIN", "Open works while the switch is off", "function MarketWindow.Open(tab)\n\tif not MarketWindow.On() then return end\n",
@@ -59,7 +62,8 @@ MUTATIONS = [
     ("WIN", "the interval is ignored", "not hasRemote(name) or now < (S.ReadyAt[name] or 0)", "not hasRemote(name)"),
     ("WIN", "no margin over the interval", "num(limits[name], L.Gaps[name] or 1)) + L.GapMargin", "num(limits[name], L.Gaps[name] or 1))"),
     ("WIN", "Config.RateLimits is ignored", "num(limits[name], L.Gaps[name] or 1)", "L.Gaps[name] or 1"),
-    ("WIN", "Buy / List / Cancel wait 1 s only", "MarketBuy = 6, MarketList = 6, MarketCancel = 6", "MarketBuy = 1, MarketList = 1, MarketCancel = 1"),
+    # the market server's Config.RateLimits win over the window's Gaps (both 6 s): the mutation breaks the Config side
+    ("CONFIG", "Buy / List / Cancel wait 1 s only", "MarketList = 6, MarketBuy = 6, MarketCancel = 6,", "MarketList = 1, MarketBuy = 1, MarketCancel = 1,"),
     ("WIN", "Index every time", "S.WantIndex, S.IndexNext = false, now + L.IndexEvery", "S.WantIndex, S.IndexNext = false, now"),
     ("WIN", "update never pumps the requests", "\t\tMarketWindow.Pump()\n\t\tif VIEW.Resting ~= resting() then", "\t\tif VIEW.Resting ~= resting() then"),
     ("WIN", "update never redraws what changed", "\t\telseif sigOf(context()) ~= VIEW.Sig then\n\t\t\trefreshParts()\n", "\t\telseif false then\n"),
@@ -80,7 +84,10 @@ MUTATIONS = [
     ("WIN", "the price is not clamped to Max", "\tif m.Max then p = math.min(p, math.floor(m.Max)) end\n", ""),
     ("WIN", "the price is not clamped to Min", "\tif m.Min then p = math.max(p, math.floor(m.Min)) end\n", ""),
     ("WIN", "the price does not start at Ref", "num(S.SellPrice, m.Ref or m.Min or 1)", "num(S.SellPrice, 1)"),
-    ("WIN", "the fee rounds up", "local fee = math.floor(price * L.Fee)", "local fee = math.ceil(price * L.Fee)"),
+    ("WIN", "the fee rounds up", "local fee = math.floor(price * MarketWindow.FeeRate())", "local fee = math.ceil(price * MarketWindow.FeeRate())"),
+    ("WIN", "A23-183: the server's Fee ignored", "return (rate and rate >= 0 and rate < 1) and rate or L.Fee", "return L.Fee"),
+    ("WIN", "A23-183: an odd Fee taken", "return (rate and rate >= 0 and rate < 1) and rate or L.Fee", "return rate or L.Fee"),
+    ("WIN", "A23-183: still 10%", "Fee = 0.07, -- A23-183", "Fee = 0.10, -- A23-183"),
     ("WIN", "the price box takes letters", "local digits = (string.gsub(tb.Text, \"%D\", \"\"))", "local digits = tb.Text"),
     ("WIN", "a spare is listed as an item", "\tif entry.Info.Kind == \"Weapon\" then kind, id = \"W\", entry.Info.Spare end\n", ""),
     ("WIN", "a spare's id is its tier only", "Spare = string.format(\"%d:%d\", tier, plus) }", "Spare = tostring(tier) }"),

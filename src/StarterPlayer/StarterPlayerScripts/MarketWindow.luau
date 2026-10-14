@@ -74,6 +74,8 @@ local TXT = {
 	Paying = "Paying…",
 	Back = "Back in your bag",
 	Today = "Today: %d listed · %d bought",
+	-- artisan contract ⑤ (10/14): an hour or more reads "1h 05m" (it read "1:05" like 65 s did)
+	Hours = "%dh %02dm",
 }
 L10n.Register("MarketWindow.TXT", TXT)
 
@@ -102,7 +104,7 @@ local L = {
 	IndexEvery = 30, -- s: MarketIndex is cached 30 s on the server
 	MineEvery = 10, -- s: the open window asks for its Mine rows again (a sale, Paid, Gate)
 	Timeout = 3, -- s after a Buy / List / Cancel: the answer is taken as in; Mine rows and the page are asked again
-	Fee = 0.10, -- A23-133: the market's cut of a sale
+	Fee = 0.07, -- A23-183 (user 10/14): the market's cut of a sale, until the server branch's Config.Market.Fee is here
 	MaxDigits = 9, MaxQuery = 24, HintRows = 3, MaxWaiting = 5,
 }
 
@@ -190,19 +192,25 @@ local function noteText(key)
 end
 MarketWindow.NoteText = noteText
 
--- seconds -> "m:ss" (under an hour) or "h:mm"
+-- seconds -> "m:ss" (under an hour) or "1h 05m" (TXT.Hours; "h:mm" looked the same as m:ss - 3900 s and 65 s both "1:05")
 function MarketWindow.TimeText(sec)
 	sec = math.max(0, math.floor(num(sec, 0)))
 	if sec >= 3600 then
-		return string.format("%d:%02d", sec // 3600, (sec % 3600) // 60)
+		return tx(TXT, "Hours", sec // 3600, (sec % 3600) // 60)
 	end
 	return string.format("%d:%02d", sec // 60, sec % 60)
 end
 
--- the market's cut and what the seller gets (A23-133: price - floor(price x 10%))
+-- the market's cut and what the seller gets (A23-183: price - floor(price x Config.Market.Fee), 7%; under 1 gold = 0) -
+-- the server's own rate, so "You get" and a sold row match what the server pays; no / odd rate = L.Fee
+function MarketWindow.FeeRate()
+	local rate = type(Config.Market) == "table" and tonumber(Config.Market.Fee) or nil
+	return (rate and rate >= 0 and rate < 1) and rate or L.Fee
+end
+
 function MarketWindow.Fee(price)
 	price = math.max(0, math.floor(num(price, 0)))
-	local fee = math.floor(price * L.Fee)
+	local fee = math.floor(price * MarketWindow.FeeRate())
 	return fee, price - fee
 end
 
@@ -328,6 +336,8 @@ function MarketWindow.SellEntries(ctx)
 	local spares = {}
 	for key, n in type(ctx.Spares) == "table" and ctx.Spares or {} do
 		local t, p = string.match(tostring(key), "^(%d+):(%d+)$")
+		-- artisan contract ⑤: no tier-1 spare (the free class weapon; the server refuses W:1:*)
+		if t and tonumber(t) <= 1 then t = nil end
 		local info = t and MarketWindow.KeyInfo("W:" .. t .. ":" .. p, ctx) or nil
 		n = math.floor(num(n, 0))
 		if info and n >= 1 then table.insert(spares, { Key = info.Key, Info = info, Count = n }) end
@@ -1004,7 +1014,10 @@ local function mineRow(list, r, info, ctx, i)
 		Size = UDim2.fromOffset(150, L.MineRowH - 8), TextYAlignment = Enum.TextYAlignment.Center, ZIndex = z })
 	label(row, tx(TXT, "Count", r.N), L.Size.Small, colorOf("Text"), { Name = "Count", Position = UDim2.fromOffset(218, 9),
 		Size = UDim2.fromOffset(84, 18), TextWrapped = false, ZIndex = z, Style = false })
-	label(row, money(r.Price), L.Size.Small, colorOf("Gold"), { Name = "Price", Position = UDim2.fromOffset(218, 31),
+	-- artisan contract ⑤: a sold listing shows what I get (price - the market's cut), like "You get" when listing
+	local shown = r.Price
+	if r.State == "Sold" then shown = select(2, MarketWindow.Fee(r.Price)) end
+	label(row, money(shown), L.Size.Small, colorOf("Gold"), { Name = "Price", Position = UDim2.fromOffset(218, 31),
 		Size = UDim2.fromOffset(84, 18), TextWrapped = false, ZIndex = z, Style = false })
 	local x = 310
 	if r.State == "Open" then

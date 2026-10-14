@@ -7,6 +7,7 @@
   - ④ 화분·꽃 20개(보류 메시지 전에 누름): Rose_Bowl 988738bb · F_Vase 4e1fdee7 · A_Bowl 801f725b · C_Urn 74e61dd9 · WoodBucket 8be5841f · SilverBucket 8dc11f60 · Daisy_Leaves 613b4061 · Rose_Leaves 674009f8 · A_Leaves fd7e900d · C_Leaves cf6f3620 · FlowerBushPot_Leaves 4ae47ca4 · NEW_FlowerBush_Leaves ef4a11c4 · Daisy_Pot 5f1df4ed · WhiteDaisy e9721480 · Blue5 6fe4a7e8 · Lilac a56ed802 · RedDaisy 0d04ff01 · PinkRose 6dcdf2d0 · RedBud 6fa78e85 · RoseBud 55f097a8. 이 중 Daisy_Pot·Rose_Bowl·A_Bowl = 2D 떨어짐 → records status 'not used'.
   - 사람 3(JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f, 아침 생성분) GLB도 받음, records '통짜 HD, 사용자 방식 아님'.
 - PBR 시트 33장 art/review/design/pbr_gate_hd_1014/(+ _overview_33_q34_bottom.jpg) → 디자인 검수에 보냄, 판정 아직. 내 걱정: Basin 아래 물 보임, A_Bowl 아래 틈, SilverBucket 아래 흐림.
+- **디자인 검수 첫 판정(10/14, art/review/design/pbr_gate_hd_1014_dr/verdict_1014.md):** 통과 29, 떨어짐 4 = Daisy_Pot(옆 패널 비침 틈·기둥 비대칭) · Rose_Bowl · PotA_Bowl(2D 다시 그림) · Fountain3_Top(꼭지 공 1.4배). Basin 바닥 막힘 = 통과, SilverBucket = 금속 반사(불투명) = 통과(⑤ 금속감 메모). 떨어진 4개 = 2D 새 판 통과 뒤 다시 HD(최종 검수 지시, 10/27 뒤). 통과 29 = 최종 검수 두 번째 판정 대기.
 - 안 한 것: 단순 13(목록은 위 10:40 줄), RoundTree_F·꽃 3(새 2D 대기), 난간 v2(Codex 사용량 한도로 못 돌림; 지시문 build/codex_jobs/balustrade_v2/task.md 남김, 결과 파일 없음).
 - Tripo 계정 설정은 내가 바꾼 상태 그대로(텍스처 4K·조명 제거·PBR 켬, 부분별 생성 끔, 폴리곤 8000) — 아래 '바꾼 Tripo 설정' 줄 참고. Chrome 탭 닫음, 수신기 끔.
 

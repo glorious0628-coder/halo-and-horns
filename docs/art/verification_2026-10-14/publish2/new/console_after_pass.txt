@@ -1,0 +1,147 @@
+[MapBuilder] moved Wall_MinZ onto Config.Map.Bounds
+[MapBuilder] moved Wall_MaxZ onto Config.Map.Bounds
+[MapBuilder] Workspace.Map.Landmarks.GoosePerch removed: the goose lives in the Goose Square (A23-141)
+[MapBuilder] reused workspace.Map (+10 missing pieces built)
+[MapBuilder] started
+[ZoneService] started
+[FactionService] started
+[ClassService] started
+[VitalsService] started
+[JusticeService] started
+[ProgressionService] started
+[CombatService] started
+[MonsterService] custom model for Slime: yes
+[MonsterService] custom model for FlowerSlime: yes
+[MonsterService] custom model for PumpkinSlime: yes
+[MonsterService] custom model for BigSlime: yes
+[MonsterService] custom model for SlimeKing: yes
+[MonsterService] custom model for PumpkinKing: yes
+[MonsterService] custom model for CoralCrab: yes
+[MonsterService] custom model for Jellyfish: yes
+[MonsterService] custom model for HermitCrab: yes
+[MonsterService] custom model for Goblin: yes
+[MonsterService] custom model for SlingshotGoblin: yes
+[MonsterService] custom model for BatGoblin: yes
+[MonsterService] custom model for GoblinBrute: yes
+[MonsterService] custom model for GhostMinion: yes
+[MonsterService] custom model for LittleGhost: yes
+[MonsterService] custom model for GhostKing: yes
+[MonsterService] custom model for CrystalLizard: yes
+[MonsterService] custom model for CaveBat: yes
+[MonsterService] custom model for GlowMushroom: yes
+[MonsterService] custom model for CrystalGolem: yes
+[MonsterService] custom model for Skeleton: yes
+[MonsterService] custom model for SkeletonArcher: yes
+[MonsterService] custom model for SkeletonKnight: yes
+[MonsterService] custom model for CaptainClatter: yes
+[MonsterService] started
+[PvPService] started
+[GrudgeService] started
+[WarService] started
+[KaijuService] started
+[GooseSquare] stand-in square built at 6000, 198, 6000 (floor Floor, size 110, 4, 90)
+[GooseService] custom model for GoldenGoose: yes
+[GooseService] started
+[ShopService] started
+[QuestService] started
+[StoryQuestService] started
+[AnnounceService] started
+[HalloweenService] started (season off, 2 bosses)
+[LootService] started
+[TelemetryService] started
+[TitleService] started
+[MonetizationService] Developer Product ids are 0: buy buttons show 'This item isn't ready yet'. Create 2 Developer Products on create.roblox.com (your game > Monetization > Developer Products) and paste their ids into Config.Products.
+[MonetizationService] A23-75 game pass ids are 0: the shop shows 'Coming soon'. Create the passes on create.roblox.com (your game > Monetization > Passes) and paste their ids into Config.GamePasses / Config.Looks PassId.
+[MonetizationService] started
+[CharacterVisuals] started
+[DataService] StudioFreshSave is on: fresh in-memory data; nothing will be saved.
+[DataService] started
+[NicknameService] started
+[SettingsService] started
+[RankingService] started
+[PetService] started
+[BoardService] started (off: Config.Board.Enabled = false)
+[BarkService] started
+[SkillService] started (Z true, X false)
+[AttendanceService] started
+[ReturnService] started
+[InviteService] started
+[DiaryService] started
+[FieldBossService] started
+[HuntFameService] started
+[Deeds] started
+[ChoiceCard] started
+[CommissionService] started
+[KillLog] started
+[QuickSlotService] started
+[LostFoundService] started
+[GatherService] started
+[CraftService] started
+[BuffService] started
+[TamerService] started
+[GearService] started
+[ServerErrorService] started
+[SwitchService] started
+[HealthService] started
+[DayCycleService] started
+[CodexService] started
+[TestMetricsService] started
+[VillageFundService] started
+[PlayerService] started
+[Main] Halo & Horns server started (62/62 services)
+[GrudgeService] grudge mail store unavailable: You must publish this place to the web to access DataStore.
+[Metrics] DaysPlayed = 1 (1-9, None, nil)
+AnalyticsService: LogCustomEvent event fired.
+[Metrics] DailyVisit 20740 step 1 Join
+AnalyticsService: LogFunnelStepEvent event fired.
+[UIKit] started
+[Settings] started
+[Keybinds] started
+[Fx] started
+[VitalsUI] started
+[HUD] started
+[EventHUD] started
+[Panels] started
+[SettingsUI] started
+[ShopUI] started
+[Intro] started
+[FactionPicker] started
+[ClassPicker] started
+[WorldMap] started
+[MonsterMotion] started
+[Announce] started
+[GrudgeGhost] started
+[ZoneLook] started
+[MiniMap] started
+[PlayerListUI] started
+[MonsterLabels] started
+[PetFollow] started
+[QuestMarker] started
+[FountainFx] started
+[SkillBar] started
+[Audio] started
+[ClientMain] client started
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Metrics] step 1 IntroDone
+AnalyticsService: LogOnboardingFunnelStepEvent event fired.
+[Metrics] step 2 Faction
+AnalyticsService: LogOnboardingFunnelStepEvent event fired.
+[Metrics] step 3 Class
+AnalyticsService: LogOnboardingFunnelStepEvent event fired.
+[Metrics] step 4 FirstMissionAccept
+AnalyticsService: LogOnboardingFunnelStepEvent event fired.
+[Metrics] step 7 MeadowArrive
+AnalyticsService: LogOnboardingFunnelStepEvent event fired.
+[Metrics] step 10 FirstMissionDone
+AnalyticsService: LogOnboardingFunnelStepEvent event fired.
+[Roblox][sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Actions.ExecuteLuauActions] The execute_luau changed camera type. Resetting from Enum.CameraType.Scriptable back to Enum.CameraType.Custom
+[Roblox][sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Actions.ExecuteLuauActions] The execute_luau changed camera type. Resetting from Enum.CameraType.Scriptable back to Enum.CameraType.Custom
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[Metrics] SessionMinutes = 1 (0-5, nil, nil)
+AnalyticsService: LogCustomEvent event fired.
+[Metrics] LeaveContext = 1 (Play, 0-5, nil)
+AnalyticsService: LogCustomEvent event fired.
+[Metrics] FriendMinutes = 0 (Solo, nil, nil)
+AnalyticsService: LogCustomEvent event fired.
+[Metrics] ZoneMinutes = 1 (HaloTown, nil, nil)
+AnalyticsService: LogCustomEvent event fired.

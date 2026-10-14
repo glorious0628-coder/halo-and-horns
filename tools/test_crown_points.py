@@ -84,13 +84,20 @@ MUTATIONS = [
     ("only the own zone counts", H, "\treturn own ~= nil and here >= own\n", "\treturn own ~= nil and here == own\n"),
     ("golden counts 1", H, "(info.Golden == true and num(H.GoldenUnits, 5) or num(H.Units, 1))", "num(H.Units, 1)"),
     ("Neutral gets fame", H, "local STAT = { Halo = \"Honor\", Horns = \"Infamy\" }", "local STAT = { Halo = \"Honor\", Horns = \"Infamy\", Neutral = \"Honor\" }"),
-    ("personal monsters count", H, "info.Personal == true or info.Practice == true or info.Minor == true then return end",
-     "info.Practice == true or info.Minor == true then return end"),
-    ("free riders count", H, " or info.Minor == true then return end", " then return end"),
+    ("personal monsters count", H, "info.Personal == true or info.Practice == true or info.Minor == true or info.First == false then return end",
+     "info.Practice == true or info.Minor == true or info.First == false then return end"),
+    ("free riders count", H, " or info.Minor == true or info.First == false then return end", " or info.First == false then return end"),
     ("no ZoneLevel table", H, "local lv = type(H.ZoneLevel) == \"table\" and H.ZoneLevel[zoneId] or nil", "local lv = nil"),
     ("the count is not saved", H, "\tdata.HuntFame = have - whole * per\n", "\tdata.HuntFame = 0\n"),
     ("fame on the PvP boards", H, "{ Hunt = true }", "{ PvP = true, Fair = true }"),
     ("no line", H, "\tif type(line) == \"string\" then Net.Notify(player, string.format(line, points), \"reward\", nil, \"RankUp\") end\n", ""),
+    # A23-181: a shared kill's hunt honor and crown units go to its first hitter only
+    ("first hit: hunt honor for every hitter", H, " or info.Minor == true or info.First == false then return end", " or info.Minor == true then return end"),
+    ("first hit: crown units for every hitter", W, "\t\t\t\telseif info.First == nil then\n", "\t\t\t\telse\n"),
+    ("first hit: the first hitter gets only a share", W, "\t\t\t\t\tWarService.AddKill(player, info.WarPoints, info.WarPoints)\n",
+     "\t\t\t\t\tWarService.AddKill(player, info.WarPoints * info.WarShare / math.max(1, info.WarPoints), info.WarShare)\n"),
+    ("first hit: an older caller counts nothing", W, "\t\t\t\telseif info.First == nil then\n\t\t\t\t\tWarService.AddKill(player, info.WarPoints, info.WarShare)",
+     "\t\t\t\telseif false then\n\t\t\t\t\tWarService.AddKill(player, info.WarPoints, info.WarShare)"),
 ]
 
 
@@ -132,7 +139,7 @@ def static() -> tuple[int, list[str]]:
     ret = strip_comments(read(SSS / "ReturnService.luau"))
     check("Config.War.ChestMinPoints" in ret, "ReturnService's war card still reads ChestMinPoints (whole personal points)")
     hud = read(ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau")
-    check('num("WarPoints", 0)' in hud, "the HUD's 'My pts' reads the WarPoints attribute (whole points now)")
+    check('TXT.MyWar' not in hud and 'MyWar =' not in hud, "A23-130: no 'My pts' under the war bar (my points are in the war window)")
     check('return string.format("%g", math.floor(v * 100 + 0.5) / 100)' in hud, "the HUD shows the war scores with two decimals")
     cfg = read(SHARED / "Config.luau")
     check('"Knights earn Honor and the Horn Legion earns Mischief, from fair fights, story choices and hunting' in cfg,

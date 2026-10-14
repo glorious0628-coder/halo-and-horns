@@ -9,7 +9,7 @@ runGroup("config", function()
 	local C = C0
 	check(C.Data.Defaults.WeaponTier == 0 and C.Data.Defaults.WeaponOwnedMask == 0,
 		"a new save starts bare-handed: WeaponTier 0, nothing owned", show({ C.Data.Defaults.WeaponTier, C.Data.Defaults.WeaponOwnedMask }))
-	check(C.Data.Version == 5, "save Version 5 = A23-153's codex (C1's tier 9 made it 4) (A23-34 and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 6, "save Version 6 = A23-186's joke weapons (tiers 10 / 11; 5 = the codex, 4 = C1's tier 9) (A23-34 and A23-69's Stats are additive)", C.Data.Version)
 	check(U.Damage == 4 and U.Range == 7 and U.Interval == 0.8 and U.AimCone == 90, "Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)", show(U))
 	check(U.Range > C.Monsters.AttackRange, "the punch reaches a slime that attacks me (Range 7 > monster reach 5.5)",
 		C.Monsters.AttackRange)
@@ -144,13 +144,19 @@ runGroup("save", function()
 		{ row(4, { WeaponTier = 9, WeaponOwnedMask = 256, Level = 50 }), 9, 256, "v4 tier 9 equipped at Lv50 is kept" },
 		{ row(4, { WeaponTier = 10, WeaponOwnedMask = 2 }), 2, 2, "v4 tier 10 -> corrupted, the best usable owned" },
 		{ row(4, { WeaponTier = 2, WeaponOwnedMask = 514 }), 2, 2, "v4 bit 10 -> corrupted, only the equipped bit" },
+		-- A23-186 (save v6): a v5 record was written by a 9-tier server, so its tier / bit 10 or 11 is still corruption
+		{ row(5, { WeaponTier = 10, WeaponOwnedMask = 2 }), 2, 2, "v5 tier 10 -> corrupted, the best usable owned" },
+		{ row(5, { WeaponTier = 2, WeaponOwnedMask = 1026 }), 2, 2, "v5 bit 11 -> corrupted, only the equipped bit" },
+		{ row(6, { WeaponTier = 10, WeaponOwnedMask = 514 }), 10, 514, "v6 the Pan equipped (bit 10) is kept" },
+		{ row(6, { WeaponTier = 2, WeaponOwnedMask = 1538 }), 2, 1538, "v6 Pan + Chicken owned are kept" },
+		{ row(6, { WeaponTier = 2, WeaponOwnedMask = 2050 }), 2, 2, "v6 bit 12 -> corrupted, only the equipped bit" },
 	} do
 		local d = load(case[1])
 		check(d.WeaponTier == case[2] and d.WeaponOwnedMask == case[3], "load: " .. case[4],
 			show({ tier = d.WeaponTier, mask = d.WeaponOwnedMask }))
 		local again = load(d)
-		check(again.WeaponTier == d.WeaponTier and again.WeaponOwnedMask == d.WeaponOwnedMask and again.Version == 5,
-			"load again: " .. case[4] .. " (idempotent, Version 4)")
+		check(again.WeaponTier == d.WeaponTier and again.WeaponOwnedMask == d.WeaponOwnedMask and again.Version == C0.Data.Version,
+			"load again: " .. case[4] .. " (idempotent, the current Version)")
 	end
 end)
 
@@ -384,6 +390,8 @@ runGroup("shop", function()
 		show({ f.WeaponOwnedMask, f.WeaponTier, f.CarriedGold }))
 	-- the anvil prompt passes M1_1's visit (1-A #2: the weapon comes with it, step 2 = Otto's scroll) before the shop opens
 	local w4 = bareWorld()
+	-- A23-188: the engine's step-1 gift on the old visit step (M1_1 ships a Slime Prince first)
+	w4.Config.StoryQuests.Defs.M1_1.Steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
 	local s, g = w4:Join(404, { Level = 2 })
 	w4.Story.Refresh(s)
 	check(g.Story and g.Story.Main.Id == "M1_1", "M1_1 is the active main quest after the first mission", show(g.Story and g.Story.Main))
@@ -407,10 +415,119 @@ runGroup("shop", function()
 		"the M1_1 gift is in hand by the time the shop opens (M1_1 at step 2)", show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main }))
 end)
 
+------------------------------------------------------------------ 6b. A23-186: Otto sells 5 (3 normal + 2 joke weapons)
+runGroup("forge sells 5", function()
+	local W = C0.Weapons
+	check(C0.WeaponShop.Buy == true and C0.WeaponShop.MaxSoldTier == 3, "Config.WeaponShop: Buy on again, MaxSoldTier 3", show(C0.WeaponShop))
+	check(C0.MaxWeaponTier == 11 and W[10].Meme == "Pan" and W[11].Meme == "Chicken" and W[10].AnyClass == true and W[11].AnyClass == true,
+		"tiers 10 / 11 appended: the Pan and the Chicken, any class", show({ C0.MaxWeaponTier, W[10], W[11] }))
+	check(W[10].Damage == W[2].Damage and W[11].Damage == W[2].Damage and W[10].Price == 300 and W[11].Price == 300
+		and W[10].MinLevel == 1 and W[11].MinLevel == 1, "as strong as Wooden (15), 300 gold, Lv1", show({ W[10].Damage, W[11].Damage }))
+	local sold = {}
+	for t = 1, C0.MaxWeaponTier do if C0.WeaponSoldAtForge(t) then table.insert(sold, t) end end
+	check(table.concat(sold, ",") == "2,3,10,11", "the Forge sells T2, T3 and the two jokes (T1 = the M1_1 gift)", table.concat(sold, ","))
+	check(C0.WeaponAtLeast(10, 3) == false and C0.WeaponAtLeast(11, 2) == false and C0.WeaponAtLeast(8, 3) == true
+		and C0.WeaponAtLeast(3, 3) == true and C0.WeaponAtLeast(2, 3) == false and C0.WeaponAtLeast(0, 3) == false,
+		"WeaponAtLeast: by Damage, a joke weapon never counts (T8 jackpot >= Iron)", "")
+	local names = {}
+	for _, cls in { "Warrior", "Mage", "Archer" } do
+		table.insert(names, C0.WeaponName(10, cls, "Halo") .. "/" .. C0.WeaponName(11, cls, "Horns"))
+	end
+	table.insert(names, C0.WeaponName(10, "Archer", "Neutral") .. "/" .. C0.WeaponName(11, "Archer", "Neutral")) -- the tamer's batons
+	check(table.concat(names, ",") == "Frying Pan/Rubber Chicken,Frying Pan/Rubber Chicken,Frying Pan/Rubber Chicken,Frying Pan/Rubber Chicken",
+		"one name for every class (and the tamer)", table.concat(names, ","))
+	check(C0.WeaponMemes.Pan.Sound == "Bonk" and C0.WeaponMemes.Pan.Push == 1.5 and C0.WeaponMemes.Chicken.Sound == "Squeak"
+		and C0.WeaponMemes.Chicken.Particle == "Feathers" and C0.WeaponMemes.Pan.SoundId == "" and C0.WeaponArtKey(10, "Mage", "Halo") == nil,
+		"Config.WeaponMemes: Pan Bonk + 1.5 studs, Chicken Squeak + Feathers (asset ids empty, no icon yet)", show(C0.WeaponMemes))
+	check(C0.WeaponGrade(10).Name == "Common" and C0.WeaponSource(11) == "A joke weapon from the Forge", "grade Common, its source line", "")
+	-- never dropped, never a jackpot, never crafted, never a commission
+	local found = {}
+	for kind, rows in C0.Loot.Tables do
+		for _, row in rows do if row.Weapon and W[row.Weapon] and W[row.Weapon].Meme then table.insert(found, "drop " .. kind) end end
+	end
+	for _, t in type(C0.Loot.Jackpot) == "table" and { C0.Loot.Jackpot.Weapon or C0.Loot.Jackpot.Tier } or {} do
+		if W[t] and W[t].Meme then table.insert(found, "jackpot") end
+	end
+	for id, r in C0.Craft.Recipes do if r.Kind == "Weapon" and W[r.Tier] and W[r.Tier].Meme then table.insert(found, "craft " .. id) end end
+	for t in C0.Commission.Orders do if W[t] and W[t].Meme then table.insert(found, "commission") end end
+	for t in type(C0.Loot.FirstTierDrops) == "table" and C0.Loot.FirstTierDrops or {} do if W[t] and W[t].Meme then table.insert(found, "first") end end
+	check(#found == 0, "a joke weapon is never a drop / jackpot / recipe / commission", table.concat(found, ", "))
+	check(C0.BestUsableWeapon(bit32.bor(bit32.lshift(1, 9), 2), 1) == 2, "Wooden + Pan owned: the best usable is still Wooden (same damage, lower tier)", "")
+
+	-- buying all five things the Forge sells (Lv5: Iron's level)
+	local w = bareWorld()
+	local p, d = w:Join(451, { Carried = 2000, Bank = 0, Level = 5 })
+	local n0 = #w.Notices
+	w:Buy(p, 1)
+	check(d.WeaponOwnedMask == 0 and indexOf(notices(w, p, n0), C0.Text.WeaponFromQuest) ~= nil, "T1 still comes from M1_1 only", "")
+	w:Buy(p, 2)
+	check(d.WeaponOwnedMask == 2 and d.WeaponTier == 2 and d.CarriedGold == 1850, "Wooden: 150, owned and held", show({ d.WeaponOwnedMask, d.CarriedGold }))
+	w:Buy(p, 3)
+	check(d.WeaponOwnedMask == 6 and d.WeaponTier == 3 and d.CarriedGold == 1050, "Iron: 800 (Lv5)", show({ d.WeaponOwnedMask, d.CarriedGold }))
+	local n1 = #w.Notices
+	w:Buy(p, 10)
+	check(d.WeaponOwnedMask == 6 + 512 and d.WeaponTier == 10 and d.CarriedGold == 750 and p:GetAttribute("WeaponTier") == 10
+		and indexOf(notices(w, p, n1), string.format(C0.Text.WeaponBought, "Frying Pan")) ~= nil,
+		"the Frying Pan: 300, owned, held, its line", show({ d.WeaponOwnedMask, d.CarriedGold, notices(w, p, n1) }))
+	w:Buy(p, 11)
+	check(d.WeaponOwnedMask == 6 + 512 + 1024 and d.WeaponTier == 11 and d.CarriedGold == 450, "the Rubber Chicken: 300",
+		show({ d.WeaponOwnedMask, d.CarriedGold }))
+	local n2 = #w.Notices
+	w:Buy(p, 4)
+	check(d.WeaponOwnedMask == 6 + 512 + 1024 and d.CarriedGold == 450 and indexOf(notices(w, p, n2), C0.Text.WeaponNotSold) ~= nil,
+		"T4 is not sold (a drop / commission)", show(notices(w, p, n2)))
+	w:Buy(p, 10)
+	check(d.WeaponTier == 10 and d.CarriedGold == 450, "an owned Pan: equipped again for free", show({ d.WeaponTier, d.CarriedGold }))
+	w:Sell(p, 11)
+	check(bit32.btest(d.WeaponOwnedMask, 1024) == false and d.CarriedGold == 480, "the Chicken sold back: +30 (10%)", show({ d.WeaponOwnedMask, d.CarriedGold }))
+	-- any class: a Mage and an Archer hold the Pan too
+	for i, cls in { "Mage", "Archer" } do
+		local wc = bareWorld()
+		local q, e = wc:Join(460 + i, { Class = cls, Carried = 300 })
+		wc:Buy(q, 10)
+		check(e.WeaponTier == 10 and e.WeaponOwnedMask == 512 and e.CarriedGold == 0, "a " .. cls .. " buys and holds the Frying Pan",
+			show({ e.WeaponTier, e.CarriedGold }))
+	end
+	local wp = bareWorld()
+	local q2, e2 = wp:Join(463, { Carried = 299 })
+	wp:Buy(q2, 10)
+	check(e2.WeaponOwnedMask == 0 and e2.CarriedGold == 299, "299 gold: no Pan", show({ e2.WeaponOwnedMask, e2.CarriedGold }))
+
+	-- the hit: the joke key rides on the Swing Fx; the Pan shoves 1.5 studs further
+	local function swingWith(tier)
+		local ws = bareWorld()
+		local a = ws:Join(470 + tier, { Class = "Warrior", Tier = tier, Mask = bit32.lshift(1, tier - 1) })
+		local m = ws:Monster("Slime", 4, 0, 10000)
+		local fx0 = #ws.Fx
+		ws.Combat.Swing(a, true)
+		ws:Flush()
+		ws:Advance(1)
+		local sw = ws:FxOf("Swing", fx0)[1]
+		local studs = nil
+		for _, s in ws.Shoves do if s.Rec == m then studs = s.Studs end end
+		return sw and sw.Data or {}, studs, ws:Dealt(m)
+	end
+	local d2, s2, h2 = swingWith(2)
+	local d10, s10, h10 = swingWith(10)
+	local d11, s11, h11 = swingWith(11)
+	check(d2.Meme == nil and d10.Meme == "Pan" and d11.Meme == "Chicken", "Swing Fx Meme: nil / Pan / Chicken", show({ d2.Meme, d10.Meme, d11.Meme }))
+	local function near(a, b) return type(a) == "number" and type(b) == "number" and math.abs(a - b) < 1e-6 end
+	check(s2 and s10 and s11 and (near(s10 - s2, 1.5) or near(s10, 1.2 + 1.5) or near(s10, 1.6 + 1.5)) and (near(s11, 1.2) or near(s11, 1.6)),
+		"the Pan shoves +1.5 studs, the Chicken the usual", show({ s2, s10, s11 }))
+	check(h2 > 0 and h10 > 0 and h11 > 0, "all three hit (the joke damage is Wooden's)", show({ h2, h10, h11 }))
+end)
+
 ------------------------------------------------------------------ 7. the M1_1 gift (both orders)
+-- A23-188: M1_1 ships "Beat a Slime Prince" as step 1 (no second Forge visit); these groups test the engine's gift at the
+-- end of a GiveWeapon quest's first step on this world's own Config with the old visit step (State BlacksmithVisited)
+local function visitStep(world)
+	world.Config.StoryQuests.Defs.M1_1.Steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
+	world.Config.StoryQuests.Defs.M1_1.Steps[2].GiveItem = { Item = "Enh70", N = 1 } -- and Otto's scroll at step 2 (the old flow)
+	return world
+end
 runGroup("gift", function()
 	-- (a) the free tier 1 first, then the wood weapon (Buy back on: 1-A #2 ships Buy = false)
-	local w = bareWorld()
+	local w = visitStep(bareWorld())
 	w.Config.WeaponShop.Buy = true
 	local function useScroll(world, pl, tier)
 		world:Advance(1) -- RateLimits.UseItem
@@ -463,7 +580,7 @@ runGroup("gift", function()
 		show({ d.WeaponOwnedMask, d.WeaponTier, d.ItemSeqNext, seqBefore }))
 
 	-- (b) the wood weapon first, then the free tier 1 (in the bag, no power line)
-	local w2 = bareWorld()
+	local w2 = visitStep(bareWorld())
 	w2.Config.WeaponShop.Buy = true
 	local q, e = w2:Join(502, { Level = 2, Carried = 150 })
 	w2.Story.Refresh(q)
@@ -483,7 +600,7 @@ runGroup("gift", function()
 	end
 
 	-- (c) a save from before A23-34 (owns T1) finishing M1_1: nothing, no line
-	local w3 = bareWorld()
+	local w3 = visitStep(bareWorld())
 	local r, f = w3:Join(503, { Level = 3, Tier = 1, Mask = 1 })
 	w3.Story.Refresh(r)
 	local k0 = #w3.Notices
@@ -506,7 +623,7 @@ runGroup("gift", function()
 		show({ g.WeaponOwnedMask, g.WeaponTier }))
 	check(s ~= nil, "joined")
 	-- (e) a Mage gets the class weapon name; a Horns Lv1 shows 0 -> 283
-	local w5 = bareWorld()
+	local w5 = visitStep(bareWorld())
 	local t5, h = w5:Join(505, { Class = "Mage", Faction = "Horns", Level = 1 })
 	w5.Story.Refresh(t5)
 	local j0 = #w5.Notices

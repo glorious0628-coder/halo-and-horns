@@ -73,6 +73,21 @@ local T = {
 		TipTitle = "Tip",
 	},
 }
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+local function trx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 local S = { Pending = nil, Card = nil, HurtAt = -math.huge, LastPoll = 0, Health = nil }
 
 PauseCard.Shown = Util.Signal.new()
@@ -354,14 +369,14 @@ function PauseCard.Show(kind, data)
 			return false
 		end
 		card.Title = T.Text.PauseTitle
-		card.Body = nextGoal and string.format(T.Text.PauseNext, nextGoal) or T.Text.PausePlain
+		card.Body = nextGoal and trx(T.Text, "PauseNext", nextGoal) or T.Text.PausePlain
 		local tomorrow = clean(data.Tomorrow, T.TomorrowMax)
-		if tomorrow then card.Body ..= "\n" .. string.format(T.Text.PauseTomorrow, tomorrow) end
+		if tomorrow then card.Body ..= "\n" .. trx(T.Text, "PauseTomorrow", tomorrow) end
 		card.OptIn = data.OptIn == true
 		card.Buttons = { { Id = "Keep", Text = T.Text.Keep }, { Id = "OK", Text = T.Text.OK } }
 	elseif kind == "Back" then
 		card.Title = T.Text.BackTitle
-		card.Body = nextGoal and string.format(T.Text.BackNext, nextGoal) or T.Text.BackPlain
+		card.Body = nextGoal and trx(T.Text, "BackNext", nextGoal) or T.Text.BackPlain
 		local news = clean(data.News, T.NewsMax) -- A23-167: the "while you were away" line, only when the server has one
 		if news then card.Body ..= "\n" .. news end
 		local zone = type(data.Zone) == "string" and #data.Zone > 0 and #data.Zone <= T.ZoneMax and data.Zone or nil
@@ -426,6 +441,7 @@ end
 
 function PauseCard.Init(registry)
 	C = registry
+	pcall(function() C.UIKit.L10n.Register("PauseCard.T.Text", T.Text) end) -- 10/14: the words' keys "PauseCard.T.Text.<key>" (trx)
 end
 
 function PauseCard.Start()

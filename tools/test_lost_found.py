@@ -35,6 +35,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("bag 10/14: a reward refused when the bag is full", "LF_SOURCE", "pcall(S.LootService.GrantItem, player, id, want, \"Reward\")", "pcall(S.LootService.GrantItem, player, id, want)"),
     # --- config
     ("config: on by default", C, "Config.LostFound = {\n\tEnabled = false,", "Config.LostFound = {\n\tEnabled = true,"),
     ("config: the chance starts at 50 kills", C, "\tFrom = 60, -- kills before", "\tFrom = 50, -- kills before"),
