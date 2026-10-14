@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 7 — fix/skill-press-reject 81e1d003 (다 됨·push, 최신)
+- 계획 2-C #8. 확인: 서버 SkillService.press가 Fx "SkillPress" { Slot, Result }를 이미 보내는데 클라에 받는 곳이 없었음 → 서버만 아는 거절(NoTarget·CantHop·TooHeavy·서버 쪽 Cooldown/NoMP·Locked)은 화면에 아무 표시 없었음. 서버 필드 바꿀 것 없음.
+- 고침(SkillBar): Fx 받기 → 버튼 흔들기 + 짧은 말(Config.Skills.Text: NoTarget, CantHop, TooHeavy, 새 NotReady "Not ready", NoMP + No 소리, 새 NotNow "Not now" / 레벨 아래면 "Unlocks at Lv N"), Queued·모르는 값 = 없음, 거절된 칸의 줄 선 누름 지움. 클라 자기 거절 글(옛 TXT "Not yet"/"Not enough MP")도 Config.Skills.Text로.
+- Hop 준비(X 켜기 아님): Fx "Hop" { To, T } → 내 캐릭터를 낮은 호로 To까지(T초, 0.1~0.6), 땅 높이 맞춤(레이캐스트, 오르막), 방향 유지, 끝나면 멈춤; 16스터드 넘음·깨진 값·KO·새 캐릭터 = 안 움직임.
+- 시험: 새 test_skill_press 26·15/15 + 정적 2, skill_learn 38·27/27, skills 151, skills_x 167, skill_kit, skill_fx 109·18/18, skill_book 67·32/32, skill_signals 142, english, l10n, story_text, hud_layout, phone_first10 = 0 failing·MISSED 0. main·dev1-village-fund와 merge-tree 깨끗.
+
 ## 10/14 밤 6 — dev1-village-fund 864cf867 (다 됨·push, 최신)
 - 개발 2 메시지(실제 서버 모양)에 맞춘 위 커밋 864cf867(f9afc184 위): Net.luau 뺌(개발 2가 FundGive/FundOpen + GameStateDefaults 넣음), 속성 = GameState 폴더, state Why("Poor"/"Full"/"Closed")·Can·Sum(막대; Week = 주 번호), 서버 글 Text.Title/Today/[side].Give/Poor(%s Step)/Full(%d PerDay)/Closed 사용, Config.VillageFundScreen은 Lead·Gold·Close·Week·Marks·Lanterns·Fireworks만, 프롬프트 ActionKey/ObjectKey Config 경로 → ActionText/ObjectText.
 - 시험 test_village_fund_ui 61·23/23 + 정적 8(Net 이름은 '많아야 1번'), english, l10n, story_text, place_english 통과. 개발 2 dev2-village-fund push 기다림 → 합친 판 시험 → 최종 검수 같이 병합.
