@@ -77,14 +77,16 @@ def static(src: dict) -> list[tuple[str, bool]]:
     names = re.findall(r'"(\w+)"', order.group(1)) if order else []
     lines = [l for l in src["GEAR"].splitlines() if not l.strip().startswith("--")]
     code = "\n".join(lines)
-    m = re.search(r"local TXT = \{.*?\n\}\n", code, re.S)
+    # 최종 검수 10/14: the words moved to Config.ClientText.GearSlots (the module reads that table)
+    m = re.search(r"local TXT = Config\.ClientText\.GearSlots\b[^\n]*\n", code)
     rest = code.replace(m.group(0), "") if m else code
     rest = "\n".join(l for l in rest.splitlines() if "Util.Warn" not in l and "L10n.Register" not in l)
     words = [s for s in re.findall(r'"([^"\n]*)"', rest) if re.search(r"[A-Za-z]", s) and " " in s.strip()]
     return [
         ("ClientMain loads GearSlots after UIKit", "GearSlots" in names and "UIKit" in names and names.index("GearSlots") > names.index("UIKit")),
         ("no Enum.KeyCode in GearSlots (BB1)", "Enum.KeyCode" not in code),
-        ("the words sit in a TXT table registered as GearSlots.TXT", m is not None and "L10n.Register(\"GearSlots.TXT\", TXT)" in code),
+        ("the words sit in Config.ClientText.GearSlots, registered as GearSlots.TXT",
+         m is not None and "L10n.Register(\"GearSlots.TXT\", TXT)" in code and "Config.ClientText.GearSlots = {" in src.get("CONFIG", "")),
         ("no English outside TXT (Util.Warn lines excepted)", not words and "Not " not in rest),
     ]
 

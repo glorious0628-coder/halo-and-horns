@@ -164,8 +164,6 @@ MUTATIONS = [
      'if type(kb) == "table" and type(kb.ShowsKeys) == "function" then return kb.ShowsKeys() == true end\n'
      "\treturn UserInputService.KeyboardEnabled == true",
      "return not UserInputService.TouchEnabled"),
-    ("B5: Intro TXT.SkipKey back to the TouchEnabled test", "INTRO",
-     'SkipKey = " (Enter)",', 'SkipKey = UserInputService.TouchEnabled and "" or " (Enter)",'),
     ("B5: Intro.SkipText decides with TouchEnabled", "INTRO",
      "then shows = kb.ShowsKeys() == true end", "then shows = not UserInputService.TouchEnabled end"),
     # review of 27246d1: Interact always keeps a key the default ProximityPrompt draws
@@ -267,9 +265,13 @@ def hint_block(body: str) -> str:
     return match.group(1) if match else ""
 
 
-def intro_txt(text: str) -> str:
+def intro_txt(text: str, config: str = "") -> str:
     match = re.search(r"\nlocal TXT = \{\n.*?\n\}\n", text, re.S)
-    return match.group(0).strip("\n") if match else ""
+    if match:
+        return match.group(0).strip("\n")
+    # 최종 검수 10/14: the words moved to Config.ClientText.Intro (the module reads that table)
+    match = re.search(r"\nConfig\.ClientText\.Intro = \{\n.*?\n\}\n", config, re.S)
+    return match.group(0).strip("\n").replace("Config.ClientText.Intro = {", "local TXT = {", 1) if match else ""
 
 
 def hint_snippets(texts: dict[str, str]) -> dict[str, str]:
@@ -280,7 +282,7 @@ def hint_snippets(texts: dict[str, str]) -> dict[str, str]:
     hint = whole_function(wmap, "function WorldMap.HintText(")
     bind = hint_block(function_body(wmap, "function WorldMap.BindKey("))
     opened = hint_block(function_body(wmap, "function WorldMap.Open("))
-    txt = intro_txt(intro)
+    txt = intro_txt(intro, texts.get("CONFIG_SOURCE", ""))
     skip = whole_function(intro, "function Intro.SkipText(")
     return {
         "HudQuestText": "local L = {}\n" + quest + "return L\n" if quest else "",
@@ -420,7 +422,7 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
           "/ MouseEnabled)")
     intro = text_of("INTRO")
     skip_fn = function_body(intro, "function Intro.SkipText(")
-    txt = intro_txt(intro)
+    txt = intro_txt(intro, text_of("CONFIG_SOURCE"))
     skip_key = re.search(r"^\s*SkipKey\s*=[^\n]*", txt, re.M)
     check(skip_fn != "" and "kb.ShowsKeys()" in skip_fn and not DEVICE_FLAGS.search(skip_fn)
           and skip_key is not None and not DEVICE_FLAGS.search(skip_key.group(0))

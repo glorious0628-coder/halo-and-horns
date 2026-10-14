@@ -20,6 +20,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SocialService = game:GetService("SocialService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared:WaitForChild("Config"))
 local Net = require(Shared:WaitForChild("Net"))
 local Util = require(Shared:WaitForChild("Util"))
 
@@ -35,7 +36,7 @@ local T = {
 	Remote = "GoToFriend", -- the server's "take me to my friend" (게임성 개발 2)
 	ToastSeconds = 5,
 	-- game text: English only (A23-48), short and easy
-	Text = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" },
+	Text = Config.ClientText.Invite, -- the words: Config.ClientText.Invite (moved 10/14)
 }
 local S = { FailAt = -math.huge, Seen = {}, Shown = {} } -- Seen[userId] = that friend's line was shown this session;
 -- Shown[source] = that source's button was counted this session

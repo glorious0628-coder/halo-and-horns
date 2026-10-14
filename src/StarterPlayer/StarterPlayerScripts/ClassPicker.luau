@@ -113,26 +113,7 @@ local PICK_LINES = {
 }
 local CLASS_ICONS = { Warrior = "🗡️", Mage = "🔮", Archer = "🏹" }
 
-local T = {
-	Title = "Pick a class!", -- short: the bundle 2 ribbon's scroll is narrow (검수 2026-10-06: 'Choose…' was cut)
-	Choose = "Pick this class!",
-	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
-	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
-	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
-	Tag = { Warrior = "Smash up close!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
-	FooterShort = "Change class later: Menu > Change Class", -- short screens (검수 2026-10-06: the menu square is Change Class)
-	Wait = "One moment...",
-	Recommend = "Best for beginners",
-	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come
-	Outfit = "Outfit coming later",
-	StartWeaponF = "First weapon: %s (from the Blacksmith)", -- A23-34 (검수 2026-10-06)
-	Male = "Boy",
-	Female = "Girl",
-	-- same rule as ClassService.onChangeClass / Panels "직업 변경" (A23-14): a free change below
-	-- Config.ClassChange.FreeKeepLevelBelow keeps the level, from there free = back to Lv 1; a ticket keeps the level.
-	-- Fallback only: Config.Text.ClassChangeRuleF (formatted with that level) replaces it below.
-	Footer = "You can change class later in Menu > Settings (free: keep your level before Lv5, after that start at Lv1 / ticket: keep your level)",
-}
+local T = Config.ClientText.ClassPicker -- the words: Config.ClientText.ClassPicker (moved 10/14)
 do
 	local below = type(Config.ClassChange) == "table" and tonumber(Config.ClassChange.FreeKeepLevelBelow) or nil
 	local rule = type(Config.Text) == "table" and Config.Text.ClassChangeRuleF or nil

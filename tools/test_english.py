@@ -11,6 +11,8 @@ Report: docs/art/verification_2026-10-06/offline_dev2_english_2026-10-06.json
 """
 from __future__ import annotations
 
+import sys
+
 from dev2_offline import ROOT, SHARED, SSS, Suite, read, run
 
 SERVER = sorted(p for p in SSS.glob("*.luau"))
@@ -72,6 +74,11 @@ def static() -> tuple[int, list[str]]:
     check("Korean string" not in config.split("\n", 1)[0], "the Config header no longer says 'Korean string'")
     check("LocaleId" not in config and "SetLanguage" not in config, "no LocaleId / language switching in Config (A23-48)")
     check(len(SERVER) >= 30, "every server script is part of the scan")
+    # 최종 검수 10/14: no player words hard-coded in client modules (they sit in central tables, Config.ClientText ...)
+    sys.path.insert(0, str(ROOT / "tools"))
+    from l10n_client_hardcoded import findings as hardcoded
+    left = hardcoded()
+    check(not left, "no player words hard-coded in client modules: " + "; ".join(f"{p}:{ln} {v}" for p, ln, v in left[:5]))
     return count, failures
 
 

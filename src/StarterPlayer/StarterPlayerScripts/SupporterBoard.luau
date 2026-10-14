@@ -12,6 +12,7 @@ local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
+local Config = require(Shared:WaitForChild("Config"))
 local Net = require(Shared:WaitForChild("Net"))
 local Util = require(Shared:WaitForChild("Util"))
 
@@ -29,8 +30,8 @@ local T = {
 	Inset = { L = 0.08, R = 0.14 }, -- share of the width kept free (behind the posts; the right post + lantern hide more, 10/08 photo)
 	MinRows = 5, -- a row is 1/max(rows, MinRows) of the names' height: a short list is not huge
 	-- game text: English only (A23-48)
-	Title = "Thank you, supporters!",
-	Empty = "Thank you for playing!",
+	Title = Config.ClientText.SupporterBoard.Title, -- the words: Config.ClientText.SupporterBoard
+	Empty = Config.ClientText.SupporterBoard.Empty,
 	Colors = { Panel = Color3.fromRGB(30, 25, 25), Text = Color3.fromRGB(255, 255, 255), Title = Color3.fromRGB(255, 210, 74) },
 }
 local S = { GameState = nil }

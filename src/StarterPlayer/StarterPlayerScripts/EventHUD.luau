@@ -106,35 +106,7 @@ local AC = {
 }
 
 -- private strings (TECH_SPEC §4.23 EventHUD; A23-48: English only, names from docs/design/glossary_en_2026-10-06.md)
-local TXT = {
-	GooseNext = "Golden Goose %s", -- the phone's next-event line is 150 px
-	GooseNextShort = "Goose %s", -- A23-145: a chip too narrow for the whole line (SQ.chipLine), then the time alone
-	GooseTitle = "Golden Goose Tug! %s",
-	EggScore = "%d", -- A23-131 황금 알 (Eggs mode): a side's points on the bar
-	EggCoop = "%d / %d", -- ... co-op: our points / the goal
-	Rescue = "Rescue %d",
-	Poach = "Poach %d",
-	MyCount = "My hits %d",
-	HintHalo = "Hit the goose to rescue it!",
-	HintHorns = "Hit the goose to poach it!",
-	HintNeutral = "The Artisan Guild sits out the tug", -- addendum A6
-	KaijuChip = "Kaiju %s %s",
-	SirenLeft = "%ds",
-	Sack = "Grudge Sack %s · %ds", -- A23-130: the "(shrinks only in PvP zones)" explanation is gone
-	KaijuSelf = "You're the Kaiju! Last %s", -- A23-130: shorter (was "... to become a legend")
-	Revenge = "Revenge: %s · %s",
-	Luck = "Today's Luck · Rare %s%%", -- A23-18 (events taken part in today, KST day)
-	-- 검수 10/09 (UI clutter review: 'Rare 5%' meant nothing to kids): the chip says the bonus over the base rare chance
-	-- and shows only when there is one (EventHUD.LuckShort)
-	LuckShort = "Lucky +%s%%",
-	Cheer = "Cheer Stars %s (%d/%d)",
-	CheerLabel = "Cheer Stars",
-	CheerCount = "%d/%d",
-	ArrowSack = "Grudge Sack %s",
-	ArrowKaiju = "Kaiju",
-	ArrowRevenge = "Revenge",
-	UnknownName = "???",
-}
+local TXT = Config.ClientText.EventHUD -- the words: Config.ClientText.EventHUD (moved 10/14)
 
 ----------------------------------------------------------------- state
 local ui = {}

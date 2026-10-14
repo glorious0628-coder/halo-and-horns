@@ -9,6 +9,8 @@
 -- (a purchase window finished), Passes.OnAttr(attr, prev, value) -> the line shown or nil (the offline test drives them).
 local Players = game:GetService("Players")
 local MarketplaceService = game:GetService("MarketplaceService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 
 local Passes = {}
 local C = nil
@@ -17,13 +19,9 @@ local T = {
 	ToastSeconds = 6,
 	BoughtWindow = 30, -- s after my finished purchase: the server's flag turning on gets its thank-you line
 	-- the server's flags (dev2) -> the thank-you line (game text: English only, A23-48; short and easy)
-	Lines = {
-		PassXP2 = "Thank you! 2x XP is on.",
-		PassGold2 = "Thank you! 2x Gold is on.",
-		PassVIP = "Thank you! You are a VIP now: crown and chat tag.",
-	},
+	Lines = Config.ClientText.PassesLines, -- the words: Config.ClientText.PassesLines (moved 10/14)
 	Looks = "LooksOwned", -- the server's bought-look list (a string that grows)
-	LookLine = "New look unlocked! Pick it in the Shop.",
+	LookLine = Config.ClientText.PassesLines.Look,
 }
 local S = { BoughtAt = -math.huge }
 

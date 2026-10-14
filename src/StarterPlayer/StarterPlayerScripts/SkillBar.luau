@@ -91,17 +91,7 @@ local COL = {
 }
 
 -- player-facing words (A23-48: English only, short for kids)
-local TXT = {
-	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
-	Level = "Lv %d",
-	NewSkill = "New skill! %s", -- A23-71 the learn moment
-	LearnKey = "Press %s",
-	LearnTouch = "Tap the new button",
-	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
-	-- A23-81 (user 2026-10-08): once, after the first skill is learned (keyboards): keys can be changed in Settings
-	KeysTip = "Tip: You can change your keys in Settings!",
-	KeysTipGo = "Open Settings",
-}
+local TXT = Config.ClientText.SkillBar -- the words: Config.ClientText.SkillBar (moved 10/14)
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1,

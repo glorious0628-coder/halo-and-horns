@@ -23,7 +23,7 @@ local LocalPlayer = Players.LocalPlayer
 local C = nil
 
 -- Forge: A23-74 weapon first, the walk to Otto's anvil (Fx "Travel" { To = "Crossroads", Spot = "Forge" })
-local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
+local TXT = Config.ClientText.FirstSteps -- the words: Config.ClientText.FirstSteps (moved 10/14)
 -- FocusUp / Again: 검수 2026-10-08 - after the server moves me (TravelDone) the camera stayed where it was, often in front
 -- of my face (CameraFollow never recenters a camera my body faces: its backpedal rule), so under the black it goes round
 -- behind my back once (same distance and height over the focus), and once more Again s later (the move may replicate late)
@@ -258,8 +258,8 @@ end
 -- waits for a calm screen; 검수 10/11 A23-130: the three cards became one - the danger line + one short line); once it
 -- is closed the Settings flag PvPCards (saved with my account) keeps it from coming again. Shown only from the place: no
 -- button sends me anywhere
-local PVP = { Title = "PvP zone", Why = "PvPIntro", Step = 0,
-	Text = "Other players can fight you here!\nKnocked out? You can lose pocket gold. Towns keep it safe." }
+local PVP = { Title = Config.ClientText.FirstStepsPvP.PvPTitle, Why = "PvPIntro", Step = 0,
+	Text = Config.ClientText.FirstStepsPvP.PvPText } -- the words: Config.ClientText.FirstStepsPvP
 
 -- the card would open for me now (not the Guild, my Settings loaded, PvPCards not set yet)
 function PVP.Wanted()

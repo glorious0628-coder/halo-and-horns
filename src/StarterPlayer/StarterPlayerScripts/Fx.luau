@@ -93,7 +93,7 @@ local TXT_BANK = "Vault +%s"
 local LOOT_UI = {
 	Life = 1.8, Wide = 1.9, Scale = 0.9, WeaponScale = 1.2, Step = 1.05, MaxLines = 5,
 	ToastSeconds = 2.5, HintSeconds = 6, Hinted = false,
-	Text = { Hint = "%s · use it from your Bag (your weapon is safe even on a fail)" },
+	Text = Config.ClientText.FxLoot, -- the words: Config.ClientText.FxLoot (moved 10/14)
 }
 
 -- attack motion tuning, one table (Fx.luau is close to Luau's 200-locals-per-function limit)

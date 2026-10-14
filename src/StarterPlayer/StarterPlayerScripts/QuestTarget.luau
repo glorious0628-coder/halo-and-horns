@@ -96,14 +96,7 @@ local K = {
 
 -- player-facing labels (A23-48: English only, names from docs/design/glossary_en_2026-10-06.md; zone names come from
 -- Config.Zones NameEn when it is there)
-local TXT = {
-	Blacksmith = "Forge",
-	Pond = "Slime Pond",
-	Fountain = "Fountain",
-	Goose = "Golden Goose Nest",
-	PumpkinSign = "To the Pumpkin Patch",
-	PotionShop = "Potion shop", -- A23-110 KO1 "Buy a potion"
-}
+local TXT = Config.ClientText.QuestTarget -- the words: Config.ClientText.QuestTarget (moved 10/14)
 
 ----------------------------------------------------------------- state
 local anchors = {} -- [key] = BasePart (workspace.HUDGuideAnchor_<key>)

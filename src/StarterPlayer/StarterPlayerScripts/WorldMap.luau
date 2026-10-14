@@ -133,37 +133,7 @@ local ZONE_TITLE = { -- ART_DIRECTION 2.2 "존 타이틀 글자색"
 }
 
 ----------------------------------------------------------------- text (A23-48: English only, glossary names)
-local TXT = {
-	Title = "World Map",
-	Here = "You are in: %s",
-	Unknown = "Unknown",
-	ZoneSub = "Lv %d+ · %s",
-	Safe = "Safe",
-	PvP = "PvP",
-	Extreme = "PvP Extreme",
-	LegendSafe = "● Safe",
-	LegendPvP = "● PvP",
-	LegendExtreme = "● Extreme",
-	LegendMe = "▲ Me",
-	Locate = "Find Me",
-	ZoomIn = "+",
-	ZoomOut = "−",
-	CloseX = "X",
-	HintMouse = "Drag: move · Wheel: zoom · {Map} / Esc: close", -- {Map}: the current map key (WorldMap.HintText)
-	HintTouch = "Drag: move · Two fingers: zoom",
-	Crown = "Crown of Balance",
-	Altar = "Altar of Fate",
-	Market = "Market",
-	Nest = "Golden Goose Nest",
-	Cart = "Egg Cart", -- A23-131: where the Horn Legion brings golden eggs
-	Pads = "Travel Pads",
-	Guild = "Artisan Guild",
-	Forge = "Forge", -- the same spot while the artisan guild is out of the game (Config.Features.NeutralFaction)
-	Pass = "Mountain Pass",
-	Goose = "Golden Goose!",
-	Kaiju = "Kaiju %s",
-	Sack = "Grudge Sack %s",
-}
+local TXT = Config.ClientText.WorldMap -- the words: Config.ClientText.WorldMap (moved 10/14)
 
 local GLYPH = {
 	Crown = "✦",

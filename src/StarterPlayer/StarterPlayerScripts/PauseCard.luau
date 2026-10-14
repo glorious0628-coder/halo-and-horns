@@ -58,20 +58,7 @@ local T = {
 	Gui = "PauseCard",
 	Z = 95, -- under UIKit.Confirm (100)
 	-- game text: English only (A23-48), short and easy
-	Text = {
-		PauseTitle = "Saved!",
-		PauseNext = "Next time: %s",
-		PausePlain = "Everything is saved.",
-		PauseTomorrow = "Tomorrow: %s",
-		Keep = "Keep playing",
-		OK = "OK",
-		BackTitle = "Welcome back!",
-		BackNext = "Next: %s",
-		BackPlain = "Good to see you again!",
-		Go = "Go",
-		Open = "Open", -- the tomorrow card's [Open] (today's gift: the attendance window)
-		TipTitle = "Tip",
-	},
+	Text = Config.ClientText.PauseCard, -- the words: Config.ClientText.PauseCard (moved 10/14)
 }
 local S = { Pending = nil, Card = nil, HurtAt = -math.huge, LastPoll = 0, Health = nil }
 

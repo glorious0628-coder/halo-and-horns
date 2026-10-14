@@ -33,7 +33,7 @@ local LocalPlayer = Players.LocalPlayer
 local D = type(Config.Death) == "table" and Config.Death or {}
 local TX = type(D.Text) == "table" and D.Text or {}
 local T = {
-	Title = "KO!",
+	Title = Config.ClientText.DeathScreen.Title, -- the words: Config.ClientText.DeathScreen
 	Linger = 2, -- s after RespawnIn: closes even if no character came
 	Tick = 0.25,
 	Dim = 0.45, -- the screen's dim (BackgroundTransparency)

@@ -32,13 +32,7 @@ local TAG = "CraftView"
 local LocalPlayer = Players.LocalPlayer
 
 -- player text (A23-130: the grade words, Skip and one result line; A23-111: keys "CraftView.TXT.<field>")
-local TXT = {
-	Grades = { Perfect = "Perfect", Great = "Great", Good = "Good", Miss = "Miss" },
-	Skip = "Skip",
-	Result = "+%d %s",
-	ResultPlain = "+%d",
-	ResultPet = "%s +%d%% speed", -- a tamer's summon (CraftResult.Pet: the new pet and its walk speed roll, 개발 3 dev3-tamer)
-}
+local TXT = Config.ClientText.CraftView -- the words: Config.ClientText.CraftView (moved 10/14)
 L10n.Register("CraftView.TXT", TXT)
 
 local V = {
