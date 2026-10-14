@@ -46,9 +46,9 @@ MUTATIONS = [
     # final review 10/13 ②: never a reward that does not exist
     ("a milestone with nothing for me still shown", "\t\tif #what > 0 then return { Days = int(m.Days)",
      "\t\tif true then return { Days = int(m.Days)"),
-    ("the name frame promised again", "\tif def then table.insert(what, tx(\"GoalTitle\", tostring(def.NameEn or def.Name))) end\n",
-     "\tif def then table.insert(what, tx(\"GoalTitle\", tostring(def.NameEn or def.Name))) end\n"
-     "\tif m.Border then table.insert(what, \"name frame\") end\n"),
+    ("the name frame promised without its art", "and type(art.Id) == \"string\" and art.Id ~= \"\" then", "then"),
+    ("the 28-day name frame skipped again (the photo's 50 days)", "then table.insert(what, tx(\"GoalBorder\")) end", "then end"),
+    ("a phone keeps the PC rows ([Claim] cut off)", "\t\tfor key, v in L.Phone do z[key] = v end\n", ""),
     ("the other side's look promised", "\t\tif need == at and look.Faction == faction then", "\t\tif need == at then"),
     ("opens many times a day", "\tif ctx.Day == nil or ctx.Day == ctx.OpenedDay then return false end\n", ""),
     ("opens during the first mission", "\tif type(ctx.Step) ~= \"number\" or ctx.Step ~= (tonumber(ctx.Done) or 99) then return false end\n", ""),

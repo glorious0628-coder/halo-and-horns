@@ -1147,11 +1147,15 @@ function SQ.GooseNeed(h)
 	local label, kit = ui.GooseChipText, C and C.UIKit
 	local text = SQ.FullLine or (label and label.Text) or ""
 	if not (label and text ~= "" and type(kit) == "table" and type(kit.MeasureText) == "function") then return GOOSE_CHIP_W end
+	-- 최종 검수 10/14 (publish4: PC showed "Goose 3:35" with room to spare): SQ.chipLine fits the line at the text
+	-- floor in SCREEN px (UITextSizeConstraint ignores UIScale), so the chip asks for that width back in du (/ scale);
+	-- measured in du before, a PC at UIScale 0.8 got a chip 20% too narrow and always the short line
+	local s = currentScale()
 	local c = label:FindFirstChildOfClass("UITextSizeConstraint")
-	local size = math.max(label.TextSize, c and c.MinTextSize or 0)
+	local size = math.max(label.TextSize * s, c and c.MinTextSize or 0)
 	local ok, _, w = pcall(kit.MeasureText, (string.gsub(text, "%d", "0")), size, label.FontFace, 100000)
 	if not (ok and type(w) == "number" and w > 0) then return GOOSE_CHIP_W end
-	return math.max(GOOSE_CHIP_W, math.ceil(room + w + 2))
+	return math.max(GOOSE_CHIP_W, math.ceil(room + w / s + 2))
 end
 
 -- A23-145 (phone photos 10/13): "Golden Goose 117:23" lost its time on a phone (the text floor is bigger than the

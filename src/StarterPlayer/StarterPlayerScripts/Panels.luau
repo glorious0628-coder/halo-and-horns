@@ -2144,6 +2144,27 @@ end
 -- A23-127 (plan 10/13 §1-A #2): the Forge sells weapons only while Config.WeaponShop.Buy ~= false (게임성 개발 2's switch;
 -- MaxSoldTier still lists the tiers, so enhancing / selling / equipping stay). Off: a weapon I do not own shows where it
 -- comes from (Config.WeaponSource) and no buttons; an owned one keeps [Equip] / [Sell]
+-- A23-186: the Forge's rows = tiers 1..MaxSoldTier, then every joke weapon it sells (Config.WeaponSoldAtForge + Meme)
+function WSHOP.CatalogTiers()
+	local cap = WSHOP.CatalogLimit()
+	if not cap then return {} end
+	local out = {}
+	for tier = 1, cap do table.insert(out, tier) end
+	for tier = cap + 1, Config.MaxWeaponTier do
+		local def = Config.Weapons[tier]
+		if type(def) == "table" and def.Meme and type(Config.WeaponSoldAtForge) == "function" and Config.WeaponSoldAtForge(tier) then
+			table.insert(out, tier)
+		end
+	end
+	return out
+end
+
+-- A23-186: a joke weapon row (its tier sold at the Forge as a Meme)
+function WSHOP.IsMeme(tier)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	return type(def) == "table" and def.Meme ~= nil
+end
+
 function WSHOP.Sells()
 	local shop = Config.WeaponShop
 	return not (type(shop) == "table" and shop.Buy == false)
@@ -2164,7 +2185,9 @@ function WSHOP.Offer(selectedTier)
 	local cap = WSHOP.CatalogLimit()
 	if not cap then return nil, T.WeaponInvalid end
 	if not WSHOP.Finite(selectedTier) or selectedTier ~= math.floor(selectedTier)
-		or selectedTier < 1 or selectedTier > cap then return nil, T.WeaponUnavailable end
+		or selectedTier < 1 or (selectedTier > cap and not table.find(WSHOP.CatalogTiers(), selectedTier)) then
+		return nil, T.WeaponUnavailable
+	end
 	-- A23-34: 0 = bare hands / nothing owned yet (tier 1 is owned only after the M1_1 gift)
 	local tier, level, ownedMask = attr("WeaponTier", 0), attr("Level"), attr("WeaponOwnedMask", 0)
 	if not WSHOP.Finite(tier) or tier ~= math.floor(tier) or tier < 0 or tier > Config.MaxWeaponTier
@@ -2924,12 +2947,16 @@ BUILDERS.WeaponShop = function(parent)
 		fire(action == "Sell" and "SellWeapon" or "UpgradeWeapon", tier)
 	end
 	local cap = WSHOP.CatalogLimit()
-	for tier = 1, cap or 0 do
+	local _ = cap
+	for _, tier in WSHOP.CatalogTiers() do
 		local row = addColumn(details, 1, 0, 5)
 		row.Name = "WeaponTier" .. tostring(tier)
 		local ui = {
 			Tier = tier,
 			Name = addText(row, "", { Size = 22, Color = theme.Gold, Font = theme.Font }),
+			-- A23-186: a joke weapon says so (Config.WeaponMemeScreen.Line)
+			Meme = WSHOP.IsMeme(tier) and addText(row, (Config.WeaponMemeScreen or {}).Line or "", { Name = "MemeLine", Size = 16,
+				Color = theme.SubText }) or nil,
 			Price = addText(row, "", { Size = 16 }),
 			Effect = addText(row, "", { Size = 16, Color = theme.Good or theme.Text }),
 			Sale = addText(row, "", { Size = 16, Color = theme.SubText }),

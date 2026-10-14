@@ -1626,14 +1626,18 @@ runGroup("first weapon drop", function()
 	g = f:Roll("BigSlime")
 	check(f:Gained(g, "Weapon", 2) == 0 and f.Data.WeaponOwnedMask == 1, "only the first Prince: never a second guarantee", "")
 	f.ScriptConst = nil
-	-- owned already: the chance is used up, nothing given
+	-- owned already (bought at the Forge first): GPT review ③ (10/14) - the chance is used, an Enhance Scroll + a T2 +0 spare instead
 	local o = fixture()
 	o.Data.LootFlags.FirstScroll = true
 	o:Set("WeaponOwnedMask", 3)
 	o.ScriptConst = 0.999999
+	local enh0 = o:Count("Enh70")
 	g = o:Roll("BigSlime")
-	check(o.Data.LootFlags.FirstWeapon == true and o:Gained(g, "Weapon", 2) == 0 and (o.Data.Spares == nil or next(o.Data.Spares) == nil),
-		"tier 2 owned already: the flag is used, nothing given (no Spare)", show(o.Data.Spares))
+	check(o.Data.LootFlags.FirstWeapon == true and o:Gained(g, "Weapon", 2) == 0 and o:Count("Enh70") == enh0 + 1
+		and type(o.Data.Spares) == "table" and o.Data.Spares["2:0"] == 1,
+		"tier 2 owned already: the flag is used, an Enhance Scroll + a T2 +0 spare instead", show({ o:Count("Enh70"), o.Data.Spares }))
+	g = o:Roll("BigSlime")
+	check(o:Count("Enh70") == enh0 + 1 and o.Data.Spares["2:0"] == 1, "once only", show(o.Data.Spares))
 	-- a stronger weapon in hand (tier 1 +10): owned, not equipped (FirstDropWeapon)
 	local s2 = fixture()
 	s2.Data.LootFlags.FirstScroll = true

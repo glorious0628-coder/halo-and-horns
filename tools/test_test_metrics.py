@@ -31,12 +31,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("GPT ④: no DropWeapon", "METRICS_SOURCE", "\tDropWeapon = function(p, d) return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end,\n", ""),
+    ("Codex B6: quest XP counted as hunting", "METRICS_SOURCE", "if source == \"Monster\" then x.H = num(x.H) + n else x.O = num(x.O) + n end",
+     "x.H = num(x.H) + n"),
     # --- config
     ("the board is off", C, "Config.TestMetrics = {\n\tEnabled = true,", "Config.TestMetrics = {\n\tEnabled = false,"),
     ("fresh means 10 minutes", C, "\tFreshSeconds = 120,\n", "\tFreshSeconds = 600,\n"),
     ("the run is 15 minutes", C, "\tTenMinutes = 10,\n", "\tTenMinutes = 15,\n"),
     ("the rejoin check at once", C, "\tKeptDelay = 20,\n", "\tKeptDelay = 1,\n"),
-    ("no Lv10 milestone", C, 'Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },', 'Milestones = { "Lv5", "Weapon", "Claim" },'),
+    ("no Lv10 milestone", C, 'Milestones = { "Lv5", "Lv10", "Weapon", "Claim", "DropWeapon" },', 'Milestones = { "Lv5", "Weapon", "Claim", "DropWeapon" },'),
     # --- joins
     ("a rejoin is a new player", TM, "\tif num(rec.J) == 0 then\n\t\tbump(d, \"Players\")", "\tif true then\n\t\tbump(d, \"Players\")"),
     ("every account is new", TM, "\t\trec.N = fresh(player, data)\n", "\t\trec.N = true\n"),
@@ -54,7 +57,7 @@ MUTATIONS = [
     ("veterans count", TM, "\tif rec.N ~= true then return end\n\tlocal d = X.Delta", "\tlocal d = X.Delta"),
     # --- milestones
     ("Lv5 at Lv4", TM, "return num(attr(p, d, \"Level\"), 1) >= 5 end", "return num(attr(p, d, \"Level\"), 1) >= 4 end"),
-    ("the gift is the dropped weapon", TM, "return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end", "return num(attr(p, d, \"WeaponOwnedMask\")) >= 1 end"),
+    ("A23-188: the T1 gift is not the first weapon", TM, "return num(attr(p, d, \"WeaponOwnedMask\")) >= 1 end", "return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end"),
     ("any step is the claim", TM, "return num(attr(p, d, \"TutorialStep\")) == 99 end", "return num(attr(p, d, \"TutorialStep\")) >= 1 end"),
     ("a milestone counts every time", TM, "if reached and rec.M[m] == nil and reached(player, data) then", "if reached and reached(player, data) then"),
     ("minutes are seconds", TM, "math.floor(math.max(0, sec) / 60)", "math.floor(math.max(0, sec))"),

@@ -4,7 +4,7 @@
 - front (the 2D front face, raw +X for the Tripo multi-view) -> Blender +Y = glTF -Z = Roblox -Z (front looks at the camera)
 - origin = the grip point: kind "sword" = the middle of the narrow grip between the pommel and the guard (found from the
   width profile), or --grip <share> = that share of the length up from the bottom end
-  blender --background --factory-startup --python tools/weapon_hd_fit.py -- <in.glb> <out.glb> <length> [--kind sword] [--grip 0.2]
+  blender --background --factory-startup --python tools/weapon_hd_fit.py -- <in.glb> <out.glb> <length> [--kind sword] [--grip 0.2] [--guard-mult 1.6]
   -> out.glb + out.json (before / after size, grip range, tris)
 """
 import json
@@ -19,6 +19,7 @@ a = sys.argv[sys.argv.index("--") + 1:]
 src, out, length = a[0], a[1], float(a[2])
 kind = a[a.index("--kind") + 1] if "--kind" in a else "sword"
 grip_share = float(a[a.index("--grip") + 1]) if "--grip" in a else None
+guard_mult = float(a[a.index("--guard-mult") + 1]) if "--guard-mult" in a else 1.6  # width x grip = the guard starts
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=src)
 obs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
@@ -59,7 +60,7 @@ else:
     while i < len(low) and low[i] > grip_w * 1.15:
         i += 1
     lo_i = i
-    while i < len(low) and low[i] < grip_w * 1.6:
+    while i < len(low) and low[i] < grip_w * guard_mult:
         i += 1
     hi_i = i
     g0, g1 = zs[lo_i], zs[hi_i]

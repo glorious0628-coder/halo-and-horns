@@ -50,7 +50,7 @@ def checks(cv: str, cfg: str) -> list[tuple[str, bool]]:
          and 'if nock then model:SetAttribute("HandBowRest", toLeft * (part.CFrame * nock.CFrame)) end' in cv),
         ("the short bow = the bow at 0.75, canted 15 degrees", "return buildBow(H, sc, w, color, 0.75)" in cv
          and "local len = tierLen(w, LEN.Bow) * (tonumber(scale) or 1)" in cv  # A23-133: the bow length from LEN
-         and "ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } }," in grips),
+         and "ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }" in grips),  # A23-187: + Rest / Hold after the turn
         ("the shapes are plain parts (no store asset ids)", "rbxassetid" not in cv[cv.find("local SHAPES = {}"):cv.find("local function buildWeapon(")]),
     ]
     return out

@@ -15,7 +15,7 @@ from mathutils import Vector
 a = sys.argv[sys.argv.index("--") + 1:]
 out, glbs = os.path.abspath(a[0]), [os.path.abspath(p) for p in a[1:]]
 PX = 90  # pixels per stud
-Z0, Z1 = -2.2, 4.5
+Z0, Z1 = -2.2, 6.0
 tiles = []
 for g in glbs:
     bpy.ops.wm.read_factory_settings(use_empty=True)

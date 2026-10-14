@@ -272,13 +272,23 @@ Config.Levels = {
 	-- ...(target: Lv 10 in about 10-12 minutes of slime hunting; gameplay plan 2026-10-13 1-A #4: 0.5 -> 0.35, the sum to Lv10
 	-- 1,381 -> 962 XP, measured in the 10/17 test)
 	EarlyMult = 0.35,
+	-- 최종 검수 10/14 (Codex B: the Lv10 cliff): from EarlyUntil the bar grows back to the full curve over a few levels
+	-- instead of x3.3 at once (Lv9 227 -> Lv10 753, just when the first-minutes 2x XP ends). Level -> share of the full XP
+	Ramp = { [10] = 0.5, [11] = 0.65, [12] = 0.8, [13] = 0.9 },
 }
 
+-- the XP from `level` to the next: the curve XPBase x level ^ XPExponent, x EarlyMult below EarlyUntil, x Ramp[level]
+-- for the levels just after it, else the full curve (min 1 when a share applies)
 function Config.XPToNext(level)
-	local xp = math.floor(Config.Levels.XPBase * level ^ Config.Levels.XPExponent)
-	if level < Config.Levels.EarlyUntil then
-		xp = math.max(1, math.floor(xp * Config.Levels.EarlyMult)) -- addendum A7-2 (min 1)
+	local L = Config.Levels
+	local xp = math.floor(L.XPBase * level ^ L.XPExponent)
+	local share = nil
+	if level < L.EarlyUntil then
+		share = L.EarlyMult -- addendum A7-2
+	elseif type(L.Ramp) == "table" and type(L.Ramp[level]) == "number" then
+		share = L.Ramp[level]
 	end
+	if share then xp = math.max(1, math.floor(xp * share)) end
 	return xp
 end
 
@@ -319,6 +329,16 @@ Config.MaxWeaponTier = #Config.Weapons
 Config.WeaponMemes = {
 	Pan = { Sound = "Bonk", SoundId = "", Push = 1.5 },
 	Chicken = { Sound = "Squeak", SoundId = "", Particle = "Feathers", ParticleId = "" },
+}
+-- A23-186 the screen side (game dev 1): the Forge row's one line under a joke weapon, and the code-drawn look while the
+-- art is not made (WeaponPose.MemeLook, this client only, over the server's class-shaped model; held like a sword)
+Config.WeaponMemeScreen = {
+	Line = "Just for fun: not stronger, just funny!",
+	Look = {
+		Pan = { Pan = { Size = { 0.25, 1.7, 1.7 }, Color = { 40, 40, 46 } }, Handle = { Size = { 0.25, 1.4, 0.25 }, Color = { 90, 60, 40 } } },
+		Chicken = { Body = { Size = { 0.8, 1.9, 0.8 }, Color = { 255, 214, 60 } }, Comb = { Size = { 0.2, 0.35, 0.45 }, Color = { 220, 40, 40 } },
+			Beak = { Size = { 0.2, 0.2, 0.3 }, Color = { 255, 150, 30 } } },
+	},
 }
 -- A23-186: true for a tier the Forge sells for gold (2..MaxSoldTier and every Meme row; tier 1 is the M1_1 gift)
 function Config.WeaponSoldAtForge(tier)
@@ -2984,21 +3004,21 @@ Config.Tutorial = {
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 			},
 		},
@@ -3042,6 +3062,8 @@ Config.Tutorial = {
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
 }
+-- Codex B5 (최종 검수 10/14): the King Slime iron line (Buy = false) shows only while a King is here or comes within this many s
+Config.Tutorial.KingSoon = 120
 
 ----------------------------------------------------------------- story quests "부서진 왕관 이야기" (user OK 2026-10-06)
 -- Design: docs/design/quest_chain_2026-10-06.md (decisions 1-8 = recommended). Main = one chain after the first
@@ -3100,7 +3122,7 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
+	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
 		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
 		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
@@ -3152,10 +3174,11 @@ Config.StoryQuests = {
 					Start = "A Slime Prince swallowed a shard! Beat it to free the shard.",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
+					-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet (a trial's Text), not just "0/3"
 					Obj = { Type = "Trials", List = {
-						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3 },
-						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1 },
-						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1 },
+						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3, Text = "Beat slimes with basic attacks %d/%d" },
+						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1, Text = "Hit 2 monsters with one skill" },
+						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1, Text = "Beat a Slime Prince above half HP" },
 					} } },
 				{ Text = "What will you do with the shard?", Panel = true,
 					Lines = { All = { "I saw it all! Now I can fight like you.", "What will you do with me?" } },
@@ -3234,16 +3257,20 @@ Config.StoryQuests = {
 		-- goes to potions
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
-			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } },
+			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
+			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
+			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
+			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
-					GiveItem = { Item = "Enh70", N = 1 }, Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
+					Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
 			Reward = { Gold = 1 },
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The Prince Who Ate the Dust", ShortName = "Slime Princes",
 			Start = "Slime Princes full of shard dust guard their little brothers and sisters.",
-			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } } }, -- A23-188: one more (M1_1 had the first: two in all)
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
@@ -3509,6 +3536,30 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 1 },
 		},
+		-- 장인 ② (artisan_min_server_2026-10-14 ①, 게임성 개발 2): the guild's first ten minutes - pick, make, sell. Neutral only,
+		-- offered while the guild (NeutralFaction) and the quest's Feature switches are on. Gather / Craft / SellMat count
+		-- GatherService.Gathered, CraftService.Crafted and LootService.MaterialSold. N0 ends with 150 gold and the crafted
+		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only
+		N0 = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" } },
+			Start = "Kit: Pick herbs, mine copper, then make something!",
+			Steps = {
+				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
+					{ Key = "a", Type = "Gather", Item = "Herb", Count = 3 },
+					{ Key = "b", Type = "Gather", Item = "CopperOre", Count = 2 },
+				} } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150, EquipCrafted = true },
+		},
+		N0b = {
+			Kind = "Sub", Title = "Sell to the Smith", ShortName = "Sell harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { Done = { "N0" }, Feature = "Gathering" },
+			Start = "Kit: Extra herbs? Otto pays gold for them!",
+			Steps = { { Text = "Sell harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
+			Reward = { GoldN = 30 },
+		},
 		N1 = {
 			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" }, Level = 5 }, -- A23-71: a skill quest
 			Start = "Kit: Shape with care. Two at once!",
@@ -3526,6 +3577,17 @@ Config.StoryQuests = {
 				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
 			},
 			Reward = { Gold = 1 },
+		},
+		-- 장인 ②: the guild's second town quest (after N2): a real order, two things made, then the Crossroads
+		N4 = {
+			Kind = "Sub", Title = "Guild Order", ShortName = "Guild order", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { Done = { "N2" }, Feature = "Crafting" },
+			Start = "Kit: A real order! Make two things for the Guild.",
+			Steps = {
+				{ Text = "Make things %d/%d", Obj = { Type = "Craft", Count = 2 } },
+				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
+			},
+			Reward = { Gold = 3, XP = 3 },
 		},
 		-- A23-46 town people "they're up to something" (docs/design/town_npc_quests_2026-10-06.md + story_depth §3 / §5-⑥,
 		-- 검수 decisions): open after M2_3 for the town's own side, once each. The rumor turns out to be harmless (the
@@ -4195,6 +4257,8 @@ for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id
 -- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
 -- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
 -- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+-- 장인 ② N0: the line when the crafted weapon goes into the hand at the quest's end
+Config.StoryQuests.Text.CraftEquipped = "%s equipped!"
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 -- gameplay plan 2026-10-13 1-A #2: an Enhance scroll used on a weapon, success or not (LootService useEnhance; M1_1 step 2)
@@ -6566,16 +6630,32 @@ Config.ClassGrips = {
 -- Rest = the turn in the fist while standing / walking (WeaponPose.RestStep fades the default toolnone out, so the arm
 -- hangs): the blade at the side, its tip up and back (130 degrees about the fist's X = 40 degrees back from upright);
 -- an attack clip brings back the plain grip (Turn) and toolnone
+-- A23-187 (user 10/14: our own hold, not Roblox's toolnone arm-forward): the Hold field says how a weapon is carried standing /
+-- walking (WeaponPose: toolnone faded out, the weld turned to Rest, Config.HoldPoses added on top of the walk / idle
+-- animation; an attack clip brings back toolnone and the plain grip): Side = a sword / short tool down at the hip, the
+-- tip back and down 45 degrees (Rest 225 about the fist's X: 0 = forward, 90 = up, 180 = back, 270 = down); Staff = held
+-- upright in one hand, the foot near the ground (Rest 90 = upright), tilted a little while walking; Bow = hanging from
+-- the LEFT hand, the limbs upright along the body (WeaponPose welds it to LeftGripAttachment while resting)
 Config.WeaponGrips = {
-	Sword = { Point = 0.5, Rest = { 130, 0, 0 } },
-	DarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },
-	Bow = { Point = 0.5 },
-	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
-	Staff = { Point = 0.45 },
-	CrookStaff = { Point = 0.45 },
-	FlaskStaff = { Point = 0.45 },
-	Hammer = { Point = 0.3 },
-	Baton = { Point = 0.3 },
+	Sword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
+	DarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
+	Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },
+	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, 0, 0 }, Hold = "Bow" },
+	Staff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	CrookStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	Hammer = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+	Baton = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+}
+
+-- A23-187: the joints' turns (degrees, X / Y / Z of each Motor6D's own frame) added on top of the walk / idle animation
+-- while a weapon rests (WeaponPose.PoseStep, every frame, every character, this client only). Side: the arm a little out
+-- from the hip so the blade clears the leg; Staff: the forearm a little forward, WalkTilt more at the wrist while
+-- walking; Bow: the left arm a little out. Tuned on Studio photos (UiSandbox / SwordTest)
+Config.HoldPoses = {
+	Side = { RightShoulder = { 0, 0, 8 }, RightElbow = { -10, 0, 0 } },
+	Staff = { RightShoulder = { -6, 0, 6 }, RightElbow = { -25, 0, 0 }, WalkTilt = { RightWrist = { -10, 0, 0 } } },
+	Bow = { LeftShoulder = { 0, 0, -8 }, LeftElbow = { -8, 0, 0 } },
 }
 
 -- (pure) the grip row of a weapon kind (a kind without a row: the sword's)
@@ -7769,6 +7849,8 @@ Config.Ranking = {
 		OutlawTag = "Outlaw", OutlawTagEn = "Outlaw",
 		OutlawChip = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
 		OutlawChipEn = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
+		OutlawChipShort = "Outlaw", -- the chip on a phone / a narrow PC row (the lock icon says no Auto Battle)
+		OutlawChipShortEn = "Outlaw",
 		RewardChip = "This week's %s #%d: XP and drops +10%% (until Monday)", -- (board name, rank)
 		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
 		OutlawStart = "Outlaw week: no Auto, half rewards, 2x bounty",
@@ -8190,6 +8272,7 @@ Config.Attendance = {
 		Collected = "Days collected: %d",
 		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
 		GoalTitle = "%s title",
+		GoalBorder = "Name frame", -- the 28-day ribbon by my name (NameTagPrefs.BorderOf)
 		Note = "Missed a day? No problem. Nothing resets.",
 		Box = "Weekly Box",
 	},
@@ -9142,11 +9225,19 @@ Config.Craft = {
 	XPExp = 1.5,
 	Range = 12, -- studs from the role's workbench (CollectionService tag StationTag, attribute Role; else the Crossroads anvil)
 	StationTag = "CraftStation",
+	-- 장인 ④ (최종 검수 10/14): the guild yard's three workbenches. A role with no part tagged StationTag gets one (CraftService,
+	-- while Crafting is on): an anchored block Offset studs from the Crossroads anvil (ShopService.Anvil), in the anvil's
+	-- model, tagged + Role. Placeholder blocks (no art: a WorldKit bench with the tag wins); spots checked by photo
+	Benches = {
+		Smith = { Offset = Vector3.new(9, 0, -6), Size = Vector3.new(5, 3, 3), Material = Enum.Material.Metal, Color = Color3.fromRGB(110, 112, 120) },
+		Alch = { Offset = Vector3.new(9, 0, 6), Size = Vector3.new(4, 3, 4), Material = Enum.Material.Wood, Color = Color3.fromRGB(120, 80, 150) },
+		Tame = { Offset = Vector3.new(-9, 0, 6), Size = Vector3.new(5, 3, 3), Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(150, 110, 70) },
+	},
 	StartsPerMinute = 6,
 	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
 	Recipes = {
-		W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 },
-		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Jelly = 10, Petal = 3, CopperOre = 4 }, XP = 20 },
+		-- 장인 ② (최종 검수 10/14): no W1 (tier 1 is the free class weapon); W2 = the first craft, from N0's harvest only
+		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Herb = 3, CopperOre = 2 }, XP = 20 },
 		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }, XP = 60 },
 		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 20, BruteHorn = 10, IronOre = 8, OakLog = 4 }, XP = 150 },
 		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 30, KnightCrest = 12, IronOre = 15, OakLog = 6 }, XP = 400 },
@@ -9158,6 +9249,11 @@ Config.Craft = {
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
 		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
+		-- 장인 ⑤ (A23-178, 최종 검수 10/14): the alchemist's first-minutes goods from the meadow's harvest and slimes. Kind
+		-- "Potion" = Potion "HP" / "MP" (the potion stock, Config.PotionStockKey; N + the hammer's +N, never past the cap)
+		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 2, Jelly = 3 }, XP = 8 },
+		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
+		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 5, CopperOre = 3 }, XP = 20 },
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
 		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
@@ -10162,7 +10258,7 @@ Config.TestMetrics = {
 	TenMinutes = 10,
 	MaxMinute = 60, -- a later milestone is counted at minute 60
 	KeptDelay = 20,
-	Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },
+	Milestones = { "Lv5", "Lv10", "Weapon", "Claim", "DropWeapon" }, -- GPT review ④: DropWeapon = the first Slime Prince's T2
 }
 
 -- A23-156 (user 10/13): the private test server (10/17-20) plays with three settings on: the Z skill (Lv15; Z on players stays
