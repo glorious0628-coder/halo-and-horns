@@ -16262,7 +16262,8 @@
    },
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_Leaves_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6690860
   }
  ],
  "HaloVar4_PotFlowers_C_Leaves_web2_hd": [
@@ -16284,7 +16285,8 @@
    },
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_Leaves_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6971376
   }
  ],
  "HaloChunk_FlowerBushPot_Leaves_web2_hd": [
@@ -16329,7 +16331,8 @@
    },
    "file": "art/models/tripo/web/NEW_FlowerBush_Leaves_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7234052
   }
  ],
  "HaloFlowerPotHQ_Daisy_Pot_web2_hd": [
@@ -16351,7 +16354,8 @@
    },
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_Pot_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 8395248
   }
  ],
  "HaloPart_Flower_WhiteDaisy_web2_hd": [
@@ -16396,7 +16400,8 @@
    },
    "file": "art/models/tripo/web/HaloPart_Flower_Blue5_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 4958700
   }
  ],
  "HaloPart_Flower_Lilac_web2_hd": [
@@ -16418,7 +16423,8 @@
    },
    "file": "art/models/tripo/web/HaloPart_Flower_Lilac_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 5151920
   }
  ],
  "HaloPart_Flower_RedDaisy_web2_hd": [
@@ -16440,7 +16446,8 @@
    },
    "file": "art/models/tripo/web/HaloPart_Flower_RedDaisy_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 4221904
   }
  ],
  "HaloPart_Flower_PinkRose_web2_hd": [
@@ -16462,7 +16469,8 @@
    },
    "file": "art/models/tripo/web/HaloPart_Flower_PinkRose_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6651644
   }
  ],
  "HaloPart_Flower_RedBud_web2_hd": [
@@ -16484,7 +16492,8 @@
    },
    "file": "art/models/tripo/web/HaloPart_Flower_RedBud_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 5190056
   }
  ],
  "HaloPart_Flower_RoseBud_web2_hd": [
@@ -16506,7 +16515,8 @@
    },
    "file": "art/models/tripo/web/HaloPart_Flower_RoseBud_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
-   "note": "generated; GLB not on disk yet (Chrome local-network permission pending) - re-download from project id"
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6508196
   }
  ],
  "NPC_HaloJuiceMan_web2_hd": [
