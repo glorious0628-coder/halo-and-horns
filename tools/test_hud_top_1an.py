@@ -177,9 +177,10 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("③ one event chip (V2.PickEvent, the kaiju too), 40 / 44 px, words >= 18 / 19 px, the notify rows under it",
          "eventInst = V2.PickEvent(cands, V2.EventCur)" in e and "{ Inst = ui.KaijuChip, Class = 2, In = 0 }" in e and "setVisible(ui.KaijuChip, eventInst == ui.KaijuChip)" in e
          and "L.EventTop = { H = 40, HTouch = 44, TextPx = 18, TextPxTouch = 19," in e and "\tV2.EventMinText()\n" in e
-         and "local y, last = math.max(top, V2.EventBottom and math.ceil(V2.EventBottom + gap) or top), nil" in e),
+         and "local y, last = math.max(top, V2.EventBottom and math.ceil(V2.EventBottom + gap) or top), nil" in e
+         and "\t\t\tnatural = V2.KaijuNeed(s)\n" in e and "ui.KaijuChipText.TextWrapped = false" in e),
         ("③ NEW! INSIDE the event chip's right end (dropped when it cannot widen; the words keep clear)",
-         'chip:SetAttribute("NewTagInside",' in e and "if res > 0 and natural + res > num(ev.W) then" in e
+         'chip:SetAttribute("NewTagInside",' in e and "\tif not (ok and tag) then return end\n" in e and "if res > 0 and natural + res > num(ev.W) then" in e
          and 'local inside = tonumber(target:GetAttribute("NewTagInside"))' in u
          and "local right = G.Right + ((SQ.NewRes or 0) > 0 and (SQ.NewRes - G.Right) or 0)" in e),
     ]
@@ -188,6 +189,8 @@ def statics(src: dict) -> list[tuple[str, bool]]:
 STATIC_MUTATIONS = [
     ("HUD", "the status row on the war meter", "(wm.Y + L.WarGeo.Bottom + CT.Gap / s)", "(wm.Y)"),
     ("EV", "the NEW! sticks out again", 'chip:SetAttribute("NewTagInside",', 'chip:SetAttribute("NewTagOutside",'),
+    ("EV", "the kaiju line wraps again", "ui.KaijuChipText.TextWrapped = false", "ui.KaijuChipText.TextWrapped = true"),
+    ("EV", "an empty NEW! room while the tag waits", "\tif not (ok and tag) then return end\n", ""),
     ("EV", "the notify rows over the event chip", "local y, last = math.max(top, V2.EventBottom and math.ceil(V2.EventBottom + gap) or top), nil",
      "local y, last = top, nil"),
 ]

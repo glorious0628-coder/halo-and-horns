@@ -665,6 +665,7 @@ local function build()
 		Color = AC.BadInk,
 		ZIndex = 4,
 	}, 15, ui.KaijuChip)
+	ui.KaijuChipText.TextWrapped = false -- one line (V2.KaijuNeed keeps the chip as wide as it needs)
 
 	-- Halloween Pumpkin King countdown / time left (Config.Halloween; KING.update places and fills it): white chip
 	-- with orange-brown ink, same look as the goose / kaiju pills
@@ -1725,6 +1726,17 @@ function V2.EventMinText()
 	end
 end
 
+-- the kaiju chip's width (du) for its whole line at the event words' floor (test Studio photo 10/14: 'Kaiju Big Slim..
+-- 4:36' wrapped to 'Kaiju' in a 65 px chip): measured like the goose line (screen px / UIScale) + its side insets
+function V2.KaijuNeed(s)
+	local label, kit = ui.KaijuChipText, C and C.UIKit
+	if not (label and label.Text ~= "" and type(kit) == "table" and type(kit.MeasureText) == "function") then return KAIJU_CHIP_W end
+	local px = IS_TOUCH and L.EventTop.TextPxTouch or L.EventTop.TextPx
+	local ok, _, w = pcall(kit.MeasureText, (string.gsub(label.Text, "%d", "0")), px, label.FontFace, 100000)
+	if not (ok and type(w) == "number" and w > 0) then return KAIJU_CHIP_W end
+	return math.max(KAIJU_CHIP_W, math.ceil(w / math.max(0.1, s) + 26))
+end
+
 -- the NEW! room (du) the shown event chip keeps on its right while its tag shows, else 0
 function V2.NewRoom(inst)
 	if not (inst and V2.NewOn == inst and os.clock() < (V2.NewUntil or 0)) then return 0 end
@@ -1897,8 +1909,7 @@ function V2.stack()
 		if eventInst == ui.KingChip then
 			natural = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn())
 		elseif eventInst == ui.KaijuChip then
-			local tb = ui.KaijuChipText and ui.KaijuChipText.TextBounds.X or 0
-			natural = math.max(KAIJU_CHIP_W, math.ceil(tb / s + 26))
+			natural = V2.KaijuNeed(s)
 		else
 			natural = SQ.GooseNeed(evH)
 		end
@@ -2010,13 +2021,14 @@ function V2.NewTag()
 	local chip = V2.EventCur
 	if not (chip and chip.Visible and chip.AbsoluteSize.X > 4) then return end
 	local E = L.EventTop
-	V2.NewOn, V2.NewUntil = chip, os.clock() + E.NewSeconds
-	V2.stack()
-	if V2.NewOn ~= chip then return end -- no room: no tag
 	local s = currentScale()
 	chip:SetAttribute("NewTagInside", (IS_TOUCH and E.NewWTouch or E.NewW) / s)
 	chip:SetAttribute("NewTagRight", E.NewRight / s)
-	pcall(kit.NewTag, chip)
+	-- the room only while the tag really shows (test Studio photo 10/14: a queued tag left an empty room on the chip)
+	local ok, tag = pcall(kit.NewTag, chip)
+	if not (ok and tag) then return end
+	V2.NewOn, V2.NewUntil = chip, os.clock() + E.NewSeconds
+	V2.stack() -- widens the chip for it, or drops the tag when it cannot
 end
 
 local function update()

@@ -130,8 +130,8 @@ MUTATIONS = [
     ("HUD", "the danger chips after Safe Zone again (folded into '+3')",
      'L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost",', 'L.ChipOrder = { "Zone", "Luck", "Bully", "Outlaw", "Wanted", "Combat", "Boost",'),
     ("HUD", "a phone gets the whole outlaw line", "local outlaw = (IS_TOUCH or L.ChipShort) and", "local outlaw = L.ChipShort and"),
-    ("HUD", "a too-narrow PC row never shortens it", "if L.ChipFit > 0 and others > 0 then L.ChipFit -= 1 else L.ChipShort = true end",
-     "if L.ChipFit > 0 and others > 0 then L.ChipFit -= 1 end"),
+    ("HUD", "a too-narrow PC row never shortens it", "if not L.ChipShort then L.ChipShort = true else L.ChipFit -= 1 end",
+     "L.ChipFit -= 1"),
     ("HUD", "no redraw on Outlaw", '"KaijuState", "Faction", "Outlaw" }, refreshChips)', '"KaijuState", "Faction" }, refreshChips)'),
     ("MINI", "the pit has no area check", "if a.Size.X < 1 or a.Size.Z < 1 then return nil end\n", ""),
     ("MINI", "posts skip a side", "\tside(x0, z1, x0, z0)\n", ""),
@@ -180,7 +180,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          '"Bully", "Outlaw", "Wanted"' in h and 'setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(outlaw) == "string", outlaw, Theme.Bad)' in h
          and 'L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost",' in h
          and 'local outlaw = (IS_TOUCH or L.ChipShort) and type(rk.OutlawChipShort) == "string" and rk.OutlawChipShort or rk.OutlawChip' in h
-         and "if L.ChipFit > 0 and others > 0 then L.ChipFit -= 1 else L.ChipShort = true end" in h and "\t\tL.ChipShort = false\n" in h
+         and "if not L.ChipShort then L.ChipShort = true else L.ChipFit -= 1 end" in h and "\t\tL.ChipShort = false\n" in h
          and 'Outlaw = "IconLock" }' in h and 'OutlawChipShort = "Outlaw",' in cfg
          and '"KaijuState", "Faction", "Outlaw" }, refreshChips)' in h and re.search(r'OutlawChip = "Outlaw:', cfg) is not None),
         ("3. the ribbon art of the 28-day border is approved (Config.UIArt RibbonDays28) and swept onto every tag",

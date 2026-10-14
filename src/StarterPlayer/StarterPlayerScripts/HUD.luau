@@ -1656,8 +1656,8 @@ function L.ChipPress(key)
 	end
 end
 
--- A23-40 / 1안 ②: the row needs a second line -> one non-danger chip fewer (the '+N' chip takes it); none left -> the
--- short words (the Outlaw line on a small PC); still two lines -> they stay (the danger names are never hidden, the event
+-- A23-40 / 1안 ②: the row needs a second line -> first the danger chips' short words (the Outlaw line), then one
+-- non-danger chip fewer at a time (the '+N' chip takes it); still two lines -> they stay (the danger names are never hidden, the event
 -- line moves down: HUD.TopBottom measures the row). refreshChips starts again from L.MaxChips when the chip set changes
 function L.CheckChipFit()
 	if not ui.chips or not ui.chipList then return end
@@ -1668,8 +1668,9 @@ function L.CheckChipFit()
 	for _, row in (L.ChipShown or { Show = {} }).Show do
 		if not row.Danger then others += 1 end
 	end
+	-- (test Studio photo 10/14: dropping the icons first left 'Outlaw +3' - the short danger words come first)
 	if ui.chips.AbsoluteSize.X > 0 and over and ((L.ChipFit > 0 and others > 0) or not L.ChipShort) then
-		if L.ChipFit > 0 and others > 0 then L.ChipFit -= 1 else L.ChipShort = true end
+		if not L.ChipShort then L.ChipShort = true else L.ChipFit -= 1 end
 		task.defer(function()
 			local ok, err = pcall(refreshChips)
 			if not ok then warnThrottled("chip fit failed: " .. tostring(err)) end
