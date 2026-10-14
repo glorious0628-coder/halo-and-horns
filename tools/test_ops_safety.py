@@ -30,12 +30,20 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # ⑤ (2026-10-14): feature switches
+    ("feature switch: never applied", "SWITCH_SOURCE", "\t\tConfig.LiveOff[def.Feature] = (SwitchService.On(key) == false) or nil\n", ""),
+    ("feature switch: FeatureOn ignores it", "CONFIG_SOURCE", "\tif type(Config.LiveOff) == \"table\" and Config.LiveOff[name] == true then return false end\n", ""),
+    ("feature switch: inverted", "SWITCH_SOURCE", "\t\tConfig.LiveOff[def.Feature] = (SwitchService.On(key) == false) or nil\n",
+     "\t\tConfig.LiveOff[def.Feature] = (SwitchService.On(key) == true) or nil\n"),
+
     # --- environments
     ("Dev gets a suffix", C, "\tif env == \"Beta\" or env == \"Live\" then return base .. \"_\" .. env end\n\treturn base", "\treturn base .. \"_\" .. env"),
     ("Beta has no suffix", C, "if env == \"Beta\" or env == \"Live\" then return base .. \"_\" .. env end", "if env == \"Live\" then return base .. \"_\" .. env end"),
     ("Live has no suffix", C, "if env == \"Beta\" or env == \"Live\" then return base .. \"_\" .. env end", "if env == \"Beta\" then return base .. \"_\" .. env end"),
-    ("any name is an environment", C, "\tif name == \"Beta\" or name == \"Live\" then return name end\n\treturn Config.Env.Default", "\tif name ~= nil then return name end\n\treturn Config.Env.Default"),
-    ("the place id is ignored", C, "local name = ok and type(id) == \"number\" and Config.Env.Names[id] or nil", "local name = Config.Env.Names[81671223175574]"),
+    ("any name is an environment", C, "\tif name == \"Beta\" or name == \"Live\" then return name end\n\tlocal places", "\tif name ~= nil then return name end\n\tlocal places"),
+    ("the place id is ignored", C, "\tlocal name = Config.Env.Names[id]\n", "\tlocal name = Config.Env.Names[81671223175574]\n"),
+    ("⑥: Places never read", C, "\t\tif tonumber(places[env]) == id then return env end\n", ""),
+    ("⑥: no warning on a Dev place", C, "\tif isStudio == true or Config.EnvName() ~= \"Dev\" then return nil end\n", "\tdo return nil end\n"),
     ("the build label is old", C, "Config.BuildLabel = \"private-test 2026.10.16\"", "Config.BuildLabel = \"beta-prep 2026.10.09\""),
     ("5 errors become 50 a minute", C, "ServerErrors = { MaxPerMinute = 5,", "ServerErrors = { MaxPerMinute = 50,"),
     ("a switch is added", C, "\t\tGoose = { Type = \"Bool\", Default = true }, -- no new goose\n", "\t\tGoose = { Type = \"Bool\", Default = true }, -- no new goose\n\t\tAdmin = { Type = \"Bool\", Default = false },\n"),

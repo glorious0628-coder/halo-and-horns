@@ -489,10 +489,20 @@ function LootService.RollKill(player, info)
 	end
 
 	-- C2: the first Slime Prince always drops the tier-2 weapon (the flag first: once; owned already = the chance is used)
+	-- GPT review ③ (10/14): a sure first drop of a tier owned already (bought at the Forge first) is never lost: an Enhance
+	-- Scroll + that weapon as a spare (+0) instead (the chance is used either way)
+	local function ownedInstead(tier)
+		giveItem("Enh70", 1)
+		pcall(LootService.AddSpare, player, tier, 0)
+	end
 	local fw = LOOT.FirstWeaponDrop
 	if fw and info.Kind == fw.Monster and data.LootFlags.FirstWeapon ~= true then
 		data.LootFlags.FirstWeapon = true
-		if validTier(fw.Tier) and not owns(data, fw.Tier) then grantFirstDrop(player, data, fw.Tier, gained) end
+		if validTier(fw.Tier) and not owns(data, fw.Tier) then
+			grantFirstDrop(player, data, fw.Tier, gained)
+		elseif validTier(fw.Tier) then
+			ownedInstead(fw.Tier)
+		end
 	end
 	-- gameplay plan 2026-10-13 1-A #2: the first King Slime always drops the tier-3 weapon, the same way
 	local fk = LOOT.FirstKingDrop
@@ -500,6 +510,8 @@ function LootService.RollKill(player, info)
 		data.LootFlags.FirstKingWeapon = true
 		if validTier(fk.Tier) and not owns(data, fk.Tier) then
 			grantFirstDrop(player, data, fk.Tier, gained, TXT.FirstKingWeapon, TXT.FirstKingEquip)
+		elseif validTier(fk.Tier) then
+			ownedInstead(fk.Tier)
 		end
 	end
 	-- 2-A ⑤: the first Goblin Brute (tier 4) and the first Skeleton Knight or Captain Clatter (tier 5), the same way
@@ -927,22 +939,24 @@ local function spareKey(tier, plus)
 end
 
 -- room for one more of that key (key below SpareKeyMax, all keys below SpareSum)
-local function spareFits(data, key)
+-- freed (GPT review ①, 10/14): slots that will be free by the time the spare comes (a craft's used-up materials)
+local function spareFits(data, key, freed)
 	local spares = type(data.Spares) == "table" and data.Spares or {}
 	local sum = 0
 	for _, n in spares do
 		sum += math.max(0, math.floor(num(n)))
 	end
 	-- bag slots (10/14): a new spare key needs a free slot
-	if math.floor(num(spares[key])) < 1 and Config.BagSlots.Counts.Spare and not Config.BagHasRoom(data) then return false end
+	if math.floor(num(spares[key])) < 1 and Config.BagSlots.Counts.Spare
+		and Config.BagUsed(data) - math.max(0, math.floor(num(freed))) >= Config.BagSlotsOf(data) then return false end
 	return math.floor(num(spares[key])) < Config.SaveV4.SpareKeyMax and sum < Config.SaveV4.SpareSum
 end
 
-function LootService.SpareRoom(player, tier, plus)
+function LootService.SpareRoom(player, tier, plus, freed)
 	local key = spareKey(tier, plus)
 	local data = key and getData(player)
 	if not data then return false end
-	return spareFits(data, key)
+	return spareFits(data, key, freed)
 end
 
 -- adds one spare of tier +plus and publishes the inventory; false (nothing changed) on a bad argument, no data or no
@@ -1023,7 +1037,21 @@ function LootService.UnpackSpare(player, tier, plus)
 	local key = spareKey(tier, plus)
 	local data = key and getData(player)
 	if not data or type(data.Spares) ~= "table" or math.floor(num(data.Spares[key])) < 1 then return "NoItem" end
-	if owns(data, tier) then return "Owned" end
+	if owns(data, tier) then
+		-- GPT review ② (10/14): a better +N of a tier owned swaps in (the weapon owned keeps its place, its old +N goes to
+		-- the spares); the same or a lower +N stays a spare
+		ensureTables(data)
+		local cur = math.floor(num(data.WeaponEnhance[tier]))
+		if plus <= cur then return "Owned" end
+		LootService.TakeSpare(player, tier, plus, 1)
+		if not LootService.AddSpare(player, tier, cur) then
+			LootService.AddSpare(player, tier, plus) -- no room for the old one: put the new one back, nothing changed
+			return "CantReceive"
+		end
+		data.WeaponEnhance[tier] = plus
+		publish(player, data)
+		return true
+	end
 	LootService.TakeSpare(player, tier, plus, 1)
 	return LootService.GrantMarketWeapon(player, tier, plus) == "Owned" or "NoItem"
 end

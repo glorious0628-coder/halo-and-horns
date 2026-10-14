@@ -94,6 +94,12 @@ end
 
 -- what a switch does to the server's own config (the rest are read through SwitchService.On by their services)
 local function apply(key)
+	-- ⑤ (최종 검수 10/14): a def with a Feature turns that build switch off on this server while it is false
+	local def = defs()[key]
+	if type(def) == "table" and type(def.Feature) == "string" then
+		Config.LiveOff = type(Config.LiveOff) == "table" and Config.LiveOff or {}
+		Config.LiveOff[def.Feature] = (SwitchService.On(key) == false) or nil
+	end
 	if key == "Halloween" and type(Config.Halloween) == "table" then
 		if ORIGINAL.Halloween == nil then ORIGINAL.Halloween = Config.Halloween.Enabled end
 		Config.Halloween.Enabled = SwitchService.On("Halloween") and ORIGINAL.Halloween == true
@@ -144,6 +150,11 @@ function SwitchService.Init(registry)
 end
 
 function SwitchService.Start()
+	-- ⑥ (최종 검수 10/14): a live server on a Dev place id says so once (its saves go to the Dev store names)
+	if type(Config.EnvWarning) == "function" then
+		local okW, line = pcall(Config.EnvWarning, RunService:IsStudio())
+		if okW and type(line) == "string" then Util.Warn(TAG, line) end
+	end
 	for key, def in defs() do
 		VALUES[key] = fallback(def)
 		publish(key)

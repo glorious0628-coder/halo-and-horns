@@ -62,8 +62,13 @@ local function warnOnce(what, err)
 	Util.Warn(TAG, what .. ": " .. tostring(err))
 end
 
+-- Config.Features.Market (the build) AND the live switch Market (SwitchService; no switch service or a failed read = on)
 local function switchOn()
-	return type(Config.FeatureOn) == "function" and Config.FeatureOn("Market") == true
+	if not (type(Config.FeatureOn) == "function" and Config.FeatureOn("Market") == true) then return false end
+	local sw = S and S.SwitchService
+	if type(sw) ~= "table" or type(sw.On) ~= "function" then return true end
+	local ok, value = pcall(sw.On, "Market")
+	return not ok or value ~= false
 end
 
 -- the saves are real (not Studio's memory mode): nothing in the market works without them
@@ -844,7 +849,11 @@ local function doBuy(player, data, id, price)
 	local info = Config.MarketParse(rec.K)
 	local n = math.floor(num(rec.N, 0))
 	if not info or n < 1 then return note(player, "AlreadySold") end
-	if info.Kind == "W" and ownsTier(data, info.Tier) then return note(player, "Owned") end
+	-- GPT review ② (10/14): a tier owned may still be bought at a higher +N (it comes as a spare: UnpackSpare swaps it in)
+	if info.Kind == "W" and ownsTier(data, info.Tier)
+		and info.Plus <= math.floor(num(type(data.WeaponEnhance) == "table" and data.WeaponEnhance[info.Tier])) then
+		return note(player, "Owned")
+	end
 	if info.Kind == "I" and not hasRoom(data, rec.K, n) then return note(player, "CantReceive") end
 	local pairKey = "P" .. tostring(math.floor(num(rec.Seller, 0)))
 	if math.floor(num(m[pairKey], 0)) >= M.PairDay then return note(player, "PairLimit") end

@@ -139,7 +139,7 @@ def static() -> tuple[int, list[str]]:
     add = function_block(loot, "function LootService.AddSpare(")
     check("notify(" not in strip_comments(add) and "Net.Notify" not in add, "AddSpare says nothing (the caller does)")
     craft = read(SSS / "CraftService.luau")
-    check("pcall(S.LootService.SpareRoom, player, r.Tier, plus)" in craft and "pcall(S.LootService.AddSpare, player, r.Tier, plus)" in craft,
+    check("pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)" in craft and "pcall(S.LootService.AddSpare, player, r.Tier, plus)" in craft,
           "CraftService calls SpareRoom / AddSpare through pcall (the API it needs)")
     return count, failures
 

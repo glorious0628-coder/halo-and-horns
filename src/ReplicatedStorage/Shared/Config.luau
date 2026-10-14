@@ -19,7 +19,10 @@ Config.Game = {
 -- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
 Config.Features = { NeutralFaction = false, Market = false, StatPoints = false }
 
+-- a build switch (Config.Features[name]) that no live switch has turned off on this server (Config.LiveOff, written by
+-- SwitchService for the Switches.Defs with a Feature; nil on the client: the screen reads the GameState Switch<key> attributes)
 function Config.FeatureOn(name)
+	if type(Config.LiveOff) == "table" and Config.LiveOff[name] == true then return false end
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
@@ -5448,13 +5451,28 @@ Config.BuildLabel = "private-test 2026.10.16" -- shown in the settings footer (b
 -- (docs/design/launch_ops_checklist.md); every other place (the dev place, Studio) is "Dev". Config.StoreName(base) is the
 -- DataStore name of a store in this environment: Dev keeps the names that already exist (nothing moves), Beta and Live get
 -- "_Beta" / "_Live" appended so a test never touches the real saves, rankings or the supporter list.
-Config.Env = { Default = "Dev", Names = {} }
+-- 최종 검수 10/14 ⑥: Places = the Beta / Live place ids (0 = not made yet; the Live one comes from the user at launch). A place
+-- id there (or in Names, [id] = "Beta" | "Live") names the environment; anything else is Dev (its own store names).
+-- Config.EnvWarning: a live (non-Studio) server on a Dev place id says so once in the log (SwitchService.Start)
+Config.Env = { Default = "Dev", Names = {}, Places = { Beta = 0, Live = 0 } }
 
 function Config.EnvName()
 	local ok, id = pcall(function() return game.PlaceId end)
-	local name = ok and type(id) == "number" and Config.Env.Names[id] or nil
+	if not ok or type(id) ~= "number" or id <= 0 then return Config.Env.Default end
+	local name = Config.Env.Names[id]
 	if name == "Beta" or name == "Live" then return name end
+	local places = type(Config.Env.Places) == "table" and Config.Env.Places or {}
+	for _, env in { "Live", "Beta" } do
+		if tonumber(places[env]) == id then return env end
+	end
 	return Config.Env.Default
+end
+
+-- a warning line (nil = fine): a server that is not Studio but runs as Dev (its place id is not Config.Env.Places Beta / Live)
+function Config.EnvWarning(isStudio)
+	if isStudio == true or Config.EnvName() ~= "Dev" then return nil end
+	local ok, id = pcall(function() return game.PlaceId end)
+	return string.format("Env: place %s is not Config.Env.Places Beta / Live: the Dev store names are used", tostring(ok and id or "?"))
 end
 
 function Config.StoreName(base)
@@ -5490,6 +5508,18 @@ Config.Switches = {
 		PioneerTitle = { Type = "Bool", Default = true, Unread = false },
 		-- A23-178: off = no new village fund gifts (the week's sums and the town lights stay)
 		VillageFund = { Type = "Bool", Default = true },
+		-- 장인 ③ (최종 검수 10/14): the market's kill switch on top of Config.Features.Market: off = no browsing, listing,
+		-- buying or packing (what was already traded still settles: deliveries, payouts, refunds, the join check)
+		Market = { Type = "Bool", Default = true, Feature = "Market" },
+		-- 최종 검수 10/14 ⑤: kill switches of the features that exist (Feature = the Config.Features key it turns off while
+		-- false; turning it back on re-reads the players on the server: GearService, GatherService, CraftService)
+		Artisan = { Type = "Bool", Default = true, Feature = "NeutralFaction" }, -- the guild: no new Neutral pick / quests
+		Crafting = { Type = "Bool", Default = true, Feature = "Crafting" },
+		Gathering = { Type = "Bool", Default = true, Feature = "Gathering" },
+		Tonics = { Type = "Bool", Default = true, Feature = "Tonics" },
+		Research = { Type = "Bool", Default = true, Feature = "Research" },
+		Gear = { Type = "Bool", Default = true, Feature = "Gear" },
+		FieldBoss = { Type = "Bool", Default = true }, -- FieldBossService: off = no new field boss (one already here stays)
 	},
 }
 
@@ -9298,6 +9328,14 @@ Config.Craft = {
 	XPExp = 1.5,
 	Range = 12, -- studs from the role's workbench (CollectionService tag StationTag, attribute Role; else the Crossroads anvil)
 	StationTag = "CraftStation",
+	-- 장인 ④ (최종 검수 10/14): the guild yard's three workbenches. A role with no part tagged StationTag gets one (CraftService,
+	-- while Crafting is on): an anchored block Offset studs from the Crossroads anvil (ShopService.Anvil), in the anvil's
+	-- model, tagged + Role. Placeholder blocks (no art: a WorldKit bench with the tag wins); spots checked by photo
+	Benches = {
+		Smith = { Offset = Vector3.new(9, 0, -6), Size = Vector3.new(5, 3, 3), Material = Enum.Material.Metal, Color = Color3.fromRGB(110, 112, 120) },
+		Alch = { Offset = Vector3.new(9, 0, 6), Size = Vector3.new(4, 3, 4), Material = Enum.Material.Wood, Color = Color3.fromRGB(120, 80, 150) },
+		Tame = { Offset = Vector3.new(-9, 0, 6), Size = Vector3.new(5, 3, 3), Material = Enum.Material.WoodPlanks, Color = Color3.fromRGB(150, 110, 70) },
+	},
 	StartsPerMinute = 6,
 	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
 	Recipes = {
@@ -9314,6 +9352,11 @@ Config.Craft = {
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
 		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
+		-- 장인 ⑤ (A23-178, 최종 검수 10/14): the alchemist's first-minutes goods from the meadow's harvest and slimes. Kind
+		-- "Potion" = Potion "HP" / "MP" (the potion stock, Config.PotionStockKey; N + the hammer's +N, never past the cap)
+		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 2, Jelly = 3 }, XP = 8 },
+		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
+		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 5, CopperOre = 3 }, XP = 20 },
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
 		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
@@ -10318,7 +10361,7 @@ Config.TestMetrics = {
 	TenMinutes = 10,
 	MaxMinute = 60, -- a later milestone is counted at minute 60
 	KeptDelay = 20,
-	Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },
+	Milestones = { "Lv5", "Lv10", "Weapon", "Claim", "DropWeapon" }, -- GPT review ④: DropWeapon = the first Slime Prince's T2
 }
 
 -- A23-156 (user 10/13): the private test server (10/17-20) plays with three settings on: the Z skill (Lv15; Z on players stays

@@ -34,6 +34,12 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # 장인 ③ (2026-10-14): the live kill switch
+    ("kill switch: the live switch ignored", X, "\tlocal ok, value = pcall(sw.On, \"Market\")\n\treturn not ok or value ~= false\n", "\treturn true\n"),
+    ("kill switch: the build switch ignored", X, "\tif not (type(Config.FeatureOn) == \"function\" and Config.FeatureOn(\"Market\") == true) then return false end\n", ""),
+    ("kill switch: a failed read is off", X, "\treturn not ok or value ~= false\n", "\treturn ok and value ~= false\n"),
+    ("GPT ②: an owned tier never bought again", "MARKET_SOURCE", "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand info.Plus <= ", "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand -1 <= "),
+    ("GPT ②: a better +N stays a spare", "LOOT_SOURCE", "\t\tif plus <= cur then return \"Owned\" end\n", "\t\tdo return \"Owned\" end\n"),
     # bag slots (2026-10-14)
     ("bag: a market buy ignores the slots", X, "\t\tif have < 1 and def and counts[def.Kind] and not Config.BagHasRoom(data) then return false end\n", ""),
     # A23-186: the joke weapons are never traded
@@ -68,7 +74,7 @@ MUTATIONS = [
     ("loot: pack keeps the tier owned", L, "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(", "\tlocal _ = (bit32.band("),
     ("loot: pack keeps the +N on the tier", L, "\tdata.WeaponEnhance[tier] = 0\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(",
      "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band("),
-    ("loot: unpack an owned tier", L, "\tif owns(data, tier) then return \"Owned\" end\n\tLootService.TakeSpare(", "\tLootService.TakeSpare("),
+    ("loot: unpack an owned tier", L, "\tif owns(data, tier) then\n\t\t-- GPT review ②", "\tif false then\n\t\t-- GPT review ②"),
     # --- gates
     ("gate: no buy level", X, "\tif level < M.BuyLevel then\n\t\tg.Buy = \"NeedLevelBuy\"\n\telseif", "\tif false then\n\t\tg.Buy = \"NeedLevelBuy\"\n\telseif"),
     ("gate: no account age", X, "\telseif num(age, 0) < M.ListAccountDays then\n", "\telseif false then\n"),
@@ -89,7 +95,7 @@ MUTATIONS = [
     # --- buy
     ("buy: my own listing", X, "\tif rec.Seller == player.UserId then return note(player, \"Own\") end\n", ""),
     ("buy: any price", X, "\tif math.floor(num(rec.Price, -1)) ~= price then return note(player, \"PriceChanged\") end\n", ""),
-    ("buy: an owned weapon tier", X, "\tif info.Kind == \"W\" and ownsTier(data, info.Tier) then return note(player, \"Owned\") end\n", ""),
+    ("buy: an owned weapon tier", X, "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand info.Plus <= ", "\tif false and ownsTier(data, info.Tier)\n\t\tand info.Plus <= "),
     ("buy: no room check", X, "\tif info.Kind == \"I\" and not hasRoom(data, rec.K, n) then return note(player, \"CantReceive\") end\n", ""),
     ("buy: no pair limit", X, "\tif math.floor(num(m[pairKey], 0)) >= M.PairDay then return note(player, \"PairLimit\") end\n", ""),
     ("buy: one unit's price for the row", X, "\tlocal total = price * n\n", "\tlocal total = price\n"),

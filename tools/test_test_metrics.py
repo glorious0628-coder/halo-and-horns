@@ -31,6 +31,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("GPT ④: no DropWeapon", "METRICS_SOURCE", "\tDropWeapon = function(p, d) return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end,\n", ""),
     ("Codex B6: quest XP counted as hunting", "METRICS_SOURCE", "if source == \"Monster\" then x.H = num(x.H) + n else x.O = num(x.O) + n end",
      "x.H = num(x.H) + n"),
     # --- config
@@ -38,7 +39,7 @@ MUTATIONS = [
     ("fresh means 10 minutes", C, "\tFreshSeconds = 120,\n", "\tFreshSeconds = 600,\n"),
     ("the run is 15 minutes", C, "\tTenMinutes = 10,\n", "\tTenMinutes = 15,\n"),
     ("the rejoin check at once", C, "\tKeptDelay = 20,\n", "\tKeptDelay = 1,\n"),
-    ("no Lv10 milestone", C, 'Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },', 'Milestones = { "Lv5", "Weapon", "Claim" },'),
+    ("no Lv10 milestone", C, 'Milestones = { "Lv5", "Lv10", "Weapon", "Claim", "DropWeapon" },', 'Milestones = { "Lv5", "Weapon", "Claim", "DropWeapon" },'),
     # --- joins
     ("a rejoin is a new player", TM, "\tif num(rec.J) == 0 then\n\t\tbump(d, \"Players\")", "\tif true then\n\t\tbump(d, \"Players\")"),
     ("every account is new", TM, "\t\trec.N = fresh(player, data)\n", "\t\trec.N = true\n"),

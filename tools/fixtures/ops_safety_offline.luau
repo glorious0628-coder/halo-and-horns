@@ -32,6 +32,14 @@ end
 local function startSwitches(w, extra)
 	w:Service("SwitchService", SWITCH_SOURCE)
 	w:InitStart({ "SwitchService" })
+	-- ⑥: a non-Studio test world is a Dev place: the start's one Env line is counted here and kept out of the warnings
+	w.EnvWarned = 0
+	for i = #w.Warnings, 1, -1 do
+		if string.find(w.Warnings[i], "Env: place", 1, true) then
+			w.EnvWarned += 1
+			table.remove(w.Warnings, i)
+		end
+	end
 	return w.Reg.SwitchService
 end
 
@@ -65,6 +73,22 @@ runGroup("environments", function()
 	C.Env.Names[w.Game.PlaceId] = nil
 	C.Env.Names[12345] = "Live"
 	check(C.EnvName() == "Dev", "another place's name does not count", C.EnvName())
+	-- ⑥ (최종 검수 10/14): Config.Env.Places = the Beta / Live ids (0 = not made yet)
+	check(type(C.Env.Places) == "table" and C.Env.Places.Beta == 0 and C.Env.Places.Live == 0, "Env.Places: Beta / Live waiting (0)", show(C.Env.Places))
+	check(C.EnvWarning(false) ~= nil and string.find(C.EnvWarning(false), "Dev", 1, true) ~= nil and C.EnvWarning(true) == nil,
+		"a live server on a Dev place: one warning line; Studio: none", tostring(C.EnvWarning(false)))
+	C.Env.Places.Live = w.Game.PlaceId
+	check(C.EnvName() == "Live" and C.StoreName("X") == "X_Live" and C.EnvWarning(false) == nil, "Places.Live = this place: Live, no warning", C.EnvName())
+	C.Env.Places.Live, C.Env.Places.Beta = 0, w.Game.PlaceId
+	check(C.EnvName() == "Beta", "Places.Beta = this place: Beta", C.EnvName())
+	C.Env.Places.Beta = 0
+	check(C.EnvName() == "Dev", "both 0 again: Dev", C.EnvName())
+	local live = opsWorld({ Studio = false })
+	startSwitches(live)
+	local studio = opsWorld({ Studio = true })
+	startSwitches(studio)
+	check(live.EnvWarned == 1 and studio.EnvWarned == 0, "SwitchService.Start: a live server on a Dev place warns once; Studio never",
+		show({ live.EnvWarned, studio.EnvWarned }))
 	w.Game.PlaceId = 12345
 	check(C.EnvName() == "Live", "the place id decides", C.EnvName())
 	w.Game.PlaceId = "x"
@@ -74,7 +98,7 @@ runGroup("environments", function()
 	local keys = {}
 	for k in C.Switches.Defs do table.insert(keys, k) end
 	table.sort(keys)
-	check(table.concat(keys, ",") == "CrownWar,DayCycle,Goose,Halloween,PassSales,PioneerTitle,VillageFund,Weather", "the listed switches (A23-105 added DayCycle and Weather, 2-A ⑦ PioneerTitle, A23-178 VillageFund)", table.concat(keys, ","))
+	check(table.concat(keys, ",") == "Artisan,Crafting,CrownWar,DayCycle,FieldBoss,Gathering,Gear,Goose,Halloween,Market,PassSales,PioneerTitle,Research,Tonics,VillageFund,Weather", "the listed switches (A23-105 added DayCycle and Weather, 2-A ⑦ PioneerTitle, A23-178 VillageFund)", table.concat(keys, ","))
 end)
 
 ------------------------------------------------------------------ the error record
@@ -395,6 +419,36 @@ runGroup("switches: Halloween", function()
 	setDoc(w2, base2, { Set = { Halloween = true } })
 	SW2.Refresh()
 	check(w2.Config.Halloween.Enabled == false and SW2.On("Halloween") == true, "the switch on never turns a season on that the config has off", tostring(w2.Config.Halloween.Enabled))
+end)
+
+-- ⑤ (최종 검수 10/14): a switch with a Feature turns that build switch off on this server while it is false
+runGroup("switches: features", function()
+	local w = opsWorld({ Studio = false })
+	local C = w.Config
+	local bad = {}
+	for key, def in C.Switches.Defs do
+		if def.Feature ~= nil and (type(def.Feature) ~= "string" or C.Features[def.Feature] == nil) then table.insert(bad, key) end
+	end
+	check(#bad == 0, "every switch's Feature is a Config.Features key", table.concat(bad, ","))
+	check(C.Switches.Defs.Crafting.Feature == "Crafting" and C.Switches.Defs.Artisan.Feature == "NeutralFaction"
+		and C.Switches.Defs.Market.Feature == "Market" and C.Switches.Defs.FieldBoss.Feature == nil, "the feature switches", "")
+	C.Features.Crafting = true
+	local SW = startSwitches(w)
+	local seen = {}
+	SW.Changed:Connect(function(k, v) table.insert(seen, k .. "=" .. tostring(v)) end)
+	local base = C.StoreName("HaloHorns_Switches_v1")
+	check(C.FeatureOn("Crafting") == true, "on before any change", "")
+	setDoc(w, base, { Set = { Crafting = false } })
+	SW.Refresh()
+	check(C.FeatureOn("Crafting") == false and C.Features.Crafting == true and table.find(seen, "Crafting=false") ~= nil,
+		"Crafting off: FeatureOn false on this server (the build switch untouched), Changed fired", show(seen))
+	setDoc(w, base, { Set = {} })
+	SW.Refresh()
+	check(C.FeatureOn("Crafting") == true and table.find(seen, "Crafting=true") ~= nil, "back to the default: on again", show(seen))
+	-- a build switch that is off stays off whatever the live one says
+	setDoc(w, base, { Set = { Gear = true } })
+	SW.Refresh()
+	check(C.FeatureOn("Gear") == false, "the live switch on never turns on a feature the build has off", "")
 end)
 
 runGroup("switches: loop", function()

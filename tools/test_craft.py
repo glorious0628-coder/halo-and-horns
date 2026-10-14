@@ -38,6 +38,20 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("⑤: Crafting back on reads nobody", "CRAFT_SOURCE", "\t\t\tif k ~= \"Crafting\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
+    ("GPT ①: SpareRoom ignores the freed slots", "LOOT_SOURCE", "Config.BagUsed(data) - math.max(0, math.floor(num(freed))) >= Config.BagSlotsOf(data) then return false end",
+     "Config.BagUsed(data) >= Config.BagSlotsOf(data) then return false end"),
+    ("GPT ①: a weapon recipe frees no slot", "CRAFT_SOURCE", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, 0)"),
+    # 장인 ④ (2026-10-14): the benches
+    ("bench: a second one over WorldKit's", R, "\t\tif type(role) == \"string\" then have[role] = true end\n", ""),
+    ("bench: not tagged", R, "\t\t\tCollectionService:AddTag(part, K().StationTag)\n", ""),
+    ("bench: built while crafting is off", R, "local function ensureBenches()\n\tif not on() then return false end\n", "local function ensureBenches()\n"),
+    # 장인 ⑤ (2026-10-14): potions
+    ("potion: any potion name", R, "\t\tif type(r.Potion) ~= \"string\" or not Config.PotionStockKey(r.Potion) then return nil end\n", ""),
+    ("potion: no cap at the start", R, "\t\treturn key ~= nil and have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Vitals.PotionInventoryCap\n", "\t\treturn key ~= nil\n"),
+    ("potion: the hammer's +N lost", R, "\t\tlocal n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))\n\t\tlocal key = Config.PotionStockKey(r.Potion)",
+     "\t\tlocal n = math.max(1, math.floor(num(r.N, 1)))\n\t\tlocal key = Config.PotionStockKey(r.Potion)"),
+    ("potion: the scroll from Lv1", C, "AS1 = { Role = \"Alch\", Kind = \"Item\", Item = \"Enh70\", N = 1, Lv = 3,", "AS1 = { Role = \"Alch\", Kind = \"Item\", Item = \"Enh70\", N = 1, Lv = 1,"),
     # bag slots (2026-10-14)
     ("bag: a new-kind result ignores the slots", R, "\tif have < 1 and def and Config.BagSlots.Counts[def.Kind] then\n", "\tif false then\n"),
     ("bag: a used-up material frees nothing", R, "held >= 1 and held <= n then freed += 1 end", "held >= 1 and held < n then freed += 1 end"),

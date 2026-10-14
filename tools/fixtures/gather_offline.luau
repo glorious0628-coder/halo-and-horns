@@ -109,6 +109,7 @@ local function gWorld(o)
 	w:Service("ChoiceCard", CARD_SOURCE)
 	w:Service("GatherService", GATHER_SOURCE)
 	w.Reg.LootService.Init(w.Reg)
+	w.Reg.SwitchService = { Changed = w.Util.Signal.new(), On = function() return true end } -- ⑤: the switchboard double
 	w:InitStart({ "Deeds", "ChoiceCard", "GatherService" })
 	w.G = w.Reg.GatherService
 	w.Gathered = {}
@@ -276,6 +277,18 @@ runGroup("config", function()
 	local K = C.ChoiceCard.Kinds.ShardBloom
 	check(K and K.Seconds == 120 and K.Good.Reward.Item == "CrownDust" and K.Good.Reward.N == 2 and K.Evil.Reward.N == 3
 		and K.Good.Points == 1 and K.Evil.Points == 1, "the Shard Bloom card: timed 120 s, Share = 2, Keep it all = 3, 1 point", show(K))
+end)
+
+------------------------------------------------------------------ ⑤ (최종 검수 10/14): Gathering back on builds the nodes
+runGroup("switch back on", function()
+	local w = gWorld({ EditConfig = function(c) c.LiveOff = { Gathering = true } end })
+	check(w.Map:FindFirstChild("GatherNodes") == nil, "the live switch off at the start: no nodes", "")
+	w.Config.LiveOff = nil
+	w.Reg.SwitchService.Changed:Fire("Gathering", true)
+	local folder = w.Map:FindFirstChild("GatherNodes")
+	check(folder ~= nil and #folder:GetChildren() == 54, "Gathering back on: the 54 nodes are built", folder and #folder:GetChildren())
+	w.Reg.SwitchService.Changed:Fire("Gathering", true)
+	check(#w.Map:GetChildren() >= 1 and #w.Map:FindFirstChild("GatherNodes"):GetChildren() == 54, "once only", "")
 end)
 
 ------------------------------------------------------------------ the nodes

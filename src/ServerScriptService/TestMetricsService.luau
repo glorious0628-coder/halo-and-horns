@@ -149,6 +149,8 @@ local REACHED = {
 	-- A23-188 (최종 검수 10/14): the first weapon = the Forge's T1 gift (any weapon owned); the first mission is that visit
 	Weapon = function(p, d) return num(attr(p, d, "WeaponOwnedMask")) >= 1 end,
 	Claim = function(p, d) return num(attr(p, d, "TutorialStep")) == 99 end, -- Config.Tutorial.Steps.Done = claimed
+	-- GPT review ④ (10/14): the first dropped weapon (a bit above tier 1: the first Slime Prince's tier 2, or later)
+	DropWeapon = function(p, d) return num(attr(p, d, "WeaponOwnedMask")) >= 2 end,
 }
 
 -- a new account's first screen, milestones and the 10-minute run, each counted once
