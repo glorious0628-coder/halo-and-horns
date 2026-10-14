@@ -354,10 +354,9 @@ local function onSwitchFaction(player, a, b)
 	local atStake = scoreKey ~= nil and statNum(player, scoreKey) > 0
 	local ticketUsed = false
 	if useTicket and lostScore and atStake then
-		local okTicket, why = S.MonetizationService.UseTicket(player, "Faction")
+		local okTicket = S.MonetizationService.UseTicket(player, "Faction")
 		if not okTicket then
-			-- CR-L25: a purchase still being saved is not "no ticket"
-			notify(player, why == "Pending" and "TicketSaving" or "NoTicket", "bad")
+			notify(player, "NoTicket", "bad")
 			return
 		end
 		ticketUsed = true

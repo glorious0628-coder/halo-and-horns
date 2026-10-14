@@ -79,7 +79,7 @@ ROUTES = [
     ("GrudgeService.luau", "fmt(\"AvengerBonus\"", "GoldPickup"),
     ("RankingService.luau", "TXT.ArtisanGain, gain", "RankUp"),
     ("RankingService.luau", "pcall(Net.Notify, p, text, \"reward\", 8", "RankUp"),
-    ("MonetizationService.luau", "string.format(Config.Text[textKey]), \"reward\"", "None"),
+    # MonetizationService: no ticket purchase line since 10/14 ③ (A23-28: no Robux change tickets)
     ("ProgressionService.luau", "Config.Text.RebirthDone", "None"),
     ("FactionService.luau", "Config.Text.UnderdogSignOn", "GoldPickup"),
     # C3: auto combat switched off by a bully penalty: the AutoOff sound only, no Deny

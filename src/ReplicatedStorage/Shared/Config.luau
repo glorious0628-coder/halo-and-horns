@@ -4476,16 +4476,13 @@ function Config.VacationReward(level, days) -- gold, xp for `days` missed days (
 	return math.floor(g * Config.Daily.VacationRate * d + 1e-6), math.floor(x * Config.Daily.VacationRate * d + 1e-6)
 end
 
------------------------------------------------------------------ Robux change tickets ("변경권")
--- Id 0 = Developer Product not created yet -> buy buttons show "상품 준비 중". After publishing, create two
--- consumable Developer Products on create.roblox.com and paste their ids here.
-Config.Products = {
-	ClassTicket = { Id = 0, PriceHint = 49, Kind = "Class", Name = "Class Change Ticket" },
-	FactionTicket = { Id = 0, PriceHint = 79, Kind = "Faction", Name = "Side Change Ticket" },
-}
+----------------------------------------------------------------- change tickets ("변경권")
+-- A23-28 (최종 검수 10/14 ③): no Robux change tickets in the beta. Tickets are earned in play only (the daily chest,
+-- the tamer's free one) and spent on a class / side change; there is no Developer Product and no ProcessReceipt.
+-- Config.ProductByKind stays (always nil) until the client's old shop rows are gone (game dev 1).
+Config.Products = {}
 Config.Tickets = {
-	MaxReceiptsKept = 50,
-	ReceiptWaitSeconds = 15, -- ProcessReceipt waits this long for the buyer's data to load
+	MaxReceiptsKept = 50, -- the old save field ProcessedReceipts is still trimmed to this (DataService)
 }
 
 function Config.ProductByKind(kind)
@@ -7477,7 +7474,6 @@ Config.Text = {
 	SwitchDoneTicket = "You joined the %s! (Ticket used, points kept)",
 	SwitchCooldown = "You can switch sides again in %s.",
 	NoTicket = "No change ticket.",
-	TicketSaving = "Still saving. Try again soon.", -- CR-L25: UseTicket returned "Pending"
 	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
 	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
@@ -7485,8 +7481,6 @@ Config.Text = {
 	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
-	ClassTicketGot = "You got 1 Class Change Ticket!",
-	FactionTicketGot = "You got 1 Side Change Ticket!",
 	ProductNotReady = "This item isn't ready yet.",
 	-- rebirth
 	RebirthNeed = "You need Lv %d to be reborn.",
