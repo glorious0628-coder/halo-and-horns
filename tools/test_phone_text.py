@@ -3,6 +3,8 @@
 Runs, in the official Luau CLI, the CURRENT pieces cut out of the sources with the CURRENT Config.luau:
 1. Util.FormatTime: under an hour "M:SS" (0:00, 2:05, 59:59), an hour or more "H:MM:SS" (1:00:00, 1:57:23 - the goose
    chip said "117:23"), never negative.
+2b. EventHUD SQ.GooseNeed (최종 검수 10/14, publish4: a PC showed "Goose 3:35" with room to spare): the chip's width in
+   du = the whole line measured at the text floor in SCREEN px / UIScale, so SQ.chipLine at that width picks the whole line.
 2. EventHUD SQ.chipLine (the goose chip): the longest line that fits the chip at its smallest text size - a PC chip
    (156 px, 11 px text) keeps "Golden Goose 1:57:23", a phone chip (117 px, 15 px text) "Goose 1:57:23", a narrower one
    the time alone; it measures every digit as a 0 (one measure per length); no UIKit / no width = the whole line.
@@ -30,6 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SPS = "src/StarterPlayer/StarterPlayerScripts/"
 FILES = {"UTIL": ROOT / "src/ReplicatedStorage/Shared/Util.luau",
          "EVENT": ROOT / (SPS + "EventHUD.luau"),
+         "GOOSE": ROOT / (SPS + "EventHUD.luau"),
          "SETTINGS": ROOT / (SPS + "SettingsUI.luau"),
          "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau"}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
@@ -38,6 +41,7 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-13/offline_phone_text_2026-10-13.json"
 CUTS = {"UTIL": ("function Util.FormatTime(seconds)", "\nend\n"),
         "EVENT": ("function SQ.chipLine(seconds)", "\nend\n"),
+        "GOOSE": ("function SQ.GooseNeed(h)", "\nend\n"),
         "SETTINGS": ("function H.TopicLines(t)", "\nend\n")}
 
 FIXTURE = r'''
@@ -114,6 +118,29 @@ ev.C = { UIKit = kit }
 ev.ui.GooseChipText = nil
 check(line(7043) == "Golden Goose 1:57:23", "no chip label: the whole line", line(7043))
 
+-- 2b. the goose chip's width (SQ.GooseNeed): the whole line at the text floor (screen px) back in du
+do
+	local SCALE = 0.8
+	local env = { ui = { GooseChipText = chip(0, 18) }, C = { UIKit = kit }, SQ = {}, GOOSE_CHIP_W = 100,
+		L = { GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.75 }, PillH = 26 },
+		currentScale = function() return SCALE end }
+	local fg = assert(loadstring(GOOSE_SOURCE, "=GooseNeed"))
+	setfenv(fg, setmetatable(env, { __index = getfenv() }))
+	fg()
+	env.SQ.FullLine = "Golden Goose 3:35"
+	local need = env.SQ.GooseNeed(30)
+	local labelPx = (need - 22) * SCALE -- the words' box (chip minus Left + Right) on screen
+	local fullPx = #"Golden Goose 0:00" * 18 * 0.55
+	check(labelPx >= fullPx, "PC (UIScale 0.8): the chip holds the whole line at its 18 px floor", labelPx .. " < " .. fullPx)
+	ev.ui.GooseChipText = chip(labelPx, 18)
+	check(line(215) == "Golden Goose 3:35", "... so the PC chip shows 'Golden Goose 3:35', not 'Goose 3:35'", line(215))
+	SCALE = 1
+	local need1 = env.SQ.GooseNeed(30)
+	check(math.abs((need1 - 22) - fullPx) <= 3, "UIScale 1: the same width in du and px", need1)
+	env.SQ.FullLine = "Hi"
+	check(env.SQ.GooseNeed(30) == 100, "a short line: never narrower than GOOSE_CHIP_W", env.SQ.GooseNeed(30))
+end
+
 -- 3. Help topic lines
 local UIS = { KeyboardEnabled = true }
 local H = { ControlLines = function() return { "KEYS" } end }
@@ -142,6 +169,7 @@ MUTATIONS = [
     ("EVENT", "the PC width ignored", "lw <= w + 1 then return line end", "lw <= w * 0.5 then return line end"),
     ("EVENT", "real digits measured", '(string.gsub(line, "%d", "0"))', "line"),
     ("EVENT", "the word alone when nothing fits", "\treturn t\nend", "\treturn lines[1]\nend"),
+    ("GOOSE", "the goose chip measured in du again (PC 'Goose 3:35')", "math.ceil(room + w / s + 2)", "math.ceil(room + w + 2)"),
     ("SETTINGS", "touch reads the keyboard lines", "if not UserInputService.KeyboardEnabled and type(touch)",
      "if false and type(touch)"),
     ("SETTINGS", "keyboards read the touch lines", "if not UserInputService.KeyboardEnabled and type(touch)",
@@ -181,7 +209,8 @@ def tx_cut(event: str) -> str:
 
 def run(src: dict) -> tuple[int, int, str]:
     text = ("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) + "\nlocal UTIL_SOURCE = " + lua_str(cut("UTIL", src["UTIL"]))
-            + "\nlocal EVENT_SOURCE = " + lua_str(cut("EVENT", src["EVENT"])) + "\nlocal TXT_SOURCE = "
+            + "\nlocal EVENT_SOURCE = " + lua_str(cut("EVENT", src["EVENT"])) + "\nlocal GOOSE_SOURCE = "
+            + lua_str(cut("GOOSE", src["GOOSE"])) + "\nlocal TXT_SOURCE = "
             + lua_str(txt_line(src["EVENT"]) + "\nlocal L = {}\n" + tx_cut(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
             + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:

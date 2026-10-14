@@ -37,6 +37,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("⑤: Gathering back on builds nothing", "GATHER_SOURCE", "\t\t\tif k ~= \"Gathering\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
     # --- the table
     ("config: on by default", C, "Config.Features.Gathering = false\n", "Config.Features.Gathering = true\n"),
     ("config: 500 a day", C, "\tDailyCap = 400,\n\tMinHoldRatio", "\tDailyCap = 500,\n\tMinHoldRatio"),

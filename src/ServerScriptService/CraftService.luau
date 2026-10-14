@@ -131,6 +131,9 @@ function CraftService.RecipeOn(id)
 		if not Config.FeatureOn("Gear") or type(r.Slot) ~= "string" or type(r.Tier) ~= "number" then return nil end
 	elseif r.Kind == "Item" then
 		if not Config.Loot.Items[r.Item] then return nil end
+	elseif r.Kind == "Potion" then
+		-- 장인 ⑤: HP / MP potions into the potion stock (LootService.GrantItem pays potions too)
+		if type(r.Potion) ~= "string" or not Config.PotionStockKey(r.Potion) then return nil end
 	elseif r.Kind == "Pet" then
 		-- ⑤ a summon needs the research switch, a known species and both services' calls
 		local P, T = S and S.PetService, S and S.TamerService
@@ -160,8 +163,15 @@ end
 -- room for the result at any +N (0..2), checked before anything is taken
 local function room(player, data, r)
 	if r.Kind == "Weapon" then
+		-- GPT review ① (10/14): a material this recipe uses up frees its slot for the spare it makes
+		local freed = 0
+		for item, n in r.Mats do
+			local mdef = Config.Loot.Items[item]
+			local held = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+			if mdef and Config.BagSlots.Counts[mdef.Kind] and held >= 1 and held <= n then freed += 1 end
+		end
 		for plus = 0, 2 do
-			local ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus)
+			local ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)
 			if not ok or yes ~= true then return false end
 		end
 		return true
@@ -177,6 +187,10 @@ local function room(player, data, r)
 	elseif r.Kind == "Pet" then
 		local ok, yes = pcall(S.PetService.HasRoom, player)
 		return ok and yes == true
+	elseif r.Kind == "Potion" then -- 장인 ⑤: N + the best +N (2) under the potion cap
+		local key = Config.PotionStockKey(r.Potion)
+		local have = key and math.floor(num(data[key])) or 0
+		return key ~= nil and have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Vitals.PotionInventoryCap
 	end
 	local have = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
 	-- bag slots (10/14): a result of a new kind needs a free slot (a material used up by this recipe frees its own)
@@ -207,6 +221,14 @@ local function payOut(player, data, r, plus)
 	elseif r.Kind == "Weapon" then
 		local ok, yes = pcall(S.LootService.AddSpare, player, r.Tier, plus)
 		return ok and yes == true
+	elseif r.Kind == "Potion" then
+		-- 장인 ⑤: all of it or nothing (the cap again at the end: the stock may have grown during the hammer)
+		local n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))
+		local key = Config.PotionStockKey(r.Potion)
+		local before = key and math.floor(num(data[key])) or 0
+		if not key or before + n > Config.Vitals.PotionInventoryCap then return false end
+		pcall(S.LootService.GrantItem, player, r.Potion, n, "Reward")
+		return math.floor(num(data[key])) - before >= n
 	elseif r.Kind == "Gear" then
 		if type(data.Gear) ~= "table" then data.Gear = Config.SanitizeGear(data.Gear) end
 		local own = data.Gear.Own
@@ -301,7 +323,7 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	end
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if player.Parent == Players then
-		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item,
+		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item, Potion = r.Potion,
 			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet, Fame = fame })
 		sendInfo(player, data)
 	end
@@ -561,6 +583,39 @@ local function addPrompt(part)
 	ST.Prompts[prompt] = role
 end
 
+-- 장인 ④: every role gets a workbench: one with no tagged part gets a block beside the Crossroads anvil (Config.Craft.Benches;
+-- placed once, never on top of a WorldKit bench of that role). true = the anvil was there (nothing more to try)
+local function ensureBenches()
+	if not on() then return false end
+	local shop = S and S.ShopService
+	local okA, anvil = false, nil
+	if type(shop) == "table" and type(shop.Anvil) == "function" then okA, anvil = pcall(shop.Anvil) end
+	if not okA or typeof(anvil) ~= "Instance" or not anvil:IsA("BasePart") then return false end
+	local have = {}
+	for _, part in CollectionService:GetTagged(K().StationTag) do
+		local role = typeof(part) == "Instance" and part:GetAttribute("Role") or nil
+		if type(role) == "string" then have[role] = true end
+	end
+	for role, row in type(K().Benches) == "table" and K().Benches or {} do
+		if not have[role] and type(K().Text.Stations[role]) == "string" and typeof(row.Offset) == "Vector3" then
+			local part = Instance.new("Part")
+			part.Name = "Workbench_" .. role
+			part.Anchored, part.CanCollide = true, true
+			part.Size = typeof(row.Size) == "Vector3" and row.Size or Vector3.new(5, 3, 3)
+			if row.Material then part.Material = row.Material end
+			if row.Color then part.Color = row.Color end
+			part.Position = anvil.Position + row.Offset
+			part:SetAttribute("Role", role)
+			part.Parent = anvil.Parent
+			CollectionService:AddTag(part, K().StationTag)
+			addPrompt(part) -- (the tag's added signal finds it too: addPrompt adds one prompt only)
+			have[role] = true
+		end
+	end
+	return true
+end
+CraftService.EnsureBenches = ensureBenches
+
 local function onPrompt(prompt, player)
 	local role = ST.Prompts[prompt]
 	if not role or not on() then return end
@@ -593,6 +648,14 @@ function CraftService.Start()
 	ProximityPromptService.PromptTriggered:Connect(guard("prompt", onPrompt))
 	for _, part in CollectionService:GetTagged(K().StationTag) do pcall(addPrompt, part) end
 	CollectionService:GetInstanceAddedSignal(K().StationTag):Connect(guard("station", addPrompt))
+	-- 장인 ④: the benches, once the map (the anvil) is there: tried now and every few seconds for a minute
+	task.spawn(function()
+		for _ = 1, 12 do
+			local ok, done = pcall(ensureBenches)
+			if ok and done then return end
+			task.wait(5)
+		end
+	end)
 	S.PlayerService.PlayerReady:Connect(guard("ready", function(player, data)
 		-- switched off: nothing is read or written (a waiting craft waits for the switch)
 		if type(data) ~= "table" or not on() then return end
@@ -620,6 +683,24 @@ function CraftService.Start()
 		S.PlayerService.CharacterDied:Connect(guard("ko", function(player)
 			closeAtZero(player, "KO")
 		end))
+	end
+	-- ⑤: the live switch Crafting back on = the players on this server are read again (a join while it was off
+	-- skipped them); looked up softly (a world without SwitchService connects nothing)
+	local switches = S.SwitchService
+	if type(switches) == "table" and type(switches.Changed) == "table" and type(switches.Changed.Connect) == "function" then
+		switches.Changed:Connect(function(k, value)
+			if k ~= "Crafting" or value ~= true then return end
+			local ok, err = pcall(function()
+				for _, part in CollectionService:GetTagged(K().StationTag) do pcall(addPrompt, part) end
+				for _, p in Players:GetPlayers() do
+					local d = S.PlayerService.IsReady(p) and S.PlayerService.GetData(p)
+					if type(d) == "table" and type(d.Craft) == "table" and type(d.Craft.Pend) == "table" then
+						CraftService.Settle(p, d)
+					end
+				end
+			end)
+			if not ok then Util.Warn(TAG, "switch on: " .. tostring(err)) end
+		end)
 	end
 	print("[CraftService] started")
 end

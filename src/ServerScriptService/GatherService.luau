@@ -462,6 +462,22 @@ function GatherService.Start()
 			end
 		end
 	end)
+	-- ⑤: the live switch Gathering back on = the players on this server are read again (a join while it was off
+	-- skipped them); looked up softly (a world without SwitchService connects nothing)
+	local switches = S.SwitchService
+	if type(switches) == "table" and type(switches.Changed) == "table" and type(switches.Changed.Connect) == "function" then
+		switches.Changed:Connect(function(k, value)
+			if k ~= "Gathering" or value ~= true then return end
+			local ok, err = pcall(function()
+				GatherService.Build()
+				for _, p in Players:GetPlayers() do
+					local d = S.PlayerService.IsReady(p) and S.PlayerService.GetData(p)
+					if type(d) == "table" then sendState(p, d) end
+				end
+			end)
+			if not ok then Util.Warn(TAG, "switch on: " .. tostring(err)) end
+		end)
+	end
 	print("[GatherService] started")
 end
 

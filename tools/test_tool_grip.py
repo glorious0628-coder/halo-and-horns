@@ -241,10 +241,9 @@ do
 	check(model:FindFirstChild("Handle").CFrame.UpVector:Dot(Vector3.yAxis) > 0.9999, "toolnone (the arm forward): the sword stands upright")
 end
 
--- 최종 검수 10/14 (user while playing: from behind, the blade stood straight up over the shoulder like a pole): standing /
--- walking the arm hangs (WeaponPose.RestStep fades toolnone out; the hand keeps the body's axes) and the Rest grip puts
--- the blade at the side, tip up and 30..50 degrees back, not across the body; the grip point stays the hilt's middle; a row
--- without Rest keeps its grip
+-- A23-187 (user 10/14, our own hold): standing / walking the arm hangs (WeaponPose.RestStep fades toolnone out; the hand
+-- keeps the body's axes) and the Rest grip puts the blade at the hip, its tip DOWN and 35..55 degrees back, not across the
+-- body; the grip point stays the hilt's middle; a staff rests upright; every row has a resting hold (Side / Staff / Bow)
 do
 	local att = HANDS[1].Grip
 	local hand = CFrame.new(1.5, 1, 0)
@@ -252,15 +251,20 @@ do
 		local grip = Config.WeaponGrip(kind, 1.2, "Rest")
 		local cf = hand * att * grip:Inverse()
 		local up = cf.UpVector
-		local back = math.deg(math.atan2(up.Z, up.Y))
-		check(up.Y > 0.5 and back >= 30 and back <= 50 and math.abs(up.X) < 0.2,
-			kind .. ": resting (the arm down) the blade's tip goes up and 30..50 degrees back, at the side", back)
+		local back = math.deg(math.atan2(up.Z, -up.Y))
+		check(up.Y < -0.5 and back >= 35 and back <= 55 and math.abs(up.X) < 0.2,
+			kind .. ": resting (the arm down) the blade's tip goes down and 35..55 degrees back, at the side", back)
 		check(((hand * att).Position - cf.Position).Magnitude < 1e-6, kind .. ": resting, the fist still holds the hilt's middle")
 		local held = hand * att * Config.WeaponGrip(kind, 1.2):Inverse()
 		check(held.UpVector:Dot(cf.UpVector) < 0.9, kind .. ": the attack hold (plain grip) is not the rest turn")
 	end
-	local a, b = Config.WeaponGrip("Staff", 3, "Rest"), Config.WeaponGrip("Staff", 3)
-	check((a.Position - b.Position).Magnitude < 1e-9 and a.UpVector:Dot(b.UpVector) > 0.9999, "a row without Rest keeps its grip at rest")
+	local staff = (hand * att * Config.WeaponGrip("Staff", 3, "Rest"):Inverse()).UpVector
+	check(staff.Y > 0.95, "a staff rests upright in the hanging hand", staff.Y)
+	local holds = true
+	for kind, row in Config.WeaponGrips do
+		if type(row.Rest) ~= "table" or (row.Hold ~= "Side" and row.Hold ~= "Staff" and row.Hold ~= "Bow") then holds = false end
+	end
+	check(holds, "every weapon row has a resting hold (Rest + Side / Staff / Bow)")
 end
 
 -- Fx.bowHand: the draw moves the bow onto the left grip and back - one weld per bow (switched on / off), MOTION.BOW_HOLD s
@@ -428,7 +432,10 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     weapon = cv[cv.index("------------------------------------------------------------------ WeaponModel"):
                 cv.index("------------------------------------------------------------------ sacks & ghost")]
     out = [
-        ("WeaponPose never writes a joint (no Transform, no ClassGrips pose)", ".Transform" not in wp and "ClassGrips" not in wp
+        # A23-187: joints are written only for a resting hold (Config.HoldPoses on top of the animation, after it)
+        ("WeaponPose writes joints only while a weapon rests (Config.HoldPoses, Stepped), no ClassGrips pose",
+         "if m and m:IsA(\"Motor6D\") then m.Transform = m.Transform * cf end" in wp and 'S.Rest[tool] == "Rest"' in wp
+         and "RunService.Stepped:Connect(function()" in wp and wp.count("m.Transform") == 2 and "ClassGrips" not in wp
          and "SolveArm" not in wp),
         ("WeaponPose: the grip probe runs in Studio only, with GripProbe", 'RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true' in wp),
         ("ClientMain still loads WeaponPose", '"WeaponPose"' in main),
@@ -472,14 +479,16 @@ def run(src: dict) -> tuple[list[tuple[str, bool]], str]:
 
 
 MUTATIONS = [
-    ("CONFIG", "the sword's fist on the guard again (0.75)", "\tSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tSword = { Point = 0.75, Rest = { 130, 0, 0 } },"),
-    ("CONFIG", "the dark sword at 0.6", "\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tDarkSword = { Point = 0.6, Rest = { 130, 0, 0 } },"),
-    ("CONFIG", "the rest blade straight up (the pole look)", "\tSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tSword = { Point = 0.5, Rest = { 90, 0, 0 } },"),
-    ("CONFIG", "the rest blade lying back flat", "\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tDarkSword = { Point = 0.5, Rest = { 175, 0, 0 } },"),
+    ("CONFIG", "the sword's fist on the guard again (0.75)", '\tSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', '\tSword = { Point = 0.75, Rest = { 225, 0, 0 }, Hold = "Side" },'),
+    ("CONFIG", "the dark sword at 0.6", '\tDarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', '\tDarkSword = { Point = 0.6, Rest = { 225, 0, 0 }, Hold = "Side" },'),
+    ("CONFIG", "the rest blade straight up (the pole look)", '\tSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', '\tSword = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Side" },'),
+    ("CONFIG", "the rest blade tip up and back (the old 10/14 rest)", '\tDarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', '\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 }, Hold = "Side" },'),
+    ("CONFIG", "a staff resting level", '\tStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Rest = { 0, 0, 0 }, Hold = "Staff" },'),
+    ("CONFIG", "a weapon without a resting hold", '\tBaton = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },', '\tBaton = { Point = 0.3 },'),
     ("CONFIG", "the rest mode ignored", '\tif mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end\n', ""),
-    ("CONFIG", "the staff at the old 43%", "\tStaff = { Point = 0.45 },", "\tStaff = { Point = 0.43 },"),
-    ("CONFIG", "the hammer held at its head", "\tHammer = { Point = 0.3 },", "\tHammer = { Point = 0.7 },"),
-    ("CONFIG", "the short bow not canted", "ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },", "ShortBow = { Point = 0.5 },"),
+    ("CONFIG", "the staff at the old 43%", '\tStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.43, Rest = { 90, 0, 0 }, Hold = "Staff" },'),
+    ("CONFIG", "the hammer held at its head", '\tHammer = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },', '\tHammer = { Point = 0.7, Rest = { 225, 0, 0 }, Hold = "Side" },'),
+    ("CONFIG", "the short bow not canted", 'ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, 0, 0 }, Hold = "Bow" },', 'ShortBow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },'),
     ("CONFIG", "Tool.Grip without the turn", "return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()",
      "return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0)"),
     ("CONFIG", "Tool.Grip measured from the other end", "return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()",

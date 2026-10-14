@@ -585,6 +585,105 @@ runGroup("e0-old-saves", function()
 		"bag slots (10/14): skipping M2_7 still gives its +4 (16), a Lv5 save stays at 12", show({ a.BagSlots, b.BagSlots, c.BagSlots }))
 end)
 
+------------------------------------------------------------------ 장인 ② the guild's first quests (N0 / N0b / N4)
+runGroup("artisan quests", function()
+	local w = townWorld({ Npcs = false, Hooks = function(world, reg)
+		reg.GatherService = { Gathered = world.Util.Signal.new() }
+		reg.CraftService = { Crafted = world.Util.Signal.new() }
+	end })
+	local C, R = w.Config, w.Registry
+	local D = C.StoryQuests.Defs
+	check(D.N0 and D.N0.Factions.Neutral and D.N0.Requires.TutorialDone and table.find(D.N0.Requires.Feature, "Gathering")
+		and table.find(D.N0.Requires.Feature, "Crafting") and D.N0.Reward.GoldN == 150 and D.N0.Reward.EquipCrafted == true,
+		"Config N0: Neutral, from the first mission, Gathering + Crafting, 150 gold + the crafted weapon in hand", show(D.N0 and D.N0.Requires))
+	check(D.N0b and D.N0b.Requires.Done[1] == "N0" and D.N0b.Steps[1].Obj.Type == "SellMat" and D.N4 and D.N4.Requires.Done[1] == "N2",
+		"Config N0b (after N0: sell 5) and N4 (after N2)", "")
+	check(C.Craft.Recipes.W1 == nil and C.Craft.Recipes.W2.Mats.Herb == 3 and C.Craft.Recipes.W2.Mats.CopperOre == 2
+		and C.Craft.Recipes.W2.Mats.Jelly == nil, "no W1 recipe; W2 = N0's harvest only (3 herbs + 2 copper)", show(C.Craft.Recipes.W2))
+	local function join(id, faction, extra)
+		local data = { TutorialStep = 99, WeaponTier = 1, WeaponOwnedMask = 1,
+			Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } }
+		for k, v in extra or {} do data[k] = v end
+		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 3, Data = data })
+		w.Story.Refresh(p)
+		w:Flush()
+		return p, d
+	end
+	-- switches off (as shipped): no N0 for anybody
+	local _, d0 = join(1801, "Neutral")
+	check(w:Track(d0, "N0") == nil, "the guild switches off: no N0", "")
+	C.Features.NeutralFaction, C.Features.Gathering, C.Features.Crafting = true, true, false
+	local _, d1 = join(1802, "Neutral")
+	check(w:Track(d1, "N0") == nil, "Crafting still off: no N0 (both switches)", "")
+	C.Features.Crafting = true
+	local _, dh = join(1803, "Halo")
+	check(w:Track(dh, "N0") == nil, "a Halo child: no N0", "")
+	local p, d = join(1804, "Neutral")
+	check(w:Track(d, "N0") ~= nil and w:Track(d, "N0b") == nil, "a guild child after the first mission: N0 (N0b waits)", show(d.Story.Subs))
+	-- harvest: only herbs / copper count, by the amount picked
+	local G = R.GatherService.Gathered
+	G:Fire(p, "OakLog", 3, "OakPile")
+	G:Fire(p, "Herb", 2, "HerbBush")
+	G:Fire(p, "CopperOre", 2, "CopperRock")
+	w:Flush()
+	local tr = w:Track(d, "N0")
+	check(tr and tr.St == 1 and tr.T.a == 2 and tr.T.b == 2, "oak counts for nothing; 2 herbs, 2 copper", show(tr))
+	G:Fire(p, "Herb", 5, "HerbBush")
+	w:Flush()
+	tr = w:Track(d, "N0")
+	check(tr and tr.St == 2, "3 herbs + 2 copper: the craft step", show(tr))
+	-- the craft: the weapon made (a spare W2 +1) goes into the hand, + 150 gold
+	w.Loot.AddSpare(p, 2, 1)
+	local bank, n0 = d.BankGold or 0, #w.Notices
+	R.CraftService.Crafted:Fire(p, "W2", 1)
+	w:Flush()
+	local lines = w:NoticesFor(p, n0)
+	local wname = C.WeaponName(2, "Warrior", "Neutral")
+	check(d.Story.Done.N0 == true and (d.BankGold or 0) == bank + 150, "N0 done: +150 gold", show({ (d.BankGold or 0) - bank, lines }))
+	check(d.WeaponTier == 2 and bit32.btest(d.WeaponOwnedMask, 2) and (d.Spares["2:1"] or 0) == 0 and d.WeaponEnhance[2] == 1
+		and table.find(lines, string.format(C.StoryQuests.Text.CraftEquipped, wname)) ~= nil,
+		"the crafted W2 +1 is unpacked and held, with its line", show({ d.WeaponTier, d.WeaponOwnedMask, d.Spares, lines }))
+	-- N0b: sell 5 gathered materials
+	w.Story.Refresh(p)
+	w:Flush()
+	check(w:Track(d, "N0b") ~= nil, "N0 done: N0b offered", show(d.Story.Subs))
+	local bank2 = d.BankGold or 0
+	w.Loot.MaterialSold:Fire(p, "Herb", 3)
+	w:Flush()
+	check(w:Track(d, "N0b") and w:Track(d, "N0b").P == 3, "3 sold of 5", show(w:Track(d, "N0b")))
+	w.Loot.MaterialSold:Fire(p, "CopperOre", 4)
+	w:Flush()
+	check(d.Story.Done.N0b == true and (d.BankGold or 0) == bank2 + 30, "5 sold: N0b done, +30 gold", show((d.BankGold or 0) - bank2))
+	-- a weaker spare never replaces the weapon held
+	local q, e = join(1805, "Neutral", { WeaponTier = 3, WeaponOwnedMask = 5, Level = 5 })
+	G:Fire(q, "Herb", 3, "HerbBush")
+	G:Fire(q, "CopperOre", 2, "CopperRock")
+	w.Loot.AddSpare(q, 2, 0)
+	R.CraftService.Crafted:Fire(q, "W2", 0)
+	w:Flush()
+	check(e.Story.Done.N0 == true and e.WeaponTier == 3 and (e.Spares["2:0"] or 0) == 1, "holding Iron: the W2 stays a spare", show({ e.WeaponTier, e.Spares }))
+	-- N4: after N2, two crafts, then the Crossroads
+	d.Story.Done.N2 = true
+	w.Story.Refresh(p)
+	w:Flush()
+	check(w:Track(d, "N4") ~= nil, "N2 done: N4 offered", show(d.Story.Subs))
+	R.CraftService.Crafted:Fire(p, "Nope", 0)
+	R.CraftService.Crafted:Fire(p, "W2", 0)
+	w:Flush()
+	check(w:Track(d, "N4").P == 1, "an unknown recipe counts for nothing; W2 counts", show(w:Track(d, "N4")))
+	R.CraftService.Crafted:Fire(p, "A1", 0)
+	w:Flush()
+	check(w:Track(d, "N4").St == 2, "two crafts: the Crossroads step", show(w:Track(d, "N4")))
+	w.ZoneOf[p] = "Crossroads"
+	w.Story.Refresh(p)
+	w:Flush()
+	check(d.Story.Done.N4 == true, "at the Crossroads: N4 done", show(w:Track(d, "N4")))
+	-- a bad player on a signal: nothing breaks
+	G:Fire("nobody", "Herb", 3, "HerbBush")
+	check(true, "a bad player on Gathered is ignored", "")
+	C.Features.NeutralFaction, C.Features.Gathering, C.Features.Crafting = false, false, false
+end)
+
 ------------------------------------------------------------------ 6. LootService.GrantItem (E6)
 runGroup("grant-item", function()
 	local w = townWorld({ Npcs = false })
@@ -832,15 +931,19 @@ runGroup("a23-71 skill quests", function()
 		local sp, sd = w:Join(7110 + level * 10 + (extra and 1 or 0) + (t.b and 2 or 0), { Faction = "Halo", Level = level, Data = data })
 		return rowOf(w, sp, sd, "S0")
 	end
+	-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet, with its own numbers
+	local ra = s0(2, { a = 1 })
+	check(ra and string.find(ra.Text, "Beat slimes with basic attacks", 1, true) == 1 and ra.Progress == 1 and ra.Target == 3,
+		"S0: the basic-attack trial first, in its words, 1/3", show(ra and { ra.Text, ra.Progress, ra.Target }))
 	local r2 = s0(2, { a = 3 })
-	check(r2 and r2.Text == "The shard's test · Skills come at Lv5" and r2.Progress == 1 and r2.Target == 3,
-		"S0 at Lv2 (skill trial open): 'The shard's test · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress }))
+	check(r2 and r2.Text == "Hit 2 monsters with one skill · Skills come at Lv5" and r2.Progress == 0 and r2.Target == 1,
+		"S0 at Lv2 (skill trial open): 'Hit 2 monsters with one skill · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress, r2.Target }))
 	local rb = s0(2, { a = 3, b = 1 })
-	check(rb and rb.Text == "The shard's test", "the skill trial already done: no tail", rb and rb.Text)
+	check(rb and rb.Text == "Beat a Slime Prince above half HP", "the skill trial already done: the last trial, no tail", rb and rb.Text)
 	local r5 = s0(5, { a = 3 })
-	check(r5 and r5.Text == "The shard's test", "Lv5 (Q learned): no tail", r5 and r5.Text)
+	check(r5 and r5.Text == "Hit 2 monsters with one skill", "Lv5 (Q learned): no tail", r5 and r5.Text)
 	local rk = s0(2, { a = 3 }, { SkillSlots = 1 })
-	check(rk and rk.Text == "The shard's test", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)
+	check(rk and rk.Text == "Hit 2 monsters with one skill", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)
 	-- N1 (Neutral, after M1_4; with the guild switch on, A23-57): not before Lv5
 	w.Config.Features.NeutralFaction = true
 	local n3, nd3 = w:Join(7120, { Faction = "Neutral", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true,

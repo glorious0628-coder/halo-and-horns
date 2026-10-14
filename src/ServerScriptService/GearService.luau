@@ -323,6 +323,20 @@ function GearService.Start()
 		LEVEL[player] = nil
 		if c then pcall(function() c:Disconnect() end) end
 	end)
+	-- ⑤: the live switch Gear back on = the players on this server are read again (a join while it was off
+	-- skipped them); looked up softly (a world without SwitchService connects nothing)
+	local switches = S.SwitchService
+	if type(switches) == "table" and type(switches.Changed) == "table" and type(switches.Changed.Connect) == "function" then
+		switches.Changed:Connect(function(k, value)
+			if k ~= "Gear" or value ~= true then return end
+			local ok, err = pcall(function()
+				for _, p in Players:GetPlayers() do
+					if S.PlayerService.IsReady(p) then onReady(p) end
+				end
+			end)
+			if not ok then Util.Warn(TAG, "switch on: " .. tostring(err)) end
+		end)
+	end
 	print("[GearService] started")
 end
 

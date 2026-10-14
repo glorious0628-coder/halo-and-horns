@@ -98,7 +98,7 @@ runGroup("environments", function()
 	local keys = {}
 	for k in C.Switches.Defs do table.insert(keys, k) end
 	table.sort(keys)
-	check(table.concat(keys, ",") == "CrownWar,DayCycle,Goose,Halloween,PassSales,PioneerTitle,VillageFund,Weather", "the listed switches (A23-105 added DayCycle and Weather, 2-A ⑦ PioneerTitle, A23-178 VillageFund)", table.concat(keys, ","))
+	check(table.concat(keys, ",") == "Artisan,Crafting,CrownWar,DayCycle,FieldBoss,Gathering,Gear,Goose,Halloween,Market,PassSales,PioneerTitle,Research,Tonics,VillageFund,Weather", "the listed switches (A23-105 added DayCycle and Weather, 2-A ⑦ PioneerTitle, A23-178 VillageFund)", table.concat(keys, ","))
 end)
 
 ------------------------------------------------------------------ the error record
@@ -419,6 +419,36 @@ runGroup("switches: Halloween", function()
 	setDoc(w2, base2, { Set = { Halloween = true } })
 	SW2.Refresh()
 	check(w2.Config.Halloween.Enabled == false and SW2.On("Halloween") == true, "the switch on never turns a season on that the config has off", tostring(w2.Config.Halloween.Enabled))
+end)
+
+-- ⑤ (최종 검수 10/14): a switch with a Feature turns that build switch off on this server while it is false
+runGroup("switches: features", function()
+	local w = opsWorld({ Studio = false })
+	local C = w.Config
+	local bad = {}
+	for key, def in C.Switches.Defs do
+		if def.Feature ~= nil and (type(def.Feature) ~= "string" or C.Features[def.Feature] == nil) then table.insert(bad, key) end
+	end
+	check(#bad == 0, "every switch's Feature is a Config.Features key", table.concat(bad, ","))
+	check(C.Switches.Defs.Crafting.Feature == "Crafting" and C.Switches.Defs.Artisan.Feature == "NeutralFaction"
+		and C.Switches.Defs.Market.Feature == "Market" and C.Switches.Defs.FieldBoss.Feature == nil, "the feature switches", "")
+	C.Features.Crafting = true
+	local SW = startSwitches(w)
+	local seen = {}
+	SW.Changed:Connect(function(k, v) table.insert(seen, k .. "=" .. tostring(v)) end)
+	local base = C.StoreName("HaloHorns_Switches_v1")
+	check(C.FeatureOn("Crafting") == true, "on before any change", "")
+	setDoc(w, base, { Set = { Crafting = false } })
+	SW.Refresh()
+	check(C.FeatureOn("Crafting") == false and C.Features.Crafting == true and table.find(seen, "Crafting=false") ~= nil,
+		"Crafting off: FeatureOn false on this server (the build switch untouched), Changed fired", show(seen))
+	setDoc(w, base, { Set = {} })
+	SW.Refresh()
+	check(C.FeatureOn("Crafting") == true and table.find(seen, "Crafting=true") ~= nil, "back to the default: on again", show(seen))
+	-- a build switch that is off stays off whatever the live one says
+	setDoc(w, base, { Set = { Gear = true } })
+	SW.Refresh()
+	check(C.FeatureOn("Gear") == false, "the live switch on never turns on a feature the build has off", "")
 end)
 
 runGroup("switches: loop", function()

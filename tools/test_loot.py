@@ -62,6 +62,8 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    ("GPT ③: an owned first drop gives nothing", "LOOT_SOURCE", "\t\telseif validTier(fw.Tier) then\n\t\t\townedInstead(fw.Tier)\n", ""),
+    ("GPT ③: no spare with the scroll", "LOOT_SOURCE", "\t\tpcall(LootService.AddSpare, player, tier, 0)\n", ""),
     # C2: the first Prince's weapon, duplicates -> Spares, the retuned rows
     ("C2: the first weapon every Prince", "LOOT_SOURCE", "\t\tdata.LootFlags.FirstWeapon = true\n\t\tif validTier(fw.Tier)", "\t\tif validTier(fw.Tier)"),
     ("C2: the first weapon never equipped", "LOOT_SOURCE", "\tif better then\n\t\tS.PlayerService.SetStat(player, \"WeaponTier\", tier) -- CharacterVisuals",

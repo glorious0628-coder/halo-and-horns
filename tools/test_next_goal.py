@@ -30,6 +30,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("Codex B5: the King line with no King near", "QUEST_SOURCE", "\t\t\tif soon and type(TUT_MESSAGES.NextIronDrop) == \"string\" then",
+     "\t\t\tif type(TUT_MESSAGES.NextIronDrop) == \"string\" then"),
     ("config: rebirth line 10 levels early", C, "Rebirth = { Warn = 5 },", "Rebirth = { Warn = 10 },"),
     ("config: rebirth line only at the level", C, "Rebirth = { Warn = 5 },", "Rebirth = { Warn = 0 },"),
     ("config: Clatter before the golden weapon", C, '{ Kind = "Commission", Service = "CommissionService", Feature = "Commission" },\n\t\t\t{ Kind = "Clatter", Service = "ClatterService", Feature = "Clatter" },',

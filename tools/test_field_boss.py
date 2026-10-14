@@ -74,6 +74,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("⑤: FieldBoss switch ignored", "FIELDBOSS_SOURCE", "\t\tif okS and onS == false then return end\n", ""),
     ("bag 10/14: a reward refused when the bag is full", "FIELDBOSS_SOURCE", "pcall(S.LootService.GrantItem, player, W.Item, n, \"Reward\")", "pcall(S.LootService.GrantItem, player, W.Item, n)"),
     ("no hunter check", K, "\tif not hunterHere(key) then return end", ""),
     ("any zone counts", K, "if ok and z == zone then return true end", "if ok then return true end"),

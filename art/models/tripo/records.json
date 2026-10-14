@@ -13311,6 +13311,23 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_final_b/Weapon_Horns_Berserker_final_b_HD_src.glb",
    "bytes": 14164456,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "judge": "최종 검수 10/14: PASS, = Horns warrior T7 'Ruin Sword' slot",
+   "tool": "tools/weapon_hd_fit.py --kind sword",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T7/Weapon_Horns_Berserker_T7_HD_fit.glb",
+   "length_studs": 6.5,
+   "after_studs": [
+    1.977,
+    0.555,
+    6.5
+   ],
+   "pivot_share": 0.17,
+   "tris": 13801,
+   "check": "art/review/weapon_design/Berserker_T7_fit.png"
   }
  ],
  "halo_houses_deco_extras_2026-10-12": [

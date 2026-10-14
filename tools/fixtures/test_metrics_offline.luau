@@ -12,6 +12,7 @@ local function metricsWorld(o)
 	local Signal = w.Util.Signal
 	w.Reg.TelemetryService = { ClientMetric = Signal.new() }
 	w.Reg.MonetizationService.PassBought = Signal.new()
+	w.Reg.ProgressionService.XPEarned = Signal.new() -- Codex B6: (player, amount, source)
 	w.Owns = {} -- [Player] = { [pass key] = true }: Roblox's answers this session (no table = Roblox has not answered)
 	function w.Reg.MonetizationService.PassAnswer(p, key)
 		if w.Owns[p] == nil then return nil end
@@ -65,7 +66,7 @@ runGroup("config", function()
 		"config: on, HaloHorns_TestMetrics_v1, round PT1, flush 60 s", show(M))
 	check(M.FreshSeconds == 120 and M.TenMinutes == 10 and M.MaxMinute == 60 and M.KeptDelay == 20,
 		"fresh under 120 s, the 10-minute run, minute cap 60, the rejoin check 20 s after the join", show(M))
-	check(table.concat(M.Milestones, ",") == "Lv5,Lv10,Weapon,Claim", "the milestones Lv5, Lv10, Weapon, Claim", show(M.Milestones))
+	check(table.concat(M.Milestones, ",") == "Lv5,Lv10,Weapon,Claim,DropWeapon", "the milestones Lv5, Lv10, Weapon, Claim, DropWeapon (GPT ④)", show(M.Milestones))
 	check(C.Tutorial.Steps.Done == 99, "the claimed tutorial step is 99 (the Claim milestone reads it)", show(C.Tutorial.Steps))
 end)
 
@@ -115,10 +116,11 @@ runGroup("milestones", function()
 	check(min(t, "Lv5", 4) == 1 and min(t, "Lv5", 5) == 0, "Lv5 at 250 s = minute 4, once", show(t.Min))
 	check(d.Telemetry.Test.M.Lv5 == 4, "the account remembers its Lv5 minute", show(d.Telemetry.Test))
 	p:SetAttribute("WeaponOwnedMask", 1)
-	check(pend(w).Min.Weapon == nil, "tier 1 only (the gift) is not the dropped weapon", show(pend(w).Min))
+	check(min(pend(w), "Weapon", 4) == 1, "A23-188: the Forge's tier-1 gift is the first weapon (minute 4)", show(pend(w).Min))
 	at(p, 400)
 	p:SetAttribute("WeaponOwnedMask", 3)
-	check(min(pend(w), "Weapon", 6) == 1, "a tier-2 bit at 400 s = Weapon minute 6", show(pend(w).Min))
+	check(min(pend(w), "DropWeapon", 6) == 1, "GPT ④: the first dropped weapon (a T2 bit) at 400 s = DropWeapon minute 6", show(pend(w).Min))
+	check(min(pend(w), "Weapon", 6) == 0 and min(pend(w), "Weapon", 4) == 1, "a later drop is not counted again", show(pend(w).Min))
 	check((pend(w).Ten or 0) == 0, "no claim yet = no 10-minute run", show(pend(w)))
 	at(p, 599)
 	p:SetAttribute("TutorialStep", 3)
@@ -148,6 +150,33 @@ runGroup("milestones", function()
 	check(t.Ten == 2 and min(t, "Lv5", 5) == 0, "a rejoin scans at once: what the save already shows is counted", show(t))
 	check(t.Players == 3 and t.New == 3 and t.Joins == 4, "a rejoin is a join, not a new player", show(t))
 	local _ = rd
+end)
+
+------------------------------------------------------------------ Codex B6: XP by source up to Lv5 / Lv10
+runGroup("xp sources", function()
+	local w = metricsWorld()
+	local E = w.Reg.ProgressionService.XPEarned
+	local p = rookie(w, 41)
+	E:Fire(p, 100, "Monster")
+	E:Fire(p, 60, nil)
+	E:Fire(p, 0, "Monster")
+	check(pend(w).XP == nil, "below Lv5: nothing added yet", show(pend(w).XP))
+	p:SetAttribute("Level", 5)
+	E:Fire(p, 40, "Monster") -- the grant that made Lv5 is counted before the level is looked at
+	local x = pend(w).XP
+	check(x and x.Lv5 and x.Lv5.Hunt == 140 and x.Lv5.Other == 60 and x.Lv5.N == 1, "Lv5: hunting 140, quests 60, one account", show(x))
+	E:Fire(p, 10, "Monster")
+	check(pend(w).XP.Lv5.N == 1 and pend(w).XP.Lv5.Hunt == 140, "Lv5 is counted once", show(pend(w).XP))
+	E:Fire(p, 200, "Quest")
+	p:SetAttribute("Level", 10)
+	E:Fire(p, 1, "Monster")
+	x = pend(w).XP
+	check(x.Lv10 and x.Lv10.Hunt == 151 and x.Lv10.Other == 260 and x.Lv10.N == 1, "Lv10: everything up to it (151 / 260)", show(x))
+	local v = veteran(w, 42)
+	E:Fire(v, 500, "Monster")
+	check(pend(w).XP.Lv5.N == 1 and pend(w).XP.Lv10.N == 1, "a save from before the test: never counted", show(pend(w).XP))
+	E:Fire("nobody", 5, "Monster")
+	check(true, "a bad player is ignored", "")
 end)
 
 ------------------------------------------------------------------ passes

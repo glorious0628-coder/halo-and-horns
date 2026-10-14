@@ -372,6 +372,12 @@ local function tickOne(key, now)
 		return
 	end
 	if c.Enabled == false or b.NextAt <= 0 or now < b.NextAt then return end
+	-- ⑤: the live switch FieldBoss off = no new boss (the slot waits, due; one already here stays)
+	local sw = S and S.SwitchService
+	if type(sw) == "table" and type(sw.On) == "function" then
+		local okS, onS = pcall(sw.On, "FieldBoss")
+		if okS and onS == false then return end
+	end
 	if not hunterHere(key) then return end -- due: waits for a hunter in its zone (NextAt stays in the past)
 	if appear(key, now) then
 		b.NextAt = now + math.max(60, num(c.Interval, 480))
@@ -382,6 +388,15 @@ local function tickOne(key, now)
 end
 
 ------------------------------------------------------------------ public
+-- seconds until field boss `key` can be met: 0 = here now (or due, waiting for a hunter), nil = off / unknown
+function FieldBossService.SecondsUntil(key)
+	local b = B[key]
+	if not b or cfg(key).Enabled == false then return nil end
+	if b.Rec ~= nil and b.Rec.Alive == true then return 0 end
+	if num(b.NextAt) <= 0 then return nil end
+	return math.max(0, num(b.NextAt) - Util.Now())
+end
+
 function FieldBossService.IsActive(key)
 	local b = B[key]
 	return b ~= nil and b.Rec ~= nil and b.Rec.Alive == true

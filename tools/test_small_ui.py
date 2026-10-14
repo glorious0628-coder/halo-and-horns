@@ -3,7 +3,9 @@
 1. Cutscene skip: nothing new - the opening already has Skip (Intro, Enter too), the craft ring has [Skip]; there is no
    faction-change scene and the enhance result is instant (checked statically below).
 2. Outlaw chip (A23-23): the HUD danger chip after Bully, shown while the attribute Outlaw is true, with the ranking's
-   own line Config.Ranking.Text.OutlawChip; the chip row redraws on Outlaw.
+   own line Config.Ranking.Text.OutlawChip; the chip row redraws on Outlaw. 최종 검수 10/14 (publish4: it hid in '+3'):
+   the danger chips come FIRST in L.ChipOrder (before Safe Zone / 2x XP / the sprout); phones and a PC row too narrow
+   for the whole line show the lock icon + Config OutlawChipShort.
 3. 28-day name frame (A23-77, Config.Attendance.Milestones { Days = 28, Border = "Days28" }): NameTagPrefs.BorderOf(days)
    = the highest Border milestone reached; the approved ribbon Config.UIArt "Ribbon" .. Border right of the name on every
    player's tag (a 1 s sweep, AttendDays). There is no frame art yet: the ribbon is the mark.
@@ -125,6 +127,11 @@ print(("SMALL_UI_SUMMARY checks=%d failed=%d"):format(checks, failed))
 MUTATIONS = [
     ("HUD", "no outlaw chip in the row", '"Bully", "Outlaw", "Wanted"', '"Bully", "Wanted"'),
     ("HUD", "the outlaw chip never shows", 'setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and', 'setChip(ui.chip.Outlaw, false and'),
+    ("HUD", "the danger chips after Safe Zone again (folded into '+3')",
+     'L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost",', 'L.ChipOrder = { "Zone", "Luck", "Bully", "Outlaw", "Wanted", "Combat", "Boost",'),
+    ("HUD", "a phone gets the whole outlaw line", "local outlaw = (IS_TOUCH or L.ChipShort) and", "local outlaw = L.ChipShort and"),
+    ("HUD", "a too-narrow PC row never shortens it", "if L.ChipFit > 1 then L.ChipFit -= 1 else L.ChipShort = true end",
+     "if L.ChipFit > 1 then L.ChipFit -= 1 end"),
     ("HUD", "no redraw on Outlaw", '"KaijuState", "Faction", "Outlaw" }, refreshChips)', '"KaijuState", "Faction" }, refreshChips)'),
     ("MINI", "the pit has no area check", "if a.Size.X < 1 or a.Size.Z < 1 then return nil end\n", ""),
     ("MINI", "posts skip a side", "\tside(x0, z1, x0, z0)\n", ""),
@@ -170,7 +177,11 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("1. the opening has Skip (button + Enter) and the craft ring [Skip]; nothing else long",
          "Intro.SkipText" in src["INTRO"] and "HHC_IntroSkip" in src["INTRO"] and "Skip = \"Skip\"" in src["CRAFT"]),
         ("2. HUD: the Outlaw chip after Bully with the ranking's own line, redrawn on Outlaw",
-         '"Bully", "Outlaw", "Wanted"' in h and 'setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(rk.OutlawChip) == "string", rk.OutlawChip, Theme.Bad)' in h
+         '"Bully", "Outlaw", "Wanted"' in h and 'setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(outlaw) == "string", outlaw, Theme.Bad)' in h
+         and 'L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost",' in h
+         and 'local outlaw = (IS_TOUCH or L.ChipShort) and type(rk.OutlawChipShort) == "string" and rk.OutlawChipShort or rk.OutlawChip' in h
+         and "if L.ChipFit > 1 then L.ChipFit -= 1 else L.ChipShort = true end" in h and "\t\tL.ChipShort = false\n" in h
+         and 'Outlaw = "IconLock" }' in h and 'OutlawChipShort = "Outlaw",' in cfg
          and '"KaijuState", "Faction", "Outlaw" }, refreshChips)' in h and re.search(r'OutlawChip = "Outlaw:', cfg) is not None),
         ("3. the ribbon art of the 28-day border is approved (Config.UIArt RibbonDays28) and swept onto every tag",
          re.search(r"RibbonDays28 = \{ Id = \"rbxassetid://\d+\"", cfg) is not None and '{ Days = 28, Border = "Days28" }' in cfg

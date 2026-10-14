@@ -30,6 +30,12 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # ⑤ (2026-10-14): feature switches
+    ("feature switch: never applied", "SWITCH_SOURCE", "\t\tConfig.LiveOff[def.Feature] = (SwitchService.On(key) == false) or nil\n", ""),
+    ("feature switch: FeatureOn ignores it", "CONFIG_SOURCE", "\tif type(Config.LiveOff) == \"table\" and Config.LiveOff[name] == true then return false end\n", ""),
+    ("feature switch: inverted", "SWITCH_SOURCE", "\t\tConfig.LiveOff[def.Feature] = (SwitchService.On(key) == false) or nil\n",
+     "\t\tConfig.LiveOff[def.Feature] = (SwitchService.On(key) == true) or nil\n"),
+
     # --- environments
     ("Dev gets a suffix", C, "\tif env == \"Beta\" or env == \"Live\" then return base .. \"_\" .. env end\n\treturn base", "\treturn base .. \"_\" .. env"),
     ("Beta has no suffix", C, "if env == \"Beta\" or env == \"Live\" then return base .. \"_\" .. env end", "if env == \"Live\" then return base .. \"_\" .. env end"),

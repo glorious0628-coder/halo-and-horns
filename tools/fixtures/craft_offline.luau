@@ -25,6 +25,13 @@ local function cWorld(o)
 	local edit = o.EditConfig
 	o.EditConfig = function(c)
 		if o.Off ~= true then c.Features.Crafting = true end
+		-- 장인 ④: the bench builder (Config.Craft.Benches) only in the groups that ask for it; the rest keep the anvil fallback
+		if o.Benches ~= true then c.Craft.Benches = nil end
+		-- 장인 ② (10/14): the shipped W1 is gone (tier 1 = the free class weapon); the mechanics groups below keep a
+		-- test-only W1 with its old numbers (a tier-1 spare, 10 gold, 5 jelly + 2 copper, XP 10)
+		if c.Craft.Recipes.W1 == nil then
+			c.Craft.Recipes.W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 }
+		end
 		if edit then edit(c) end
 	end
 	local w = dev3World(o)
@@ -33,6 +40,10 @@ local function cWorld(o)
 	w.Tagged = { CraftStation = {} }
 	w.Added = rbxSignal(w.Warnings)
 	w.Services.CollectionService = { GetTagged = function(_, tag) return w.Tagged[tag] or {} end,
+		AddTag = function(_, inst, tag) -- 장인 ④: CraftService tags the benches it builds
+			w.Tagged[tag] = w.Tagged[tag] or {}
+			table.insert(w.Tagged[tag], inst)
+		end,
 		GetInstanceAddedSignal = function() return w.Added end }
 	w.PPS = { PromptTriggered = rbxSignal(w.Warnings) }
 	w.Services.ProximityPromptService = w.PPS
@@ -82,6 +93,7 @@ local function cWorld(o)
 		end
 		function L.SpareRoom(p, tier, plus) return not w.SpareFull end
 	end
+	w.Reg.SwitchService = { Changed = w.Util.Signal.new(), On = function() return true end } -- ⑤: the switchboard double
 	w:InitStart({ "CraftService" })
 	w.C = w.Reg.CraftService
 	w.Crafted = {}
@@ -200,11 +212,13 @@ runGroup("config", function()
 	check(M.T.Strikes == 5 and M.T.Ring == 1.2 and M.T.Rest == 0.35 and M.T.Lead == 0.8 and M.T.Timeout == 20,
 		"the shared hammer (CraftMini.T): 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, 20 s time-up", show(M.T))
 	check(K.Range == 12 and K.StartsPerMinute == 6 and C.RateLimits.CraftStart == 3, "12 studs, 6 starts a minute, one start every 3 s", "")
-	local want = { W1 = { 1, 1, 10, 10 }, W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
+	local want = { W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
 		W6 = { 6, 20, 7500, 900 }, W7 = { 7, 25, 22500, 2000 }, W9 = { 9, 30, 60000, 4000 } }
 	local smithRows = 0
 	for _, r in K.Recipes do if r.Role == "Smith" and r.Kind == "Weapon" then smithRows += 1 end end
-	check(smithRows == 8, "eight blacksmith weapon recipes", tostring(smithRows))
+	check(smithRows == 7 and K.Recipes.W1 == nil, "seven blacksmith weapon recipes (장인 ②: no W1, tier 1 is the free class weapon)", tostring(smithRows))
+	check(K.Recipes.W2.Mats.Herb == 3 and K.Recipes.W2.Mats.CopperOre == 2 and K.Recipes.W2.Mats.Jelly == nil,
+		"W2 = the first craft from N0's harvest only (3 herbs + 2 copper)", show(K.Recipes.W2.Mats))
 	-- ⑥ gear rows (게임성 개발 3): Armor / Ring (Smith, Lv 8 / 16 / 24), PetArmor / PetAcc (Tame, Lv 5 / 12 / 20), Kind Gear,
 	-- materials that exist; the recipes wait for Config.Features.Gear
 	local gearWant = { G1 = { "Smith", "Armor", 1, 8 }, G2 = { "Smith", "Armor", 2, 16 }, G3 = { "Smith", "Armor", 3, 24 },
@@ -228,7 +242,7 @@ runGroup("config", function()
 		check(r and r.Role == "Smith" and r.Kind == "Weapon" and r.Tier == x[1] and r.Lv == x[2] and r.Gold == x[3] and r.XP == x[4],
 			"recipe tier / craft Lv / gold / XP as the design table", id .. " " .. show(r))
 	end
-	check(K.Recipes.W1.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 8 and K.Recipes.W6.Mats.SilverOre == 12
+	check(K.Recipes.W2.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 8 and K.Recipes.W6.Mats.SilverOre == 12
 		and K.Recipes.W9.Mats.MoonCrystal == 20 and K.Recipes.W3.Mats.SeaShell == nil and K.Recipes.W5.Mats.CrystalShard == nil,
 		"gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)", "")
 	for _, key in { "NotArtisan", "NeedLevel", "NeedMats", "NeedGold", "Far", "Busy", "Full", "Auto" } do
@@ -447,10 +461,10 @@ end)
 ------------------------------------------------------------------ the ends without a finish
 runGroup("ends", function()
 	local w = cWorld()
-	local p, d = smith(w, 1)
+	local p, d = smith(w, 1, { Items = (function() local t = table.clone(MATS); t.Herb = 50; return t end)() }) -- 장인 ②: W2 takes herbs
 	w.C.TryStart(p, "W2")
 	check(type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "W2" and d.Craft.Pend.Plus == -1 and d.Craft.Pend.Gold == 40
-		and d.Craft.Pend.Mats.Jelly == 10 and d.Craft.Pend.Mats.CopperOre == 4, "the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
+		and d.Craft.Pend.Mats.Herb == 3 and d.Craft.Pend.Mats.CopperOre == 2, "the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
 		show(d.Craft.Pend))
 	w:Advance(0.8 + 20 + 0.1)
 	check(d.Craft.Pend == nil and d.Craft.Made.W2 == 1 and last(w.Spares).Tier == 2 and last(w.Spares).Plus == 0
@@ -554,6 +568,136 @@ runGroup("results", function()
 	check(w.C.TryStart(c2, "T2") == "ok" and (dc2.Items.CopperOre or 0) == 0, "the last 2 copper go into it: that slot frees, Herb fits", show(dc2.Items))
 	local e2, de2 = smith(w, 6, { BagSlots = 14 })
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
+end)
+
+------------------------------------------------------------------ 장인 ⑤ (A23-178): the alchemist's goods
+runGroup("alchemist goods", function()
+	local w = cWorld({ EditConfig = function(c)
+		c.Craft.Recipes.APX = { Role = "Alch", Kind = "Potion", Potion = "Nope", N = 1, Lv = 1, Gold = 1, Mats = { Herb = 1 }, XP = 1 }
+	end })
+	local C0 = w.Config
+	local K0 = C0.Craft.Recipes
+	check(K0.AP1.Role == "Alch" and K0.AP1.Kind == "Potion" and K0.AP1.Potion == "HP" and K0.AP1.N == 2 and K0.AP1.Mats.Herb == 2
+		and K0.AP1.Mats.Jelly == 3 and K0.AP2.Potion == "MP" and K0.AS1.Kind == "Item" and K0.AS1.Item == "Enh70"
+		and K0.AS1.Mats.Herb == 5 and K0.AS1.Mats.CopperOre == 3 and K0.AS1.Lv == 3,
+		"Config: HP / MP potions and the 70% scroll from the meadow's harvest and slimes (Alch)", show({ K0.AP1, K0.AS1 }))
+	check(w.C.RecipeOn("AP1") ~= nil and w.C.RecipeOn("AS1") ~= nil and w.C.RecipeOn("APX") == nil,
+		"a Potion recipe is on only for a real potion (HP / MP)", "")
+	local stock = { Herb = 40, Jelly = 20, CopperOre = 10, Petal = 10 }
+	local p, d = smith(w, 11, { Items = deepCopy(stock) }, "Mage")
+	local hp = C0.PotionStockKey("HP")
+	local before = d[hp] or 0
+	startAndHammer(w, p, HONEST, { Recipe = "AP1" })
+	local res = last(fired(w, "CraftResult", p))
+	check(res and res.Kind == "Potion" and res.Potion == "HP" and (d[hp] or 0) == before + 2 + res.Plus and p:GetAttribute(hp) == d[hp],
+		"AP1: 2 HP potions + the hammer's +N into the stock (attribute too); CraftResult says Potion HP", show({ res, d[hp] }))
+	check(d.Items.Herb == 38 and d.Items.Jelly == 17, "its materials went at the start (2 herbs, 3 jelly)", show(d.Items))
+	-- the cap: no start when N + 2 would pass it
+	w:Advance(61)
+	d[hp] = C0.Vitals.PotionInventoryCap - 3
+	check(w.C.TryStart(p, "AP1") == "full" and d.Items.Herb == 38, "near the potion cap: full, nothing taken", show(d.Items))
+	d[hp] = 0
+	-- the scroll waits for craft Lv3
+	check(w.C.TryStart(p, "AS1") == "level", "the 70% scroll needs alchemy Lv3", "")
+	d.Craft.Alch = { Lv = 3, XP = 0 }
+	local enh = d.Items.Enh70 or 0
+	startAndHammer(w, p, HONEST, { Recipe = "AS1" })
+	local res2 = last(fired(w, "CraftResult", p))
+	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 33 and d.Items.CopperOre == 7,
+		"AS1 at Lv3: 70% scrolls (1 + the hammer's +N) from 5 herbs + 3 copper", show({ res2, d.Items }))
+	-- a blacksmith cannot make them
+	local s = smith(w, 12, { Items = deepCopy(stock) })
+	check(w.C.TryStart(s, "AP1") == "role" and w.C.TryStart(s, "AS1") == "role", "a blacksmith cannot brew", "")
+end)
+
+------------------------------------------------------------------ 장인 ④ (최종 검수 10/14): the guild yard's three benches
+runGroup("benches", function()
+	local w = cWorld({ Benches = true })
+	local B = w.Config.Craft.Benches
+	check(B.Smith and B.Alch and B.Tame and B.Smith.Offset and B.Smith.Offset.X == 9, "Config.Craft.Benches: Smith / Alch / Tame spots by the anvil", "")
+	local anvil = newInstance("Part", w)
+	anvil.Name, anvil.Position = "Anvil", vec(40, 2, 50)
+	local guild = newInstance("Model", w)
+	guild.Name = "ArtisanGuild"
+	anvil.Parent = guild
+	w.Reg.ShopService = w.Reg.ShopService or {}
+	w.Reg.ShopService.Anvil = function() return anvil end
+	-- (Start already built benches around the world's own anvil: start this check from none)
+	w.Tagged.CraftStation = {}
+	-- a WorldKit bench of one role is there already
+	local kit = newInstance("Part", w)
+	kit.Attrs.Role = "Alch"
+	table.insert(w.Tagged.CraftStation, kit)
+	check(w.C.EnsureBenches() == true, "the anvil is there: done", "")
+	local roles, prompts = {}, 0
+	for _, part in w.Tagged.CraftStation do
+		local role = part:GetAttribute("Role")
+		roles[role] = (roles[role] or 0) + 1
+		if part ~= kit and part:FindFirstChild("CraftPrompt") then prompts += 1 end
+	end
+	check(roles.Smith == 1 and roles.Tame == 1 and roles.Alch == 1, "one bench per role (the WorldKit Alch bench kept, no second)", show(roles))
+	local smithBench = nil
+	for _, part in w.Tagged.CraftStation do if part:GetAttribute("Role") == "Smith" then smithBench = part end end
+	check(smithBench and smithBench.Name == "Workbench_Smith" and smithBench.Anchored == true and smithBench.Parent == guild
+		and smithBench.Position.X == 40 + B.Smith.Offset.X and smithBench.Position.Z == 50 + B.Smith.Offset.Z and prompts == 2,
+		"Workbench_Smith: anchored, in the guild model, beside the anvil, with its Craft prompt", show(smithBench and smithBench.Position))
+	check(w.C.EnsureBenches() == true and #w.Tagged.CraftStation == 3, "a second run adds nothing", #w.Tagged.CraftStation)
+	-- crafting off / no anvil: nothing
+	local off = cWorld({ Off = true, Benches = true })
+	off.Reg.ShopService = off.Reg.ShopService or {}
+	off.Reg.ShopService.Anvil = function() return anvil end
+	check(off.C.EnsureBenches() == false and #off.Tagged.CraftStation == 0, "Crafting off: no bench", "")
+	local none = cWorld({ Benches = true })
+	none.Reg.ShopService = none.Reg.ShopService or {}
+	none.Reg.ShopService.Anvil = function() return nil end
+	none.Tagged.CraftStation = {}
+	check(none.C.EnsureBenches() == false and #none.Tagged.CraftStation == 0, "no anvil yet: nothing (tried again later)", "")
+	-- the built bench works: a blacksmith next to it may craft there
+	local p = smith(w, 21, { Items = (function() local t = table.clone(MATS); t.Herb = 50; return t end)() }) -- W2 takes herbs (장인 ②)
+	rootOf(p).Position = smithBench.Position
+	check(w.C.TryStart(p, "W2") == "ok", "next to the new Smith bench: a craft starts", "")
+end)
+
+------------------------------------------------------------------ GPT review ① (10/14): a full bag and a recipe that uses its materials up
+runGroup("full bag weapon", function()
+	local w = cWorld({ RealSpare = true })
+	local recipe = w.Config.Craft.Recipes.W2
+	local function bagOf(extra)
+		local items, n = table.clone(recipe.Mats), 0
+		for _ in items do n += 1 end
+		for k, v in extra or {} do items[k] = v end
+		local ids = {}
+		for id, def in w.Config.Loot.Items do
+			if w.Config.BagSlots.Counts[def.Kind] and items[id] == nil then table.insert(ids, id) end
+		end
+		table.sort(ids)
+		for _, id in ids do
+			if n >= 12 then break end
+			items[id] = 1
+			n += 1
+		end
+		return items
+	end
+	local p, d = smith(w, 61, { Items = bagOf(), BagSlots = 12 })
+	check(w.Config.BagUsed(d) == 12 and not w.Config.BagHasRoom(d), "(12 kinds in 12 slots, W2's materials exactly)", w.Config.BagUsed(d))
+	check(w.C.TryStart(p, "W2") == "ok", "W2 uses its kinds up: their slots hold the spare it makes (12 -> 10)", "")
+	local more = {}
+	for id, n in recipe.Mats do more[id] = n + 5 end
+	local q, e = smith(w, 62, { Items = bagOf(more), BagSlots = 12 })
+	check(w.C.TryStart(q, "W2") == "full", "the same bag with more of each material: no slot frees, full", "")
+end)
+
+------------------------------------------------------------------ ⑤ (최종 검수 10/14): Crafting back on reads the players again
+runGroup("switch back on", function()
+	local w = cWorld()
+	w.Config.LiveOff = { Crafting = true }
+	local p, d = smith(w, 51, { Craft = { Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { CopperOre = 2 } } } })
+	check(type(d.Craft.Pend) == "table" and next(w.Spares) == nil, "joined while Crafting was off: the waiting craft waits", show(d.Craft))
+	w.Config.LiveOff = nil
+	w.Reg.SwitchService.Changed:Fire("Gear", true)
+	check(type(d.Craft.Pend) == "table", "another switch: nothing", "")
+	w.Reg.SwitchService.Changed:Fire("Crafting", true)
+	check(d.Craft.Pend == nil and next(w.Spares) ~= nil, "Crafting back on: the waiting craft is paid (W2 +1)", show(d.Craft))
 end)
 
 ------------------------------------------------------------------ craft XP
@@ -810,7 +954,7 @@ end)
 runGroup("fame", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local R = C.Craft.Recipes
-	check(C.CraftFame(R.W1, 0) == 1 and C.CraftFame(R.W1, 2) == 2 and C.CraftFame(R.W1, 1) == 1 and C.CraftFame(R.W4, 0) == 2
+	check(C.CraftFame(R.W2, 0) == 1 and C.CraftFame(R.W2, 2) == 2 and C.CraftFame(R.W2, 1) == 1 and C.CraftFame(R.W4, 0) == 2
 		and C.CraftFame(R.W6, 0) == 3 and C.CraftFame(R.W9, 0) == 4 and C.CraftFame(R.W9, 2) == 5 and C.CraftFame(nil, 2) == 0,
 		"fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1", "")
 	local rk = {}
