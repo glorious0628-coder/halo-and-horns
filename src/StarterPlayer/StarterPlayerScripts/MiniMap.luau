@@ -89,6 +89,8 @@ local T = {
 	Shallow = 16, -- studs of lighter water around each land (WorldMap SHALLOW)
 	PassCorridor = 20, -- road corridor |z| < 20 through the mountain pass (A10)
 	ExtremeLevel = 25, -- PvP zones from this level use the extreme colour (WorldMap / MapBuilder)
+	-- 2-C #9 the Crown Pit's edge posts in the world (this client only)
+	PitFolder = "PitEdgeLocal", PitStep = 12, PitPostH = 3, PitRayUp = 200, PitRetry = 10, PitTries = 30,
 	WarnEvery = 10, -- seconds between warnings
 	MaxPads = 6, PadGlyph = IS_TOUCH and 12 or 13, -- 빛 마을 점검 #52: town pad marks (the world map's ▣)
 }
@@ -279,6 +281,7 @@ local function prepareData()
 				PvP = z.PvP == true,
 				MinLevel = math.floor(num(z.MinLevel, 1)),
 				FloorColor = typeof(z.FloorColor) == "Color3" and z.FloorColor or COL.Land,
+				Pit = MiniMap.PitOf(z),
 			})
 		end
 	end
@@ -398,6 +401,19 @@ local function drawWorld()
 			BackgroundTransparency = 0.3,
 			ZIndex = 3,
 		}, { corner(0.08, 0), stroke(dangerColor(z), 2, 0.05) })
+	end
+	-- 2-C #9 (A23-90, ART_DIRECTION 2.4): a PvP area inside a safe zone (the Crown Pit) in the extreme colour
+	for _, z in W.Zones do
+		local a = z.Pit
+		if a then
+			local hx, hz = a.Size.X / 2, a.Size.Z / 2
+			rect(a.Center.X - hx, a.Center.X + hx, a.Center.Z - hz, a.Center.Z + hz, {
+				Name = "Pit_" .. z.Id,
+				BackgroundColor3 = COL.Extreme,
+				BackgroundTransparency = 0.7,
+				ZIndex = 3,
+			}, { corner(0.08, 0), stroke(COL.Extreme, 2, 0.05) })
+		end
 	end
 	for i, r in W.Roads do
 		rect(r.MinX, r.MaxX, r.MinZ, r.MaxZ, {
@@ -1208,7 +1224,90 @@ function MiniMap.Init(registry)
 	if not ok then Util.Warn(TAG, "map data failed: " .. tostring(err)) end
 end
 
+-- 2-C #9 (A23-90 "경계에 잘 보이는 표시", ART_DIRECTION 2.4 extreme red = the Crown Pit only): (pure) a zone's PvP area
+-- (Config.Zones[id].PvPArea { Center, Size }) or nil
+function MiniMap.PitOf(z)
+	local a = type(z) == "table" and z.PvPArea or nil
+	if type(a) ~= "table" or typeof(a.Center) ~= "Vector3" or typeof(a.Size) ~= "Vector3" then return nil end
+	if a.Size.X < 1 or a.Size.Z < 1 then return nil end
+	return { Center = a.Center, Size = a.Size, Name = a.Name }
+end
+
+-- (pure) the edge posts of an area: { x, z } points every `step` studs along its rectangle (the corners included once)
+function MiniMap.PitPosts(a, step)
+	if type(a) ~= "table" or typeof(a.Center) ~= "Vector3" or typeof(a.Size) ~= "Vector3" then return {} end
+	step = math.max(4, tonumber(step) or 16)
+	local x0, x1 = a.Center.X - a.Size.X / 2, a.Center.X + a.Size.X / 2
+	local z0, z1 = a.Center.Z - a.Size.Z / 2, a.Center.Z + a.Size.Z / 2
+	local out = {}
+	local function side(ax, az, bx, bz)
+		local len = math.max(math.abs(bx - ax), math.abs(bz - az))
+		local n = math.max(1, math.ceil(len / step))
+		for i = 0, n - 1 do
+			local t = i / n
+			table.insert(out, { ax + (bx - ax) * t, az + (bz - az) * t })
+		end
+	end
+	side(x0, z0, x1, z0)
+	side(x1, z0, x1, z1)
+	side(x1, z1, x0, z1)
+	side(x0, z1, x0, z0)
+	return out
+end
+
+-- the posts in the world, on this client only: a thin red post on the ground (a ray down) at each point, not touchable;
+-- a point whose ground is not streamed in yet is tried again later (T.PitRetry)
+function MiniMap.BuildPitEdges()
+	local folder = workspace:FindFirstChild(T.PitFolder)
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = T.PitFolder
+		folder.Parent = workspace
+	end
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local skip = { folder }
+	for _, p in Players:GetPlayers() do
+		if p.Character then table.insert(skip, p.Character) end
+	end
+	params.FilterDescendantsInstances = skip
+	local missing = 0
+	for id, z in type(Config.Zones) == "table" and Config.Zones or {} do
+		local a = MiniMap.PitOf(z)
+		local off = a ~= nil and seasonOff(z)
+		if a and not off then
+			for i, pt in MiniMap.PitPosts(a, T.PitStep) do
+				local name = tostring(id) .. "_" .. i
+				if not folder:FindFirstChild(name) then
+					local hit = workspace:Raycast(Vector3.new(pt[1], a.Center.Y + T.PitRayUp, pt[2]), Vector3.new(0, -2 * T.PitRayUp, 0), params)
+					if hit then
+						local post = Instance.new("Part")
+						post.Name = name
+						post.Anchored, post.CanCollide, post.CanQuery, post.CanTouch, post.CastShadow = true, false, false, false, false
+						post.Material = Enum.Material.Neon
+						post.Color = COL.Extreme
+						post.Transparency = 0.25
+						post.Size = Vector3.new(0.6, T.PitPostH, 0.6)
+						post.CFrame = CFrame.new(hit.Position + Vector3.new(0, T.PitPostH / 2, 0))
+						post.Parent = folder
+					else
+						missing += 1
+					end
+				end
+			end
+		end
+	end
+	return missing
+end
+
 function MiniMap.Start()
+	task.spawn(function() -- 2-C #9: the Crown Pit's edge posts (again while some ground is not streamed in)
+		for _ = 1, T.PitTries do
+			local ok, missing = pcall(MiniMap.BuildPitEdges)
+			if ok and missing == 0 then break end
+			task.wait(T.PitRetry)
+		end
+	end)
 	local ok, err = pcall(build)
 	if not ok or not S.built then
 		Util.Warn(TAG, "build failed: " .. tostring(err))

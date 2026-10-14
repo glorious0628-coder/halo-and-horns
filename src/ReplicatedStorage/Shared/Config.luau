@@ -8125,6 +8125,12 @@ Config.Analytics.ClientMetrics = {
 	Perf = "Perf", -- the phone / PC frame + memory summary of the last window (Config.Analytics.Perf, system_review 더하기 7)
 }
 Config.Analytics.InviteSources = { "Menu", "PlayerList", "GooseWin", "WarWin" }
+-- 2-C #9 (최종 검수 10/14; A23-79 #3 "거위/왕관전 승리 카드에 [Invite a friend]"): a small win card (Invite.WinCard, game
+-- dev 1) when my side wins the goose game (Fx GooseEnd { Winner } = my faction, within GooseRange studs of the goose) or
+-- a crown war round (GameState WarBlessing = my faction when a round really ends); Seconds on screen; never near a KO, a
+-- failed scroll or the Shop (Invite.CanShow)
+Config.WinCard = { Seconds = 8, GooseRange = 120,
+	Text = { GooseWin = "You won the goose game!", WarWin = "Your side won the crown!", Invite = "Invite a friend" } }
 Config.Analytics.PassIds = { "XP2", "Gold2", "VIP", "Look" } -- "Pass" args besides Config.GamePasses / Config.Looks ids
 -- review 2026-10-08 (one client must not flood the whole game's analytics budget): ClientMetric calls LOGGED a minute per
 -- player, and the ids logged once a session; every accepted call still fires TelemetryService.ClientMetric (no limit)
