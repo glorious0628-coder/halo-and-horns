@@ -338,6 +338,40 @@ runGroup("switches: start and interval", function()
 	check(ok2 and waited2 == 10, "and never faster than 10 s", tostring(waited2))
 end)
 
+-- review 10/14 (2-A ⑦): a switch with Unread (PioneerTitle) answers Unread until this server's first good read
+runGroup("switches: before the first read", function()
+	local w = opsWorld({ Studio = false })
+	check(w.Config.Switches.Defs.PioneerTitle.Unread == false and w.Config.Switches.Defs.PioneerTitle.Default == true,
+		"PioneerTitle: Default on, Unread off", "")
+	w.Fail["HaloHorns_Switches_v1:Get"] = 1
+	local SW = startSwitches(w)
+	w.Warnings = {}
+	check(SW.HasRead() == false and SW.On("PioneerTitle") == false and w.GameState:GetAttribute("SwitchPioneerTitle") == false,
+		"the first read failed: PioneerTitle off (its Unread), and says so", tostring(w.GameState:GetAttribute("SwitchPioneerTitle")))
+	check(SW.On("PassSales") == true and SW.On("Goose") == true, "switches without Unread keep their Default", "")
+	local changes = {}
+	SW.Changed:Connect(function(k, v) table.insert(changes, k .. "=" .. tostring(v)) end)
+	w.Fail["HaloHorns_Switches_v1:Get"] = 1
+	check(SW.Refresh() == false and SW.On("PioneerTitle") == false and #changes == 0, "another failed read: still off, no signal", "")
+	w.Warnings = {}
+	check(SW.Refresh() == true and SW.HasRead() == true and SW.On("PioneerTitle") == true and table.concat(changes, ",") == "PioneerTitle=true"
+		and w.GameState:GetAttribute("SwitchPioneerTitle") == true, "the first good read (no document): on, one Changed, published",
+		table.concat(changes, ","))
+	w.Fail["HaloHorns_Switches_v1:Get"] = 1
+	SW.Refresh()
+	w.Warnings = {}
+	check(SW.On("PioneerTitle") == true, "a later failed read keeps the answer (never back to Unread)", "")
+	-- a board that turns it off (the launch day): off at the first read, never on before it
+	local w2 = opsWorld({ Studio = false })
+	setDoc(w2, "HaloHorns_Switches_v1", { Set = { PioneerTitle = false } })
+	local SW2 = startSwitches(w2)
+	local ch2 = {}
+	SW2.Changed:Connect(function(k, v) table.insert(ch2, k .. "=" .. tostring(v)) end)
+	check(SW2.HasRead() == true and SW2.On("PioneerTitle") == false, "the board says off: off after the first read", "")
+	SW2.Refresh()
+	check(#ch2 == 0, "and it never flickered on", table.concat(ch2, ","))
+end)
+
 runGroup("switches: Halloween", function()
 	local w = opsWorld({ Studio = false })
 	local SW = startSwitches(w)

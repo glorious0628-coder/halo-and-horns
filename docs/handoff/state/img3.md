@@ -1,6 +1,14 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
-## ★ 10/14 낮 — 난간 ⑤ 1차 (이 절이 최신, 가져오기 대기)
+## ★ 10/14 낮 — ⛔ 전부 멈춤 (최종 검수 지시: 사용자 원래 계획 = 디자인은 10/20 뒤). 지금 상태만
+- WorldKit·재질 일 안 함. 하던 것 없음(진행 중 작업 0, 올리는 중인 것 0, Studio 안 건드림).
+- 남은 것(재개 때): 난간 v2 GLB(Blender 손보기 2, 통과 시) → 메시만 + 사용자 3D 가져오기 → 키트(tools/worldkit/tripo_parts_kit_gen.py) → P129 → 낮밤 사진. SA 20장 asset_ids에 있음(m0..m4). 화면 제어는 사용자가 거부했으니(10/14) 가져오기는 사용자 직접.
+- WorldKit Studio(STUDIO_ID 98b5c8af-…) 열림·미저장, 내가 넣은 것 없음.
+
+## ★ 10/14 낮 — 난간 멈춤 (기록): 합친 판 통과 취소
+- 사용자가 WorldKit에 가져와 보고 합친 판 모양이 2D와 다르다고 함(가로대·받침 두껍고 기둥 작음) → 최종 검수가 통과 취소, Blender 손보기 2가 Codex로 레이아웃 다시(v2). **내 SA 20장(asset_ids SA_HaloVar4_Balustrade_C_m0..m4_*)은 그대로 둠(부품 텍스처는 같음).** v2 GLB 통과하면: 재질 번호·부품 수 다르면 `glb_sa_maps_multi.py`로 다시 확인(같은 부품 텍스처면 SA 재사용) → 메시만 `glb_strip_mesh.py --part-names` → 사용자 3D 가져오기 → 키트 스크립트(tripo_parts_kit_gen.py) → P129. Workspace의 사용자가 넣은 회색 모델은 건드리지 않음. 키트·놓기 스크립트와 재질 표는 그대로 쓸 수 있게 push됨(128995b).
+
+## ★ 10/14 낮 — 난간 ⑤ 1차 (기록)
 - 한 일: build/tripo_parts/HaloVar4_Balustrade_C_tripo.glb(13 메시·재질 5·압축 없음) → `tools/glb_sa_maps_multi.py`(재질별 원본 맵) → `tools/hd_mat_tune.py`(금 = 색 마스크 또는 M>0.5 → 금속 0.90·거칠기 0.30·색상 42°·채도↑; 대리석 = 금속 0·거칠기 0.50·상아 색상 36°·V 대비 1.35·흰점 0.99 소프트클립; 원본 대리석은 분홍빛 + 거칠기 0.2대라 번쩍였음) → build/img3_bal/tuned2 → **SA 20장 올림**(asset_ids `SA_HaloVar4_Balustrade_C_m0..m4_{C,N,M,R}`; m0 = 기둥 6개(DoubleSided), m1 = 끝 기둥 2, m2 = 가로대 2, m3 = 받침 2, m4 = 모서리 기둥).
 - 메시만 GLB = `build/import3d_bal/HaloVar4_Balustrade_C_TU.glb`(`glb_strip_mesh.py --part-names`: 노드 이름 `..._pNN_mK`). **사용자 화면 제어 거부(10/14)** → 3D 가져오기는 사용자 직접(WorldKit 창 → 홈 → 3D 가져오기 → 이 GLB 1개). 가져오면 Workspace.HaloVar4_Balustrade_C_TU.
 - 다음(가져온 뒤, MCP만): `py tools/worldkit/tripo_parts_kit_gen.py HaloVar4_Balustrade_C 4.5 --two 0` → build/wk/tripo_parts_kit_HaloVar4_Balustrade_C.luau 실행(= ServerStorage.HaloTripoKits.<이름>, 높이 4.5칸, 피벗 바닥 중앙) → 놓기 = Workspace.HaloV2.Props.Real.P129_HaloVar4_Balustrade_C(전망대 남쪽 끝 낭떠러지 난간, pos 205,28,-822 yaw 4°, 옛 파트 키트 103파트; 옛 것은 ServerStorage.Parked_*로) — V자(모서리) 모양이라 옛 납작 키트(9×2.3)보다 앞뒤가 깊음(높이 4.5 기준 폭 ≈12 × 깊이 ≈7): 자리 맞는지 사진으로 확인, 꼭지(+z) 방향은 바깥 낭떠러지 쪽 → `tools/prop_ab_shots.py <out> P129=art/out/s2/noshadow/HaloVar4_Balustrade_C_front_ns.png --back`(창 펼침 필요) → 디자인 검수.
