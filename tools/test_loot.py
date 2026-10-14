@@ -129,6 +129,18 @@ MUTATIONS = [
      "data.LootFlags[fd.Flag] = true", "data.LootFlags[fd.Flag] = nil"),
     ("first Brute / Knight paid when the tier is owned", "LOOT_SOURCE",
      "if validTier(fd.Tier) and not owns(data, fd.Tier) then", "if validTier(fd.Tier) then"),
+    # bag slots (2026-10-14)
+    ("bag: a new kind past the slots", "LOOT_SOURCE", "\tif have < 1 and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n",
+     "\tif false then\n"),
+    ("bag: a held kind refused too", "LOOT_SOURCE", "\tif have < 1 and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n",
+     "\tif Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n"),
+    ("bag: no Full line", "LOOT_SOURCE", "\t\tfullNotice(player, \"Bag\", Config.BagSlots.Text.Full)\n", ""),
+    ("bag: spares never full", "LOOT_SOURCE", "Config.BagSlots.Counts.Spare and not Config.BagHasRoom(data) then return false end", "false then return false end"),
+    ("bag: slots past Max", "LOOT_SOURCE", "\tlocal after = math.min(Config.BagSlots.Max, before + n)\n", "\tlocal after = before + n\n"),
+    ("bag: slots never saved", "LOOT_SOURCE", "\tS.PlayerService.SetStat(player, \"BagSlots\", after)\n", ""),
+    ("bag: a 0 count is a slot", "CONFIG_SOURCE", "if def and counts[def.Kind] and (tonumber(c) or 0) >= 1 then n += 1 end",
+     "if def and counts[def.Kind] then n += 1 end"),
+    ("bag: one slot fewer", "CONFIG_SOURCE", "\treturn Config.BagUsed(data) < Config.BagSlotsOf(data)\n", "\treturn Config.BagUsed(data) < Config.BagSlotsOf(data) - 1\n"),
     ("jackpot for every monster kind", "LOOT_SOURCE",
      "jackpot.Monsters[info.Kind] and", "true and"),
     # A23-22 bully drop penalty (review item 3): rows AND the jackpot x DropMult while BullyStacks >= 1

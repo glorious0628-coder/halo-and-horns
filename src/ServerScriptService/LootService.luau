@@ -197,6 +197,11 @@ local function addItem(player, data, id, n)
 	local def = LOOT.Items[id]
 	if not def or n <= 0 then return 0 end
 	local have = math.floor(num(data.Items[id]))
+	-- bag slots (10/14): a NEW kind needs a free slot (a kind already held stacks to ItemCap)
+	if have < 1 and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then
+		fullNotice(player, "Bag", Config.BagSlots.Text.Full)
+		return 0
+	end
 	local room = math.max(0, LOOT.ItemCap - have)
 	local given = math.clamp(n, 0, room)
 	if given < n then
@@ -886,6 +891,8 @@ local function spareFits(data, key)
 	for _, n in spares do
 		sum += math.max(0, math.floor(num(n)))
 	end
+	-- bag slots (10/14): a new spare key needs a free slot
+	if math.floor(num(spares[key])) < 1 and Config.BagSlots.Counts.Spare and not Config.BagHasRoom(data) then return false end
 	return math.floor(num(spares[key])) < Config.SaveV4.SpareKeyMax and sum < Config.SaveV4.SpareSum
 end
 
@@ -906,6 +913,19 @@ function LootService.AddSpare(player, tier, plus)
 	data.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1
 	publish(player, data)
 	return true
+end
+
+-- bag slots (10/14): +n slots (a quest reward), never past Config.BagSlots.Max; returns how many were really added.
+-- data.BagSlots only grows (SetStat mirrors the BagSlots attribute)
+function LootService.AddBagSlots(player, n)
+	local data = getData(player)
+	n = math.floor(num(n))
+	if not data or n < 1 then return 0 end
+	local before = Config.BagSlotsOf(data)
+	local after = math.min(Config.BagSlots.Max, before + n)
+	if after <= before then return 0 end
+	S.PlayerService.SetStat(player, "BagSlots", after)
+	return after - before
 end
 
 -- re-mirror the owner's items / per-tier +N (Inventory remote) and the equipped WeaponEnhance attribute; for other

@@ -38,6 +38,11 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # bag slots (2026-10-14)
+    ("bag: a new-kind result ignores the slots", R, "\tif have < 1 and def and Config.BagSlots.Counts[def.Kind] then\n", "\tif false then\n"),
+    ("bag: a used-up material frees nothing", R, "held >= 1 and held <= n then freed += 1 end", "held >= 1 and held < n then freed += 1 end"),
+    ("bag: one slot fewer at the craft", R, "if Config.BagUsed(data) - freed >= Config.BagSlotsOf(data) then return false end",
+     "if Config.BagUsed(data) - freed >= Config.BagSlotsOf(data) - 1 then return false end"),
     # --- the table (the hammer's own numbers: tools/test_craft_mini.py)
     ("config: on by default", C, "Config.Features.Crafting = false\n", "Config.Features.Crafting = true\n"),
     ("config: archers are blacksmiths", C, "Roles = { Warrior = \"Smith\", Mage = \"Alch\", Archer = \"Tame\" },", "Roles = { Warrior = \"Smith\", Mage = \"Alch\", Archer = \"Smith\" },"),

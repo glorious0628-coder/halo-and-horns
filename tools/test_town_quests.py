@@ -49,6 +49,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # bag slots (2026-10-14)
+    ("bag: Reward.BagSlots ignored", ST, "if type(def.Reward) == \"table\" and num(def.Reward.BagSlots) > 0 and S.LootService",
+     "if false and S.LootService"),
+    ("bag: no Gained line", ST, "\t\tif ok and num(added) > 0 then notify(player, string.format(Config.BagSlots.Text.Gained, added), \"reward\", \"None\") end\n", ""),
+    ("bag: no catch-up at the join", ST, "\t\t\tlocal okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)\n\t\t\tif not okBag", "\t\t\tlocal okBag, errBag = true, nil\n\t\t\tif not okBag"),
+    ("bag: no catch-up on a chapter skip", ST, "\t\tlocal okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)\n\t\tif not okBag", "\t\tlocal okBag, errBag = true, nil\n\t\tif not okBag"),
+    ("bag: catch-up adds again", ST, "\tif want > have then loot.AddBagSlots(player, want - have) end", "\tif want > Config.BagSlots.Default then loot.AddBagSlots(player, want - Config.BagSlots.Default) end"),
+    ("bag: Lunch1 without slots", C, "			Reward = { BagSlots = 4 }, -- bag slots 10/14: the first upgrade", "			-- bag slots 10/14: the first upgrade"),
+    ("bag: M2_7 without slots", C, "Reward = { Gold = 2, XP = 2, BagSlots = 4 }, -- bag slots 10/14", "Reward = { Gold = 2, XP = 2 }, -- bag slots 10/14"),
     # SKL-3 the practice subs SK1 / SK2
     ("SKL-3: SkillHit ignores the Slot", ST,
      "\t\tif obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)\n", ""),
