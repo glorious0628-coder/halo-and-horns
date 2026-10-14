@@ -18,7 +18,7 @@ from PIL import Image, ImageDraw
 from scipy import ndimage
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-W2D = os.path.join(ROOT, "art", "out", "s2", "weapons_t13_4v")
+W2D = os.environ.get("WEAPON_2D_DIR") or os.path.join(ROOT, "art", "out", "s2", "weapons_t13_4v")  # override for redraws / memes
 GREY = (104, 104, 104)
 MAG = (255, 0, 255)
 SIDES = ["front", "left", "right", "back"]
