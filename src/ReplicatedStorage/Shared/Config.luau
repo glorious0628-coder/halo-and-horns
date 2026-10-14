@@ -1413,6 +1413,18 @@ Config.Kaiju = {
 -- (the goose's WinWarPoints, the kaiju's 30) go to the pool only. ChestMinPoints / SiegeTarget sit at the old difficulty
 -- in the new scale (30 -> 1 personal point = 100 kills or one PvP KO; 150 kills a head -> 1.5 a head) until the boss race
 -- and the golden hour land (then 3 / 10-12, the design's budget table); the 10/17 and 11/7 test logs retune them.
+-- 최종 검수 10/14 상단 HUD 1안 ①: the small window a press on the war bar opens (HUD L.RegisterWarInfo; the bar itself
+-- has no words and no time): the round's time left, both scores, one line on how to help
+Config.WarInfo = {
+	Width = 440,
+	Text = {
+		Title = "Crown War",
+		Time = "Next crown in %s",
+		NoRound = "A new round starts soon.",
+		Score = "%s %s : %s %s", -- (Halo's name, its points, Horns' points, Horns' name)
+		Note = "Hunt monsters and win fights to fill your side's bar.",
+	},
+}
 Config.War = {
 	RoundSeconds = 600,
 	KillsPerPoint = 100, -- A23-135: one crown point per 100 monsters (later maybe 1000 with more players)

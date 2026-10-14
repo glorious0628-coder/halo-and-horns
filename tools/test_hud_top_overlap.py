@@ -99,10 +99,10 @@ MUTATIONS = [
     ("EV", "the chip's bottom not published", "\t\t\tV2.EventBottom = evY + evH\n", ""),
     ("EV", "the goose sticks out of the chip again", "local size, pos = UDim2.fromOffset(iw, iw), UDim2.new(0, G.Left, 0.5, 0)",
      "local size, pos = UDim2.fromOffset(iw, iw), UDim2.new(0, -6, 0.5, 0)"),
-    ("EV", "the goose chip not taller", "IconK = 0.75, PlusH = 4 }", "IconK = 0.75, PlusH = 0 }"),
-    ("EV", "the goose as big as the chip", "IconK = 0.75, PlusH = 4 }", "IconK = 1.2, PlusH = 4 }"),
+    ("EV", "the goose chip not taller", "IconK = 0.65, PlusH = 4 }", "IconK = 0.65, PlusH = 0 }"),
+    ("EV", "the goose as big as the chip", "IconK = 0.65, PlusH = 4 }", "IconK = 1.2, PlusH = 4 }"),
     ("EV", "the column goose chip at a fixed width", "\t\tif row.Goose then w = SQ.GooseNeed(row.H) end\n", ""),
-    ("EV", "the event goose chip at a fixed width", "or SQ.GooseNeed(evH)", "or GOOSE_CHIP_W"),
+    ("EV", "the event goose chip at a fixed width", "\t\t\tnatural = SQ.GooseNeed(evH)\n", "\t\t\tnatural = GOOSE_CHIP_W\n"),
     ("EV", "the insides do not follow the chip", "\tif inst == ui.GooseChip then SQ.FitGoose(size.Y.Offset) end", "\tif false then end"),
 ]
 
@@ -128,7 +128,7 @@ def war_block(h: str) -> str:
     a = h.find("local function buildWar")
     if a < 0:
         a = h.find("ui.war = w")
-    b = h.find("-- the top bar plate hugs the bar", a)
+    b = h.find("-- (pure) 최종 검수 10/14 상단 HUD 1안 ①", a)
     return h[a:b] if a >= 0 and b > a else ""
 
 
@@ -150,15 +150,15 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          "ui.warTime" not in h and "ui.warInfo" not in h and "ui.warLine" not in h and "WarClock" not in h
          and war_texts(h) == 2 and "\t\tName = \"Open\",\n\t\tText = \"\"," in war_block(h)
          and "\topen.Activated:Connect(function() pcall(L.OpenWarInfo) end)\n" in war_block(h)
-         and "C.QuestBook.ShowTab(L.WarInfoTab)" in h and "L.WarInfoTab = \"Event\"" in h),
+         and "C.QuestBook.ShowTab(L.WarInfoTab)" in h and "L.WarInfoTab, L.WarInfoId = \"Event\", \"WarInfo\"" in h),
         ("EventHUD places the event chip with V2.EventTop under HUD.TopBottom",
          "local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)" in e
          and "V2.EventBottom = evY + evH" in e and "function EventHUD.TopBottom()" in e),
-        ("the goose chip (user 10/14 '오리가 낑김'): icon inside (Left 10, h x 0.75, Gap 6, Right 12), 4 taller, as wide as its line",
-         "GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.75, PlusH = 4 }" in e
+        ("the goose chip (user 10/14 '오리가 낑김'): icon inside (Left 10, h x 0.65 = 26 px in the 1안 40 px chip, Gap 6, Right 12), 4 taller, as wide as its line",
+         "GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.65, PlusH = 4 }" in e
          and "local size, pos = UDim2.fromOffset(iw, iw), UDim2.new(0, G.Left, 0.5, 0)" in e
          and "if inst == ui.GooseChip then SQ.FitGoose(size.Y.Offset) end" in e and "if row.Goose then w = SQ.GooseNeed(row.H) end" in e
-         and "or SQ.GooseNeed(evH)" in e and "Position = UDim2.new(0, -6, 0.5, -1)" not in e),
+         and "\t\t\tnatural = SQ.GooseNeed(evH)\n" in e and "Position = UDim2.new(0, -6, 0.5, -1)" not in e),
         ("QuestMarker clamps the on-screen marker and the edge track under the band",
          "ly = math.min(math.max(ly, topLimit()), H - T.HalfY)" in q and "local box = { mx, math.max(my, topLimit()), W - mx, H - my }" in q
          and q.index("local function topLimit()") < q.index("local function placeEdge(")),

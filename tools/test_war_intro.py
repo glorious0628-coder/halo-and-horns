@@ -30,9 +30,9 @@ STATIC = [
     ("ApplyFold hides / shows the war bar by HUD.WarHidden",
      ['\tlocal hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)\n',
       "\tif ui.war and ui.war.Visible == hideWar then\n\t\tui.war.Visible = not hideWar\n"]),
-    ("coming in during play: one toast and a NEW! tag",
+    ("coming in during play: one toast (1안 10/14: no NEW! tag on the war bar)",
      ["\t\tif changed and not hideWar then", "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n",
-      "pcall(UIKit.NewTag, ui.war)"]),
+      "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n\t\tend\n"]),
     ("the line is short English", ['\tWarIntro = "Crown War: win points for your side!",']),
     ("검수 10/09 (user: too kind): the toast is switched off in Config.Nudges", ["\tWarIntro = false, --"], "CONFIG"),
 ]
