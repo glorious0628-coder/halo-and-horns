@@ -1826,6 +1826,11 @@ runGroup("weapon pity", function()
 	check(not bit32.btest(g4.Data.WeaponOwnedMask, 8) and g4:Gained(again, "Weapon", 4) == 0,
 		"after giving it away: the next Goblin pays no instant tier 4", show(g4.Data.WeaponPity))
 	check(near(g4.Data.WeaponPity.T4, p4), "... the counter restarted from 0 (one Goblin's chance)", show(g4.Data.WeaponPity))
+	-- review 10/14b: once a tier ever: a save holding a counter past At (from before the reset) pays nothing again
+	g4.Data.WeaponPity.T4 = 99
+	local again2 = g4:Force("Goblin", {}, false)
+	check(not bit32.btest(g4.Data.WeaponOwnedMask, 8) and g4:Gained(again2, "Weapon", 4) == 0 and g4.Data.LootFlags.Pity4 == true,
+		"a counter past At after the tier was paid once: no second luck drop (LootFlags Pity4)", show(g4.Data.LootFlags))
 	-- golden x GoldenMult; a Brute's two rows count for their own tiers
 	local b = fresh(12)
 	b:Roll("GoblinBrute", true)

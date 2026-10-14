@@ -403,7 +403,7 @@ end
 local function giveBack(player, data, id, row, state)
 	local m = marketOf(data)
 	if isDone(m, id) then return end
-	row.St = state
+	row.St, row.Pend = state, nil
 	local left = giveThing(player, data, row.K, math.floor(num(row.N, 0)))
 	if left > 0 then
 		row.N, row.Ret = left, true
@@ -425,7 +425,7 @@ local function payOut(player, data, id, row, rec)
 		warnOnce("pay", added)
 		return
 	end
-	row.St, row.Fin, row.Ret = "Paid", os.time(), nil
+	row.St, row.Fin, row.Ret, row.Pend = "Paid", os.time(), nil, nil
 	markDone(m, id)
 	note(player, "MarketPaid", Util.FormatInt(get))
 	happened(player, MarketService.Paid, "MarketPaid", get)
@@ -460,7 +460,7 @@ local function settleOut(player, data, id, rec)
 			won = false
 			if old ~= nil then return nil end
 			won = true
-			return { Id = id, Seller = uid, St = "Cancel", At = os.time(), Tomb = true }
+			return { Id = id, Seller = uid, K = row.K, St = "Cancel", At = os.time(), Tomb = true }
 		end)
 		if not ok then return end -- tried again at the next round
 		if won then
@@ -772,6 +772,13 @@ local function doList(player, data, kind, id, n, price)
 		if not S.LootService.TakeSpare(player, info.Tier, info.Plus, n) then return note(player, "NoItem") end
 	end
 	local m = marketOf(data)
+	-- review 10/14b: the save keeps at most SaveV4.MarketRows rows a side; one more would be dropped at the next load
+	local outRows = 0
+	for _ in m.Out do outRows += 1 end
+	if outRows >= Config.SaveV4.MarketRows then
+		giveThing(player, data, key, n) -- the things were taken above: back at once (nothing public)
+		return note(player, "Full")
+	end
 	local lid = string.gsub(HttpService:GenerateGUID(false), "[{}]", "")
 	local now = os.time()
 	local row = { K = key, N = n, Price = price, St = "Open", Pend = true, At = now, Exp = now + M.Hours * 3600 }
@@ -821,7 +828,7 @@ local function doBuy(player, data, id, price)
 	local okR, rec = lget(id)
 	if not okR then return note(player, "Resting") end
 	if not rec or rec.St ~= "Open" or os.time() >= num(rec.Exp, 0) then
-		if rec then mapDrop(rec.K, id) end
+		if rec and type(rec.K) == "string" then mapDrop(rec.K, id) end
 		return note(player, "AlreadySold")
 	end
 	if rec.Seller == player.UserId then return note(player, "Own") end
@@ -833,6 +840,9 @@ local function doBuy(player, data, id, price)
 	if info.Kind == "I" and not hasRoom(data, rec.K, n) then return note(player, "CantReceive") end
 	local pairKey = "P" .. tostring(math.floor(num(rec.Seller, 0)))
 	if math.floor(num(m[pairKey], 0)) >= M.PairDay then return note(player, "PairLimit") end
+	local inRows = 0
+	for _ in m.In do inRows += 1 end
+	if inRows >= Config.SaveV4.MarketRows then return note(player, "Full") end -- review 10/14b (the save's row cap)
 	local total = price * n
 	if not S.ProgressionService.SpendGold(player, total, "Market") then return note(player, "NotEnoughGold") end
 	local tok = string.sub(string.gsub(HttpService:GenerateGUID(false), "[{}%-]", ""), 1, 16) -- review 10/14 BLOCK 2
@@ -862,7 +872,13 @@ local function doBuy(player, data, id, price)
 	if not ok then
 		local okA, again = lget(id) -- the write may have landed before the error
 		if not okA then return note(player, "Checking") end -- the In row stays Pay; the round settles it
-		after, won = again, again ~= nil and again.St == "Sold" and again.Buyer == uid
+		-- review 10/14b: the errored write may still land later: settle as the round does (an Open row is voided first,
+		-- Sold to me = delivered), never a bare refund
+		local mine = again ~= nil and again.St == "Sold" and again.Buyer == uid
+		settleIn(player, data, id, again)
+		if mine then hintSold(rec.Seller, id) end
+		if not (again and again.St == "Open") then mapDrop(rec.K, id) end
+		return
 	end
 	if won then
 		deliver(player, data, id, row)

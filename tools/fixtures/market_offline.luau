@@ -744,9 +744,10 @@ runGroup("join check", function()
 			i4 = { Price = 320, St = "Sold", Pay = true, Tok = "t4", K = "I:Enh70", N = 1 } } }
 	local p, d = hero(a, 30, { Items = { Jelly = 10 }, BankGold = 0, Market = market })
 	check(d.Market.Out.p1.St == "Open" and mapRows(a, "I:Jelly").p1 ~= nil, "Pend + a ledger row: Open and listed", show(d.Market.Out.p1))
-	check(d.Market.Out.p2.St == "Cancel" and d.Items.Jelly == 14, "Pend + no ledger row: 4 Jelly back", show({ d.Market.Out.p2, d.Items }))
+	check(d.Market.Out.p2.St == "Cancel" and d.Market.Out.p2.Pend == nil and d.Items.Jelly == 14, "Pend + no ledger row: 4 Jelly back (Pend cleared)",
+		show({ d.Market.Out.p2, d.Items }))
 	local tomb = L.Rows["L_p2"]
-	check(tomb and tomb.St == "Cancel" and tomb.Tomb == true and tomb.Seller == 30,
+	check(tomb and tomb.St == "Cancel" and tomb.Tomb == true and tomb.Seller == 30 and tomb.K == "I:Jelly",
 		"review 10/14: ... and a tombstone where the row would be (a late listing write can never open it)", show(tomb))
 	check(d.Market.Out.o1.St == "Paid" and d.BankGold == 19 + 310 and table.find(d.Market.Done, "o1") ~= nil,
 		"Open + Sold while away: paid 20 - 1 (7% floored)", show({ d.Market.Out.o1, d.BankGold }))
@@ -808,6 +809,39 @@ runGroup("races", function()
 	c:Remote("MarketBuy", buyer, lid, 5)
 	check(ledgerOf(b, lid).St == "Open" and (bd.Items.Jelly or 0) == 0 and bd.BankGold + bd.CarriedGold == gold0,
 		"a voided attempt: the purchase write is refused, the buyer refunded once, the listing still open", show({ ledgerOf(b, lid), bd.BankGold }))
+	-- review 10/14b BLOCK: the buy write errors before writing and the read says Open: the attempt is voided first, then
+	-- refunded once (a late landing of that write is refused); the listing stays open, the seller is never paid
+	local mem3, stores3 = {}, {}
+	local e = marketWorld({ Mem = mem3, Stores = stores3 })
+	local f = marketWorld({ Mem = mem3, Stores = stores3 })
+	f.AllowWarn = FAILWARN
+	local es = hero(e, 65)
+	local eid = listJelly(e, es)
+	local fb, fbd = hero(f, 66, { Items = {} })
+	local fgold = fbd.BankGold + fbd.CarriedGold
+	f.Fail[f.LedgerName .. ":Update"] = 1
+	f:Remote("MarketBuy", fb, eid, 5)
+	local erow = ledgerOf(e, eid)
+	local voids = 0
+	for _ in type(erow.Void) == "table" and erow.Void or {} do voids += 1 end
+	check(erow.St == "Open" and voids == 1 and fbd.BankGold + fbd.CarriedGold == fgold and fbd.Market.In[eid] == nil
+		and table.find(fbd.Market.Done, eid) ~= nil, "an errored buy write with the row Open: voided in the ledger, then refunded once",
+		show({ erow, fbd.BankGold }))
+	-- the tombstone keeps the listing's K
+	check(ledgerOf(a, id).K == nil or ledgerOf(a, id).K == "I:Jelly", "(a tombstone written by another session may lack K)", "")
+	-- the save's row cap: one more Out row than SaveV4.MarketRows is refused and the things stay
+	local cw = marketWorld()
+	local rows = {}
+	for i = 1, cw.Config.SaveV4.MarketRows do
+		rows["c" .. string.format("%03d", i)] = { K = "I:Jelly", N = 1, Price = 2, St = "Cancel", At = NOW, Exp = NOW + 99, Fin = NOW }
+	end
+	local cp, cpd = hero(cw, 67, { Items = { Jelly = 30 }, Market = { Day = 0, Lists = 0, Buys = 0, Done = {}, In = {}, Out = rows } })
+	local cn = #cw.Notices
+	listJelly(cw, cp)
+	local outN = 0
+	for _ in cpd.Market.Out do outN += 1 end
+	check(outN == cw.Config.SaveV4.MarketRows and cpd.Items.Jelly == 30 and notes(cw, cp, cn) == "The market is full.",
+		"the save's row cap: no 65th row, the Jelly stays, 'The market is full.'", show({ outN, cpd.Items.Jelly, notes(cw, cp, cn) }))
 	-- FIX: the ledger is read without the server cache
 	check(c.GetOpts ~= nil and c.GetOpts.UseCache == false, "ledger reads pass UseCache = false", show(c.GetOpts and c.GetOpts.UseCache))
 	-- FIX: a listing undone after a failed save keeps what no longer fits (owed, Ret)
