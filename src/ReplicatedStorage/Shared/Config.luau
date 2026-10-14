@@ -4502,11 +4502,11 @@ end
 -- Attr = the Player attribute (true / false) the server keeps while the player owns it. No stat is ever sold (A23-75):
 -- 2x XP / 2x Gold double what is EARNED, and that counts for the level cap and the rankings as it is.
 Config.GamePasses = {
-	XP2 = { Id = 0, Price = 199, Name = "2x XP", Attr = "PassXP2" },
-	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
-	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
-	Stickers = { Id = 0, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
-	Bubbles = { Id = 0, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
+	XP2 = { Id = 2037356271, Price = 199, Name = "2x XP", Attr = "PassXP2" },
+	Gold2 = { Id = 2036360276, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
+	VIP = { Id = 2037986277, Price = 249, Name = "VIP", Attr = "PassVIP" },
+	Stickers = { Id = 2037920281, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
+	Bubbles = { Id = 2038178270, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
 -- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
@@ -4639,15 +4639,35 @@ function Config.BubbleSide(key)
 	end
 	return nil
 end
+
+-- A23-182 (user 2026-10-14: 이동 = 월 구독, 패스 아님): Fast Travel = a monthly in-experience subscription. Id = the number
+-- Creator Hub shows (the API gets "EXP-<Id>"; a string Id is used as it is); 0 = off. MonetizationService asks Roblox at
+-- PlayerReady and on Players.UserSubscriptionStatusChanged (GetUserSubscriptionStatusAsync, pcall: a failure / Studio = not
+-- subscribed) and mirrors the answer as the player attribute Attr (the screen reads it). The Travel remote (the menu's
+-- teleport) works only while subscribed; the glowing pads (ZoneService pads, the PvP pads) stay free for everyone.
+Config.Subscriptions = {
+	FastTravel = { Id = 118606392447792, Attr = "SubFastTravel" },
+}
+-- the shop card (game dev 1, fix/fast-travel-pass-ui): Id = the api id ("EXP-<Id>", "" = off: no card) made from
+-- Config.Subscriptions below (one source), Price = R$ a month (set on Creator Hub; shown only), Attr / Icon
+Config.SubscriptionInfo = {
+	FastTravel = { Name = "Fast Travel", Line = "Teleport to any zone you have unlocked from the menu. No stats are for sale.",
+		Price = 149, Attr = "SubFastTravel", Icon = "IconTravel" },
+}
+for key, info in Config.SubscriptionInfo do
+	local id = Config.Subscriptions[key] and Config.Subscriptions[key].Id
+	info.Id = (type(id) == "number" and id > 0) and string.format("EXP-%d", id) or (type(id) == "string" and id ~= "0" and id or "")
+end
+
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
 -- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
 -- comma-separated, in Order); worn: LookOn (an id of the player's own faction, or "").
 Config.Looks = {
-	HaloIce = { Faction = "Halo", PassId = 0, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
-	HaloGold = { Faction = "Halo", PassId = 0, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
-	HornsLava = { Faction = "Horns", PassId = 0, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
-	HornsShadow = { Faction = "Horns", PassId = 0, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
+	HaloIce = { Faction = "Halo", PassId = 2036084293, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
+	HaloGold = { Faction = "Halo", PassId = 2036414290, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
+	HornsLava = { Faction = "Horns", PassId = 2036582289, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
+	HornsShadow = { Faction = "Horns", PassId = 2037344272, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
 	HaloSprout = { Faction = "Halo", Unlock = { Attendance = 14 }, Name = "Sprout Halo", Icon = "LookHaloSprout", Order = 5 },
 	HornsSprout = { Faction = "Horns", Unlock = { Attendance = 14 }, Name = "Sprout Horns", Icon = "LookHornsSprout", Order = 6 },
 	HaloStarlight = { Faction = "Halo", Unlock = { Attendance = 50 }, Name = "Star Halo", Icon = "LookHaloStarlight", Order = 7 },
@@ -6423,9 +6443,14 @@ Config.ClassGrips = {
 -- in CharacterVisuals is gone. The swords follow Roblox's ClassicSword (메인 반영 1 10/13, main_apply/classic_sword:
 -- Tool.Grip (0, 0, -1.5) on its 4-stud handle mesh; side photo: the fist's middle 74% up the hilt from the pommel end,
 -- its top against the guard): 0.75 of our 1.2-stud hilt (the table's first 0.6 left a gap under the guard).
+-- 최종 검수 10/14 (user while playing: from behind the swordsman held the blade straight up over the shoulder like a pole,
+-- the fist on the guard): the swords are held in the MIDDLE of the hilt (Point 0.5: the guard sits above the fist), and
+-- Rest = the turn in the fist while standing / walking (WeaponPose.RestStep fades the default toolnone out, so the arm
+-- hangs): the blade at the side, its tip up and back (130 degrees about the fist's X = 40 degrees back from upright);
+-- an attack clip brings back the plain grip (Turn) and toolnone
 Config.WeaponGrips = {
-	Sword = { Point = 0.75 },
-	DarkSword = { Point = 0.75 },
+	Sword = { Point = 0.5, Rest = { 130, 0, 0 } },
+	DarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },
 	Bow = { Point = 0.5 },
 	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
 	Staff = { Point = 0.45 },
@@ -6443,12 +6468,14 @@ function Config.WeaponGripOf(kind)
 end
 
 -- (pure) the Tool.Grip of a weapon kind whose Handle is len studs long: the grip point (0, (Point - 0.5) x len, 0) on the
--- Handle, turned by Turn. The engine then puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's
--- frame in the fist = CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
-function Config.WeaponGrip(kind, len)
+-- Handle, turned by Turn (mode "Rest" and a row with Rest: turned by Rest - the standing / walking hold). The engine then
+-- puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's frame in the fist =
+-- CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
+function Config.WeaponGrip(kind, len, mode)
 	local row = Config.WeaponGripOf(kind)
 	local point = math.clamp(tonumber(row.Point) or 0.5, 0, 1)
 	local turn = type(row.Turn) == "table" and row.Turn or {}
+	if mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end
 	local angles = CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
 	return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
 end

@@ -5825,6 +5825,8 @@ function L.TileWindow(def)
 	local panels = C and C.Panels
 	local has = type(panels) == "table" and type(panels.Has) == "function" and panels.Has or nil
 	if not has then return nil end
+	-- A23-182: the Travel square only for a Fast Travel subscriber (Panels.TravelOn: SubFastTravel)
+	if def.Window == "Travel" and not (type(panels.TravelOn) == "function" and panels.TravelOn() == true) then return nil end
 	if def.Window and has(def.Window) == true then return def.Window end
 	if def.Alt and has(def.Alt) == true then return def.Alt end
 	return nil
@@ -6683,6 +6685,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "Class", "ClassChosen" }, L.RefreshAttackGlyph)
 	UIKit.OnAttr({ "Class", "ClassChosen", "Faction" }, L.RefreshSkillIcon)
 	UIKit.OnAttr({ "Level", "Rebirths", "VacationDays", "AttendReady" }, refreshMenuGlow)
+	UIKit.OnAttr({ "SubFastTravel" }, function() if ui.foldOpen then L.PlaceFold(false) end end) -- A23-182: the Travel square
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",

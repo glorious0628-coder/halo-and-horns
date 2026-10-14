@@ -56,8 +56,9 @@ OUT = ROOT / "docs/art/verification_2026-10-12/offline_tool_grip_2026-10-12.json
 LUAU = ROOT / "build/luau_cli_0_741/luau.exe"
 FIXTURE = ROOT / "tools/fixtures/archer_native_aju.json"
 # the user's table (docs/design/weapon_grip_plan_2026-10-12.md, chosen 10/12 night): where the fist holds the Handle;
-# the swords at Roblox's ClassicSword (메인 반영 1 10/13: the fist 74% up its hilt, its top against the guard) = 0.75
-POINTS = {"Sword": 0.75, "DarkSword": 0.75, "Bow": 0.5, "ShortBow": 0.5, "Staff": 0.45, "CrookStaff": 0.45, "FlaskStaff": 0.45,
+# the swords: 최종 검수 10/14 (user while playing: the fist sat on the guard) = the middle of the hilt, 0.5 (was 0.75 =
+# Roblox's ClassicSword, the fist's top against the guard)
+POINTS = {"Sword": 0.5, "DarkSword": 0.5, "Bow": 0.5, "ShortBow": 0.5, "Staff": 0.45, "CrookStaff": 0.45, "FlaskStaff": 0.45,
           "Hammer": 0.3, "Baton": 0.3}
 ROWS = [("Warrior", "Halo", "Sword"), ("Warrior", "Horns", "DarkSword"), ("Warrior", "Neutral", "Hammer"),
         ("Mage", "Halo", "Staff"), ("Mage", "Horns", "CrookStaff"), ("Mage", "Neutral", "FlaskStaff"),
@@ -240,6 +241,28 @@ do
 	check(model:FindFirstChild("Handle").CFrame.UpVector:Dot(Vector3.yAxis) > 0.9999, "toolnone (the arm forward): the sword stands upright")
 end
 
+-- 최종 검수 10/14 (user while playing: from behind, the blade stood straight up over the shoulder like a pole): standing /
+-- walking the arm hangs (WeaponPose.RestStep fades toolnone out; the hand keeps the body's axes) and the Rest grip puts
+-- the blade at the side, tip up and 30..50 degrees back, not across the body; the grip point stays the hilt's middle; a row
+-- without Rest keeps its grip
+do
+	local att = HANDS[1].Grip
+	local hand = CFrame.new(1.5, 1, 0)
+	for _, kind in { "Sword", "DarkSword" } do
+		local grip = Config.WeaponGrip(kind, 1.2, "Rest")
+		local cf = hand * att * grip:Inverse()
+		local up = cf.UpVector
+		local back = math.deg(math.atan2(up.Z, up.Y))
+		check(up.Y > 0.5 and back >= 30 and back <= 50 and math.abs(up.X) < 0.2,
+			kind .. ": resting (the arm down) the blade's tip goes up and 30..50 degrees back, at the side", back)
+		check(((hand * att).Position - cf.Position).Magnitude < 1e-6, kind .. ": resting, the fist still holds the hilt's middle")
+		local held = hand * att * Config.WeaponGrip(kind, 1.2):Inverse()
+		check(held.UpVector:Dot(cf.UpVector) < 0.9, kind .. ": the attack hold (plain grip) is not the rest turn")
+	end
+	local a, b = Config.WeaponGrip("Staff", 3, "Rest"), Config.WeaponGrip("Staff", 3)
+	check((a.Position - b.Position).Magnitude < 1e-9 and a.UpVector:Dot(b.UpVector) > 0.9999, "a row without Rest keeps its grip at rest")
+end
+
 -- Fx.bowHand: the draw moves the bow onto the left grip and back - one weld per bow (switched on / off), MOTION.BOW_HOLD s
 -- on the left after a clip (rapid shots never flip it), at once on death (최종 검수 10/13 review)
 local function bowWelds(handle)
@@ -409,6 +432,12 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          and "SolveArm" not in wp),
         ("WeaponPose: the grip probe runs in Studio only, with GripProbe", 'RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true' in wp),
         ("ClientMain still loads WeaponPose", '"WeaponPose"' in main),
+        # 최종 검수 10/14: the sword rests at the side unless an attack clip runs (toolnone faded, the Rest grip)
+        ("WeaponPose.RestStep: toolnone faded and the Rest grip while no attack runs, back for an attack",
+         "local want = WeaponPose.Want(kind, fxAttacking(char))" in wp and "local w = rest and T.Low or 1" in wp
+         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)' in wp and "tr:AdjustWeight(w, rest and T.Fade or 0)" in wp and "weld.C1 = c1" in wp
+         and "weld.Part1 == handle" in wp
+         and "pcall(WeaponPose.RestStep, os.clock())" in wp and "function Fx.AttackPlaying(char)" in fx),
         ("ClassGrips: nine rows, each only its Weapon", len(rows) == 9 and all(line.rstrip().endswith("},") or "}, --" in line for line in rows)
          and all(k not in grips.split("Config.ClassGrips = {", 1)[1] for k in ("Hold =", "OneHand", "OffHand", "TwoHand", "Walk ="))),
         ("CharacterVisuals: no fist() angle rule left", "fist(" not in weapon.replace("old per-weapon fist() angle", "")),
@@ -443,8 +472,11 @@ def run(src: dict) -> tuple[list[tuple[str, bool]], str]:
 
 
 MUTATIONS = [
-    ("CONFIG", "the sword held at its middle (the old 50%)", "\tSword = { Point = 0.75 },", "\tSword = { Point = 0.5 },"),
-    ("CONFIG", "the dark sword back at the first 0.6 (a gap under the guard)", "\tDarkSword = { Point = 0.75 },", "\tDarkSword = { Point = 0.6 },"),
+    ("CONFIG", "the sword's fist on the guard again (0.75)", "\tSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tSword = { Point = 0.75, Rest = { 130, 0, 0 } },"),
+    ("CONFIG", "the dark sword at 0.6", "\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tDarkSword = { Point = 0.6, Rest = { 130, 0, 0 } },"),
+    ("CONFIG", "the rest blade straight up (the pole look)", "\tSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tSword = { Point = 0.5, Rest = { 90, 0, 0 } },"),
+    ("CONFIG", "the rest blade lying back flat", "\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },", "\tDarkSword = { Point = 0.5, Rest = { 175, 0, 0 } },"),
+    ("CONFIG", "the rest mode ignored", '\tif mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end\n', ""),
     ("CONFIG", "the staff at the old 43%", "\tStaff = { Point = 0.45 },", "\tStaff = { Point = 0.43 },"),
     ("CONFIG", "the hammer held at its head", "\tHammer = { Point = 0.3 },", "\tHammer = { Point = 0.7 },"),
     ("CONFIG", "the short bow not canted", "ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },", "ShortBow = { Point = 0.5 },"),
@@ -490,6 +522,11 @@ MUTATIONS = [
     ("FX", "drop leaves the bow in the left hand", "\tFeel.clearWeaponMotion(st)\n\tFeel.bowHand(st, false)\n", "\tFeel.clearWeaponMotion(st)\n"),
     ("FX", "a sword moved too", 'weapon:GetAttribute("AttackHand") == "LeftHand" and weapon:FindFirstChild("Handle")', 'weapon:FindFirstChild("Handle")'),
     ("FX", "an attack clip changed", "PaladinSwing", "PaladinSwing2"),
+    ("WP", "the sword never rests", "local w = rest and T.Low or 1", "local w = 1"),
+    ("WP", "rests during an attack too", "local want = WeaponPose.Want(kind, fxAttacking(char))", "local want = WeaponPose.Want(kind, false)"),
+    ("WP", "the rest step never runs", "local okR, errR = pcall(WeaponPose.RestStep, os.clock())", "local okR, errR = true, nil"),
+    ("WP", "the weld never turns (Tool.Grip only: the engine weld kept the blade level)", "weld.C1 = c1", "local _ = c1"),
+    ("WP", "an attack fades in (the blade level with the arm still down)", "tr:AdjustWeight(w, rest and T.Fade or 0)", "tr:AdjustWeight(w, T.Fade)"),
     ("WP", "WeaponPose writes a joint again", "function WeaponPose.Step(dt)\n", "function WeaponPose.Step(dt)\n\tlocal m = nil; if m then m.Transform = CFrame.identity end\n"),
     ("HERO", "the Hero preview drops the weapon Tool", 'if inst:IsA("Tool") and inst.Name == "WeaponModel" then return true end', ""),
 ]

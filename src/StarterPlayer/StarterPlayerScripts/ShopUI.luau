@@ -192,6 +192,31 @@ local function metric(id, arg)
 	if type(cb) == "table" and type(cb.Metric) == "function" then pcall(cb.Metric, id, arg) end
 end
 
+-- A23-182 (user 10/14, 정정: Fast Travel = a monthly subscription): the subscription cards under the passes, one a row of
+-- Config.SubscriptionInfo (game dev 2: { [kind] = { Id = "EXP-…", Name, Line, Price, Attr?, Icon? } }) whose Id is a real
+-- subscription id ("" / 0 = no card); a tap = MarketplaceService:PromptSubscriptionPurchase; Attr (default "Sub"..kind,
+-- e.g. SubFastTravel, set by the server) = subscribed. Pure (tools/test_fast_travel_ui.py)
+function ShopUI.SubCards()
+	local all = type(Config.SubscriptionInfo) == "table" and Config.SubscriptionInfo or {}
+	local out = {}
+	for kind, d in all do
+		if type(kind) == "string" and type(d) == "table" and type(d.Id) == "string" and d.Id ~= "" and d.Id ~= "0"
+			and type(d.Name) == "string" then
+			table.insert(out, { Kind = kind, Id = d.Id, Name = d.Name, Line = type(d.Line) == "string" and d.Line or nil,
+				Price = tonumber(d.Price) or 0, Attr = type(d.Attr) == "string" and d.Attr or ("Sub" .. kind),
+				Icon = type(d.Icon) == "string" and d.Icon or "IconTravel" })
+		end
+	end
+	table.sort(out, function(a, b) return a.Kind < b.Kind end)
+	return out
+end
+
+local function promptSub(id, kind)
+	metric("PurchasePrompt", kind)
+	local ok, err = pcall(MarketplaceService.PromptSubscriptionPurchase, MarketplaceService, player, id)
+	if not ok then Util.Warn(TAG, "PromptSubscriptionPurchase failed: " .. tostring(err)) end
+end
+
 local function prompt(id, kind)
 	metric("PurchasePrompt", kind)
 	local ok, err = pcall(MarketplaceService.PromptGamePassPurchase, MarketplaceService, player, id)
@@ -472,6 +497,40 @@ local function buildShop(parent, kit, arg)
 		if not p.Info then metric("PassView", p.Kind) end -- one a kind per open (ComeBack keeps its own gap)
 	end
 
+	-- A23-182: the subscriptions (Fast Travel), one card each, under the passes
+	local subCells = {}
+	local subs = ShopUI.SubCards()
+	if #subs > 0 then
+		local scards = grid(kit, parent, "Subscriptions", L.Cols, L.CardH, #subs)
+		for _, sd in subs do
+			local function tapSub()
+				if attrOf(sd.Attr, false) == true then kit.Toast(T.OwnedToast, "info"); return end
+				promptSub(sd.Id, sd.Kind)
+			end
+			local card = cardButton(u, kit, scards, "Sub" .. sd.Kind, tapSub, openedAt)
+			rimSlot(u, "SlotRare", sd.Icon, {
+				Name = "Slot", AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, L.Pad),
+				Size = UDim2.fromOffset(L.Slot, L.Slot), ScaleType = Enum.ScaleType.Fit, Parent = card,
+			})
+			cardWords(u, card, sd.Name, sd.Line, linesTop, linesH)
+			local cell = { Sub = sd }
+			cell.Button = capsule(kit, card, function()
+				if os.clock() >= openedAt + L.Guard then tapSub() end
+			end)
+			table.insert(subCells, cell)
+		end
+	end
+	local function refreshSubs()
+		for _, cell in subCells do
+			if attrOf(cell.Sub.Attr, false) == true then
+				setCapsule(kit, cell, T.Owned, kit.Palette.Free, true)
+			else
+				setCapsule(kit, cell, string.format(T.MonthF, Util.FormatInt(cell.Sub.Price)), kit.Palette.Buy, true)
+			end
+		end
+	end
+	refreshSubs()
+
 	-- looks: my side's rim tiles (nothing while no look is listed yet)
 	local looks = lookList()
 	local mine = myFaction()
@@ -504,6 +563,7 @@ local function buildShop(parent, kit, arg)
 
 	local function refreshAll()
 		for _, cell in passCells do refreshPass(kit, cell) end
+		refreshSubs()
 		for _, cell in lookCells do refreshLook(kit, cell) end
 		for _, r in ticketRows do
 			r.Label.Text = string.format(T.TicketF, r.Name, math.floor(tonumber(attrOf(r.Attr, 0)) or 0))

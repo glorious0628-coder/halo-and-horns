@@ -411,6 +411,20 @@ MUTATIONS = [
      "\tif PASS.Queued[userId] then return end\n\tPASS.Want[userId] = entry\n"),
     ("a queued write dropped after a leave", M, "\t\tlocal want = PASS.Want[userId]\n\t\tPASS.Want[userId] = nil\n",
      "\t\tlocal want = PASS.Want[userId]\n\t\tPASS.Want[userId] = nil\n\t\tif Players:GetPlayerByUserId(userId) == nil then return end\n"),
+    # A23-182: the Fast Travel subscription
+    ("sub: the api id without EXP-", M, 'then return string.format("EXP-%d", id) end', 'then return string.format("%d", id) end'),
+    ("sub: Id 0 asked", M, 'id == id and id > 0 and id == math.floor(id) then', 'id == id and id >= 0 and id == math.floor(id) then'),
+    ("sub: a failed ask counts", M, "\t\ton = ok and type(res) == \"table\" and res.IsSubscribed == true\n", "\t\ton = not ok or res.IsSubscribed == true\n"),
+    ("sub: renewing counts as subscribed", M, "res.IsSubscribed == true\n", "(res.IsSubscribed == true or res.IsRenewing == true)\n"),
+    ("sub: no attribute", M, '\tif type(def.Attr) == "string" then player:SetAttribute(def.Attr, on) end\n', ""),
+    ("sub: never asked at join", M, "\t\ttask.spawn(SUB.CheckAll, player) -- A23-182: subscriptions, every join\n", ""),
+    ("sub: the change signal ignored", M, "\t\t\t\tif MonetizationService.SubscriptionApiId(key) == subscriptionId then\n",
+     "\t\t\t\tif false then\n"),
+    ("sub: any change rechecks every key", M, "\t\t\t\tif MonetizationService.SubscriptionApiId(key) == subscriptionId then\n",
+     "\t\t\t\tif true then\n"),
+    ("sub: kept after a leave", M, "\t\tSUB.Active[player] = nil\n", ""),
+    ("sub: HasSub is the attribute", M, "\tlocal a = SUB.Active[player]\n\treturn a ~= nil and a[key] == true\n",
+     "\treturn player:GetAttribute(\"SubFastTravel\") ~= false\n"),
 ]
 
 
