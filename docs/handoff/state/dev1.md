@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/15 아침 — 번역 체인·숨기기·쥐는 자세 (push, 최신)
+## 10/15 낮 — 무기 상점 창 dev1-weapon-shop 3eb69150 (push, 최신)
+- dev2-weapon-shop 위 + dev1-hold-pose 합침. WSHOP.CatalogTiers(1·2·3·10·11), WSHOP.IsMeme, Offer가 밈 줄 허용, Config.WeaponMemeScreen{Line, Look}; WeaponPose.MemeOf/MemeLook(코드 팬·닭, 서버 모양 로컬 숨김, 칼 자세); Fx Feel.memeHits(SoundId·ParticleId 빈칸 = 없음). test_weapon_shop_meme 10·9/9.
+- 남은 큐: fix/client-text-central을 병합된 main 위로 다시 올리기(tr-first10·format-keys·hide-not-now·bag-slots·war-bar 등이 main에 들어간 뒤; 그때 HUD·BagUI 표도 옮김). 그 전엔 대기.
+
+## 10/15 아침 — 번역 체인·숨기기·쥐는 자세 (push)
 - 병합 순서(최종 검수): small-ui·war-bar·goal-chip → **fix/tr-first10** (첫 10분 문장 키, ui-tr 포함) → **fix/format-keys-modules** (모듈 표도 format_keys, '% ' 공백 형식 아님) → **fix/hide-not-now** (Config.QuestNotNow: 거위·S2 줄 1시간 규칙, 상점 티켓 칸 삭제) → **dev1-hold-pose** c94c5a60 (A23-187) → 맨 뒤 **fix/client-text-central** a49a16f7 (Config.ClientText.<모듈>, HUD·BagUI는 그 가지들 병합 뒤 옮김 → 그때 tr-first10 위로 다시 올리기).
 - 시험 습관: 종료 코드만 보지 말 것(실패인데 exit 0인 시험 많음) → scratchpad sweep.sh는 Status: failed / N failing도 잡음. 무거운 전체 시험은 가지당 한 번, 변이는 바뀐 모듈만(최종 검수 요청: PC 부하).
 - 작업 폴더: wt_dev1merge(전체), wt_dev1b·wt_dev1c(sparse: src/tools/docs/design, build는 ../Game/build 연결).
