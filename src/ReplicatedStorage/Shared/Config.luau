@@ -1146,6 +1146,16 @@ Config.Stats = {
 		LevelAuto = "%s · Power %s → %s", -- "+1 Health · Power 965 → 1003"
 		LevelPoints = "+%d Stat Points! Tap Power.", -- Auto off (Config.Plural: "+1 Stat Point!")
 		FirstManual = "Tap + to pick. Reset is free!", -- once, the first time Auto is turned off
+		-- the Hero window's Stats tab (게임성 개발 1, CharacterUI.StatPanel; 최종 검수 10/15 계획 5 / 2-C #3)
+		Head = "Stat Points",
+		Free = "Free points: %d",
+		Points = "%d pts · +%s%%", -- (points in it, its bonus)
+		Plus = "+", Plus5 = "+5",
+		AutoOn = "Auto: On", AutoOff = "Auto: Off",
+		Reset = "Reset (free)",
+		AutoAsk = "Turn Auto on?", AutoAskBody = "Your class will place every point again.", AutoAskOk = "Turn on",
+		NextPower = "+1: Power %s → %s", -- what one more point in it gives
+		Hunt = "Hunting fame", HuntValue = "%d / %d", -- the HuntFame bar (Config.HuntFame: KillsPerPoint units = Points)
 	},
 }
 

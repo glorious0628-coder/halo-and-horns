@@ -846,4 +846,27 @@ check(#warns == warns10 + 1 and find(body10, "Title_Auto") ~= nil and find(body1
 	"#3: a failing Mount is warned once and the window still draws", #warns - warns10)
 closeWin(reg10, body10)
 
+-- 최종 검수 10/15 (계획 5, 2-C #3): the point panel + the hunting fame bar (Stats tab)
+do
+	local function powerWith(a, h) return 1000 + 30 * a + 20 * h end
+	check(M.StatPanel({ StatOn = false, StatFree = 3 }) == nil, "the point panel hides while Features.StatPoints is off (no 'soon')")
+	local p = M.StatPanel({ StatOn = true, StatAtk = 10, StatHp = 4, StatFree = 3, AutoStat = false, PowerNow = 1380, PowerWith = powerWith })
+	local a = p and p.Rows[1]
+	check(p and p.Free == 3 and p.Auto == false and p.CanReset == true and a.Letter == "A" and a.CanAdd and a.CanAdd5,
+		"by hand with 3 free points: [+] [+5] on, Reset on", p and p.Free)
+	check(a and a.Line == string.format(Config.Stats.Text.Points, 10, math.floor(Config.StatBonus(10) * 100 + 0.5))
+		and a.Next == string.format(Config.Stats.Text.NextPower, "1,380", "1,410"),
+		"a row: its points · bonus, and +1: Power 1,380 → 1,410 (one more point)", a and (tostring(a.Line) .. " | " .. tostring(a.Next)))
+	local auto = M.StatPanel({ StatOn = true, StatAtk = 10, StatHp = 4, StatFree = 3, AutoStat = true, PowerNow = 1380, PowerWith = powerWith })
+	check(auto and not auto.Rows[1].CanAdd and not auto.CanReset, "Auto on: no [+], no Reset (the server places them)")
+	local one = M.StatPanel({ StatOn = true, StatFree = 1, AutoStat = false, PowerWith = powerWith })
+	check(one and one.Rows[2].CanAdd and not one.Rows[2].CanAdd5, "one free point: [+] yes, [+5] no")
+	local hb = M.HuntBar({ Faction = "Halo", HuntFame = 37 })
+	check(hb and hb.Have == 37 and hb.Per == Config.HuntFame.KillsPerPoint and math.abs(hb.Frac - 0.37) < 1e-9
+		and hb.Value == string.format(Config.Stats.Text.HuntValue, 37, Config.HuntFame.KillsPerPoint), "the hunting bar: 37 / 100", hb and hb.Value)
+	check(M.HuntBar({ Faction = "Neutral", HuntFame = 37 }) == nil and M.HuntBar({ Faction = "Halo" }) == nil,
+		"no bar for Neutral or without the HuntFame attribute")
+	local rows = M.StatRows({ Faction = "Halo", StatOn = true, StatFree = 2, AutoStat = false, HuntFame = 5, PowerWith = powerWith })
+	check(rows[1] and rows[1].Kind == "StatPanel" and rows[2] and rows[2].Kind == "HuntBar", "the Stats tab starts with the panel and the bar")
+end
 print(string.format("CHARACTER_UI_SUMMARY checks=%d failed=%d", checks, failed))

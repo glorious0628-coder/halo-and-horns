@@ -82,6 +82,9 @@ MUTATIONS = [
      "\t\tif false then\n"),
     ("UI", "the shown title is sent again", "\t\t\tif t.Current then return false end\n", ""),
     ("UI", "SetTitle sends the name", "return send(\"SetTitle\", nil, id)", "return send(\"SetTitle\", nil, t.Name)"),
+    ("UI", "the point panel while the switch is off", "if type(ctx) ~= \"table\" or ctx.StatOn ~= true then return nil end", "if type(ctx) ~= \"table\" then return nil end"),
+    ("UI", "[+] with Auto on", "CanAdd = not auto and free >= 1 and not maxed", "CanAdd = free >= 1 and not maxed"),
+    ("UI", "the hunting bar for Neutral", "if ctx.Faction ~= \"Halo\" and ctx.Faction ~= \"Horns\" then return nil end", ""),
     ("UI", "a watched attribute does not redraw", "if CharacterUI.Watch[name] then\n", "if false then\n"),
     ("UI", "the Stats page never shows", "\tif VIEW.StatsPage then VIEW.StatsPage.Visible = id == \"Stats\" end\n", ""),
     ("UI", "an equip button never switches off", "kit.SetEnabled(b, enabled)\n", ""),
@@ -209,7 +212,8 @@ def static(src: dict) -> list[tuple[str, bool]]:
          and names.count("CharacterUI") == 1 and names.index("CharacterUI") == names.index("BagUI") + 1
          and names.index("CharacterUI") > names.index("Panels") and names.index("CharacterUI") > names.index("UIKit")),
         ("no player text written in code: " + (", ".join(literals) if literals else "none"), not literals),
-        ("the window sends EquipWeapon and SetTitle only (the server checks both)", sends == ["EquipWeapon", "SetTitle"]),
+        ("the window sends EquipWeapon, SetTitle and StatAction only (the server checks all three)",
+         sends == ["EquipWeapon", "SetTitle", "StatAction"]),
         ("no 'local x <const>' (Luau rule)", re.search(r"local\s+\w+\s*<const>", code) is None),
         ("the header states the GearSlots rule (all six cells, none of its own, Build once, Refresh each open, opts.Refresh)",
          "ALL SIX cells" in header and "NO cell of its own" in header and "Build(frame, { Refresh = fn }) once" in header
