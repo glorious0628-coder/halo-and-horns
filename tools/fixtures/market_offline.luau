@@ -498,7 +498,7 @@ runGroup("buy and pay", function()
 	local g = a.Gold[#a.Gold]
 	check(g and g.Src == "Market" and g.N == 45, "as bank gold 'Market' (never 2x)", show(g and { g.Src, g.N }))
 	check(ledgerOf(a, id).Paid == true and a.Saved[10].Market.Out[id].St == "Paid", "the ledger is marked Paid after the seller's save", show(ledgerOf(a, id)))
-	check(string.find(notes(a, s, n1), "Market sale! +45 gold", 1, true) ~= nil, "the seller's notice", notes(a, s, n1))
+	check(string.find(notes(a, s, n1), "Sold on the Market! +45 gold", 1, true) ~= nil, "the seller's notice", notes(a, s, n1))
 	check(table.find(a.QuestEvents, "10:MarketListed") ~= nil and table.find(b.QuestEvents, "11:MarketBought") ~= nil
 		and table.find(a.QuestEvents, "10:MarketPaid") ~= nil, "the market quests hear MarketListed / MarketBought / MarketPaid",
 		show({ a.QuestEvents, b.QuestEvents }))

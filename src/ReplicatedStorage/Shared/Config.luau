@@ -9843,55 +9843,6 @@ function Config.CodexFromKillLog(killLog, codex)
 	return out
 end
 
--- A23-160 ④ (게임성 개발 2, 10/13): the private test's numbers board (TestMetricsService; docs/design/test_metrics_2026-10-13.md,
--- read with tools/test_metrics_board.py). One document per test round in its own DataStore (Config.StoreName(Store); Studio: its
--- own "_STUDIO" copy), key = Round; no name or UserId. New = an account first seen this round as a fresh save (no intro, Lv1, no
--- kill, under FreshSeconds of play). Milestones of a new account, at whole minutes of play: Lv5, Lv10, Weapon (the first
--- dropped weapon, tier 2+), Claim (the first mission claimed). TenMinutes = the "10-minute run" (Lv5 + Weapon + Claim all
--- before it). Passes: bought, then on a later join (KeptDelay s after it, once the ownership check ran) still working or not.
-Config.TestMetrics = {
-	Enabled = true,
-	Store = "HaloHorns_TestMetrics_v1",
-	Round = "PT1", -- 10/17-20; the next test (12/3-6, A23-162) = "PT2"
-	FlushSeconds = 60,
-	FreshSeconds = 120,
-	TenMinutes = 10,
-	MaxMinute = 60, -- a later milestone is counted at minute 60
-	KeptDelay = 20,
-	Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },
-}
-
--- A23-156 (user 10/13): the private test server (10/17-20) plays with three settings on: the Z skill (Lv15; Z on players stays
--- off, PvPZX), a golden goose every 10 minutes (the real rule stays every 4 hours) and the pass sales. Applied by
--- Config.ApplyTestServer(), which Main.server.luau and ClientMain.client.luau call first thing (so both sides read the same
--- values, and the offline tests keep the real defaults). After the test: Enabled = false.
-Config.TestServer = {
-	Enabled = true,
-	Skills = { ZEnabled = true },
-	GooseEvery = 600,
-	PassSales = true,
-}
-
-function Config.ApplyTestServer()
-	-- 최종 검수 10/13 review: never on the Live game, even when Enabled = false is forgotten after the test
-	if type(Config.EnvName) == "function" and Config.EnvName() == "Live" then return false end
-	local T = Config.TestServer
-	if type(T) ~= "table" or T.Enabled ~= true or T.Applied == true then return false end
-	T.Applied = true
-	if type(T.Skills) == "table" and type(Config.Skills) == "table" then
-		for k, v in T.Skills do Config.Skills[k] = v end
-	end
-	local every = tonumber(T.GooseEvery)
-	if every and every > 0 and type(Config.Goose) == "table" and type(Config.Goose.Schedule) == "table" then
-		Config.Goose.Schedule.Every = math.floor(every)
-	end
-	local defs = type(Config.Switches) == "table" and Config.Switches.Defs or nil
-	if T.PassSales ~= nil and type(defs) == "table" and type(defs.PassSales) == "table" then
-		defs.PassSales.Default = T.PassSales == true
-	end
-	return true
-end
-
 ------------------------------------------------------------------ C-5 / C-7 the player market (게임성 개발 2, 2026-10-13)
 -- SPEC A23-127 / A23-133; server design docs/design/market_server_2026-10-13.md; the window MarketWindow.luau (게임성 개발 4,
 -- docs/design/market_window_2026-10-12.md §6). Switch Config.Features.Market (off: no window, no new listing or purchase;
@@ -9930,7 +9881,7 @@ Config.Market = {
 	Text = {
 		MarketListed = "Listed on the Market.",
 		MarketBought = "Bought %s!", -- (the thing's name)
-		MarketPaid = "Market sale! +%s gold", -- (what the seller got)
+		MarketPaid = "Sold on the Market! +%s gold", -- (what the seller got)
 		MarketCancelled = "Listing cancelled. It's back in your bag.",
 		MarketExpired = "A listing ended. It's back in your bag.",
 		MarketRefund = "Someone was faster. +%s gold back.", -- (the refund)
@@ -9967,7 +9918,9 @@ end
 -- MarketBought / MarketListed / MarketPaid (a player who traded before the quest opened passes at once). Guide = the
 -- window's tab ([Go] opens Market on it: MarketBuy / MarketSell / MarketMine). Rewards = minutes of hunting (proposed;
 -- 최종 검수 sets them).
-for _, name in { "MarketBought", "MarketListed", "MarketPaid" } do Config.StoryQuests.Events[name] = true end
+Config.StoryQuests.Events.MarketBought = true
+Config.StoryQuests.Events.MarketListed = true
+Config.StoryQuests.Events.MarketPaid = true
 Config.StoryQuests.Defs.MK1 = { Kind = "Sub", Title = "Market Day", ShortName = "Market buy",
 	Requires = { Level = 5, Feature = "Market" },
 	Steps = { { Text = "Buy something at the Market", ShortName = "Buy one", Guide = "MarketBuy",
@@ -9978,7 +9931,7 @@ Config.StoryQuests.Defs.MK2 = { Kind = "Sub", Title = "My First Stall", ShortNam
 	Steps = { { Text = "List something at the Market", ShortName = "List one", Guide = "MarketSell",
 		Obj = { Type = "Event", Name = "MarketListed", Past = true } } },
 	Reward = { Gold = 2, XP = 2 } }
-Config.StoryQuests.Defs.MK3 = { Kind = "Sub", Title = "Sold!", ShortName = "Market sale",
+Config.StoryQuests.Defs.MK3 = { Kind = "Sub", Title = "Sold!", ShortName = "Market sold",
 	Requires = { Level = 10, Feature = "Market", Done = { "MK2" } },
 	Steps = { { Text = "Sell something at the Market", ShortName = "Get paid", Guide = "MarketMine",
 		Obj = { Type = "Event", Name = "MarketPaid", Past = true } } },
@@ -10029,6 +9982,55 @@ function Config.MarketRange(key)
 	local base = (w and (tonumber(w.Price) or 0) > 0) and w.Price or M.WeaponRef8
 	local ref = math.floor(base * (1 + M.PlusRef * info.Plus))
 	return ref, math.max(1, math.floor(ref * M.MinMult)), math.floor(ref * M.MaxMult)
+end
+
+-- A23-160 ④ (게임성 개발 2, 10/13): the private test's numbers board (TestMetricsService; docs/design/test_metrics_2026-10-13.md,
+-- read with tools/test_metrics_board.py). One document per test round in its own DataStore (Config.StoreName(Store); Studio: its
+-- own "_STUDIO" copy), key = Round; no name or UserId. New = an account first seen this round as a fresh save (no intro, Lv1, no
+-- kill, under FreshSeconds of play). Milestones of a new account, at whole minutes of play: Lv5, Lv10, Weapon (the first
+-- dropped weapon, tier 2+), Claim (the first mission claimed). TenMinutes = the "10-minute run" (Lv5 + Weapon + Claim all
+-- before it). Passes: bought, then on a later join (KeptDelay s after it, once the ownership check ran) still working or not.
+Config.TestMetrics = {
+	Enabled = true,
+	Store = "HaloHorns_TestMetrics_v1",
+	Round = "PT1", -- 10/17-20; the next test (12/3-6, A23-162) = "PT2"
+	FlushSeconds = 60,
+	FreshSeconds = 120,
+	TenMinutes = 10,
+	MaxMinute = 60, -- a later milestone is counted at minute 60
+	KeptDelay = 20,
+	Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },
+}
+
+-- A23-156 (user 10/13): the private test server (10/17-20) plays with three settings on: the Z skill (Lv15; Z on players stays
+-- off, PvPZX), a golden goose every 10 minutes (the real rule stays every 4 hours) and the pass sales. Applied by
+-- Config.ApplyTestServer(), which Main.server.luau and ClientMain.client.luau call first thing (so both sides read the same
+-- values, and the offline tests keep the real defaults). After the test: Enabled = false.
+Config.TestServer = {
+	Enabled = true,
+	Skills = { ZEnabled = true },
+	GooseEvery = 600,
+	PassSales = true,
+}
+
+function Config.ApplyTestServer()
+	-- 최종 검수 10/13 review: never on the Live game, even when Enabled = false is forgotten after the test
+	if type(Config.EnvName) == "function" and Config.EnvName() == "Live" then return false end
+	local T = Config.TestServer
+	if type(T) ~= "table" or T.Enabled ~= true or T.Applied == true then return false end
+	T.Applied = true
+	if type(T.Skills) == "table" and type(Config.Skills) == "table" then
+		for k, v in T.Skills do Config.Skills[k] = v end
+	end
+	local every = tonumber(T.GooseEvery)
+	if every and every > 0 and type(Config.Goose) == "table" and type(Config.Goose.Schedule) == "table" then
+		Config.Goose.Schedule.Every = math.floor(every)
+	end
+	local defs = type(Config.Switches) == "table" and Config.Switches.Defs or nil
+	if T.PassSales ~= nil and type(defs) == "table" and type(defs.PassSales) == "table" then
+		defs.PassSales.Default = T.PassSales == true
+	end
+	return true
 end
 
 return Config

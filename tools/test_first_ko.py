@@ -199,9 +199,10 @@ def static() -> tuple[int, list[str]]:
     # added one per line after the table: A23-113 SackMet, gameplay plan 2026-10-13 1-A #2 ScrollUsed (M1_1 step 2)
     later = set(re.findall(r"^Config\.StoryQuests\.Events\.(\w+) = true", config, re.M))
     used = set(re.findall(r'Type = "Event", Name = "(\w+)"', config))
-    check(listed == {"FirstKO", "PotionBought", "QuickSlotSet", "PotionUsed"} and later == {"SackMet", "ScrollUsed"}
-          and used <= (listed | later),
-          f"Config.StoryQuests.Events lists the four happenings (+ SackMet, ScrollUsed) and the steps use only those ({sorted(used)})")
+    # C-5 / C-7 (the market): MarketBought / MarketListed / MarketPaid for the market quests MK1-MK3
+    check(listed == {"FirstKO", "PotionBought", "QuickSlotSet", "PotionUsed"}
+          and later == {"SackMet", "ScrollUsed", "MarketBought", "MarketListed", "MarketPaid"} and used <= (listed | later),
+          f"Config.StoryQuests.Events lists the four happenings (+ SackMet, ScrollUsed, the 3 market ones) and the steps use only those ({sorted(used)})")
     check(shop.count('pcall(story.Event, player, "PotionBought"') == 1, "ShopService reports PotionBought once (a successful BuyPotion)")
     buy = function_block(shop, "function M.BuyPotion(")
     check(buy.index("S.PlayerService.SetStat(player, key, count + amount)") < buy.index('"PotionBought"'),
