@@ -49,6 +49,10 @@ local function passWorld(opts)
 	function mp.GetUserSubscriptionStatusAsync(_, player, apiId)
 		table.insert(w.SubAsks, { UserId = player.UserId, Id = apiId })
 		if opts.SubFail then error("offline subscription failure") end
+		if (w.SubFailTimes or 0) > 0 then -- the next N asks error (최종 검수 10/14 ①: the retry)
+			w.SubFailTimes -= 1
+			error("offline subscription failure")
+		end
 		local mine = w.Subs[player.UserId]
 		return { IsSubscribed = mine ~= nil and mine[apiId] == true, IsRenewing = true }
 	end
@@ -1097,6 +1101,32 @@ runGroup("subscription", function()
 	local s = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = "EXP-42" end, Subs = { [5] = { ["EXP-42"] = true } } })
 	local g = s:Join(5)
 	check(g:GetAttribute("SubFastTravel") == true, "a string id EXP-42 is asked as it is", show(s.SubAsks))
+	-- 최종 검수 10/14 ①: a failing ask is tried again; the last answer is saved and counts when every try fails
+	local r = passWorld({ Subs = { [6] = { [API] = true } } })
+	r.SubFailTimes = 1
+	local h = r:Join(6)
+	local asks = 0
+	for _, x in r.SubAsks do if x.Id == API then asks += 1 end end
+	check(h:GetAttribute("SubFastTravel") == true and r.Ms.HasSub(h, "FastTravel") == true and asks == 2,
+		"the first ask fails, the second says yes: on", show({ asks, h:GetAttribute("SubFastTravel") }))
+	check(r.Data[h].PassSeen["Sub:FastTravel"] == true, "Roblox's yes is saved (PassSeen Sub:FastTravel)", show(r.Data[h].PassSeen))
+	r.SubFailTimes = 2
+	local h2 = r:Join(7)
+	check(h2:GetAttribute("SubFastTravel") == false and r.Data[h2].PassSeen["Sub:FastTravel"] == false, "two fails then a no: off, the no saved", show(r.Data[h2].PassSeen))
+	local x = passWorld({ SubFail = true })
+	local k = x:Join(8, { Data = { PassSeen = { ["Sub:FastTravel"] = true } } })
+	local tries = 0
+	for _, y in x.SubAsks do if y.Id == API then tries += 1 end end
+	check(k:GetAttribute("SubFastTravel") == true and x.Ms.HasSub(k, "FastTravel") == true and tries == x.Config.PassBoost.CheckTries,
+		"every try fails (3): the saved yes counts", show({ tries, k:GetAttribute("SubFastTravel") }))
+	local k2 = x:Join(9, { Data = { PassSeen = { ["Sub:FastTravel"] = false } } })
+	check(k2:GetAttribute("SubFastTravel") == false and not x.Ms.HasSub(k2, "FastTravel"), "every try fails, a saved no: off", "")
+	local z2 = passWorld({ EditConfig = function(cfg) cfg.Subscriptions.FastTravel.Id = 0 end })
+	local k3 = z2:Join(10, { Data = { PassSeen = { ["Sub:FastTravel"] = true } } })
+	check(k3:GetAttribute("SubFastTravel") == false and not z2.Ms.HasSub(k3, "FastTravel"), "Id 0 (off): a saved yes never counts", "")
+	local _, seen = x.Config.SanitizeLooks(nil, { ["Sub:FastTravel"] = true, ["Sub:Nope"] = true, Sub = true, ["Sub:"] = false })
+	check(seen["Sub:FastTravel"] == true and seen["Sub:Nope"] == nil and seen.Sub == nil and seen["Sub:"] == nil,
+		"the save keeps Sub:<a Config.Subscriptions key> only", show(seen))
 end)
 
 runGroup("A23-167 first minutes 2x XP", function()

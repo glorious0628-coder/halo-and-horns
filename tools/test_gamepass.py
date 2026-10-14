@@ -219,6 +219,12 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # 최종 검수 10/14 ①: the subscription retry + saved answer
+    ("sub: never tried again", "MONETIZATION_SOURCE", "\t\tif try < Config.PassBoost.CheckTries and player.Parent ~= nil then\n\t\t\ttask.wait(pause)",
+     "\t\tif false then\n\t\t\ttask.wait(pause)"),
+    ("sub: the saved answer ignored", "MONETIZATION_SOURCE", "\t\tanswer = data ~= nil and seenTable(data)[SUB.SeenKey(key)] == true\n", "\t\tanswer = false\n"),
+    ("sub: the answer never saved", "MONETIZATION_SOURCE", "\t\tseenTable(data)[SUB.SeenKey(key)] = answer\n", ""),
+    ("sub: the save drops Sub keys", "CONFIG_SOURCE", "or (sub ~= nil and type(Config.Subscriptions) == \"table\" and Config.Subscriptions[sub] ~= nil)", "or false"),
     # A23-167 the first minutes x2 XP (게임성 개발 2, 2026-10-14)
     ("early: the pass and the first minutes multiply (x4)", P, "\treturn math.max(M.PassMult(player, \"XP2\"), early)\n",
      "\treturn M.PassMult(player, \"XP2\") * early\n"),
@@ -415,9 +421,10 @@ MUTATIONS = [
     # A23-182: the Fast Travel subscription
     ("sub: the api id without EXP-", M, 'then return string.format("EXP-%d", id) end', 'then return string.format("%d", id) end'),
     ("sub: Id 0 asked", M, 'id == id and id > 0 and id == math.floor(id) then', 'id == id and id >= 0 and id == math.floor(id) then'),
-    ("sub: a failed ask counts", M, "\t\ton = ok and type(res) == \"table\" and res.IsSubscribed == true\n", "\t\ton = not ok or res.IsSubscribed == true\n"),
-    ("sub: renewing counts as subscribed", M, "res.IsSubscribed == true\n", "(res.IsSubscribed == true or res.IsRenewing == true)\n"),
-    ("sub: no attribute", M, '\tif type(def.Attr) == "string" then player:SetAttribute(def.Attr, on) end\n', ""),
+    ("sub: a failed ask counts", M, "\t\tif ok and type(res) == \"table\" and type(res.IsSubscribed) == \"boolean\" then return res.IsSubscribed end\n",
+     "\t\tif not ok then return true end\n\t\tif type(res) == \"table\" and type(res.IsSubscribed) == \"boolean\" then return res.IsSubscribed end\n"),
+    ("sub: renewing counts as subscribed", M, "then return res.IsSubscribed end\n", "then return res.IsSubscribed or res.IsRenewing == true end\n"),
+    ("sub: no attribute", M, '\tif type(def) == "table" and type(def.Attr) == "string" then player:SetAttribute(def.Attr, on) end\n', ""),
     ("sub: never asked at join", M, "\t\ttask.spawn(SUB.CheckAll, player) -- A23-182: subscriptions, every join\n", ""),
     ("sub: the change signal ignored", M, "\t\t\t\tif MonetizationService.SubscriptionApiId(key) == subscriptionId then\n",
      "\t\t\t\tif false then\n"),

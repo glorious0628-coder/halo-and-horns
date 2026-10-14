@@ -236,22 +236,59 @@ function MonetizationService.SubscriptionApiId(key)
 	return nil
 end
 
--- asks Roblox about one subscription and mirrors it (attribute Attr); a failure, an off id or Studio's error = false
-function SUB.Check(player, key)
-	local def = Config.Subscriptions[key]
-	local apiId = MonetizationService.SubscriptionApiId(key)
-	local on = false
-	if apiId then
+-- the saved last answer's key in data.PassSeen (Config.SanitizeLooks keeps "Sub:<key>" of a Config.Subscriptions key)
+function SUB.SeenKey(key)
+	return "Sub:" .. tostring(key)
+end
+
+-- one answer from Roblox: true / false, or nil when every try failed (Config.PassBoost.CheckTries, doubling wait)
+function SUB.Ask(player, apiId)
+	local pause = Config.PassBoost.CheckWait
+	for try = 1, Config.PassBoost.CheckTries do
 		local ok, res = pcall(MarketplaceService.GetUserSubscriptionStatusAsync, MarketplaceService, player, apiId)
-		on = ok and type(res) == "table" and res.IsSubscribed == true
+		if ok and type(res) == "table" and type(res.IsSubscribed) == "boolean" then return res.IsSubscribed end
+		if try < Config.PassBoost.CheckTries and player.Parent ~= nil then
+			task.wait(pause)
+			pause *= 2
+		else
+			break
+		end
 	end
-	if player.Parent == nil then return end
+	return nil
+end
+
+function SUB.Set(player, key, on)
+	local def = Config.Subscriptions[key]
 	SUB.Active[player] = SUB.Active[player] or {}
 	SUB.Active[player][key] = on
-	if type(def.Attr) == "string" then player:SetAttribute(def.Attr, on) end
+	if type(def) == "table" and type(def.Attr) == "string" then player:SetAttribute(def.Attr, on) end
+end
+
+-- asks Roblox about one subscription and mirrors it (attribute Attr). 최종 검수 10/14 ①: a failing ask is tried again
+-- like the passes (PASS.Ask); when every try fails the last answer Roblox gave (saved, data.PassSeen["Sub:<key>"]) counts
+-- (none saved = off). An off id (Id 0) = false, never asked, nothing saved
+function SUB.Check(player, key)
+	local apiId = MonetizationService.SubscriptionApiId(key)
+	local answer = false
+	if apiId then answer = SUB.Ask(player, apiId) end
+	if player.Parent == nil then return end
+	local data = S.PlayerService.GetData(player)
+	if answer == nil then
+		answer = data ~= nil and seenTable(data)[SUB.SeenKey(key)] == true
+	elseif apiId and data then
+		seenTable(data)[SUB.SeenKey(key)] = answer
+	end
+	SUB.Set(player, key, answer)
 end
 
 function SUB.CheckAll(player)
+	-- the saved last answers first (nothing waits for Roblox), then Roblox's answer replaces each
+	local data = S.PlayerService.GetData(player)
+	for key in type(Config.Subscriptions) == "table" and Config.Subscriptions or {} do
+		if player.Parent == nil then return end
+		local saved = data ~= nil and MonetizationService.SubscriptionApiId(key) ~= nil and seenTable(data)[SUB.SeenKey(key)] == true
+		SUB.Set(player, key, saved)
+	end
 	for key in type(Config.Subscriptions) == "table" and Config.Subscriptions or {} do
 		local ok, err = pcall(SUB.Check, player, key)
 		if not ok then Util.Warn(TAG, "subscription " .. tostring(key) .. ": " .. tostring(err)) end

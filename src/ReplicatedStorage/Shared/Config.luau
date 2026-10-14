@@ -4721,7 +4721,10 @@ function Config.SanitizeLooks(looks, seen)
 	local passSeen = {}
 	if type(seen) == "table" then
 		for id, v in seen do
-			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]) then
+			-- "Sub:<key>" = a subscription's last answer (최종 검수 10/14 ①, MonetizationService SUB.Check)
+			local sub = type(id) == "string" and string.match(id, "^Sub:(.+)$") or nil
+			if type(id) == "string" and type(v) == "boolean" and (Config.GamePasses[id] or Config.Looks[id]
+				or (sub ~= nil and type(Config.Subscriptions) == "table" and Config.Subscriptions[sub] ~= nil)) then
 				passSeen[id] = v
 			end
 		end
