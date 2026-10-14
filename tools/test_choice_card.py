@@ -29,6 +29,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("bag 10/14: a reward refused when the bag is full", "CARD_SOURCE", "pcall(S.LootService.GrantItem, player, id, want, \"Reward\")", "pcall(S.LootService.GrantItem, player, id, want)"),
     # --- A23-87 (게임성 개발 2): a card's XP reward, never 2x
     ("card XP doubled by the pass", K, "pcall(S.ProgressionService.AddXP, player, xp, xp)",
      "pcall(S.ProgressionService.AddXP, player, xp)"),

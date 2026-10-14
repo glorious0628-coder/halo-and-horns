@@ -49,6 +49,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("bag 10/14: a reward refused when the bag is full", "FINISHER_SOURCE", "pcall(S.LootService.GrantItem, player, id, n, \"Reward\")", "pcall(S.LootService.GrantItem, player, id, n)"),
     # --- MonsterService: the manual mark and the kill's info.Manual
     ("manual hits never marked", M, "\t\tif manual == true then\n\t\t\trecord._manualAt = record._manualAt or {}\n",
      "\t\tif false then\n\t\t\trecord._manualAt = record._manualAt or {}\n"),
