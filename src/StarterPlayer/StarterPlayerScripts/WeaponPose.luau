@@ -29,7 +29,7 @@ local T = {
 	Model = "WeaponModel",
 	ToolNone = "ToolNoneAnim", -- the default Animate's toolnone Animation
 	Low = 0.001, Fade = 0.15, -- the faded toolnone weight / its fade time (s)
-	RestEvery = 0.1, -- s between the hold checks
+	RestEvery = 0.05, -- s between the hold checks
 	ProbeEvery = 2, -- s: Studio's GripProbe print (every frame measured, the worst printed)
 }
 local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0 }
@@ -153,7 +153,9 @@ function WeaponPose.RestStep(now)
 				local rest = want == "Rest"
 				for _, tr in toolNoneTracks(char) do
 					local w = rest and T.Low or 1
-					if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, T.Fade) end
+					-- SwordTest 10/14: to an attack at once (the swing grip comes with it - a fade showed the blade level for a
+					-- moment with the arm still down); back to rest with the fade
+					if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, rest and T.Fade or 0) end
 				end
 				-- the engine's RightGrip weld (C1 = the Tool.Grip it was made with): a client's Tool.Grip change does not reach
 				-- the server-made weld (SwordTest Studio 10/14: the blade stayed level), so the weld's C1 itself turns (local)

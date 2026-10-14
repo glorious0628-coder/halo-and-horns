@@ -435,7 +435,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         # 최종 검수 10/14: the sword rests at the side unless an attack clip runs (toolnone faded, the Rest grip)
         ("WeaponPose.RestStep: toolnone faded and the Rest grip while no attack runs, back for an attack",
          "local want = WeaponPose.Want(kind, fxAttacking(char))" in wp and "local w = rest and T.Low or 1" in wp
-         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)' in wp and "weld.C1 = c1" in wp
+         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)' in wp and "tr:AdjustWeight(w, rest and T.Fade or 0)" in wp and "weld.C1 = c1" in wp
          and "weld.Part1 == handle" in wp
          and "pcall(WeaponPose.RestStep, os.clock())" in wp and "function Fx.AttackPlaying(char)" in fx),
         ("ClassGrips: nine rows, each only its Weapon", len(rows) == 9 and all(line.rstrip().endswith("},") or "}, --" in line for line in rows)
@@ -526,6 +526,7 @@ MUTATIONS = [
     ("WP", "rests during an attack too", "local want = WeaponPose.Want(kind, fxAttacking(char))", "local want = WeaponPose.Want(kind, false)"),
     ("WP", "the rest step never runs", "local okR, errR = pcall(WeaponPose.RestStep, os.clock())", "local okR, errR = true, nil"),
     ("WP", "the weld never turns (Tool.Grip only: the engine weld kept the blade level)", "weld.C1 = c1", "local _ = c1"),
+    ("WP", "an attack fades in (the blade level with the arm still down)", "tr:AdjustWeight(w, rest and T.Fade or 0)", "tr:AdjustWeight(w, T.Fade)"),
     ("WP", "WeaponPose writes a joint again", "function WeaponPose.Step(dt)\n", "function WeaponPose.Step(dt)\n\tlocal m = nil; if m then m.Transform = CFrame.identity end\n"),
     ("HERO", "the Hero preview drops the weapon Tool", 'if inst:IsA("Tool") and inst.Name == "WeaponModel" then return true end', ""),
 ]
