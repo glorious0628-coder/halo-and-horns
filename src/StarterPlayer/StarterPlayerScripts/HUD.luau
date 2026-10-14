@@ -5493,10 +5493,17 @@ function L.StoryTap(st, zone, panels)
 		end
 		return
 	end
+	-- 개발 2 ④ 10/14: the goose plays in the Goose Square (A23-141), never in the Crossroads - the goose chip with its Join
+	-- button glows round instead of a trip (nothing when the chip is not on the screen)
+	if g == "Goose" then
+		local ev = C and C.EventHUD
+		if type(ev) == "table" and type(ev.PulseGooseChip) == "function" then pcall(ev.PulseGooseChip) end
+		return
+	end
 	local target = g
 	if g == "OwnTown" then target = Config.HomeZoneId(getFaction()) end
 	if g == "SlimePond" then target = "SlimeMeadow" end
-	if g == "Fountain" or g == "Goose" then target = "Crossroads" end
+	if g == "Fountain" then target = "Crossroads" end
 	-- 빛 마을 점검 #17 / #21 / #29: a Config.StoryQuests.Landmarks spot (HeroStatue, WoodsGate, GoblinCamp1, ...): its
 	-- zone (Config.ZoneAt), then the spot itself (QuestTarget.Story does the same for the marker)
 	local lms = Config.StoryQuests and Config.StoryQuests.Landmarks

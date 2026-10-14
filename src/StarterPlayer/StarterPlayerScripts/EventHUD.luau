@@ -1154,9 +1154,57 @@ function SQ.chipLine(seconds)
 end
 
 ----------------------------------------------------------------- per-tick updates
+-- the egg bar from EggFx.Bar's numbers (the live round: center = the time; the frozen result: no time)
+function SQ.DrawEggBar(b, center)
+	local col = (b.Coop and b.Side == "Horns") and AC.WarHorns or AC.WarHalo
+	if ui.TugLeft.BackgroundColor3 ~= col then ui.TugLeft.BackgroundColor3 = col end
+	setVisible(ui.TugRight, not b.Coop)
+	ui.TugLeft.Size = UDim2.fromScale(b.Fill, 1)
+	setVisible(ui.TugLeft, b.Fill > 0.001)
+	setText(ui.TugLeftText, b.Coop and L.Tx(TXT, "EggCoop", b.Left, b.Right) or L.Tx(TXT, "EggScore", b.Left))
+	setText(ui.TugRightText, b.Coop and "" or L.Tx(TXT, "EggScore", b.Right))
+	setText(ui.TugCenterText, center or "")
+	local clock = b.Overtime and GOLD or ui.TugCenterInk
+	if clock and ui.TugCenterText.TextColor3 ~= clock then ui.TugCenterText.TextColor3 = clock end
+	if ui.TugCrown then setVisible(ui.TugCrown, b.Overtime == true) end
+end
+
+-- a round glow around a pill / bar (its own rounded rim, no rays): a soft rim that breathes SQ.PulseTimes times, then
+-- goes; reduced motion = a steady rim for the same time. EventHUD.PulseGooseChip (HUD: the goose quest row) uses it too
+SQ.PulseTimes, SQ.PulseHalf = 3, 0.45
+function SQ.Pulse(frame, color)
+	if typeof(frame) ~= "Instance" or not frame:IsA("GuiObject") then return end
+	local rim = frame:FindFirstChild("RoundPulse")
+	if not rim then
+		rim = Instance.new("UIStroke")
+		rim.Name = "RoundPulse"
+		rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		rim.LineJoinMode = Enum.LineJoinMode.Round
+		rim.Parent = frame
+	end
+	rim.Color = typeof(color) == "Color3" and color or GOLD
+	rim.Thickness, rim.Transparency, rim.Enabled = 4, 0.1, true
+	local total = SQ.PulseTimes * SQ.PulseHalf * 2
+	local kit = C and C.UIKit
+	local reduced = type(kit) == "table" and type(kit.ReducedMotion) == "function" and kit.ReducedMotion()
+	if not reduced then
+		local tw = game:GetService("TweenService"):Create(rim, TweenInfo.new(SQ.PulseHalf, Enum.EasingStyle.Sine,
+			Enum.EasingDirection.InOut, SQ.PulseTimes * 2 - 1, true), { Thickness = 1, Transparency = 0.7 })
+		tw:Play()
+	end
+	SQ.PulseToken = (SQ.PulseToken or 0) + 1
+	local token = SQ.PulseToken
+	task.delay(total, function()
+		if SQ.PulseToken == token and rim.Parent then rim.Enabled = false end
+	end)
+end
+
 local function updateGoose(now)
 	SQ.Out = false
-	if gsAttr("GooseActive", false) == true then
+	local active = gsAttr("GooseActive", false) == true
+	if active and SQ.WasActive == false then SQ.Pulse(ui.GooseChip, GOLD) end -- 개발 2 ② 10/14: a round glow at the start
+	SQ.WasActive = active
+	if active then
 		-- A23-141: Eggs mode outside the Goose Square - the chip shows only the goose time (+ the Join button, SQ.update),
 		-- no egg bar; inside the square the bar below shows as before
 		local eggFx = C and C.EggFx
@@ -1192,17 +1240,7 @@ local function updateGoose(now)
 				setVisible(ui.Tug, false)
 				return
 			end
-			local col = (b.Coop and b.Side == "Horns") and AC.WarHorns or AC.WarHalo
-			if ui.TugLeft.BackgroundColor3 ~= col then ui.TugLeft.BackgroundColor3 = col end
-			setVisible(ui.TugRight, not b.Coop)
-			ui.TugLeft.Size = UDim2.fromScale(b.Fill, 1)
-			setVisible(ui.TugLeft, b.Fill > 0.001)
-			setText(ui.TugLeftText, b.Coop and L.Tx(TXT, "EggCoop", b.Left, b.Right) or L.Tx(TXT, "EggScore", b.Left))
-			setText(ui.TugRightText, b.Coop and "" or L.Tx(TXT, "EggScore", b.Right))
-			setText(ui.TugCenterText, Util.FormatTime(b.Seconds))
-			local clock = b.Overtime and GOLD or ui.TugCenterInk
-			if clock and ui.TugCenterText.TextColor3 ~= clock then ui.TugCenterText.TextColor3 = clock end
-			if ui.TugCrown then setVisible(ui.TugCrown, b.Overtime) end
+			SQ.DrawEggBar(b, Util.FormatTime(b.Seconds))
 			return
 		end
 		if ui.TugCrown then setVisible(ui.TugCrown, false) end
@@ -1271,6 +1309,21 @@ local function updateGoose(now)
 		-- 개발 2 10/13: still in the Goose Square after the round = the chip stays for the Leave button (SQ.update)
 		local eggFx = C and C.EggFx
 		local inside = type(eggFx) == "table" and type(eggFx.Inside) == "function" and eggFx.Inside() == true
+		local untilAt = num(gsAttr("GooseResultUntil", 0))
+		if inside and untilAt > now and type(eggFx.Bar) == "function" then
+			local b = eggFx.Bar({ Rescue = gsAttr("GooseResultHalo", 0), Poach = gsAttr("GooseResultHorns", 0), EndsAt = 0,
+				Mode = gsAttr("GooseMode", "Versus"), CoopSide = gsAttr("GooseCoopSide", "None"),
+				CoopTarget = gsAttr("GooseCoopTarget", 0) }, now)
+			if b then
+				setVisible(ui.Tug, true)
+				SQ.DrawEggBar(b, "")
+				if SQ.ResultFor ~= untilAt then -- once per result: the winner's colour (a tie: gold)
+					SQ.ResultFor = untilAt
+					local won = gsAttr("GooseResult", "")
+					SQ.Pulse(ui.Tug, won == "Horns" and AC.WarHorns or (won == "Halo" and AC.WarHalo or GOLD))
+				end
+			end
+		end
 		if nextAt > 0 then
 			setVisible(ui.GooseChip, true)
 			setText(ui.GooseChipText, SQ.chipLine(nextAt - now))
@@ -1744,6 +1797,14 @@ function V2.eventY(rects, chipsShown)
 end
 
 -- the drawn bottom (du) of the next-event chip while the column places it (QuestMarker keeps the marker under it)
+-- 개발 2 ④ (10/14): the goose quest row pressed - the goose chip (with its Join button) glows round; false when it is
+-- not on the screen
+function EventHUD.PulseGooseChip()
+	if not ui.GooseChip or not ui.GooseChip.Visible then return false end
+	SQ.Pulse(ui.GooseChip, GOLD)
+	return true
+end
+
 function EventHUD.TopBottom()
 	return V2.Active and V2.EventBottom or nil
 end
