@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 3 — fix/death-box a63b6665 (다 됨·push, 최신)
+- goal-chips-3는 main c8bf83be 병합됨. 최종 검수 API 검토 S: 패배 화면 박스 220 고정인데 줄 합 ≈350 → 넘침.
+- **fix/death-box a63b6665**(origin/main c8bf83be 위 1커밋): DeathScreen.Look(touch)·BoxHeight(lines, look) 순수, paint()가 박스 높이 = 보이는 줄 합(줄마다 size+8, 사이 6). 폰(TouchEnabled, UIScale 0.75): 글자 Title 56·Cause 20·Lost 19·GotTitle 22·Got 19·Back 18(스타일 바닥 이상), Got 최대 2줄(XP·골드 먼저), 중심 0.5. 계산: PC 350du, 폰 265du = 199px → 361 높이에서 위 81·아래 280px.
+- 시험: death_screen 18·13/13(새: PC 9줄 합, 폰 2줄, 폰 위 막대 58px 아래·바닥 안 + 돌연변이 4), goal_chips 51·19/19(정적 글귀 T.GotSize→look.GotSize), ko_screen, phone_first10, english, phone_text, first_ko, first_ko_king, l10n, story_text 모두 0 failing·MISSED 0.
+- 최종 검수 병합 대기. MINOR(폰 라운드 10/21): FactionPicker 폰 3줄이 스크롤 아래, 작은 PC 창 카드 높이 chH만큼 줄어듦.
+- 다음: ④ 공용 선택 카드 창 준비 + MINOR 1 Held(아래 10/14 새벽 2), origin/main 위 새 가지. 켜기는 10/17 뒤.
+
 ## 10/14 밤 2 — fix/goal-chips-3 6dc8edd0 (다 됨·push, 최신)
 - d31252ac 위 6dc8edd0: Config.luau GotHonor/GotHonorEn을 '-- Config.Plural' 주석 밖 자기 줄로. origin/main과 병합 깨끗(main은 2f8ccc12 뒤 src·시험 안 바꿈).
 - 시험 18개 모두 0 failing·MISSED 0: goal_chips 51·19/19, death_screen 15·9/9, ko_screen 52/52·30/30, story_text errors 0, first_ko 225, first_ko_king 300(314), first_look 16·16/16, hud_layout 11970, hud_reveal 25·15/15, quest_lines 27/27, phone_first10 23·18/18, phone_text 19·11/11, comeback_client 17·9/9, english 81, l10n 92·29/29, fit_text 7/7, camera_input 42/42, place_english(--place) 한글 0.
