@@ -1,6 +1,11 @@
-# 게임성 개발 2 — 상태 (2026-10-14 한밤, 스킬 배우기·황금 거위 보고)
+# 게임성 개발 2 — 상태 (2026-10-15 새벽, 스킬 배우기 고침 보고)
 
-## 지금 (10/14 한밤) — 모두 보고함, 최종 검수 병합 대기
+## 지금 (10/15 새벽) — 보고함, 최종 검수 병합 대기
+- **dev2-learn-skill-2 7ba592dd** (main 8d7075eb 위; worktree ../wt_learn): 메인 Play(publish8)에서 Lv5인데 SkillLearnReady 0 / Gleam 프롬프트 꺼짐 고침. ① SkillService: PlayerReady 때 Level 속성 변화 훅 → catchUp(DebugCommand Level은 LeveledUp 안 탐) ② QuestService.publish: GoalKind "SkillLearn" 줄이 스토리 메인 줄보다 고정 칸 먼저(대장간 방문 뒤) ③ 클라 StoryNpcs.Refresh: SkillLearnReady > SkillSlots 동안 SkillTeacher NPC 프롬프트·! 켬(개발 1에 알림). 시험: skills 207 + 120/120, town_quests 1068 + 260/260, next_goal 58 + 19/19, story_npcs 14 + 11/11, board 97 + 27/27.
+- **다음 할 일:** test_a23_14(변이 없이) 323/330 — 실패 7 = goose-coop / goose-modes 토스트 문구 시험(A23-191 거위 토스트 삭제 뒤 시험이 옛 토스트를 찾음, main에서도 같음). 시험을 GameState GooseResult* 기준으로 고치기.
+- 개발 1 약속(A23-193 화면): 속성 SkillLearnReady(숫자)/SkillTeacher(NpcId), Fx SkillLearned{Slots,Teacher}, 스승 = StoryNpc 태그 + NpcId, 새 원격 없음.
+
+## 앞서 (10/14 한밤) — 병합됨(learn = cc07f98b)
 | 가지 | tip | 무엇 | 시험 |
 |---|---|---|---|
 | dev2-learn-skill | ec0b7341 | A23-193: Lv5/15/25(+과제) = 준비만(속성 SkillLearnReady/SkillTeacher), 진영 스승(Gleam/Rose=Smokey/Otto — Otto 몸에 Talk 프롬프트) 대화 → SkillService.TryLearn → SkillSlots + Fx SkillLearned{Slots,Teacher}. 환생·스승 몸 없음·Learn off = 바로. 저장 형식 그대로. 목표 줄 NextLearn / SkillLearnFirst | skills 206 + 120/120, town_quests 1068 + 260/260, board 97 + 27/27, next_goal 58 + 19/19, a23_14 330(변이 없이) |
