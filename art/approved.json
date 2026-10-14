@@ -8887,7 +8887,13 @@
  "HaloFlowerGarden_4": {
   "prompt": "art/prompts/HaloFlowerWands_concept4.txt",
   "original": "art/out/concept/HaloFlowerWands_concept4.png (ChatGPT via codex_image, 2026-10-14)",
-  "status": "candidate — user 10/14 '너무 이뻐' (회의실); 5차(요술봉 느낌)와 비교 뒤 확정",
+  "status": "확정 — 사용자 10/14 저녁 회의실 '4차가 이뻐'(5차 요술봉판은 탈락: 배경 잔꽃 X)",
   "note": "A23-189: 꽃·덤불 오브제는 Tripo 안 함 — 이 시트를 기준으로 기본 파트(공·원뿔·원기둥·쐐기·고리)+재질로 제작. 주인공 = 진주 구슬+떠다니는 구슬, 수정 다발. 관련: concept.png(1차 단순)·concept2(화려)·concept3(우아)"
+ },
+ "HornsFlowerGarden_1": {
+  "prompt": "art/prompts/HornsFlowerGarden_1.txt",
+  "original": "art/out/concept/HornsFlowerGarden_1.png (ChatGPT via codex_image, 2026-10-14)",
+  "status": "candidate — 사용자 판정 대기",
+  "note": "A23-189 뿔 마을 꽃 오브제, 4차 구성과 같은 틀(불씨 구슬·자수정 다발·용암 줄)"
  }
 }
