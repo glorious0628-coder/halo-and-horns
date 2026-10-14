@@ -4578,6 +4578,7 @@ Config.PassInfo = {
 		PrivateName = "Private Server",
 		PriceF = "%s R$",
 		MonthF = "%s R$ / mo",
+		MonthTextF = "%s / mo", -- a subscription priced by Roblox in the player's money ("$4.99 / mo")
 		Owned = "Owned",
 		Soon = "Coming soon",
 		Off = "Not on sale",

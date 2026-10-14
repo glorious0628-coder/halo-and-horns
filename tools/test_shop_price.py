@@ -7,6 +7,9 @@ ShopUI.LivePrice(id, infoType, fallback[, fetch]) shows MarketplaceService:GetPr
 3. A failure or no price (not for sale) = the Config price, remembered (never asked again).
 4. A price read later repaints the open shop (PRICE.Refresh = the shop's refreshAll).
 5. Call sites: pass cards (GamePass), looks (GamePass), class/faction tickets (Product).
+6. Subscription cards (A23-182): ShopUI.SubPrice(id "EXP-...", fallback) = GetSubscriptionProductInfoAsync(id) the same
+   way (one shared reader PRICE.Ask): its DisplayPrice text (the player's local money, drawn with MonthTextF) or a
+   PriceInRobux number (MonthF); id "" / failure / neither = the Config R$ price.
 Extracted and run: the PRICE table + ShopUI.LivePrice with a queued task.spawn and a fetch double. Static: the call sites.
 Mutations: each must make a check fail.
 Report: docs/art/verification_2026-10-14/offline_shop_price_2026-10-14.json (do not commit)
@@ -22,6 +25,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 FILE = ROOT / "src/StarterPlayer/StarterPlayerScripts/ShopUI.luau"
+CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -60,6 +64,9 @@ end
 local MarketplaceService = { GetProductInfo = function(self, id, t)
 	table.insert(mpCalls, tostring(t) .. ":" .. id)
 	return { PriceInRobux = 77 }
+end, GetSubscriptionProductInfoAsync = function(self, id)
+	table.insert(mpCalls, "Sub:" .. tostring(id))
+	return { DisplayPrice = "$2.99" }
 end }
 local ShopUI = {}
 local env = setmetatable({ ShopUI = ShopUI, MarketplaceService = MarketplaceService,
@@ -135,18 +142,52 @@ ShopUI.LivePrice(808, "GamePass", 1, fetch)
 flush()
 check(ShopUI.LivePrice(808, "GamePass", 1, fetch) == 300 and PRICE.Busy["GamePass:808"] == nil
 	and spawnErrors == 0, "a broken repaint keeps the price (no error escapes the read)", spawnErrors)
+-- 9. subscriptions: "" / "0" = Config, never asked; DisplayPrice text; R$ number; failure = Config; real read
+PRICE.Refresh = function() refreshes += 1 end
+local subCalls = {}
+local subAnswers = { ["EXP-1"] = { DisplayPrice = "$4.99", PriceInRobux = 400 }, ["EXP-2"] = { PriceInRobux = 149 },
+	["EXP-3"] = "error", ["EXP-4"] = { DisplayPrice = "" } }
+local function subFetch(id)
+	table.insert(subCalls, id)
+	local a = subAnswers[id]
+	if a == "error" then error("http 500") end
+	return a
+end
+check(ShopUI.SubPrice("", 149, subFetch) == 149 and ShopUI.SubPrice("0", 149, subFetch) == 149
+	and ShopUI.SubPrice(nil, 149, subFetch) == 149 and #subCalls == 0 and #Q == 0, "no subscription id = Config, not asked",
+	#subCalls)
+local before = refreshes
+for _, id in { "EXP-1", "EXP-2", "EXP-3", "EXP-4" } do
+	check(ShopUI.SubPrice(id, 149, subFetch) == 149, "Config price until Roblox answers (" .. id .. ")", "")
+	ShopUI.SubPrice(id, 149, subFetch)
+end
+check(#Q == 4, "one read per subscription", #Q)
+flush()
+check(ShopUI.SubPrice("EXP-1", 149, subFetch) == "$4.99", "Roblox's own price text first", tostring(ShopUI.SubPrice("EXP-1", 149, subFetch)))
+check(ShopUI.SubPrice("EXP-2", 149, subFetch) == 149 and PRICE.Cache["Sub:EXP-2"] == 149, "else its R$ number", "")
+check(ShopUI.SubPrice("EXP-3", 99, subFetch) == 99 and PRICE.Cache["Sub:EXP-3"] == false, "a failure = Config, remembered", "")
+check(ShopUI.SubPrice("EXP-4", 99, subFetch) == 99, "an empty price text = Config", "")
+check(#subCalls == 4 and #Q == 0 and refreshes == before + 4, "asked once each, each answer repaints", #subCalls)
+ShopUI.SubPrice("EXP-9", 1)
+flush()
+check(count(mpCalls, "Sub:EXP-9") == 1 and ShopUI.SubPrice("EXP-9", 1) == "$2.99",
+	"the real read is MarketplaceService:GetSubscriptionProductInfoAsync(id)", table.concat(mpCalls, ","))
+check(spawnErrors == 0, "no error escapes a read", spawnErrors)
 print(("SHOP_PRICE_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
     ("id 0 asks Roblox", "\tif id <= 0 then return fallback end\n", "\tif id < 0 then return fallback end\n"),
     ("the cache ignored", "\tif v ~= nil then return v == false and fallback or v end\n", ""),
-    ("a failure not remembered", "math.floor(price) or false", "math.floor(price) or nil"),
+    ("a failure not remembered", "(ok and price ~= nil) and price or false", "(ok and price ~= nil) and price or nil"),
     ("asked again while it waits", "\tif not PRICE.Busy[key] then\n", "\tif true then\n"),
     ("busy never cleared", "\t\t\tPRICE.Busy[key] = nil\n", ""),
     ("no repaint", "\t\t\tif PRICE.Refresh then pcall(PRICE.Refresh) end\n", ""),
     ("the repaint without pcall", "if PRICE.Refresh then pcall(PRICE.Refresh) end", "if PRICE.Refresh then PRICE.Refresh() end"),
-    ("the read without pcall", "local ok, info = pcall(get, id, infoType)", "local ok, info = true, get(id, infoType)"),
+    ("the read without pcall", "local ok, price = pcall(function()\n\t\t\t\tlocal info = call()\n"
+     "\t\t\t\treturn type(info) == \"table\" and read(info) or nil\n\t\t\tend)\n",
+     "local ok, price = true, (function()\n\t\t\t\tlocal info = call()\n"
+     "\t\t\t\treturn type(info) == \"table\" and read(info) or nil\n\t\t\tend)()\n"),
     ("a free item shows the Config price", "(price and price >= 0)", "(price and price > 0)"),
     ("the pass card keeps the Config price",
      "Price = ShopUI.LivePrice(cfg.Id, Enum.InfoType.GamePass, tonumber(cfg.Price) or tonumber(cfg.PriceHint) or p.Price),",
@@ -158,6 +199,15 @@ MUTATIONS = [
      "ShopUI.LivePrice(p.Id, Enum.InfoType.GamePass, p.PriceHint)"),
     ("the shop never registers its repaint", "\tPRICE.Refresh = refreshAll", "\t-- PRICE.Refresh = refreshAll"),
     ("the ticket button not repainted", "if r.Button and r.PriceText then r.Button.Text = r.PriceText() end", ""),
+    ("an empty subscription id asks Roblox", 'if type(id) ~= "string" or id == "" or id == "0" then return fallback end',
+     'if type(id) ~= "string" then return fallback end'),
+    ("the subscription ignores Roblox's price text",
+     '\t\tif type(info.DisplayPrice) == "string" and info.DisplayPrice ~= "" then return info.DisplayPrice end\n', ""),
+    ("the subscription ignores its R$ number", "return (robux and robux >= 0) and math.floor(robux) or nil", "return nil"),
+    ("the subscription card keeps the Config price", "local price = ShopUI.SubPrice(cell.Sub.Id, cell.Sub.Price)",
+     "local price = cell.Sub.Price"),
+    ("the price text drawn as R$", 'type(price) == "string" and string.format(T.MonthTextF, price)',
+     'false and string.format(T.MonthTextF, price)'),
 ]
 
 
@@ -176,6 +226,9 @@ def cut(text: str, start: str, end: str) -> str:
     return text[a:b] if b >= 0 else ""
 
 
+CONFIG_TEXT = CONFIG.read_text(encoding="utf-8-sig")
+
+
 def statics(src: str) -> list[tuple[str, bool]]:
     return [
         ("pass cards: GamePass price from Roblox, Config as the fallback",
@@ -185,6 +238,11 @@ def statics(src: str) -> list[tuple[str, bool]]:
          "local price = ShopUI.LivePrice(def.PassId or def.Id, Enum.InfoType.GamePass, tonumber(def.Price) or 99)" in src
          and "Util.FormatInt(price)" in src),
         ("tickets: Product price from Roblox", "ShopUI.LivePrice(p.Id, Enum.InfoType.Product, p.PriceHint)" in src),
+        ("subscription cards: Roblox's price, text with MonthTextF, R$ with MonthF",
+         "local price = ShopUI.SubPrice(cell.Sub.Id, cell.Sub.Price)" in src
+         and 'type(price) == "string" and string.format(T.MonthTextF, price)' in src
+         and "or string.format(T.MonthF, Util.FormatInt(price))" in src
+         and re.search(r'\bMonthTextF = "%s / mo"', CONFIG_TEXT) is not None),
         ("the shop registers its repaint and repaints ticket buttons",
          "\tPRICE.Refresh = refreshAll" in src
          and "if r.Button and r.PriceText then r.Button.Text = r.PriceText() end" in src),

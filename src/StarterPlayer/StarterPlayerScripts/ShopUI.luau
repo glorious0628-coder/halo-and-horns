@@ -91,25 +91,45 @@ end
 -- .PriceInRobux (regional prices and sales: the same number as the buy window). Read once per id in the background
 -- (pcall), cached for the session; until then, on a failure, without a price (not for sale) or with id 0: the Config
 -- price. A new price repaints the open shop (PRICE.Refresh). fetch(id, infoType) -> info is for the offline test.
-local PRICE = { Cache = {}, Busy = {}, Refresh = nil, Fetch = nil }
-function ShopUI.LivePrice(id, infoType, fallback, fetch)
-	id = math.floor(tonumber(id) or 0)
-	if id <= 0 then return fallback end
-	local key = tostring(infoType) .. ":" .. id
+local PRICE = { Cache = {}, Busy = {}, Refresh = nil, Fetch = nil, SubFetch = nil }
+-- one background read per key: call() -> info (pcall), read(info) -> the price or nil (nil / a failure is remembered as
+-- false = the fallback from then on); the first answer repaints the open shop
+function PRICE.Ask(key, fallback, call, read)
 	local v = PRICE.Cache[key]
 	if v ~= nil then return v == false and fallback or v end
 	if not PRICE.Busy[key] then
 		PRICE.Busy[key] = true
-		local get = fetch or PRICE.Fetch or function(i, t) return MarketplaceService:GetProductInfo(i, t) end
 		task.spawn(function()
-			local ok, info = pcall(get, id, infoType)
-			local price = ok and type(info) == "table" and tonumber(info.PriceInRobux) or nil
-			PRICE.Cache[key] = (price and price >= 0) and math.floor(price) or false
+			local ok, price = pcall(function()
+				local info = call()
+				return type(info) == "table" and read(info) or nil
+			end)
+			PRICE.Cache[key] = (ok and price ~= nil) and price or false
 			PRICE.Busy[key] = nil
 			if PRICE.Refresh then pcall(PRICE.Refresh) end
 		end)
 	end
 	return fallback
+end
+function ShopUI.LivePrice(id, infoType, fallback, fetch)
+	id = math.floor(tonumber(id) or 0)
+	if id <= 0 then return fallback end
+	local get = fetch or PRICE.Fetch or function(i, t) return MarketplaceService:GetProductInfo(i, t) end
+	return PRICE.Ask(tostring(infoType) .. ":" .. id, fallback, function() return get(id, infoType) end, function(info)
+		local price = tonumber(info.PriceInRobux)
+		return (price and price >= 0) and math.floor(price) or nil
+	end)
+end
+-- A23-182 subscription card: GetSubscriptionProductInfoAsync("EXP-...") the same way -> Roblox's own price text
+-- (DisplayPrice, the player's local money) or a PriceInRobux number; id "" / failure / neither = the Config R$ price
+function ShopUI.SubPrice(id, fallback, fetch)
+	if type(id) ~= "string" or id == "" or id == "0" then return fallback end
+	local get = fetch or PRICE.SubFetch or function(i) return MarketplaceService:GetSubscriptionProductInfoAsync(i) end
+	return PRICE.Ask("Sub:" .. id, fallback, function() return get(id) end, function(info)
+		if type(info.DisplayPrice) == "string" and info.DisplayPrice ~= "" then return info.DisplayPrice end
+		local robux = tonumber(info.PriceInRobux)
+		return (robux and robux >= 0) and math.floor(robux) or nil
+	end)
 end
 ShopUI._PRICE = PRICE -- tools/test_shop_price.py
 
@@ -525,7 +545,10 @@ local function buildShop(parent, kit, arg)
 			if attrOf(cell.Sub.Attr, false) == true then
 				setCapsule(kit, cell, T.Owned, kit.Palette.Free, true)
 			else
-				setCapsule(kit, cell, string.format(T.MonthF, Util.FormatInt(cell.Sub.Price)), kit.Palette.Buy, true)
+				local price = ShopUI.SubPrice(cell.Sub.Id, cell.Sub.Price) -- 2-C #10: Roblox's price (text or R$)
+				local text = type(price) == "string" and string.format(T.MonthTextF, price)
+					or string.format(T.MonthF, Util.FormatInt(price))
+				setCapsule(kit, cell, text, kit.Palette.Buy, true)
 			end
 		end
 	end
