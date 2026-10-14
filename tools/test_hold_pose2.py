@@ -38,7 +38,7 @@ WP_CUTS = ["function WeaponPose.MemeOf(tier)", "function WeaponPose.HoldOf(kind)
            "function WeaponPose.Approach(x, want, dt, time)", "function WeaponPose.MoveState(air, share)",
            "function WeaponPose.PoseFor(kind, w, state)", "function WeaponPose.Compose(base, target, damp, s)",
            "function WeaponPose.DampOf(pose, joint, state)", "local function fxAttacking(char)", "function WeaponPose.BaseOf(m)",
-           "function WeaponPose.PoseStep(dt)"]
+           "function WeaponPose.JointOf(char, joint)", "function WeaponPose.PoseStep(dt)"]
 
 EXTRA = r'''
 function CF:ToEulerAnglesXYZ()
@@ -87,7 +87,7 @@ local function rig(kind, tier)
     for _, j in { { "Shoulder", "UpperArm" }, { "Elbow", "LowerArm" }, { "Wrist", "Hand" } } do
         for _, s in { "Right", "Left" } do
             local part = child(char, node("Part", s .. j[2], { CFrame = CFrame.new(), Size = Vector3.new(1, 1, 1) }))
-            m[s .. j[1]] = child(part, node("Motor6D", s .. j[1], { Transform = CFrame.new() }))
+            m[s .. j[1]] = child(part, node("Motor6D", s .. j[1], { Transform = CFrame.new(), Enabled = true }))
         end
     end
     local tool = child(char, node("Tool", "WeaponModel"))
@@ -102,6 +102,7 @@ local function rig(kind, tier)
     local player = { Character = char, GetAttribute = function(_, k) return k == "WeaponTier" and (tier or 1) or nil end }
     PLAYERS = { player }
     S.Char = {}
+    S.Joint = {}
     S.Wrote = setmetatable({}, { __mode = "k" })
     return m, grip, root, function(v) state = v end
 end
@@ -202,6 +203,25 @@ do
     ok(m.RightElbow.Transform:FuzzyEq(want, 1e-6), "60 frames: the unwritten elbow holds ONE turn (no build-up)", xOf(m.RightElbow.Transform))
 end
 
+-- 2d. an upgraded avatar (HoldTest 10/15): its Motor6Ds are off, AnimationConstraints drive the arms
+do
+    local m = rig("Sword")
+    local char = PLAYERS[1].Character
+    local torso = child(char, node("Part", "UpperTorso", { CFrame = CFrame.new(), Size = Vector3.new(1, 1, 1) }))
+    local upper = char:FindFirstChild("RightUpperArm")
+    m.RightShoulder.Enabled = false
+    local a0 = child(torso, node("Attachment", "RightShoulderRigAttachment", {}))
+    local a1 = child(upper, node("Attachment", "RightShoulderRigAttachment", {}))
+    local ac = child(char, node("AnimationConstraint", "RightShoulder", { Attachment0 = a0, Attachment1 = a1, Enabled = true,
+        Transform = CFrame.new() }))
+    for _ = 1, 20 do
+        ac.Transform = CFrame.Angles(math.rad(40), 0, 0)
+        WeaponPose.PoseStep(DT)
+    end
+    ok(xOf(ac.Transform) < 4 and math.abs(xOf(m.RightShoulder.Transform)) < 1e-9,
+        "an upgraded avatar: the AnimationConstraint gets the damped pose, the off Motor6D is left alone", xOf(ac.Transform))
+end
+
 -- 3. Config
 local good = true
 for name, pose in Config.HoldPoses do
@@ -232,6 +252,9 @@ MUTATIONS = [
     ("WP", "toolnone raised for the attack", "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end",
      "local w = rest and T.Low or 1 if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, T.Fade) end"),
     ("WP", "the bow back in the right hand for an attack", "\telseif mine and mine.Enabled and fxOn then\n", "\telseif mine and mine.Enabled then\n\t\trightGrip.Enabled = true\n"),
+    ("WP", "only Motor6Ds (an upgraded avatar's arms untouched)", "\tlocal parentName = T.Parents[joint]\n\tfor _, d in char:GetDescendants() do",
+     "\tlocal parentName = T.Parents[joint]\n\tfor _, d in {} do"),
+    ("WP", "a switched-off Motor6D used", "\tif m and m:IsA(\"Motor6D\") and m.Enabled then\n", "\tif m and m:IsA(\"Motor6D\") then\n"),
     ("CONFIG", "the sword's shoulder barely damped", "Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },\n\tStaff",
      "Damp = { Stand = 0.3, Walk = 0.3, Run = 0.3, Air = 0.3, Lower = 0.95 } },\n\tStaff"),
 ]
@@ -280,7 +303,7 @@ def run(src: dict) -> tuple[int, int, str]:
              c[c.find("Config.HoldMotion = {"):c.find("\n", c.find("Config.HoldMotion = {"))] + "\n",
              cut(c, "function Config.WeaponGripOf(kind)"), cut(c, "function Config.WeaponGrip(kind, len, mode)"),
              "local PLAYERS = {}\nlocal Players = { GetPlayers = function() return PLAYERS end }\nlocal WeaponPose = {}\n",
-             t[0] if t else "local T = {}\n", "local S = { Rest = {}, Wrote = {}, Char = {} }\n"]
+             t[0] if t else "local T = {}\n", "local S = { Rest = {}, Wrote = {}, Char = {}, Joint = {} }\n"]
     parts += [cut(w, s) for s in WP_CUTS]
     code = twm.MATH + "\n" + "\n".join(parts) + "\n" + TESTS
     with tempfile.TemporaryDirectory() as d:

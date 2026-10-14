@@ -6650,14 +6650,17 @@ Config.HoldPoses = {
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
 	Staff = { Arm = "Right",
-		Stand = { RightShoulder = { -8, 0, 16 }, RightElbow = { -20, 0, 0 } },
-		Walk = { RightShoulder = { -8, 0, 20 }, RightElbow = { -16, 0, 0 } },
+		-- RightWrist (HoldTest 10/15, measured: the staff leaned 28 degrees forward and in, its orb before the chest):
+		-- turns it back upright, a little back and out
+		Stand = { RightShoulder = { -8, 0, 8 }, RightElbow = { -20, 0, 0 }, RightWrist = { 37, 0, -11 } },
+		Walk = { RightShoulder = { -8, 0, 10 }, RightElbow = { -16, 0, 0 }, RightWrist = { 34, 0, -12 } },
 		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.98 } },
 	Bow = { Arm = "Left",
-		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 } },
-		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 } },
+		-- LeftWrist (HoldTest 10/15, measured: the bow leaned 19 degrees in across the body): upright by the left leg
+		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 13, 0, 13 } },
+		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { 12, 0, 14 } },
 		Run = { LeftShoulder = { 0, 0, -4 }, LeftElbow = { 8, 0, 0 } },
 		Air = { LeftElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95, Free = 0.15 } },

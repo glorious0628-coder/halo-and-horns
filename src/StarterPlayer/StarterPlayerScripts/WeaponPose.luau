@@ -49,10 +49,14 @@ local T = {
 	-- the Motor6Ds of Config.HoldPoses: joint name -> the R15 part it sits in
 	Joints = { RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm", RightWrist = "RightHand",
 		LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm", LeftWrist = "LeftHand" },
+	-- each joint's parent part (an upgraded avatar's AnimationConstraint is found by this part pair, like Fx)
+	Parents = { RightShoulder = "UpperTorso", RightElbow = "RightUpperArm", RightWrist = "RightLowerArm",
+		LeftShoulder = "UpperTorso", LeftElbow = "LeftUpperArm", LeftWrist = "LeftLowerArm" },
 }
 local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0,
 	Wrote = setmetatable({}, { __mode = "k" }), -- motor -> { Out = what we wrote, Base = the animation's value under it }
-	Char = setmetatable({}, { __mode = "k" }) } -- character -> { R = the rest share 0..1, W = the walk blend 0..1 }
+	Char = setmetatable({}, { __mode = "k" }), -- character -> { R = the rest share 0..1, W = the walk blend 0..1 }
+	Joint = setmetatable({}, { __mode = "k" }) } -- character -> { [joint name] = the Motor6D / AnimationConstraint }
 
 -- per hand: dHand = the hand's centre to the weapon line, dGrip = its grip attachment to the line (the holding hand: 0 =
 -- the Handle runs through the fist), axis = its held axis (-Z, the knuckle line) against the line, fore = the forearm
@@ -351,6 +355,38 @@ function WeaponPose.BowRest(char, tool, handle, rightGrip, rest)
 	end
 end
 
+-- hold-pose-2 (HoldTest photos 10/15: the arms kept swinging - the avatar is joint-upgraded, its Motor6Ds are OFF and
+-- AnimationConstraints drive the arms): the joint that really moves `joint` of `char` - an enabled Motor6D of that name
+-- in its part, else an enabled AnimationConstraint joining the same two parts (Fx.findJoints' rule); cached per character
+function WeaponPose.JointOf(char, joint)
+	local cache = S.Joint[char]
+	if not cache then
+		cache = {}
+		S.Joint[char] = cache
+	end
+	local j = cache[joint]
+	if j and j.Parent and j.Enabled then return j end
+	cache[joint] = nil
+	local part = char:FindFirstChild(T.Joints[joint] or "")
+	if not part then return nil end
+	local m = part:FindFirstChild(joint)
+	if m and m:IsA("Motor6D") and m.Enabled then
+		cache[joint] = m
+		return m
+	end
+	local parentName = T.Parents[joint]
+	for _, d in char:GetDescendants() do
+		if d:IsA("AnimationConstraint") and d.Enabled then
+			local a0, a1 = d.Attachment0, d.Attachment1
+			if a0 and a1 and a1.Parent == part and a0.Parent and a0.Parent.Name == parentName then
+				cache[joint] = d
+				return d
+			end
+		end
+	end
+	return nil
+end
+
 -- the animation's value of a motor this frame: its Transform, or - when the Transform is still exactly what we wrote last
 -- frame (the animation does not key that joint) - the base we wrote it over
 function WeaponPose.BaseOf(m)
@@ -405,11 +441,7 @@ function WeaponPose.PoseStep(dt)
 			if not weld.C1:FuzzyEq(c1, T.Same) then weld.C1 = c1 end
 		end
 		if share <= 0 then continue end -- the attack clip owns the arm
-		local function motor(joint)
-			local part = char:FindFirstChild(T.Joints[joint] or "")
-			local m = part and part:FindFirstChild(joint)
-			return (m and m:IsA("Motor6D")) and m or nil
-		end
+		local function motor(joint) return WeaponPose.JointOf(char, joint) end
 		local turns = WeaponPose.PoseFor(kind, st.W, state)
 		local joints = {}
 		for joint in turns do joints[joint] = true end
