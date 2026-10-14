@@ -1,5 +1,10 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/14 낮 끝 (클리어 전) — 다음 나는 여기부터
+- **준비된 것:** ① 키트 스크립트 `tools/worldkit/npc_hd_kit.luau`(몸 SA + 메시 후광 숨김 + 게임 후광 Acc_HaloR1 같은 자리·지름, 키 5.2칸; 부품 사람에도 재사용) ② `tools/npc_hd_split.py`(Blender: 후광 고리 분리·피벗, meshopt GLB 재저장 겸용; 절대 경로만) ③ 재질 표 `docs/design/roblox_material_hd_2026-10-14.md`(첫 모델로 시험 뒤 고침) ④ SA 올린 8장(통짜 BakerGranny·BellElder)은 **미사용**, asset_ids에 _NOTE 표시(지우지 말 것).
+- **다음 일 = 난간:** 최종 검수가 Blender로 합친 `build/tripo_parts/HaloVar4_Balustrade_C_tripo.glb`(부품 13개 = MeshPart 13, 가로대·받침은 축별 맞춤 판; join false). 순서: meshopt이면 Blender 재저장(npc_hd_split.py 참고) → `glb_sa_maps.py`(부품마다 맵) → 맵 직접 보고 10장 이하씩 올림 → `glb_strip_mesh.py` → 최종 검수에 사용자 3D 가져오기 신청 → WorldKit에 놓기 + 재질 표대로 보정 → 2D 옆 낮·밤(C2c) → 디자인 검수 → 최종 검수.
+- WorldKit Studio = 열림·최소화, **저장 금지**(최종 검수 먼저). MCP 이름 "Game", STUDIO_ID로 선택(list_roblox_studios). SA 올리기 남은 것(d 14·g 4 − ArmoryBarrels·JuiceParasol --replace)은 위 10/14 절 그대로.
+
 ## ★ 10/14 낮 — 다시 켬 (A23-174·175: HD 모델 + ⑤ Roblox 재질 전부 필수)
 - 할 일: 통과 HD 모델(art/models/tripo/web/<이름>_HD_pbr_src.*, Blender 크기·피벗 끝난 판; 난간 등 부품 = tools/assemble_parts.py 합본 GLB) → WorldKit(STUDIO_NAME=WorldKit)에 가져오기(사용자 3D 가져오기, 최종 검수 경유) → SA 보정 → 2D 옆 낮·밤(C2c) → 디자인 검수 → 최종 검수. 재질 표 초안 = docs/design/roblox_material_hd_2026-10-14.md.
 - WorldKit Studio = **열림(10/14 낮, 최소화, MCP 이름 "Game"·studio_id는 list_roblox_studios로 확인; STUDIO_NAME=WorldKit 안 맞으면 STUDIO_ID)**. 저장본(10/13 23:42)에 HaloV2·HaloTripoKits 58·Parked_PreTripo*·_TU 109 다 있음 → 백업 불러오기 불필요. 저장(Ctrl+S)은 최종 검수에게 먼저.
