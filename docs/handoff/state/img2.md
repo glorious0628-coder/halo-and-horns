@@ -13,6 +13,7 @@
   8. `HaloPart_Flower_TulipWhite`·`TulipBlue`: 옆 = 잎이 앞뒤로 겹친 좁은 모습. 프롬프트 `*_left_ns.txt`(push), job `<이름>:left:NEW`, right = left 뒤집기, back = 앞 뒤집기.
   9. `HaloVar3_RoundTree_F_Trunk`(옆 = 거의 I자)·`_Canopy`(옆 = 한쪽 덩어리, 아래 열림 없음): 프롬프트 `*_left_ns.txt`(push), job `<이름>:left:NEW,art/out/s2/noshadow/HaloVar3_RoundTree_F_left_ns.png`, right = left 뒤집기, back = 앞 뒤집기.
   10. `HaloPart_Flower_WhiteDaisyMany` 새로: Daisy 화분의 흰 꽃 = 꽃잎 많은 데이지(지금 WhiteDaisy 5잎은 PotA·PotF·덤불용으로 OK). 앞·옆·뒤(fl 방식, ref = `HaloFlowerPotHQ_Daisy_front_ns.png`), 꽃 목록 md의 Daisy 줄을 WhiteDaisyMany로 고치기.
+  11. `Town_Halo_Fountain3_Top`(디자인 검수 10/14 10:40, 최종 검수와 같은 판단): 꼭지 금 공이 원래 통짜 `art/out/s2/noshadow/Town_Halo_Fountain3_front_ns.png` 꼭대기보다 ≈1.4배 큼 → 원래 그림을 재서 공 지름 ≈ 위 그릇 폭의 1/4로 앞 다시, 그릇·기둥은 그대로, 둥근 부품이라 앞 1장 → 4면 복사. 시트 맨 위 줄 = 원래 통짜 4면.
   - 그다음 원래 순서: 사람 14명 부품(프롬프트·작업 목록 준비 끝, 아래 '10/14 10:00' 참고; raw 4장 SirGleam·PotionMerchant Head front·left 있음) → ⑤ 108장.
 - 판정: 꽃 5종 줄기 끝 지운 판 통과(디자인 검수). BushPot 작은 노란 꽃 4개 = 뺌(최종 검수 OK). 부품 2D ①②③ 14종 통과.
 
