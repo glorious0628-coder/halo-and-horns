@@ -1,5 +1,18 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 10 — fix/auto-translate-on 70cd9694 (급함, 다 됨·push, 최신)
+- SPEC A23-179(사용자 "누가 자동 번역까지 끄래"): ClientMain의 전체 AutoLocalize=false watcher(69f1fe45) 삭제 → Roblox 자동 번역 켜짐.
+- 끈 채로 둔 것(만드는 곳에서만): 이름표 Line1("[칭호] 이름", CharacterVisuals; Line2·3은 번역), Tab 목록 PlayerName, 후원자 판 이름 줄, UIKit artText Number=true(숫자 라벨 전부, 호출자가 AutoLocalize 주면 그 값), 피해 숫자 풀(전리품 줄은 번역: e.Gui.AutoLocalize = look ~= nil), 스킬 초, 입력칸(닉네임·시장). 새 UIKit.NoTranslate(inst). 채팅 말풍선은 Roblox TextChatService 것이라 해당 없음.
+- 운명의 제단 프롬프트: 저장된 place에 AutoLocalize=false가 1개 남아 있어(rbxlx 유일) MapBuilder가 이제 true로 씀(지우기만 하면 place 값이 남음).
+- 시험: 새 test_auto_translate 14·7/7(전체 끄기 없음, DescendantAdded 안 끄기 없음, false는 허용 목록 9곳만, 필수 자리 11개), test_place_english 검사 2개 새 규칙으로, market_window 165·60/60, nickname 790, supporter_board, english, l10n, story_text, skill_learn, skill_fx, king_drop, hud_layout, phone_first10, fit_text, beta_basics, keys_settings, grudge, ranking, loot, golden_egg, goose_square, class_grips_server 통과; rank_marks 117/117(정적 10 = 성긴 worktree glb 없음, 거짓). luau-compile 바꾼 10파일 OK. 기다리는 가지 모두와 merge-tree 깨끗.
+- ⑤ 번역으로 글이 길어질 때 넘칠 곳(목록만):
+  1. **FitText·HUD L.FitGoal·L.TextLines·MeasureRenderedText는 TextService로 영어 원문을 잼** → 번역문이 길면 '맞춤' 라벨도 넘침(메뉴 칸 이름 FitMinPx 8, 퀘스트 목표 2줄, Faction/ClassPicker 카드). TextScaled 라벨은 실제 그린 글 기준이라 안전.
+  2. DeathScreen 줄: TextWrapped + 높이 size+8 고정 → 번역이 두 줄이면 다음 줄과 겹침(박스 높이 합은 줄마다 한 줄 기준).
+  3. HUD 목표 칩 2·3층: 한 줄 + "..." → 긴 번역은 잘림.
+  4. Panels 키트 버튼(ArtTextButton TextScaled, 바닥 12px): 좁은 버튼(마을 기금 190du, 출석 Claim, 상점 Buy)에서 긴 단어는 12px에서도 넘칠 수 있음.
+  5. TextTruncate 라벨(CharacterUI, PetWindow, PlayerListUI, Panels 일부): 넘치진 않고 잘림.
+  6. 자동 번역은 string.format으로 만든 문장(숫자·이름 낀 줄)은 통째로 한 항목 → Creator Hub에 숫자별 항목이 쌓일 수 있음(번역 안 될 수 있음).
+
 ## 10/14 밤 9 — fix/settings-apply fe85439a (다 됨·push, 최신)
 - 계획 2-C #9 앞 두 개. 확인: 설정 DmgNum(All/Off)·Tags(All/Near/Off)는 저장만 되고 클라 어디서도 안 읽었음(Settings.luau 말고 0곳).
 - 피해 숫자: Fx MOTION.DamageNumbersOn()(Settings DmgNum, 기본 All) + MOTION.IsDamageKey(M 내 타격·P PvP·H 받은 피해) → showAmount 맨 앞에서 Off면 안 그림, Release 합계(ShowNumber)도. 골드·XP·전리품(G·RG·RX) 그대로.
