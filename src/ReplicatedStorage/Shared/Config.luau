@@ -9143,6 +9143,11 @@ Config.Craft = {
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
 		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
+		-- 장인 ⑤ (A23-178, 최종 검수 10/14): the alchemist's first-minutes goods from the meadow's harvest and slimes. Kind
+		-- "Potion" = Potion "HP" / "MP" (the potion stock, Config.PotionStockKey; N + the hammer's +N, never past the cap)
+		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 2, Jelly = 3 }, XP = 8 },
+		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
+		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 5, CopperOre = 3 }, XP = 20 },
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
 		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
