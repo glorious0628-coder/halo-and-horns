@@ -489,11 +489,22 @@ local function layBig(now)
 	return egg
 end
 
+-- ⑤ (최종 검수 10/14): the goose walks to where it should be at most Walk.MaxSpeed studs a second (no jump to the rim)
+local function walkTo(G, target, dt)
+	local d = flat(target, G.Pos)
+	local step = math.max(0, num(E.Walk.MaxSpeed, 14)) * math.max(0, dt)
+	if d <= step or d < 0.01 then
+		G.Pos = target
+	else
+		G.Pos = clampGoose(v3(G.Pos.X + (target.X - G.Pos.X) / d * step, target.Y, G.Pos.Z + (target.Z - G.Pos.Z) / d * step))
+	end
+end
+
 local function stepGoose(now, el, dt, tilt)
 	local G = R.Goose
 	-- the crown at Crown.At: the goose stops on the west rim, lays the crown (west half) and Gold eggs
 	if el >= E.Crown.At then
-		G.Pos = clampGoose(GEO.Center + v3(-E.Walk.Radius, 0, 0))
+		walkTo(G, clampGoose(GEO.Center + v3(-E.Walk.Radius, 0, 0)), dt)
 		if not R.CrownLaid then
 			R.CrownLaid = true
 			setAct("Lay", R.T0 + E.Duration)
@@ -562,7 +573,7 @@ local function stepGoose(now, el, dt, tilt)
 	-- the walk: a circle around the fountain, its centre tilted toward the losing side
 	G.Angle += dt * math.pi * 2 / E.Walk.Lap
 	local c = GEO.Center
-	G.Pos = clampGoose(v3(c.X + math.cos(G.Angle) * E.Walk.Radius, c.Y, c.Z + num(tilt, 0) + math.sin(G.Angle) * E.Walk.Radius))
+	walkTo(G, clampGoose(v3(c.X + math.cos(G.Angle) * E.Walk.Radius, c.Y, c.Z + num(tilt, 0) + math.sin(G.Angle) * E.Walk.Radius)), dt)
 end
 
 ------------------------------------------------------------------ deliver / return / pick / tag / lay
@@ -606,7 +617,9 @@ local function deliver(now, p, st)
 end
 
 local function fits(st, egg)
-	if st.Faction == "Neutral" or egg.Kind == "Feather" then return true end
+	if egg.Kind == "Feather" then return true end
+	-- ③ (Codex, 최종 검수 10/14): an artisan never takes the crown egg (the sides' last big swing)
+	if st.Faction == "Neutral" then return egg.Kind ~= "Crown" end
 	local slots = slotsOf(egg)
 	if slots >= E.MaxSlots then return st.Slots == 0 end
 	return st.Slots + slots <= E.MaxSlots
@@ -626,8 +639,7 @@ local function pick(now, p, st, egg)
 			W.Grant(p, E.Items.Feather, 1, egg.Pos)
 		else
 			W.Grant(p, E.Items.Egg, 1, egg.Pos)
-			st.NeutralEggs += 1
-			pcall(W.Fx, "EggDeliver", { UserId = p.UserId, Pos = egg.Pos, N = 1, Points = 0, Side = "Neutral" })
+			st.NeutralEggs += 1 -- ② no EggDeliver Fx (it drew "+0" and the Halo bell): the bag pop is the feedback
 		end
 		return
 	end

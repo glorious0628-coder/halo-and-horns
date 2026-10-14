@@ -1338,7 +1338,9 @@ local function onReleased(player, info)
 	addProgress(player, "Release", 1)
 end
 
-local function onGooseFinished(_result, counts)
+local function onGooseFinished(_result, counts, info)
+	-- ④ (최종 검수 10/14): the egg hunt counts everyone who brought an egg home (info.Took), paid or not
+	if type(info) == "table" and type(info.Took) == "table" then counts = info.Took end
 	if type(counts) ~= "table" then return end
 	for p, c in counts do
 		if typeof(p) == "Instance" and p:IsA("Player") and num(c) > 0 then

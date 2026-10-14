@@ -234,6 +234,7 @@ runGroup("remote", function()
 	G.Clock, G.World.Clock = 1000, 1000
 	G.GS.OnRemote(p, "Join")
 	check(p.Attrs.InGooseSquare == true, "'Join' joins", "")
+	check(G.GS.CountIn("Halo") == 1 and G.GS.CountIn("Horns") == 0, "③ CountIn: one Knight in the square, no Legion", show({ G.GS.CountIn("Halo"), G.GS.CountIn("Horns") }))
 	G.GS.OnRemote(p, "Leave")
 	check(p.Attrs.InGooseSquare == true, "a second call within RateLimits.GooseSquare is ignored", "")
 	G.World.Clock = 1002
@@ -242,9 +243,8 @@ runGroup("remote", function()
 	G.Active = false
 	G.World.Clock = 1004
 	G.GS.OnRemote(p, "Join")
-	local n = G.World.Notices[#G.World.Notices]
-	check(n and n.Player == p and n.Text == "The goose is gone." and p.Attrs.InGooseSquare == false, "a refusal = the client table's Text line once",
-		show(n and n.Text))
+	-- A23-191 (최종 검수 10/14): a refusal says nothing (the Join button is dimmed by GooseJoinBlock)
+	check(#G.World.Notices == 0 and p.Attrs.InGooseSquare == false, "a refusal says nothing (no toast)", #G.World.Notices)
 	-- no client table (game dev 1's Config.Goose.Square taken away): no line, never an error
 	local H = square({ EditConfig = function(c) c.Goose.Square = nil end })
 	H.Active = false
