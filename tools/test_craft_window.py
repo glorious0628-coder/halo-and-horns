@@ -105,6 +105,19 @@ MUTATIONS = [
     ("WIN", "a bench tagged later is never watched", "\t\tCollectionService:GetInstanceAddedSignal(tag):Connect(watchStation)\n", ""),
     ("PANELS", "the menu ignores opts.Menu", "\tfor i, e in extra do table.insert(entries, 2 + i, e) end\n", ""),
     ("MAIN", "the window is never loaded", "\"CraftView\", \"CraftWindow\",", "\"CraftView\","),
+    # artisan contract ③ (game dev 1, 10/14): a made weapon -> [Use it] (UnpackSpare) -> worn (EquipWeapon)
+    ("WIN", "③ a spare of another tier counts", "if tonumber(t) == e.Tier and have > 0 then", "if have > 0 then"),
+    ("WIN", "③ the lowest +N picked", "if tonumber(p) > bestPlus then", "if bestPlus < 0 or tonumber(p) < bestPlus then"),
+    ("WIN", "③ a button for a tier I own", "Use = not owned and ctx.Unpacking", "Use = ctx.Unpacking"),
+    ("WIN", "③ a button without UnpackSpare on the server", "or ctx.UnpackOn ~= true or", "or"),
+    ("WIN", "③ the power ignores the spare's +N", "pcall(ctx.Power, e.Tier, plus)", "pcall(ctx.Power, e.Tier, 0)"),
+    ("WIN", "③ the power line uncoloured", "tone == \"Good\" and \"Good\" or (tone == \"Bad\" and \"Bad\" or \"Sub\")", "\"Sub\""),
+    ("WIN", "③ the power line at a level that can't use it", "\t\telse -- contract ③: my power now", "\t\tend\n\t\tdo -- contract ③: my power now"),
+    ("WIN", "③ the made weapon never worn", "if u.Equip and kit then kit.Fire(\"EquipWeapon\", u.Tier) end", "if false then end"),
+    ("WIN", "③ worn at any level", "Equip = Config.WeaponUsable(e.Tier, math.max(1, math.floor(num(ctx.Level, 1)))) }", "Equip = true }"),
+    ("WIN", "③ waits forever", "elseif os.clock() - u.At >= L.UnpackTimeout then", "elseif false then"),
+    ("WIN", "③ the button on while one waits", "and ctx.Unpacking ~= true and ctx.Pending", "and ctx.Pending"),
+    ("WIN", "③ the watch never runs", "\t\t\tlocal okU, errU = pcall(CraftWindow.WatchUnpack)\n", "\t\t\tlocal okU, errU = true, nil\n"),
 ]
 
 
@@ -123,8 +136,10 @@ def static(src: dict) -> list[tuple[str, bool]]:
     return [
         ("ClientMain loads CraftWindow after Panels / UIKit / CraftView", "CraftWindow" in names
          and all(n in names and names.index("CraftWindow") > names.index(n) for n in ("Panels", "UIKit", "CraftView"))),
-        ("the window sends CraftStart only (the server checks it all)", fires == ["CraftStart"]),
+        ("the window sends CraftStart, and UnpackSpare + EquipWeapon for a made weapon (contract ③) only",
+         sorted(fires) == ["CraftStart", "EquipWeapon", "UnpackSpare"]),
         ("no fixed key in CraftWindow (BB1)", "Enum.KeyCode" not in code),
+        ("③ the 0.25 s loop watches the [Use it] answer", "pcall(CraftWindow.WatchUnpack)" in code),
         ("the refusal lines are the server's own notice texts (Config.Craft.Text), no copies",
          "tx(Config.Craft.Text, why)" in code and "Not enough" not in code and "workbench" not in code),
         ("Panels' menu takes a registered window's opts.Menu", "type(o.Menu) == \"function\"" in src["PANELS"]
