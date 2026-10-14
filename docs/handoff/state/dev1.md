@@ -1,6 +1,15 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/15 저녁 — HUD 사진 고침·상단 HUD 1안·번역 안쪽·무기 메시·걷기 자세 (push, 최신)
+## 10/15 밤 — 자세 2·화면 글 중앙 표 2·스킬 과제·동료 살리기·거위 칩 (push, 최신)
+- **dev1-hold-pose-2 526fc28d** (5번째 묶음, 사진 통과): 무기 든 팔 Animate 흔들림 감쇠(Config.HoldPoses Stand/Walk/Run/Air + Damp, Config.HoldMotion In 0.08/InBow 0.06/Out 0.18 smoothstep, 손잡이 Turn↔Rest 같은 시계, toolnone 공격 때도 안 올림, 활 왼손 유지). 핵심: 사용자 아바타 = 관절 업그레이드(AnimationConstraint, Motor6D 꺼짐) → WeaponPose.JointOf. 지팡이 손목 {37,0,-11}, 활 왼손목 {13,0,13}(손 방향 재고 계산). 사진 docs/art/verification_2026-10-15/hold_pose2/. 시험 test_hold_pose2 33·12/12. 스크립트 scratchpad play_hold_pose2.py(카메라 따라가기), probe_pose.py(손 방향), tune_pose.py(execute_luau의 require는 게임 모듈과 다른 사본이라 Config 실시간 조정 안 됨).
+- **fix/client-text-central-2 19845a80** (6번째 묶음): main + 옛 가지 병합, HUD.TXT·BagUI.TXT도 Config.ClientText로, 하드코딩 0. HUD 글 찾던 시험 10개 고침. craft·loot 변이 MISSED는 main에서도 같음(개발 2), costume_physics RETIRED.
+- **dev1-skill-tasks c8bc2c5d**: SkillSlots만으로 잠금, SkillBar.TaskLine/TaskFor(키 번역, 서버 줄과 같은 영어), 스킬책·목표 칩·잠긴 키 토스트에 과제 줄. test_skill_tasks_ui 11·6/6.
+- **dev1-revive 26d52549**: DeathScreen.PromptOn(같은 편만), 대기 줄 'A friend can help you up (N s)' + 'Get up in town'(ReviveSkip), Fx Revived 한 줄. test_death_screen 22·16/16.
+- **fix/goose-words 0814a10e**: 거위 칩 'Golden Goose' → 'Goose' → 아이콘 빼고 'Goose' → 숫자만. UIKit.Tr FormatByKey 실패 시 Studio 경고. (원인: 18px 바닥에서 'Goose 7:29' 89px > 85px 칸.)
+- 번역 재현: LocalizationTable:GetTranslator("ko"):FormatByKey(FirstSkill, {"5"}) 정상 → publish7 영어는 임시 표 줄 문제로 보임(메인 반영 1 표 확인 기다림). Studio 강제 로케일은 플러그인에서 못 씀(RobloxScript 권한).
+- 큐: 비었음. 남은 것: 메인 반영 1 임시 표 정보 오면 확인, 무기 메시 id(build/weapon_mesh_ids.json → tools/apply_weapon_mesh_ids.py), A23-188 첫 흐름(개발 2 보고 뒤), 첫 사냥 무공격 힌트·T2 슬라임 타수·Hero HuntFame 막대.
+
+## 10/15 저녁 — HUD 사진 고침·상단 HUD 1안·번역 안쪽·무기 메시·걷기 자세 (push)
 - **fix/hud-photos-1 141d606e** (main에 들어감): 막대 시간 숫자 삭제(A23-184), PC 거위 칩 GooseNeed = 화면 px÷UIScale, 위험 칩 먼저 + Outlaw IconLock·OutlawChipShort(En), 출석 28일 Name frame 목표(GoalBorder) + 폰 줄 높이(AttendanceUI.Sizes).
 - **fix/hud-top-1안 9030d6fb** (Codex build/codex/hud_top_design.md 1안 + 최종 검수 결정): HUD.WarGeometry(실제 px: 왕관 24/22가 트랙 위 6/4px, 트랙 14, 방패 40/36 안쪽), 막대 누르면 WarInfo 창(Config.WarInfo, HUD.WarInfoLines), 막대 NEW! 없음 / HUD.ChipPlan(위험 칩 Bully·Outlaw·Wanted·PvP존 = 늘 글, +N 아님; 닫힘 = 안전 아이콘 + 버프 아이콘 1 + +N; 누르면 펼침 5초; 줄 36/44px, 글 18/19px, Wraps) / EventHUD V2.PickEvent(괴수 > 진행 중 왕·열린 거위 > 가까운 예정, 동률 유지), 칩 40/44px, NEW! 칩 안쪽(UIKit NewTagInside, 태그 뜰 때만 자리), 괴수 칩 한 줄(V2.KaijuNeed), 알림 줄은 이벤트 아래. 새 test_hud_top_1an 31·15/15. 사진 docs/art/verification_2026-10-14/hud_top_1an_v2/ (시험 Studio, 창 491×444라 칩 줄 좁음; 서버가 Outlaw·Bully·점수 속성을 몇 초 뒤 되돌림).
 - **fix/tr-inner da9b460a**: UIKit.Tr 인자 없는 키도 FormatByKey(key,{}), Tx는 등록 표면 항상 키로; L.GoalTiers 진영 말 fmt(faction). test_ui_tr 36·11/11.
