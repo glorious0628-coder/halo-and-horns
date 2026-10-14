@@ -97,6 +97,12 @@ def sources() -> dict[str, str]:
 
 def check(src: dict[str, str]) -> list[tuple[str, bool, str]]:
     rows = []
+    # 최종 검수 10/14: every player word of a client screen sits in a central table (Config.ClientText.<Module> ...), where
+    # the localization export finds it - none left in the modules (tools/l10n_client_hardcoded.py; HUD / BagUI move after
+    # their pending branches)
+    left = hardcoded({"src/" + k: v for k, v in src.items() if k.startswith("StarterPlayer/")})
+    rows.append(("no player words hard-coded in client modules (central tables only)", not left,
+                 " | ".join(f"{p.rsplit('/', 1)[-1]}:{ln} {v}" for p, ln, v in left[:4])))
     cm = strip(src.get(SPS + "ClientMain.client.luau", ""))
     rows.append(("ClientMain has no AutoLocalize switch-off", "AutoLocalize" not in cm, ""))
     watch = []
@@ -142,12 +148,6 @@ def check(src: dict[str, str]) -> list[tuple[str, bool, str]]:
     hud = strip(src.get(SPS + "HUD.luau", ""))
     rows.append(("the HUD switches translation off only on its 5 number-only labels (not the Power line)",
                  len(re.findall(r"AutoLocalize\s*=\s*false", hud)) == 5, str(len(re.findall(r"AutoLocalize\s*=\s*false", hud)))))
-    # 최종 검수 10/14: every player word of a client screen sits in a central table (Config.ClientText.<Module> ...), where
-    # the localization export finds it - none left in the modules (tools/l10n_client_hardcoded.py; HUD / BagUI move after
-    # their pending branches)
-    left = hardcoded({"src/" + k: v for k, v in src.items() if k.startswith("StarterPlayer/")})
-    rows.append(("no player words hard-coded in client modules (central tables only)", not left,
-                 " | ".join(f"{p.rsplit('/', 1)[-1]}:{ln} {v}" for p, ln, v in left[:4])))
     return rows
 
 
