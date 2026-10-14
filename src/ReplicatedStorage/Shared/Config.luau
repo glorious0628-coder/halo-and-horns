@@ -1406,14 +1406,18 @@ Config.VillageFund = {
 	PerDay = 3,
 	Points = 1,
 	Spots = {
-		-- halo_fixed_points_v2: the Town_Halo_Fountain3 pool centre (radius 9); the prompt reaches Radius studs
-		Halo = { Pos = Vector3.new(22, 10, -590), Radius = 16, Zone = "HaloTown" },
+		-- review 10/14: the spot is the pivot of the model Town_Halo_Fountain3 wherever it stands (today's main place:
+		-- Map/Decor/HaloProps/Cell_0_-9, pivot (34.55, 20, -566), the plaza at Y 20; the stage-6 map moves it to (22, 10, -590),
+		-- halo_fixed_points_v2); Pos = the fallback until the model is found. The prompt sits Lift studs above it and
+		-- reaches Radius studs
+		Halo = { Model = "Town_Halo_Fountain3", Pos = Vector3.new(34.55, 20, -566), Lift = 3, Radius = 16, Zone = "HaloTown" },
 		-- Horns: off until the Horns town is rebuilt (A23-155; final review 10/14)
 	},
 	Goals = { Lanterns = 30000, Fireworks = 100000 }, -- a side's weekly sum (gold); tune after the 10/17~20 test
 	Store = "HaloHorns_VillageFund_v1",
 	FlushSeconds = 60, -- x0.5..1.5: this server's unsaved gifts are added to the week's document
 	ReadSeconds = 60, -- the week's document is read again (the shown sums = stored + this server's unsaved)
+	CloseWait = 20, -- s the close waits for a weekly write still running before it writes the rest
 	Stat = { Halo = "Honor", Horns = "Infamy" },
 	Text = {
 		Halo = { Prompt = "Share gold", Give = "Share %s gold", Done = "You shared %s gold! Honor +%d",

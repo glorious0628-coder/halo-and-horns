@@ -70,7 +70,7 @@ MUTATIONS = [
      "\tlocal stored = num(X.Stored[side])"),
     ("the pending not shown", F, "\treturn math.max(0, stored + (pend and num(pend[side]) or 0))", "\treturn math.max(0, stored)"),
     ("Studio writes the live store", F, "\t\tif RunService:IsStudio() then name ..= \"_STUDIO\" end\n", ""),
-    ("no close flush", F, "\tgame:BindToClose(function()\n\t\tpcall(VillageFundService.Flush)\n\tend)\n", ""),
+    ("no close flush", F, "\t\tend\n\t\tpcall(VillageFundService.Flush)\n\tend)\n", "\t\tend\n\tend)\n"),
     ("no flush loop", F, "\t\t\tpcall(VillageFundService.Flush)\n\t\tend\n", "\t\tend\n"),
     ("no read loop", F, "\t\t\tpcall(VillageFundService.Read)\n", ""),
     # --- the lights
@@ -80,6 +80,18 @@ MUTATIONS = [
     ("old levels announced", F, "\t\t\tX.Said[wk .. \":\" .. side] = VillageFundService.LevelOf(VillageFundService.SumOf(side))\n", ""),
     ("the line everywhere", F, "\t\t\t\tif okZ and zone == spot.Zone then notify", "\t\t\t\tif okZ then notify"),
     ("no prompt for the side", F, "\t\t\tX.Prompts[prompt] = side\n", ""),
+    # review 10/14
+    ("the model is ignored", F, "\t\tif spot and type(spot.Model) == \"string\" and not X.Found[side] then",
+     "\t\tif false then"),
+    ("the prompt stays at the fallback", F, "\t\t\t\tif part then part.Position = cf.Position + Vector3.new(0, num(spot.Lift, 3), 0) end\n", ""),
+    ("the gifts stay at the fallback", F, "\t\t\t\tX.Where[side] = cf.Position\n", ""),
+    ("no search after the start", F, "\t\tpcall(resolveSpots) -- a fountain built after the start is picked up here\n", ""),
+    ("a failed read is a base", F, "\tlocal okRead = st == nil\n", "\tlocal okRead = true\n"),
+    ("lines before the first read", F, "\t\tif X.Base[wk] and spot and level > num(X.Said[key]) then",
+     "\t\tif spot and level > num(X.Said[key]) then"),
+    ("the close does not wait", F, "\t\twhile X.Writing > 0 and os.clock() - t0 < num(V.CloseWait, 20) do\n",
+     "\t\twhile false do\n"),
+    ("a running write not counted", F, "\tX.Writing += 1\n", ""),
 ]
 
 

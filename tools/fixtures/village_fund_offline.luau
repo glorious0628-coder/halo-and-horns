@@ -4,7 +4,8 @@
 -- (+ SpendGold / GrantFame / SwitchService / Workspace / ProximityPromptService doubles here). Its loops are stepped by hand.
 
 local STORE = "HaloHorns_VillageFund_v1_STUDIO"
-local HALO = { X = 22, Y = 10, Z = -590 }
+-- the Spot.Pos fallback (today's main place: the Town_Halo_Fountain3 pivot); no model in these worlds unless o.Fountain
+local HALO = { X = 34.55, Y = 20, Z = -566 }
 
 local function fundWorld(o)
 	o = o or {}
@@ -38,9 +39,40 @@ local function fundWorld(o)
 	end }
 	-- the places VillageFundService touches at Start
 	local workspace = newInstance("Workspace", w)
+	-- Roblox's FindFirstChild(name, recursive)
+	workspace.FindFirstChild = function(o2, name, recursive)
+		local function find(node)
+			for _, c in node._children do
+				if c.Name == name then return c end
+				if recursive then
+					local f = find(c)
+					if f then return f end
+				end
+			end
+			return nil
+		end
+		return find(o2)
+	end
 	w.Workspace = workspace
 	w.Services.Workspace = workspace
 	w.Services.ProximityPromptService = { PromptTriggered = rbxSignal(w.Warnings) }
+	-- the fountain model where the main place keeps it (Map/Decor/HaloProps/Cell_0_-9), its pivot at `pos`
+	function w:AddFountain(pos, name)
+		local parent = workspace
+		for _, n in { "Map", "Decor", "HaloProps", "Cell_0_-9" } do
+			local f = newInstance("Folder", self)
+			f.Name = n
+			f.Parent = parent
+			parent = f
+		end
+		local m = newInstance("Model", self)
+		m.Name = name or "Town_Halo_Fountain3"
+		m.GetPivot = function() return { Position = pos } end
+		m.Parent = parent
+		return m
+	end
+	if o.Fountain then w:AddFountain(w.V3(o.Fountain.X, o.Fountain.Y, o.Fountain.Z)) end
+	for k, n in o.Fail or {} do w.Fail[k] = n end
 	w:Service("VillageFundService", FUND_SOURCE)
 	w:InitStart({ "VillageFundService" })
 	w.VF = w.Reg.VillageFundService
@@ -53,14 +85,15 @@ local function fundWorld(o)
 		self:Place(p, dist or 4, 3)
 		return p, self.Data[p]
 	end
-	function w:Place(p, dist, dy)
+	function w:Place(p, dist, dy, at)
+		local c = at or HALO
 		local char = newInstance("Model", self)
 		local hum = newInstance("Humanoid", self)
 		hum.Health = 100
 		hum.Parent = char
 		local root = newInstance("Part", self)
 		root.Name = "HumanoidRootPart"
-		root.Position = self.V3(HALO.X + dist, HALO.Y + (dy or 3), HALO.Z)
+		root.Position = self.V3(c.X + dist, c.Y + (dy or 3), c.Z)
 		root.Parent = char
 		p.Character = char
 		p.Hum = hum
@@ -96,8 +129,10 @@ runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local V = C.VillageFund
 	check(V.Enabled == true and V.Step == 1000 and V.PerDay == 3 and V.Points == 1, "on, 1,000 a gift, 3 a day, +1 a gift", show(V))
-	check(V.Spots.Halo ~= nil and V.Spots.Halo.Pos.X == 22 and V.Spots.Halo.Pos.Y == 10 and V.Spots.Halo.Pos.Z == -590
-		and V.Spots.Halo.Radius == 16 and V.Spots.Halo.Zone == "HaloTown", "the Halo spot: the Town_Halo_Fountain3 pool (22, 10, -590), radius 16, HaloTown", show(V.Spots.Halo))
+	check(V.Spots.Halo ~= nil and V.Spots.Halo.Model == "Town_Halo_Fountain3" and V.Spots.Halo.Pos.X == 34.55 and V.Spots.Halo.Pos.Y == 20
+		and V.Spots.Halo.Pos.Z == -566 and V.Spots.Halo.Lift == 3 and V.Spots.Halo.Radius == 16 and V.Spots.Halo.Zone == "HaloTown",
+		"the Halo spot: the model Town_Halo_Fountain3 (fallback = today's pivot (34.55, 20, -566)), lift 3, radius 16, HaloTown", show(V.Spots.Halo))
+	check(V.CloseWait == 20, "the close waits up to 20 s for a running write", tostring(V.CloseWait))
 	check(V.Spots.Horns == nil, "no Horns spot until its town is rebuilt (final review 10/14)", show(V.Spots))
 	check(V.Goals.Lanterns == 30000 and V.Goals.Fireworks == 100000, "goals 30,000 lanterns / 100,000 fireworks", show(V.Goals))
 	check(V.Store == "HaloHorns_VillageFund_v1" and V.FlushSeconds == 60 and V.ReadSeconds == 60, "store, flush 60, read 60", show(V))
@@ -131,7 +166,8 @@ runGroup("prompts", function()
 	local prompt = spot and spot:FindFirstChild("FundPrompt")
 	check(prompt ~= nil and folder:FindFirstChild("FundSpot_Horns") == nil, "one prompt part for Halo, none for Horns", "")
 	check(spot ~= nil and spot.Anchored == true and spot.CanCollide == false and spot.Transparency == 1 and spot.CanQuery == false
-		and spot.CanTouch == false and spot.Position.X == 22 and spot.Position.Z == -590, "an invisible anchored part at the pool", "")
+		and spot.CanTouch == false and spot.Position.X == 34.55 and spot.Position.Y == 23 and spot.Position.Z == -566,
+		"no model: an invisible anchored part 3 studs above the fallback spot", "")
 	check(prompt ~= nil and prompt.ClassName == "ProximityPrompt" and prompt.MaxActivationDistance == 16 and prompt.HoldDuration == 0
 		and prompt.ActionText == "" and prompt:GetAttribute("ActionKey") == "Config.VillageFund.Text.Halo.Prompt"
 		and prompt:GetAttribute("ObjectKey") == "Config.VillageFund.Text.Title" and prompt:GetAttribute("Faction") == "Halo",
@@ -389,6 +425,84 @@ runGroup("levels", function()
 	w2:Tick(1)
 	check(w2.VF.SumOf("Halo") == 5000 and w2.GameState:GetAttribute("FundLevelHalo") == 2 and #w2:NoticesFor(b) == 0,
 		"a new week read while children are in town: level 2 shown, no line", show(w2:NoticesFor(b)))
+	-- review 10/14: a failed first read is no base: nothing is said before the first good read, and the levels the good
+	-- read finds already reached are not said either
+	local wk3 = w2:Week()
+	local stores3 = { [STORE] = { Name = STORE, Kind = "Standard", Rows = { ["W" .. wk3] = { V = 1, Halo = 5000, Horns = 0 } } } }
+	local w3 = fundWorld({ Stores = stores3, EditConfig = edit, Time = w2.Time, Fail = { [STORE .. ":Get"] = 1 } })
+	w3.AllowWarn = "read"
+	local c3 = w3:Kid(4, "Halo", 100000)
+	c3:SetAttribute("ZoneId", "HaloTown")
+	w3:Give(c3)
+	w3:Give(c3)
+	check(w3.VF.SumOf("Halo") == 2000 and #w3:NoticesFor(c3) == 2, "before the first good read: 2,000 here, no light line",
+		show(w3:NoticesFor(c3)))
+	w3:Tick(61)
+	check(w3.VF.SumOf("Halo") == 7000 and w3.GameState:GetAttribute("FundLevelHalo") == 2 and #w3:NoticesFor(c3) == 2,
+		"the first good read: level 2 shown, still no line", show(w3:NoticesFor(c3)))
+end)
+
+------------------------------------------------------------------ the fountain model (review 10/14)
+runGroup("fountain model", function()
+	local at = { X = 100, Y = 20, Z = 100 }
+	local w = fundWorld({ Fountain = at })
+	local part = w.Workspace:FindFirstChild("VillageFund"):FindFirstChild("FundSpot_Halo")
+	check(part.Position.X == 100 and part.Position.Y == 23 and part.Position.Z == 100, "the prompt part sits 3 studs above the model's pivot",
+		show({ part.Position.X, part.Position.Y, part.Position.Z }))
+	local p, d = w:Kid(1, "Halo", 5000)
+	w:Place(p, 4, 3, at)
+	w:Give(p)
+	check(gold(d) == 4000, "a child at the model's fountain gives", gold(d))
+	local q, dq = w:Kid(2, "Halo", 5000) -- at the fallback Pos, far from the model
+	w:Give(q)
+	check(gold(dq) == 5000, "the fallback Pos is not the spot while the model is there", gold(dq))
+	-- a fountain built after the start (a map swap): the read loop picks it up and moves the prompt
+	local w2 = fundWorld()
+	local at2 = { X = -200, Y = 30, Z = 50 }
+	w2:AddFountain(w2.V3(at2.X, at2.Y, at2.Z))
+	w2:Tick(61)
+	local part2 = w2.Workspace:FindFirstChild("VillageFund"):FindFirstChild("FundSpot_Halo")
+	check(part2.Position.X == -200 and part2.Position.Y == 33 and part2.Position.Z == 50, "a model found later: the prompt moves to it",
+		show({ part2.Position.X, part2.Position.Y, part2.Position.Z }))
+	local r, dr = w2:Kid(3, "Halo", 5000)
+	w2:Place(r, 4, 3, at2)
+	w2:Give(r)
+	check(gold(dr) == 4000, "and the gifts follow it", gold(dr))
+	-- another model name is not the fountain
+	local w3 = fundWorld()
+	w3:AddFountain(w3.V3(500, 20, 500), "Town_Halo_Bench")
+	w3:Tick(61)
+	local part3 = w3.Workspace:FindFirstChild("VillageFund"):FindFirstChild("FundSpot_Halo")
+	check(part3.Position.X == 34.55 and part3.Position.Z == -566, "another model's name: the fallback stays", "")
+	check(#w.Warnings == 0 and #w2.Warnings == 0 and #w3.Warnings == 0, "no warning", "")
+end)
+
+------------------------------------------------------------------ the close while a weekly write runs (review 10/14)
+runGroup("close while writing", function()
+	local w = fundWorld({ Stores = {} })
+	local p = w:Kid(1, "Halo", 100000)
+	w:Give(p)
+	local close = w.BoundToClose[1]
+	local co = nil
+	local hooked = false
+	w.BeforeUpdate = function()
+		if hooked then return end
+		hooked = true
+		w:Give(p) -- a gift while the write runs (pending again)
+		co = coroutine.create(close)
+		local ok, err = coroutine.resume(co)
+		assert(ok, err)
+		-- the close returned while this write still runs: the server is gone, this write never lands
+		if coroutine.status(co) == "dead" then error("the server closed before this write ended") end
+	end
+	w.AllowWarn = "save"
+	w.VF.Flush()
+	if co and coroutine.status(co) == "suspended" then
+		local ok, err = coroutine.resume(co)
+		assert(ok, err)
+	end
+	check(co ~= nil and coroutine.status(co) == "dead" and w:Doc() and w:Doc().Halo == 2000,
+		"the close waits for the running write, then writes the rest: 2,000", show(w:Doc()))
 end)
 
 ------------------------------------------------------------------ off

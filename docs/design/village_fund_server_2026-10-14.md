@@ -27,7 +27,9 @@ Text = { Halo = { Prompt = "Share 1,000 gold", Done = "You shared 1,000 gold! Ho
 - 실시간 스위치 `Config.Switches.Defs.VillageFund = { Type = "Bool", Default = true }`: 끄면 새로 넣기만 멈춤(합계·꾸미기는 그대로).
 
 ## 3. 상호작용과 원격 검증
-- 서버가 `Workspace.VillageFund.FundSpot_<진영>`(보이지 않는 고정 파트, `Pos` = 풀 중심; 분수 모델과 떨어져 있어 모델이 바뀌어도 그대로) 안에 `ProximityPrompt "FundPrompt"`를 만듦(CraftService 방식: `ActionText` "" + 속성 `ActionKey` / `ObjectKey` / `Faction`, MaxActivationDistance = Radius, 누르기만).
+- 서버가 `Workspace.VillageFund.FundSpot_<진영>`(보이지 않는 고정 파트) 안에 `ProximityPrompt "FundPrompt"`를 만듦(CraftService 방식: `ActionText` "" + 속성 `ActionKey` / `ObjectKey` / `Faction`, MaxActivationDistance = Radius, 누르기만).
+- **자리(검토 10/14):** `Spots[f].Model`("Town_Halo_Fountain3")을 Workspace에서 찾아(재귀) 그 피벗이 자리 — 파트는 그 위 `Lift`(3) 스터드. 못 찾으면 `Pos`(지금 main 피벗 (34.55, 20, -566)), 읽기 루프마다 다시 찾아 나중에 생긴 분수(6단계 교체)로 옮김. 거리 검사도 같은 자리.
+- **닫힐 때:** 주기 쓰기가 도는 중이면(그 묶음은 대기 표에서 빠져 있음) 최대 `CloseWait`(20)초 기다린 뒤 남은 것을 씀. **첫 읽기:** 그 주 첫 GetAsync가 성공해야 기준(이미 지난 단계는 말 안 함); 그 전엔 단계 글 없음.
   프롬프트는 **그 진영 아이에게만** 보이게 클라가 `Enabled`를 끔(서버는 어차피 다시 검사).
 - `PromptTriggered`(서버) → `Net.FundOpen:FireClient(player, state)` — state = `{ Faction, Today, PerDay, Step, Gold(가진 합), Week, Goals, Level(0/1/2) }`.
 - 클라가 확인 카드에서 [Give] → 원격 `Net.FundGive:FireServer()` (**인자 없음**: 금액·진영·횟수는 서버가 정함; 인자가 오면 무시).

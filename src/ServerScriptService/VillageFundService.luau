@@ -38,6 +38,10 @@ local X = {
 	Base = {}, -- [week] = true once this server read that week (levels before it are never announced)
 	Said = {}, -- ["<week>:<side>"] = the highest level announced (or seen at the first read)
 	Prompts = {}, -- [ProximityPrompt] = side
+	Parts = {}, -- [side] = the prompt's part
+	Where = {}, -- [side] = the spot: the pivot of the fountain model Spot.Model once found (review 10/14), else Spot.Pos
+	Found = {}, -- [side] = true once the model was found (the search stops)
+	Writing = 0, -- weekly writes running now (the close waits for them)
 	Store = nil, -- the DataStore, or false when it cannot be opened (Studio without API access)
 }
 
@@ -86,15 +90,19 @@ local function todayCount(data, day)
 	return math.max(0, math.floor(num(data.FundToday)))
 end
 
--- alive and within the Spot's Radius (flat distance: the pool sits higher than the walk)
-local function nearSpot(player, spot)
+local function spotPos(side, spot)
+	return X.Where[side] or spot.Pos
+end
+
+-- alive and within the Spot's Radius of its place (flat distance: the pool sits higher than the walk)
+local function nearSpot(player, spot, side)
 	local char = player.Character
 	if not char then return false end
 	local hum = char:FindFirstChildOfClass("Humanoid")
 	if not hum or num(hum.Health) <= 0 then return false end
 	local root = char:FindFirstChild("HumanoidRootPart")
 	if not root then return false end
-	local p, c = root.Position, spot.Pos
+	local p, c = root.Position, spotPos(side, spot)
 	local dx, dz = num(p.X) - num(c.X), num(p.Z) - num(c.Z)
 	local r = math.max(1, num(spot.Radius, 16))
 	return dx * dx + dz * dz <= r * r
@@ -136,12 +144,12 @@ local function publish()
 		end
 		local key = wk .. ":" .. side
 		local spot = spotOf(side)
-		if spot and level > num(X.Said[key]) then
+		if X.Base[wk] and spot and level > num(X.Said[key]) then
 			X.Said[key] = level
 			local line = type(TXT[side]) == "table" and TXT[side][level >= 2 and "Fireworks" or "Lanterns"] or nil
 			local ok, list = pcall(S.PlayerService.GetReadyPlayers)
 			local zones = S.ZoneService
-			for _, p in ok and list or {} do
+			for _, p in (ok and type(zones) == "table") and list or {} do
 				local okZ, zone = pcall(zones.GetZoneId, p)
 				if okZ and zone == spot.Zone then notify(p, line, "reward", "None") end
 			end
@@ -181,6 +189,7 @@ function VillageFundService.Flush()
 	if not st then return false end
 	local mine = X.Pending
 	X.Pending = {} -- gifts made while the writes wait go to the next flush
+	X.Writing += 1
 	local all = true
 	for wk, sums in mine do
 		local ok, res = pcall(st.UpdateAsync, st, keyOf(wk), function(old)
@@ -199,24 +208,28 @@ function VillageFundService.Flush()
 			X.Pending[wk] = back
 		end
 	end
+	X.Writing -= 1
 	publish()
 	return all
 end
 
--- this week's document; the first read of a week sets the levels already reached (never announced)
+-- this week's document; the first GOOD read of a week sets the levels already reached (never announced; review 10/14:
+-- a failed read is no base). No DataStore at all (Studio without API access): this server's own sums are all there is
 function VillageFundService.Read()
 	local wk = week()
 	local st = store()
+	local okRead = st == nil
 	if st then
 		local ok, res = pcall(st.GetAsync, st, keyOf(wk))
 		if ok then
 			local doc = sanitize(res)
 			X.Stored = { Week = wk, Halo = doc.Halo, Horns = doc.Horns }
+			okRead = true
 		else
 			Util.Warn(TAG, "read: " .. tostring(res))
 		end
 	end
-	if not X.Base[wk] then
+	if okRead and not X.Base[wk] then
 		X.Base[wk] = true
 		for _, side in SIDES do
 			X.Said[wk .. ":" .. side] = VillageFundService.LevelOf(VillageFundService.SumOf(side))
@@ -267,7 +280,7 @@ end
 local function allowed(player, data)
 	if not S.PlayerService.IsReady(player) then return nil end
 	local spot = spotOf(data.Faction)
-	if not spot or not nearSpot(player, spot) then return nil end
+	if not spot or not nearSpot(player, spot, data.Faction) then return nil end
 	return spot
 end
 
@@ -320,6 +333,27 @@ function VillageFundService.Give(player)
 end
 
 ------------------------------------------------------------------ the fountain prompts
+-- review 10/14: the fountain model named Spot.Model, anywhere in the Workspace, is the spot (its pivot); until it is
+-- found (a map built later, the stage-6 swap) the spot is Spot.Pos. The prompt's part follows it (Lift studs higher).
+local function resolveSpots()
+	local Workspace = game:GetService("Workspace")
+	for _, side in SIDES do
+		local spot = spotOf(side)
+		if spot and type(spot.Model) == "string" and not X.Found[side] then
+			local okF, m = pcall(Workspace.FindFirstChild, Workspace, spot.Model, true)
+			if okF and m and (m:IsA("Model") or m:IsA("BasePart")) then
+				local okP, cf = pcall(m.GetPivot, m)
+				if okP and cf then
+					X.Where[side] = cf.Position
+					X.Found[side] = true
+					local part = X.Parts[side]
+					if part then part.Position = cf.Position + Vector3.new(0, num(spot.Lift, 3), 0) end
+				end
+			end
+		end
+	end
+end
+
 local function placePrompts()
 	local Workspace = game:GetService("Workspace")
 	local folder = Instance.new("Folder")
@@ -335,7 +369,7 @@ local function placePrompts()
 			part.CanTouch = false
 			part.Transparency = 1
 			part.Size = Vector3.new(1, 1, 1)
-			part.Position = spot.Pos
+			part.Position = spotPos(side, spot) + Vector3.new(0, num(spot.Lift, 3), 0)
 			local prompt = Instance.new("ProximityPrompt")
 			prompt.Name = "FundPrompt"
 			prompt.HoldDuration = 0
@@ -348,6 +382,7 @@ local function placePrompts()
 			prompt:SetAttribute("Faction", side)
 			prompt.Parent = part
 			part.Parent = folder
+			X.Parts[side] = part
 			X.Prompts[prompt] = side
 		end
 	end
@@ -360,6 +395,8 @@ end
 
 function VillageFundService.Start()
 	if not on() then return end
+	local okS, errS = pcall(resolveSpots)
+	if not okS then Util.Warn(TAG, "spots: " .. tostring(errS)) end
 	local okP, errP = pcall(placePrompts)
 	if not okP then Util.Warn(TAG, "prompts: " .. tostring(errP)) end
 	game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt, player)
@@ -380,6 +417,7 @@ function VillageFundService.Start()
 	task.spawn(function()
 		local every = math.max(30, num(V.ReadSeconds, 60))
 		while true do
+			pcall(resolveSpots) -- a fountain built after the start is picked up here
 			pcall(VillageFundService.Read)
 			task.wait(every)
 		end
@@ -392,6 +430,11 @@ function VillageFundService.Start()
 		end
 	end)
 	game:BindToClose(function()
+		-- review 10/14: a periodic write still running holds gifts that are no longer pending: wait for it, then write the rest
+		local t0 = os.clock()
+		while X.Writing > 0 and os.clock() - t0 < num(V.CloseWait, 20) do
+			task.wait(0.2)
+		end
 		pcall(VillageFundService.Flush)
 	end)
 	print("[VillageFundService] started")
