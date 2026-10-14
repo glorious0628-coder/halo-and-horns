@@ -49,7 +49,7 @@ end
 -- A23-57: a request for the switched-off artisan guild is refused like any invalid one, with a log line
 local function logNeutralRefused(player, factionId)
 	if factionId == "Neutral" and not Config.FeatureOn("NeutralFaction") then
-		warnThrottled("neutral", ("%s asked for the artisan guild, off for the beta (A23-57)"):format(player.Name))
+		warnThrottled("neutral", ("%s asked for the artisan guild, off until the artisan update (A23-57; in the beta, A23-162)"):format(player.Name))
 	end
 end
 
