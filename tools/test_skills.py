@@ -110,8 +110,11 @@ MUTATIONS = [
     ("a rebirth opens nothing", SK, 'num(player:GetAttribute("Level"), 1), num(player:GetAttribute("Rebirths")), TASK.Done(player))',
      'num(player:GetAttribute("Level"), 1), 0, TASK.Done(player))'),
     ("the unlock notice with the flag off", SK, "\t\tif slot and flagOn(slot) then\n", "\t\tif slot then\n"),
-    ("the unlock notice at join", SK, "connect(\"PlayerService\", \"PlayerReady\", function(player) catchUp(player, false) end)",
-     "connect(\"PlayerService\", \"PlayerReady\", function(player) catchUp(player, true) end)"),
+    ("the unlock notice at join", SK, "\t\tcatchUp(player, false)\n\t\tif levelHooked[player]",
+     "\t\tcatchUp(player, true)\n\t\tif levelHooked[player]"),
+    # main Play 10/14: a Level set without the level-up signal (DebugCommand) catches up too
+    ("no catch-up on a Level change", SK, "\t\tif levelHooked[player] or not isPlayer(player) then return end\n",
+     "\t\tif true then return end\n"),
     # A23-193: the teacher
     ("teacher: the level teaches again", SK, "\tif want > have and teacher and LEARN.Body(teacher) then\n", "\tif false then\n"),
     ("teacher: stuck without a body", SK, "\tif want > have and teacher and LEARN.Body(teacher) then\n", "\tif want > have and teacher then\n"),
@@ -126,7 +129,7 @@ MUTATIONS = [
      "\tlocal have = slotsOf(player)\n"),
     ("teacher: the talk never asks", "STORY_SOURCE", "\t\tif okL and learned == true then return \"SkillLearn\" end\n", ""),
     ("SkillLearned: the level teaches", C, "\tif type(L) == \"table\" and L.Enabled == true then return (tonumber(rebirths) or 0) >= 1 end\n", ""),
-    ("no catch-up at level up", SK, "\tconnect(\"ProgressionService\", \"LeveledUp\", function(player) catchUp(player, true) end)\n", ""),
+    # (no "no catch-up at level up" mutation since 10/14: the Level attribute hook covers a level-up too)
     ("a real respawn keeps the Z cooldown", SK, "\t\t\ts.ReadyAt, s.Queued = {}, nil\n", "\t\t\ts.Queued = nil\n"),
     ("a cosmetic respawn resets the Z cooldown", SK, "if cosmetic or not isPlayer(player) then return end",
      "if not isPlayer(player) then return end"),
