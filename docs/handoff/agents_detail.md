@@ -1,5 +1,7 @@
 > **10/13 밤 md 정리:** 이 파일이 가리키는 날짜 문서(인계·검토·옛 설계) 중 상당수는 지웠다. 필요하면 git 역사(커밋 'md 정리' 이전)에서 본다. 지금 읽을 것은 `docs/handoff/README.md`.
 
+> **10/14 md 정리(사용자):** 261 → 163개. 여기 언급된 옛 문서(beta_board·firefly_prompt_pack·skills_weapons_pets·text_rewrite·visual_direction·HANDOFF_CODEX·docs/vendor/tripo_api 등)는 지움 — 내용은 git 역사(커밋 "md 정리 10/14" 이전)에 있음. 지금 계획 = `docs/design/gameplay_plan_2026-10-14.md`.
+
 # agents_detail.md — material moved out of AGENTS.md (2026-10-11 slimming)
 
 > Not loaded every turn. `AGENTS.md` (main rules) points here. Same precedence as AGENTS.md "Which rule wins": a newer SPEC A23 entry beats anything below. Entries marked **[superseded]** are kept for history only. Nothing in this file is a new rule; every line comes from the old AGENTS.md (36 KB, updated 2026-10-09) or from the SPEC/handoff entries named. Lines marked **Now** / **Current** (cleanup 2026-10-13) only repeat today's AGENTS.md rules next to the older text they replace.
