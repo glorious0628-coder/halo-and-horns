@@ -3049,6 +3049,8 @@ Config.Tutorial = {
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 	},
 }
+-- Codex B5 (최종 검수 10/14): the King Slime iron line (Buy = false) shows only while a King is here or comes within this many s
+Config.Tutorial.KingSoon = 120
 
 ----------------------------------------------------------------- story quests "부서진 왕관 이야기" (user OK 2026-10-06)
 -- Design: docs/design/quest_chain_2026-10-06.md (decisions 1-8 = recommended). Main = one chain after the first
@@ -3159,10 +3161,11 @@ Config.StoryQuests = {
 					Start = "A Slime Prince swallowed a shard! Beat it to free the shard.",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
+					-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet (a trial's Text), not just "0/3"
 					Obj = { Type = "Trials", List = {
-						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3 },
-						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1 },
-						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1 },
+						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3, Text = "Beat slimes with basic attacks %d/%d" },
+						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1, Text = "Hit 2 monsters with one skill" },
+						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1, Text = "Beat a Slime Prince above half HP" },
 					} } },
 				{ Text = "What will you do with the shard?", Panel = true,
 					Lines = { All = { "I saw it all! Now I can fight like you.", "What will you do with me?" } },

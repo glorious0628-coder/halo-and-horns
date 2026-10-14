@@ -59,6 +59,8 @@ MUTATIONS = [
     ("bag: catch-up adds again", ST, "\tif want > have then loot.AddBagSlots(player, want - have) end", "\tif want > Config.BagSlots.Default then loot.AddBagSlots(player, want - Config.BagSlots.Default) end"),
     ("bag: Lunch1 without slots", C, "			Reward = { BagSlots = 4 }, -- bag slots 10/14: the first upgrade", "			-- bag slots 10/14: the first upgrade"),
     ("bag: M2_7 without slots", C, "Reward = { Gold = 2, XP = 2, BagSlots = 4 }, -- bag slots 10/14", "Reward = { Gold = 2, XP = 2 }, -- bag slots 10/14"),
+    ("Codex B1: the trials row says 0/3 again", ST, "\t\t\telseif first == nil and type(sub.Text) == \"string\" then\n\t\t\t\tfirst = sub\n",
+     "\t\t\telseif false then\n\t\t\t\tfirst = sub\n"),
     # SKL-3 the practice subs SK1 / SK2
     ("SKL-3: SkillHit ignores the Slot", ST,
      "\t\tif obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)\n", ""),

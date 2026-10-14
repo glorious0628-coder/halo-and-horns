@@ -832,15 +832,19 @@ runGroup("a23-71 skill quests", function()
 		local sp, sd = w:Join(7110 + level * 10 + (extra and 1 or 0) + (t.b and 2 or 0), { Faction = "Halo", Level = level, Data = data })
 		return rowOf(w, sp, sd, "S0")
 	end
+	-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet, with its own numbers
+	local ra = s0(2, { a = 1 })
+	check(ra and string.find(ra.Text, "Beat slimes with basic attacks", 1, true) == 1 and ra.Progress == 1 and ra.Target == 3,
+		"S0: the basic-attack trial first, in its words, 1/3", show(ra and { ra.Text, ra.Progress, ra.Target }))
 	local r2 = s0(2, { a = 3 })
-	check(r2 and r2.Text == "The shard's test · Skills come at Lv5" and r2.Progress == 1 and r2.Target == 3,
-		"S0 at Lv2 (skill trial open): 'The shard's test · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress }))
+	check(r2 and r2.Text == "Hit 2 monsters with one skill · Skills come at Lv5" and r2.Progress == 0 and r2.Target == 1,
+		"S0 at Lv2 (skill trial open): 'Hit 2 monsters with one skill · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress, r2.Target }))
 	local rb = s0(2, { a = 3, b = 1 })
-	check(rb and rb.Text == "The shard's test", "the skill trial already done: no tail", rb and rb.Text)
+	check(rb and rb.Text == "Beat a Slime Prince above half HP", "the skill trial already done: the last trial, no tail", rb and rb.Text)
 	local r5 = s0(5, { a = 3 })
-	check(r5 and r5.Text == "The shard's test", "Lv5 (Q learned): no tail", r5 and r5.Text)
+	check(r5 and r5.Text == "Hit 2 monsters with one skill", "Lv5 (Q learned): no tail", r5 and r5.Text)
 	local rk = s0(2, { a = 3 }, { SkillSlots = 1 })
-	check(rk and rk.Text == "The shard's test", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)
+	check(rk and rk.Text == "Hit 2 monsters with one skill", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)
 	-- N1 (Neutral, after M1_4; with the guild switch on, A23-57): not before Lv5
 	w.Config.Features.NeutralFaction = true
 	local n3, nd3 = w:Join(7120, { Faction = "Neutral", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true,

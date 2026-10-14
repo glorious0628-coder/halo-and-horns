@@ -743,7 +743,16 @@ local function nextGoalText(data, player)
 		-- gameplay plan 2026-10-13 1-A #2: no weapon sold (Config.WeaponShop.Buy == false): it drops (Princes, the King);
 		-- the line is Tutorial.Text.NextIronDrop (게임성 개발 1's text; none = no iron line, never the gold one)
 		if type(Config.WeaponShop) == "table" and Config.WeaponShop.Buy == false then
-			if type(TUT_MESSAGES.NextIronDrop) == "string" then return TUT_MESSAGES.NextIronDrop, "IronDrop" end
+			-- Codex B5 (최종 검수 10/14): the King Slime line only while a King is here or comes within KingSoon s (a goal
+			-- that cannot be done now is not shown first; the next goals below take its place)
+			local fb = S and S.FieldBossService
+			local wait = nil
+			if type(fb) == "table" and type(fb.SecondsUntil) == "function" then
+				local okW, w = pcall(fb.SecondsUntil, "SlimeKing")
+				wait = okW and w or nil
+			end
+			local soon = wait ~= nil and wait <= num(TUT_CFG.KingSoon, 120)
+			if soon and type(TUT_MESSAGES.NextIronDrop) == "string" then return TUT_MESSAGES.NextIronDrop, "IronDrop" end
 		else
 			local gold = math.floor(math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold)))
 			return string.format(TUT_MESSAGES.NextIronGold, Util.FormatNumber(iron.Price), Util.FormatNumber(gold)), "IronGold"
