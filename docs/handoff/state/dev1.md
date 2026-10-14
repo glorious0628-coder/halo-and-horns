@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 22 — 가방 칸 정정 fix/bag-slots-with-sell d417e164 (push, 최신)
+## 10/14 밤 23 — 작은 화면 묶음 fix/small-ui-batch b5b2def2 (2-C #9, push, 최신)
+- ① 연출 건너뛰기: 할 것 없음(Intro Skip+Enter, 제작 [Skip], 강화 즉시, 진영 변신 연출 없음). ② HUD 칩 Outlaw(Config.Ranking.Text.OutlawChip). ③ NameTagPrefs.BorderOf/FitBorder: RibbonDays28을 이름 오른쪽에(테두리 그림 없음). ④ Invite.GooseWin/WarWin/WinCard(PanelCard+BtnSecondary, Config.WinCard, 8초); 왕관전은 WarRoundEndsAt 휴리스틱. ⑤ MiniMap.PitOf/PitPosts, 두 지도에 PvPArea 극한 빨강, 월드에 내 화면만 빨간 기둥(PitEdgeLocal).
+- test_small_ui 22·23/23; settings_apply·halloween_hidden 고친 뒤 통과. place_english = worktree에 place 없음. a23_14 결과 확인 남음.
+- 목록: 왕관전 라운드 끝 신호(개발 2), 28일 테두리 그림(디자인).
+
+## 10/14 밤 22 — 가방 칸 정정 fix/bag-slots-with-sell d417e164 (push)
 - 최종 검수 정정: 가방 전체 종류 수 하나. Config.BagSlots { Default 12, Step 4, Max 20, Counts(Material·Enhance·Transfer·Tonic·Treat·Spare), Text.Gained, Text.Full }. BagUI.Used(cells), 아래 줄 IconBag + 'n / N'(가득 = 빨강, 늘면 금테 깜빡 shine). 격자·LayoutSig는 원래대로(잠긴 칸 없음). test_bag_ui 211·99/99. fix/bag-slots-ui 965cdf95는 버림.
 - dev2-market 0af19d16(UnpackSpare = 거래소 또는 Crafting) 위 market-no-refund + artisan-unpack 합쳐 시험 통과. 최종 검수: 안 팔린 판매 글 [Cancel] 그대로.
 - 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests).
