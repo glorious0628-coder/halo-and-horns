@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 21 — 거래소 수수료 + 가방 칸 (push, 최신)
+## 10/14 밤 22 — 가방 칸 정정 fix/bag-slots-with-sell d417e164 (push, 최신)
+- 최종 검수 정정: 가방 전체 종류 수 하나. Config.BagSlots { Default 12, Step 4, Max 20, Counts(Material·Enhance·Transfer·Tonic·Treat·Spare), Text.Gained, Text.Full }. BagUI.Used(cells), 아래 줄 IconBag + 'n / N'(가득 = 빨강, 늘면 금테 깜빡 shine). 격자·LayoutSig는 원래대로(잠긴 칸 없음). test_bag_ui 211·99/99. fix/bag-slots-ui 965cdf95는 버림.
+- dev2-market 0af19d16(UnpackSpare = 거래소 또는 Crafting) 위 market-no-refund + artisan-unpack 합쳐 시험 통과. 최종 검수: 안 팔린 판매 글 [Cancel] 그대로.
+- 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests).
+
+## 10/14 밤 21 — 거래소 수수료 + 가방 칸 (push)
 - **fix/market-no-refund 66464a64** (A23-183): 창에 환불·되돌리기 없음 확인. MarketWindow.FeeRate = Config.Market.Fee(개발 2), 없거나 이상하면 L.Fee 0.07. 안 팔린 판매 글 [Cancel]은 남김(최종 검수에 확인 부탁). test_market_window 167·66/66.
 - **fix/bag-slots-ui 965cdf95**: Config.BagSlots { Default 8, Step 4, Max 16, Text.Gained "+%d bag slots" }. BagUI.Slots(속성 BagSlots) / SlotPlan(순수): 빈 칸 → Max까지 잠긴 칸(GlyphLock), 물건은 안 숨김; BagUI.OnSlots(Start 속성 신호) → 늘어난 칸 S.Flash → 다음 그림에서 금테 깜빡(shine). LayoutSig = 열 수만. test_bag_ui 208·96/96. dev1-artisan-sell과 BagUI.Start 충돌 → 합친 판 fix/bag-slots-with-sell c09a3ef3(212·99/99).
 - 걱정 전달: 서버가 탭당 8칸을 진짜 막으면 재료 탭이 금방 참.
