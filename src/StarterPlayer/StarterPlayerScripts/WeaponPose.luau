@@ -155,9 +155,16 @@ function WeaponPose.RestStep(now)
 					local w = rest and T.Low or 1
 					if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, T.Fade) end
 				end
-				if S.Rest[tool] ~= want then
-					S.Rest[tool] = want
-					tool.Grip = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)
+				-- the engine's RightGrip weld (C1 = the Tool.Grip it was made with): a client's Tool.Grip change does not reach
+				-- the server-made weld (SwordTest Studio 10/14: the blade stayed level), so the weld's C1 itself turns (local)
+				local hand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
+				local weld = hand and hand:FindFirstChild("RightGrip")
+				if weld and weld:IsA("JointInstance") and weld.Part1 == handle then
+					local c1 = Config.WeaponGrip(kind, handle.Size.Y, rest and "Rest" or nil)
+					if S.Rest[tool] ~= want or weld.C1 ~= c1 then
+						S.Rest[tool] = want
+						weld.C1 = c1
+					end
 				end
 			end
 		end
