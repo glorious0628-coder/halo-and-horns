@@ -1508,7 +1508,7 @@ Config.DayCycle = {
 -- them off on a phone). Mostly clear: a clear spell lasts Clear s (random in the range), then a shower starts with Chance
 -- (else another clear spell) and lasts Rain s. Snow ONLY in the northern winter by the Korean date (KST = UTC +
 -- UtcOffsetHours, SnowMonths 12 / 1 / 2): then every shower is snow INSTEAD of rain (WinterChance, Snow s) - one kind of
--- sky at a time, snow is the winter's treat (the 12/19 launch is in it) and rain at freezing would only be sleet; a
+-- sky at a time, snow is the winter's treat (the 12/15 beta is in it, A23-162) and rain at freezing would only be sleet; a
 -- shower running when the month turns changes kind at midnight KST (its look eases across). A new server starts clear
 -- for FirstClear s. One Random per server, seeded from os.time() and the JobId (a number Seed pins it). The light gets
 -- wet with the weather, eased over BlendSeconds: the sun x BrightK, exposure + ExpAdd, the fog greyer (Desat) and
@@ -2702,7 +2702,7 @@ end
 -- hunted and from the road, review 2026-10-06); it stays Lifetime s, then leaves when not defeated. GameState:
 -- PumpkinKingNextAt (server time of the next appearance, 0 = off), PumpkinKingActive, PumpkinKingEndsAt.
 Config.Halloween = {
-	-- A23-119 (user 2026-10-11, beta moved to 2026-12-01): the Pumpkin Patch and the Haunted Hollow are HIDDEN. false = the season is off
+	-- A23-119 (user 2026-10-11; the beta is 2026-12-15 now, A23-162): the Pumpkin Patch and the Haunted Hollow are HIDDEN. false = the season is off
 	-- for everyone (Config.SeasonOn): both zones leave Config.ZoneAt, no pumpkin / bat / ghost kind spawns (their slots go back to the base
 	-- kinds), no king, no road sign, no HUD line, no map drawing (WorldMap / MiniMap skip Season lands, roads and zones), no candy bag
 	-- (LostFound), no King Diary / candy jar row (QuestBook), no news line. No code and no data is deleted: true brings it all back (a
@@ -2710,6 +2710,7 @@ Config.Halloween = {
 	Enabled = false,
 	-- A23-28 HW-13: the season switches itself off at 2026-11-09 00:00 KST (= 2026-11-08 15:00 UTC) by the server clock:
 	-- no seasonal spawns, no king, no PumpkinPatch zone / sign after it. Candy already earned stays in the bag.
+	-- 2-A ⑦: the 2026 dates here are past by the beta; bringing the season back (next Halloween) = new EndsAt + DayOneStart.
 	EndsAt = 1794150000,
 	King = "PumpkinKing", -- the miniboss kind (Config.MonsterTypes)
 	FirstDelay = 360,
@@ -5273,6 +5274,8 @@ Config.Switches = {
 		Goose = { Type = "Bool", Default = true }, -- no new goose
 		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
 		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
+		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay)
+		PioneerTitle = { Type = "Bool", Default = true },
 	},
 }
 
@@ -5404,7 +5407,7 @@ Config.Help = {
 	-- the news window (and the last help topic): update weekly
 	News = {
 		{ Title = "Beta", Lines = {
-			"Your beta save carries over to the full launch.", -- A23-119: the launch date is set in December
+			"Your beta save carries over to the full launch.", -- A23-162: the launch date is set in January (no date here)
 			"Everyone who joins before the launch gets the Beta Pioneer title.",
 		} },
 		{ Title = "New this week", Lines = {
@@ -5935,10 +5938,12 @@ Config.Announce = {
 	},
 }
 
--- A23-18 beta: saves carry over to the full launch; everyone who plays before it gets the stat-free title
+-- A23-18 beta: saves carry over to the full launch; everyone who plays before it gets the stat-free title. Gameplay plan
+-- 2026-10-14 2-A ⑦ (A23-162: the launch day is set in January): no date in the code any more - PioneerUntil is a far date and
+-- the launch day turns the live switch PioneerTitle off (Config.Switches; no publish needed). Owned titles always stay.
 Config.Beta = {
 	GrantPioneer = true, -- BB16: false stops new grants (owned titles stay)
-	PioneerUntil = 1797645600, -- 2026-12-19 11:00 KST (full launch)
+	PioneerUntil = 4102444800, -- 2100-01-01 00:00 UTC: never in practice (the switch ends the grants)
 }
 
 -- BB16 selectable nametag titles (never give stats). TitleOrder = picker order.
@@ -8377,12 +8382,11 @@ end
 -- #2 the 8 Roblox badges (one badge for the angel and the devil path alike). Ids = the badge ids the user creates on
 -- create.roblox.com at publishing (5 free a day: two days; launch_ops_checklist). 0 = not made yet: never asked, awarded
 -- at a later join once the id is set. Stronger = a weapon above the first tier owned; FirstSkill = the first skill
--- learned (Lv5); Rank2 = faction rank 2 (Config.Titles.Thresholds); Halloween2026 = candy or a king beaten together in
--- the 2026 season.
+-- learned (Lv5); Rank2 = faction rank 2 (Config.Titles.Thresholds). 2-A ⑦: Halloween2026 left the list (the season is
+-- hidden until next Halloween: no badge to make now; ReturnService still knows the key for a later season list).
 Config.Badges = {
-	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2", "Halloween2026" },
-	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0,
-		Halloween2026 = 0 },
+	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2" },
+	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0 },
 	RetrySeconds = 300, -- a failed AwardBadge is tried again after this long
 }
 -- #5 the notification opt-in moment (13+ only: Roblox decides in CanPromptOptInAsync on the client). Once a shown prompt,
