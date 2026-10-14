@@ -701,6 +701,8 @@ Config.Skills = {
 	Text = {
 		NewSkill = "New skill! %s (%s)", NewSkillTouch = "New skill! Tap the new button.", TryIt = "Try it",
 		NoMP = "Not enough MP", NoTarget = "No target", TooHeavy = "Too heavy to jump!", CantHop = "Can't hop here",
+		-- 2-C #8 (game dev 1, 10/14): the short word over a refused skill button (SkillBar; the server's Fx "SkillPress")
+		NotReady = "Not ready", NotNow = "Not now",
 		UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt", Guarded = "Guarded", MPGain = "+%d MP",
 		Cost = "Costs %d MP", Cooldown = "%s s cooldown", Ready = "Ready", NeedMP = "Need MP",
 		XHalo = "Halo: guards friends", XHorns = "Horns: steals MP", XArtisan = "Artisan: crafted look",
