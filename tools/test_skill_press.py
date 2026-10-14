@@ -1,13 +1,13 @@
-"""SkillBar server refusals + X hop prep offline test (gameplay_plan 2026-10-14 2-C #8, 최종 검수 10/14).
+"""SkillBar A23-180 gate + X hop prep offline test (user 10/14: no refusal words; the screen gates first).
 
-The server (SkillService.press) answers a manual press with Fx "SkillPress" { Slot, Result }; before this the client had no
-listener, so a press the server refused (no target, can't hop, too heavy, its own cooldown / MP view, a switched-off
-slot) showed nothing. Now: the button shakes with one short word from Config.Skills.Text ("No target", "Can't hop here",
-"Too heavy to jump!", "Not ready", "Not enough MP" + the No sound, "Not now" / "Unlocks at Lv N"); "Queued" says
-nothing; unknown slots / results / junk show nothing; the client's own refusals read the same table; a refusal clears
-the press waiting behind it. X hop prep (archer X, tamer Big Boing; XEnabled stays off until 10/20): Fx "Hop" { To, T }
-moves my own character along a low arc to To at its ground height (uphill too), keeps the facing, ends still; a far /
-broken To, a knocked-out or new character = no move.
+A23-180 (최종 검수 10/14, server dev2 5bd777c5): the server no longer refuses a press (no monster = a cast at the air;
+PressBuffer s of cooldown left = it waits) and answers only "Queued". So SkillBar shows no refusal words and no shake;
+SkillBar.Gate decides first: a slot not learned, MP below the cost, more than Config.Skills.PressBuffer (0.35 s) of
+cooldown, or the Hop slot (Shape Hop) while carrying the grudge sack (SackGold) / as a kaiju (KaijuState Siren, Active) /
+with a goose egg (EggCarry) = nothing sent, nothing said, no sound; 0.35 s or less left = sent; the server's SkillPress
+answers show nothing; the carry attributes repaint the bar. X hop prep (archer X, tamer Big Boing; XEnabled stays
+off): Fx "Hop" { To, T } moves my own character along a low arc to To at its ground height (uphill too), keeps the
+facing, ends still; a far / broken To, a knocked-out or new character = no move.
 Runs the real SkillBar.luau + Config.luau in tools/fixtures/skill_press_offline.luau with the official Luau CLI.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-14/offline_skill_press_2026-10-14.json (do not commit)
@@ -27,14 +27,18 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-14/offline_skill_press_2026-10-14.json"
 
 MUTATIONS = [
-    ("no listener", '\t\t\tif kind == "SkillPress" then\n', '\t\t\tif false then\n'),
-    ("no target says nothing", 'NoTarget = "NoTarget", ', ''),
-    ("Queued shakes too", 'local PRESS = { Word = { Cooldown = "NotReady",', 'local PRESS = { Word = { Queued = "NoTarget", Cooldown = "NotReady",'),
-    ("the server's MP refusal is silent", '\tif data.Result == "NoMP" then\n\t\tlocal audio', '\tif false then\n\t\tlocal audio'),
-    ("a locked slot never names its level", '\t\tif st.Locked then word = string.format(TXT.Unlock, st.Unlock) end\n', ''),
-    ("the waiting press stays", '\t\tS.queued = nil\n\t\tshowQueue(data.Slot, false)\n\tend\n\tshake(b, word)', '\tend\n\tshake(b, word)'),
-    ("the client's own cooldown word hard-coded", '\t\tshake(b, skillWord("NotReady"))\n', '\t\tshake(b, "Not yet")\n'),
-    ("no hop move", '\t\t\telseif kind == "Hop" then\n', '\t\t\telseif false then\n'),
+    ("MP short still sends", '\tif st.MPShort then return false, "MP" end\n', ""),
+    ("carrying still hops", '\tif st.Heavy then return false, "Heavy" end\n', ""),
+    ("any cooldown blocks (no buffer)", "if (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then", "if (tonumber(st.Left) or 0) > 0 then"),
+    ("a long cooldown still sends", '\tif (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then return false, "Cooldown" end\n', ""),
+    ("the buffer at 0.35 s blocks too", "if (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then",
+     "if (tonumber(st.Left) or 0) >= (tonumber(buffer) or T.PressBuffer) then"),
+    ("Use ignores the gate", "\tif not SkillBar.Gate(st, pressBuffer()) then return false end\n", ""),
+    ("the sack ignored", 'num("SackGold", 0) > 0 or ', ""),
+    ("the egg ignored", "\n\t\t\tor num(\"EggCarry\", 0) > 0", ""),
+    ("every skill is a Hop", 'Hop = def ~= nil and def.Shape == "Hop",', "Hop = true,"),
+    ("carrying never repaints", '\tUIKit.OnAttr({ "SackGold", "KaijuState", "EggCarry" }, refreshAll) -- A23-180: what blocks the Hop slot\n', ""),
+    ("no hop move", '\t\t\tif kind == "Hop" then', '\t\t\tif false then'),
     ("a hop of any length", '\tif flat < 0.5 or flat > HOP.MaxDist then return false end\n', ''),
     ("a hop while knocked out", '\tif not (root and hum and hum.Health > 0) then return false end\n', '\tif not (root and hum) then return false end\n'),
     ("the landing ignores the ground", '\tlocal to = SkillBar.HopLanding(from, data.To, groundY(from, char), groundY(data.To, char))\n',
@@ -85,6 +89,7 @@ def main():
     code = "\n".join(line.split("--", 1)[0] for line in bar.splitlines())
     static = [
         ("no refusal word typed into SkillBar (Config.Skills.Text only)", not re.search(r'"(Not yet|Not ready|Not enough MP|No target)"', code)),
+        ("A23-180: no shake / floating word / server refusal display left", not re.search(r"\bshake\(|b\.Word|OnPress|skillWord", code)),
         ("the hop only on the server's Fx (no own hop input)", len(re.findall(r'(?<!function )SkillBar[.]OnHop[(]', code)) == 1),
     ]
     for name, good in static:
