@@ -27,6 +27,7 @@ Net.Names = {
 	"GooseSquare", -- A23-141 ("Join" | "Leave") the Goose Square (GooseSquare.luau via GooseService)
 	"SendSticker", -- A23-143 (key: a Config.Stickers.Order id) a chat sticker over my head (MonetizationService)
 	"SetBubble", -- A23-144 (key: a Config.Bubbles.Order id I may use, or "" = my side's free one) MonetizationService
+	"StatAction", -- A23-69 (op: "add" | "add5" | "reset" | "auto", arg: "A" | "H" | boolean | nil) StatService
 	-- server -> client
 	"Notify", "Fx", "OpenPanel",
 	"NicknameResult", -- filtered nickname + status only, never the user's raw request

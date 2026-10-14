@@ -47,6 +47,7 @@ Config.PluralWords = {
 	days = "day", times = "time", minutes = "minute", seconds = "second", hits = "hit", ["basic hits"] = "basic hit",
 	slimes = "slime", monsters = "monster", materials = "material", quests = "quest", players = "player",
 	["Wanted players"] = "Wanted player", Knights = "Knight", ["more great items"] = "more great item",
+	["Stat Points"] = "Stat Point", -- A23-69 stage 2
 }
 
 function Config.Plural(text)
@@ -997,6 +998,17 @@ Config.Stats = {
 	-- f(points), in order: { up to this many points, + this much a point }
 	Curve = { { 20, 0.01 }, { 40, 0.005 }, { math.huge, 0.0025 } },
 	AutoPattern = { Warrior = "HA", Mage = "HA", Archer = "AH" }, -- repeated: Lv100 = H50 / A49 (Archer A50 / H49)
+	ResetCooldown = 3, -- s between two free resets (stage 2, StatService)
+	-- stage 2 lines (§6, StatService; only after the first [Claim]). The [Stats] tab's own words come with game dev 1's
+	-- StatUI
+	Text = {
+		Names = { A = "Attack", H = "Health" },
+		Gain = "+%d %s", -- "+1 Health"
+		FirstPoint = "New Stat Point! Auto placed it. Tap Power to see.", -- once, the first point after the first [Claim]
+		LevelAuto = "%s · Power %s → %s", -- "+1 Health · Power 965 → 1003"
+		LevelPoints = "+%d Stat Points! Tap Power.", -- Auto off (Config.Plural: "+1 Stat Point!")
+		FirstManual = "Tap + to pick. Reset is free!", -- once, the first time Auto is turned off
+	},
 }
 
 -- f(points): the bonus of `points` in one stat (0.1 at 10, 0.2 at 20, 0.25 at 30, 0.3 at 40, 0.4475 at 99; more points
@@ -1037,6 +1049,13 @@ function Config.StatAlloc(stats, level, classId)
 		if ch == "A" then a += 1 elseif ch == "H" then h += 1 end
 	end
 	return a, h, points - (a + h)
+end
+
+-- A23-69 stage 2: the max HP with `hpPoints` in Health (x hpMult; the plain Config.MaxHealth while the switch is off).
+-- PlayerService multiplies it by JusticeService.GetHealthMult; the PvP hit base and the bait rule use it too (§3-3)
+function Config.StatMaxHealth(level, factionId, classId, hpPoints)
+	local _, hm = Config.StatMults(0, hpPoints)
+	return math.floor(Config.MaxHealth(level, factionId, classId) * hm)
 end
 
 -- (atkMult, hpMult) of a split: 1 + f each; (1, 1) while Config.Features.StatPoints is off
@@ -1091,6 +1110,7 @@ Config.Power = {
 	Text = {
 		Label = "Power", LabelEn = "Power",
 		Formula = "Set by your level and weapon (enhance included)", FormulaEn = "Set by your level and weapon (enhance included)",
+		FormulaStats = "Set by your level, weapon and stats", -- A23-69: the Formula line while Features.StatPoints is on
 		-- PvPNote / PvPNoteEn: finished lines, filled from Config.PvP.PowerRatioMax / Min right after Config.PvP below
 		Up = "Power +%s", UpEn = "Power +%s",
 		Change = "Power %s → %s", ChangeEn = "Power %s → %s",
@@ -1113,9 +1133,10 @@ end
 -- BB4 / A23-69: THE power number of a player, from the attributes (Level, WeaponTier, WeaponEnhance and the stat points
 -- StatAtk / StatHp). JusticeService (the CombatPower attribute, the bully rule, boldness), PvPService, the Tab list and
 -- the HUD all use this one formula. tierOverride / enhOverride: the same player with another weapon (LootService's
--- "Power X -> Y"). Server and client alike.
-function Config.CombatPowerOf(player, tierOverride, enhOverride)
-	local level = tonumber(player:GetAttribute("Level")) or 1
+-- "Power X -> Y"). levelOverride / allocOverride ({ A, H }): the same player at another level and split (StatService's
+-- level-up line, 2-A ⑧), the gear mults still the player's own. Server and client alike.
+function Config.CombatPowerOf(player, tierOverride, enhOverride, levelOverride, allocOverride)
+	local level = tonumber(levelOverride) or tonumber(player:GetAttribute("Level")) or 1
 	if level ~= level then level = 1 end
 	local tier = tierOverride
 	if tier == nil then
@@ -1126,7 +1147,8 @@ function Config.CombatPowerOf(player, tierOverride, enhOverride)
 	local enhance = enhOverride
 	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
 	local gearAtk, gearHp = Config.GearMultsOf(player) -- ⑥ gear (게임성 개발 3): (1, 1) while Config.Features.Gear is off
-	return Config.CombatPower(math.max(1, level), tier, enhance, Config.StatAllocOf(player), { A = gearAtk, H = gearHp })
+	local alloc = type(allocOverride) == "table" and allocOverride or Config.StatAllocOf(player)
+	return Config.CombatPower(math.max(1, level), tier, enhance, alloc, { A = gearAtk, H = gearHp })
 end
 
 -- 최종 검수 10/13 (ref_rpg_ui #1, 전투력 풀어 보기): the two numbers the power is made of (Config.PowerOf: the square root
@@ -4812,6 +4834,7 @@ Config.RateLimits = {
 	UseItem = 0.4, EquipWeapon = 0.3, SellMaterials = 1, SetAnnounceName = 0.5, SetTitle = 0.5, SetLook = 0.5, EquipPet = 0.5, GhostHold = 2.7, -- GhostHold: a bit under the 3 s client cooldown
 	SetSettings = 1, -- BB2: the client sends at most one blob per this + 0.05 s (a dropped call gets no answer)
 	UseSkill = 0.1, -- SKL-2: skill presses (the 0.5 s gap between skills is SkillService's)
+	StatAction = 0.15, -- A23-69 stage 2: a [+] / [+5] / Reset / Auto press (StatService)
 	UiMetric = 2, -- BB38: window-open reports (each window counts once a session)
 	SetQuickSlot = 0.2, -- A23-109: one quick-slot fill / empty / swap (QuickSlotService)
 }
