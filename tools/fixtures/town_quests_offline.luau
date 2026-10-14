@@ -1286,6 +1286,16 @@ runGroup("ch3-halo-good", function()
 	w:MoveTo(p, vec(gate.X + 2, 0, gate.Z))
 	w.Story.Refresh(p)
 	w:Flush()
+	-- 최종 검수 10/14: a full bag (no scroll yet, every slot used) still gets the reward scroll
+	d.Items = d.Items or {}
+	d.Items.Enh70 = nil
+	local fill = {}
+	for k, def in w.Config.Loot.Items do
+		if def.Kind == "Material" then table.insert(fill, k) end
+	end
+	table.sort(fill)
+	for i = 1, w.Config.BagSlotsOf(d) do if fill[i] and (d.Items[fill[i]] or 0) < 1 then d.Items[fill[i]] = 1 end end
+	check(not w.Config.BagHasRoom(d), "(the bag is full before Pip1's reward)", w.Config.BagUsed(d))
 	local enh, n3 = d.Items and d.Items.Enh70 or 0, #w.Notices
 	w:Act(p, "Pip1", "Talk")
 	check(d.Story.Done.Pip1 and (d.Items.Enh70 or 0) == enh + 1

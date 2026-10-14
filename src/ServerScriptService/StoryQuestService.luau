@@ -340,7 +340,7 @@ end
 local function grantItem(player, id, n)
 	local loot = S.LootService
 	if type(id) ~= "string" or type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return nil end
-	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)))
+	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)), "Reward") -- a reward fits a full bag (10/14)
 	if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 	local given = ok and math.floor(num(res)) or 0
 	if given <= 0 then return nil end
@@ -1158,7 +1158,7 @@ local function payChoice(player, obj, side)
 	local id = r.Item or r.Potion
 	local loot = S.LootService
 	if type(id) == "string" and type(loot) == "table" and type(loot.GrantItem) == "function" then
-		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)))
+		local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(r.N, 1)), "Reward") -- a reward fits a full bag (10/14)
 		if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 		local given = ok and math.floor(num(res)) or 0
 		if given > 0 then

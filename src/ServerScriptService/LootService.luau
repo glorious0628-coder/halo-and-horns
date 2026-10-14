@@ -193,12 +193,13 @@ local function publish(player, data)
 	end)
 end
 
-local function addItem(player, data, id, n)
+local function addItem(player, data, id, n, anySlot)
 	local def = LOOT.Items[id]
 	if not def or n <= 0 then return 0 end
 	local have = math.floor(num(data.Items[id]))
-	-- bag slots (10/14): a NEW kind needs a free slot (a kind already held stacks to ItemCap)
-	if have < 1 and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then
+	-- bag slots (10/14): a NEW kind needs a free slot (a kind already held stacks to ItemCap). anySlot (a quest / story
+	-- reward, 최종 검수 10/14) skips it: a reward always goes in, even past the slots (only picking up a new kind stops)
+	if have < 1 and not anySlot and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then
 		fullNotice(player, "Bag", Config.BagSlots.Text.Full)
 		return 0
 	end
@@ -421,7 +422,8 @@ end
 
 -- E6 (story_depth 6-1) / A23-46: a quest reward of `n` (1..99) of one Config.Loot.Items id or potion kind ("HP" /
 -- "MP"), through the same caps and full notices as drops. Returns how many were given (0 for a bad id / n or no data).
-function LootService.GrantItem(player, id, n)
+-- source "Reward" (a quest / story reward, 최종 검수 10/14): never refused for bag slots (the item cap still counts)
+function LootService.GrantItem(player, id, n, source)
 	local data = getData(player)
 	n = math.floor(num(n))
 	if not data or type(id) ~= "string" or n < 1 or n > 99 then return 0 end
@@ -432,7 +434,7 @@ function LootService.GrantItem(player, id, n)
 		return #gained
 	end
 	if not LOOT.Items[id] then return 0 end
-	local given = addItem(player, data, id, n)
+	local given = addItem(player, data, id, n, source == "Reward")
 	if given > 0 then publish(player, data) end
 	return given
 end

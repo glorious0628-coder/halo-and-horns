@@ -2947,6 +2947,13 @@ runGroup("bag slots", function()
 	f:Give(mats[13], 1)
 	check(f:Noticed(B.Text.Full) == 1, "the Full line at most once in 5 minutes", f:Noticed(B.Text.Full))
 	check(f:Give("Jelly", 4) == 4 and f:Count("Jelly") == 9, "a kind already held still stacks", f:Count("Jelly"))
+	-- 최종 검수 10/14: a quest / story reward always goes in (past the slots); any other source does not
+	check(f.Loot.GrantItem(f.Player, mats[12], 2) == 0 and f:Count(mats[12]) == 0, "GrantItem (a drop / no source): refused when full", "")
+	check(f.Loot.GrantItem(f.Player, mats[12], 2, "Gift") == 0, "... another source too", "")
+	check(f.Loot.GrantItem(f.Player, mats[12], 2, "Reward") == 2 and f:Count(mats[12]) == 2 and C.BagUsed(f.Data) == 13,
+		"GrantItem source Reward: in, past the slots (13 kinds in 12)", C.BagUsed(f.Data))
+	check(f:Give(mats[13], 1) == 0, "... and picking up a new kind still stops", f:Count(mats[13]))
+	f.Data.Items[mats[12]] = nil
 	-- a scroll is a slot too; a potion is not (not in the grid)
 	check(f:Give("Enh70", 1) == 0, "a scroll of a new kind: no room either", f:Count("Enh70"))
 	-- spares: a new key needs a slot, a key held stacks

@@ -52,6 +52,7 @@ MUTATIONS = [
     # bag slots (2026-10-14)
     ("bag: Reward.BagSlots ignored", ST, "if type(def.Reward) == \"table\" and num(def.Reward.BagSlots) > 0 and S.LootService",
      "if false and S.LootService"),
+    ("bag: a story reward refused when full", ST, "math.floor(num(n, 1)), \"Reward\") -- a reward fits a full bag (10/14)", "math.floor(num(n, 1))) --"),
     ("bag: no Gained line", ST, "\t\tif ok and num(added) > 0 then notify(player, string.format(Config.BagSlots.Text.Gained, added), \"reward\", \"None\") end\n", ""),
     ("bag: no catch-up at the join", ST, "\t\t\tlocal okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)\n\t\t\tif not okBag", "\t\t\tlocal okBag, errBag = true, nil\n\t\t\tif not okBag"),
     ("bag: no catch-up on a chapter skip", ST, "\t\tlocal okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)\n\t\tif not okBag", "\t\tlocal okBag, errBag = true, nil\n\t\tif not okBag"),

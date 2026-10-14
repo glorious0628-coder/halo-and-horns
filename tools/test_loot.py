@@ -134,6 +134,8 @@ MUTATIONS = [
      "\tif false then\n"),
     ("bag: a held kind refused too", "LOOT_SOURCE", "\tif have < 1 and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n",
      "\tif Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n"),
+    ("bag: a reward refused when full", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n)\n"),
+    ("bag: every source skips the slots", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, true)\n"),
     ("bag: no Full line", "LOOT_SOURCE", "\t\tfullNotice(player, \"Bag\", Config.BagSlots.Text.Full)\n", ""),
     ("bag: spares never full", "LOOT_SOURCE", "Config.BagSlots.Counts.Spare and not Config.BagHasRoom(data) then return false end", "false then return false end"),
     ("bag: slots past Max", "LOOT_SOURCE", "\tlocal after = math.min(Config.BagSlots.Max, before + n)\n", "\tlocal after = before + n\n"),
