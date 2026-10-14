@@ -1,5 +1,13 @@
 # 이미지 생성 3 — 상태 (2026-10-11 밤, PC 재부팅 뒤)
 ## 지금 상태 한 줄 (10/12 오전 9:50)
+## ★ 10/14 낮 — 난간 ⑤ 1차 (이 절이 최신, 가져오기 대기)
+- 한 일: build/tripo_parts/HaloVar4_Balustrade_C_tripo.glb(13 메시·재질 5·압축 없음) → `tools/glb_sa_maps_multi.py`(재질별 원본 맵) → `tools/hd_mat_tune.py`(금 = 색 마스크 또는 M>0.5 → 금속 0.90·거칠기 0.30·색상 42°·채도↑; 대리석 = 금속 0·거칠기 0.50·상아 색상 36°·V 대비 1.35·흰점 0.99 소프트클립; 원본 대리석은 분홍빛 + 거칠기 0.2대라 번쩍였음) → build/img3_bal/tuned2 → **SA 20장 올림**(asset_ids `SA_HaloVar4_Balustrade_C_m0..m4_{C,N,M,R}`; m0 = 기둥 6개(DoubleSided), m1 = 끝 기둥 2, m2 = 가로대 2, m3 = 받침 2, m4 = 모서리 기둥).
+- 메시만 GLB = `build/import3d_bal/HaloVar4_Balustrade_C_TU.glb`(`glb_strip_mesh.py --part-names`: 노드 이름 `..._pNN_mK`). **사용자 화면 제어 거부(10/14)** → 3D 가져오기는 사용자 직접(WorldKit 창 → 홈 → 3D 가져오기 → 이 GLB 1개). 가져오면 Workspace.HaloVar4_Balustrade_C_TU.
+- 다음(가져온 뒤, MCP만): `py tools/worldkit/tripo_parts_kit_gen.py HaloVar4_Balustrade_C 4.5 --two 0` → build/wk/tripo_parts_kit_HaloVar4_Balustrade_C.luau 실행(= ServerStorage.HaloTripoKits.<이름>, 높이 4.5칸, 피벗 바닥 중앙) → 놓기 = Workspace.HaloV2.Props.Real.P129_HaloVar4_Balustrade_C(전망대 남쪽 끝 낭떠러지 난간, pos 205,28,-822 yaw 4°, 옛 파트 키트 103파트; 옛 것은 ServerStorage.Parked_*로) — V자(모서리) 모양이라 옛 납작 키트(9×2.3)보다 앞뒤가 깊음(높이 4.5 기준 폭 ≈12 × 깊이 ≈7): 자리 맞는지 사진으로 확인, 꼭지(+z) 방향은 바깥 낭떠러지 쪽 → `tools/prop_ab_shots.py <out> P129=art/out/s2/noshadow/HaloVar4_Balustrade_C_front_ns.png --back`(창 펼침 필요) → 디자인 검수.
+- Luau 실행 도구: build/img3_bal/run.py(STUDIO_ID 고정, 코드 파일 → execute_luau; JSON 안 '
+' 때문에 파싱 오류 나므로 파일로).
+- WorldKit(STUDIO_ID 98b5c8af-552d-45f0-aa71-3ee3a5eae7ee, 이름 "Game") 열림, 저장 안 됨(place=0). 내가 넣은 것 아직 없음(저장할 것 없음).
+
 ## ★ 10/14 낮 끝 (클리어 전) — 다음 나는 여기부터
 - **준비된 것:** ① 키트 스크립트 `tools/worldkit/npc_hd_kit.luau`(몸 SA + 메시 후광 숨김 + 게임 후광 Acc_HaloR1 같은 자리·지름, 키 5.2칸; 부품 사람에도 재사용) ② `tools/npc_hd_split.py`(Blender: 후광 고리 분리·피벗, meshopt GLB 재저장 겸용; 절대 경로만) ③ 재질 표 `docs/design/roblox_material_hd_2026-10-14.md`(첫 모델로 시험 뒤 고침) ④ SA 올린 8장(통짜 BakerGranny·BellElder)은 **미사용**, asset_ids에 _NOTE 표시(지우지 말 것).
 - **다음 일 = 난간:** 최종 검수가 Blender로 합친 `build/tripo_parts/HaloVar4_Balustrade_C_tripo.glb`(부품 13개 = MeshPart 13, 가로대·받침은 축별 맞춤 판; join false). 순서: meshopt이면 Blender 재저장(npc_hd_split.py 참고) → `glb_sa_maps.py`(부품마다 맵) → 맵 직접 보고 10장 이하씩 올림 → `glb_strip_mesh.py` → 최종 검수에 사용자 3D 가져오기 신청 → WorldKit에 놓기 + 재질 표대로 보정 → 2D 옆 낮·밤(C2c) → 디자인 검수 → 최종 검수.
