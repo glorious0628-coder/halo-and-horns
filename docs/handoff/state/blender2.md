@@ -4,6 +4,7 @@
 - **새 규칙(사용자 10/14 "블렌더 작업은 코덱스한테 시켜봐"):** Blender 일(assemble_parts.py·axis_fit_bar.py·크기·피벗·방향)은 내가 직접 안 돌리고 Codex CLI(`codex exec -C <Game> -s workspace-write --skip-git-repo-check -`, exe = tools/codex_image.py codex_exe())에 시킨다. 못 하면 보고하고 멈춤.
 - **Codex 첫 시험 = 됨:** 지시문 `build/codex_jobs/balustrade_codex_test/task.md` → assemble_parts.py(layout_nojoin.json) → `build/tripo_parts/HaloVar4_Balustrade_C_tripo_codex.glb` + final_gate 렌더. 기존 `_tripo.glb`와 물체 13·삼각형 103,648·치수 2.058×1.192×0.77·파일 크기 같음, 앞/알베도/3/4 렌더 픽셀 차이 0(내가 PIL로 확인). 4분 45초, Codex 토큰 77,646(gpt-6.1-sol, 한도 메시지 없음). 지시문은 짧게: Codex가 AGENTS.md 등 문서를 읽느라 토큰을 씀.
 - 2D 통과 확정(최종 검수 10/14): WhiteRock_a·b·c(12000)·ArmoryBarrel(8000)·Fountain3 Basin·MidTier(12000)·Top(8000)·TreePlanter(8000)·TreeFruit(8000)·RoundTree_E Trunk(8000)·E Canopy(12000)·G Trunk(8000)·G Canopy(12000). **RoundTree_F Trunk·Canopy = 2D 다시 그리는 중, 새 2D 올 때까지 누르지 않음.**
+- **10:0x 멈춤 2건(최종 검수에 물음):** ① Chrome 155 로컬 네트워크 접근 권한 = prompt → 페이지→수신기(127.0.0.1:8765) POST가 멈춤(사용자가 Chrome에서 '허용' 눌러야). JuiceMan·MailBoy·OldSailor GLB는 탭 메모리(window.__b_*)에만. 수신기 = scratchpad recv3.py(스레드, 안 멈춤). ② 계정 HD 설정이 바뀌어 있음: 텍스처 꺼짐·부분별 생성 켬(체험 ×1, 정밀)·폴리곤 50000 → 버튼 60→0. 답 오기 전 생성 안 누름. WhiteRock_a 2D는 칸에 넣어 둠.
 - 다음: 최종 검수 '전달함, 시작' 뒤 Chrome(Tripo) 큐 — JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) → 단순 14 → 분수 부품 → 나무 부품. 설정 = HD 탭, 4K('55'), 조명 제거, PBR, 삼각형.
 
 
