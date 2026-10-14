@@ -1132,7 +1132,9 @@ function SQ.FitGoose(h)
 		if icon.Size ~= size then icon.Size = size end
 		if icon.Position ~= pos then icon.Position = pos end
 	end
-	local x = G.Left + (icon and (iw + G.Gap) or 0)
+	-- 최종 검수 10/15 (publish7 PC: '7:29' alone): the icon steps aside before the words go (SQ.IconOff, SQ.chipLine)
+	if icon and icon.Visible == (SQ.IconOff == true) then icon.Visible = SQ.IconOff ~= true end
+	local x = G.Left + ((icon and SQ.IconOff ~= true) and (iw + G.Gap) or 0)
 	if label then
 		local right = G.Right + ((SQ.NewRes or 0) > 0 and (SQ.NewRes - G.Right) or 0) -- 1안 ③: the NEW! room
 		local pos, size = UDim2.fromOffset(x, 1), UDim2.new(1, -(x + right), 1, -2)
@@ -1173,12 +1175,32 @@ function SQ.chipLine(seconds)
 	local size = c and c.MinTextSize or label.TextSize
 	local w = label.AbsoluteSize.X
 	if w <= 0 or size <= 0 then return lines[1] end
-	for _, line in lines do
+	-- 최종 검수 10/15 (publish7 PC: '7:29' alone - 'Goose 7:29' was 89 px for an 85 px words box at the 18 px floor):
+	-- 'Golden Goose t' -> 'Goose t' -> 'Goose t' with the icon's room given to the words -> the time alone (last)
+	local icon = ui.GooseIcon
+	local room = icon and (icon.Size.X.Offset + L.GooseChip.Gap) * currentScale() or 0
+	local withIcon = SQ.IconOff == true and w - room or w
+	local function fits(line, width)
 		-- every digit as a 0: one measure per length (the time changes every second; MeasureText caches)
 		local ok, _, lw = pcall(kit.MeasureText, (string.gsub(line, "%d", "0")), size, label.FontFace, 100000)
-		if ok and type(lw) == "number" and lw <= w + 1 then return line end
+		return ok and type(lw) == "number" and lw <= width + 1
 	end
-	return t
+	local off = nil
+	local pick = t
+	if fits(lines[1], withIcon) then
+		off, pick = false, lines[1]
+	elseif fits(lines[2], withIcon) then
+		off, pick = false, lines[2]
+	elseif room > 0 and fits(lines[2], withIcon + room) then
+		off, pick = true, lines[2]
+	else
+		off = false
+	end
+	if (SQ.IconOff == true) ~= off then
+		SQ.IconOff = off
+		if ui.GooseChip then SQ.FitGoose(ui.GooseChip.Size.Y.Offset) end
+	end
+	return pick
 end
 
 ----------------------------------------------------------------- per-tick updates

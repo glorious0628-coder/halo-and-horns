@@ -85,7 +85,8 @@ local function chip(width, minSize)
 		end }
 end
 local TXT = { GooseNext = "Golden Goose %s", GooseNextShort = "Goose %s" }
-local ev = { ui = {}, C = { UIKit = kit }, SQ = {}, Util = Util }
+local SCALE = 1
+local ev = { ui = {}, C = { UIKit = kit }, SQ = { FitGoose = function() end }, Util = Util, currentScale = function() return SCALE end }
 do
 	local src = EVENT_SOURCE:gsub("^function SQ%.chipLine", "function SQ.chipLine")
 	local fe = assert(loadstring(TXT_SOURCE .. "\n" .. src, "=chipLine"))
@@ -117,6 +118,21 @@ check(line(7043) == "Golden Goose 1:57:23", "no UIKit: the whole line", line(704
 ev.C = { UIKit = kit }
 ev.ui.GooseChipText = nil
 check(line(7043) == "Golden Goose 1:57:23", "no chip label: the whole line", line(7043))
+-- 최종 검수 10/15 (publish7 PC '7:29' alone): before the time alone, the icon's room goes to 'Goose t'
+ev.ui.GooseIcon = { Size = { X = { Offset = 25 } }, Visible = true }
+ev.ui.GooseChip = { Size = { Y = { Offset = 40 } } }
+ev.SQ.IconOff = false
+ev.ui.GooseChipText = chip(85, 18) -- 'Goose 0:00' = 10 x 18 x 0.55 = 99 px > 85; with the icon's 31 px: 116
+local got = line(449) -- (called once: each call is one tick)
+check(got == "Goose 7:29" and ev.SQ.IconOff == true, "PC 85 px words box: 'Goose 7:29' with the icon stepping aside",
+	tostring(got) .. " off=" .. tostring(ev.SQ.IconOff))
+ev.ui.GooseChipText = chip(85 + 31, 18) -- now drawn without the icon: the box grew by its room; still no room with it
+check(line(449) == "Goose 7:29" and ev.SQ.IconOff == true, "... stays so next tick (the box measured without the icon)", line(449))
+ev.ui.GooseChipText = chip(200, 18)
+check(line(449) == "Golden Goose 7:29" and ev.SQ.IconOff == false, "room again: the whole line, the icon back", line(449))
+ev.ui.GooseChipText = chip(40, 18)
+check(line(449) == "7:29" and ev.SQ.IconOff == false, "nothing fits even without the icon: the time alone, with its icon (last step)", line(449))
+ev.ui.GooseIcon, ev.SQ.IconOff = nil, nil
 
 -- 2b. the goose chip's width (SQ.GooseNeed): the whole line at the text floor (screen px) back in du
 do
@@ -166,9 +182,10 @@ MUTATIONS = [
     ("UTIL", "over an hour stays M:SS", "\tif seconds >= 3600 then\n", "\tif seconds >= math.huge then\n"),
     ("UTIL", "minutes not wrapped", "seconds // 60 % 60, seconds % 60)", "seconds // 60, seconds % 60)"),
     ("EVENT", "no short line", "L.Tx(TXT, \"GooseNextShort\", t), t }", "t }"),
-    ("EVENT", "the PC width ignored", "lw <= w + 1 then return line end", "lw <= w * 0.5 then return line end"),
+    ("EVENT", "the PC width ignored", "and lw <= width + 1\n", "and lw <= width * 0.5\n"),
+    ("EVENT", "no icon step (the time alone first)", "\telseif room > 0 and fits(lines[2], withIcon + room) then\n", "\telseif false then\n"),
     ("EVENT", "real digits measured", '(string.gsub(line, "%d", "0"))', "line"),
-    ("EVENT", "the word alone when nothing fits", "\treturn t\nend", "\treturn lines[1]\nend"),
+    ("EVENT", "the word alone when nothing fits", "\tlocal pick = t\n", "\tlocal pick = lines[1]\n"),
     ("GOOSE", "the goose chip measured in du again (PC 'Goose 3:35')", "math.ceil(room + w / s + 2)", "math.ceil(room + w + 2)"),
     ("SETTINGS", "touch reads the keyboard lines", "if not UserInputService.KeyboardEnabled and type(touch)",
      "if false and type(touch)"),
@@ -211,7 +228,7 @@ def run(src: dict) -> tuple[int, int, str]:
     text = ("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) + "\nlocal UTIL_SOURCE = " + lua_str(cut("UTIL", src["UTIL"]))
             + "\nlocal EVENT_SOURCE = " + lua_str(cut("EVENT", src["EVENT"])) + "\nlocal GOOSE_SOURCE = "
             + lua_str(cut("GOOSE", src["GOOSE"])) + "\nlocal TXT_SOURCE = "
-            + lua_str(txt_line(src["EVENT"]) + "\nlocal L = {}\n" + tx_cut(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
+            + lua_str(txt_line(src["EVENT"]) + "\nlocal L = { GooseChip = { Gap = 6 } }\n" + tx_cut(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
             + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "phone_text.luau"

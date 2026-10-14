@@ -3603,6 +3603,14 @@ function UIKit.Tr(key, ...)
 		if type(fmt) == "string" and fmt ~= key then
 			local ok, out = pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})
 			if ok and type(out) == "string" and out ~= "" then return out end
+			-- 최종 검수 10/15 (publish7: one inner piece stayed English): say once in Studio which key the table refused
+			UIKit.TR.Warned = UIKit.TR.Warned or {}
+			if not ok and not UIKit.TR.Warned[key] then
+				UIKit.TR.Warned[key] = true
+				pcall(function()
+					if game:GetService("RunService"):IsStudio() then warn("[UIKit] FormatByKey failed: " .. key .. " " .. tostring(out)) end
+				end)
+			end
 		end
 	end
 	return UIKit.L10n.T(key, n > 0 and { ... } or nil, UIKit.Lang())
