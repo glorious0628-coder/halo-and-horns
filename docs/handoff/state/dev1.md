@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 5 — dev1-village-fund f9afc184 (다 됨·push, 최신)
+- death-box(24eae591)·choice-card-held(84cefeeb) main 병합됨.
+- **마을 기금 화면**(A23-178 B, 계약 docs/design/village_fund_server_2026-10-14.md §8): 가지 **dev1-village-fund f9afc184**(origin/main 67ed5712 위 1커밋). 새 모듈 VillageFundUI(ClientMain ChoiceCardUI 뒤): ① FundPrompt는 내 진영 것만 Enabled(속성 Faction, 없으면 가까운 Spots), FundOpen → Panels 'VillageFund' 카드(Lead Share/Show off, Today n/3, 가진 골드, [Give 1,000] → FundGive:FireServer() 인자 없음, 1초 잠금, [Close]), 새 FundOpen = 제자리 갱신, 분수에서 Radius+8 멀어지거나 진영 바뀌면 닫힘 ② Poor/Full = [Give] 흐림 + 서버 글 Config.VillageFund.Text.Poor/Full ③ 주간 막대 UIKit.ArtBar(불꽃 목표까지 채움, 등불 30% 눈금, ReplicatedStorage FundHalo/FundHorns 실시간) ④ 등불(FundLevel≥1, 고리 8개·폰 4개, 둥근 반짝임+PointLight)·밤 불꽃(≥2 + DayPhase Night, 별·색종이 Emit 2.6~4.2초마다, 폰 5~7초·반), 빛줄기·Beam·Trail 없음.
+- Net: FundGive·FundOpen 내 가지가 넣음(개발 2에 알림). Config: 새 표 Config.VillageFundScreen만(카드 글). Config.VillageFund는 개발 2 몫 — 시험은 없으면 계약 §2 표를 넣고 돎.
+- 시험: test_village_fund_ui 54·19/19 + 정적 8, english, l10n, story_text, codex, choice_card_ui, fit_text, place_english(--place) 0 failing·MISSED 0.
+- 기다림: 개발 2 dev2-village-fund(+ FundPrompt 속성 Faction 부탁) → 최종 검수 같이 병합 → 메인 사진(아직 사진 스크립트 없음, 필요하면 만듦).
+
 ## 10/14 밤 4 — fix/choice-card-held fdbd7c19 (다 됨·push, 최신)
 - ④ 선택 카드 창 준비 = MINOR 1: **fix/choice-card-held fdbd7c19**(origin/main 6a4b3ae9 위 1커밋, death-box와 병합 깨끗). ChoiceCardUI offer: 시간 카드가 아직 시간 안이고 다른 출처 카드가 오면 시간 카드는 그대로 두고 새 카드는 S.Held(같은 출처 더 새 카드가 Held를 바꿈) → 시간 카드 끝나면 Held가 뜸.
 - 시험: test_choice_card_ui 61·27/27(새 검사 4·돌연변이 2), test_choice_card 133·68/68, english 81 = 0 failing·MISSED 0.
