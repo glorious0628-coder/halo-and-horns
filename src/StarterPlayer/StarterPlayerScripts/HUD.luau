@@ -2161,6 +2161,9 @@ function L.BuildTracker(root)
 	local goal = UIKit.StyledLabel({ Name = "Goal", LayoutOrder = 2, Size = UDim2.new(1, 0, 0, 0),
 		AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, ZIndex = 4,
 		Parent = frame }, "Body")
+	for _, prop in { "TextFits", "TextBounds" } do -- A23-179: a longer translation shrinks it (L.GoalGuard)
+		goal:GetPropertyChangedSignal(prop):Connect(function() task.defer(L.GoalGuard) end)
+	end
 	-- line 3: (p/t) + the Claim pill
 	local prog = UIKit.Create("Frame", { Name = "Progress", LayoutOrder = 3, BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 0, T.ProgH), ZIndex = 4, Parent = frame }, {
@@ -2365,6 +2368,25 @@ end
 -- Studio 991x451, UIScale 0.5: AutomaticSize gave the box one line while the words wrapped to two - "...in the" and the
 -- rest cut off). A size under the style's real-px floor is measured at the floor (that is what renders); while a size is
 -- being measured the line keeps AutomaticSize
+-- 최종 검수 10/14 (A23-179 translation overflow): Roblox's automatic translation changes only what is DRAWN - goal.Text
+-- stays English, so FitGoal (TextService on goal.Text) sized the box for the English sentence. The engine's TextFits is
+-- computed on the drawn (translated) text: while it is false the size steps down by 1 (pure L.GuardStep) to the least of
+-- GoalMin and the style floor; FitGoal starts over at the next text / layout change.
+function L.GuardStep(fits, size, least)
+	if fits == false and type(size) == "number" and type(least) == "number" and size > least then return size - 1 end
+	return size
+end
+
+function L.GoalGuard()
+	local t, T = ui.tracker, L.Tracker
+	local goal = t and t.Goal
+	if not (goal and T.GoalMin) or goal.AutomaticSize ~= Enum.AutomaticSize.None then return end
+	local tc = goal:FindFirstChildOfClass("UITextSizeConstraint")
+	local floorDu = tc and math.ceil(tc.MinTextSize / math.max(0.05, currentScale())) or 0
+	local size = L.GuardStep(goal.TextFits, goal.TextSize, math.max(T.GoalMin, floorDu))
+	if size ~= goal.TextSize then goal.TextSize = size end
+end
+
 function L.FitGoal()
 	local t, T = ui.tracker, L.Tracker
 	if not (t and T.Rect and T.GoalMax) then return end

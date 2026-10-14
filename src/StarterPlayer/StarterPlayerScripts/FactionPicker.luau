@@ -1338,7 +1338,9 @@ local function layoutPerks(c, W, H, minT, scale)
 		local ix = math.max(0, (textW - inkW) / 2)
 		row.Icon.Position = UDim2.fromOffset(ix, row.Layout.IconY)
 		row.Dot.Position = UDim2.fromOffset(ix, row.Layout.IconY)
-		setTextRange(row.Text, size, size) -- the card's one size (never fitted per row)
+		-- the card's one size (never fitted per row) for our English; A23-179: a longer translation may shrink to MIN_TEXT
+		-- (TextScaled draws the translated words) instead of being cut by the row's clip
+		setTextRange(row.Text, MIN_TEXT, size)
 	end
 end
 
