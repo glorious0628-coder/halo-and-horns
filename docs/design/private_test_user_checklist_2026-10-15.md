@@ -18,7 +18,7 @@ Creator Hub(create.roblox.com) → 만들기 → 체험 "Halo & Horns"(장소 81
 | 7 | Gold Halo | 99 | (6과 같은 글) |
 | 8 | Lava Horns | 99 | (6과 같은 글) |
 | 9 | Shadow Horns | 99 | (6과 같은 글) |
-| 10 | Fast Travel | 149 | Teleport to any zone you have unlocked from the menu. No stats are for sale. |
+| 10 | Fast Travel (**구독**, 패스 아님: 수익 창출 → 구독 → 월, 가장 낮은 가격 등급) | 월 | Teleport to any zone you have unlocked from the menu, every month. No stats are for sale. |
 
 - 만든 뒤 **패스 9개의 ID 숫자**(주소 끝 숫자)를 이름과 함께 저에게 보내 주세요. → 개발 2가 `Config.GamePasses`·치장 Looks 표에 넣고 동결판에 포함합니다(10/15 18:00 전이면 좋음, 늦으면 10/16 오전).
 - **판매 켜기(On Sale)는 지금 켜 두세요.** 시험 동안 초대한 사람만 들어오고, 패스마다 한 번씩 사 보고 다시 접속해 혜택이 남는지 봅니다(A23-156 ③). 실제 로벅스가 듭니다(작은 금액).

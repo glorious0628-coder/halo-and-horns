@@ -94,7 +94,7 @@
 
 ### A23-182. 텔레포트(Travel 창) = Robux 패스 전용, 지금은 숨김; 닉네임 바꾸기 티켓 없음 (사용자 2026-10-14)
 - 사용자: "텔레포트 기능 다 쓸 수 없게 하고, 로벅스로 구입한 애만 쓸 수 있게 하자. 지금은 텔레포트 UI 숨기는 게 나을듯" / "닉네임 바꾸기는 ㄴㄴ(트롤)".
-- **Travel 창(HUD 타일 → 구역 고르기 → Travel 원격) = 새 패스 "Fast Travel"**(최종 검수 가격 149 R$, 설명 'Teleport to any zone you have unlocked from the menu. No stats are for sale.'). 패스 없으면 HUD 타일 숨김 + 서버 Travel 원격 거절(조용히). 패스 ID는 사용자가 Creator Hub에서 만들면(10번째) 코드에 넣음; ID 0 = 모두 숨김.
+- 사용자 같은 날 정정 "한 달에 한 번 결제해야 돼": **Travel 창 = 월 구독 "Fast Travel"**(Roblox 체험 내 구독, Creator Hub → 수익 창출 → 구독; 가격은 돈 단위 등급 — 최종 검수 안: 가장 낮은 등급. 설명 'Teleport to any zone you have unlocked from the menu, every month. No stats are for sale.'). 서버는 접속 때 MarketplaceService:GetUserSubscriptionStatusAsync(pcall, 실패 = 없음으로)로 확인해 속성으로 올리고, Travel 원격은 구독 중일 때만. 구독 ID 0 = 모두 숨김. 패스(일회)로는 팔지 않음.
 - **발판 텔레포트(마을 빛나는 발판 → 초원, PvP 발판)는 그대로 무료**: 첫 10분 퀘스트 'Step on the glowing pad'(A23-88)가 쓰는 길.
 - 닉네임 바꾸기 티켓은 만들지 않음(트롤 뒤 이름 바꾸기 막기). 그 밖의 Robux 아이디어는 A23-181.
 
