@@ -140,6 +140,21 @@ local TXT = {
 	UnknownName = "???",
 }
 
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+function L.Tx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
+
 ----------------------------------------------------------------- state
 local ui = {}
 local arrows = {}
@@ -1144,7 +1159,7 @@ end
 -- "1:57:23" (the goose icon says what)
 function SQ.chipLine(seconds)
 	local t = Util.FormatTime(seconds)
-	local lines = { string.format(TXT.GooseNext, t), string.format(TXT.GooseNextShort, t), t }
+	local lines = { L.Tx(TXT, "GooseNext", t), L.Tx(TXT, "GooseNextShort", t), t }
 	SQ.FullLine = lines[1] -- the chip's width asks for the whole line (SQ.GooseNeed)
 	local label, kit = ui.GooseChipText, C and C.UIKit
 	if not (label and type(kit) == "table" and type(kit.MeasureText) == "function") then return lines[1] end
@@ -1204,8 +1219,8 @@ local function updateGoose(now)
 			setVisible(ui.TugRight, not b.Coop)
 			ui.TugLeft.Size = UDim2.fromScale(b.Fill, 1)
 			setVisible(ui.TugLeft, b.Fill > 0.001)
-			setText(ui.TugLeftText, b.Coop and string.format(TXT.EggCoop, b.Left, b.Right) or string.format(TXT.EggScore, b.Left))
-			setText(ui.TugRightText, b.Coop and "" or string.format(TXT.EggScore, b.Right))
+			setText(ui.TugLeftText, b.Coop and L.Tx(TXT, "EggCoop", b.Left, b.Right) or L.Tx(TXT, "EggScore", b.Left))
+			setText(ui.TugRightText, b.Coop and "" or L.Tx(TXT, "EggScore", b.Right))
 			setText(ui.TugCenterText, Util.FormatTime(b.Seconds))
 			local clock = b.Overtime and GOLD or ui.TugCenterInk
 			if clock and ui.TugCenterText.TextColor3 ~= clock then ui.TugCenterText.TextColor3 = clock end
@@ -1243,7 +1258,7 @@ local function updateGoose(now)
 			elseif faction == "Neutral" then
 				coopSub = TXT.HintNeutral
 			else
-				coopSub = string.format(TXT.MyCount, mine)
+				coopSub = L.Tx(TXT, "MyCount", mine)
 			end
 			setText(ui.TugSub, coopSub)
 			return
@@ -1257,18 +1272,18 @@ local function updateGoose(now)
 		-- rescue (gold) grows from the left over the full-width poach (red) capsule
 		ui.TugLeft.Size = UDim2.fromScale(frac, 1)
 		setVisible(ui.TugLeft, frac > 0.001)
-		setText(ui.TugLeftText, string.format(TXT.Rescue, math.floor(rescue)))
-		setText(ui.TugRightText, string.format(TXT.Poach, math.floor(poach)))
-		setText(ui.TugCenterText, string.format(TXT.GooseTitle, timeLeft))
+		setText(ui.TugLeftText, L.Tx(TXT, "Rescue", math.floor(rescue)))
+		setText(ui.TugRightText, L.Tx(TXT, "Poach", math.floor(poach)))
+		setText(ui.TugCenterText, L.Tx(TXT, "GooseTitle", timeLeft))
 		local sub
 		if faction == "Halo" then
-			sub = string.format(TXT.MyCount, mine) .. " · " .. TXT.HintHalo
+			sub = L.Tx(TXT, "MyCount", mine) .. " · " .. TXT.HintHalo
 		elseif faction == "Horns" then
-			sub = string.format(TXT.MyCount, mine) .. " · " .. TXT.HintHorns
+			sub = L.Tx(TXT, "MyCount", mine) .. " · " .. TXT.HintHorns
 		elseif faction == "Neutral" then
 			sub = TXT.HintNeutral
 		else
-			sub = string.format(TXT.MyCount, mine)
+			sub = L.Tx(TXT, "MyCount", mine)
 		end
 		setText(ui.TugSub, sub)
 	else
@@ -1474,13 +1489,13 @@ local function updateKaiju(now)
 	local endsAt = num(gsAttr("KaijuEndsAt", 0))
 	if phase == "Active" then
 		setVisible(ui.KaijuChip, true)
-		setText(ui.KaijuChipText, string.format(TXT.KaijuChip, kaijuName(L.KaijuNameMax), Util.FormatTime(endsAt - now)))
+		setText(ui.KaijuChipText, L.Tx(TXT, "KaijuChip", kaijuName(L.KaijuNameMax), Util.FormatTime(endsAt - now)))
 	else
 		setVisible(ui.KaijuChip, false)
 	end
 	if phase == "Siren" then
 		local left = math.max(0, math.ceil(endsAt - now))
-		local text = safeFormat(Config.Story.KaijuSiren, kaijuName()) .. "  " .. string.format(TXT.SirenLeft, left)
+		local text = safeFormat(Config.Story.KaijuSiren, kaijuName()) .. "  " .. L.Tx(TXT, "SirenLeft", left)
 		setText(ui.SirenText, text)
 		setVisible(ui.Siren, true)
 	else
@@ -1504,17 +1519,17 @@ local function updatePersonal(now)
 	local sack = num(myAttr("SackGold", 0))
 	if sack > 0 then
 		local secs = math.max(0, math.ceil(num(myAttr("SackSeconds", 0))))
-		text = string.format(TXT.Sack, Util.FormatNumber(sack), secs)
+		text = L.Tx(TXT, "Sack", Util.FormatNumber(sack), secs)
 		color = ink.Sack
 	elseif myAttr("KaijuState", "None") == "Active" then
 		local endsAt = 0
 		if num(gsAttr("KaijuUserId", 0)) == LocalPlayer.UserId then endsAt = num(gsAttr("KaijuEndsAt", 0)) end
-		text = string.format(TXT.KaijuSelf, Util.FormatTime(endsAt - now))
+		text = L.Tx(TXT, "KaijuSelf", Util.FormatTime(endsAt - now))
 		color = ink.Kaiju
 	else
 		local target, untilT = revengeTarget(now)
 		if target then
-			text = string.format(TXT.Revenge, Util.PlayerDisplayName(target), Util.FormatTime(untilT - now))
+			text = L.Tx(TXT, "Revenge", Util.PlayerDisplayName(target), Util.FormatTime(untilT - now))
 			color = ink.Revenge
 		end
 	end
@@ -1557,7 +1572,7 @@ end
 local function luckData()
 	local events = math.max(0, math.floor(num(myAttr("LuckEvents", 0))))
 	local pct = Util.FormatPercent(Config.RareChance(events))
-	local line1 = string.format(TXT.Luck, pct)
+	local line1 = L.Tx(TXT, "Luck", pct)
 	local need = math.floor(num(Config.Goose and Config.Goose.CheerStarsForRare))
 	if need <= 0 then need = 5 end
 	local stars = math.max(0, math.floor(num(myAttr("CheerStars", 0))))
@@ -1566,7 +1581,7 @@ end
 
 -- "응원별 ★★☆☆☆ (2/5)"
 local function cheerText(stars, need, filled)
-	return string.format(TXT.Cheer, string.rep("★", filled) .. string.rep("☆", need - filled), stars, need)
+	return L.Tx(TXT, "Cheer", string.rep("★", filled) .. string.rep("☆", need - filled), stars, need)
 end
 
 local function updateLuck()
@@ -1574,7 +1589,7 @@ local function updateLuck()
 	setText(ui.LuckLine1, line1)
 	if ui.CheerStars then
 		setStars(filled, need)
-		setText(ui.CheerCount, string.format(TXT.CheerCount, stars, need))
+		setText(ui.CheerCount, L.Tx(TXT, "CheerCount", stars, need))
 	else
 		setText(ui.LuckLine2, cheerText(stars, need, filled))
 	end
@@ -1614,7 +1629,7 @@ local function gatherTargets(now)
 			if p ~= LocalPlayer then
 				local sackGold = num(p:GetAttribute("SackGold"))
 				if sackGold > 0 then
-					local text = string.format(TXT.ArrowSack, Util.FormatNumber(sackGold))
+					local text = L.Tx(TXT, "ArrowSack", Util.FormatNumber(sackGold))
 					local existing = byPlayer[p]
 					if existing then
 						existing.Label = existing.Label .. " · " .. text
@@ -2073,6 +2088,7 @@ end
 ----------------------------------------------------------------- public API
 function EventHUD.Init(registry)
 	C = registry
+	pcall(function() C.UIKit.L10n.Register("EventHUD.TXT", TXT) end) -- 10/14: the words' keys "EventHUD.TXT.<key>" (trx)
 end
 
 -- logical y (MainGui UIScale units) of the event strip's bottom, or nil before the first layout. HUD's status chips

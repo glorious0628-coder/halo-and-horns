@@ -274,7 +274,7 @@ def static_checks(src):
          and "for _, key in L.LineIconKeys(e) do" in setline and 'QuestDone = "Done!",' in src),
         ("the ▼ sits on the head line 'Quests (N)' over the lines, not beside line 1",
          'QuestHead = "Quests (%d)",' in src and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
-         and "ui.questHead.Text.Text = string.format(TXT.QuestHead, #all)" in refresh
+         and 'ui.questHead.Text.Text = L.Tx(TXT, "QuestHead", #all)' in refresh  # 10/14: by key (UIKit.Tr)
          and "block.Position = UDim2.fromOffset(q.X, q.Y + hh)" in layout),
         # A23-99 추가 (user 2026-10-10 photo "이거 없애달라니까"): the head line is off - no frame, no height, no gap
         ("A23-99: the head line 'Quests (N) ▼' is gone (Config.Nudges.QuestHead = false) and leaves no gap",

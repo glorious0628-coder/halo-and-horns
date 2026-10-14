@@ -138,7 +138,7 @@ print(("PHONE_SUMMARY checks=%d failed=%d"):format(checks, failed))
 MUTATIONS = [
     ("UTIL", "over an hour stays M:SS", "\tif seconds >= 3600 then\n", "\tif seconds >= math.huge then\n"),
     ("UTIL", "minutes not wrapped", "seconds // 60 % 60, seconds % 60)", "seconds // 60, seconds % 60)"),
-    ("EVENT", "no short line", "string.format(TXT.GooseNextShort, t), t }", "t }"),
+    ("EVENT", "no short line", "L.Tx(TXT, \"GooseNextShort\", t), t }", "t }"),
     ("EVENT", "the PC width ignored", "lw <= w + 1 then return line end", "lw <= w * 0.5 then return line end"),
     ("EVENT", "real digits measured", '(string.gsub(line, "%d", "0"))', "line"),
     ("EVENT", "the word alone when nothing fits", "\treturn t\nend", "\treturn lines[1]\nend"),
@@ -172,10 +172,17 @@ def txt_line(event: str) -> str:
     return "local TXT = { GooseNext = %s, GooseNextShort = %s }" % (m1[1] if m1 else '""', m2[1] if m2 else '""')
 
 
+def tx_cut(event: str) -> str:
+    """EventHUD's L.Tx (10/14: the words by key; no UIKit here = string.format)"""
+    a = event.find("function L.Tx(t, key, ...)")
+    b = event.find("\nend\n", a)
+    return event[a:b + 5] if a >= 0 and b >= 0 else ""
+
+
 def run(src: dict) -> tuple[int, int, str]:
     text = ("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) + "\nlocal UTIL_SOURCE = " + lua_str(cut("UTIL", src["UTIL"]))
             + "\nlocal EVENT_SOURCE = " + lua_str(cut("EVENT", src["EVENT"])) + "\nlocal TXT_SOURCE = "
-            + lua_str(txt_line(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
+            + lua_str(txt_line(src["EVENT"]) + "\nlocal L = {}\n" + tx_cut(src["EVENT"])) + "\nlocal SETTINGS_SOURCE = " + lua_str(cut("SETTINGS", src["SETTINGS"]))
             + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "phone_text.luau"

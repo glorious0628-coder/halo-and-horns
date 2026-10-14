@@ -24,6 +24,21 @@ local C = nil
 
 -- Forge: A23-74 weapon first, the walk to Otto's anvil (Fx "Travel" { To = "Crossroads", Spot = "Forge" })
 local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+local function trx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 -- FocusUp / Again: 검수 2026-10-08 - after the server moves me (TravelDone) the camera stayed where it was, often in front
 -- of my face (CameraFollow never recenters a camera my body faces: its backpedal rule), so under the black it goes round
 -- behind my back once (same distance and height over the focus), and once more Again s later (the move may replicate late)
@@ -141,7 +156,7 @@ function TRAVEL.Start(data)
 	for i = 0, whole - 1 do
 		task.delay(i, function()
 			if token == TRAVEL.Token and not TRAVEL.Done and TRAVEL.Line then
-				TRAVEL.Line.Text = string.format(TXT.Count, string.format(TXT.Travel, place), whole - i)
+				TRAVEL.Line.Text = trx(TXT, "Count", trx(TXT, "Travel", place), whole - i)
 			end
 		end)
 	end
@@ -251,6 +266,7 @@ end
 
 function FirstSteps.Init(registry)
 	C = registry
+	pcall(function() C.UIKit.L10n.Register("FirstSteps.TXT", TXT) end) -- 10/14: the words' keys "FirstSteps.TXT.<key>" (trx)
 end
 
 ----------------------------------------------------------------- 검수 10/09 (system review ②) the first PvP zone

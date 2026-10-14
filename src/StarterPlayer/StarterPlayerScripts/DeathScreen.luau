@@ -27,6 +27,21 @@ local Util = require(Shared:WaitForChild("Util"))
 
 local DeathScreen = {}
 local C = nil
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+local function trx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 local TAG = "DeathScreen"
 local LocalPlayer = Players.LocalPlayer
 
@@ -80,7 +95,7 @@ function DeathScreen.GotLines(got, faction)
 	if type(got) ~= "table" then return out end
 	local function add(key, n, f)
 		local w = txt(key)
-		if w and n >= 1 then table.insert(out, Config.Plural(string.format(w, f and f(n) or n))) end
+		if w and n >= 1 then table.insert(out, Config.Plural(trx(TX, key, f and f(n) or n))) end
 	end
 	local fmt = function(n) return Util.FormatNumber(math.floor(n)) end
 	add("GotXP", tonumber(got.XP) or 0, fmt)
@@ -100,7 +115,7 @@ function DeathScreen.Lines(data, left, got, faction)
 	local name = type(data.Name) == "string" and data.Name ~= "" and data.Name or nil
 	if (by == "Player" or by == "Kaiju" or by == "Monster") and name then
 		local f = txt(by)
-		out.Cause = f and string.format(f, name) or nil
+		out.Cause = f and trx(TX, by, name) or nil
 	elseif by == "Fall" then
 		out.Cause = txt("Fall")
 	else
@@ -111,7 +126,7 @@ function DeathScreen.Lines(data, left, got, faction)
 		out.Lost = txt("Sack")
 	elseif lost >= 1 then
 		local f = txt("Lost")
-		out.Lost = f and string.format(f, Util.FormatNumber(math.floor(lost))) or nil
+		out.Lost = f and trx(TX, "Lost", Util.FormatNumber(math.floor(lost))) or nil
 	else
 		out.Lost = txt("LostNone") -- 검수 10/10: the first KO (A23-110) says it cost nothing
 	end
@@ -123,7 +138,7 @@ function DeathScreen.Lines(data, left, got, faction)
 	end
 	if type(left) == "number" and left > 0 then
 		local f = txt("Respawn")
-		out.Back = f and string.format(f, math.max(1, math.ceil(left))) or nil
+		out.Back = f and trx(TX, "Respawn", math.max(1, math.ceil(left))) or nil
 	end
 	return out
 end
