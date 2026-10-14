@@ -95,9 +95,9 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("UIKit.LangChanged is a Util Signal", "UIKit.LangChanged = Util.Signal.new()" in ui),
         ("UIKit.Lang uses L10n.LangOf", "UIKit.L10n.LangOf(LocalPlayer)" in lang),
         # 최종 검수 10/14: with arguments a registered key goes through UIKit.Tr (the table by key; English = L10n.T)
-        ("UIKit.Tx: registered tables go through L10n.T (with arguments through UIKit.Tr, which falls back to L10n.T)",
-         "UIKit.L10n.PathOf(t)" in tx and 'return UIKit.L10n.T(path .. "." .. key, nil, UIKit.Lang())' in tx
-         and 'if select("#", ...) > 0 then return UIKit.Tr(path .. "." .. key, ...) end' in tx
+        ("UIKit.Tx: registered tables go by key through UIKit.Tr (publish5: pieces without arguments too; falls back to L10n.T)",
+         "UIKit.L10n.PathOf(t)" in tx
+         and 'return UIKit.Tr(path .. "." .. key, ...) -- 10/14: by key (translated), with or without arguments' in tx
          and 'return UIKit.L10n.T(key, n > 0 and { ... } or nil, UIKit.Lang())' in ui),
         ("UIKit.Tx keeps the old path", 'local s = t[key .. "En"] or t[key]' in tx),
         ("LangChanged fires on the Lang attribute",

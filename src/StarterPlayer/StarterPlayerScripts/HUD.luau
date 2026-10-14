@@ -2310,7 +2310,8 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 	end
 	-- 최종 검수 10/14 (MINOR): the crown line only for a side that has one - Neutral / None / nil get none on purpose
 	-- (it used to come out nil only because string.format failed on the missing word)
-	local sideWord = (faction == "Halo" or faction == "Horns") and W[faction] or nil
+	-- 10/14 (publish5): the side word by its key too (translated before it goes inside 'Big goal: %s')
+	local sideWord = (faction == "Halo" or faction == "Horns") and type(W[faction]) == "string" and fmt(faction) or nil
 	local big = type(sideWord) == "string" and fmt("Big", sideWord) or nil
 	return best and fmt("Next", best.Text) or nil, big
 end
