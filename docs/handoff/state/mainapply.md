@@ -1,5 +1,8 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 12:25 게시판 저장 (사용자 Save to File As)
+- build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/14 12:24:26, 44,728,640 B, SHA256 83173b9e…cd18, push 13c7098. 소스 176개 전부 일치(main 4204aa30 = HEAD src, 스크립트 Source 대조 missing 0), 끝 `</roblox>` 확인. 대조 스크립트 build/p2_cmp.py(git 무시). Studio 열림·Edit. 다음 = 사용자 Alt+P, '게시함' 오면 Creator Hub 기록 확인.
+
 ## 10/14 낮 (게시 앞 sync + Play 사진, 최종 검수 신청 OK)
 - **Studio**: build/GoodEvil.rbxlx(10/13 23:28:22 판)로 다시 열었음(전 Studio는 홈 화면이라 새로 염, id 58a04fbe…), Edit, Play 없음, 창 앞에 둠, StudioFreshSave=true, **저장 안 함**. 코드 = main 30b7a13e sync(새로 쓴 스크립트 36). Save As = 사용자(최종 검수 판정 뒤).
 - **사진**(docs/art/verification_2026-10-14/publish2/): pc/(first_look 3장+log), phone/(844 first10 11장), new/(마을 기금 카드·설정 창 아래 줄(피해 숫자·남 이름표)·이름표 VIP 왕관 있음/없음 + log). 콘솔 오류 0(DataStore 안내만).
