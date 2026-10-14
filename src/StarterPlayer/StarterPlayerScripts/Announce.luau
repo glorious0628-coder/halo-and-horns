@@ -171,7 +171,6 @@ function A.WatchTeam()
 		last = lp.Team
 		local text = A.JoinToast(was, last)
 		local kit = C and C.UIKit
-		if text and type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, text, "good") end
 	end)
 end
 

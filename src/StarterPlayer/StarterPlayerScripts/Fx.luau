@@ -4308,25 +4308,7 @@ handlers.Loot = function(data)
 					weapon, nil, { Life = LOOT_UI.Life, Wide = LOOT_UI.Wide, Stack = line * LOOT_UI.Step, Icon = icon })
 				line += 1
 			end
-			-- B14: scroll drops (the only items the player acts on) also get a short toast; the session's first one
-			-- carries where to use it until the item list was opened once (weapons / jackpot have server toasts)
-			if def and firstId ~= nil and it.Item == firstId then
-				firstId, LOOT_UI.Hinted = nil, true -- covered by the server's first-scroll guide
-			elseif def and (def.Kind == "Enhance" or def.Kind == "Transfer") then
-				local panels = C and C.Panels
-				local seen = true
-				if type(panels) == "table" and type(panels.ItemsSeen) == "function" then
-					local okS, s = pcall(panels.ItemsSeen)
-					seen = okS and s == true
-				end
-				if not seen and not LOOT_UI.Hinted then
-					LOOT_UI.Hinted = true
-					local okH, hint = pcall(string.format, LOOT_UI.Text.Hint, text)
-					uiCall("Toast", okH and hint or text, "reward", LOOT_UI.HintSeconds, it.Item)
-				else
-					uiCall("Toast", text, "reward", LOOT_UI.ToastSeconds, it.Item) -- scroll art + its colour band
-				end
-			end
+			-- A23-191 (user 10/14): no scroll-drop toast / hint (the bag dot shows it)
 		end
 	end
 	if pos and nearCamera(pos) and #items > 0 then
@@ -4421,8 +4403,7 @@ handlers.Bank = function(data)
 	else
 		text = string.format(TXT_BANK, gold)
 	end
-	uiCall("Toast", text, "reward")
-	Fx.PlaySound("Coin")
+	Fx.PlaySound("Coin") -- A23-191: no toast (the gold number moves)
 end
 
 handlers.Upgrade = function(_data)

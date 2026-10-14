@@ -1357,7 +1357,7 @@ local function buildChips(root)
 		Rookie = { ac("ChipRookie", Theme.XP), ac("ChipRookieRim", Theme.XP), ac("ChipRookieText", COL.Dark) },
 	}
 	-- A23-26 order: zone -> luck -> danger (bully, wanted, combat) -> rookie / protected -> blessing, size, kaiju queue.
-	-- A23-40: the first L.MaxChips that show stay, the rest fold into one '+N' chip (refreshChips)
+	-- A23-192 (user 10/14): every chip shows with its words; a full row wraps (no '+N')
 	local icons = { Blessing = "WarCrownPip", Zone = "IconSafe", Rookie = "IconSprout", Luck = "IconClover", Wanted = "Star",
 		Boost = "IconExp", Private = "IconPrivateServer", Outlaw = "IconLock" } -- Outlaw: Auto Battle locked (IconLock)
 	L.ChipIcons = icons
@@ -1367,142 +1367,29 @@ local function buildChips(root)
 	-- Zone · 2x XP · the sprout): the danger chips (Bully, Outlaw, Wanted, Combat) come FIRST, so they always show
 	L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost", "Private", "Rookie", "Protected", "Blessing",
 		"Size", "Kaiju" }
-	-- 최종 검수 10/14 상단 HUD 1안 ②: the danger chips (always words, never counted / folded / in '+N'; the PvP zone too,
-	-- HUD.ChipPlan), then the Safe Zone as its shield icon alone, then ONE buff as its icon (the first of ChipBuffs that
-	-- shows and has an icon), then '+N'; a press opens every chip with its words for L.ChipFold.TapSeconds
+	-- the danger chips first (their short words on a too-long row, L.CheckChipFit); ChipBuffs = the buff chips
 	L.ChipDanger = { Bully = true, Outlaw = true, Wanted = true }
 	L.ChipBuffs = { "Boost", "Luck", "Blessing", "Rookie", "Private", "Protected", "Size" }
-	L.MaxChips = 2 -- 1안 ②: non-danger chips at most (closed: the Safe Zone icon + one buff icon)
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
-	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
-	L.BuildChipFold()
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
-	for key, chip in ui.chip do
-		chip.Frame.Active = true
-		chip.Frame.InputBegan:Connect(function(input)
-			local t = input.UserInputType
-			if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(L.ChipPress, key) end
-		end)
-	end
-	ui.chipMore.Frame.Active = true
-	ui.chipMore.Frame.InputBegan:Connect(function(input)
-		local t = input.UserInputType
-		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(L.ChipPress, "More") end
-	end)
-	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
+	L.ChipWantKey = ""
 end
 
--- ui_clutter_review ③ (검수 10/09; look = 이미지 개발, when = 개발 1): folded, the chip row is one small round candy chip
--- with the icons of the chips that want to show (at most L.ChipFold.MaxIcons, then '+N'); a press calls
--- L.ChipFold.OnTap (개발 1's rule, HUD.OnChipsFoldTap) or unfolds. HUD.SetChipsFolded(true/false) switches it
-function L.BuildChipFold()
-	local frame = UIKit.Create("TextButton", {
-		Name = "Fold",
-		Text = "",
-		AutoButtonColor = false,
-		LayoutOrder = 0,
-		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.fromOffset(0, L.ChipH),
-		BackgroundColor3 = ac("ChipSafe", Theme.Good):Lerp(COL.White, 0.55),
-		Visible = false,
-		Parent = ui.chips,
-	}, {
-		corner(UDim.new(0.5, 0)),
-		UIKit.Create("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 2),
-		}),
-		UIKit.Create("UIStroke", { Thickness = 2, Color = Theme.SubText, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-		UIKit.Create("UIGradient", { Rotation = 90, Color = ColorSequence.new(COL.White, Color3.fromRGB(222, 222, 222)) }),
-		UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 4), PaddingRight = UDim.new(0, 4) }),
-	})
-	local fold = { Frame = frame, Icons = {} }
-	for i = 1, L.ChipFold.MaxIcons do
-		fold.Icons[i] = UIKit.ArtImage("IconSafe", {
-			Name = "Icon" .. i,
-			LayoutOrder = i,
-			Size = UDim2.fromOffset(L.ChipH - 4, L.ChipH - 4),
-			Visible = false,
-			Parent = frame,
-		})
-	end
-	fold.More = artLabel(true, {
-		Name = "More",
-		LayoutOrder = 10,
-		AutomaticSize = Enum.AutomaticSize.X,
-		Size = UDim2.new(0, 0, 1, 0),
-		TextSize = 12,
-		Outline = false,
-		TextColor3 = COL.Dark,
-		Visible = false,
-		Parent = frame,
-	})
-	frame.Activated:Connect(function()
-		local fn = L.ChipFold.OnTap
-		if type(fn) == "function" then
-			local ok, err = pcall(fn)
-			if not ok then warnThrottled("chip fold tap failed: " .. tostring(err)) end
-		else
-			HUD.SetChipsFolded(false)
-		end
-	end)
-	ui.chipFold = fold
-end
-
--- (pure) 최종 검수 10/14 상단 HUD 1안 ②: keys = the chips that want to show (L.ChipOrder order); danger = { [key] = true }
--- (+ the Zone chip in a PvP zone: zoneDanger); iconOK = { [key] = true } chips that have an icon (the Safe Zone only in
--- town: safeZone); open = pressed open; fit = how many non-danger chips may show. -> { Show = { { Key, Icon } .. },
--- More = how many wait behind '+N' }. Danger chips always show with their words and never count; closed, the Safe Zone
--- shows as its icon, then one buff (the first of `buffs` that shows and has an icon) as its icon, the rest wait in '+N';
--- open, the others show with their words up to `fit`. Nothing shows -> an empty Show (no row at all)
-function HUD.ChipPlan(keys, danger, iconOK, buffs, open, fit, safeZone, zoneDanger)
-	local show, rest, more = {}, {}, 0
+-- (pure) A23-192 (user 10/14 "이것도 그냥 이렇게 길게 해줘 +1 이렇게 하지마"): every chip that wants to show shows with
+-- its words, in L.ChipOrder order (danger chips first); a full row wraps (no '+N', no icons-only fold). The other
+-- arguments are kept for the callers: -> { Show = { { Key, Icon = false, Danger? } .. }, More = 0 }
+function HUD.ChipPlan(keys, danger, _iconOK, _buffs, _open, _fit, _safeZone, zoneDanger)
+	local show = {}
 	for _, k in keys do
-		if danger[k] or (k == "Zone" and zoneDanger) then
-			table.insert(show, { Key = k, Icon = false, Danger = true })
-		else
-			table.insert(rest, k)
-		end
+		table.insert(show, { Key = k, Icon = false, Danger = (danger[k] or (k == "Zone" and zoneDanger)) and true or nil })
 	end
-	fit = math.max(0, tonumber(fit) or 0)
-	local used = 0
-	if open then
-		for _, k in rest do
-			if used < fit then
-				used += 1
-				table.insert(show, { Key = k, Icon = false })
-			else
-				more += 1
-			end
-		end
-		return { Show = show, More = more }
-	end
-	local picked = {}
-	if table.find(rest, "Zone") and safeZone and iconOK.Zone then picked.Zone = true end
-	for _, b in buffs do
-		if table.find(rest, b) and iconOK[b] then
-			picked[b] = true
-			break
-		end
-	end
-	for _, k in rest do
-		if picked[k] and used < fit then
-			used += 1
-			table.insert(show, { Key = k, Icon = true })
-		else
-			more += 1
-		end
-	end
-	return { Show = show, More = more }
+	return { Show = show, More = 0 }
 end
 
 -- refreshChips' last step: the plan on the chips (setChip already set their words / colours / visibility)
 function L.ApplyChipFold()
-	if ui.chipFold then ui.chipFold.Frame.Visible = false end -- the old icons chip: 1안 shows the chips themselves
 	local keys, iconOK = {}, {}
 	for _, key in L.ChipOrder do
 		local chip = ui.chip[key]
@@ -1512,7 +1399,7 @@ function L.ApplyChipFold()
 		end
 	end
 	local town, pvp = attr("ZoneTown", false) == true, attr("ZonePvP", false) == true and getFaction() ~= "Neutral"
-	local plan = HUD.ChipPlan(keys, L.ChipDanger, iconOK, L.ChipBuffs, not L.ChipFold.Folded, L.ChipFit, town, pvp)
+	local plan = HUD.ChipPlan(keys, L.ChipDanger, iconOK, L.ChipBuffs, true, #keys, town, pvp)
 	L.ChipShown = plan
 	local on = {}
 	for _, row in plan.Show do on[row.Key] = row end
@@ -1538,41 +1425,19 @@ function L.ApplyChipFold()
 			end
 		end
 	end
-	setChip(ui.chipMore, plan.More > 0, L.Tx(TXT, "MoreChips", plan.More), Theme.SubText)
 end
 
--- a press on a chip: closed -> open (every chip with its words) for TapSeconds; open -> Luck / Private say their rule
--- (one toast, a press only - never by itself), any other chip closes it again
-function L.ChipPress(key)
-	if L.ChipFold.Folded then
-		L.ChipFoldTap()
-		return
-	end
-	if key == "Luck" then
-		pcall(UIKit.Toast, TXT.LuckTap, "info")
-	elseif key == "Private" then
-		local ps = Config.PrivateServer
-		if type(ps) == "table" and type(ps.Text) == "string" then pcall(UIKit.Toast, ps.Text, "info") end
-	else
-		HUD.SetChipsFolded(true)
-	end
-end
-
--- A23-40 / 1안 ②: the row needs a second line -> first the danger chips' short words (the Outlaw line), then one
--- non-danger chip fewer at a time (the '+N' chip takes it); still two lines -> they stay (the danger names are never hidden, the event
--- line moves down: HUD.TopBottom measures the row). refreshChips starts again from L.MaxChips when the chip set changes
+-- A23-40 / A23-192: the row needs a second line -> first the danger chips' short words (the Outlaw line); still two
+-- lines -> the row wraps (nothing hidden; the event line moves down: HUD.TopBottom measures the row). refreshChips starts again with the full words when the chip set changes
 function L.CheckChipFit()
 	if not ui.chips or not ui.chipList then return end
 	local s = math.max(0.1, currentScale())
 	local rowPx = (L.ChipRowH or L.ChipH) * s
 	local over = ui.chipList.AbsoluteContentSize.Y > rowPx + 2 or ui.chipList.AbsoluteContentSize.X > ui.chips.AbsoluteSize.X + 1
-	local others = 0
-	for _, row in (L.ChipShown or { Show = {} }).Show do
-		if not row.Danger then others += 1 end
-	end
 	-- (test Studio photo 10/14: dropping the icons first left 'Outlaw +3' - the short danger words come first)
-	if ui.chips.AbsoluteSize.X > 0 and over and ((L.ChipFit > 0 and others > 0) or not L.ChipShort) then
-		if not L.ChipShort then L.ChipShort = true else L.ChipFit -= 1 end
+	-- A23-192: nothing is folded any more - a too-long row only takes the danger chips' short words, then wraps
+	if ui.chips.AbsoluteSize.X > 0 and over and not L.ChipShort then
+		L.ChipShort = true
 		task.defer(function()
 			local ok, err = pcall(refreshChips)
 			if not ok then warnThrottled("chip fit failed: " .. tostring(err)) end
@@ -3137,45 +3002,21 @@ local function buildButtons(root)
 		Parent = root,
 	})
 
-	-- 공격 (one press = one swing): Firefly orange disc + my class glyph (L.RefreshAttackGlyph) + "공격"
+	-- 공격 (one press = one swing): Firefly orange disc + my class glyph (L.RefreshAttackGlyph)
 	ui.attack = roundButton("Attack", L.Attack, "BtnAttack", COL.AttackFill)
 	L.RefreshAttackGlyph()
-	artLabel(false, {
-		Name = "Label",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.76),
-		Size = UDim2.fromScale(0.62, 0.2),
-		TextScaled = true,
-		MaxTextSize = math.floor(L.Attack * 0.2),
-		Title = true,
-		Text = TXT.Attack,
-		ZIndex = 4,
-		Parent = ui.attack,
-	})
-	L.FitText(ui.attack:FindFirstChild("Label"), 16, true)
+	-- A23-191 (user 10/14 "표시만 봐도 아니까"): no "Attack" word under the glyph - the icon only
 	keyHint(ui.attack, "Attack", UDim2.fromScale(0.86, 0.86), Vector2.new(0.5, 0.5))
 
 	-- 스킬 Q: Firefly blue disc (BtnSpecial); only MP and cooldown decide readiness
 	local rel, relArt = roundButton("Release", L.Release, "BtnSpecial", COL.ReleaseFill)
 	ui.release, ui.releaseArt = rel, relArt
 	L.RefreshSkillIcon() -- my class's Q skill icon (bundle 14), IconSpecial until a class is chosen
-	ui.skillLabel = artLabel(false, {
-		Name = "Sub",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.74),
-		Size = UDim2.fromScale(0.76, 0.22),
-		TextScaled = true,
-		MaxTextSize = math.max(14, math.floor(L.Release * 0.18)),
-		Title = true,
-		Text = TXT.Release,
-		ZIndex = 4,
-		Parent = rel,
-	})
-	L.FitText(ui.skillLabel, 14, true)
+	-- A23-191: no "Skill" word under the icon
 	ui.skillTimer = artLabel(false, {
 		Name = "Timer",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.45),
+		Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(0.6, 0.3),
 		TextScaled = true,
 		MaxTextSize = 26,
@@ -3221,23 +3062,12 @@ local function buildButtons(root)
 	UIKit.ArtImage("GlyphAuto", {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.4),
-		Size = UDim2.fromScale(0.46, 0.46),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.52, 0.52),
 		ZIndex = 3,
 		Parent = ui.auto,
 	})
-	ui.autoLabel = L.FitText(artLabel(false, {
-		Name = "Label",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.74),
-		Size = UDim2.fromScale(0.8, 0.26),
-		TextScaled = true,
-		MaxTextSize = 14,
-		Title = true,
-		Text = TXT.Auto,
-		ZIndex = 4,
-		Parent = ui.auto,
-	}), 12, true)
+	-- A23-191: no "Auto ON / OFF" word - the gold ring (ON) / the dimmed disc (OFF) say it
 	ui.autoGlow = makeGlow(ui.auto, UDim.new(0.5, 0))
 	keyHint(ui.auto, "Auto", UDim2.fromScale(0.85, 0.85), Vector2.new(0.5, 0.5))
 	ui.auto.Activated:Connect(function()
@@ -3258,8 +3088,8 @@ function L.RefreshAttackGlyph()
 	UIKit.ArtImage(key, {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.42),
-		Size = UDim2.fromScale(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.56, 0.56),
 		ZIndex = 3,
 		Parent = ui.attack,
 	})
@@ -3284,8 +3114,8 @@ function L.RefreshSkillIcon()
 	ui.releaseIcon = UIKit.ArtImage(key, {
 		Name = "Icon",
 		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.4),
-		Size = UDim2.fromScale(0.5, 0.5),
+		Position = UDim2.fromScale(0.5, 0.5),
+		Size = UDim2.fromScale(0.56, 0.56),
 		Visible = visible,
 		ZIndex = 3,
 		Parent = rel,
@@ -3670,8 +3500,7 @@ refreshChips = function()
 	setChip(ui.chip.Private, UIKit.GameAttr("PrivateServer", false) == true, TXT.PrivateHalf, Theme.SubText, false, nil, true)
 	L.RefreshBoost()
 
-	-- A23-40: at most L.MaxChips chips in their order (fewer when they do not fit the row, L.CheckChipFit); the rest fold
-	-- into one '+N' chip (no stacked rows)
+	-- A23-192: all of them, in their order (a new set starts again with the full danger words)
 	local wantKey = ""
 	for _, key in L.ChipOrder do
 		local chip = ui.chip[key]
@@ -3679,10 +3508,8 @@ refreshChips = function()
 	end
 	if wantKey ~= L.ChipWantKey then
 		L.ChipWantKey = wantKey
-		L.ChipFit = L.MaxChips
 		L.ChipShort = false
 	end
-	L.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))
 	L.ApplyChipFold()
 end
 
@@ -3692,42 +3519,6 @@ function HUD.ChipFoldSig(wantKey, town, pvp, luck)
 	return keys .. "|" .. (town and "T" or (pvp and "P" or "W")) .. "|" .. tostring(luck or "")
 end
 L.ChipFoldSig = HUD.ChipFoldSig
-
--- a new key unfolds the chips now and folds them ShowSeconds later (a newer change or a press restarts the wait)
-function L.WatchChipFold(sig)
-	-- 1안 ② (최종 검수 10/14): a change no longer opens the row by itself (it shows what matters closed)
-	L.ChipFold.Sig = sig
-end
-
-function L.FoldLater(seconds)
-	local cf = L.ChipFold
-	cf.Token += 1
-	local token = cf.Token
-	task.delay(seconds, function()
-		if cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays
-	end)
-end
-
--- the fold chip's press: show them TapSeconds, then fold again
-function L.ChipFoldTap()
-	HUD.SetChipsFolded(false)
-	L.FoldLater(L.ChipFold.TapSeconds)
-end
-
--- ui_clutter_review ③: fold / unfold the status chips (개발 1 decides when; 3 s after a change -> fold, press -> unfold)
-function HUD.SetChipsFolded(folded)
-	folded = folded == true
-	if L.ChipFold.Folded == folded then return end
-	L.ChipFold.Folded = folded
-	if ui.chip then
-		local ok, err = pcall(refreshChips)
-		if not ok then warnThrottled("chip fold failed: " .. tostring(err)) end
-	end
-end
-
-function HUD.ChipsFolded()
-	return L.ChipFold.Folded
-end
 
 -- the status chip row shows at least one chip (user 10/13 first look: out of town the row is empty and EventHUD's
 -- next-event line floated a whole row under the war meter; EventHUD lifts it into the empty row)
@@ -3770,11 +3561,6 @@ function HUD.ChipsShown()
 		if c:IsA("GuiObject") and c.Visible then return true end
 	end
 	return false
-end
-
--- the fold chip's press (nil = just unfold)
-function HUD.OnChipsFoldTap(fn)
-	L.ChipFold.OnTap = type(fn) == "function" and fn or nil
 end
 
 ----------------------------------------------------------------- refresh: war meter
@@ -3858,7 +3644,6 @@ local function refreshSkill()
 	local remaining = math.max(0, num("SkillReadyAt", 0) - Util.Now())
 	local ready = remaining <= 0 and num("Mana", 0) >= Config.BasicSkill.ManaCost
 	-- A23-60 (user 2026-10-06): no MP number on the button (the skill description says it); the button only dims
-	ui.skillLabel.Text = TXT.Release
 	ui.skillTimer.Visible = remaining > 0
 	ui.skillTimer.Text = string.format("%.1f", remaining)
 	if ui.releaseIcon then ui.releaseIcon.Visible = remaining <= 0 end
@@ -3966,9 +3751,7 @@ function L.ApplyFold(changed)
 	local hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)
 	if ui.war and ui.war.Visible == hideWar then
 		ui.war.Visible = not hideWar
-		if changed and not hideWar then -- it comes in during play: one short line says what it is (Config.Nudges.WarIntro)
-			if (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, "info") end
-		end
+		-- A23-191 (user 10/14): no "Crown War" intro toast when it comes in
 	end
 	local fold = L.RookieFold()
 	if changed and L.WasFolded == true and not fold and type(UIKit.NewTag) == "function" then
@@ -4383,7 +4166,6 @@ local function parseQuests()
 	end
 	local folded = #shown < #normal
 	if questState.Folded == true and not folded and #normal > 0 and (Config.Nudges or {}).DailiesOpened ~= false then
-		UIKit.Toast((type(TUT.Text) == "table" and TUT.Text.DailiesOpened) or TXT.DailiesOpened, "good", 4)
 	end
 	questState.Folded = folded
 	for _, e in shown do
@@ -5432,13 +5214,11 @@ doUpgrade = function()
 	local panels = C and C.Panels
 	if type(panels) ~= "table" or type(panels.Open) ~= "function" then return end
 	if attr("ZoneId", "") ~= "Crossroads" then
-		panels.Open("Travel")
-		UIKit.Toast(L.Smith.Travel, "info", 4)
+		panels.Open("Travel") -- A23-191: no toast
 		return
 	end
 	if L.PressAnvil() then return end
-	showGuide(L.BlacksmithTarget(), L.Smith.Guide, "smith:manual", 30)
-	UIKit.Toast(L.Smith.Walk, "info", 4)
+	showGuide(L.BlacksmithTarget(), L.Smith.Guide, "smith:manual", 30) -- A23-191: no toast
 end
 
 -- A23-91 보강 (user 2026-10-09 "공격할 때 몬스터 쪽으로 몸 돌리기 … 조금 더 세세하게"; numbers Config.AutoFace):
@@ -5772,7 +5552,6 @@ function L.RefreshAuto()
 	local unlocked = attr("AutoCombatUnlocked", false) == true and attr("ClassChosen", false) == true
 	local on = unlocked and attr("AutoCombatEnabled", false) == true
 	ui.auto.Visible = unlocked
-	if ui.autoLabel then ui.autoLabel.Text = on and TXT.AutoOn or TXT.AutoOff end
 	if ui.autoGlow then ui.autoGlow.Transparency = on and 0 or 1 end
 	paint(ui.autoArt, on and COL.White or COL.DimTint, on and COL.ReleaseFill or COL.Grey)
 end
@@ -5835,7 +5614,6 @@ function L.PinnedTap(e, r)
 		elseif zone ~= TUT_GUIDE_ZONE then
 			showGuide(findTravelTarget(TUT_GUIDE_ZONE), TUT_GUIDE_TEXT, "zone:" .. TUT_GUIDE_ZONE, 30)
 		else
-			if (Config.Nudges or {}).HuntSlimes ~= false then UIKit.Toast(TXT.HuntSlimes, "info", 3) end
 		end
 	end
 end
@@ -5914,7 +5692,6 @@ function L.TileTap(def)
 			local ok, err = pcall(list.Toggle)
 			if not ok then warnThrottled("ranking list failed: " .. tostring(err)) end
 		else
-			UIKit.Toast(TXT.TileSoon, "info", 2)
 		end
 		return
 	end
@@ -5954,7 +5731,6 @@ function L.WindowSoon(action)
 			return
 		end
 	end
-	if not throttled("tileSoon", 0.6) then UIKit.Toast(TXT.TileSoon, "info", 2) end
 end
 
 function L.WindowKey(action)
@@ -6300,15 +6076,9 @@ L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and
 	BodyMinK = IS_TOUCH and 0.66 or 0.8, GoalLines = 2, GoalMax = nil, GoalMin = nil,
 	ProgColor = Color3.fromRGB(255, 96, 72), Rect = nil }
 L.LineCache = { Lines = {}, N = 0 } -- L.TextLines: "text|size|width|font" -> lines (false = measuring)
-L.ChipFold = { Folded = true, OnTap = nil, MaxIcons = 3 } -- closed = 1안 ② (HUD.ChipPlan); HUD.SetChipsFolded
--- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
--- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
--- unfold them), the zone kind or the luck words (L.ChipFoldSig). Auto = the rule is on
-L.ChipFold.Auto, L.ChipFold.ShowSeconds, L.ChipFold.TapSeconds, L.ChipFold.Token = true, 3, 5, 0
 -- 1안 ② / ④ (real px): the status row Row tall (phone RowTouch = the 44 px touch target), Gap under the war meter, the
 -- words at least TextPx (phone 19), an icon chip's art Icon px
 L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24 }
-L.ChipFold.OnTap = L.ChipFoldTap -- defined above (the chips section); HUD.OnChipsFoldTap may replace it
 -- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
 L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
 L.GuideHide = 15
@@ -6405,10 +6175,6 @@ applyLayout = function()
 	for _, chip in ui.chip do
 		chip.Frame.Size = UDim2.fromOffset(0, rowH)
 		if chip.Label then chip.Label.TextSize = textDu end
-	end
-	if ui.chipMore then
-		ui.chipMore.Frame.Size = UDim2.fromOffset(0, rowH)
-		ui.chipMore.Label.TextSize = textDu
 	end
 	local chipsBottom = chipsY + math.max(rowH, ui.chips.AbsoluteSize.Y / s)
 	local nt = R.notify
@@ -6800,13 +6566,6 @@ function HUD.Start()
 	end
 	-- Studio-only check hooks (A23-191: the hint preview went with the hints)
 	if game:GetService("RunService"):IsStudio() then
-		-- ChipsFoldPreview = true / false folds / unfolds the status chips (이미지 개발 photos, ui_clutter_review ③)
-		LocalPlayer:GetAttributeChangedSignal("ChipsFoldPreview"):Connect(function()
-			-- a photo preview turns 개발 1's automatic fold off (L.ChipFold.Auto) so it cannot fold / unfold mid-shot
-			local v = LocalPlayer:GetAttribute("ChipsFoldPreview")
-			L.ChipFold.Auto = v == nil
-			HUD.SetChipsFolded(v == true)
-		end)
 	end
 
 	bindButtonInput()

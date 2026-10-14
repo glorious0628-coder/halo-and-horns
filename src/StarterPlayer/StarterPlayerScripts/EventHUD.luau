@@ -1636,7 +1636,6 @@ local function gatherTargets(now)
 	-- lore hint: the first time this session a sack-carrier arrow appears for a Halo player
 	if sawSack and isHalo and not loreShown and (Config.Nudges or {}).SackLore ~= false then
 		loreShown = true
-		uiToast(safeFormat(Config.Story.SackLore), "info", 4)
 	end
 end
 

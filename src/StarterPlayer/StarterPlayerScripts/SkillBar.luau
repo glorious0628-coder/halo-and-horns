@@ -402,20 +402,7 @@ local function buildButton(slot)
 		Size = UDim2.fromScale(0.66, 0.24), TextScaled = true, ZIndex = 7, Visible = false, Parent = holder,
 	}, "Number")
 
-	-- PCs: the name pill on the lower rim, the key badge in the lower right (keyboards). The pill reaches a little past
-	-- the rim (like the tile captions) and its words take the 12 px Number floor, not the 16 px button floor: at 16 px
-	-- "Shockwave" stood taller than the 16 px pill and was cut ("Shockwa", 2026-10-07), Z / X names are longer still
-	if not IS_TOUCH then
-		b.Pill = UIKit.Create("Frame", {
-			Name = "Name", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.9),
-			Size = UDim2.fromScale(1.2, 0.22), BackgroundColor3 = COL.Navy, BackgroundTransparency = 0.12, ZIndex = 7,
-			Active = false, Parent = holder,
-		}, { corner() })
-		b.PillText = smallLabel({
-			Name = "Text", Text = "", Position = UDim2.fromScale(0.04, 0), Size = UDim2.fromScale(0.92, 1),
-			TextScaled = true, ZIndex = 8, Parent = b.Pill,
-		}, "Number")
-	end
+	-- A23-191 (user 10/14 "표시만 봐도 아니까"): no name pill under the skill icon; PCs keep the small key badge
 	local kb = C and C.Keybinds
 	local showKeys = type(kb) == "table" and type(kb.ShowsKeys) == "function" and kb.ShowsKeys() or false
 	if showKeys then
@@ -528,8 +515,6 @@ local function paintButton(b)
 	end
 	if b.Lock then b.Lock.Visible = st.Locked end
 	if b.LockText then b.LockText.Visible = false end -- A23-180: the lock picture only, no words
-	if b.PillText then b.PillText.Text = st.Def.Name end
-	if b.Pill then b.Pill.Visible = not st.Locked end
 	if b.Key then
 		-- only a key that works now (Keybinds.IsLive: SkillZ / SkillX are live once their flags are on), and only while
 		-- Settings.KeyBadges ('Key hints') is on - A23-78: off by default, like the HUD and potion badges (검수 10/08)
@@ -727,7 +712,7 @@ function LEARN.Tell(level, slot)
 	LEARN.TellAt = os.clock()
 	local task = math.floor(num("Level", 1)) >= (tonumber(level) or 1) and SkillBar.TaskFor(slot) or ""
 	local line = task ~= "" and task or trx(TXT, "Later", level)
-	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "info", 2.5) end
+	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "bad", 2.5) end -- A23-191: why the key did nothing
 end
 
 ----------------------------------------------------------------- public API
