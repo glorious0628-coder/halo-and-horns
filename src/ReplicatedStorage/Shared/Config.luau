@@ -4586,8 +4586,6 @@ Config.PassInfo = {
 		Wearing = "Wearing",
 		LooksSideF = "Looks for %s",
 		Looks = "Looks",
-		Tickets = "Change Tickets",
-		TicketF = "%s · you have %d",
 		SoonToast = "Not on sale yet. Check back soon!",
 		OffToast = "Not on sale right now. Check back later!",
 		OwnedToast = "You already have this!",
@@ -7349,6 +7347,14 @@ Config.NextGoal = {
 -- show tier 1 only (TouchTiers). Steps: Skill = that slot's Config.Skills.Unlock level (Z / X only while their switch
 -- is on, none after a rebirth - like QuestService's next-goal row), Zone = the zone's MinLevel (seasonal zones never),
 -- Rebirth = Config.RebirthLevel. Equal levels: the first row here wins. No clock, no buy word (A23-79).
+-- 최종 검수 10/14 (감사 2 '못 하는 일 숨기기': in the first 10 minutes rows you CANNOT do now showed as much as the
+-- things to do): a quest row whose thing is far away folds out of the HUD lines / tracker (the quest window keeps it),
+-- and comes back by itself in time. Goose = a story step guided to the goose (S1 / GW5 'Join a Golden Egg hunt'):
+-- shown while a hunt runs or the next one (GameState GooseNextAt) is within Window s. War = the rows in WarRows (S2 a
+-- crown war chest): shown while the war is fought (WarMode not Idle) and the round ends within Window s. Check = s
+-- between the HUD's looks (the time passing). Words: none (the row just waits).
+Config.QuestNotNow = { Enabled = true, Window = 3600, Check = 15, GooseGuide = "Goose", WarRows = { S2 = true } }
+
 Config.GoalChips = {
 	Enabled = true,
 	TouchTiers = 1,

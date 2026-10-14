@@ -4332,8 +4332,9 @@ local function parseQuests()
 	-- (false = no folding at all); without it (older servers) L.RookieFold (TutorialStep 0 / 3 / 1 / 2) decides here
 	local fold = TUT.FoldOthers == nil and L.RookieFold()
 	local shown = {}
+	local now = Util.Now()
 	for _, e in normal do
-		if not (fold or e.Folded) then table.insert(shown, e) end
+		if not (fold or e.Folded or L.NotNow(e, UIKit.GameAttr, now)) then table.insert(shown, e) end
 	end
 	local folded = #shown < #normal
 	if questState.Folded == true and not folded and #normal > 0 and (Config.Nudges or {}).DailiesOpened ~= false then
@@ -4344,6 +4345,39 @@ local function parseQuests()
 		table.insert(pinned, e)
 	end
 	return pinned
+end
+
+-- 최종 검수 10/14 (pure; tools/test_quest_not_now.py): a row you cannot do now (Config.QuestNotNow) - true = fold it.
+-- gs(name, default) reads a GameState attribute (UIKit.GameAttr), now = the server clock
+function L.NotNow(e, gs, now)
+	local R = Config.QuestNotNow
+	if type(R) ~= "table" or R.Enabled ~= true or type(e) ~= "table" or type(gs) ~= "function" then return false end
+	local story = type(e.Story) == "table" and e.Story or nil
+	if not story then return false end
+	local window = tonumber(R.Window) or 3600
+	now = tonumber(now) or 0
+	if story.Guide == R.GooseGuide then
+		if gs("GooseActive", false) == true then return false end
+		local nextAt = tonumber(gs("GooseNextAt", 0)) or 0
+		return not (nextAt > 0 and nextAt - now <= window)
+	end
+	if type(R.WarRows) == "table" and R.WarRows[story.Id] then
+		if gs("WarMode", "Idle") == "Idle" then return true end
+		local ends = tonumber(gs("WarRoundEndsAt", 0)) or 0
+		return not (ends > 0 and ends - now <= window)
+	end
+	return false
+end
+
+-- the rows folded by L.NotNow right now ("" = none): the HUD redraws its lines when this changes (the clock passing)
+function L.NotNowSig()
+	local data = questState.Data
+	if type(data) ~= "table" then return "" end
+	local now, out = Util.Now(), {}
+	for _, e in ipairs(data) do
+		if type(e) == "table" and L.NotNow(e, UIKit.GameAttr, now) then table.insert(out, tostring(e.Id)) end
+	end
+	return table.concat(out, ",")
 end
 
 -- CR-L50: the owner's quest list arrives on the "Quests" remote (fired only when it changes) instead of the
@@ -6665,6 +6699,22 @@ function HUD.Start()
 	UIKit.OnAttr({ "SubFastTravel" }, function() if ui.foldOpen then L.PlaceFold(false) end end) -- A23-182: the Travel square
 	questState.Started = true -- CR-L50: "Quests" remote payloads refresh the rows from now on
 	UIKit.OnAttr({ "DailyClaims", "RerollReadyAt" }, refreshQuests) -- the list itself comes from onQuests
+	-- 10/14 (Config.QuestNotNow): a goose / war row folds or comes back as the next hunt / the round gets near
+	L.NotNowLast = L.NotNowSig()
+	local function notNowCheck()
+		local sig = L.NotNowSig()
+		if sig ~= L.NotNowLast then
+			L.NotNowLast = sig
+			refreshQuests()
+		end
+	end
+	UIKit.OnGameAttr({ "GooseActive", "GooseNextAt", "WarMode", "WarRoundEndsAt" }, notNowCheck)
+	task.spawn(function()
+		while true do
+			task.wait(tonumber((Config.QuestNotNow or {}).Check) or 15)
+			pcall(notNowCheck)
+		end
+	end)
 	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",
 		"KaijuState", "Faction", "Outlaw" }, refreshChips)
 	UIKit.OnAttr({ "WarPoints", "Faction" }, refreshWar)

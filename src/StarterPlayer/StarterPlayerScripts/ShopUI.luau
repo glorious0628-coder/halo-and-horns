@@ -1,6 +1,6 @@
 -- ShopUI.luau : the Robux shop (SPEC A23-75, user 2026-10-08: 2x XP · 2x Gold · VIP passes, halo / horn looks and the
 -- private server, prices "추천 가격대로") as the Panels window "Shop", added through Panels.Register (BB13). It takes
--- the old change-ticket shop's id; the ticket rows stay at the bottom while a ticket is on sale (검수 2026-10-07).
+-- the old change-ticket shop's id (A23-28: no change tickets in the beta - 최종 검수 10/14 removed their rows).
 -- Layout (이미지 개발 2026-10-08; one list for PC and phones, the window scrolls when the screen is short):
 --   Passes - six cards, three a row (plan 10/13 §1-A #6: + the Sticker Pack and the Bubble Pack, A23-143 / A23-144; a
 --     locked sticker / bubble opens the Shop with { Focus = kind }: that card wears a gold rim).
@@ -14,7 +14,6 @@
 --   Looks - my side's halo / horn looks (Config.Looks; no side or Neutral: all of them) as rim tiles with a capsule:
 --     price / Wear / Wearing (tap again = take it off, through the SetLook remote once it exists). 검수 2026-10-08: the
 --     section shows once looks are picked and listed (no "coming soon" teaser before that).
---   Change Tickets - the two old rows while a ticket product has an id.
 --   A soft last line: ask a grown-up first. No timers, no "best value" badges, no pop-ups (A23-75: no pressure).
 -- Server (게임성 개발 2, docs/design/gamepass_server_2026-10-08.md): Config.GamePasses[Kind] = { Id, Price, Attr } and
 -- the player attributes it sets after UserOwnsGamePassAsync (PassXP2 · PassGold2 · PassVIP, LooksOwned "a,b",
@@ -61,7 +60,7 @@ local T = type(INFO.Screen) == "table" and INFO.Screen or {}
 local L = {
 	Cols = 3, Gap = 10, CardH = 251, Pad = 10, Slot = 70, Icon = 0.62, NameH = 28, NameSize = 22, NameMinPx = 12,
 	LinesMinPx = 11,
-	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 4, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20, TicketH = 64,
+	LineSize = 15, CapsH = 40, CapsSize = 22, LookCols = 4, LookH = 178, LookSlot = 84, HeadH = 30, HeadSize = 20,
 	Guard = 0.35, -- s: a fast second tap on the [메뉴] square must not land on a card (CR-L26)
 	Focus = { Color = Color3.fromRGB(255, 210, 60), Thickness = 3 }, -- the asked card's rim ({ Focus = kind })
 }
@@ -439,56 +438,12 @@ local function refreshLook(kit, cell)
 	end
 end
 
-local function ticketsOnSale()
-	for _, kind in { "Class", "Faction" } do
-		local p = Config.ProductByKind(kind)
-		if p and (tonumber(p.Id) or 0) ~= 0 then return true end
-	end
-	return false
-end
-
-local function buildTickets(u, kit, parent, rows)
-	header(u, kit, parent, T.Tickets)
-	for _, kind in { "Class", "Faction" } do
-		local p = Config.ProductByKind(kind)
-		local row = Instance.new("Frame")
-		row.Name = "Ticket" .. kind
-		row.BackgroundColor3 = kit.Palette.Row
-		row.BorderSizePixel = 0
-		row.Size = UDim2.new(1, 0, 0, L.TicketH)
-		row.LayoutOrder = kit.NextOrder()
-		local c = Instance.new("UICorner")
-		c.CornerRadius = UDim.new(0, 10)
-		c.Parent = row
-		row.Parent = parent
-		local label = u.StyledLabel({
-			Name = "Label", Position = UDim2.fromOffset(14, 0), Size = UDim2.new(1, -200, 1, 0),
-			TextXAlignment = Enum.TextXAlignment.Left, TextSize = 18, TextWrapped = true, Parent = row,
-		}, "Body")
-		local b = kit.Button(row, "", kit.Palette.Buy, UDim2.fromOffset(170, 46), function()
-			if not p or (tonumber(p.Id) or 0) == 0 then kit.Toast(T.SoonToast, "info"); return end
-			local ok, err = pcall(MarketplaceService.PromptProductPurchase, MarketplaceService, player, p.Id)
-			if not ok then Util.Warn(TAG, "PromptProductPurchase failed: " .. tostring(err)) end
-		end)
-		b.AnchorPoint = Vector2.new(1, 0.5)
-		b.Position = UDim2.new(1, -10, 0.5, 0)
-		local onSale = p ~= nil and (tonumber(p.Id) or 0) ~= 0
-		local function priceText()
-			return onSale and string.format(T.PriceF, tostring(ShopUI.LivePrice(p.Id, Enum.InfoType.Product, p.PriceHint))) or T.Soon
-		end
-		b.Text = priceText()
-		kit.SetEnabled(b, onSale)
-		table.insert(rows, { Label = label, Name = (p and p.Name) or kind, Button = b, PriceText = priceText,
-			Attr = kind == "Class" and "ClassTickets" or "FactionTickets" })
-	end
-end
-
 local function buildShop(parent, kit, arg)
 	local u = uikit()
 	local focus = type(arg) == "table" and arg.Focus or nil -- a locked sticker / bubble: its pass card (StickerUI)
 	if not u then return nil end
 	local openedAt = os.clock()
-	local passCells, lookCells, ticketRows = {}, {}, {}
+	local passCells, lookCells = {}, {}
 
 	-- passes: four cards in one row
 	local cards = grid(kit, parent, "Passes", L.Cols, L.CardH, #PASSES)
@@ -581,17 +536,12 @@ local function buildShop(parent, kit, arg)
 		end
 	end
 
-	if ticketsOnSale() then buildTickets(u, kit, parent, ticketRows) end
 	kit.Text(parent, T.Note, { Color = kit.Theme.SubText, Size = 15, Align = Enum.TextXAlignment.Center })
 
 	local function refreshAll()
 		for _, cell in passCells do refreshPass(kit, cell) end
 		refreshSubs()
 		for _, cell in lookCells do refreshLook(kit, cell) end
-		for _, r in ticketRows do
-			r.Label.Text = string.format(T.TicketF, r.Name, math.floor(tonumber(attrOf(r.Attr, 0)) or 0))
-			if r.Button and r.PriceText then r.Button.Text = r.PriceText() end
-		end
 	end
 	PRICE.Refresh = refreshAll -- 2-C #10: a price read later repaints this shop
 	return refreshAll
