@@ -27,6 +27,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+CFG_TXT = (Path(__file__).resolve().parents[1] / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")  # the moved words (Config.ClientText)
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 FILES = {"HUD": SPS / "HUD.luau", "MINI": SPS / "MiniMap.luau", "WORLD": SPS / "WorldMap.luau", "TAGS": SPS / "NameTagPrefs.luau",
          "INV": SPS / "Invite.luau", "CFG": ROOT / "src/ReplicatedStorage/Shared/Config.luau", "INTRO": SPS / "Intro.luau",
@@ -175,7 +176,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     h, mini, world, tags, inv, cfg = src["HUD"], src["MINI"], src["WORLD"], src["TAGS"], src["INV"], src["CFG"]
     return [
         ("1. the opening has Skip (button + Enter) and the craft ring [Skip]; nothing else long",
-         "Intro.SkipText" in src["INTRO"] and "HHC_IntroSkip" in src["INTRO"] and "Skip = \"Skip\"" in src["CRAFT"]),
+         "Intro.SkipText" in src["INTRO"] and "HHC_IntroSkip" in src["INTRO"] and "Skip = \"Skip\"" in src["CRAFT"] + CFG_TXT),
         ("2. HUD: the Outlaw chip after Bully with the ranking's own line, redrawn on Outlaw",
          '"Bully", "Outlaw", "Wanted"' in h and 'setChip(ui.chip.Outlaw, attr("Outlaw", false) == true and type(outlaw) == "string", outlaw, Theme.Bad)' in h
          and 'L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost",' in h

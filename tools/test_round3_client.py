@@ -18,6 +18,7 @@ import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+CFG_TXT = (Path(__file__).resolve().parents[1] / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")  # the moved words (Config.ClientText)
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 PANELS = ROOT / "src/StarterPlayer/StarterPlayerScripts/Panels.luau"
 OUT = ROOT / "docs/art/verification_2026-10-07/offline_round3_client_2026-10-07.json"
@@ -109,7 +110,7 @@ def main():
          and 'local anvil = L.ForgeWalk[zone] and L.BlacksmithTarget() or nil' in hud
          and 0 < guides.find("\tif forge then") < guides.find("\telseif L.NeedsMeadowGuide(step)")
          and "BlacksmithVisited" not in forge_branch
-         and 'ForgeGuide = "First weapon",' in hud),
+         and 'ForgeGuide = "First weapon",' in CFG_TXT),
         ("빛 마을 점검 #20: tapping the Forge row brings the guide back and pops the quest marker (no RequestTutorial)",
          "\telseif step == L.ForgeStep then\n" in pinned
          and "\t\tHUD.ClearGuide()\n\t\trefreshGuides()\n\t\tlocal qm = C and C.QuestMarker\n"

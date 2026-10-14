@@ -43,6 +43,7 @@ import sys
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+CFG_TXT = (Path(__file__).resolve().parents[1] / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")  # the moved words (Config.ClientText)
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 FILES = {"CODEX": SPS / "CodexUI.luau", "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
          "HUD": SPS / "HUD.luau", "MAIN": SPS / "ClientMain.client.luau", "NET": ROOT / "src/ReplicatedStorage/Shared/Net.luau"}
@@ -91,7 +92,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
                                                                                         block(screen, "Text = {"))),
         ("the HUD tile Codex opens the window 'Codex' (named TXT.TileCodex)",
          '{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },' in hud
-         and 'TileCodex = "Monsters"' in hud and "Codex = TXT.TileCodex" in hud),
+         and 'TileCodex = "Monsters"' in CFG_TXT and "Codex = TXT.TileCodex" in hud),
         ("ClientMain loads CodexUI once, after Panels", names.count("CodexUI") == 1 and "Panels" in names
          and names.index("Panels") < names.index("CodexUI")),
         ("the remotes are Net names (CodexOpen / Codex / CodexUp)", all(f'"{n}"' in net for n in ("CodexOpen", "Codex", "CodexUp"))

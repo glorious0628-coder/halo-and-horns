@@ -10941,4 +10941,139 @@ Config.ClientText.PassesLines = {
 Config.ClientText.VitalsUI = {
 	PotionShop = "Potion shop", -- the way to the merchant when a [Buy] press has no potions
 }
+Config.ClientText.HUD = {
+	LevelTag = "Lv",
+	PowerLine = "Lv %d · %s %s", -- 'Lv 10 · Power 424' (A23-26)
+	PowerLineShort = "Lv %d · %s", -- the narrowest phone rows (2026-10-07): 'Lv 25 · 249' (L.CheckPouch)
+	Pouch = "· %s %s", -- after the power line: '· Pouch 1.2K' (검수 2026-10-06: carried gold can be stolen)
+	PouchLine = "%s %s", -- its own line under the XP bar when the power line is too narrow
+	CarriedTag = "Pouch",
+	PowerWord = "Power", -- A23-48 (Config.Power.Text.Label stays the Korean source)
+	Stronger = "Stronger!", -- A23-68 #3: the first weapon's big line
+	WarHalo = "Halo %s", -- the war bar's ends (were the Korean emblems)
+	WarHorns = "%s Horns",
+	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
+	WantedBounty = " · %s",
+	LuckTap = "Rare drops come a bit more often today!", -- 검수 10/09: a press on the Lucky chip
+	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
+	Blessing = "%s Crown Blessing +%d%%",
+	Safe = "Safe Zone",
+	PvP = "PvP Zone",
+	PvPNeutral = "PvP Zone · Artisans safe",
+	Rookie = "Sprout Shield",
+	RookieGrace = "Sprout Shield ends · PvP in %ds", -- A23-18 graduation grace (GraduateGraceUntil)
+	Protected = "Revive Shield",
+	InCombat = "In Combat",
+	Size = "Size ×%.2f",
+	Bully = "Bully Lv %d",
+	BullyPenalty = "Bully penalty: no Auto Battle · half XP & drops (%d min)", -- A23-22
+	KaijuQueued = "Kaiju waiting",
+	QuestHeader = "Daily Quests %d/%d", QuestHeaderTouch = "Dailies %d/%d", -- phones: the 150 px block beside the map
+	QuestAllDone = "Dailies done! Bonus quests on",
+	QuestClaimable = " · Claim %d",
+	QuestTouchClaim = "Claim %d quests!",
+	QuestTouchLine = "%s/%s %s", -- progress first: truncation only cuts the quest text
+	QuestExpand = "▼",
+	QuestCollapse = "▲",
+	QuestClose = "Close",
+	BadgeDaily = "Daily",
+	BadgeExtra = "Bonus",
+	BadgePinned = "Guide",
+	BadgeMain = "Main",
+	BadgeSub = "Side",
+	Claim = "Claim",
+	Reroll = "Swap", -- Gotham has no ↻ glyph (rendered as tofu)
+	RerollTitle = "Swap quest", -- CR-M25 confirm dialog
+	RerollBody = "Your progress will be lost. Swap it?",
+	RerollYes = "Swap",
+	Attack = "Attack",
+	Release = "Skill",
+	Perfect = "PERFECT!",
+	AutoOn = "Auto ON",
+	AutoOff = "Auto OFF",
+	Map = "Map",
+	Menu = "Menu",
+	Pet = "Pet",
+	Bag = "Bag",
+	Auto = "Auto",
+	-- A23-40 icon tiles (names under the icons; long names shrink inside the tile, never below 10 px on phones)
+	TileCharacter = "Hero",
+	TileSkills = "Skills",
+	TileRanking = "Ranking",
+	TileCodex = "Monsters", -- A23-153 (user 10/13 first look "코덱스 뭐야": the plain word)
+	TileSettings = "Settings",
+	TileNews = "News",
+	TileDiary = "Diary",
+	TileTravel = "Travel",
+	TileHelp = "Help",
+	TileShop = "Shop",
+	TileInvite = "Invite", -- A23-79 #3 the [Menu] square
+	-- A23-75 status chip: the 2x XP / 2x Gold passes (one chip, right after the danger chips)
+	BoostXP = "2x XP",
+	BoostGold = "2x Gold",
+	BoostBoth = "2x XP · Gold",
+	EarlyXP = "2x XP · %d min", -- A23-167: the first minutes' 2x XP (the minutes left), the pass chip's own words
+	-- plan 10/13 §1-A #6 (A23-90): in a private server (GameState PrivateServer, 게임성 개발 2) one chip; a press says the
+	-- whole rule (Config.PrivateServer.Text)
+	PrivateHalf = "Private server · half rewards",
+	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
+	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
+	QuestLineNums = "%s/%s",
+	QuestLineSummary = "Daily Quests %d/%d",
+	QuestOpenList = "▼",
+	QuestCloseList = "▲",
+	QuestHead = "Quests (%d)", -- 검수 10/08: the head line over the quest lines (the ▼ lives here)
+	QuestDone = "Done!", -- a finished line: its name + Done! (+ the Claim pill where a press claims it)
+	MoreChips = "+%d",
+	TravelLeft = "%s %.1fs",
+	ZoneGuide = "%s", -- the guide label: one short line (검수 2026-10-08)
+	Monster = "Monster",
+	-- texts used once in the code below
+	GuideHere = "This way!",
+	Traveling = "Traveling...",
+	DailiesOpened = "Daily quests are open!",
+	SmithGuide = "Forge",
+	ForgeGuide = "First weapon", -- A23-74 weapon first (TutorialStep Forge)
+	NoMana = "Not enough MP.",
+	GoSmith = "Go to the Crossroads and find the anvil at the Forge.",
+	Pond = "Pond",
+	Fountain = "Fountain",
+	HuntSlimes = "Hunt slimes and big slimes for XP.",
+	-- A23-68 #2 (user 2026-10-07 "그 자리 힌트"): the hint bubbles over the combat buttons (HUD.Hint)
+	HintTap = "Tap to hit!",
+	HintClick = "Click to hit!",
+	HintSkill = "Try your skill!",
+}
+Config.ClientText.BagUI = {
+	Title = "Bag",
+	Tabs = { Gear = "Gear", Use = "Use", Scroll = "Scrolls", Material = "Materials" },
+	Sorts = { Default = "Newest", Name = "Name", Grade = "Grade", Kind = "Type" },
+	Worn = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", PetGear = "Pet" }, -- one short word per slot (UiSandbox 10/12: "Pet gear" ran into "Ring")
+	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
+	Attack = "Attack %s",
+	Power = "Power %s → %s",
+	PowerNow = "Power %s",
+	SlotsF = "%d / %d", -- 최종 검수 10/14: kinds in the bag / its slots (Config.BagSlots)
+	Spare = "Spare",
+	Count = "×%d",
+	TonicLeft = "%s left",
+	TonicWait = "Wait %s", -- two others run: when the first of them ends (UiSandbox 10/12: an off Drink still looked on)
+	Drink = "Drink", Full = "Full", Empty = "Empty", Wait = "%d s", Quick = "Quick slot",
+	Use = "Use", Cancel = "Cancel", Enhance = "Enhance", Move = "Move",
+	ScrollEnh = "+%d on success · %d%%",
+	ScrollMove = "Moves all + to another weapon · %d%%",
+	PickEnhance = "Pick a weapon.",
+	PickFrom = "Pick the weapon to take + from.",
+	PickTo = "Pick the weapon to get +%d.",
+	ConfirmEnh = "%s\n+%d → +%d · %d%% chance", -- UiSandbox 10/12: "+0 → +1" no longer breaks in the 200 du column
+	ConfirmMove = "%s +%d →\n%s +%d · %d%% chance",
+	FailDown = "A fail may drop it 1 step. Weapons never break!",
+	FailKeep = "Nothing changes on a fail.",
+	SellsFor = "Sells for %s each",
+	SellOne = "Sell 1", -- artisan contract ②: a gathered material at the anvil
+	SellAll = "Sell all",
+	SellWhere = "Sell it at the Forge's anvil.",
+	From = "From: %s",
+}
+
 return Config

@@ -17,6 +17,7 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
+CFG_TXT = (Path(__file__).resolve().parents[1] / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")  # the moved words (Config.ClientText)
 HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-08/offline_quest_lines_2026-10-08.json"
@@ -271,9 +272,9 @@ def static_checks(src):
          and "ShortName = L.EnglishShortName(e)," in src),
         ("a finished line keeps its name + Done! (SetQuestLine uses L.LineFinish / L.LineIconKeys)",
          "local claimable, pill = L.LineFinish(e, li)" in setline and "l.Nums.Text = claimable and TXT.QuestDone or (nums or \"\")" in setline
-         and "for _, key in L.LineIconKeys(e) do" in setline and 'QuestDone = "Done!",' in src),
+         and "for _, key in L.LineIconKeys(e) do" in setline and 'QuestDone = "Done!",' in CFG_TXT),
         ("the ▼ sits on the head line 'Quests (N)' over the lines, not beside line 1",
-         'QuestHead = "Quests (%d)",' in src and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
+         'QuestHead = "Quests (%d)",' in CFG_TXT and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
          and 'ui.questHead.Text.Text = L.Tx(TXT, "QuestHead", #all)' in refresh  # 10/14: by key (UIKit.Tr)
          and "block.Position = UDim2.fromOffset(q.X, q.Y + hh)" in layout),
         # A23-99 추가 (user 2026-10-10 photo "이거 없애달라니까"): the head line is off - no frame, no height, no gap

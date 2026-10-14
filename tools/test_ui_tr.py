@@ -190,8 +190,9 @@ SPS_DIR = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 
 
 def module_keys() -> set[str]:
-    try:
-        return {k for k, _ in module_rows()[0]}
+    try:  # every row the format list writes (moved tables keep their registered path: Config.ClientText rows renamed)
+        from l10n_format_keys import rows
+        return {r["key"] for r in rows()} | {k for k, _ in module_rows()[0]}
     except Exception:  # noqa: BLE001
         return set()
 

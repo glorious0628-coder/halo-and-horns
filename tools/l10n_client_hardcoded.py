@@ -25,8 +25,6 @@ TBL = re.compile(r'^(?:local\s+)?(TXT\w*|TEXT\w*|T|WORDS|LABELS|STR|COPY|LINES)\
 LIT = re.compile(r'"((?:[^"\\]|\\.)*)"')
 # known and accepted: module -> literals ("*" = the whole module: its word table moves after a pending branch merges)
 ALLOW: dict[str, set[str]] = {
-    "HUD": {"*"},      # moves after fix/war-bar-no-text (its TXT changes there)
-    "BagUI": {"*"},    # moves after fix/bag-slots-with-sell / dev1-artisan-sell (their TXT keys)
     "UIKit": {"Halo & Horns 0123"},  # the font preload's probe text (never shown)
     "FactionPicker": {"Artisan"},  # NEUTRAL_FALLBACK: only when Config.Factions.Neutral is missing
     "Panels": {"Artisan"},  # the same fallback
