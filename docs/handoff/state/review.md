@@ -308,4 +308,5 @@
 - (정정) 위 "13:40·14:30·15:30" 시각은 틀림 — 실제는 10:00~11:00 사이. 사용자: 계획은 날짜 말고 순서만.
 - **10/14 병합 8·9:** fix/auto-translate-on 292d184b(A23-179 자동 번역 켬) + dev2-stale-text 6637e536 → main bcde9e91. 반박 검토: FIX 1(HUD 695 전투력 줄 번역 안 됨)·MINOR 1(CharacterUI 닉네임 번역됨) → 개발 1 settings-apply 커밋에. 사용자: 디자인 세션 4개 지움(세션 3개), 계획은 순서만(gameplay_plan 맨 위). 다음 = 마을 기금(e30da8fa + 23660dc6) 시험 중 → 설정 적용 → 스킬 거절 없애기(A23-180).
 - **10/14 병합 10·11:** dev2-village-fund e30da8fa + dev1-village-fund 23660dc6 → main e35d32b9(마을 기금 서버+화면, 분수 모델 자리). 사용자: 계획은 순서만(날짜 없음), 장인(중립)+거래소를 3번으로, 그다음 디자인(4번) — gameplay_plan 맨 위. 개발 2 = 장인 최소판 서버 계약부터, 개발 1 = settings-apply(이름표·번역 후속) → skill-press-gate. 스킬 서버 5bd777c5 시험 중.
+- **10/14 병합 12:** fix/skill-no-reject 5bd777c5 → main(A23-180 서버: 대상 없음 = 허공 쓰기, 재사용 0.35초 안 = 받아 두기, 나머지 조용히). 화면(skill-press-gate)은 개발 1 큐. API 감사 돌림: build/api_agent/gap_audit_1014 (계획에 빠진 게임성 항목).
 
