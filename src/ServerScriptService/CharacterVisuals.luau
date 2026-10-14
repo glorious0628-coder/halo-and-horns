@@ -992,7 +992,8 @@ local function buildWeapon(player, character)
 		p.CFrame = place * p.CFrame
 	end
 
-	if tier >= 6 and main then
+	local glow = type(w) == "table" and not w.Meme -- A23-186: a joke weapon (tier 10 / 11) never glows like T6+
+	if glow and tier >= 6 and main then
 		local existing = main:FindFirstChildOfClass("PointLight")
 		if existing then
 			existing.Brightness = 2.5
@@ -1001,7 +1002,7 @@ local function buildWeapon(player, character)
 			addLight(main, color, 10 * sc, 2)
 		end
 	end
-	if tier >= 7 and main then
+	if glow and tier >= 7 and main then
 		sparkle(main, color, 12, 0.35 * sc)
 	end
 

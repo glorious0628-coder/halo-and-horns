@@ -58,7 +58,7 @@ local function fixture(saved, missingMerchant)
 	serial += 1
 	local config = execute(CONFIG_SOURCE, CONFIG_ENV)
 	config.Levels = { MaxLevel = 100 }
-	check(config.MaxWeaponTier == 9, "extracted Config.MaxWeaponTier is not 9 (Data Version 4 weapon tiers, C1)")
+	check(config.MaxWeaponTier == 11, "extracted Config.MaxWeaponTier is not 11 (C1 tier 9 + A23-186 joke tiers 10 / 11)")
 	config.Tickets = { MaxReceiptsKept = 100 }
 	config.Rebirth = { BonusNormal = .25 }
 	config.Factions = { None = {}, Halo = {}, Horns = {}, Neutral = {} }

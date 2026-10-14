@@ -225,7 +225,7 @@ runGroup("power", function()
 	local wantOff, topTier = best(off, nil, nil)
 	local want = best(on, nil, top)
 	local m1 = on.MaxCombatPower()
-	check(m0 == wantOff and topTier == off.MaxWeaponTier and m1 == want and m1 > m0 and math.abs(m1 / m0 - math.sqrt(1.14 * 1.22)) < 0.001,
+	check(m0 == wantOff and topTier == 9 and m1 == want and m1 > m0 and math.abs(m1 / m0 - math.sqrt(1.14 * 1.22)) < 0.001,
 		"MaxCombatPower: off = the best tier (the Mythic, tier 9) at MaxLevel +MaxEnhance; on = the same with the T3 +2 armor and ring",
 		show({ m0, wantOff, topTier, m1, want }))
 	local both = newConfig(false)

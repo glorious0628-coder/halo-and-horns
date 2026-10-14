@@ -77,7 +77,7 @@ runGroup("config", function()
 	local d = C.Data.Defaults.Attendance
 	check(type(d) == "table" and d.Days == 0 and d.LastDay == 0 and d.Slot == 1, "save default { Days 0, LastDay 0, Slot 1 }",
 		show(d))
-	check(C.Data.Version == 5, "data version 5 = A23-153's codex (C1's tier 9 made it 4) (attendance is an additive field)", C.Data.Version)
+	check(C.Data.Version == 6, "data version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9) (attendance is an additive field)", C.Data.Version)
 	check(C.RateLimits.ClaimAttendance == 1, "ClaimAttendance 1 s", C.RateLimits.ClaimAttendance)
 	-- A23-77 size: about 3-5 hunting minutes a day, about 30 a week (gold + XP minutes of the board)
 	local minutes = 0

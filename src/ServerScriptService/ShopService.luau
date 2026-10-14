@@ -49,7 +49,7 @@ local function onUpgradeWeapon(player, selectedTier)
 		Util.Warn("ShopService", "invalid WeaponShop.MaxSoldTier; weapon purchase refused")
 		return
 	end
-	if selectedTier > saleLimit then
+	if selectedTier > saleLimit and not Config.WeaponSoldAtForge(selectedTier) then -- A23-186: + the joke weapons
 		Net.Notify(player, Config.Text.WeaponNotSold, "info")
 		return
 	end
@@ -135,7 +135,7 @@ local function onSellWeapon(player, selectedTier)
 	local shop = Config.WeaponShop
 	local saleLimit = type(shop) == "table" and shop.MaxSoldTier or nil
 	if not finite(saleLimit) or saleLimit ~= math.floor(saleLimit) or saleLimit < 1 or saleLimit > maxTier then return end
-	if selectedTier > saleLimit then return end
+	if selectedTier > saleLimit and not Config.WeaponSoldAtForge(selectedTier) then return end -- A23-186: + the joke weapons
 	local tier, ownedMask = data.WeaponTier, data.WeaponOwnedMask
 	if not finite(tier) or tier ~= math.floor(tier) or tier < 0 or tier > maxTier then return end -- A23-34: 0 = bare hands
 	local validMask = bit32.lshift(1, maxTier) - 1

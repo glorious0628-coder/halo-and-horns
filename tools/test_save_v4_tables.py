@@ -53,8 +53,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # --- defaults and limits
-    ("config: the version back to 3 (C1 bumped it to 4, A23-153 to 5)", C, "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 5,",
-     "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 3,"),
+    ("config: the version back to 3 (C1 bumped it to 4, A23-153 to 5)", C, "so it must refuse v6 records (CR-L3)\n\tVersion = 6,",
+     "so it must refuse v6 records (CR-L3)\n\tVersion = 3,"),
     ("config: one craft level for all roles", C, "CraftRoles = { \"Smith\", \"Alch\", \"Tame\" },", "CraftRoles = { \"Smith\" },"),
     ("config: craft Lv40", C, "\tCraftMaxLv = 30,\n", "\tCraftMaxLv = 40,\n"),
     ("config: three buffs", C, "\tBuffMax = 2, -- Buffs", "\tBuffMax = 3, -- Buffs"),
@@ -116,7 +116,7 @@ MUTATIONS = [
     ("all: the load skips EggHonorAt", C, "\td.EggHonorAt = Config.SanitizeEggHonorAt(d.EggHonorAt, now)\n", ""),
     # --- DataService / PetService
     ("DataService: the v4 repair never runs", D, "\tif Config.SanitizeSaveV4 then Config.SanitizeSaveV4(d, os.time()) end\n", ""),
-    ("DataService: no v5 step in migrate (A23-153; C1 made the v4 one)", D, "\t\td.Version = 5\n", ""),
+    ("DataService: the last migrate step never sets the version (A23-186 v6; A23-153 v5; C1 v4)", D, "\t\td.Version = 6\n", ""),
     ("pet: Roll dropped", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", ""),
     ("pet: Roll kept as it was", P, "\t\t\t\t\tRoll = sanitizeRoll(p.Roll),\n", "\t\t\t\t\tRoll = p.Roll,\n"),
     ("pet: fractions allowed", P, "if type(spd) ~= \"number\" or spd ~= math.floor(spd) or spd < range[1]", "if type(spd) ~= \"number\" or spd ~= spd or spd < range[1]"),

@@ -132,7 +132,9 @@ Config.Data = {
 	-- is decided with stage 2 (the switch on). An older server refuses a newer record (CR-L3).
 	-- C1 (save v4): 4 = weapon tier 9 (a 9-bit mask, WeaponEnhance[9]) + Spares / Market (save_v4_tables_2026-10-11.md).
 	-- A23-153 (save v5): 5 = the monster codex (Codex; DataService.migrate fills it once from KillLog.ByKind).
-	Version = 5,
+	-- A23-186 (save v6): 6 = weapon tiers 10 / 11 (the Forge's joke weapons: an 11-bit mask, WeaponEnhance[10..11]); a v5
+	-- server would read such a mask as corrupted and wipe it, so it must refuse v6 records (CR-L3)
+	Version = 6,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -141,7 +143,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 5,
+		Version = 6,
 		Level = 1,
 		XP = 0,
 		BankGold = 0,
@@ -279,10 +281,10 @@ end
 
 ----------------------------------------------------------------- weapons (7 tiers shared by every class)
 -- Damage = normal per-target swing damage at Lv 1 for class Damage multiplier 1.0, BEFORE the 50% immediate rule.
--- Gameplay plan 2026-10-13 1-A #2 (A23-127: weapons come from drops and trades): Buy = false refuses only buying a weapon
--- not owned yet (ShopService, Text.WeaponDropOnly; the Forge hides its buy button). Equip, enhance and sell stay, and
--- MaxSoldTier still bounds the Forge rows (never 0: that closes enhance and sell too)
-Config.WeaponShop = { MaxSoldTier = 3, Buy = false, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+-- A23-186 (user 10/14 "기본 무기는 팔자고 했는데? 5개 정도 팔자"): Otto sells again (Buy = true; Buy = false would refuse
+-- buying a weapon not owned yet, Text.WeaponDropOnly). The Forge rows = tiers 2..MaxSoldTier (tier 1 stays the free M1_1
+-- gift) + every Meme row (Config.WeaponSoldAtForge); MaxSoldTier also bounds enhance / sell rows (never 0)
+Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
 
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
@@ -302,24 +304,54 @@ Config.Weapons = {
 	-- jackpot, never sold at the Forge (WeaponShop.MaxSoldTier), never a commission. Price = the sale-value reference only.
 	-- Color = placeholder until the image team picks the Mythic look.
 	{ Tier = 9, Damage = 2200, Price = 250000, MinLevel = 50, Color = Color3.fromRGB(255, 70, 130), Material = Enum.Material.Neon, Length = 6.2 }, -- C1: 0.3 under T7 (the bigger orb keeps the staff within the avatar's height, A23-133)
+	-- A23-186: the Forge's joke weapons (Meme = their Config.WeaponMemes key). Any class holds them under one name (AnyClass),
+	-- as strong as the Wooden tier 2 (Damage 15), gold only at the Forge: never dropped, never a jackpot, never crafted,
+	-- never a commission; enhanced like any weapon. Never "a better weapon" by their tier number (Config.WeaponAtLeast)
+	{ Tier = 10, Damage = 15, Price = 300, MinLevel = 1, Meme = "Pan", AnyClass = true, Color = Color3.fromRGB(70, 72, 80), Material = Enum.Material.Metal, Length = 3 },
+	{ Tier = 11, Damage = 15, Price = 300, MinLevel = 1, Meme = "Chicken", AnyClass = true, Color = Color3.fromRGB(255, 214, 60), Material = Enum.Material.SmoothPlastic, Length = 3 },
 }
 Config.MaxWeaponTier = #Config.Weapons
+-- A23-186: what a joke weapon's hit adds (CombatService Fx "Swing" Meme = the key; the client plays Sound / Particle,
+-- game dev 1). Push = studs added to the hit monster's usual shove. SoundId / ParticleId = "" until the assets are made
+Config.WeaponMemes = {
+	Pan = { Sound = "Bonk", SoundId = "", Push = 1.5 },
+	Chicken = { Sound = "Squeak", SoundId = "", Particle = "Feathers", ParticleId = "" },
+}
+-- A23-186: true for a tier the Forge sells for gold (2..MaxSoldTier and every Meme row; tier 1 is the M1_1 gift)
+function Config.WeaponSoldAtForge(tier)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	if type(def) ~= "table" then return false end
+	if def.Meme then return true end
+	local shop = Config.WeaponShop
+	return tier >= 2 and type(shop) == "table" and tier <= (tonumber(shop.MaxSoldTier) or 0)
+end
+-- A23-186: true when weapon `tier` is at least as strong as weapon `ref` (by Damage; a joke weapon never counts, whatever
+-- its tier number) - "owns an Iron weapon" and the like
+function Config.WeaponAtLeast(tier, ref)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	local r = type(ref) == "number" and Config.Weapons[ref] or nil
+	if type(def) ~= "table" or type(r) ~= "table" or def.Meme then return false end
+	return (tonumber(def.Damage) or 0) >= (tonumber(r.Damage) or 0)
+end
 
 -- display names per class (A23-48: English only); tier 7 is a table keyed by faction. Index = saved tier key: only
 -- ever APPEND tiers. T4-T6 names come from the monsters that drop them (design skills_weapons_pets_2026-10-05 §1 B3).
 Config.WeaponNames = {
 	Warrior = { "Twig", "Wooden Sword", "Iron Sword", "Goblin Thief's Golden Sword", "Old Kingdom Crystal Sword", "Guardian Spirit Sword",
-		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword" },
+		{ Halo = "Dawn Sword", Horns = "Ruin Sword", None = "Crown Shard Sword" }, "Jelly Crown Sword", "Crownforged Sword",
+		"Frying Pan", "Rubber Chicken" }, -- A23-186: the joke weapons, the same name for every class
 	Mage = { "Dry Staff", "Oak Staff", "Iron Staff", "Goblin Thief's Golden Staff", "Old Kingdom Crystal Staff", "Guardian Spirit Staff",
-		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff" },
+		{ Halo = "Dawn Staff", Horns = "Ruin Staff", None = "Crown Shard Staff" }, "Jelly Crown Staff", "Crownforged Staff",
+		"Frying Pan", "Rubber Chicken" },
 	Archer = { "Slingshot Bow", "Wooden Bow", "Iron Bow", "Goblin Thief's Golden Bow", "Old Kingdom Crystal Bow", "Guardian Spirit Bow",
-		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow" },
+		{ Halo = "Dawn Bow", Horns = "Ruin Bow", None = "Crown Shard Bow" }, "Jelly Crown Bow", "Crownforged Bow",
+		"Frying Pan", "Rubber Chicken" },
 }
 
 -- A23-39: the pet tamer (artisan guild Archer, Config.IsTamer) holds taming batons instead of bows (same stats)
 Config.WeaponNames.Tamer = { "Twig Baton", "Wooden Baton", "Iron Baton", "Goblin Thief's Golden Baton",
 	"Old Kingdom Crystal Baton", "Guardian Spirit Baton", { Halo = "Dawn Baton", Horns = "Ruin Baton", None = "Crown Shard Baton" },
-	"Jelly Crown Baton", "Crownforged Baton" }
+	"Jelly Crown Baton", "Crownforged Baton", "Frying Pan", "Rubber Chicken" }
 -- the former English twin is the same tables now (readers of WeaponNamesEn keep working)
 Config.WeaponNamesEn = Config.WeaponNames
 
@@ -348,6 +380,8 @@ Config.WeaponInfo = {
 	{ Grade = "Legend", Source = "Crafted by artisans" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
 	{ Grade = "Mythic", Source = "Crafted by artisans" },
+	{ Grade = "Common", Source = "A joke weapon from the Forge" }, -- A23-186 Frying Pan
+	{ Grade = "Common", Source = "A joke weapon from the Forge" }, -- A23-186 Rubber Chicken
 }
 
 function Config.WeaponGrade(tier)
@@ -405,6 +439,7 @@ function Config.WeaponArtKey(tier, classId, factionId)
 	if type(tier) ~= "number" or tier ~= tier or math.abs(tier) == math.huge then tier = 1 end
 	if tier < 1 then return nil end
 	tier = math.clamp(math.floor(tier), 1, Config.MaxWeaponTier)
+	if Config.Weapons[tier] and Config.Weapons[tier].Meme then return nil end -- A23-186: no icon yet (the slot's code look)
 	if classId ~= "Warrior" and classId ~= "Mage" and classId ~= "Archer" then classId = "Warrior" end
 	-- A23-39: the pet tamer's batons (icons T1-T6; T7 / T8 keep the Archer keys until they are drawn)
 	if tier <= 6 and Config.IsTamer(classId, factionId) then return "Weapon_Tamer_T" .. tostring(tier) end
@@ -10063,6 +10098,7 @@ function Config.MarketKey(kind, id)
 	local t, p = string.match(id, "^(%d+):(%d+)$")
 	local tier, plus = tonumber(t), tonumber(p)
 	if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier or plus > Config.Loot.MaxEnhance then return nil end
+	if Config.Weapons[tier].Meme then return nil end -- A23-186: the joke weapons are the Forge's only, never traded
 	return string.format("W:%d:%d", tier, plus)
 end
 

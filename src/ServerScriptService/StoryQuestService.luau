@@ -240,7 +240,8 @@ end
 
 local function ownsIron(player)
 	local mask = math.floor(num(player:GetAttribute("WeaponOwnedMask"), 1))
-	return bit32.btest(mask, bit32.lshift(1, 2)) or num(player:GetAttribute("WeaponTier"), 1) >= 3
+	-- A23-186: the equipped weapon counts when it is at least Iron by strength (a joke weapon's tier 10 / 11 never does)
+	return bit32.btest(mask, bit32.lshift(1, 2)) or Config.WeaponAtLeast(math.floor(num(player:GetAttribute("WeaponTier"), 1)), 3)
 end
 
 local function stateTrue(player, key)
