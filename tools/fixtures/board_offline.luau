@@ -73,8 +73,10 @@ end
 local function atBoard(w, userId, cards, o)
 	o = o or {}
 	local spot = L0[B0.Boards[o.Board or "Meadow"].Spot]
+	-- A23-193: a hero of Lv5+ has learned Q from the teacher (saved slots 1) unless o.Attrs says otherwise
+	local attrs = o.Attrs or ((o.Level or 6) >= 5 and { SkillSlots = 1 } or nil)
 	local p, d = w:Join(userId, { Faction = o.Faction or "Halo", Level = o.Level or 6, Pos = vec(spot.X + 3, 0, spot.Z),
-		Attrs = o.Attrs, Data = { Board = { Cards = { [o.Board or "Meadow"] = cards }, Day = C0.DayIndex(math.floor(w.Time)) } } })
+		Attrs = attrs, Data = { Board = { Cards = { [o.Board or "Meadow"] = cards }, Day = C0.DayIndex(math.floor(w.Time)) } } })
 	return p, d
 end
 
@@ -196,6 +198,14 @@ runGroup("a23-71 skill card", function()
 		for _, id in cardIds(w:LastBoard(q)) do if id == "J4" then sawAt5 = true end end
 	end
 	check(sawAt5, "Lv5: J4 shows up again")
+	-- A23-193: Lv5 before the teacher (no saved slot): still no J4
+	local sawUnlearned = false
+	for i = 1, 40 do
+		local q = atBoard(w, 1300 + i, nil, { Level = 5, Attrs = { SkillSlots = 0 } })
+		w:Act(q, "Meadow", "Open")
+		for _, id in cardIds(w:LastBoard(q)) do if id == "J4" then sawUnlearned = true end end
+	end
+	check(not sawUnlearned, "Lv5 before the teacher: no J4 yet")
 end)
 
 ------------------------------------------------------------------ 4. take, progress, pay

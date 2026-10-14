@@ -814,6 +814,39 @@ Config.Skills.Tasks.Blacksmith = Config.Skills.Tasks.Warrior
 Config.Skills.Tasks.Alchemist = Config.Skills.Tasks.Mage
 Config.Skills.Tasks.Tamer = Config.Skills.Tasks.Archer
 
+-- A23-193 (user 10/14 "스킬을 배워야지 ㅋㅋㅋ 갑자기 생기는 게 이상해"): a skill is LEARNED from the side's teacher. The level
+-- (+ the class task for Z / X) makes it ready; the goal line says "meet <teacher>"; talking to that town NPC (StoryNpc
+-- NpcId, within Range) teaches it (SkillService.TryLearn: SkillSlots up, Fx "SkillLearned" { Slots, Teacher }). Teachers:
+-- Halo = Sir Gleam (the Halo knight), Horns = Rose (the only Horns town person with a body), Neutral = Otto (the guild's
+-- smith, given a Talk prompt below). A rebirth, a teacher with no body in the world, or Enabled false = the old rule (the
+-- slot opens at once). Old saves keep their slots. Lines = what the teacher says (1-2, %s = the skill's name; the client
+-- draws them, then the key try-out)
+Config.Skills.Learn = {
+	Enabled = true,
+	Teachers = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" },
+	Range = 16, -- studs (= Config.StoryQuests.NpcRange)
+	Text = {
+		Goal = "Learn a skill: meet %s", -- the goal chip (%s = the teacher's name)
+		Lines = {
+			Halo = { "You have grown strong. Let me show you %s.", "Now you try it!" },
+			Horns = { "Whoa, you're ready! Watch me do %s.", "Your turn. Go!" },
+			Neutral = { "Good hands make good moves. This is %s.", "Go on, try it here!" },
+		},
+	},
+}
+
+-- A23-193: the teacher's name for a faction ("" = no teacher): the town NPC's Label, else the story speaker name
+function Config.SkillTeacherName(factionId)
+	local L = Config.Skills.Learn
+	local id = type(L) == "table" and type(L.Teachers) == "table" and L.Teachers[factionId] or nil
+	if type(id) ~= "string" then return "" end
+	for _, e in (type(Config.TownNpcs) == "table" and Config.TownNpcs.List) or {} do
+		if e.Story == id and type(e.Label) == "string" then return e.Label end
+	end
+	local sp = type(Config.StoryQuests) == "table" and Config.StoryQuests.Speakers or nil
+	return type(sp) == "table" and type(sp[id]) == "string" and sp[id] or id
+end
+
 -- 99N D: the task of one kit's slot (nil = none: Q, an unknown kit, or the tasks off)
 function Config.SkillTask(kit, slot)
 	local t = Config.Skills.Tasks
@@ -861,7 +894,11 @@ end
 -- A23-71: the player has a skill (Q) = saved slots >= 1 (kept after a level reset) or the level / rebirths open one
 -- (also true in the moment before SkillService's catch-up raised the saved slots)
 function Config.SkillLearned(slots, level, rebirths)
-	return (tonumber(slots) or 0) >= 1 or Config.SkillSlotsFor(level, rebirths) >= 1
+	if (tonumber(slots) or 0) >= 1 then return true end
+	-- A23-193: the level alone no longer gives a skill (the teacher does); a rebirth still opens them
+	local L = Config.Skills.Learn
+	if type(L) == "table" and L.Enabled == true then return (tonumber(rebirths) or 0) >= 1 end
+	return Config.SkillSlotsFor(level, rebirths) >= 1
 end
 
 -- the skill kit of a class in a faction: Neutral -> Blacksmith / Alchemist / Tamer (Config.IsTamer), else the class id
@@ -3084,7 +3121,7 @@ Config.Tutorial = {
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
-		Skill = "Skill at Lv %d", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
+		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
 		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
 	-- A23-86 F (content_beyond_10min): the next-goal ladder once the early goals (iron weapon, first skills, the woods) are
@@ -3169,7 +3206,8 @@ Config.Tutorial = {
 		-- (QuestService GoalKind "IronDrop", 게임성 개발 2): the first King Slime always drops it. No number to format
 		NextIronDrop = "Next goal · Beat a King Slime for an Iron weapon",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
-		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)", -- SKL-3 (skill_kit §2): the next skill to learn
+		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)",
+		NextLearn = "Next goal · Learn a skill: meet %s", -- A23-193: a ready skill waits at the side's teacher -- SKL-3 (skill_kit §2): the next skill to learn
 		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
 		NextRebirth = "Next goal · Lv%d: Rebirth and start again (now Lv%d)",
 		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
@@ -3281,6 +3319,7 @@ Config.StoryQuests = {
 		ChangedEvil = "You gave it last time. Now you keep. Shards change too.",
 		NewTitle = "New title: %s!", -- E3 (a stat-free title)
 		SkillLater = "%s · Skills come at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
+		SkillLearnFirst = "%s · Learn it from %s first", -- A23-193: the same row while the skill waits at the teacher
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a Slime Prince (A23-84)
@@ -4453,6 +4492,14 @@ table.insert(Config.TownNpcs.List, { Id = "Tiny", Name = "Npc_Tiny", Story = "Ti
 table.insert(Config.TownNpcs.List, { Id = "Rose", Name = "Npc_Rose", Story = "Smokey", Label = "Rose", At = Vector3.new(-18, 0, 424),
 	Look = Vector3.new(-18, 0, 380),
 	Colors = { Head = Color3.fromRGB(205, 150, 115), Torso = Color3.fromRGB(150, 60, 80), Legs = Color3.fromRGB(70, 50, 60) } })
+-- A23-193: Otto teaches the artisans their skills: his body gets a Talk prompt (Story "Otto": no quest step uses it; the
+-- anvil keeps the weapon shop prompt)
+for _, e in Config.TownNpcs.List do
+	if e.Id == "Otto" then
+		e.Story = e.Story or "Otto"
+		e.Label = e.Label or "Otto"
+	end
+end
 
 -- E11 (quest_volume §3-3 / §4, 검수 OK 2026-10-07): the hunting-field job boards (BoardService). Enabled = false until
 -- game dev 1's board window ships; on, extra quests stop (a claimed daily slot stays empty) and the boards take that

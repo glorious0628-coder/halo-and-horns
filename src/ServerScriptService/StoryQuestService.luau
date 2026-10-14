@@ -991,7 +991,12 @@ local function rowFor(player, data, id, track)
 	end
 	-- A23-71: a step that needs a skill hit (or a trial list still missing one) before the first skill says when it comes
 	if not track.Claim and needsSkill(obj, track) and not Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths) then
-		text = string.format(TXT.SkillLater, text, math.floor(num((Config.Skills.Unlock or {}).Q, 5)))
+		-- A23-193: ready but not learned = go to the teacher
+		if num(player:GetAttribute("SkillLearnReady")) > num(data.SkillSlots) and type(TXT.SkillLearnFirst) == "string" then
+			text = string.format(TXT.SkillLearnFirst, text, Config.SkillTeacherName(player:GetAttribute("Faction")))
+		else
+			text = string.format(TXT.SkillLater, text, math.floor(num((Config.Skills.Unlock or {}).Q, 5)))
+		end
 	end
 	return {
 		Id = "story:" .. id, Kind = def.Kind, Pinned = def.Kind == "Main", TutorialStep = TUT_DONE,
@@ -1316,6 +1321,12 @@ function StoryQuestService.TalkToNpc(player, npcId)
 	if not S.PlayerService.IsReady(player) or player:GetAttribute("ClassChosen") ~= true then return nil end
 	local data = getData(player)
 	if not data then return nil end
+	-- A23-193: the side's teacher teaches a ready skill first (a quest step of the same NPC opens on the next talk)
+	local skills = S.SkillService
+	if type(skills) == "table" and type(skills.TryLearn) == "function" then
+		local okL, learned = pcall(skills.TryLearn, player, npcId)
+		if okL and learned == true then return "SkillLearn" end
+	end
 	local st = story(data)
 	local order = {}
 	if st.Main.Id ~= "" then table.insert(order, { st.Main.Id, st.Main }) end

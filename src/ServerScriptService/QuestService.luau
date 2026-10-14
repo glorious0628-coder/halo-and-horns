@@ -719,6 +719,11 @@ local NEXT_ZONE = "GoblinWoods"
 local hadNextGoal = {} -- [Player] = true while the pinned row shows a next goal (GuideDone toast on its end)
 local function nextGoalText(data, player)
 	local level = getLevel(data)
+	-- A23-193: a ready skill waits at the side's teacher: first (one short walk)
+	if typeof(player) == "Instance" and type(TUT_MESSAGES.NextLearn) == "string"
+		and num(player:GetAttribute("SkillLearnReady")) > num(data.SkillSlots) then
+		return string.format(TUT_MESSAGES.NextLearn, Config.SkillTeacherName(player:GetAttribute("Faction"))), "SkillLearn", nil
+	end
 	local iron = Config.Weapons[IRON_TIER]
 	local owned = math.floor(num(data.WeaponOwnedMask, 1))
 	-- A23-186: the equipped weapon counts when it is at least Iron by strength (never a joke weapon's tier number)

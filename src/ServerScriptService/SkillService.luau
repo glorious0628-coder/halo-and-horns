@@ -43,6 +43,10 @@
 --   newly opened slot sends Fx "SkillUnlocked" { Slot } only then (Q always).
 --   99N D (계획 5): Z / X also need their class task (Config.Skills.Tasks: BasicKills / SkillMulti / FarKills); the count
 --   is saved in data.SkillTask and mirrored as SkillTaskSlot / SkillTaskN; done = the slot opens (catchUp, the Fx above).
+--   A23-193: a slot the level (+ task) opens is only READY: attributes SkillLearnReady (the slots the teacher would open,
+--   0 = nothing to learn) + SkillTeacher (the teacher's NpcId, Config.Skills.Learn.Teachers by faction); talking to the
+--   teacher (StoryQuestService.TalkToNpc -> SkillService.TryLearn) opens it: Fx "SkillUnlocked" per slot (as before) +
+--   Fx "SkillLearned" { Slots = { "Q", ... }, Teacher = NpcId }. A rebirth / no teacher body in the world = at once.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -833,7 +837,9 @@ end
 -- the task running now: the first of Z / X not open yet whose level is reached (and every slot before it open); nil = none
 function TASK.Running(player)
 	if num(player:GetAttribute("Rebirths")) >= 1 then return nil end
-	local have, lv = slotsOf(player), num(player:GetAttribute("Level"), 1)
+	-- A23-193: a slot waiting at the teacher counts as open here (its task is done)
+	local have = math.max(slotsOf(player), math.floor(num(player:GetAttribute("SkillLearnReady"))))
+	local lv = num(player:GetAttribute("Level"), 1)
 	local unlock, kit = K.Unlock or {}, TASK.Kit(player)
 	for _, slot in TASK.Order do
 		if have >= SLOT[slot] then continue end
@@ -858,12 +864,45 @@ local function slotsFor(player)
 	return Config.SkillSlotsFor(num(player:GetAttribute("Level"), 1), num(player:GetAttribute("Rebirths")), TASK.Done(player))
 end
 
--- raises the saved SkillSlots to what the level / rebirths allow (never lowers it); announce = the new-slot Fx
-local function catchUp(player, announce)
-	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player) then return end
-	local have = slotsOf(player)
-	local want = slotsFor(player)
-	if want <= have then return TASK.Mirror(player) end
+------------------------------------------------------------------ A23-193: the side's teacher teaches a ready skill
+local LEARN = {}
+
+-- the teacher's NpcId for this player's side (nil = Learn off / no teacher)
+function LEARN.Teacher(player)
+	local L = K.Learn
+	if type(L) ~= "table" or L.Enabled ~= true or type(L.Teachers) ~= "table" then return nil end
+	local id = L.Teachers[player:GetAttribute("Faction")]
+	return type(id) == "string" and id or nil
+end
+
+-- where the teacher's body stands (the StoryNpc-tagged model with that NpcId); nil = no body in this world
+function LEARN.Body(npcId)
+	local okS, cs = pcall(game.GetService, game, "CollectionService")
+	if not okS or not cs then return nil end
+	local okT, tagged = pcall(cs.GetTagged, cs, (Config.StoryQuests and Config.StoryQuests.NpcTag) or "StoryNpc")
+	if not okT or type(tagged) ~= "table" then return nil end
+	for _, inst in tagged do
+		local okA, id = pcall(function() return inst:GetAttribute("NpcId") end)
+		if okA and id == npcId then
+			local okP, pos = pcall(function() return inst:GetPivot().Position end)
+			if okP and typeof(pos) == "Vector3" then return pos end
+		end
+	end
+	return nil
+end
+
+function LEARN.Mirror(player, ready, teacher)
+	if player.Parent == nil then return end
+	local changed = player:GetAttribute("SkillLearnReady") ~= ready
+	player:SetAttribute("SkillLearnReady", ready)
+	player:SetAttribute("SkillTeacher", teacher or "")
+	-- the goal row ("meet <teacher>" / the next goal after it) follows at once
+	local quests = S.QuestService
+	if changed and type(quests) == "table" and type(quests.MarkDirty) == "function" then pcall(quests.MarkDirty, player) end
+end
+
+-- saves the slots have+1..want and sends the new-slot Fx (announce)
+local function raise(player, have, want, announce)
 	S.PlayerService.SetStat(player, "SkillSlots", want)
 	TASK.Mirror(player)
 	if not announce then return end
@@ -875,6 +914,42 @@ local function catchUp(player, announce)
 			if not ok then Util.Warn(TAG, "unlock: " .. tostring(err)) end
 		end
 	end
+end
+
+-- raises the saved SkillSlots to what the level / rebirths allow (never lowers it); announce = the new-slot Fx.
+-- A23-193: with a teacher (no rebirth yet, the teacher's body in the world) the slots wait: SkillLearnReady / SkillTeacher
+local function catchUp(player, announce)
+	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player) then return end
+	local have = slotsOf(player)
+	local want = slotsFor(player)
+	local teacher = num(player:GetAttribute("Rebirths")) < 1 and LEARN.Teacher(player) or nil
+	if want > have and teacher and LEARN.Body(teacher) then
+		LEARN.Mirror(player, want, teacher)
+		return TASK.Mirror(player)
+	end
+	LEARN.Mirror(player, 0, nil)
+	if want <= have then return TASK.Mirror(player) end
+	raise(player, have, want, announce)
+end
+
+-- A23-193: the player talked to npcId (StoryQuestService.TalkToNpc asks first): true = a ready skill was learned there
+-- (the talk is used up: a quest step of that NPC opens on the next talk)
+function SkillService.TryLearn(player, npcId)
+	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player) then return false end
+	if num(player:GetAttribute("Rebirths")) >= 1 then return false end
+	local teacher = LEARN.Teacher(player)
+	if not teacher or npcId ~= teacher then return false end
+	local have, want = slotsOf(player), slotsFor(player)
+	if want <= have then return false end
+	local pos, root = LEARN.Body(teacher), Util.GetRoot(player)
+	if not pos or not root or Util.FlatDistance(root.Position, pos) > num(K.Learn.Range, 16) then return false end
+	LEARN.Mirror(player, 0, nil)
+	raise(player, have, want, true)
+	local order, slots = K.Order or { "Q", "Z", "X" }, {}
+	for i = have + 1, want do table.insert(slots, order[i]) end
+	local ok, err = pcall(Net.Fx, player, "SkillLearned", { Slots = slots, Teacher = teacher })
+	if not ok then Util.Warn(TAG, "learned: " .. tostring(err)) end
+	return true
 end
 
 -- one step of the running task (kind = its Kind; ok(def) says whether this event fits); the slot opens when it is done
