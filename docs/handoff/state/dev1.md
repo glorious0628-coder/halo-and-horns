@@ -7,6 +7,7 @@
 - 번역 안쪽 조각: 원인 = 임시 표 줄(최종 검수 정리). fix/goose-words에 FormatByKey 실패 Studio 경고. 시험 패턴 2개(goal_chips·first_look)는 최종 검수가 fix/test-patterns d0dba09f로 고침.
 - 작업 폴더: wt_dev1c = fix/goose-words(체크아웃만), wt_dev1b = dev1-revive, wt_dev1merge = fix/client-text-central-2.
 - 큐: 비었음. 주간 사용량 50% → 최종 검수 지시로 세션 clear. 다음 일은 새 메시지로.
+- **지킬 줄(개발 2 알림 10/15):** StoryNpcs.Refresh()의 9줄(dev2-learn-skill-2 7ba592dd, 병합 대기) = LocalPlayer SkillLearnReady > SkillSlots 이면 SkillTeacher id를 called에 넣음 → 스승 Talk 프롬프트·'!' 켬. StoryNpcs 고칠 때 이 줄 살리기. 목표 줄 GoalKind "SkillLearn"이 스토리 메인 줄보다 먼저. 확인: dev1-learn-skill은 main에 있고 StoryNpcs 안 건드림, 7ba592dd와 merge-tree 깨끗.
 
 ## 10/15 밤 — 자세 2·화면 글 중앙 표 2·스킬 과제·동료 살리기·거위 칩 (push)
 - **dev1-hold-pose-2 526fc28d** (5번째 묶음, 사진 통과): 무기 든 팔 Animate 흔들림 감쇠(Config.HoldPoses Stand/Walk/Run/Air + Damp, Config.HoldMotion In 0.08/InBow 0.06/Out 0.18 smoothstep, 손잡이 Turn↔Rest 같은 시계, toolnone 공격 때도 안 올림, 활 왼손 유지). 핵심: 사용자 아바타 = 관절 업그레이드(AnimationConstraint, Motor6D 꺼짐) → WeaponPose.JointOf. 지팡이 손목 {37,0,-11}, 활 왼손목 {13,0,13}(손 방향 재고 계산). 사진 docs/art/verification_2026-10-15/hold_pose2/. 시험 test_hold_pose2 33·12/12. 스크립트 scratchpad play_hold_pose2.py(카메라 따라가기), probe_pose.py(손 방향), tune_pose.py(execute_luau의 require는 게임 모듈과 다른 사본이라 Config 실시간 조정 안 됨).
