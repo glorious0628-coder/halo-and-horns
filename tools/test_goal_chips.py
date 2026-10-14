@@ -320,7 +320,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("the tracker's room on small PC windows counts the tiers",
          "+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) + T.Gap) * 2 or 0)" in h),
         ("the tiers sit under the progress line (LayoutOrder 4-5)", "LayoutOrder = 2 + i," in h),
-        ("the KO screen draws the Got labels", 'S.Labels["Got" .. i] = label(ui, box, "Got" .. i, T.GotSize, "Body", 4 + i)' in ds),
+        ("the KO screen draws the Got labels", 'S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i)' in ds),
         ("the KO screen paints the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)" in ds),
         ("the run's attributes are watched", re.search(r'for _, k in \{ "Level", "XP", "CarriedGold", "BankGold", "Honor", "Infamy", '
                                                        r'"Faction", "Rebirths" \} do\n\t+LocalPlayer:GetAttributeChangedSignal\(k\):Connect\(onAttr\)', ds) is not None),
