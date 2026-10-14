@@ -16079,7 +16079,8 @@
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_Bowl_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
-   "file_bytes": 6995128
+   "file_bytes": 6995128,
+   "status": "not used - 2D failed re-check (최종 검수 10/14, 2D redraw); generated before the hold message"
   }
  ],
  "HaloVar3_PotFlowers_F_Vase_web2_hd": [
@@ -16125,7 +16126,8 @@
    "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_Bowl_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
-   "file_bytes": 6987960
+   "file_bytes": 6987960,
+   "status": "not used - 2D failed re-check (최종 검수 10/14, 2D redraw); generated before the hold message"
   }
  ],
  "HaloVar4_PotFlowers_C_Urn_web2_hd": [
@@ -16355,7 +16357,8 @@
    "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_Pot_HD_pbr_src.glb",
    "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
    "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
-   "file_bytes": 8395248
+   "file_bytes": 8395248,
+   "status": "not used - 2D failed re-check (최종 검수 10/14, 2D redraw); generated before the hold message"
   }
  ],
  "HaloPart_Flower_WhiteDaisy_web2_hd": [
