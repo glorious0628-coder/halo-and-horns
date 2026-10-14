@@ -39,6 +39,7 @@ local T = {
 	ProbeEvery = 2, -- s: Studio's GripProbe print (every frame measured, the worst printed)
 	RestBow = "RestBow", -- the local left-hand weld of a resting bow (A23-187)
 	Walking = 0.1, -- MoveDirection magnitude that counts as walking (the staff's WalkTilt)
+	MemeLook = "MemeLook", MemeKind = "Sword", -- A23-186: the joke weapons' local look (a Model under the Tool), held like a sword
 	-- the Motor6Ds of Config.HoldPoses: joint name -> the R15 part it sits in
 	Joints = { RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm", RightWrist = "RightHand",
 		LeftShoulder = "LeftUpperArm", LeftElbow = "LeftLowerArm", LeftWrist = "LeftHand" },
@@ -121,6 +122,56 @@ function WeaponPose.Step(dt)
 	end
 end
 
+-- A23-186 (pure): the joke weapon a player holds (their WeaponTier = a Config.Weapons row with Meme) -> its key or nil
+function WeaponPose.MemeOf(tier)
+	local def = type(tier) == "number" and Config.Weapons[tier] or nil
+	return type(def) == "table" and type(def.Meme) == "string" and def.Meme or nil
+end
+
+-- A23-186: the code-drawn joke look on this client (Config.WeaponMemeScreen.Look): the server's class-shaped parts hidden
+-- here (LocalTransparencyModifier), our parts welded to the Handle along its length; gone when the weapon changes
+function WeaponPose.MemeLook(tool, meme)
+	local handle = tool:FindFirstChild("Handle")
+	local look = tool:FindFirstChild(T.MemeLook)
+	if look and look:GetAttribute("Meme") ~= meme then
+		look:Destroy()
+		look = nil
+	end
+	local spec = meme and type(Config.WeaponMemeScreen) == "table" and type(Config.WeaponMemeScreen.Look) == "table"
+		and Config.WeaponMemeScreen.Look[meme] or nil
+	for _, p in tool:GetDescendants() do
+		if p:IsA("BasePart") and not (look and p:IsDescendantOf(look)) then p.LocalTransparencyModifier = spec and 1 or 0 end
+	end
+	if not (spec and handle and handle:IsA("BasePart")) or look then return look end
+	look = Instance.new("Model")
+	look.Name = T.MemeLook
+	look:SetAttribute("Meme", meme)
+	local len = handle.Size.Y
+	local function part(name, def, offset)
+		if type(def) ~= "table" then return end
+		local p = Instance.new("Part")
+		p.Name = name
+		p.Size = Vector3.new(def.Size[1], def.Size[2], def.Size[3])
+		p.Color = Color3.fromRGB(def.Color[1], def.Color[2], def.Color[3])
+		p.CanCollide, p.CanQuery, p.CanTouch, p.Massless, p.CastShadow = false, false, false, true, false
+		p.CFrame = handle.CFrame * offset
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0, weld.Part1 = handle, p
+		weld.Parent = p
+		p.Parent = look
+	end
+	if meme == "Pan" then
+		part("Handle", spec.Handle, CFrame.new(0, -len / 2 + spec.Handle.Size[2] / 2, 0))
+		part("Pan", spec.Pan, CFrame.new(0, len / 2 + spec.Pan.Size[2] / 2 - 0.3, 0))
+	else
+		part("Body", spec.Body, CFrame.new(0, len / 2, 0))
+		part("Comb", spec.Comb, CFrame.new(0, len / 2 + spec.Body.Size[2] / 2, 0))
+		part("Beak", spec.Beak, CFrame.new(0, len / 2 + spec.Body.Size[2] / 2 - 0.3, -spec.Body.Size[3] / 2))
+	end
+	look.Parent = tool
+	return look
+end
+
 -- (pure) a weapon kind's resting hold (Config.WeaponGrips Hold: "Side" / "Staff" / "Bow") or nil
 function WeaponPose.HoldOf(kind)
 	local rows = Config.WeaponGrips
@@ -186,6 +237,10 @@ function WeaponPose.RestStep(now)
 		local tool = char and char:FindFirstChild(T.Model)
 		if tool and tool:IsA("Tool") then
 			local kind = tool:GetAttribute("Kind")
+			-- A23-186: a joke weapon looks like itself here and is held like a sword
+			local meme = WeaponPose.MemeOf(tonumber(p:GetAttribute("WeaponTier")))
+			pcall(WeaponPose.MemeLook, tool, meme)
+			if meme then kind = T.MemeKind end
 			local want = WeaponPose.Want(kind, fxAttacking(char))
 			local handle = tool:FindFirstChild("Handle")
 			if want and handle and handle:IsA("BasePart") then
@@ -250,7 +305,8 @@ function WeaponPose.PoseStep()
 		if tool and tool:IsA("Tool") and S.Rest[tool] == "Rest" then
 			local hum = char:FindFirstChildOfClass("Humanoid")
 			local walking = hum ~= nil and hum.MoveDirection.Magnitude > T.Walking
-			for joint, cf in WeaponPose.PoseFor(tool:GetAttribute("Kind"), walking) do
+			local kind = WeaponPose.MemeOf(tonumber(p:GetAttribute("WeaponTier"))) and T.MemeKind or tool:GetAttribute("Kind")
+			for joint, cf in WeaponPose.PoseFor(kind, walking) do
 				local part = char:FindFirstChild(T.Joints[joint])
 				local m = part and part:FindFirstChild(joint)
 				if m and m:IsA("Motor6D") then m.Transform = m.Transform * cf end
