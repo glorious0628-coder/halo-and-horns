@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 17 — 검 쥐기 끝: fix/sword-hold fe4665f9 (병합 가능, 최신)
+- 엔진 사진 2판(시험 Studio SwordTest = build/GoodEvil.rbxlx 복사본, 스크래치 스크립트 play_sword_hold.py; 메인 안 건드림): docs/art/verification_2026-10-14/sword_hold/(1판: Tool.Grip 바꿔도 서버 RightGrip 용접 안 바뀜 → 날 앞으로 수평), sword_hold2/(2판: 용접 C1 직접 → 날 @몸통 (0,0.72,0.69) 위·뒤 44°, 팔 내림, 손잡이 가운데).
+- 고침 3커밋: ad40b932(Point 0.5, Rest {130,0,0}, RestStep toolnone 0.001) → fb3942ba(RightGrip 용접 C1 로컬로 돌림) → fe4665f9(공격 갈 땐 toolnone 바로, 검사 0.05초). test_tool_grip·weapon_motion 269 통과.
+- 남은 확인: 마지막 커밋(공격 즉시 전환)은 엔진 사진 없음 → 메인 반영 1 사진 때 공격 한 장.
+
 ## 10/14 밤 16 — Fast Travel 구독 화면 + 장인 ② 가방 팔기 (push, 최신)
 - **fix/fast-travel-pass-ui ca659495** (A23-182, 월 구독): Panels.TravelOn() = 속성 SubFastTravel == true; Panels.Open("Travel") 막음, 메뉴 Travel 줄 뺌, HUD 타일 숨김(속성 바뀌면 펼침 다시), 스킬북 [Where to hunt] 숨김. ShopUI.SubCards(): Config.SubscriptionInfo.FastTravel { Id "EXP-…" 문자열, Name, Line, Price, Attr?, Icon? } → 카드 한 장, PromptSubscriptionPurchase, 구독 중 Owned. 새 test_fast_travel_ui 16·11/11, skill_book 68·33/33. Config.SubscriptionInfo·SubFastTravel·서버 Travel 거절 = 개발 2.
 - **dev1-artisan-sell 651e54e1** (계약 ②): BagUI.SellPlan + [Sell 1]·[Sell all] → SellItem(itemId, n), 모루 프롬프트(Config.WeaponShop.PromptName) PromptShown일 때만 켬, Net에 SellItem 없으면 안 보임. test_bag_ui 198·91/91. 개발 2 dev2-artisan-sell과 같이 병합.
