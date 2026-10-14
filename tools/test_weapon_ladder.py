@@ -54,9 +54,9 @@ MUTATIONS = [
     # --- Version 4
     ("migrate: a v3 bit 9 wipes the whole mask", D, "\t\t\td.WeaponOwnedMask = bit32.band(m, bit32.lshift(1, oldTiers) - 1)\n",
      "\t\t\td.WeaponOwnedMask = -1\n"),
-    ("config: the version back to 3", C, "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 5,",
-     "(Codex; DataService.migrate fills it once from KillLog.ByKind).\n\tVersion = 3,"),
-    ("config: the default record's version 3", C, "\tDefaults = {\n\t\tVersion = 5,", "\tDefaults = {\n\t\tVersion = 3,"),
+    ("config: the version back to 3", C, "so it must refuse v6 records (CR-L3)\n\tVersion = 6,",
+     "so it must refuse v6 records (CR-L3)\n\tVersion = 3,"),
+    ("config: the default record's version 3", C, "\tDefaults = {\n\t\tVersion = 6,", "\tDefaults = {\n\t\tVersion = 3,"),
     ("DataService: no v4 step", D, "\tif (tonumber(d.Version) or 1) < 4 then\n", "\tif false then\n"),
     ("DataService: the old steps follow MaxWeaponTier", D, "\tlocal oldTiers = 8\n", "\tlocal oldTiers = Config.MaxWeaponTier\n"),
     ("DataService: a v3 tier 9 trusted", D,
@@ -66,7 +66,7 @@ MUTATIONS = [
     ("DataService: the repair keeps 8 bits", D, "local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1",
      "local validMask = bit32.lshift(1, 8) - 1"),
     ("DataService: the repair keeps tiers 0..8", D, "or weaponTier > Config.MaxWeaponTier then", "or weaponTier > 8 then"),
-    ("DataService: bit 10 kept", D, "local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1",
+    ("DataService: bit 12 kept (A23-186: 11 tiers)", D, "local validMask = bit32.lshift(1, Config.MaxWeaponTier) - 1",
      "local validMask = bit32.lshift(1, Config.MaxWeaponTier + 1) - 1"),
     # --- Spares repair
     ("spares: no per-key cap", C, "\t\tlocal n = V4.int(t[k], 0, L.SpareKeyMax)\n", "\t\tlocal n = V4.int(t[k], 0, math.huge)\n"),
@@ -103,9 +103,10 @@ MUTATIONS = [
     ("loot: 21 of one key", L, "math.floor(num(spares[key])) < Config.SaveV4.SpareKeyMax", "math.floor(num(spares[key])) <= Config.SaveV4.SpareKeyMax"),
     ("loot: no total cap", L, "and sum < Config.SaveV4.SpareSum", "and true"),
     ("loot: AddSpare skips the room check", L, "if not data or not spareFits(data, key) then return false end", "if not data then return false end"),
-    ("loot: AddSpare adds 2", L, "math.max(0, math.floor(num(data.Spares[key]))) + 1", "math.max(0, math.floor(num(data.Spares[key]))) + 2"),
-    ("loot: AddSpare not published", L, "\tdata.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1\n\tpublish(player, data)\n",
-     "\tdata.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1\n"),
+    ("loot: AddSpare adds 2", L, "not spareFits(data, key) then return false end\n\tif type(data.Spares) ~= \"table\" then data.Spares = {} end\n\tdata.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1",
+     "not spareFits(data, key) then return false end\n\tif type(data.Spares) ~= \"table\" then data.Spares = {} end\n\tdata.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 2"),
+    ("loot: AddSpare not published", L, "not spareFits(data, key) then return false end\n\tif type(data.Spares) ~= \"table\" then data.Spares = {} end\n\tdata.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1\n\tpublish(player, data)\n",
+     "not spareFits(data, key) then return false end\n\tif type(data.Spares) ~= \"table\" then data.Spares = {} end\n\tdata.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1\n"),
     ("loot: payload without Spares", L, "WeaponSeq = weaponSeq, Spares = spares }", "WeaponSeq = weaponSeq }"),
     ("loot: sanitize drops Spares / Market", L, "\tdata.Items = items\n", "\tdata.Items = items\n\tdata.Spares, data.Market = nil, nil\n"),
     ("loot: sanitize keeps 8 enhance tiers", L,
@@ -128,7 +129,7 @@ def static() -> tuple[int, list[str]]:
     check(top_locals < 190, f"Config's top chunk stays well under 200 locals ({top_locals})")
     data_block = re.search(r"^Config\.Data = \{(.*?)^\}", config, re.M | re.S)
     versions = re.findall(r"^\t{1,2}Version = (\d+),", data_block.group(1), re.M) if data_block else []
-    check(versions == ["5", "5"], f"Config.Data.Version and Defaults.Version are both 5 (A23-153; C1 made it 4) ({versions})")
+    check(versions == ["6", "6"], f"Config.Data.Version and Defaults.Version are both 6 (A23-186; A23-153 made it 5, C1 4) ({versions})")
     check("Config.WeaponShop = { MaxSoldTier = 3," in config, "the Forge's MaxSoldTier stays 3")
     data = read(SSS / "DataService.luau")
     mig = function_block(data, "local function migrate(")

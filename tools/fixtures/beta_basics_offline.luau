@@ -509,7 +509,17 @@ runGroup("power-monotonic", function()
 	check(enhBad == 0, "+0 -> +10 always raises the number (every weapon, every level)", enhBad)
 	-- weapons sorted by Config.Weapons[t].Damage (ties keep the tier order)
 	local byDamage = {}
-	for t = 1, C.MaxWeaponTier do table.insert(byDamage, t) end
+	-- A23-186: the joke weapons (Meme, tiers 10 / 11) are Wooden's copies, checked apart below
+	for t = 1, C.MaxWeaponTier do if not C.Weapons[t].Meme then table.insert(byDamage, t) end end
+	local memeBad = 0
+	for t = 1, C.MaxWeaponTier do
+		if C.Weapons[t].Meme then
+			for _, level in { 1, 30, 100 } do
+				if C.CombatPower(level, t, 3) ~= C.CombatPower(level, 2, 3) then memeBad += 1 end
+			end
+		end
+	end
+	check(memeBad == 0, "A23-186: a joke weapon's number is the Wooden weapon's (Damage 15)", memeBad)
 	table.sort(byDamage, function(a, b)
 		local da, db = C.Weapons[a].Damage, C.Weapons[b].Damage
 		if da ~= db then return da < db end
@@ -871,7 +881,7 @@ runGroup("title-config", function()
 	check(type(D.Titles) == "table" and next(D.Titles) == nil, "Data.Defaults.Titles = {}", show(D.Titles))
 	check(D.TitleSel == "", "Data.Defaults.TitleSel = \"\"", show(D.TitleSel))
 	check(D.BetaPioneer == false, "legacy Data.Defaults.BetaPioneer kept as false (migrated by TitleService)", show(D.BetaPioneer))
-	check(C.Data.Version == 5, "Data.Version is 5 = A23-153's codex (C1's tier 9 made it 4) (the title fields and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 6, "Data.Version is 6 = A23-186's joke weapons (5 = A23-153's codex) (the title fields and A23-69's Stats are additive)", C.Data.Version)
 	local mirrored = {}
 	for _, k in C.Data.Mirrored do mirrored[k] = true end
 	check(mirrored.TitleSel == true, "TitleSel is mirrored (attribute for nametag / HUD)")

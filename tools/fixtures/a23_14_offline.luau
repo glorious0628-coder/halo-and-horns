@@ -1462,8 +1462,8 @@ end
 
 runGroup("daily-intro (A23-104)", function()
 	local C = CONFIG
-	check(C.Daily.IntroGate == true and C.Daily.IntroQuest == "D0" and C.Data.Defaults.DailyIntro == false and C.Data.Version == 5,
-		"config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 5 = A23-153's codex (C1's tier 9 made it 4))", show({ C.Daily.IntroGate, C.Daily.IntroQuest }))
+	check(C.Daily.IntroGate == true and C.Daily.IntroQuest == "D0" and C.Data.Defaults.DailyIntro == false and C.Data.Version == 6,
+		"config: the gate is on, the intro quest is D0, the save default DailyIntro = false (data version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9))", show({ C.Daily.IntroGate, C.Daily.IntroQuest }))
 	local def = C.StoryQuests.Defs.D0
 	check(def and def.Kind == "Sub" and def.Factions == nil and def.Hidden ~= true and table.concat(def.Requires.Done, ",") == "M1_4"
 		and #def.Steps == 1 and def.Steps[1].Panel == true and def.Steps[1].Npc == nil and def.Steps[1].Obj.Type == "Talk"

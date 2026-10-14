@@ -321,8 +321,13 @@ runGroup("weapon first", function()
 	check(#asked == 1 and st.First.GiveM1_12 == true and d.Items.Enh70 == LT.ItemCap,
 		"a full stack: asked once, then marked given (no retry, no repeated 'full' line)", show({ asked, st.First.GiveM1_12 }))
 	d.Items.Enh70 = keep
+	-- A23-186: the Forge sells again (Buy = true ships; buying is tested in test_unarmed_start "forge sells 5"); with Buy = false
+	-- a weapon not owned is refused with one line, no gold spent
 	local n4 = #w.Notices
+	check(w.Config.WeaponShop.Buy == true, "A23-186: Config.WeaponShop.Buy = true ships", "")
+	w.Config.WeaponShop.Buy = false
 	w:Buy(p, 2)
+	w.Config.WeaponShop.Buy = true
 	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BankGold >= 150
 		and count(w:NoticesFor(p, n4), w.Config.Text.WeaponDropOnly) == 1,
 		"WeaponShop.Buy = false: buying the tier-2 weapon is refused with one line, no gold spent", show({ d.WeaponTier, d.BankGold, w:NoticesFor(p, n4) }))

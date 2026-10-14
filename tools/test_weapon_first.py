@@ -95,7 +95,7 @@ MUTATIONS = [
      "if false then"),
     # --- gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon sold; M1_1 step 2 teaches enhancing
     ("1-A #2: the Forge sells new weapons again", SH, "if not alreadyOwned and shop.Buy == false then", "if false then"),
-    ("1-A #2: Config sells weapons again", C, "MaxSoldTier = 3, Buy = false,", "MaxSoldTier = 3, Buy = true,"),
+    ("A23-186: Config stops selling weapons", C, "MaxSoldTier = 3, Buy = true,", "MaxSoldTier = 3, Buy = false,"),
     ("1-A #2: Otto gives no scroll", C, "GiveItem = { Item = \"Enh70\", N = 1 }, ", ""),
     # 최종 검수 10/13 review: a gift that gave nothing is tried again at the join, and given once only
     ("1-A #2: the step gift every time", "STORY_SOURCE", "\tif first[key] == true then return end\n\tfirst[key] = true -- saved before the item",
@@ -189,7 +189,7 @@ SUITE = Suite(
              "LootService.GrantFirstWeapon (tier 1 equipped, 'Power 0 -> N'), step 1 'Travel to Squishy Meadow - step on the "
              "glowing travel pad (or Map -> Travel)' (ShortName 'To the meadow'), no weapon window, no automatic trip; any "
              "arrival in the meadow (the pad, Map -> Travel, a walk) starts the hunt (step 2). The claim always clears "
-             "BlacksmithVisited (M1_1 = a new visit; gameplay plan 1-A #2: step 2 opens with Otto's one Enhance Scroll, the Forge refuses buying a weapon not owned (WeaponShop.Buy = false, Text.WeaponDropOnly), a scroll used on the weapon finishes M1_1 with Gold 1) "
+             "BlacksmithVisited (M1_1 = a new visit; gameplay plan 1-A #2: step 2 opens with Otto's one Enhance Scroll, A23-186: the Forge sells again (WeaponShop.Buy = true; with Buy = false it refuses buying a weapon not owned, Text.WeaponDropOnly), a scroll used on the weapon finishes M1_1 with Gold 1) "
              "and says only the reward (A23-130 Claimed '+%s gold', no line at the hunt start or 5/5). Old saves at steps 1 / 2 / "
              "99, class chosen, bare-handed without tier 1 get the gift at the join (once a session; never at steps 0 / "
              "3, never when armed). No anvil: the gift at once. The Forge step survives a save / load.",

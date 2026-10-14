@@ -34,6 +34,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-186: the joke weapons are never traded
+    ("A23-186: a joke weapon listed", C, "\tif Config.Weapons[tier].Meme then return nil end -- A23-186: the joke weapons are the Forge's only, never traded\n", ""),
     # --- config
     ("config: the switch ships on", C, "Config.Features = { NeutralFaction = false, Market = false,", "Config.Features = { NeutralFaction = false, Market = true,"),
     ("config: buying from Lv1", C, "BuyLevel = 5, ListLevel = 10,", "BuyLevel = 1, ListLevel = 10,"),
@@ -54,7 +56,7 @@ MUTATIONS = [
     ("config: tonics cannot be listed", C, "Kinds = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true },",
      "Kinds = { Material = true, Enhance = true, Transfer = true, Treat = true },"),
     ("config: tier 1 can be listed", C, "if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier", "if not tier or not plus or tier < 1 or tier > Config.MaxWeaponTier"),
-    ("config: no plus cap", C, "or plus > Config.Loot.MaxEnhance then return nil end\n\treturn string.format(\"W:%d:%d\"", "then return nil end\n\treturn string.format(\"W:%d:%d\""),
+    ("config: no plus cap", C, "or plus > Config.Loot.MaxEnhance then return nil end\n\tif Config.Weapons[tier].Meme", "then return nil end\n\tif Config.Weapons[tier].Meme"),
     ("config: a material's Min below its Sell", C, "return sell * M.MaterialRef, sell, sell * M.MaterialMax", "return sell * M.MaterialRef, 1, sell * M.MaterialMax"),
     ("config: weapon Ref without the plus", C, "local ref = math.floor(base * (1 + M.PlusRef * info.Plus))", "local ref = math.floor(base)"),
     # --- LootService helpers

@@ -168,6 +168,18 @@ local function migrate(d, player)
 		if Config.CodexFromKillLog then d.Codex = Config.CodexFromKillLog(d.KillLog, d.Codex) end
 		d.Version = 5
 	end
+	-- A23-186 (save v6): weapon tiers 10 / 11 (the joke weapons, mask bits 10 / 11). A sane v5 record changes nothing; a tier
+	-- above 9 / a bit above 9 in it (which no 9-tier server ever wrote) is corrupted, never a free joke weapon. The bump makes
+	-- a v5 server refuse v6 records (CR-L3) instead of wiping an 11-bit mask
+	if (tonumber(d.Version) or 1) < 6 then
+		local v5Tiers = 9
+		if type(d.WeaponTier) == "number" and d.WeaponTier > v5Tiers then d.WeaponTier = -1 end
+		local m = d.WeaponOwnedMask
+		if type(m) == "number" and m == math.floor(m) and m >= bit32.lshift(1, v5Tiers) and m < 2 ^ 31 then
+			d.WeaponOwnedMask = bit32.band(m, bit32.lshift(1, v5Tiers) - 1)
+		end
+		d.Version = 6
+	end
 end
 
 -- A23-109 (검수 10/10): a brand-new record - a first DataStore record AND every in-memory (Studio) record - starts with

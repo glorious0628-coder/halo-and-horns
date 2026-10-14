@@ -965,7 +965,7 @@ local HANDLERS = {
 		act(player, "MarketCancel", doCancel, id)
 	end,
 	PackWeapon = function(player, tier)
-		if not whole(tier, 2, Config.MaxWeaponTier) then return end
+		if not whole(tier, 2, Config.MaxWeaponTier) or Config.Weapons[tier].Meme then return end -- A23-186: no joke weapon
 		local data = begin(player, "PackWeapon")
 		if not data or not switchOn() then return end
 		local r = S.LootService.PackWeapon(player, tier)

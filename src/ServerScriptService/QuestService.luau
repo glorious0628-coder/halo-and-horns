@@ -725,7 +725,8 @@ local function nextGoalText(data, player)
 	local level = getLevel(data)
 	local iron = Config.Weapons[IRON_TIER]
 	local owned = math.floor(num(data.WeaponOwnedMask, 1))
-	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or num(data.WeaponTier, 1) >= IRON_TIER
+	-- A23-186: the equipped weapon counts when it is at least Iron by strength (never a joke weapon's tier number)
+	local hasIron = bit32.btest(owned, bit32.lshift(1, IRON_TIER - 1)) or Config.WeaponAtLeast(math.floor(num(data.WeaponTier, 1)), IRON_TIER)
 	if iron and not hasIron then
 		if level < iron.MinLevel then
 			-- A23-71 D6 / S16: the first skill comes at the same level (Skills.Unlock.Q): one line for both
