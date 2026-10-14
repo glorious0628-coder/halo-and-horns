@@ -630,8 +630,8 @@ end
 -- Desktop: right half of the class row; touch: right half of the bank row. A rise floats a gold "+N" and counts the
 -- number up (not when the level changed in the same moment: the level-up banner already celebrates). Drops are silent.
 -- Changes within 0.4 s merge; while the opening / a picker is open one pending popup waits. Tap -> "Character" window.
-L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6,
-	TierFrom = nil } -- TierFrom: the weapon tier before a better one came (L.TierChanged -> the next settle's line)
+L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6 }
+-- L.Pow.TierFrom: the weapon tier before a better one came (L.TierChanged -> the next settle's Slime line)
 L.PowerTap = 44 -- touch: the power line's tap area is at least this many real px tall (a finger)
 -- A23-68 #3 (user 2026-10-07: "슬라임 5대 > 2대 이런 거는 됐고 그냥 전투력이 올라야지"): the first weapon (WeaponTier
 -- 0 -> 1+, the M1_1 blacksmith's gift) gets one big moment: gold sparkles on me, the PowerUp sound, a big "Stronger!"
