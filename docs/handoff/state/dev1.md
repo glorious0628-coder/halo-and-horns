@@ -1,6 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/15 새벽 — 사용자 지적 3건 + 번역 키 (push, 최신)
+## 10/15 아침 — 번역 체인·숨기기·쥐는 자세 (push, 최신)
+- 병합 순서(최종 검수): small-ui·war-bar·goal-chip → **fix/tr-first10** (첫 10분 문장 키, ui-tr 포함) → **fix/format-keys-modules** (모듈 표도 format_keys, '% ' 공백 형식 아님) → **fix/hide-not-now** (Config.QuestNotNow: 거위·S2 줄 1시간 규칙, 상점 티켓 칸 삭제) → **dev1-hold-pose** c94c5a60 (A23-187) → 맨 뒤 **fix/client-text-central** a49a16f7 (Config.ClientText.<모듈>, HUD·BagUI는 그 가지들 병합 뒤 옮김 → 그때 tr-first10 위로 다시 올리기).
+- 시험 습관: 종료 코드만 보지 말 것(실패인데 exit 0인 시험 많음) → scratchpad sweep.sh는 Status: failed / N failing도 잡음. 무거운 전체 시험은 가지당 한 번, 변이는 바뀐 모듈만(최종 검수 요청: PC 부하).
+- 작업 폴더: wt_dev1merge(전체), wt_dev1b·wt_dev1c(sparse: src/tools/docs/design, build는 ../Game/build 연결).
+- 쥐는 자세: Config.WeaponGrips Rest+Hold(Side/Staff/Bow), Config.HoldPoses, WeaponPose.BowRest/PoseStep. 사진 docs/art/verification_2026-10-14/hold_pose/ (시험 Studio = build/HoldTest_1014.rbxlx 복사본, 사진 스크립트 scratchpad play_hold_pose.py; Studio 창이 최소화면 흰 사진 → ShowWindow 복원).
+- 다음: 무기 상점 창(A23-186: dev2-weapon-shop 3ce1b9ac — WeaponSoldAtForge, UpgradeWeapon(tier), 밈 10/11, Config.WeaponMemes 소리·입자, Fx Swing Meme) → client-text-central 다시 올리기.
+
+## 10/15 새벽 — 사용자 지적 3건 + 번역 키 (push)
 - **fix/war-bar-no-text 7ac4589b**: 왕관전 막대 아래 줄 전부 삭제(A23-130), 시간 숫자만 막대 안 가운데(ui.warTime, 번역 끔), 판 = 막대만, HUD.TopBottom = 판·막대·방패. 거위 칩 아이콘 안쪽(L.GooseChip Left 10/Right 12/Gap 6/IconK 0.75/PlusH 4, SQ.FitGoose·SQ.GooseNeed). test_hud_top_overlap 14·21/21, crown_points·auto_translate 갱신. 사진 때 숫자와 왕관 끝 겹침 확인.
 - **fix/goal-chip-two-lines b0e8081b**: 목표 칩 2·3층 줄바꿈(최대 2줄, L.FitTierHeight = TextBounds/scale), 자리 계산 1+2줄, Config.GoalChips.Text.Halo/Horns = "Win the Crown", 3층 색 = 진영 색. test_goal_chips 52·25/25.
 - **fix/ui-tr 965d5f28**: UIKit.Tr(key, ...)·TrArgs·TrForm·TrStart, Tx(인자 있음) → Tr. tools/l10n_format_keys.py → Game/build/l10n/format_keys.json/.csv(338). test_ui_tr 26·9/9, test_l10n 정적 갱신.
