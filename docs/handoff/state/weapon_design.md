@@ -1,4 +1,8 @@
-# 무기 디자인 — 상태 (10/14 저녁)
+# 무기 디자인 — 상태 (10/14 밤, 끝)
+
+**요약(10/14 밤):** 무기 30개(9직업 T1~T3 27 + Horns 전사 T7 Ruin Sword + 밈 Frying Pan·Rubber Chicken) 전부 최종 검수 통과 + Blender 크기·피벗·방향 맞춤 끝. 목록 = `art/models/tripo/weapons/weapons_fit_manifest.json`(GLB는 디스크만). Tripo 오늘 275점(18,320 → 18,045), ChatGPT 그림 22장.
+**남은 일(다른 세션):** Studio 업로드 = 메인 반영 1(manifest 경로, 최종 검수 OK 뒤, 10개 이하씩) → MeshId를 Config에 = 최종 검수 → Tool Handle 위 메시·code_len으로 MeshPart 크기 맞추기 = 개발 1. ⑤ Roblox 재질(연한 노랑·ShadowHunter 붉은 띠·T3 칼날 홈 밝히기)은 넣은 뒤.
+**다음 무기 일(T4~T8, 밈 추가)** = 최종 검수가 새 메시지로 부름.
 
 역할 파일: `docs/handoff/role_prompts/18_weapon_design.md` (A23-187). 보고 = 최종 검수.
 
@@ -24,7 +28,7 @@
 - Berserker_T3 새 HD 최종 검수 통과.
 - Berserker final_b: 시트 `Berserker_final_b_sheet.jpg`, 비침 0, 같음. 최종 검수: Horns 전사 T7 'Ruin Sword' 자리 → `Weapon_Horns_Berserker_T7/Weapon_Horns_Berserker_T7_HD_fit.glb` 6.5 스터드 맞춤 끝(`Berserker_T7_fit.png`).
 - 밈 2개 2D 4면(Codex): `art/out/s2/weapons_meme_4v/`, 시트 `meme_2d_4v.jpg` 최종 검수 OK → HD 2개(폴리곤 8000, 길이 3.5, 피벗 손잡이 가운데) 대기.
-- 새 HD 3개 끝(10/14 밤, 165점, 잔액 18,045): Blacksmith_T2 `_HD3_src`(새 옆면 → 2D와 맞음), Frying Pan·Rubber Chicken `_HD_src`. 맞춤 3.5 스터드(망치 0.3, 팬 0.28 = 나무 손잡이 가운데, 닭 0.15 = 테이프 가운데), 확인 `new_HD3_fit.png`, 시트 `redo_HD3_Blacksmith.jpg`·`meme_HD.jpg` 최종 검수 판정 대기.
+- 새 HD 3개 끝(10/14 밤, 165점, 잔액 18,045): Blacksmith_T2 `_HD3_src`(새 옆면 → 2D와 맞음), Frying Pan·Rubber Chicken `_HD_src`. 맞춤 3.5 스터드(망치 0.3, 팬 0.28 = 나무 손잡이 가운데, 닭 0.15 = 테이프 가운데), 확인 `new_HD3_fit.png`, 시트 `redo_HD3_Blacksmith.jpg`·`meme_HD.jpg` 최종 검수 통과.
 - **업로드 목록:** `art/models/tripo/weapons/weapons_fit_manifest.json` (맞춤 GLB 전부, 길이·피벗·code_len).
 - Tripo 점수: 오늘 275 씀(18,320 → 18,045). 받기 = 페이지 fetch → 127.0.0.1 임시 서버(x-suffix 헤더로 `_HD2_src`). 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
 - 주의: 게임 코드(CharacterVisuals tierLen)는 Config Length를 그대로 안 씀: 칼 ≈3.85~4.55, 지팡이 = 아바타 키 0.65~0.75, 활 3.1~4.9 스터드. GLB는 Config Length로 맞췄음(최종 검수 지시) — 넣을 때 MeshPart 크기로 맞추면 됨.
