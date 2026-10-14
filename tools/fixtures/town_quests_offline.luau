@@ -913,11 +913,19 @@ runGroup("a23-71 skill quests", function()
 	check(row and row.Text == "Lv5 · Learn your first skill (now Lv3)" and row.ShortName == "Reach Lv 5" and d.Story.Main.St == 1,
 		"M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'", show(row and { row.Text, row.ShortName }))
 	w.PS.SetStat(p, "Level", 5)
+	p:SetAttribute("SkillLearnReady", 1) -- A23-193: SkillService: Q waits at the teacher
+	w.Story.Refresh(p)
+	w:Flush()
+	row = w.Story.MainRow(p, d)
+	check(d.Story.Main.St == 2 and row and row.Text == "Hit monsters with a skill · Learn it from Sir Gleam first",
+		"Lv5, Q not learned yet: the skill hits begin, the row sends me to Sir Gleam", show(row and { d.Story.Main.St, row.Text }))
+	w.PS.SetStat(p, "SkillSlots", 1)
+	p:SetAttribute("SkillLearnReady", 0)
 	w.Story.Refresh(p)
 	w:Flush()
 	row = w.Story.MainRow(p, d)
 	check(d.Story.Main.St == 2 and row and row.Text == "Hit monsters with a skill" and row.Target == 3,
-		"Lv5: the skill hits begin, no 'Skills come' tail", show(row and { d.Story.Main.St, row.Text, row.Target }))
+		"Q learned: no tail", show(row and { d.Story.Main.St, row.Text, row.Target }))
 	-- a Lv7 who reaches M1_3 passes the Lv5 step at once
 	local p7, d7 = w:Join(7102, { Faction = "Horns", Level = 7,
 		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
@@ -940,7 +948,7 @@ runGroup("a23-71 skill quests", function()
 		"S0 at Lv2 (skill trial open): 'Hit 2 monsters with one skill · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress, r2.Target }))
 	local rb = s0(2, { a = 3, b = 1 })
 	check(rb and rb.Text == "Beat a Slime Prince above half HP", "the skill trial already done: the last trial, no tail", rb and rb.Text)
-	local r5 = s0(5, { a = 3 })
+	local r5 = s0(5, { a = 3 }, { SkillSlots = 1 })
 	check(r5 and r5.Text == "Hit 2 monsters with one skill", "Lv5 (Q learned): no tail", r5 and r5.Text)
 	local rk = s0(2, { a = 3 }, { SkillSlots = 1 })
 	check(rk and rk.Text == "Hit 2 monsters with one skill", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)

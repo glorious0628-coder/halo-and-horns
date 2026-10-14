@@ -480,10 +480,12 @@ runGroup("a23-71 skill dailies", function()
 				"Lv" .. level .. " seed " .. seed .. " " .. show(f.Data.Quests))
 		end
 	end
-	-- Lv5 opens Q: the skill daily is back, even before SkillService's catch-up raised the saved slots
+	-- A23-193: Lv5 makes Q ready, the teacher teaches it: the skill daily comes once Q is learned (saved slots 1)
 	for seed = 1, 8 do
 		local ids = idsOf(questWorld(rookieRow(5, "Horns", { SkillSlots = 0 }), seed * 53))
-		check(ids.Release == 1 and ids.Kill == 1 and ids.Gold == 1, "Lv5: kill / skill / gold again", show(ids))
+		check(ids.Release == nil and (ids.Kill or 0) + (ids.Gold or 0) == 3, "Lv5 before the teacher: no 'Skill hits' daily", show(ids))
+		ids = idsOf(questWorld(rookieRow(5, "Horns", { SkillSlots = 1 }), seed * 53))
+		check(ids.Release == 1 and ids.Kill == 1 and ids.Gold == 1, "Lv5 with Q learned: kill / skill / gold again", show(ids))
 	end
 	-- a Lv3 who kept Q after a level reset (saved slots 1) keeps the full set
 	local kept = idsOf(questWorld(rookieRow(3, "Halo", { SkillSlots = 1 }), 11))
