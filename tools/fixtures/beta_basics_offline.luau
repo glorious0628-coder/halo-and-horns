@@ -311,7 +311,8 @@ local function newWorld(opts)
 	ps.AddStat = real.AddStat
 	w.PS = ps
 
-	local registry = { PlayerService = ps, DataService = ds }
+	-- opts.Switch = a SwitchService double present before TitleService.Start (it connects to Changed there)
+	local registry = { PlayerService = ps, DataService = ds, SwitchService = opts.Switch }
 	local justice = execute("JusticeService", JUSTICE_SOURCE, newEnv())
 	local title = execute("TitleService", TITLE_SOURCE, newEnv())
 	w.Justice, w.Title, w.Registry = justice, title, registry
@@ -980,6 +981,26 @@ runGroup("title-pioneer", function()
 	wn.Registry.SwitchService = { On = function() return true end }
 	local _, don = wn:Join(9263)
 	check(don.Titles.BetaPioneer ~= nil, "switch PioneerTitle on: granted", show(don.Titles))
+	-- review 10/14: the switch is off until the server's first good read; when the read turns it on, every child already
+	-- in game gets the title then (and a later off -> nobody new)
+	local swOn = false
+	local sig = rbxSignal({})
+	local wr = newWorld({ Time = UNTIL - 86400, Switch = { On = function(key) return key ~= "PioneerTitle" or swOn end,
+		Changed = sig } })
+	local pr, dr = wr:Join(9264)
+	check(next(dr.Titles) == nil and pr:GetAttribute("TitlesOwned") == "", "before the first read (switch off): no title at the join",
+		show(dr.Titles))
+	swOn = true
+	sig:Fire("PioneerTitle", true)
+	check(dr.Titles.BetaPioneer ~= nil and pr:GetAttribute("TitlesOwned") == "BetaPioneer",
+		"the read turns it on: the child already in game gets it", show(dr.Titles))
+	sig:Fire("PioneerTitle", true)
+	sig:Fire("Goose", true)
+	check(wr.Warnings[1] == nil, "a second on / another switch: nothing (no warning)", table.concat(wr.Warnings, " | "))
+	local wl = newWorld({ Time = UNTIL + 86400, Switch = { On = function() return true end, Changed = rbxSignal({}) } })
+	local _, dl = wl:Join(9265)
+	wl.Registry.SwitchService.Changed:Fire("PioneerTitle", true)
+	check(next(dl.Titles) == nil, "after PioneerUntil: the switch turning on gives nothing", show(dl.Titles))
 	-- a newly granted pioneer title never replaces another selected title
 	local wg = newWorld({ Time = UNTIL - 86400 })
 	wg.Rows[wg:Key(9240)] = row({ Titles = { GrayLegend = 1780000000 }, TitleSel = "GrayLegend" })

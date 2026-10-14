@@ -39,6 +39,14 @@ MUTATIONS = [
     ("the build label is old", C, "Config.BuildLabel = \"private-test 2026.10.16\"", "Config.BuildLabel = \"beta-prep 2026.10.09\""),
     ("5 errors become 50 a minute", C, "ServerErrors = { MaxPerMinute = 5,", "ServerErrors = { MaxPerMinute = 50,"),
     ("a switch is added", C, "\t\tGoose = { Type = \"Bool\", Default = true }, -- no new goose\n", "\t\tGoose = { Type = \"Bool\", Default = true }, -- no new goose\n\t\tAdmin = { Type = \"Bool\", Default = false },\n"),
+    # review 10/14: PioneerTitle answers its Unread (off) until the first good read
+    ("PioneerTitle without Unread", C, "PioneerTitle = { Type = \"Bool\", Default = true, Unread = false },",
+     "PioneerTitle = { Type = \"Bool\", Default = true },"),
+    ("Unread ignored", W, "\tif not READ and def.Unread ~= nil then return def.Unread end\n", ""),
+    ("the first read never counts", W, "\tREAD = true\n\tSwitchService.Apply(", "\tSwitchService.Apply("),
+    ("a failed read counts as read", W, "\tlocal ok, doc = pcall(st.GetAsync, st, W.Key or \"Live\")\n",
+     "\tREAD = true\n\tlocal ok, doc = pcall(st.GetAsync, st, W.Key or \"Live\")\n"),
+    ("the start ignores Unread", W, "\t\tVALUES[key] = fallback(def)\n", "\t\tVALUES[key] = def.Default\n"),
     # --- the error text
     ("digits are kept", E, "\ttext = string.gsub(text, \"%d%d%d+\", \"#\")\n", ""),
     ("control characters are kept", E, "\ttext = string.gsub(text, \"[%c]+\", \" \")\n", ""),
@@ -96,7 +104,7 @@ MUTATIONS = [
     ("Studio reads the real switches", W, "\t\tif RunService:IsStudio() then name ..= \"_STUDIO\" end\n\t\tlocal ok, st = pcall(DataStoreService.GetDataStore, DataStoreService, name)\n\t\tSTORE = ok and st or false", "\t\tlocal ok, st = pcall(DataStoreService.GetDataStore, DataStoreService, name)\n\t\tSTORE = ok and st or false"),
     ("the loop reads once", W, "\t\t\ttask.wait(math.max(10, num(W.Interval, 60)))\n", "\t\t\ttask.wait(1e9)\n"),
     ("the loop reads every second", W, "\t\t\ttask.wait(math.max(10, num(W.Interval, 60)))\n", "\t\t\ttask.wait(1)\n"),
-    ("the defaults are not published at the start", W, "\tfor key, def in defs() do\n\t\tVALUES[key] = def.Default\n\t\tpublish(key)\n\tend\n", ""),
+    ("the defaults are not published at the start", W, "\tfor key, def in defs() do\n\t\tVALUES[key] = fallback(def)\n\t\tpublish(key)\n\tend\n", ""),
 ]
 
 
