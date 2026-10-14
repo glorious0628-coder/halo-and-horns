@@ -19,8 +19,9 @@
 - 2 LightMage: 최종 검수 통과(T2 각진 보석 허용) → 맞춤 끝(--kind staff --grip 0.45, 길이 3/3.5/4), 확인 `chunk2_LightMage_fit.png`. 닫힌 틈(T1 220px·T2 4,148px)은 2D에도 있는 고리 틈. T2 구슬이 3D에선 각진 보석.
 
 - 3 Ranger: 통과 → 맞춤 끝(--kind bow --grip 0.5), 확인 `chunk3_Ranger_fit.png`. 각 _HD_fit.json에 code_len(`tools/weapon_code_len.py`, 최종 검수: 넣을 때 코드가 MeshPart 크기 맞춤 = 개발 1).
-- 4~6 Horns: 8개 통과 → 맞춤 끝(확인 `chunk_Horns_fit_a/b.png`). **Berserker_T3 떨어짐**(칼날 바늘구멍) → A23-174 설정 새 HD 1개(55점) 할 차례; 새 것도 구멍이면 Codex 2D 다시.
-- 7~9 Neutral: 시트 `chunk_Neutral_{Blacksmith,Alchemist,PetTamer}.jpg` 보고, 판정 대기. Blacksmith T2 왼쪽 때리는 면이 3D는 둥근 구리판(2D는 네모 쇠). 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
+- 4~6 Horns: 8개 통과 → 맞춤 끝(확인 `chunk_Horns_fit_a/b.png`). Berserker_T3 옛 HD 떨어짐(바늘구멍) → 새 HD(task 96d262d9, `_HD2_src.glb`, 6,852 삼각형, 구멍 0) → 맞춤 끝(`--guard-mult 2.5`, 확인 `Berserker_T3_HD2_fit.png`), 최종 검수 판정 대기.
+- 7~9 Neutral: 8개 통과 → 맞춤 끝(망치·몽둥이 0.3, 물병 지팡이 0.45; 확인 `chunk_Neutral_fit_a/b.png`). Blacksmith_T2 옛 HD·새 HD(task 614dca14) 둘 다 양쪽 끝 둥근 구리판 → 원인 = 2D 오른쪽 면이 끝을 정면으로 안 봄(`Blacksmith_T2_2d_heads.jpg`) → 2D 옆면 다시 그리기 제안.
+- Tripo 점수: 110 씀(잔액 18,320 → 18,210). 받기 = 페이지 fetch → 127.0.0.1 임시 서버(x-suffix 헤더로 `_HD2_src`). 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
 - 주의: 게임 코드(CharacterVisuals tierLen)는 Config Length를 그대로 안 씀: 칼 ≈3.85~4.55, 지팡이 = 아바타 키 0.65~0.75, 활 3.1~4.9 스터드. GLB는 Config Length로 맞췄음(최종 검수 지시) — 넣을 때 MeshPart 크기로 맞추면 됨.
 
 ## 다음
