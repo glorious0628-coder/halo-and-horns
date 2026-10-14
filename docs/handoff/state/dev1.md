@@ -1,6 +1,15 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/15 낮 — 무기 상점 창 dev1-weapon-shop 3eb69150 (push, 최신)
+## 10/15 저녁 — HUD 사진 고침·상단 HUD 1안·번역 안쪽·무기 메시·걷기 자세 (push, 최신)
+- **fix/hud-photos-1 141d606e** (main에 들어감): 막대 시간 숫자 삭제(A23-184), PC 거위 칩 GooseNeed = 화면 px÷UIScale, 위험 칩 먼저 + Outlaw IconLock·OutlawChipShort(En), 출석 28일 Name frame 목표(GoalBorder) + 폰 줄 높이(AttendanceUI.Sizes).
+- **fix/hud-top-1안 9030d6fb** (Codex build/codex/hud_top_design.md 1안 + 최종 검수 결정): HUD.WarGeometry(실제 px: 왕관 24/22가 트랙 위 6/4px, 트랙 14, 방패 40/36 안쪽), 막대 누르면 WarInfo 창(Config.WarInfo, HUD.WarInfoLines), 막대 NEW! 없음 / HUD.ChipPlan(위험 칩 Bully·Outlaw·Wanted·PvP존 = 늘 글, +N 아님; 닫힘 = 안전 아이콘 + 버프 아이콘 1 + +N; 누르면 펼침 5초; 줄 36/44px, 글 18/19px, Wraps) / EventHUD V2.PickEvent(괴수 > 진행 중 왕·열린 거위 > 가까운 예정, 동률 유지), 칩 40/44px, NEW! 칩 안쪽(UIKit NewTagInside, 태그 뜰 때만 자리), 괴수 칩 한 줄(V2.KaijuNeed), 알림 줄은 이벤트 아래. 새 test_hud_top_1an 31·15/15. 사진 docs/art/verification_2026-10-14/hud_top_1an_v2/ (시험 Studio, 창 491×444라 칩 줄 좁음; 서버가 Outlaw·Bully·점수 속성을 몇 초 뒤 되돌림).
+- **fix/tr-inner da9b460a**: UIKit.Tr 인자 없는 키도 FormatByKey(key,{}), Tx는 등록 표면 항상 키로; L.GoalTiers 진영 말 fmt(faction). test_ui_tr 36·11/11.
+- **dev1-weapon-mesh 216e2a6f** (dev1-weapon-shop 위): Config.WeaponMeshes 30개(매니페스트 Length·Pivot) + WeaponMeshFor, CharacterVisuals WMESH(Start에서 미리 불러 둠, 코드 길이 비례, Pivot = 쥐는 점, 코드 파트 투명), MemeLook은 서버 메시 있으면 비킴. id 채우기: `py tools/apply_weapon_mesh_ids.py` (build/weapon_mesh_ids.json = {매니페스트 이름: {MeshId, TextureId}}). test_weapon_mesh 15·11/11.
+- **dev1-hold-walk 708ad8de** (dev1-hold-pose 위): Config.HoldPoses Counter(손목에서 팔 흔들림 0.7~0.8 되감기), WeaponPose.BaseOf(애니가 안 쓴 관절 쌓임 막기). test_hold_walk 11·6/6.
+- 남은 큐: ① dev1-hold-pose-2 = Codex 6개(build/codex/hold_pose_advice.md: Transform 한 곳, 팔 감쇠, 공격 전환 보간, 활 왼손 한 경로, 각도표, 사진 세트) + publish6 지팡이 구슬 가슴 겹침·활 등 뒤 선 + 밈 코드 모양 안 나옴(Studio에서 MemeLook 확인) ② A23-188 첫 흐름 FirstSteps 글·목표 칩(개발 2 dev2-first-flow 보고 뒤) ③ 첫 사냥 무공격 힌트(이제 Prince 2 임무 중)·T2 슬라임 타수 줄·Hero HuntFame 막대(스탯 화면 때) ④ client-text-central을 main 위로 다시(HUD·BagUI 표 포함).
+- 작업 폴더: wt_dev1c = fix/hud-top-1an, wt_dev1b = dev1-weapon-mesh, wt_dev1merge = fix/tr-inner. 사진 스크립트 scratchpad hud1an_photos.py(play_publish4_photos 재사용).
+
+## 10/15 낮 — 무기 상점 창 dev1-weapon-shop 3eb69150 (push)
 - dev2-weapon-shop 위 + dev1-hold-pose 합침. WSHOP.CatalogTiers(1·2·3·10·11), WSHOP.IsMeme, Offer가 밈 줄 허용, Config.WeaponMemeScreen{Line, Look}; WeaponPose.MemeOf/MemeLook(코드 팬·닭, 서버 모양 로컬 숨김, 칼 자세); Fx Feel.memeHits(SoundId·ParticleId 빈칸 = 없음). test_weapon_shop_meme 10·9/9.
 - 남은 큐: fix/client-text-central을 병합된 main 위로 다시 올리기(tr-first10·format-keys·hide-not-now·bag-slots·war-bar 등이 main에 들어간 뒤; 그때 HUD·BagUI 표도 옮김). 그 전엔 대기.
 
