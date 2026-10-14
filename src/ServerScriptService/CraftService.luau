@@ -561,6 +561,39 @@ local function addPrompt(part)
 	ST.Prompts[prompt] = role
 end
 
+-- 장인 ④: every role gets a workbench: one with no tagged part gets a block beside the Crossroads anvil (Config.Craft.Benches;
+-- placed once, never on top of a WorldKit bench of that role). true = the anvil was there (nothing more to try)
+local function ensureBenches()
+	if not on() then return false end
+	local shop = S and S.ShopService
+	local okA, anvil = false, nil
+	if type(shop) == "table" and type(shop.Anvil) == "function" then okA, anvil = pcall(shop.Anvil) end
+	if not okA or typeof(anvil) ~= "Instance" or not anvil:IsA("BasePart") then return false end
+	local have = {}
+	for _, part in CollectionService:GetTagged(K().StationTag) do
+		local role = typeof(part) == "Instance" and part:GetAttribute("Role") or nil
+		if type(role) == "string" then have[role] = true end
+	end
+	for role, row in type(K().Benches) == "table" and K().Benches or {} do
+		if not have[role] and type(K().Text.Stations[role]) == "string" and typeof(row.Offset) == "Vector3" then
+			local part = Instance.new("Part")
+			part.Name = "Workbench_" .. role
+			part.Anchored, part.CanCollide = true, true
+			part.Size = typeof(row.Size) == "Vector3" and row.Size or Vector3.new(5, 3, 3)
+			if row.Material then part.Material = row.Material end
+			if row.Color then part.Color = row.Color end
+			part.Position = anvil.Position + row.Offset
+			part:SetAttribute("Role", role)
+			part.Parent = anvil.Parent
+			CollectionService:AddTag(part, K().StationTag)
+			addPrompt(part) -- (the tag's added signal finds it too: addPrompt adds one prompt only)
+			have[role] = true
+		end
+	end
+	return true
+end
+CraftService.EnsureBenches = ensureBenches
+
 local function onPrompt(prompt, player)
 	local role = ST.Prompts[prompt]
 	if not role or not on() then return end
@@ -593,6 +626,14 @@ function CraftService.Start()
 	ProximityPromptService.PromptTriggered:Connect(guard("prompt", onPrompt))
 	for _, part in CollectionService:GetTagged(K().StationTag) do pcall(addPrompt, part) end
 	CollectionService:GetInstanceAddedSignal(K().StationTag):Connect(guard("station", addPrompt))
+	-- 장인 ④: the benches, once the map (the anvil) is there: tried now and every few seconds for a minute
+	task.spawn(function()
+		for _ = 1, 12 do
+			local ok, done = pcall(ensureBenches)
+			if ok and done then return end
+			task.wait(5)
+		end
+	end)
 	S.PlayerService.PlayerReady:Connect(guard("ready", function(player, data)
 		-- switched off: nothing is read or written (a waiting craft waits for the switch)
 		if type(data) ~= "table" or not on() then return end

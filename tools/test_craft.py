@@ -38,6 +38,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # 장인 ④ (2026-10-14): the benches
+    ("bench: a second one over WorldKit's", R, "\t\tif type(role) == \"string\" then have[role] = true end\n", ""),
+    ("bench: not tagged", R, "\t\t\tCollectionService:AddTag(part, K().StationTag)\n", ""),
+    ("bench: built while crafting is off", R, "local function ensureBenches()\n\tif not on() then return false end\n", "local function ensureBenches()\n"),
     # bag slots (2026-10-14)
     ("bag: a new-kind result ignores the slots", R, "\tif have < 1 and def and Config.BagSlots.Counts[def.Kind] then\n", "\tif false then\n"),
     ("bag: a used-up material frees nothing", R, "held >= 1 and held <= n then freed += 1 end", "held >= 1 and held < n then freed += 1 end"),

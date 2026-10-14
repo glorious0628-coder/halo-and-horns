@@ -25,6 +25,8 @@ local function cWorld(o)
 	local edit = o.EditConfig
 	o.EditConfig = function(c)
 		if o.Off ~= true then c.Features.Crafting = true end
+		-- 장인 ④: the bench builder (Config.Craft.Benches) only in the groups that ask for it; the rest keep the anvil fallback
+		if o.Benches ~= true then c.Craft.Benches = nil end
 		if edit then edit(c) end
 	end
 	local w = dev3World(o)
@@ -33,6 +35,10 @@ local function cWorld(o)
 	w.Tagged = { CraftStation = {} }
 	w.Added = rbxSignal(w.Warnings)
 	w.Services.CollectionService = { GetTagged = function(_, tag) return w.Tagged[tag] or {} end,
+		AddTag = function(_, inst, tag) -- 장인 ④: CraftService tags the benches it builds
+			w.Tagged[tag] = w.Tagged[tag] or {}
+			table.insert(w.Tagged[tag], inst)
+		end,
 		GetInstanceAddedSignal = function() return w.Added end }
 	w.PPS = { PromptTriggered = rbxSignal(w.Warnings) }
 	w.Services.ProximityPromptService = w.PPS
@@ -554,6 +560,54 @@ runGroup("results", function()
 	check(w.C.TryStart(c2, "T2") == "ok" and (dc2.Items.CopperOre or 0) == 0, "the last 2 copper go into it: that slot frees, Herb fits", show(dc2.Items))
 	local e2, de2 = smith(w, 6, { BagSlots = 14 })
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
+end)
+
+------------------------------------------------------------------ 장인 ④ (최종 검수 10/14): the guild yard's three benches
+runGroup("benches", function()
+	local w = cWorld({ Benches = true })
+	local B = w.Config.Craft.Benches
+	check(B.Smith and B.Alch and B.Tame and B.Smith.Offset and B.Smith.Offset.X == 9, "Config.Craft.Benches: Smith / Alch / Tame spots by the anvil", "")
+	local anvil = newInstance("Part", w)
+	anvil.Name, anvil.Position = "Anvil", vec(40, 2, 50)
+	local guild = newInstance("Model", w)
+	guild.Name = "ArtisanGuild"
+	anvil.Parent = guild
+	w.Reg.ShopService = w.Reg.ShopService or {}
+	w.Reg.ShopService.Anvil = function() return anvil end
+	-- (Start already built benches around the world's own anvil: start this check from none)
+	w.Tagged.CraftStation = {}
+	-- a WorldKit bench of one role is there already
+	local kit = newInstance("Part", w)
+	kit.Attrs.Role = "Alch"
+	table.insert(w.Tagged.CraftStation, kit)
+	check(w.C.EnsureBenches() == true, "the anvil is there: done", "")
+	local roles, prompts = {}, 0
+	for _, part in w.Tagged.CraftStation do
+		local role = part:GetAttribute("Role")
+		roles[role] = (roles[role] or 0) + 1
+		if part ~= kit and part:FindFirstChild("CraftPrompt") then prompts += 1 end
+	end
+	check(roles.Smith == 1 and roles.Tame == 1 and roles.Alch == 1, "one bench per role (the WorldKit Alch bench kept, no second)", show(roles))
+	local smithBench = nil
+	for _, part in w.Tagged.CraftStation do if part:GetAttribute("Role") == "Smith" then smithBench = part end end
+	check(smithBench and smithBench.Name == "Workbench_Smith" and smithBench.Anchored == true and smithBench.Parent == guild
+		and smithBench.Position.X == 40 + B.Smith.Offset.X and smithBench.Position.Z == 50 + B.Smith.Offset.Z and prompts == 2,
+		"Workbench_Smith: anchored, in the guild model, beside the anvil, with its Craft prompt", show(smithBench and smithBench.Position))
+	check(w.C.EnsureBenches() == true and #w.Tagged.CraftStation == 3, "a second run adds nothing", #w.Tagged.CraftStation)
+	-- crafting off / no anvil: nothing
+	local off = cWorld({ Off = true, Benches = true })
+	off.Reg.ShopService = off.Reg.ShopService or {}
+	off.Reg.ShopService.Anvil = function() return anvil end
+	check(off.C.EnsureBenches() == false and #off.Tagged.CraftStation == 0, "Crafting off: no bench", "")
+	local none = cWorld({ Benches = true })
+	none.Reg.ShopService = none.Reg.ShopService or {}
+	none.Reg.ShopService.Anvil = function() return nil end
+	none.Tagged.CraftStation = {}
+	check(none.C.EnsureBenches() == false and #none.Tagged.CraftStation == 0, "no anvil yet: nothing (tried again later)", "")
+	-- the built bench works: a blacksmith next to it may craft there
+	local p = smith(w, 21)
+	rootOf(p).Position = smithBench.Position
+	check(w.C.TryStart(p, "W2") == "ok", "next to the new Smith bench: a craft starts", "")
 end)
 
 ------------------------------------------------------------------ craft XP
