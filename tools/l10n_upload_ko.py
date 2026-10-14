@@ -25,6 +25,7 @@ def main():
     ap.add_argument("--map", default="build/l10n/table_map.json")
     ap.add_argument("--chunk", type=int, default=20)
     ap.add_argument("--locale", default="ko")
+    ap.add_argument("--by-key", action="store_true", help="use the CSV key (no source dedupe): per-key words")
     a = ap.parse_args()
     s, info = call("POST", f"{BASE}/autolocalization/games/{GAME_ID}/autolocalizationtable")
     if s != 200:
@@ -36,10 +37,11 @@ def main():
     entries, seen = [], set()
     for r in csv.DictReader(open(ROOT / a.csv, encoding="utf-8-sig")):
         src, ko = r["Source"].strip(), (r.get("Ko") or "").strip()
-        if not src or not ko or ko == src or src in seen:
+        ident = r["Key"] if a.by_key else src
+        if not src or not ko or ko == src or ident in seen:
             continue
-        seen.add(src)
-        key, ctx = tmap.get(src, (r["Key"], ""))
+        seen.add(ident)
+        key, ctx = (r["Key"], "") if a.by_key else tmap.get(src, (r["Key"], ""))
         entries.append({"identifier": {"key": key, "context": ctx, "source": src}, "metadata": {"example": ""},
                         "translations": [{"locale": a.locale, "translationText": ko}]})
     print(f"sending {len(entries)} translations ({a.locale})")

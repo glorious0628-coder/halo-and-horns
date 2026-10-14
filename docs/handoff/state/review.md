@@ -344,3 +344,12 @@
 - 세션: 게임성 개발 1·2 = 큐 끝나면 상태 파일 push + clear(사용량 50% 규칙). 무기 디자인 = clear. 메인 반영 1 = Save As 대기.
 
 - 20:12 메인 반영 1에 c7c3505a sync 요청(Play 없음). 그 뒤 사용자 Save As → place 복사·push → Alt+P → 모든 서버 종료. 오늘 병합 총 61개.
+
+## 10/14 밤 ~ 10/15 새벽 (최종 검수) — 사용자 직접 플레이 피드백 묶음
+- 사용자 결정 SPEC A23-190~193: 번역 정리(외래어 음차, '무기 안 부서져요' 류 문구 삭제, 몬스터 이름은 원래 그대로 — 새 이름 두 번 보고 "본래 이름이 낫다"), 파란 설명 UI 전부 삭제(A23-191, 사용자 크게 화냄 "몇 번을 말하냐"), 버프 칩 전부 펼침 가로 한 줄(A23-192), 스킬은 스승에게 배움(A23-193: 빛 글림 경·뿔 로즈·장인 오토).
+- 병합(merge_chain, 시험 통과): cfd5f08a Hero 스탯 / f56045ce HuntFame / b5290b14 번역·숫자 잘림 / 49f8da14 l10n_coverage / e0a12d27(dev1-no-banner) / ec0b7341 스킬 배우기 서버 / f3b67a9c 거위 서버 / 6d2d606b·6d044caf 스승 배우기 화면 / fb6394bf 거위 화면 / d1cd2dc4 칩 가로·퀘스트 마침표 / 7ba592dd 스킬 배우기 고침 → main 856a8540.
+- 뺀 가지: dev1-first-hunt-hint 4681edff, dev1-t2-feel 14e46874 (힌트·토스트 = A23-191 위반), fix/goose-words 0814a10e (test_phone_text 충돌, 칩 글자 — 필요하면 다시).
+- 번역: GPT 아스트라(한국 정서 '현지화' 기준)로 표 전체 2,424줄 재검토 → 937줄 고침, 새 ~690줄 업로드(by-key; tools/l10n_upload_ko.py --by-key 추가). 남은 missing 5 = 게임 이름·숫자 형식. 파일 build/l10n/ko_fix_all_1014.csv, ko_new_all_1014.csv, ko_last_1014.csv, ko_learn.csv, review_all/.
+- 거위 광장 골격 메인 Studio에 넣음(23 parts). 사진 publish8·9.
+- 내일 큐: 퀘스트 창 목록 'Go to Otto's Forge…' 영어(개발 1), a23_14 거위 토스트 시험(개발 2), dev1 전체 스윕 결과 ../wt_kosweep/build/sw/_summary.txt, 거위 판 중 사진, 상호작용 G 프롬프트 'Talk' 글자(Roblox 기본 — 원하면 자체 프롬프트).
+- 사용자 할 일: Alt+P 게시 → 모든 서버 종료(저장 형식 v6), Open Cloud 키 Assets 권한(무기 3D 30개 업로드).
