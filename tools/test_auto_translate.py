@@ -61,6 +61,10 @@ MUTATIONS = [
     ("numbers translated", SPS + "UIKit.luau", "if props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end", ""),
     ("loot lines never translated", SPS + "Fx.luau", "e.Gui.AutoLocalize = look ~= nil", "e.Gui.AutoLocalize = false"),
     ("the altar prompt off again", "ServerScriptService/MapBuilder.luau", "prompt.AutoLocalize = true", "prompt.AutoLocalize = false"),
+    ("the Language row back in Order", "ReplicatedStorage/Shared/Config.luau", '"Tags", "BagSort", "Cam" },', '"Tags", "Lang", "BagSort", "Cam" },'),
+    ("the picker's own crafting words back", SPS + "FactionPicker.luau", '"No loot or Wanted" },',
+     '"No loot or Wanted", { "Crafting (soon)", "Crafting soon", "Crafting", "Craft" } },'),
+    ("the note copy back", SPS + "FactionPicker.luau", 'local NEUTRAL_NOTE = ""', 'local NEUTRAL_NOTE = "No fight buffs · No PvP · Crafting (coming soon)"'),
     ("supporters' names translated", SPS + "SupporterBoard.luau", "\t\trow.AutoLocalize = false -- A23-179: supporters' names stay as they are\n", ""),
 ]
 
@@ -103,6 +107,17 @@ def check(src: dict[str, str]) -> list[tuple[str, bool, str]]:
     rows.append(("AutoLocalize = false only at the listed name / number / typed-text places", not extra, " | ".join(extra[:5])))
     for name, f, snip in REQUIRED:
         rows.append((name, snip in strip(src.get(f, "")) or snip in src.get(f, ""), f))
+    # stale text (최종 검수 10/14, with A23-179 / A23-146): no Language row, the picker keeps no crafting words of its own
+    cfg = src.get("ReplicatedStorage/Shared/Config.luau", "")
+    start = cfg.find("Config.Settings = {")
+    order = re.search(r"\tOrder = \{([^}]*)\}", cfg[start:]) if start >= 0 else None
+    sui = strip(src.get(SPS + "SettingsUI.luau", ""))
+    rows.append(("no Language row in Settings (auto translation on, no Korean mode)",
+                 order is not None and '"Lang"' not in order.group(1) and 'settingsSet("Lang"' not in sui, ""))
+    fp = strip(src.get(SPS + "FactionPicker.luau", ""))
+    rows.append(("the faction picker keeps no crafting words of its own (Config.UIArt.FactionPerks / Factions.Neutral.Note)",
+                 not re.search(r'"Craft(ing)?( \(soon\)| soon| \(coming soon\))?"', fp) and "Crafting (coming soon)" not in fp, ""))
+    rows.append(("the Artisan note has no code copy", 'local NEUTRAL_NOTE = ""' in fp, ""))
     return rows
 
 

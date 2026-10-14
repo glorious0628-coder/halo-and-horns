@@ -5197,7 +5197,8 @@ Config.Settings = {
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
 	},
-	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "Lang", "BagSort", "Cam" },
+	-- A23-179 / A23-146: no Language row (Roblox's auto translation is on, no Korean mode); a saved Lang value is only ignored
+	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
 		Music = "Music", MusicEn = "Music",
