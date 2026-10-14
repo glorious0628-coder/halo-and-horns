@@ -1407,6 +1407,9 @@ Config.Data.Defaults.HuntFame = 0
 -- A23-155). The live switch VillageFund stops new gifts only. Spot Pos = the pool centre; the prompt sits there.
 Config.VillageFund = {
 	Enabled = true,
+	-- 최종 검수 10/14 ② (the first 15 minutes need a place to spend): a child's gifts climb a ladder over their whole
+	-- save, counted from FundGiven: the 1st gift Ladder[1] (200), the 2nd Ladder[2] (500), every one after = Step (1000)
+	Ladder = { 200, 500 },
 	Step = 1000,
 	PerDay = 3,
 	Points = 1,
@@ -1436,6 +1439,18 @@ Config.VillageFund = {
 		Closed = "The fund is closed right now.",
 	},
 }
+-- the gold of a child's next gift from all the gold they gave before (data.FundGiven): Ladder rungs in turn, then Step
+function Config.VillageFundStep(given)
+	local V = Config.VillageFund
+	local left = math.floor(tonumber(given) or 0)
+	if left ~= left or left < 0 then left = 0 end
+	for _, rung in type(V.Ladder) == "table" and V.Ladder or {} do
+		local n = math.max(1, math.floor(tonumber(rung) or 1))
+		if left < n then return n end
+		left -= n
+	end
+	return math.max(1, math.floor(tonumber(V.Step) or 1000))
+end
 -- the player's fund record (additive keys): the KST day of the last gift, gifts that day, all gold given
 Config.Data.Defaults.FundDay = 0
 Config.Data.Defaults.FundToday = 0
