@@ -2,7 +2,12 @@
 
 ## 10/14 오후 (맨 위 = 이것부터)
 - 최종 검수 지시(새 세션, Opus 5.5): 내 몫 = ① 이미지 생성 2 부품 2D 판정 ② 손보기 2 HD PBR 판정 ③ 이미지 생성 3 WorldKit 낮·밤 사진. Tripo = HD 한 번에(A23-174~177), 사람도 머리·몸·소품 부품. Bright 부품 = 사용자 OK(판정 불필요).
-- **부품 2D ①②③ 16종 = 전부 통과**(시트 `art/review/design/parts2d_1014/`: 4면 시트 3장 + 100% 크롭). 흰 바위 a·b·c(4면 각각 그림, 방향 맞음, 폭 ±10%) · NEW_ArmoryBarrel(앞 1장 ×4) · 분수 Basin·MidTier·Top(×4, 가운데 끼움 자리 맞음) · TreePlanter(잔디에 줄기 구멍)·TreeFruit · RoundTree_E/F/G Trunk·Canopy(×4). 그림자·바닥·다른 부품 없음.
+- **④ 최종 검수 두 번째 판정 = 내 표 그대로 확정**(통과 그릇 7·잎 6·꽃 7 + 줄기 끝 5 → 손보기 2 HD 큐). BushPot 노란 꽃 4개 = 뺌(최종 검수 결정, 이미지 생성 2에 전함).
+- **④ 꽃 5종 줄기 끝 지움(d56e7fd) = 통과**(100% 확인; PinkRose 아래 지운 자리 아주 옅은 1px 테두리 — 배경과 거의 같아 Tripo엔 상관없음). 대기: PotF_Vines·Tulip 2·나무 F 2 다시 그림(Codex 11:41~).
+- **④ 화분·꽃(이미지 생성 2, 939e5b3) 내 판정:** 통과 = 그릇·잎 대부분(Daisy Pot 8각·Leaves, Rose Bowl·Leaves, PotF Vase, PotA·PotC, 나무·은 양동이, BushPot Leaves(4면 다 다름, 맞음), NEW_FlowerBush Leaves), RedBud·RoseBud(꽃받침 둘레 고름). **떨어짐 = PotF_Vines(아치 ×4, F_Canopy와 같은 경우), TulipWhite·TulipBlue(잎 2장이 한 판 ×4 → 옆은 잎이 겹친 모습이어야)**. **고쳐서 통과 = WhiteDaisy·Lilac·RedDaisy·Blue5·PinkRose 앞면 아래 줄기 끝**(옆·뒤는 줄기가 곧장 뒤로 → 앞에선 안 보여야; PIL로 지우기). 시트 `art/review/design/parts2d_1014/b4_*.jpg`. BushPot 노란 꽃 빼기 = 찬성, 결정은 최종 검수.
+- **최종 검수 두 번째 판정: 14 통과, RoundTree_F_Trunk·F_Canopy 떨어짐**(둥글지 않은데 4면 같은 그림). 다시 그리기는 최종 검수가 이미지 생성 2에 보냄.
+- **판정 기준(최종 검수 10/14):** '앞 1장 → 3면 복사'는 돌려도 같은 둥근 부품(통·화분·분수·공 덮개)만. **둥글지 않은데(Y자 줄기·아치 덮개 등) 4면이 같으면 떨어짐** — 옆은 옆에서 본 모습(Y → I자), 뒤는 앞 좌우 뒤집기. 'PBR 때 확인'으로 넘기지 말 것(55점 쓴 뒤) → 2D에서 막음.
+- (내 첫 판정) **부품 2D ①②③ 16종 = 전부 통과**(시트 `art/review/design/parts2d_1014/`: 4면 시트 3장 + 100% 크롭). 흰 바위 a·b·c(4면 각각 그림, 방향 맞음, 폭 ±10%) · NEW_ArmoryBarrel(앞 1장 ×4) · 분수 Basin·MidTier·Top(×4, 가운데 끼움 자리 맞음) · TreePlanter(잔디에 줄기 구멍)·TreeFruit · RoundTree_E/F/G Trunk·Canopy(×4). 그림자·바닥·다른 부품 없음.
   - 메모: F Trunk = Y자 ×4 → Tripo가 가지 4개로 만들 수 있음(아치 덮개 아래라 괜찮음, PBR 때 확인). 옛 무기고 세트의 나무 상자는 이번 묶음에 없음. 흰 바위 b 배경만 조금 어두움(Tripo엔 상관없음).
 - 다음: ④ 그릇·잎·공유 꽃 34장, ⑤ 103장(이미지 생성 2 진행 중) → 오면 같은 방법(`scratchpad parts_check.py` = 4면 bbox·해시·시트; 지금은 스크래치라 필요하면 다시 짧게).
 

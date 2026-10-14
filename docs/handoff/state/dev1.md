@@ -1,5 +1,34 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 6 — dev1-village-fund 864cf867 (다 됨·push, 최신)
+- 개발 2 메시지(실제 서버 모양)에 맞춘 위 커밋 864cf867(f9afc184 위): Net.luau 뺌(개발 2가 FundGive/FundOpen + GameStateDefaults 넣음), 속성 = GameState 폴더, state Why("Poor"/"Full"/"Closed")·Can·Sum(막대; Week = 주 번호), 서버 글 Text.Title/Today/[side].Give/Poor(%s Step)/Full(%d PerDay)/Closed 사용, Config.VillageFundScreen은 Lead·Gold·Close·Week·Marks·Lanterns·Fireworks만, 프롬프트 ActionKey/ObjectKey Config 경로 → ActionText/ObjectText.
+- 시험 test_village_fund_ui 61·23/23 + 정적 8(Net 이름은 '많아야 1번'), english, l10n, story_text, place_english 통과. 개발 2 dev2-village-fund push 기다림 → 합친 판 시험 → 최종 검수 같이 병합.
+
+## 10/14 밤 5 — dev1-village-fund f9afc184
+- death-box(24eae591)·choice-card-held(84cefeeb) main 병합됨.
+- **마을 기금 화면**(A23-178 B, 계약 docs/design/village_fund_server_2026-10-14.md §8): 가지 **dev1-village-fund f9afc184**(origin/main 67ed5712 위 1커밋). 새 모듈 VillageFundUI(ClientMain ChoiceCardUI 뒤): ① FundPrompt는 내 진영 것만 Enabled(속성 Faction, 없으면 가까운 Spots), FundOpen → Panels 'VillageFund' 카드(Lead Share/Show off, Today n/3, 가진 골드, [Give 1,000] → FundGive:FireServer() 인자 없음, 1초 잠금, [Close]), 새 FundOpen = 제자리 갱신, 분수에서 Radius+8 멀어지거나 진영 바뀌면 닫힘 ② Poor/Full = [Give] 흐림 + 서버 글 Config.VillageFund.Text.Poor/Full ③ 주간 막대 UIKit.ArtBar(불꽃 목표까지 채움, 등불 30% 눈금, ReplicatedStorage FundHalo/FundHorns 실시간) ④ 등불(FundLevel≥1, 고리 8개·폰 4개, 둥근 반짝임+PointLight)·밤 불꽃(≥2 + DayPhase Night, 별·색종이 Emit 2.6~4.2초마다, 폰 5~7초·반), 빛줄기·Beam·Trail 없음.
+- Net: FundGive·FundOpen 내 가지가 넣음(개발 2에 알림). Config: 새 표 Config.VillageFundScreen만(카드 글). Config.VillageFund는 개발 2 몫 — 시험은 없으면 계약 §2 표를 넣고 돎.
+- 시험: test_village_fund_ui 54·19/19 + 정적 8, english, l10n, story_text, codex, choice_card_ui, fit_text, place_english(--place) 0 failing·MISSED 0.
+- 기다림: 개발 2 dev2-village-fund(+ FundPrompt 속성 Faction 부탁) → 최종 검수 같이 병합 → 메인 사진(아직 사진 스크립트 없음, 필요하면 만듦).
+
+## 10/14 밤 4 — fix/choice-card-held fdbd7c19 (다 됨·push, 최신)
+- ④ 선택 카드 창 준비 = MINOR 1: **fix/choice-card-held fdbd7c19**(origin/main 6a4b3ae9 위 1커밋, death-box와 병합 깨끗). ChoiceCardUI offer: 시간 카드가 아직 시간 안이고 다른 출처 카드가 오면 시간 카드는 그대로 두고 새 카드는 S.Held(같은 출처 더 새 카드가 Held를 바꿈) → 시간 카드 끝나면 Held가 뜸.
+- 시험: test_choice_card_ui 61·27/27(새 검사 4·돌연변이 2), test_choice_card 133·68/68, english 81 = 0 failing·MISSED 0.
+- 켜기는 10/17 뒤 개발 2(Finisher.Kinds 되돌리기, 고른 뒤 Afterglow). 최종 검수 병합 대기(fix/death-box a63b6665도).
+
+## 10/14 밤 3 — fix/death-box a63b6665 (다 됨·push, 최신)
+- goal-chips-3는 main c8bf83be 병합됨. 최종 검수 API 검토 S: 패배 화면 박스 220 고정인데 줄 합 ≈350 → 넘침.
+- **fix/death-box a63b6665**(origin/main c8bf83be 위 1커밋): DeathScreen.Look(touch)·BoxHeight(lines, look) 순수, paint()가 박스 높이 = 보이는 줄 합(줄마다 size+8, 사이 6). 폰(TouchEnabled, UIScale 0.75): 글자 Title 56·Cause 20·Lost 19·GotTitle 22·Got 19·Back 18(스타일 바닥 이상), Got 최대 2줄(XP·골드 먼저), 중심 0.5. 계산: PC 350du, 폰 265du = 199px → 361 높이에서 위 81·아래 280px.
+- 시험: death_screen 18·13/13(새: PC 9줄 합, 폰 2줄, 폰 위 막대 58px 아래·바닥 안 + 돌연변이 4), goal_chips 51·19/19(정적 글귀 T.GotSize→look.GotSize), ko_screen, phone_first10, english, phone_text, first_ko, first_ko_king, l10n, story_text 모두 0 failing·MISSED 0.
+- 최종 검수 병합 대기. MINOR(폰 라운드 10/21): FactionPicker 폰 3줄이 스크롤 아래, 작은 PC 창 카드 높이 chH만큼 줄어듦.
+- 다음: ④ 공용 선택 카드 창 준비 + MINOR 1 Held(아래 10/14 새벽 2), origin/main 위 새 가지. 켜기는 10/17 뒤.
+
+## 10/14 밤 2 — fix/goal-chips-3 6dc8edd0 (다 됨·push, 최신)
+- d31252ac 위 6dc8edd0: Config.luau GotHonor/GotHonorEn을 '-- Config.Plural' 주석 밖 자기 줄로. origin/main과 병합 깨끗(main은 2f8ccc12 뒤 src·시험 안 바꿈).
+- 시험 18개 모두 0 failing·MISSED 0: goal_chips 51·19/19, death_screen 15·9/9, ko_screen 52/52·30/30, story_text errors 0, first_ko 225, first_ko_king 300(314), first_look 16·16/16, hud_layout 11970, hud_reveal 25·15/15, quest_lines 27/27, phone_first10 23·18/18, phone_text 19·11/11, comeback_client 17·9/9, english 81, l10n 92·29/29, fit_text 7/7, camera_input 42/42, place_english(--place) 한글 0.
+- 최종 검수 병합 대기 → 메인 반영 1 사진 `HH_MAIN_STUDIO=1 py tools/play_goal_chips_photos.py [phone]`.
+- 다음: ④ 공용 선택 카드 창 준비 + MINOR 1 Held(아래 10/14 새벽 2), origin/main 위 새 가지. 켜기는 10/17 뒤.
+
 ## 10/14 밤 — fix/goal-chips-3 d31252ac (WIP, 최신; 사용자 계정 옮김으로 정리)
 - 가지 **fix/goal-chips-3 d31252ac**(origin/main 2f8ccc12 위, worktree ../wt_dev1merge), 2-A ①②③(A23-167):
   - ① HUD 칩 2·3층: HUD L.GoalTiers(순수)·L.RefreshGoalTiers·L.GoalTierSize·L.GoalTiersOn, 추적기(QuestTracker) 안 GoalTier2/3(LayoutOrder 4·5), 작은 PC 창 높이 계산에 포함. Config.GoalChips(Steps·Text, 폰 TouchTiers=1).

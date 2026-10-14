@@ -48,6 +48,7 @@ Config.PluralWords = {
 	slimes = "slime", monsters = "monster", materials = "material", quests = "quest", players = "player",
 	["Wanted players"] = "Wanted player", Knights = "Knight", ["more great items"] = "more great item",
 	["Stat Points"] = "Stat Point", -- A23-69 stage 2
+	items = "item", -- A23-167 ③ the KO screen's "+1 item"
 }
 
 function Config.Plural(text)
@@ -338,8 +339,9 @@ Config.WeaponInfo = {
 	{ Grade = "Common", Source = "Your first weapon, a gift from the Blacksmith", SourceEn = "Your first weapon, a gift from the Blacksmith" }, -- A23-34
 	{ Grade = "Common", Source = "Slime Prince drop (your first one always drops it)", ShopSource = "Sold at the Forge" },
 	{ Grade = "Fine", Source = "King Slime drop (your first one always drops it)", ShopSource = "Sold at the Forge (from Lv5)" },
-	{ Grade = "Rare", Source = "Rare drop from Goblins and Goblin Brutes, or a Forge commission" },
-	{ Grade = "Epic", Source = "Rare drop from Skeletons and Skeleton Knights, or a Forge commission" },
+	-- 2-A ⑤ weapon luck (Config.Loot.FirstTierDrops): the first Brute / Knight or Clatter always drops T4 / T5
+	{ Grade = "Rare", Source = "Rare drop in the Goblin Woods (your first Goblin Brute always drops it), or a Forge commission" },
+	{ Grade = "Epic", Source = "Rare drop in the Skeleton Ruins (your first Knight or Captain Clatter always drops it), or a Forge commission" },
 	{ Grade = "Epic", Source = "Very rare drop from Skeleton Knights, or a Forge commission" },
 	{ Grade = "Legend", Source = "Crafted by artisans (full launch)" },
 	{ Grade = "Legend", Source = "Super rare slime drop (jackpot!)" },
@@ -1528,7 +1530,7 @@ Config.DayCycle = {
 -- them off on a phone). Mostly clear: a clear spell lasts Clear s (random in the range), then a shower starts with Chance
 -- (else another clear spell) and lasts Rain s. Snow ONLY in the northern winter by the Korean date (KST = UTC +
 -- UtcOffsetHours, SnowMonths 12 / 1 / 2): then every shower is snow INSTEAD of rain (WinterChance, Snow s) - one kind of
--- sky at a time, snow is the winter's treat (the 12/19 launch is in it) and rain at freezing would only be sleet; a
+-- sky at a time, snow is the winter's treat (the 12/15 beta is in it, A23-162) and rain at freezing would only be sleet; a
 -- shower running when the month turns changes kind at midnight KST (its look eases across). A new server starts clear
 -- for FirstClear s. One Random per server, seeded from os.time() and the JobId (a number Seed pins it). The light gets
 -- wet with the weather, eased over BlendSeconds: the sun x BrightK, exposure + ExpAdd, the fog greyer (Desat) and
@@ -2722,7 +2724,7 @@ end
 -- hunted and from the road, review 2026-10-06); it stays Lifetime s, then leaves when not defeated. GameState:
 -- PumpkinKingNextAt (server time of the next appearance, 0 = off), PumpkinKingActive, PumpkinKingEndsAt.
 Config.Halloween = {
-	-- A23-119 (user 2026-10-11, beta moved to 2026-12-01): the Pumpkin Patch and the Haunted Hollow are HIDDEN. false = the season is off
+	-- A23-119 (user 2026-10-11; the beta is 2026-12-15 now, A23-162): the Pumpkin Patch and the Haunted Hollow are HIDDEN. false = the season is off
 	-- for everyone (Config.SeasonOn): both zones leave Config.ZoneAt, no pumpkin / bat / ghost kind spawns (their slots go back to the base
 	-- kinds), no king, no road sign, no HUD line, no map drawing (WorldMap / MiniMap skip Season lands, roads and zones), no candy bag
 	-- (LostFound), no King Diary / candy jar row (QuestBook), no news line. No code and no data is deleted: true brings it all back (a
@@ -2730,6 +2732,7 @@ Config.Halloween = {
 	Enabled = false,
 	-- A23-28 HW-13: the season switches itself off at 2026-11-09 00:00 KST (= 2026-11-08 15:00 UTC) by the server clock:
 	-- no seasonal spawns, no king, no PumpkinPatch zone / sign after it. Candy already earned stays in the bag.
+	-- 2-A ⑦: the 2026 dates here are past by the beta; bringing the season back (next Halloween) = new EndsAt + DayOneStart.
 	EndsAt = 1794150000,
 	King = "PumpkinKing", -- the miniboss kind (Config.MonsterTypes)
 	FirstDelay = 360,
@@ -3908,6 +3911,43 @@ Config.StoryQuests = {
 		},
 	},
 }
+
+-- gameplay plan 2026-10-14 2-A ⑤ (weapon luck, 게임성 개발 2): two woods subs for everyone (Lv12 = the tier-4 weapon's level,
+-- Lv20 = the tier-5 one's): the usual pick rewards + Gold 2 / XP 2 + one 30% scroll (Reward.Item) for the weapon. The
+-- words promise no weapon (the first Brute's tier 4 is Config.Loot.FirstTierDrops' own line)
+Config.StoryQuests.Defs.GW9 = {
+	Kind = "Sub", Title = "Otto's Lost Blades", ShortName = "Lost blades", Speaker = "Smith",
+	Requires = { Done = { "M2_7" }, Level = 12 },
+	Start = "Otto: The Goblin Brutes carry off my old blades! Find out why.",
+	Steps = {
+		{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 2 } },
+		{ Text = "The Brute's sack", Panel = true,
+			Lines = { All = { "Otto: Old blades! The Brutes use them to dig for shiny rocks.", "Otto: So what do we do with them?" } },
+			Obj = { Type = "Choice", Good = { Label = "Fix them for new hunters", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+				Evil = { Label = "Sell them back to the Brutes", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
+				Neutral = { A = "Fix them for new hunters", B = "Sell them back to the Brutes" } } },
+	},
+	Reward = { Gold = 2, XP = 2, Item = "Enh30", N = 1 },
+	Finish = "Otto: A blade is only as good as the hand that holds it.",
+}
+Config.StoryQuests.Defs.GW10 = {
+	Kind = "Sub", Title = "Ready for the Ruins", ShortName = "To the ruins",
+	Requires = { Done = { "M2_7" }, Level = 20 },
+	Start = "The Skeleton Ruins open at Lv25. Get your weapon ready in the woods!",
+	Steps = {
+		{ Text = "Goblins %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 15 } },
+		{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 3 } },
+		{ Text = "Before the ruins", Panel = true,
+			Lines = { All = { "Your weapon feels ready.", "The ruins are big. Who goes with you?" } },
+			Obj = { Type = "Choice", Good = { Label = "Wait for a new hunter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
+				Evil = { Label = "Go first. Take the best spot!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
+				Neutral = { A = "Wait for a new hunter", B = "Go first. Take the best spot!" } } },
+	},
+	Reward = { Gold = 2, XP = 2, Item = "Enh30", N = 1 },
+	Finish = "Is it braver to go first, or to go together?",
+}
+table.insert(Config.StoryQuests.Subs, table.find(Config.StoryQuests.Subs, "GW8") + 1, "GW9")
+table.insert(Config.StoryQuests.Subs, table.find(Config.StoryQuests.Subs, "GW9") + 1, "GW10")
 
 -- A23-46 town sub-quest spots at the bridge ends of Config.Map.Bridges: the meadow end of the Goblin bridge (650, 0, 0)
 -- 14 studs back, outside the PvP woods (H1 spies there), and the Crossroads ends of the Halo / Horns bridges (0, 0, -150)
@@ -5257,6 +5297,8 @@ Config.Switches = {
 		Goose = { Type = "Bool", Default = true }, -- no new goose
 		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
 		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
+		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay)
+		PioneerTitle = { Type = "Bool", Default = true },
 	},
 }
 
@@ -5388,7 +5430,7 @@ Config.Help = {
 	-- the news window (and the last help topic): update weekly
 	News = {
 		{ Title = "Beta", Lines = {
-			"Your beta save carries over to the full launch.", -- A23-119: the launch date is set in December
+			"Your beta save carries over to the full launch.", -- A23-162: the launch date is set in January (no date here)
 			"Everyone who joins before the launch gets the Beta Pioneer title.",
 		} },
 		{ Title = "New this week", Lines = {
@@ -5709,6 +5751,21 @@ Config.Loot = {
 	-- gameplay plan 2026-10-13 1-A #2: the same for the first King Slime a player defeats (a paid kill, not a practice
 	-- King; LootFlags.FirstKingWeapon): the tier-3 iron weapon (Text.FirstKingWeapon / FirstKingEquip)
 	FirstKingDrop = { Monster = "SlimeKing", Tier = 3 },
+	-- gameplay plan 2026-10-14 2-A ⑤ (weapon luck, 게임성 개발 2): the same for the first Goblin Brute (tier 4) and the first
+	-- Skeleton Knight or Captain Clatter (tier 5, one guarantee for both) a player defeats: a paid kill (never a free rider's
+	-- share or a practice boss), LootFlags[Flag] once, a weapon owned already = the chance is used. Monsters = kind -> the
+	-- Text keys "First<that>Weapon" / "First<that>Equip"
+	FirstTierDrops = {
+		{ Monsters = { GoblinBrute = "Brute" }, Tier = 4, Flag = "FirstBruteWeapon" },
+		{ Monsters = { SkeletonKnight = "Knight", CaptainClatter = "Clatter" }, Tier = 5, Flag = "FirstKnightWeapon" },
+	},
+	-- 2-A ⑤ weapon luck: every kill that rolls a weapon row of a tier not owned yet adds that row's chance (x GoldenMult on a
+	-- golden monster, at most 1; no bully / ranking / pit multipliers; a BelowLevel row that is not rolled adds nothing) to
+	-- data.WeaponPity["T<tier>"] (an additive save field: it only ever grows). At At[tier] (= that many drops' worth of
+	-- luck) the tier drops for sure (Text.PityWeapon / PityEquip). At 1.5 = at most 300 Goblin Brutes or 750 Goblins for T4,
+	-- 375 Skeleton Knights for T5, 1500 Knights or 150 Captain Clatters (from Lv30) for T6, 100 Slime Princes for T3.
+	-- The jackpot (T8) has no pity.
+	WeaponPity = { Enabled = true, At = { [3] = 1.5, [4] = 1.5, [5] = 1.5, [6] = 1.5 } },
 	-- a weapon drop the player already owns turns into gold
 	DuplicateWeaponGold = { [2] = 15, [3] = 80, [4] = 300, [5] = 1000, [6] = 3000, [7] = 9000, [8] = 3000 }, -- C2: 2 / 3 = 10% of the old price
 	Text = {
@@ -5729,6 +5786,16 @@ Config.Loot = {
 		FirstDropEquip = "The Slime Prince dropped [%s]! Equipped.", -- C2: ... and it beat the weapon in hand
 		FirstKingWeapon = "The King Slime dropped [%s]!", -- 1-A #2: the first King's weapon (weapon)
 		FirstKingEquip = "The King Slime dropped [%s]! Equipped.", -- ... and it beat the weapon in hand
+		-- 2-A ⑤ FirstTierDrops (weapon); "...Equip" = it beat the weapon in hand
+		FirstBruteWeapon = "The Goblin Brute dropped [%s]!",
+		FirstBruteEquip = "The Goblin Brute dropped [%s]! Equipped.",
+		FirstKnightWeapon = "The Skeleton Knight dropped [%s]!",
+		FirstKnightEquip = "The Skeleton Knight dropped [%s]! Equipped.",
+		FirstClatterWeapon = "Captain Clatter dropped [%s]!",
+		FirstClatterEquip = "Captain Clatter dropped [%s]! Equipped.",
+		-- 2-A ⑤ WeaponPity (weapon)
+		PityWeapon = "Your hunting paid off! [%s]!",
+		PityEquip = "Your hunting paid off! [%s]! Equipped.",
 		JackpotSelf = "Legendary weapon [%s]!",
 		-- A23-34: the same jackpot found bare-handed is equipped at once
 		JackpotEquip = "Legendary weapon [%s]!",
@@ -5764,6 +5831,8 @@ Config.Loot = {
 		SellFar = "Sell materials near the Forge anvil.",
 	},
 }
+-- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
+Config.Data.Defaults.WeaponPity = {}
 
 -- Roblox's own chat lines in English (A23-48; 검수 2026-10-07: the team line showed in the player's Roblox language).
 -- ChatText.luau rewrites them on the legacy chat (server), Announce.luau on TextChatService (client).
@@ -5892,10 +5961,12 @@ Config.Announce = {
 	},
 }
 
--- A23-18 beta: saves carry over to the full launch; everyone who plays before it gets the stat-free title
+-- A23-18 beta: saves carry over to the full launch; everyone who plays before it gets the stat-free title. Gameplay plan
+-- 2026-10-14 2-A ⑦ (A23-162: the launch day is set in January): no date in the code any more - PioneerUntil is a far date and
+-- the launch day turns the live switch PioneerTitle off (Config.Switches; no publish needed). Owned titles always stay.
 Config.Beta = {
 	GrantPioneer = true, -- BB16: false stops new grants (owned titles stay)
-	PioneerUntil = 1797645600, -- 2026-12-19 11:00 KST (full launch)
+	PioneerUntil = 4102444800, -- 2100-01-01 00:00 UTC: never in practice (the switch ends the grants)
 }
 
 -- BB16 selectable nametag titles (never give stats). TitleOrder = picker order.
@@ -7085,6 +7156,15 @@ Config.UIArt.CardLayout = { -- bundle 2 regions (art/approved.json layout)
 -- faction card perk rows (icon part + short plain text, mockup art/out/UI_Faction_B.png). Numbers must match
 -- Config.Factions (XPBonus, MaxHPMult, GoldBonus, DamageBonus, ChargeCap) and Config.Kaiju.StarsNeeded.
 -- Short (optional) = shorter line used when Text cannot fit its row at the min text size (landscape phones).
+-- A23-167 ④ (게임성 개발 1, 2026-10-14): under each side's card on the faction picker, the three things the pick changes,
+-- one short line each (text only, no new art): my home town (Config.Zones), the mark above my head
+-- (CharacterVisuals), my guide (Config.Tutorial.Welcome). tools/test_goal_chips.py checks the names against those.
+Config.FactionChanges = {
+	Halo = { "Home: Halo Citadel", "On your head: a gold halo", "Your guide: Hallie" },
+	Horns = { "Home: Horns Den", "On your head: little horns", "Your guide: Magpie" },
+	Neutral = { "Home: the Crossroads", "On your head: a teal gear", "Your guide: Kit" },
+}
+
 Config.UIArt.FactionPerks = {
 	Halo = {
 		{ Icon = "IconExp", Text = "XP +30%" },
@@ -7199,6 +7279,28 @@ Config.NextGoal = {
 	MaxKillsShown = 99, -- above this keep the normal upgrade text
 	GuideSeconds = 90, -- zone guide (HUD.ShowGuide) auto-clears after this many seconds
 	GuideZones = { "GoblinWoods", "SkeletonRuins" }, -- guide on reaching these zones' MinLevel (Lv 10 / Lv 25)
+}
+
+-- A23-167 ① (게임성 개발 1, 2026-10-14; plan 2026-10-14 §2-A ①): the HUD goal chips in three tiers - tier 1 = the 'now
+-- do' quest (the tracker, as before), tier 2 = 'Next' (the nearest of Steps above my level, after the level the
+-- tracker's own next-goal row already names), tier 3 = 'Big goal' (my side's crown). HUD.L.GoalTiers (pure). Phones
+-- show tier 1 only (TouchTiers). Steps: Skill = that slot's Config.Skills.Unlock level (Z / X only while their switch
+-- is on, none after a rebirth - like QuestService's next-goal row), Zone = the zone's MinLevel (seasonal zones never),
+-- Rebirth = Config.RebirthLevel. Equal levels: the first row here wins. No clock, no buy word (A23-79).
+Config.GoalChips = {
+	Enabled = true,
+	TouchTiers = 1,
+	SizeK = 0.85, -- tiers 2-3 text size / the goal sentence's (PC)
+	Steps = {
+		{ Kind = "Skill", Slot = "Q" }, { Kind = "Skill", Slot = "Z" }, { Kind = "Skill", Slot = "X" },
+		{ Kind = "Zone", Zone = "GoblinWoods" }, { Kind = "Zone", Zone = "SkeletonRuins" },
+		{ Kind = "Rebirth" },
+	},
+	Text = {
+		Next = "Next: %s", Big = "Big goal: %s",
+		FirstSkill = "Lv %d · first skill", Skill = "Lv %d · new skill", Zone = "Lv %d · %s", Rebirth = "Lv %d · Rebirth",
+		Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",
+	},
 }
 
 -- English message templates (always through string.format). Use these for the listed situations.
@@ -7626,6 +7728,13 @@ Config.Death = {
 		Lost = "Lost %s pouch gold", LostEn = "Lost %s pouch gold",
 		Sack = "You lost the Grudge Sack", SackEn = "You lost the Grudge Sack",
 		Respawn = "Back in %d s", RespawnEn = "Back in %d s",
+		-- A23-167 ③ (게임성 개발 1, 10/14): 'what this run gave me' - since my character came (DeathScreen.Tally), one
+		-- line each, only what grew; Honor for the Knights, Mischief for the Legion (A23-166)
+		GotTitle = "This run", GotTitleEn = "This run", GotXP = "+%s XP", GotXPEn = "+%s XP",
+		GotGold = "+%s gold", GotGoldEn = "+%s gold",
+		GotItems = "+%d items", GotItemsEn = "+%d items", -- Config.Plural: "+1 item"
+		GotHonor = "+%s Honor", GotHonorEn = "+%s Honor",
+		GotMischief = "+%s Mischief", GotMischiefEn = "+%s Mischief",
 	},
 	-- one tip per situation (%s = the potion key name, or 'the potion button' on touch)
 	Tips = {
@@ -8296,12 +8405,11 @@ end
 -- #2 the 8 Roblox badges (one badge for the angel and the devil path alike). Ids = the badge ids the user creates on
 -- create.roblox.com at publishing (5 free a day: two days; launch_ops_checklist). 0 = not made yet: never asked, awarded
 -- at a later join once the id is set. Stronger = a weapon above the first tier owned; FirstSkill = the first skill
--- learned (Lv5); Rank2 = faction rank 2 (Config.Titles.Thresholds); Halloween2026 = candy or a king beaten together in
--- the 2026 season.
+-- learned (Lv5); Rank2 = faction rank 2 (Config.Titles.Thresholds). 2-A ⑦: Halloween2026 left the list (the season is
+-- hidden until next Halloween: no badge to make now; ReturnService still knows the key for a later season list).
 Config.Badges = {
-	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2", "Halloween2026" },
-	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0,
-		Halloween2026 = 0 },
+	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2" },
+	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0 },
 	RetrySeconds = 300, -- a failed AwardBadge is tried again after this long
 }
 -- #5 the notification opt-in moment (13+ only: Roblox decides in CanPromptOptInAsync on the client). Once a shown prompt,

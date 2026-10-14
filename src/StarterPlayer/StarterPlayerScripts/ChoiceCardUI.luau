@@ -306,6 +306,13 @@ local function offer(card)
 	-- the two servers are separate (a saved ChoiceCard card and a timed finisher card may both be open): a timed card
 	-- over a waiting saved one holds that one back until the timed card is over
 	local old = S.Card
+	-- 최종 검수 10/14 (MINOR 1): a timed card still running (finisher 10 s, ShardBloom 120 s) stays on screen when the
+	-- other server sends a card - drawing the new one closed the timed card and its server answered None (the gift was
+	-- lost); the new card waits in S.Held (a newer card from the same server replaces a held one) until the timed card ends
+	if old and old.Ends and os.clock() < old.Ends and old.Src ~= card.Src then
+		S.Held = card
+		return
+	end
 	if old and not old.Ends and card.Ends and old.Src ~= card.Src then
 		S.Held = old
 	elseif old and old.Src == card.Src then

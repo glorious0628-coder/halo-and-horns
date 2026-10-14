@@ -4,6 +4,9 @@ Runs, in the official Luau CLI, the CURRENT Config.luau and DeathScreen.luau on 
 Fx remote, CharacterAdded). Checks: the lines (KO!, "Knocked out by King Slime" / "You fell" / "You were knocked out",
 pouch gold lost or the Grudge Sack - no line when nothing was lost, "Back in 3 s" counting, never the server's fun tip),
 the screen drawn on UIKit.Gui (not modal, dim, under the opening), my own KO only, closed by my next character.
+Box height (최종 검수 10/14): the box is the sum of its shown lines (each size + 8, 6 between) with 4 'This run' lines on
+a PC; a phone (TouchEnabled, UIScale 0.75, 361 px high) shows at most 2 (XP, gold) and the whole box sits between the
+Roblox top bar (58 px) and the screen bottom.
 Static: ClientMain loads DeathScreen after EventHUD. Mutations: each must be caught.
 
 Usage: py tools/test_death_screen.py
@@ -70,12 +73,15 @@ local function obj(c)
 end
 local GUI = obj("ScreenGui")
 local FX = { OnClientEvent = signal() }
-local ME = { UserId = 7, CharacterAdded = signal() }
+local ME = { UserId = 7, CharacterAdded = signal(), Attrs = { Level = 1, XP = 0, CarriedGold = 0, BankGold = 0, Honor = 0, Faction = "Halo" } }
+function ME:GetAttribute(k) return self.Attrs[k] end
+local UIS = { TouchEnabled = false }
 local env = setmetatable(table.clone(base), { __index = getfenv() })
 env.game = { GetService = function(_, n)
 	if n == "Players" then return { LocalPlayer = ME } end
 	if n == "ReplicatedStorage" then return { WaitForChild = function() return { WaitForChild = function(_, m) return m end } end } end
 	if n == "TweenService" then return { Create = function() return { Play = function() end } end } end
+	if n == "UserInputService" then return UIS end
 	return {}
 end }
 env.require = function(m)
@@ -125,6 +131,37 @@ check(texts.Title == "KO!" and texts.Cause == "Knocked out by King Slime" and te
 check(frame and frame.ZIndex < 100, "under the opening and the pickers", frame and frame.ZIndex)
 ME.CharacterAdded:Fire({})
 check(not DS.IsOpen() and #GUI.Children == 0, "my next character closes it", #GUI.Children)
+
+-- box height: a run that gave XP, gold, items and Honor (4 'This run' lines)
+ME.Attrs.XP, ME.Attrs.CarriedGold, ME.Attrs.Honor = 50, 100, 5
+FX.OnClientEvent:Fire("Loot", { Items = { { N = 2 } } })
+local function shown(touch)
+	UIS.TouchEnabled = touch
+	FX.OnClientEvent:Fire("KO", { By = "Monster", Name = "King Slime", Lost = 30, RespawnIn = 3 })
+	local b = GUI.Children[1] and GUI.Children[1].Children[1]
+	local sum, n, vis = 0, 0, {}
+	for _, c in b and b.Children or {} do
+		if c.ClassName == "TextLabel" and c.Visible then sum += c.Size.Args[4] n += 1 vis[c.Name] = c.Text end
+	end
+	local pad = 0
+	for _, c in b and b.Children or {} do if c.ClassName == "UIListLayout" then pad = c.Padding.Args[2] end end
+	return b, sum + math.max(0, n - 1) * pad, n, vis
+end
+local b, want, n, vis = shown(false)
+local h = b and b.Size.Args[4]
+check(n == 9 and vis.Got4 ~= nil and h == want and h > 220, "PC: 4 'This run' lines, the box is the sum of its 9 lines (not 220)",
+	tostring(n) .. " lines, box " .. tostring(h) .. " want " .. tostring(want))
+DS.Hide()
+b, want, n, vis = shown(true)
+h = b and b.Size.Args[4]
+local y = b and b.Position.Args[2] or 0
+local top, bottom = y * 361 - h * 0.75 / 2, y * 361 + h * 0.75 / 2
+check(vis.Got1 == "+50 XP" and vis.Got2 == "+100 gold" and vis.Got3 == nil and vis.Got4 == nil,
+	"phone: at most 2 'This run' lines, XP and gold first", tostring(vis.Got1) .. " / " .. tostring(vis.Got2) .. " / " .. tostring(vis.Got3))
+check(h == want and top >= 58 and bottom <= 361 - 8, "phone 361 px high: the box is its lines and fits under the top bar",
+	("box %s want %s top %.0f bottom %.0f"):format(tostring(h), tostring(want), top, bottom))
+DS.Hide()
+UIS.TouchEnabled = false
 print(("DEATH_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -137,6 +174,11 @@ MUTATIONS = [
     ("DS", "everyone's KO shows", "data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return false end",
      "false then return false end"),
     ("DS", "never closes on the new character", "LocalPlayer.CharacterAdded:Connect(function() DeathScreen.Hide() end)", "local _ = 0"),
+    ("DS", "the box stays 220 high", "S.Box.Size = UDim2.new(0.8, 0, 0, DeathScreen.BoxHeight(lines, S.Look))",
+     "S.Box.Size = UDim2.new(0.8, 0, 0, 220)"),
+    ("DS", "the phone keeps 4 lines", "GotSize = 19, MaxGot = 2, Y = 0.5 }", "GotSize = 19, MaxGot = 4, Y = 0.5 }"),
+    ("DS", "the phone box sits high", "GotSize = 19, MaxGot = 2, Y = 0.5 }", "GotSize = 19, MaxGot = 2, Y = 0.42 }"),
+    ("DS", "the phone uses PC sizes", "local src = touch == true and T.Touch or T", "local src = T"),
     ("DS", "modal (blocks input)", "\tframe.Active = false\n", "\tframe.Active = true\n"),
     ("MAIN", "never loaded", '"EventHUD", "DeathScreen", "Panels"', '"EventHUD", "Panels"'),
 ]

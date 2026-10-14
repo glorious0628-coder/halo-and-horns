@@ -119,7 +119,12 @@ MUTATIONS = [
     ("GrantPioneer flag ignored", "TITLE_SOURCE",
      "(beta.GrantPioneer == true and os.time()", "(os.time()"),
     ("legacy BetaPioneer boolean ignored", "TITLE_SOURCE",
-     "local pioneer = data.BetaPioneer == true or (", "local pioneer = ("),
+     "local pioneer = data.BetaPioneer == true\n\t\tor (", "local pioneer = false\n\t\tor ("),
+    # gameplay plan 2-A ⑦: the live switch PioneerTitle
+    ("switch PioneerTitle ignored", "TITLE_SOURCE",
+     "os.time() < beta.PioneerUntil and pioneerSwitchOn())", "os.time() < beta.PioneerUntil)"),
+    ("a failing switchboard ends the grants", "TITLE_SOURCE",
+     "return not ok or on ~= false", "return ok and on ~= false"),
     ("first grant auto-selects the pioneer title again", "TITLE_SOURCE",
      'if pioneer then TitleService.Grant(player, "BetaPioneer") end',
      'if pioneer and TitleService.Grant(player, "BetaPioneer") and data.TitleSel == "" then S.PlayerService.SetStat(player, "TitleSel", "BetaPioneer") end'),

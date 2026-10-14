@@ -1,6 +1,6 @@
 """Mesh-only copy of GLB files for the Studio 3D importer (이미지 생성 3, 10/13).
 
-  py tools/glb_strip_mesh.py <out_dir> <a.glb> [<b.glb> ...]
+  py tools/glb_strip_mesh.py <out_dir> <a.glb> [<b.glb> ...] [--part-names]
 
 Keeps only POSITION / NORMAL / TEXCOORD_0 / indices of every primitive (one node per primitive, names from the source
 mesh), drops images / materials, so the importer uploads a small mesh and no 8K texture (the maps go up separately as
@@ -13,9 +13,13 @@ import os
 import struct
 import sys
 
-out_dir = sys.argv[1]
+# --part-names: node name = <file>_p<NN>_m<material index> (multi-material assembled models: each MeshPart can find its
+# SurfaceAppearance set after the import; 이미지 생성 3, 10/14). Without it all nodes carry the file name (one material).
+PART_NAMES = "--part-names" in sys.argv
+ARGV = [a for a in sys.argv if a != "--part-names"]
+out_dir = ARGV[1]
 os.makedirs(out_dir, exist_ok=True)
-for src in sys.argv[2:]:
+for src in ARGV[2:]:
     f = open(src, "rb").read()
     jl = struct.unpack("<I", f[12:16])[0]
     g = json.loads(f[20:20 + jl])
@@ -43,8 +47,9 @@ for src in sys.argv[2:]:
         for j, p in enumerate(m["primitives"]):
             at = {k: take(p["attributes"][k]) for k in ("POSITION", "NORMAL", "TEXCOORD_0") if k in p["attributes"]}
             meshes.append({"name": m.get("name", "mesh"), "primitives": [{"attributes": at, "indices": take(p["indices"]), "mode": 4}]})
-            nodes.append({"name": "%s%s" % (os.path.splitext(os.path.basename(src))[0], "" if j == 0 else "_%d" % j),
-                          "mesh": len(meshes) - 1})
+            base = os.path.splitext(os.path.basename(src))[0]
+            nm = ("%s_p%02d_m%d" % (base, len(nodes), p.get("material", 0))) if PART_NAMES else "%s%s" % (base, "" if j == 0 else "_%d" % j)
+            nodes.append({"name": nm, "mesh": len(meshes) - 1})
     while len(binb) % 4:
         binb.append(0)
     ng = {"asset": {"version": "2.0", "generator": "glb_strip_mesh"}, "scene": 0, "scenes": [{"nodes": list(range(len(nodes)))}],

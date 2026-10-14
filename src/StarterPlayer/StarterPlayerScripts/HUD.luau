@@ -2177,6 +2177,14 @@ function L.BuildTracker(root)
 		ZIndex = 5, Parent = prog }, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
 	local claimText = UIKit.StyledLabel({ Name = "Text", Size = UDim2.fromScale(1, 1), Text = TXT.Claim, ZIndex = 6,
 		Parent = claim }, "Number")
+	-- A23-167 ①: goal chip tiers 2 'Next' and 3 'Big goal' under the 'now do' quest (L.RefreshGoalTiers; one line each)
+	local tiers = {}
+	for i = 2, 3 do
+		tiers[i] = UIKit.StyledLabel({ Name = "GoalTier" .. i, LayoutOrder = 2 + i, Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left,
+			Visible = false, ZIndex = 4, Parent = frame }, "Body")
+	end
+	tiers[3].TextColor3 = ac("GoldText", Theme.Gold)
 	if IS_TOUCH then -- phones: the game's 11 px floor for the sentence and the numbers (the block sits beside the minimap)
 		goal:SetAttribute("StyleMinPx", 11)
 		nums:SetAttribute("StyleMinPx", 11)
@@ -2186,7 +2194,92 @@ function L.BuildTracker(root)
 	-- showing / hiding changes no size: HUD.QuestBlock still has to follow it (이미지 개발 10/09)
 	frame:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.PlaceTrackerHead) end)
 	ui.tracker = { Frame = frame, Band = band, Icon = icon, Title = title, Goal = goal, Nums = nums, Claim = claim,
-		ClaimText = claimText }
+		ClaimText = claimText, Tiers = tiers }
+end
+
+-- A23-167 ① (pure; tools/test_goal_chips.py): the goal chips' tier 2 'Next' = the nearest Config.GoalChips.Steps level
+-- above `level` and above the level the tracker's own next-goal row `e` names (QuestService GoalKind), tier 3 'Big goal'
+-- = my side's crown line; nil = no line
+function L.GoalTiers(level, rebirths, skillSlots, faction, e)
+	local G = Config.GoalChips
+	if type(G) ~= "table" or G.Enabled ~= true then return nil, nil end
+	local W = type(G.Text) == "table" and G.Text or {}
+	local skills = type(Config.Skills) == "table" and Config.Skills or {}
+	local order = skills.Order or { "Q", "Z", "X" }
+	local function fmt(f, ...)
+		if type(f) ~= "string" then return nil end
+		local ok, out = pcall(string.format, f, ...)
+		return ok and out or nil
+	end
+	local steps = {}
+	for _, s in type(G.Steps) == "table" and G.Steps or {} do
+		local at, text = nil, nil
+		if s.Kind == "Skill" then
+			local i = table.find(order, s.Slot)
+			local need = tonumber((skills.Unlock or {})[s.Slot])
+			if i and need and rebirths < 1 and i > skillSlots and (s.Slot == "Q" or skills[s.Slot .. "Enabled"] == true) then
+				at, text = need, fmt(i == 1 and W.FirstSkill or W.Skill, need)
+			end
+		elseif s.Kind == "Zone" then
+			local z = Config.Zones[s.Zone]
+			if type(z) == "table" and z.Season == nil and tonumber(z.MinLevel) then
+				at, text = z.MinLevel, fmt(W.Zone, z.MinLevel, tostring(z.Name))
+			end
+		elseif s.Kind == "Rebirth" and type(Config.RebirthLevel) == "function" then
+			at = Config.RebirthLevel(math.max(0, rebirths))
+			text = fmt(W.Rebirth, at)
+		end
+		if at and text and at > level then table.insert(steps, { Kind = s.Kind, At = at, Text = text }) end
+	end
+	-- the tracker's next-goal row already says the nearest step of its kind (the iron weapon = Weapons[3].MinLevel)
+	local kind = type(e) == "table" and e.NextGoal == true and e.GoalKind or nil
+	local same = ({ SkillIron = "Skill", IronLevel = "Iron", Skill = "Skill", Zone = "Zone", Rebirth = "Rebirth",
+		RebirthReady = "Rebirth" })[kind]
+	local shown = nil
+	if same == "Iron" then
+		local iron = Config.Weapons and Config.Weapons[3]
+		shown = type(iron) == "table" and tonumber(iron.MinLevel) or nil
+	elseif same then
+		for _, s in steps do
+			if s.Kind == same and (shown == nil or s.At < shown) then shown = s.At end
+		end
+	end
+	local best = nil
+	for _, s in steps do
+		if (shown == nil or s.At > shown) and (best == nil or s.At < best.At) then best = s end
+	end
+	return best and fmt(W.Next, best.Text) or nil, fmt(W.Big, W[faction]) or nil
+end
+
+-- tiers 2-3 text size (du) from the goal sentence's
+function L.GoalTierSize(bodySize)
+	local k = tonumber(type(Config.GoalChips) == "table" and Config.GoalChips.SizeK) or 0.85
+	return math.max(12, math.floor(bodySize * k))
+end
+
+-- tiers 2-3 on (PC; phones only with Config.GoalChips.TouchTiers >= 2)
+function L.GoalTiersOn()
+	local G = Config.GoalChips
+	return type(G) == "table" and G.Enabled == true and (not IS_TOUCH or (tonumber(G.TouchTiers) or 1) >= 2)
+end
+
+-- the tiers' words from my level / skills / side and the tracker's entry (default: line 1's)
+function L.RefreshGoalTiers(e)
+	local t = ui.tracker
+	if not (t and t.Tiers) then return end
+	if e == nil and ui.qline and ui.qline[1] then e = ui.qline[1].Entry end
+	local nextText, bigText = nil, nil
+	if L.GoalTiersOn() and t.Frame.Visible then
+		nextText, bigText = L.GoalTiers(math.floor(num("Level", 1)), math.floor(num("Rebirths", 0)),
+			math.floor(num("SkillSlots", 0)), getFaction(), e)
+	end
+	local words = { [2] = nextText, [3] = bigText }
+	for i = 2, 3 do
+		local l = t.Tiers[i]
+		local text = words[i]
+		if text and l.Text ~= text then l.Text = text end
+		if l.Visible ~= (text ~= nil) then l.Visible = text ~= nil end
+	end
 end
 
 -- line 1's entry -> the tracker (called from L.SetQuestLine)
@@ -2194,6 +2287,7 @@ function L.SetTracker(e, label, nums)
 	local t = ui.tracker
 	if not t then return end
 	t.Frame.Visible = label ~= nil
+	L.RefreshGoalTiers(e)
 	if not label then return end
 	local title = (type(e) == "table" and type(e.ShortName) == "string" and e.ShortName ~= "") and e.ShortName or label
 	local goal = (type(e) == "table" and type(e.Goal) == "string" and e.Goal ~= "") and e.Goal
@@ -2234,6 +2328,7 @@ function L.LayoutTracker(q)
 	if not IS_TOUCH and R and R.power_line and R.minimap then
 		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
 			+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8 -- 검수 10/10: no head line, no room for it
+			+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) + T.Gap) * 2 or 0) -- A23-167 ① tiers 2-3
 		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
 		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
 	end
@@ -2253,6 +2348,7 @@ function L.LayoutTracker(q)
 	if prog then prog.Size = UDim2.new(1, 0, 0, math.ceil(bodySize * 1.35)) end
 	t.Claim.Size = UDim2.fromOffset(math.floor(bodySize * 4.2), math.ceil(bodySize * 1.3))
 	t.ClaimText.TextSize = math.max(12, math.floor(bodySize * 0.85))
+	for _, l in t.Tiers or {} do l.TextSize = L.GoalTierSize(bodySize) end
 	T.Rect = q
 	L.FitGoal()
 	task.defer(L.PlaceTrackerHead)
@@ -6556,6 +6652,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "TravelingUntil" }, refreshTravel)
 	UIKit.OnAttr({ "TutorialStep", "ZoneId", "BlacksmithVisited", "TutorialKills" }, refreshGuides)
 	UIKit.OnAttr({ "Level" }, onLevelChanged)
+	UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction" }, function() L.RefreshGoalTiers() end) -- A23-167 ①
 	-- A23-68 #4: the first [Claim] unfolds the quest lines and the war meter's info line (NEW! tags)
 	UIKit.OnAttr({ "TutorialStep" }, function()
 		L.ApplyFold(true)
