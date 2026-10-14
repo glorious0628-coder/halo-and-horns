@@ -239,6 +239,8 @@ Config.Data = {
 		SkillSlots = 0,
 		-- A23-71: this save's SkillSlots follow the Lv5 / 15 / 25 rule (older saves are fixed once at load: DataService)
 		SkillsA71 = true,
+		-- 99N D (additive, Version stays 3): the class task counts that open Z / X (Config.Skills.Tasks)
+		SkillTask = { Z = 0, X = 0 },
 		-- A23-69 stat points (an additive field, Version stays 3): Auto = the class pattern places every point (default ON); Order = the letters
 		-- picked by hand, in order ("HAHA...", at most Config.Stats.MaxPoints). No balance is kept: the points come from
 		-- the level (Config.StatPoints), so a level reset shrinks the build and leveling up again rebuilds it
@@ -774,13 +776,83 @@ Config.Skills = {
 	},
 }
 
+-- 99N D (계획 5, 최종 검수 10/14): Z and X open at their level AND a class task (Q: the level only). A task counts from
+-- the moment its level is reached and the slot before it is open (Z first, then X); the count is saved (data.SkillTask
+-- { Z, X }) and mirrored as SkillTaskSlot ("Z" / "X" / "" = none running) + SkillTaskN. Kinds (SkillService counts them):
+--   BasicKills { Count }: kills this player earned without a skill hit on that monster (MonsterKilled info.SkillHit)
+--   SkillMulti { Slot, Min, Count }: casts of that slot that hit Min or more monsters (CombatService.Released)
+--   FarKills { Dist, Count }: kills while standing Dist studs or more from the monster
+-- Manual and auto casts / kills both count. A rebirth opens all three (as before); a save that has the slot keeps it.
+-- The artisan kits use the task of the class they come from (Blacksmith = Warrior, Alchemist = Mage, Tamer = Archer)
+Config.Skills.Tasks = {
+	Enabled = true,
+	Warrior = {
+		Z = { Kind = "BasicKills", Count = 40 },
+		X = { Kind = "SkillMulti", Slot = "Z", Min = 3, Count = 15 },
+	},
+	Mage = {
+		Z = { Kind = "SkillMulti", Slot = "Q", Min = 2, Count = 20 },
+		X = { Kind = "SkillMulti", Slot = "Z", Min = 3, Count = 15 },
+	},
+	Archer = {
+		Z = { Kind = "FarKills", Dist = 20, Count = 30 },
+		X = { Kind = "FarKills", Dist = 25, Count = 50 },
+	},
+	-- player-facing words for the goal chip / SkillBar (the client draws them: 게임성 개발 1). %d / %s in this order:
+	-- BasicKills (Count), SkillMulti (Min, the slot's button name, Count), FarKills (Count, Dist); Goal (Unlock level,
+	-- the task line, done, Count)
+	Text = {
+		BasicKills = "Defeat %d monsters with basic attacks",
+		SkillMulti = "Hit %d+ monsters at once with %s, %d times",
+		FarKills = "Defeat %d monsters from %d+ studs away",
+		Goal = "Lv%d skill: %s (%d/%d)",
+		SlotName = { Q = "Skill 1", Z = "Skill 2", X = "Skill 3" },
+	},
+}
+Config.Skills.Tasks.Blacksmith = Config.Skills.Tasks.Warrior
+Config.Skills.Tasks.Alchemist = Config.Skills.Tasks.Mage
+Config.Skills.Tasks.Tamer = Config.Skills.Tasks.Archer
+
+-- 99N D: the task of one kit's slot (nil = none: Q, an unknown kit, or the tasks off)
+function Config.SkillTask(kit, slot)
+	local t = Config.Skills.Tasks
+	if type(t) ~= "table" or t.Enabled ~= true or slot == "Q" then return nil end
+	local k = t[kit]
+	local def = type(k) == "table" and k[slot] or nil
+	return type(def) == "table" and def or nil
+end
+
+-- 99N D: the goal line of a task with its count (the client's chip; "" for no task)
+function Config.SkillTaskLine(kit, slot, done)
+	local def = Config.SkillTask(kit, slot)
+	if not def then return "" end
+	local T = Config.Skills.Tasks.Text
+	local n = math.max(1, math.floor(tonumber(def.Count) or 1))
+	local line
+	if def.Kind == "BasicKills" then
+		line = string.format(T.BasicKills, n)
+	elseif def.Kind == "SkillMulti" then
+		line = string.format(T.SkillMulti, math.floor(tonumber(def.Min) or 1), T.SlotName[def.Slot] or "a skill", n)
+	elseif def.Kind == "FarKills" then
+		line = string.format(T.FarKills, n, math.floor(tonumber(def.Dist) or 0))
+	else
+		return ""
+	end
+	local lv = math.floor(tonumber((Config.Skills.Unlock or {})[slot]) or 1)
+	return string.format(T.Goal, lv, line, math.clamp(math.floor(tonumber(done) or 0), 0, n), n)
+end
+
 -- A23-71: the skill slots (0..3) a level / rebirth count opens: Q at Unlock.Q, Z at Unlock.Z, X at Unlock.X, all three
--- after a rebirth (SKL-2). SkillService raises the saved SkillSlots to this; DataService fixes older saves once
-function Config.SkillSlotsFor(level, rebirths)
+-- after a rebirth (SKL-2). 99N D: with the tasks on, Z / X also need done[slot] == true (the server's count; nil = not
+-- done). SkillService raises the saved SkillSlots to this; DataService fixes older saves once
+function Config.SkillSlotsFor(level, rebirths, done)
 	if (tonumber(rebirths) or 0) >= 1 then return 3 end
 	local unlock, lv, n = Config.Skills.Unlock or {}, tonumber(level) or 1, 0
+	local tasks = type(Config.Skills.Tasks) == "table" and Config.Skills.Tasks.Enabled == true
 	for _, slot in Config.Skills.Order or { "Q", "Z", "X" } do
-		if lv >= (tonumber(unlock[slot]) or math.huge) then n += 1 end
+		if lv < (tonumber(unlock[slot]) or math.huge) then break end
+		if tasks and slot ~= "Q" and not (type(done) == "table" and done[slot] == true) then break end
+		n += 1
 	end
 	return n
 end
