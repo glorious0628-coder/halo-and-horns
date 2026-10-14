@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 14 — 장인 화면 시작: fix/market-window-3 65835d8a (다 됨·push, 최신)
+- 계약 docs/design/artisan_min_server_2026-10-14.md. 화면 몫 5개 중 ③(거래소 창 고장 3개)부터: TimeText 한 시간 이상 = TXT.Hours "1h 05m"(65초 "1:05"와 안 겹침), 내 목록 Sold 줄 값 = Fee 뺀 받는 값(You get과 같은 계산), 팔기 목록에서 T1 여분(W:1:*) 뺌. test_market_window 166·63/63(새 검사 1·변이 3), english, l10n, auto_translate 통과.
+- ④ 확인만: FactionPicker는 모듈 로드 때 Config.Features.NeutralFaction을 읽어 켜져 있으면 Soon 카드 대신 장인 카드(자동). 실시간 스위치 아님(게시 필요) — 손 안 댐.
+- 기다림(서버 가지): ② SellItem 가방 [Sell]·'Sells for' 줄, ③ UnpackSpare 제작 창 [Equip]·Power A→B, ① 목표 Gather/Craft/SellMat 추적기·퀘스트 창. 개발 2에 기대 이름 보냄.
+- 대기 병합: fix/settings-apply 7ab6e07e, fix/skill-press-gate 097d69c2, fix/market-window-3 65835d8a(서로·main 깨끗).
+
 ## 10/14 밤 13 — fix/skill-press-gate 097d69c2 (다 됨·push, 최신)
 - A23-180(사용자 "서버가 거절을 안 하게 해야지"; 서버 개발 2 fix/skill-no-reject 5bd777c5). SkillBar: 거절 글·흔들기·떠오르는 말 라벨·OnPress·skillWord·No 소리 전부 삭제. 새 순수 SkillBar.Gate(st, buffer): 안 배움 / MP 부족 / 재사용 > PressBuffer(Config.Skills.PressBuffer, 없으면 0.35) / Hop 칸(Shape Hop)에서 짐(SackGold>0, KaijuState Siren·Active, EggCarry>0) → 안 보냄·말 없음; 0.35초 이하 남음 → 보냄. 짐이면 Hop 칸 흐림(MP 부족처럼), SackGold·KaijuState·EggCarry 바뀌면 다시 칠함. 잠금 그림 옆 'Lv N' 글 숨김. Config.Skills.Text NotReady·NotNow 삭제. SkillPress Fx는 이제 아무것도 안 그림(Hop Fx는 그대로).
 - 남긴 것: 첫 스킬 전 스킬 키 → "Skills come at Lv N" 토스트(A23-71 LEARN.Tell, test_skill_learn이 지킴) — 버튼 거절 글이 아니라 배우기 안내라 둠(최종 검수 판단 대기).
