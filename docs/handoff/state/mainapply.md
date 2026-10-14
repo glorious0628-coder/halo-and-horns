@@ -1,5 +1,9 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/15 04:30 게시판 4 저장 (사용자가 새벽에 직접 Save to File As)
+- build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/15 04:30:59, 45,059,343 B, SHA256 56145ea1…bb98. 소스 178개 일치(main 856a8540, 그 뒤 src 변경 없음), 거위 광장 Model 자식 23, 임시 시험 개체 0, 끝 `</roblox>`. 앞 판(10/14 20:22)을 새 판으로 덮음. 다음 = 사용자 Alt+P.
+- Studio: 10/15 00:20 시점 열려 있었음(Edit·미저장·Play 없음), PC 재시작 뒤엔 닫혀 있을 수 있음. 컴퓨터 제어 허락은 이전 설치 경로 Studio에만 걸려 있고 새 경로(packages\claude_…)는 사용자가 거부 → Save As는 계속 사용자 몫.
+
 ## 10/14 20:22 게시판 3 저장 (사용자 Save to File As)
 - build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/14 20:22:13, 44,969,519 B, SHA256 ecebfac6…c63b, push b52d2c4. 소스 179개 일치(main c7c3505a), 임시 시험 개체 0, 끝 `</roblox>`. 앞 판(13:44)을 새 판으로 덮음. 다음 = 사용자 Alt+P.
 
