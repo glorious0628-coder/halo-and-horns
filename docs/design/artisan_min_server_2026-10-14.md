@@ -19,6 +19,7 @@
 | ⑥ | 장인 마을 자리 | **없음**(구역·MapBuilder 골격 없음, 모루·작업대는 장소 파일에만) | 1단계 = 교차로 길드 마당(작업대 3개 파트), 2단계 = 장인 마을 구역(자리 결정 필요) | S → L | 개발 2(+메인 반영 1) |
 
 ## ① 장인 첫 10분 퀘스트
+> **10/14 구현(dev2-artisan-quests):** 목표 Gather { Item?, Node?, Count }·Craft { Role?, Kind?, Count }·SellMat { Count } (StoryQuestService, 신호 GatherService.Gathered·CraftService.Crafted·LootService.MaterialSold 부드러운 연결). N0 'First Harvest' = 약초 3 + 구리 2 → 아무거나 1개 제작 → 150골드(GoldN) + 만든 무기 손에(Reward.EquipCrafted → LootService.EquipBestSpare: 더 센 것만). N0b 'Sell to the Smith' = 채집 재료 5개 팔기 → 30골드. N4 'Guild Order' = N2 뒤, 제작 2 → 교차로 → Gold 3·XP 3. Requires.Feature는 목록도 됨(N0 = Gathering + Crafting). W1 레시피 삭제, W2 = 약초 3 + 구리 2(참나무는 숲 Lv10이라 첫 10분엔 없음).
 **지금:** `Config.StoryQuests` 서브 목록(3048-3053)에 N1·N2·N3만. N1 "The Artisan's Touch"(Lv5, SkillHit 3) · N2 "Guild Supply Book"
 (큰 슬라임 3 + 몬스터 골드 60 + 교차로) = Neutral 전용인데 **둘 다 전투 퀘스트**이고 스위치 꺼짐으로 막힘(StoryQuestService 591-593;
 주석은 "이미 Neutral인 저장은 그대로"라는데 코드는 그들도 막음 → 주석·코드 불일치). N3·WB1 = 모두에게 열림(Neutral 선택지 있음).

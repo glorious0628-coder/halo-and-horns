@@ -45,7 +45,7 @@ MUTATIONS = [
     ("config: XP x 50", C, "\tXPBase = 40,\n\tXPExp = 1.5,", "\tXPBase = 50,\n\tXPExp = 1.5,"),
     ("config: range 15", C, "\tRange = 12, -- studs from the role's workbench", "\tRange = 15, -- studs from the role's workbench"),
     ("config: 10 starts a minute", C, "\tStartsPerMinute = 6,\n", "\tStartsPerMinute = 10,\n"),
-    ("config: W1 costs 20", C, "Tier = 1, Lv = 1, Gold = 10,", "Tier = 1, Lv = 1, Gold = 20,"),
+    ("config: W2 costs 80", C, "Tier = 2, Lv = 1, Gold = 40,", "Tier = 2, Lv = 1, Gold = 80,"),
     ("config: W3 at craft Lv1", C, "Tier = 3, Lv = 5, Gold = 200,", "Tier = 3, Lv = 1, Gold = 200,"),
     ("config: Sea Shell back in W3", C, "Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }", "Mats = { SlimeCore = 6, Jelly = 20, SeaShell = 10 }"),
     ("config: XP at Lv30 goes on", C, "\tif l ~= l or l >= K.MaxLv then return 0 end\n", "\tif l ~= l then return 0 end\n"),

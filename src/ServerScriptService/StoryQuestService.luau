@@ -325,6 +325,20 @@ local function eventAmount(player, obj, ev)
 		return 0
 	elseif ev.Kind == "Goose" then
 		return t == "Goose" and 1 or 0
+	elseif ev.Kind == "Gather" then -- 장인 ②: a pick at a gathering node (Item / Node = only that one)
+		if t ~= "Gather" then return 0 end
+		if obj.Item and ev.Item ~= obj.Item then return 0 end
+		if obj.Node and ev.Node ~= obj.Node then return 0 end
+		return math.max(0, math.floor(num(ev.N)))
+	elseif ev.Kind == "Craft" then -- 장인 ②: a finished craft (Role / Kind = only that role's / kind of recipe)
+		if t ~= "Craft" then return 0 end
+		local r = type(Config.Craft) == "table" and type(Config.Craft.Recipes) == "table" and Config.Craft.Recipes[ev.Recipe] or nil
+		if type(r) ~= "table" then return 0 end
+		if obj.Role and r.Role ~= obj.Role then return 0 end
+		if obj.Kind and r.Kind ~= obj.Kind then return 0 end
+		return 1
+	elseif ev.Kind == "SellMat" then -- 장인 ②: gathered materials sold at the Forge (SellItem)
+		return t == "SellMat" and math.max(0, math.floor(num(ev.N))) or 0
 	end
 	return 0
 end
@@ -406,6 +420,14 @@ local function complete(player, data, id)
 		local ok, new = pcall(titles.Grant, player, titleId)
 		if not ok then Util.Warn(TAG, "TitleService.Grant: " .. tostring(new)) end
 		if ok and new == true then notify(player, string.format(TXT.NewTitle, Config.TitleDefs[titleId].Name), "reward", "RankUp") end
+	end
+	-- 장인 ② N0: the weapon just crafted (a spare) goes into the hand when it is better than the one held
+	if r and r.EquipCrafted == true and S.LootService and type(S.LootService.EquipBestSpare) == "function" then
+		local ok, tier = pcall(S.LootService.EquipBestSpare, player)
+		if not ok then Util.Warn(TAG, "EquipBestSpare: " .. tostring(tier)) end
+		if ok and type(tier) == "number" then
+			notify(player, string.format(TXT.CraftEquipped, Config.WeaponName(tier, player:GetAttribute("Class"), faction(player))), "reward", "Equip")
+		end
 	end
 	-- A23-34: the blacksmith's free first weapon after the story lines (1-A #2: normally paid at the visit already)
 	giveWeapon(player, def)
@@ -594,7 +616,10 @@ local function requirementsMet(player, data, def)
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
 	-- C-5 (게임성 개발 2): Feature = the quest waits for its Config.Features switch (the market quests)
-	if req.Feature and not Config.FeatureOn(req.Feature) then return false end
+	if type(req.Feature) == "string" and not Config.FeatureOn(req.Feature) then return false end
+	for _, f in type(req.Feature) == "table" and req.Feature or {} do -- 장인 ②: every switch of a list
+		if not Config.FeatureOn(f) then return false end
+	end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
 	-- A23-70: TutorialDone = the first mission is claimed (TutorialStep 99); NotDone = none of these quests is done yet
 	if req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end
@@ -1294,6 +1319,23 @@ function StoryQuestService.Start()
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
 	connect("GooseService", "GooseFinished", onGooseFinished)
+	-- 장인 ②: the guild's steps (looked up softly: a world without these services connects nothing, with no warning)
+	for _, hook in {
+		{ "GatherService", "Gathered", function(player, item, n, node) feed(player, { Kind = "Gather", Item = item, N = n, Node = node }) end },
+		{ "CraftService", "Crafted", function(player, recipeId) feed(player, { Kind = "Craft", Recipe = recipeId }) end },
+		{ "LootService", "MaterialSold", function(player, id, n) feed(player, { Kind = "SellMat", Item = id, N = n }) end },
+	} do
+		local svc = S[hook[1]]
+		local sig = type(svc) == "table" and svc[hook[2]] or nil
+		if type(sig) == "table" and type(sig.Connect) == "function" then
+			local fn = hook[3]
+			sig:Connect(function(player, ...)
+				if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
+				local ok, err = pcall(fn, player, ...)
+				if not ok then Util.Warn(TAG, hook[2] .. ": " .. tostring(err)) end
+			end)
+		end
+	end
 	-- A23-113: a PvP KO that took gold into a Grudge Sack is the first meeting with the sack, for the thief and for the victim
 	-- (looked up softly like the card hooks below: a world without PvPService connects nothing, with no warning)
 	local pvp = S.PvPService

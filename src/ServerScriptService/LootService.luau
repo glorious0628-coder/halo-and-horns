@@ -1006,6 +1006,30 @@ function LootService.UnpackSpare(player, tier, plus)
 	return LootService.GrantMarketWeapon(player, tier, plus) == "Owned" or "NoItem"
 end
 
+-- 장인 ② (N0's end): the best spare weapon (by Damage, usable at this level, a tier not owned yet, never a joke weapon)
+-- that beats the weapon held is unpacked (UnpackSpare: owned with its +N) and put in the hand. Returns its tier, or nil
+function LootService.EquipBestSpare(player)
+	local data = getData(player)
+	if not data or type(data.Spares) ~= "table" then return nil end
+	local held = Config.Weapons[math.floor(num(data.WeaponTier, 0))]
+	local bestDamage = type(held) == "table" and num(held.Damage) or 0
+	local best, bestPlus = nil, 0
+	for key, c in data.Spares do
+		local t, p = string.match(tostring(key), "^(%d+):(%d+)$")
+		local tier, plus = tonumber(t), tonumber(p)
+		local def = tier and Config.Weapons[tier] or nil
+		if def and not def.Meme and math.floor(num(c)) >= 1 and not owns(data, tier) and Config.WeaponUsable(tier, num(data.Level, 1))
+			and (num(def.Damage) > bestDamage or (best == tier and plus > bestPlus)) then
+			best, bestPlus, bestDamage = tier, plus, num(def.Damage)
+		end
+	end
+	if not best or LootService.UnpackSpare(player, best, bestPlus) ~= true then return nil end
+	S.PlayerService.SetStat(player, "WeaponTier", best)
+	Net.Fx(player, "Upgrade", { Tier = best })
+	publish(player, data)
+	return best
+end
+
 -- re-mirror the owner's items / per-tier +N (Inventory remote) and the equipped WeaponEnhance attribute; for other
 -- services after they change WeaponTier / ownership in a way the client should see at once (no data is changed)
 function LootService.Refresh(player)
