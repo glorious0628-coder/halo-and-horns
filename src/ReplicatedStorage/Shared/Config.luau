@@ -3109,7 +3109,7 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N1", "N2", "H1", "R1", "N3", "Pip1", -- quest_volume §3-2 (A23-56) below:
+	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
 		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
 		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
@@ -3519,6 +3519,30 @@ Config.StoryQuests = {
 			},
 			Reward = { Gold = 1 },
 		},
+		-- 장인 ② (artisan_min_server_2026-10-14 ①, 게임성 개발 2): the guild's first ten minutes - pick, make, sell. Neutral only,
+		-- offered while the guild (NeutralFaction) and the quest's Feature switches are on. Gather / Craft / SellMat count
+		-- GatherService.Gathered, CraftService.Crafted and LootService.MaterialSold. N0 ends with 150 gold and the crafted
+		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only
+		N0 = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" } },
+			Start = "Kit: Pick herbs, mine copper, then make something!",
+			Steps = {
+				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
+					{ Key = "a", Type = "Gather", Item = "Herb", Count = 3 },
+					{ Key = "b", Type = "Gather", Item = "CopperOre", Count = 2 },
+				} } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150, EquipCrafted = true },
+		},
+		N0b = {
+			Kind = "Sub", Title = "Sell to the Smith", ShortName = "Sell harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { Done = { "N0" }, Feature = "Gathering" },
+			Start = "Kit: Extra herbs? Otto pays gold for them!",
+			Steps = { { Text = "Sell harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
+			Reward = { GoldN = 30 },
+		},
 		N1 = {
 			Kind = "Sub", Title = "The Artisan's Touch", ShortName = "Artisan touch", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M1_4" }, Level = 5 }, -- A23-71: a skill quest
 			Start = "Kit: Shape with care. Two at once!",
@@ -3536,6 +3560,17 @@ Config.StoryQuests = {
 				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
 			},
 			Reward = { Gold = 1 },
+		},
+		-- 장인 ②: the guild's second town quest (after N2): a real order, two things made, then the Crossroads
+		N4 = {
+			Kind = "Sub", Title = "Guild Order", ShortName = "Guild order", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { Done = { "N2" }, Feature = "Crafting" },
+			Start = "Kit: A real order! Make two things for the Guild.",
+			Steps = {
+				{ Text = "Make things %d/%d", Obj = { Type = "Craft", Count = 2 } },
+				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
+			},
+			Reward = { Gold = 3, XP = 3 },
 		},
 		-- A23-46 town people "they're up to something" (docs/design/town_npc_quests_2026-10-06.md + story_depth §3 / §5-⑥,
 		-- 검수 decisions): open after M2_3 for the town's own side, once each. The rumor turns out to be harmless (the
@@ -4205,6 +4240,8 @@ for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id
 -- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
 -- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
 -- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+-- 장인 ② N0: the line when the crafted weapon goes into the hand at the quest's end
+Config.StoryQuests.Text.CraftEquipped = "%s equipped!"
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 -- gameplay plan 2026-10-13 1-A #2: an Enhance scroll used on a weapon, success or not (LootService useEnhance; M1_1 step 2)
@@ -9143,8 +9180,8 @@ Config.Craft = {
 	StartsPerMinute = 6,
 	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
 	Recipes = {
-		W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 },
-		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Jelly = 10, Petal = 3, CopperOre = 4 }, XP = 20 },
+		-- 장인 ② (최종 검수 10/14): no W1 (tier 1 is the free class weapon); W2 = the first craft, from N0's harvest only
+		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Herb = 3, CopperOre = 2 }, XP = 20 },
 		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }, XP = 60 },
 		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 20, BruteHorn = 10, IronOre = 8, OakLog = 4 }, XP = 150 },
 		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 30, KnightCrest = 12, IronOre = 15, OakLog = 6 }, XP = 400 },

@@ -25,6 +25,11 @@ local function cWorld(o)
 	local edit = o.EditConfig
 	o.EditConfig = function(c)
 		if o.Off ~= true then c.Features.Crafting = true end
+		-- 장인 ② (10/14): the shipped W1 is gone (tier 1 = the free class weapon); the mechanics groups below keep a
+		-- test-only W1 with its old numbers (a tier-1 spare, 10 gold, 5 jelly + 2 copper, XP 10)
+		if c.Craft.Recipes.W1 == nil then
+			c.Craft.Recipes.W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 }
+		end
 		if edit then edit(c) end
 	end
 	local w = dev3World(o)
@@ -200,11 +205,13 @@ runGroup("config", function()
 	check(M.T.Strikes == 5 and M.T.Ring == 1.2 and M.T.Rest == 0.35 and M.T.Lead == 0.8 and M.T.Timeout == 20,
 		"the shared hammer (CraftMini.T): 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, 20 s time-up", show(M.T))
 	check(K.Range == 12 and K.StartsPerMinute == 6 and C.RateLimits.CraftStart == 3, "12 studs, 6 starts a minute, one start every 3 s", "")
-	local want = { W1 = { 1, 1, 10, 10 }, W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
+	local want = { W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
 		W6 = { 6, 20, 7500, 900 }, W7 = { 7, 25, 22500, 2000 }, W9 = { 9, 30, 60000, 4000 } }
 	local smithRows = 0
 	for _, r in K.Recipes do if r.Role == "Smith" and r.Kind == "Weapon" then smithRows += 1 end end
-	check(smithRows == 8, "eight blacksmith weapon recipes", tostring(smithRows))
+	check(smithRows == 7 and K.Recipes.W1 == nil, "seven blacksmith weapon recipes (장인 ②: no W1, tier 1 is the free class weapon)", tostring(smithRows))
+	check(K.Recipes.W2.Mats.Herb == 3 and K.Recipes.W2.Mats.CopperOre == 2 and K.Recipes.W2.Mats.Jelly == nil,
+		"W2 = the first craft from N0's harvest only (3 herbs + 2 copper)", show(K.Recipes.W2.Mats))
 	-- ⑥ gear rows (게임성 개발 3): Armor / Ring (Smith, Lv 8 / 16 / 24), PetArmor / PetAcc (Tame, Lv 5 / 12 / 20), Kind Gear,
 	-- materials that exist; the recipes wait for Config.Features.Gear
 	local gearWant = { G1 = { "Smith", "Armor", 1, 8 }, G2 = { "Smith", "Armor", 2, 16 }, G3 = { "Smith", "Armor", 3, 24 },
@@ -228,7 +235,7 @@ runGroup("config", function()
 		check(r and r.Role == "Smith" and r.Kind == "Weapon" and r.Tier == x[1] and r.Lv == x[2] and r.Gold == x[3] and r.XP == x[4],
 			"recipe tier / craft Lv / gold / XP as the design table", id .. " " .. show(r))
 	end
-	check(K.Recipes.W1.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 8 and K.Recipes.W6.Mats.SilverOre == 12
+	check(K.Recipes.W2.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 8 and K.Recipes.W6.Mats.SilverOre == 12
 		and K.Recipes.W9.Mats.MoonCrystal == 20 and K.Recipes.W3.Mats.SeaShell == nil and K.Recipes.W5.Mats.CrystalShard == nil,
 		"gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)", "")
 	for _, key in { "NotArtisan", "NeedLevel", "NeedMats", "NeedGold", "Far", "Busy", "Full", "Auto" } do
@@ -447,10 +454,10 @@ end)
 ------------------------------------------------------------------ the ends without a finish
 runGroup("ends", function()
 	local w = cWorld()
-	local p, d = smith(w, 1)
+	local p, d = smith(w, 1, { Items = (function() local t = table.clone(MATS); t.Herb = 50; return t end)() }) -- 장인 ②: W2 takes herbs
 	w.C.TryStart(p, "W2")
 	check(type(d.Craft.Pend) == "table" and d.Craft.Pend.Id == "W2" and d.Craft.Pend.Plus == -1 and d.Craft.Pend.Gold == 40
-		and d.Craft.Pend.Mats.Jelly == 10 and d.Craft.Pend.Mats.CopperOre == 4, "the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
+		and d.Craft.Pend.Mats.Herb == 3 and d.Craft.Pend.Mats.CopperOre == 2, "the save keeps what was paid: Pend { Id, Plus -1, Gold, Mats }",
 		show(d.Craft.Pend))
 	w:Advance(0.8 + 20 + 0.1)
 	check(d.Craft.Pend == nil and d.Craft.Made.W2 == 1 and last(w.Spares).Tier == 2 and last(w.Spares).Plus == 0
@@ -810,7 +817,7 @@ end)
 runGroup("fame", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local R = C.Craft.Recipes
-	check(C.CraftFame(R.W1, 0) == 1 and C.CraftFame(R.W1, 2) == 2 and C.CraftFame(R.W1, 1) == 1 and C.CraftFame(R.W4, 0) == 2
+	check(C.CraftFame(R.W2, 0) == 1 and C.CraftFame(R.W2, 2) == 2 and C.CraftFame(R.W2, 1) == 1 and C.CraftFame(R.W4, 0) == 2
 		and C.CraftFame(R.W6, 0) == 3 and C.CraftFame(R.W9, 0) == 4 and C.CraftFame(R.W9, 2) == 5 and C.CraftFame(nil, 2) == 0,
 		"fame: craft Lv 1-9 = 1, 10-19 = 2, 20-29 = 3, 30 = 4; the hammer's +2 adds 1", "")
 	local rk = {}
