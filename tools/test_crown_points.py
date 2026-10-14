@@ -89,6 +89,8 @@ MUTATIONS = [
     ("free riders count", H, " or info.Minor == true or info.First == false then return end", " or info.First == false then return end"),
     ("no ZoneLevel table", H, "local lv = type(H.ZoneLevel) == \"table\" and H.ZoneLevel[zoneId] or nil", "local lv = nil"),
     ("the count is not saved", H, "\tdata.HuntFame = have - whole * per\n", "\tdata.HuntFame = 0\n"),
+    ("no HuntFame attribute after a count", H, "\tplayer:SetAttribute(\"HuntFame\", data.HuntFame)\n", ""),
+    ("HuntFame not mirrored on join", C, "\t\t\"HuntFame\", -- 10/14 dev1", "\t\t-- 10/14 dev1"),
     ("fame on the PvP boards", H, "{ Hunt = true }", "{ PvP = true, Fair = true }"),
     ("no line", H, "\tif type(line) == \"string\" then Net.Notify(player, string.format(line, points), \"reward\", nil, \"RankUp\") end\n", ""),
     # A23-181: a shared kill's hunt honor and crown units go to its first hitter only
