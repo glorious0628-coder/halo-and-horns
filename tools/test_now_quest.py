@@ -39,7 +39,7 @@ MUTATIONS = [
      "\t\t\tif best == nil then best, bestShare = i, share end\n"),
     ("the story waiting ignored", "\tif callIndex and rows[callIndex] then return callIndex end\n", ""),
     ("the tail kept", '\tlocal main = string.match(text, "^(.-)%s+·%s") or text\n', "\tlocal main = text\n"),
-    ("no full stop", '\tif not string.find(main, "[%.!%?]$") then main ..= "." end\n', ""),
+    ("no full stop", '\tif not string.find(main, "[%.!%?。]$") then main ..= "." end\n', ""),
     ("the server's Goal ignored", '\tif type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end\n', ""),
 ]
 
