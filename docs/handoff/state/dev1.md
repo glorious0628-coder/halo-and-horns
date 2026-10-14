@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 4 — fix/choice-card-held fdbd7c19 (다 됨·push, 최신)
+- ④ 선택 카드 창 준비 = MINOR 1: **fix/choice-card-held fdbd7c19**(origin/main 6a4b3ae9 위 1커밋, death-box와 병합 깨끗). ChoiceCardUI offer: 시간 카드가 아직 시간 안이고 다른 출처 카드가 오면 시간 카드는 그대로 두고 새 카드는 S.Held(같은 출처 더 새 카드가 Held를 바꿈) → 시간 카드 끝나면 Held가 뜸.
+- 시험: test_choice_card_ui 61·27/27(새 검사 4·돌연변이 2), test_choice_card 133·68/68, english 81 = 0 failing·MISSED 0.
+- 켜기는 10/17 뒤 개발 2(Finisher.Kinds 되돌리기, 고른 뒤 Afterglow). 최종 검수 병합 대기(fix/death-box a63b6665도).
+
 ## 10/14 밤 3 — fix/death-box a63b6665 (다 됨·push, 최신)
 - goal-chips-3는 main c8bf83be 병합됨. 최종 검수 API 검토 S: 패배 화면 박스 220 고정인데 줄 합 ≈350 → 넘침.
 - **fix/death-box a63b6665**(origin/main c8bf83be 위 1커밋): DeathScreen.Look(touch)·BoxHeight(lines, look) 순수, paint()가 박스 높이 = 보이는 줄 합(줄마다 size+8, 사이 6). 폰(TouchEnabled, UIScale 0.75): 글자 Title 56·Cause 20·Lost 19·GotTitle 22·Got 19·Back 18(스타일 바닥 이상), Got 최대 2줄(XP·골드 먼저), 중심 0.5. 계산: PC 350du, 폰 265du = 199px → 361 높이에서 위 81·아래 280px.
