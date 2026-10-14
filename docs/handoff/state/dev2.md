@@ -1,6 +1,22 @@
-# 게임성 개발 2 — 상태 (2026-10-14 밤, 계획 5·8 서버 몫 보고)
+# 게임성 개발 2 — 상태 (2026-10-14 한밤, 스킬 배우기·황금 거위 보고)
 
-## 지금 (10/14 밤)
+## 지금 (10/14 한밤) — 모두 보고함, 최종 검수 병합 대기
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-learn-skill | ec0b7341 | A23-193: Lv5/15/25(+과제) = 준비만(속성 SkillLearnReady/SkillTeacher), 진영 스승(Gleam/Rose=Smokey/Otto — Otto 몸에 Talk 프롬프트) 대화 → SkillService.TryLearn → SkillSlots + Fx SkillLearned{Slots,Teacher}. 환생·스승 몸 없음·Learn off = 바로. 저장 형식 그대로. 목표 줄 NextLearn / SkillLearnFirst | skills 206 + 120/120, town_quests 1068 + 260/260, board 97 + 27/27, next_goal 58 + 19/19, a23_14 330(변이 없이) |
+| dev2-goose-polish | f3b67a9c | 거위 검토 ②③④⑤ 서버: 토스트·announce 전부 삭제, GameState GooseResult*, 광장 안 사람 기준 모드(GooseSquare.CountIn)·같은 판정, 협동 목표 고정, 장인 왕관 알 금지·+0 Fx 없음, 퀘스트 info.Took(알 1개+), 거위 걷기 MaxSpeed 14 | golden_egg 220 + 93/93, goose_square 92 + 52/52, notify_sound 69 + 60/60 |
+- 거위 검토 전문: Game/build/codex/goose_review_2026-10-14.md (Codex goose_codex.md). ① 광장 골격 = build/goose_square_apply.luau(메인 반영 1 몫).
+- 개발 1에 보냄: 스킬 배우기 화면 이름, 거위 화면 몫 목록(경계 점 높이·결과 멈춤·Join 칩 반짝·뒤뚱).
+- worktree: ../wt_learn, ../wt_goose, ../wt_l10ncov, ../wt_huntattr, ../wt_bench(sparse; build/luau_cli 복사해 둠).
+
+## 앞서 (10/14 밤 늦게)
+- **dev2-benches-2 2e6cb56e** (보고함, 6번째 묶음; 관련 a23_14·gamepass·gear_slots·save_v4·weapon_ladder 통과): main 사진에 작업대 0개 → 원인 = ensureBenches가 Features.Crafting 꺼지면 안 만듦(모루 경로는 맞음: Map.Landmarks.ArtisanGuild.Anvil). 고침: 작업대 3개는 항상, Craft 프롬프트만 Crafting 켜졌을 때; 실시간 끄기 = 프롬프트 지움. craft 223/251, 변이 129/129. 남은 MISSED 'bag: a used-up material frees nothing'(패턴 2회) = main 원래 것.
+- **dev2-huntfame-attr f56045ce** (보고함, 개발 1 요청 큐 ③): 속성 HuntFame = data.HuntFame (Mirrored + OnKilled SetAttribute). crown_points 86/47 변이, Mirrored 쓰는 시험 6개 통과. worktree ../wt_huntattr(sparse: src/tools/docs/design, build/luau_cli 복사).
+- **dev2-l10n-coverage 49f8da14** (보고함): tools/l10n_coverage.py — 플레이어 글 전부(Config 걷기 + 등록 글 표 + format_keys.csv + 하드코딩 찾기) vs 클라우드 표(읽기만) → build/l10n/missing_ko.csv, suspect_ko.csv(empty/english/mixed/numbers/placeholders/stale), auto_ko.csv(자동 번역), table_entries.json. 10/14 결과: 글 2751, ok 2439, missing 305, suspect 7, auto 48. test_l10n_coverage 32/32. l10n_format_keys에 picked_rows() 나눔(출력 같음). 번역 자체 = 최종 검수 + GPT. worktree ../wt_l10ncov(sparse).
+- 주의: worktree에서도 `git stash` 쓰지 말 것(저장소 공용 stash 목록) — 10/14 실수로 한 번 하고 바로 pop함.
+- 다음: 메인 반영 1 sync 사진에서 Workbench_Smith/Alch/Tame 3개 확인(최종 검수가 봄). worktree ../wt_bench = dev2-benches-2.
+
+## 앞서 (10/14 밤)
 - **보고함, 병합 대기:**
 
 | 가지 | tip | 무엇 | 시험 |
