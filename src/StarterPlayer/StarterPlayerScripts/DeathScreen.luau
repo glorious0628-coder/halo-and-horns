@@ -188,6 +188,7 @@ local function label(ui, parent, name, size, style, order, color)
 		l.LayoutOrder = order
 	end
 	if color then l.TextColor3 = color end
+	l.AutomaticSize = Enum.AutomaticSize.Y -- A23-179: a longer translation wraps to a second line inside the box
 	l.Parent = parent
 	return l
 end
@@ -225,6 +226,7 @@ function DeathScreen.Show(data)
 	box.AnchorPoint = Vector2.new(0.5, 0.5)
 	box.Position = UDim2.fromScale(0.5, look.Y)
 	box.Size = UDim2.new(0.8, 0, 0, 0) -- paint() sets it to the shown lines
+	box.AutomaticSize = Enum.AutomaticSize.Y -- A23-179: a translated line that wraps grows the box (never spills)
 	box.ZIndex = T.ZIndex
 	box.Parent = frame
 	local list = Instance.new("UIListLayout")
