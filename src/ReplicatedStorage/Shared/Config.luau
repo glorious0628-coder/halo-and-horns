@@ -266,13 +266,23 @@ Config.Levels = {
 	-- ...(target: Lv 10 in about 10-12 minutes of slime hunting; gameplay plan 2026-10-13 1-A #4: 0.5 -> 0.35, the sum to Lv10
 	-- 1,381 -> 962 XP, measured in the 10/17 test)
 	EarlyMult = 0.35,
+	-- 최종 검수 10/14 (Codex B: the Lv10 cliff): from EarlyUntil the bar grows back to the full curve over a few levels
+	-- instead of x3.3 at once (Lv9 227 -> Lv10 753, just when the first-minutes 2x XP ends). Level -> share of the full XP
+	Ramp = { [10] = 0.5, [11] = 0.65, [12] = 0.8, [13] = 0.9 },
 }
 
+-- the XP from `level` to the next: the curve XPBase x level ^ XPExponent, x EarlyMult below EarlyUntil, x Ramp[level]
+-- for the levels just after it, else the full curve (min 1 when a share applies)
 function Config.XPToNext(level)
-	local xp = math.floor(Config.Levels.XPBase * level ^ Config.Levels.XPExponent)
-	if level < Config.Levels.EarlyUntil then
-		xp = math.max(1, math.floor(xp * Config.Levels.EarlyMult)) -- addendum A7-2 (min 1)
+	local L = Config.Levels
+	local xp = math.floor(L.XPBase * level ^ L.XPExponent)
+	local share = nil
+	if level < L.EarlyUntil then
+		share = L.EarlyMult -- addendum A7-2
+	elseif type(L.Ramp) == "table" and type(L.Ramp[level]) == "number" then
+		share = L.Ramp[level]
 	end
+	if share then xp = math.max(1, math.floor(xp * share)) end
 	return xp
 end
 
