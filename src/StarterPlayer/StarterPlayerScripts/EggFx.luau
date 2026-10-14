@@ -410,8 +410,8 @@ local function dropVisual(rec)
 end
 
 -- a little burst of round sparkles at pos (a pickup by someone else, a tag)
-local function pop(pos, color, count)
-	if not EggFx.Here() or not near(pos, num(lookCfg().SparkleRange, 60)) then return end
+local function pop(pos, color, count, anyDistance)
+	if not EggFx.Here() or (not anyDistance and not near(pos, num(lookCfg().SparkleRange, 60))) then return end
 	local p = quiet(Instance.new("Part"))
 	p.Name = "EggPop"
 	p.Size = Vector3.new(0.2, 0.2, 0.2)
@@ -552,7 +552,10 @@ local function stepEggs(now, me)
 			if not v:IsA("MeshPart") then v.Size = Vector3.new(s, s * 1.3, s) end
 		end
 		if rec.Glow then rec.Glow.CFrame = CFrame.new(pos) end
-		local alpha = hidAt and 1 or (can and 0 or num(lk.NoPickAlpha, 0.6))
+		local def = type(kinds[rec.Kind]) == "table" and kinds[rec.Kind] or {}
+		local full = num(def.Slots, 1) >= num(cfg.MaxSlots, 3) and carry > 0
+		local notMine = rec.Kind == "Crown" and LocalPlayer:GetAttribute("Faction") == "Neutral"
+		local alpha = hidAt and 1 or ((can and not full and not notMine) and 0 or num(lk.NoPickAlpha, 0.6))
 		if v.LocalTransparencyModifier ~= alpha then v.LocalTransparencyModifier = alpha end
 		if rec.Glow then rec.Glow.LocalTransparencyModifier = hidAt and 1 or 0 end
 		local sparkle = landed and not hidAt and cam ~= nil and (cam - pos).Magnitude <= num(lk.SparkleRange, 60)
@@ -562,9 +565,7 @@ local function stepEggs(now, me)
 			Kind = rec.Kind }, { Pos = me, Can = can, Carry = carry, Moved = walking }, cfg, now) then
 			S.Hidden[rec.Id] = now
 			pop(pos + Vector3.new(0, 0.5, 0), nil, 14)
-			local steps = type(lk.PickSpeed) == "table" and lk.PickSpeed or { 1, 1.12, 1.26 }
-			play("EggPickup", { Speed = num(steps[math.clamp(carry + 1, 1, #steps)], 1) }, "GoldPickup")
-			S.PreviewAt = os.clock()
+			S.PreviewAt = os.clock() -- 개발 2 ⑤ 10/14: the sound comes with the server's yes (Step, EggCarry rising)
 			carry += slotsOf(rec.Kind)
 		end
 	end
@@ -588,45 +589,39 @@ local function homeColor(faction)
 	return type(f) == "table" and typeof(f.Color) == "Color3" and f.Color or Color3.fromRGB(255, 215, 90)
 end
 
--- my home ring (only I see it) and the ring boundary dots, while the event runs
+-- 개발 2 ① 10/14: the two home rings (the nest = Halo, the cart = Horns) for everyone in the square while the round runs,
+-- mine breathing while I carry; no ring boundary dots any more (the square's walls are the edge)
 local function stepRings(active)
 	local cfg, lk = eggCfg(), lookCfg()
-	local faction = LocalPlayer:GetAttribute("Faction")
-	local home = active and LocalPlayer:GetAttribute("EggCan") == true and EggFx.HomeFor(faction) or nil
-	if home then
-		local r = num(cfg.HomeRadius, 8)
-		local hl = type(lk.Home) == "table" and lk.Home or {}
-		if not S.Home or not S.Home.Parent then
-			S.Home = disc("MyEggHome", r, homeColor(faction), 1)
-			S.Home.Material = Enum.Material.Neon
-			S.HomeFaction = nil
+	local hl = type(lk.Home) == "table" and lk.Home or {}
+	local mySide = LocalPlayer:GetAttribute("Faction")
+	local carrying = num(LocalPlayer:GetAttribute("EggCarry"), 0) > 0
+	S.Rings = S.Rings or {}
+	for _, side in { "Halo", "Horns" } do
+		local home = active and EggFx.HomeFor(side) or nil
+		local ring = S.Rings[side]
+		if home then
+			if not ring or not ring.Parent then
+				ring = disc("EggHome" .. side, num(cfg.HomeRadius, 8), homeColor(side), 1)
+				ring.Material = Enum.Material.Neon
+				S.Rings[side] = ring
+				S.RingAt = S.RingAt or {}
+				S.RingAt[side] = nil
+			end
+			S.RingAt = S.RingAt or {}
+			if S.RingAt[side] ~= home then
+				ring.CFrame = CFrame.new(home.X, groundY(home) + num(hl.Height, 0.15), home.Z) * FLAT
+				S.RingAt[side] = home
+			end
+			local mine = side == mySide
+			local pulse = (mine and carrying) and (math.sin(os.clock() * 4) * 0.08) or 0
+			ring.Transparency = ((mine and carrying) and num(hl.CarryAlpha, 0.45) or num(hl.Alpha, 0.75)) + pulse
+		elseif ring then
+			ring:Destroy()
+			S.Rings[side] = nil
 		end
-		if S.HomeFaction ~= faction or S.HomeAt ~= home then -- new, I changed sides at the altar, or the square's home moved
-			S.Home.Color = homeColor(faction)
-			S.Home.CFrame = CFrame.new(home.X, groundY(home) + num(hl.Height, 0.15), home.Z) * FLAT
-			S.HomeFaction = faction
-			S.HomeAt = home
-		end
-		local carrying = num(LocalPlayer:GetAttribute("EggCarry"), 0) > 0
-		local pulse = carrying and (math.sin(os.clock() * 4) * 0.08) or 0
-		S.Home.Transparency = (carrying and num(hl.CarryAlpha, 0.45) or num(hl.Alpha, 0.75)) + pulse
-	elseif S.Home then
-		S.Home:Destroy()
-		S.Home = nil
 	end
-	local b = type(lk.Boundary) == "table" and lk.Boundary or {}
-	local center = EggFx.Center()
-	local show = active and near(center, num(b.Range, 160) + num(cfg.RingRadius, 54))
-	if show and #S.Dots == 0 then
-		local n, r = math.max(8, math.floor(num(b.Dots, 48))), num(cfg.RingRadius, 54)
-		for i = 1, n do
-			local a = (i / n) * math.pi * 2
-			local p = Vector3.new(center.X + math.cos(a) * r, 0, center.Z + math.sin(a) * r)
-			local dot = ball("EggRingDot", num(b.Size, 0.7), Color3.fromRGB(255, 235, 160), num(b.Alpha, 0.35))
-			dot.CFrame = CFrame.new(p.X, groundY(p + Vector3.new(0, 4, 0)) + 0.4, p.Z)
-			table.insert(S.Dots, dot)
-		end
-	elseif not show and #S.Dots > 0 then
+	if #S.Dots > 0 then -- (older builds' dots)
 		for _, d in S.Dots do d:Destroy() end
 		S.Dots = {}
 	end
@@ -717,9 +712,8 @@ local function stepWobble(now, me)
 		S.StillPos, S.StillAt = me, now
 	end
 	local cfg = eggCfg()
-	local center = EggFx.Center()
-	local flat = Vector3.new(me.X - center.X, 0, me.Z - center.Z).Magnitude
-	local amount = EggFx.Wobble(flat, now - (S.StillAt or now), cfg)
+	-- 개발 2 ① 10/14: in the Goose Square no ring edge takes eggs back, so no edge wobble (distance 0) - standing still only
+	local amount = EggFx.Wobble(0, now - (S.StillAt or now), cfg)
 	if joint and joint:IsA("Motor6D") then
 		local w = type(lookCfg().Wobble) == "table" and lookCfg().Wobble or {}
 		local deg = math.rad(num(w.Max, 18)) * amount * math.sin(os.clock() * num(w.Speed, 14))
@@ -741,9 +735,9 @@ local function stepAway()
 		pcall(function() S.Flights[i].Part:Destroy() end)
 		table.remove(S.Flights, i)
 	end
-	if S.Home then
-		S.Home:Destroy()
-		S.Home = nil
+	for side, ring in S.Rings or {} do -- both home rings off outside the square
+		ring:Destroy()
+		S.Rings[side] = nil
 	end
 	if #S.Dots > 0 then
 		for _, d in S.Dots do d:Destroy() end
@@ -788,8 +782,11 @@ function EggFx.Step()
 			-- it" pop). 최종 검수 10/12: not after a preview (that egg is hidden already) - or someone else's egg next to
 			-- me in the same half second lost its pop
 			S.MineAt = os.clock()
-			play("EggPickup", nil, "GoldPickup")
 		end
+		-- 개발 2 ⑤ 10/14: the pickup sound = the server's yes; pitch 1 / 1.12 / 1.26 by the eggs now held; the stand-in is
+		-- Loot (the delivery keeps GoldPickup / the bell: picking and scoring sound different)
+		local steps = type(lookCfg().PickSpeed) == "table" and lookCfg().PickSpeed or { 1, 1.12, 1.26 }
+		play("EggPickup", { Speed = num(steps[math.clamp(carry, 1, #steps)], 1) }, "Loot")
 	end
 	S.Carry = carry
 	stepEggs(now, me)
@@ -903,11 +900,14 @@ function EggFx.OnFx(kind, data)
 		pop(home + Vector3.new(0, 1, 0), homeColor(data.Side), 20)
 	elseif kind == "EggTag" then
 		if typeof(data.Pos) == "Vector3" then pop(data.Pos + Vector3.new(0, 2, 0), Color3.fromRGB(255, 245, 210), 16) end
-	elseif kind == "GooseEnd" then -- confetti over the winner's home
-		local home = EggFx.HomeFor(data.Winner)
-		if home and near(home, 200) then
-			for _, col in { Color3.fromRGB(255, 215, 90), Color3.fromRGB(255, 255, 255), homeColor(data.Winner) } do
-				pop(home + Vector3.new(0, 6, 0), col, 25)
+	elseif kind == "GooseEnd" then -- 개발 2 ② 10/14: confetti over the winner's home, any distance; a tie: over both
+		local sides = (data.Winner == "Halo" or data.Winner == "Horns") and { data.Winner } or { "Halo", "Horns" }
+		for _, side in sides do
+			local home = EggFx.HomeFor(side)
+			if home then
+				for _, col in { Color3.fromRGB(255, 215, 90), Color3.fromRGB(255, 255, 255), homeColor(side) } do
+					pop(home + Vector3.new(0, 6, 0), col, 25, true)
+				end
 			end
 		end
 	end

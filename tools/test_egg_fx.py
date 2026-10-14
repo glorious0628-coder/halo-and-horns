@@ -398,9 +398,9 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         ("EggFx: outside the Goose Square the egg screens are off (Step -> stepAway, no sounds, no pops, no Fx)",
          "if not EggFx.Here() then\n\t\tstepAway()\n\t\treturn\n\tend" in egg
          and "if not EggFx.Here() then return end -- no egg sound outside the Goose Square" in egg
-         and "if not EggFx.Here() or not near(pos, num(lookCfg().SparkleRange, 60)) then return end" in egg
+         and "if not EggFx.Here() or (not anyDistance and not near(pos, num(lookCfg().SparkleRange, 60))) then return end" in egg
          and "if not EggFx.Here() or type(data) ~= \"table\" then return end" in egg
-         and "EggFx.HomeFor(faction)" in egg and "EggFx.HomeFor(data.Winner)" in egg, ""),
+         and "EggFx.HomeFor(side)" in egg, ""),
         ("Config.Goose.Square: Remote / Attr / Block / Fade / Text exactly as the contract (A23-141)",
          bool(square) and 'Remote = "GooseSquare"' in sq and 'Attr = "InGooseSquare"' in sq and 'Block = "GooseJoinBlock"' in sq
          and "Fade = { In = 0.25, Out = 0.35 }" in sq and 'Join = "Join"' in sq and 'Leave = "Leave"' in sq
@@ -446,9 +446,11 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         ("최종 검수 10/12: 'near' also counts where I walked the last MoveWindow s (S.Trail)",
          "local near = root ~= nil and within(root.Position)" in egg and "for _, s in S.Trail do" in egg
          and "near = within(s.Pos)" in egg and "Near = near }" in egg, ""),
-        ("최종 검수 10/12: MineAt only for a pickup without a preview",
-         re.search(r"if os\.clock\(\) - \(S\.PreviewAt or -math\.huge\) > 1 then\n(?:\t+--[^\n]*\n)*\t+S\.MineAt = os\.clock\(\)\n"
-                   r"\t+play\(\"EggPickup\", nil, \"GoldPickup\"\)", egg) is not None and egg.count("S.MineAt = os.clock()") == 1, ""),
+        ("최종 검수 10/12: MineAt only for a pickup without a preview; 개발 2 ⑤ 10/14: the pickup sound with the server's yes",
+         re.search(r"if os\.clock\(\) - \(S\.PreviewAt or -math\.huge\) > 1 then\n(?:\t+--[^\n]*\n)*\t+S\.MineAt = os\.clock\(\)\n", egg)
+         is not None and egg.count("S.MineAt = os.clock()") == 1
+         and 'play("EggPickup", { Speed = num(steps[math.clamp(carry, 1, #steps)], 1) }, "Loot")' in egg
+         and egg.count('play("EggPickup"') == 1, ""),
         ("EggFx: the pickup preview hides at once and shows again after PredictHold s",
          "S.Hidden[rec.Id] = now" in egg and "now - hidAt > num(lk.PredictHold, 0.6)" in egg, ""),
         ("EggFx: a preview the server turned down is not retried for RetryAfter s (no flicker)",
@@ -456,11 +458,11 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and "Moved = walking" in egg, ""),
         ("EggFx: unanswered previews take their slots (no 4th egg in one frame)",
          "if rec.Id ~= nil and S.Hidden[rec.Id] then carry += slotsOf(rec.Kind) end" in egg
-         and "S.PreviewAt = os.clock()\n\t\t\tcarry += slotsOf(rec.Kind)" in egg, ""),
+         and "carry += slotsOf(rec.Kind)\n\t\tend\n\tend\nend" in egg, ""),
         ("EggFx: '+N' only for my own delivery", "if data.UserId ~= LocalPlayer.UserId then return end" in egg, ""),
         ("EventHUD: the Eggs bar comes from EggFx.Bar, the line under it hidden, no explanation text",
-         "eggFx.Bar(" in branch and "setVisible(ui.TugSub, false)" in branch and ("TXT.EggCoop" in branch or '"EggCoop"' in branch)
-         and "Hint" not in branch and "MyCount" not in branch, ""),
+         "eggFx.Bar(" in branch and "setVisible(ui.TugSub, false)" in branch and "SQ.DrawEggBar(b, " in branch
+         and '"EggCoop"' in hud and "Hint" not in branch and "MyCount" not in branch, ""),
         ("EventHUD: the overtime clock gold with the approved crown", 'Art.image("Crown"' in hud and "b.Overtime and GOLD" in hud, ""),
         ("Audio: deliveries / tags (my side's sound, others within EggRange, stand-ins)",
          'kind == "EggDeliver" or kind == "EggTag"' in audio and "d > T.EggRange" in audio
@@ -485,7 +487,7 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
         # 게임성 개발 2 10/12 (the skeleton doc): the goose's fallback spot, the ring dots and the wobble all centre on the
         # square's GooseSpot (EggFx.Center), never on the old plaza fountain's Config.Goose.Egg.Center directly
         ("A23-141: the goose spot, the ring and the wobble centre on EggFx.Center (the square's GooseSpot)",
-         "\treturn EggFx.Center() + Vector3.new(0, 4, 0), g" in egg and egg.count("\tlocal center = EggFx.Center()\n") == 2
+         "\treturn EggFx.Center() + Vector3.new(0, 4, 0), g" in egg and egg.count("\tlocal center = EggFx.Center()\n") == 0
          and "typeof(cfg.Center) == \"Vector3\" and cfg.Center" not in egg, ""),
     ]
 
@@ -563,8 +565,8 @@ MUTATIONS = [
      "return { Halo = cfgHome.Halo, Horns = cfgHome.Horns }"),
     ("EGG", "the egg play runs outside the square", "if not EggFx.Here() then\n\t\tstepAway()\n\t\treturn\n\tend", ""),
     ("EGG", "egg sounds outside the square", "\tif not EggFx.Here() then return end -- no egg sound outside the Goose Square\n", ""),
-    ("EGG", "egg pops outside the square", "if not EggFx.Here() or not near(pos, num(lookCfg().SparkleRange, 60)) then return end",
-     "if not near(pos, num(lookCfg().SparkleRange, 60)) then return end"),
+    ("EGG", "egg pops outside the square", "if not EggFx.Here() or (not anyDistance and not near(pos, num(lookCfg().SparkleRange, 60))) then return end",
+     "if not anyDistance and not near(pos, num(lookCfg().SparkleRange, 60)) then return end"),
     ("EGG", "egg Fx outside the square", "if not EggFx.Here() or type(data) ~= \"table\" then return end", "if type(data) ~= \"table\" then return end"),
     ("EGG", "the fade never ends", "\t\t\tgui.Enabled = false\n\t\t\tS.FadeTween = nil\n", ""),
     ("EGG", "a new fade does not restart the old one", "if S.FadeTween then S.FadeTween:Cancel() end", ""),
