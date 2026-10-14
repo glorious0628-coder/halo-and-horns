@@ -8517,7 +8517,8 @@ Config.ChoiceCard.Screen = {
 -- own extra words (VillageFundUI). Title, Today, the [Give] words, Poor / Full / Closed, the prompt and the notices - and
 -- every number - live in Config.VillageFund.Text (게임성 개발 2); this table is the rest of the card. Lead: %d = points.
 Config.VillageFundScreen = {
-	Lead = { Halo = "Share gold with Halo Town. Honor +%d each time.", Horns = "Show off your gold in Horns Town. Mischief +%d each time." },
+	Lead = { Halo = "Share gold with Halo Citadel. Honor +%d each time.", Horns = "Show off your gold in Horns Den. Mischief +%d each time." },
+	Far = "Walk up to the fountain.", -- [Give] is grey past the fountain's reach (the server takes gifts only inside it)
 	Gold = "Your gold: %s",
 	Close = "Close",
 	Week = "Town this week: %s gold",

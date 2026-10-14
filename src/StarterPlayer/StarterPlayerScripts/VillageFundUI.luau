@@ -63,7 +63,9 @@ local COL = {
 }
 -- State = the last FundOpen state; SentAt = when [Give] went out (-inf = none); Prompts = FundPrompt -> its side;
 -- Towns[side] = { Folder, Level, Lights = {}, Burst = part?, NextBurst }; Emitters = { { Emitter, Rate, Kind } }
-local S = { Ready = false, State = nil, SentAt = -math.huge, Prompts = setmetatable({}, { __mode = "k" }), Towns = {},
+-- 최종 검수 10/14 FIX 1: Prompts is a STRONG table (a weak one let a prompt switched off before I picked a side drop
+-- out, and it stayed off after the pick); gone prompts are dropped in applyPrompts
+local S = { Ready = false, State = nil, SentAt = -math.huge, Prompts = {}, Towns = {},
 	Emitters = {}, Rng = Random.new() }
 local VIEW = { Shown = false }
 
@@ -79,6 +81,19 @@ local function spot(side)
 	local s = spots and spots[side]
 	return (type(s) == "table" and typeof(s.Pos) == "Vector3") and s or nil
 end
+-- the fountain spot's pivot: the server's Workspace.VillageFund.FundSpot_<side> part (the prompt sits Lift studs over the
+-- pivot of the fountain model; 개발 2 07ca5b92), else Config Spots[side].Pos (the server's own fallback)
+local function spotPos(sd)
+	local sp = spot(sd)
+	if not sp then return nil end
+	local folder = workspace:FindFirstChild("VillageFund")
+	local part = folder and folder:FindFirstChild("FundSpot_" .. sd)
+	if part and part:IsA("BasePart") then
+		return part.Position - Vector3.new(0, tonumber(sp.Lift) or 3, 0)
+	end
+	return sp.Pos
+end
+
 local function n(v, default)
 	v = tonumber(v)
 	return (v ~= nil and v == v and v ~= math.huge and v ~= -math.huge) and v or default
@@ -93,9 +108,12 @@ local function side(v) return (v == "Halo" or v == "Horns") and v or nil end
 ---------------------------------------------------------------------------------------------------- pure
 -- why [Give] is off for this state: the server's Why ("Poor" / "Full" / "Closed") when it sends one, else worked out
 -- here: "Full" (PerDay today - the stronger one), "Poor" (less gold than one gift), "Closed" (the server says Can =
--- false without a reason) or nil
-function VillageFundUI.Reason(state)
+-- false without a reason) or nil. ctx (this client, 최종 검수 10/14 MINOR ①) = { Dead, Far }: the server only takes a gift
+-- from a living player inside Radius, so a knocked-out player reads "Closed" and one past Radius "Far" first
+function VillageFundUI.Reason(state, ctx)
 	if type(state) ~= "table" then return "Full" end
+	if type(ctx) == "table" and ctx.Dead == true then return "Closed" end
+	if type(ctx) == "table" and ctx.Far == true then return "Far" end
 	if state.Why == "Poor" or state.Why == "Full" or state.Why == "Closed" then return state.Why end
 	local f = fund() or {}
 	local per, step = n(state.PerDay, n(f.PerDay, 3)), n(state.Step, n(f.Step, 1000))
@@ -105,8 +123,8 @@ function VillageFundUI.Reason(state)
 	return nil
 end
 
--- the card's words for a state: { Lead, Today, Gold, Give, Reason?, CanGive }
-function VillageFundUI.CardLines(state)
+-- the card's words for a state (+ ctx, see Reason): { Lead, Today, Gold, Give, Reason?, CanGive }
+function VillageFundUI.CardLines(state, ctx)
 	state = type(state) == "table" and state or {}
 	local f = fund() or {}
 	local w = words()
@@ -115,7 +133,7 @@ function VillageFundUI.CardLines(state)
 	local t = serverText()
 	local mine = type(t[my or ""]) == "table" and t[my or ""] or {}
 	local lead = type(w.Lead) == "table" and w.Lead[my or ""] or nil
-	local why = VillageFundUI.Reason(state)
+	local why = VillageFundUI.Reason(state, ctx)
 	local reason = nil
 	if why == "Poor" then
 		reason = fmt(t.Poor, Util.FormatInt(step))
@@ -123,6 +141,8 @@ function VillageFundUI.CardLines(state)
 		reason = fmt(t.Full, per)
 	elseif why == "Closed" then
 		reason = fmt(t.Closed)
+	elseif why == "Far" then
+		reason = fmt(w.Far)
 	end
 	return {
 		Lead = fmt(lead, math.max(1, math.floor(n(f.Points, 1)))),
@@ -214,9 +234,9 @@ local function promptSide(p)
 	if typeof(pos) ~= "Vector3" then return nil end
 	local best, bestD = nil, math.huge
 	for _, sd in L.Sides do
-		local sp = spot(sd)
-		if sp then
-			local d = (Vector3.new(pos.X, 0, pos.Z) - Vector3.new(sp.Pos.X, 0, sp.Pos.Z)).Magnitude
+		local sp, at = spot(sd), spotPos(sd)
+		if sp and at then
+			local d = (Vector3.new(pos.X, 0, pos.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude
 			if d < bestD and d <= n(sp.Radius, 16) * 3 then best, bestD = sd, d end
 		end
 	end
@@ -293,11 +313,25 @@ local function paintBar()
 	end
 end
 
+-- this client's side of a gift: knocked out / past the fountain's Radius (the server refuses both)
+local function cardCtx(state)
+	local char = LocalPlayer and LocalPlayer.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	local ctx = { Dead = not (root and hum and hum.Health > 0), Far = false }
+	local sd = side(state and state.Faction)
+	local sp, at = sd and spot(sd), sd and spotPos(sd)
+	if root and sp and at then
+		ctx.Far = (Vector3.new(root.Position.X, 0, root.Position.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude > n(sp.Radius, 16)
+	end
+	return ctx
+end
+
 -- the open card shows S.State (in place: a new FundOpen redraws the numbers)
 local function paint()
 	local state = S.State
 	if not (VIEW.Shown and state) then return end
-	local lines = VillageFundUI.CardLines(state)
+	local lines = VillageFundUI.CardLines(state, cardCtx(state))
 	if VIEW.Lead then VIEW.Lead.Text = lines.Lead end
 	if VIEW.Today then VIEW.Today.Text = lines.Today end
 	if VIEW.Gold then VIEW.Gold.Text = lines.Gold end
@@ -315,7 +349,7 @@ end
 
 local function give()
 	local state = S.State
-	if not state or not VillageFundUI.CardLines(state).CanGive then return end
+	if not state or not VillageFundUI.CardLines(state, cardCtx(state)).CanGive then return end
 	if os.clock() - S.SentAt < L.Wait then return end
 	S.SentAt = os.clock()
 	if VIEW.Kit and VIEW.Give then pcall(VIEW.Kit.SetEnabled, VIEW.Give, false) end
@@ -433,17 +467,17 @@ end
 
 -- lanterns: a ring of round soft glows over the fountain, each with one warm light
 local function buildTown(sd, plan)
-	local sp = spot(sd)
-	if not sp then return end
+	local sp, base = spot(sd), spotPos(sd)
+	if not (sp and base) then return end
 	local f = Instance.new("Folder")
 	f.Name = sd
 	f.Parent = folder()
-	local t = { Folder = f, Lights = plan.Lights, Burst = nil, NextBurst = 0 }
+	local t = { Folder = f, Lights = plan.Lights, Burst = nil, NextBurst = 0, Base = base }
 	S.Towns[sd] = t
 	local r = n(sp.Radius, 16) * L.Lantern.Ring
 	for i = 1, plan.Lights do
 		local a = (i - 1) / plan.Lights * math.pi * 2
-		local p = ghostPart("Lantern" .. i, sp.Pos + Vector3.new(math.cos(a) * r, L.Lantern.Up, math.sin(a) * r), f)
+		local p = ghostPart("Lantern" .. i, base + Vector3.new(math.cos(a) * r, L.Lantern.Up, math.sin(a) * r), f)
 		emitter(p, "Glow", { Texture = L.Tex.Glow, Color = ColorSequence.new(COL[sd]), LightEmission = 1,
 			LightInfluence = 0, Rate = L.Lantern.Rate, Lifetime = NumberRange.new(1, 1.6), Speed = NumberRange.new(0, 0.2),
 			Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.9), NumberSequenceKeypoint.new(0.5, 1.3),
@@ -455,7 +489,7 @@ local function buildTown(sd, plan)
 		light.Parent = p
 	end
 	-- fireworks: one high point; bursts are round puffs of stars and confetti (Emit only, no stream, no streaks)
-	local b = ghostPart("Fireworks", sp.Pos + Vector3.new(0, L.Firework.Up, 0), f)
+	local b = ghostPart("Fireworks", base + Vector3.new(0, L.Firework.Up, 0), f)
 	emitter(b, "Stars", { Texture = L.Tex.Glow, LightEmission = 1, LightInfluence = 0, Rate = 0,
 		Lifetime = NumberRange.new(1.2, 1.9), Speed = NumberRange.new(8, 16), SpreadAngle = Vector2.new(180, 180),
 		Drag = 3, Acceleration = Vector3.new(0, -5, 0),
@@ -502,10 +536,12 @@ local function townStep(now)
 	for _, sd in L.Sides do
 		local plan = VillageFundUI.FxPlan(fundAttr("FundLevel" .. sd), ph, phone, calm)
 		local t = S.Towns[sd]
-		if not plan.Lanterns or not spot(sd) then
+		local at = spotPos(sd)
+		if not plan.Lanterns or not at then
 			if t then clearTown(sd) end
 		else
-			if t and t.Lights ~= plan.Lights then
+			-- a new lantern count (phone) or the fountain spot moved (the server's part came / the map changed): rebuild
+			if t and (t.Lights ~= plan.Lights or (t.Base and (t.Base - at).Magnitude > 1)) then
 				clearTown(sd)
 				t = nil
 			end
@@ -525,16 +561,17 @@ end
 local function step(now)
 	local state = S.State
 	if VIEW.Shown and state then
-		local sp = spot(side(state.Faction) or "")
+		local sd = side(state.Faction) or ""
+		local sp, at = spot(sd), spotPos(sd)
 		local pos = rootPos()
-		if sp and pos then
-			local d = (Vector3.new(pos.X, 0, pos.Z) - Vector3.new(sp.Pos.X, 0, sp.Pos.Z)).Magnitude
+		if sp and at and pos then
+			local d = (Vector3.new(pos.X, 0, pos.Z) - Vector3.new(at.X, 0, at.Z)).Magnitude
 			if d > n(sp.Radius, 16) + L.Away then closeCard() end
 		end
 		if VIEW.Shown and S.SentAt > -math.huge and now - S.SentAt >= L.Wait then
 			S.SentAt = -math.huge
-			paint()
 		end
+		if VIEW.Shown then paint() end -- [Give] follows my distance / KO (MINOR ①)
 	end
 	townStep(now)
 end
@@ -575,6 +612,8 @@ function VillageFundUI.Start()
 	workspace.DescendantAdded:Connect(function(d) pcall(consider, d) end)
 	if LocalPlayer then
 		LocalPlayer:GetAttributeChangedSignal("Faction"):Connect(function()
+			-- FIX 1: look at every FundPrompt again (one missing from the table is found and set too)
+			pcall(function() for _, d in workspace:GetDescendants() do consider(d) end end)
 			pcall(applyPrompts)
 			if S.State and side(S.State.Faction) ~= mySide() then closeCard() end
 		end)

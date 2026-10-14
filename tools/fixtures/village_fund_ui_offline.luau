@@ -138,7 +138,7 @@ local CONTRACT = false
 if type(Config.VillageFund) ~= "table" then
 	CONTRACT = true
 	Config.VillageFund = { Enabled = true, Step = 1000, PerDay = 3, Points = 1,
-		Spots = { Halo = { Pos = v3(22, 10, -590), Radius = 16, Zone = "HaloTown", Model = "Town_Halo_Fountain3" } },
+		Spots = { Halo = { Pos = v3(22, 10, -590), Lift = 3, Radius = 16, Zone = "HaloTown", Model = "Town_Halo_Fountain3" } },
 		Goals = { Lanterns = 30000, Fireworks = 100000 },
 		Text = { Title = "Village Fund", Today = "Today %d/%d", Poor = "You need %s gold.",
 			Full = "That's %d for today. Come back tomorrow!", Closed = "The village fund is closed for now.",
@@ -189,6 +189,9 @@ local root = inst("Part")
 root.Name = "HumanoidRootPart"
 root.Position = HALO.Pos + v3(4, 3, 2)
 root.Parent = char
+local hum = inst("Humanoid")
+hum.Health = 100
+hum.Parent = char
 LP.Character = char
 
 -- Net double
@@ -340,6 +343,11 @@ check("reason: the server's Why wins", UI.Reason(with({ Why = "Closed", Can = fa
 check("reason: Can = false without a Why = Closed", UI.Reason(with({ Can = false })) == "Closed" and UI.Reason(with({ Can = true })) == nil)
 local cl = UI.CardLines(base)
 check("Halo card: Share + Honor", string.find(cl.Lead, "Share", 1, true) ~= nil and string.find(cl.Lead, "Honor +1", 1, true) ~= nil, cl.Lead)
+check("the card names the towns by their game names (glossary)", string.find(cl.Lead, "Halo Citadel", 1, true) ~= nil
+	and string.find(UI.CardLines(with({ Faction = "Horns" })).Lead, "Horns Den", 1, true) ~= nil, cl.Lead)
+check("reason: knocked out = Closed, past the reach = Far (before the server's own)", UI.Reason(base, { Dead = true }) == "Closed"
+	and UI.Reason(base, { Far = true }) == "Far" and UI.Reason(with({ Today = 3 }), { Far = true }) == "Far"
+	and UI.CardLines(base, { Far = true }).Reason == SCR.Far and UI.CardLines(base, { Far = true }).CanGive == false)
 check("Horns card: Show off + Mischief", string.find(UI.CardLines(with({ Faction = "Horns" })).Lead, "Show off", 1, true) ~= nil
 	and string.find(UI.CardLines(with({ Faction = "Horns" })).Lead, "Mischief +1", 1, true) ~= nil)
 check("Today 0/3, my gold, Share 1,000 gold", cl.Today == string.format(VF.Text.Today, 0, 3) and cl.Gold == "Your gold: 2,500"
@@ -436,6 +444,35 @@ open(with({ Today = 0, Gold = 5000 }))
 setAttr("Faction", "Horns")
 check("a side switch closes my old side's card", CURRENT == nil)
 setAttr("Faction", "Halo")
+-- MINOR ①: [Give] follows my KO / distance while the card is open
+root.Position = HALO.Pos
+open(with({ Today = 0, Gold = 5000 }))
+hum.Health = 0
+T.Step(CLOCK)
+check("knocked out: [Give] grey + the server's Closed line", ENABLED[give()] == false and label("Reason").Text == VF.Text.Closed,
+	label("Reason") and label("Reason").Text)
+hum.Health = 100
+T.Step(CLOCK)
+check("back on my feet: [Give] on again", ENABLED[give()] == true and label("Reason").Visible == false)
+root.Position = HALO.Pos + v3(HALO.Radius + 3, 0, 0)
+T.Step(CLOCK)
+check("past the fountain's reach (card still open): [Give] grey + 'Walk up'", CURRENT == "VillageFund" and ENABLED[give()] == false
+	and label("Reason").Text == SCR.Far, label("Reason") and label("Reason").Text)
+give().Click()
+T.Give()
+check("a gift from too far sends nothing", fundFired() == 2, fundFired())
+root.Position = HALO.Pos
+T.Step(CLOCK)
+check("walking back: [Give] on", ENABLED[give()] == true)
+closeBtn = BODY:FindFirstChild("CloseButton", true)
+closeBtn.Click()
+-- FIX 1: a prompt that fell out of the table (it was switched off before I had a side) is found again on a side change
+T.S.Prompts[haloPrompt] = nil
+haloPrompt.Enabled = false
+setAttr("Faction", "Horns")
+setAttr("Faction", "Halo")
+check("a side pick finds a prompt the table lost and turns it on", haloPrompt.Enabled == true and T.S.Prompts[haloPrompt] == "Halo")
+check("the prompt table holds its prompts (not weak)", getmetatable(T.S.Prompts) == nil)
 
 -- 4) the town glow
 setRS("FundLevelHalo", 1)
@@ -485,5 +522,30 @@ check("a new week (level 0): the lanterns go", fxf:FindFirstChild("Halo") == nil
 setRS("FundLevelHorns", 1)
 T.Step(CLOCK + 23)
 check("the other side's town lights up too (anyone walking in sees it)", fxf:FindFirstChild("Horns") ~= nil)
+-- 개발 2 07ca5b92: the spot = the server's FundSpot part (the fountain model's pivot + Lift), not Config Pos
+setRS("FundLevelHalo", 1)
+T.Step(CLOCK + 29)
+local before = fxf:FindFirstChild("Halo") and fxf:FindFirstChild("Halo"):FindFirstChild("Fireworks")
+check("before the server's part: the lanterns stand on Config Pos", before and before.Position.X == HALO.Pos.X)
+local vf = inst("Folder")
+vf.Name = "VillageFund"
+local spotPart = inst("Part")
+spotPart.Name = "FundSpot_Halo"
+spotPart.Position = HALO.Pos + v3(40, HALO.Lift, 0)
+spotPart.Parent = vf
+add(vf, WS)
+setRS("FundLevelHalo", 1)
+T.Step(CLOCK + 30)
+local moved = fxf:FindFirstChild("Halo")
+local fw = moved and moved:FindFirstChild("Fireworks")
+check("the lanterns follow the server's fountain spot", fw and fw.Position.X == HALO.Pos.X + 40 and fw.Position.Y == HALO.Pos.Y + T.L.Firework.Up,
+	fw and (fw.Position.X .. "," .. fw.Position.Y))
+root.Position = HALO.Pos + v3(41, 0, 0)
+open(with({ Today = 0, Gold = 5000 }))
+T.Step(CLOCK + 31)
+check("the reach is measured from the server's spot", CURRENT == "VillageFund" and ENABLED[give()] == true, label("Reason") and label("Reason").Text)
+root.Position = HALO.Pos
+T.Step(CLOCK + 32)
+check("... and the card closes away from it (Config Pos is only the fallback)", CURRENT == nil)
 
 print(("VILLAGE_FUND_UI_SUMMARY checks=%d failed=%d contract=%s"):format(checks, failed, tostring(CONTRACT)))
