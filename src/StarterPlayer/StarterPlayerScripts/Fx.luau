@@ -4681,6 +4681,14 @@ function Fx.PlaySound(name)
 	end)
 end
 
+-- 최종 검수 10/14: is a class attack clip running on this character right now? (WeaponPose.RestStep: the sword is raised
+-- only while attacking)
+function Fx.AttackPlaying(char)
+	local st = char and Feel.Chars[char]
+	local attack = st and Feel.Active[st] and st.Layers and st.Layers.Attack
+	return attack ~= nil and attack.Clip ~= nil
+end
+
 -- opts (optional, addendum A9-2): { Pop = true } scales the number PopScale -> 1 in PopTime. Plain text never merges.
 function Fx.ShowNumber(worldPos, text, color, scale, opts)
 	if typeof(worldPos) ~= "Vector3" then return end
