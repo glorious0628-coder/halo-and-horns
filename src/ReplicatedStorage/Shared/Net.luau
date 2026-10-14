@@ -54,6 +54,8 @@ Net.Names = {
 	-- 게임성 개발 2 (2026-10-08), client -> server:
 	"FinisherPick", -- (card id: number, "Help" | "Tickle") the King Slime finisher card (FinisherService)
 	"CardAction", -- A23-86 CC: (card id: number, "Good" | "Evil") the open choice card (ChoiceCard)
+	"FundGive", -- A23-178 B: no arguments, one village fund gift at my side's fountain (VillageFundService decides all)
+	"FundOpen", -- A23-178 B s->c owner only { Faction, Today, PerDay, Step, Gold, Week, Goals, Level }: my fountain's card
 	"Commission", -- A23-86 H: (tier: integer) order the golden / crystal / spirit weapon at the Forge (CommissionService)
 	"SetQuickSlot", -- A23-109 (게임성 개발 2): (slot 1..3, item: a Config.QuickSlots.Items key | "") QuickSlotService; the
 	-- answer is the owner's QuickSlots attribute (no reply remote)
