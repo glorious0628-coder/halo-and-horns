@@ -62,7 +62,8 @@ MUTATIONS = [
     ("WIN", "the interval is ignored", "not hasRemote(name) or now < (S.ReadyAt[name] or 0)", "not hasRemote(name)"),
     ("WIN", "no margin over the interval", "num(limits[name], L.Gaps[name] or 1)) + L.GapMargin", "num(limits[name], L.Gaps[name] or 1))"),
     ("WIN", "Config.RateLimits is ignored", "num(limits[name], L.Gaps[name] or 1)", "L.Gaps[name] or 1"),
-    ("WIN", "Buy / List / Cancel wait 1 s only", "MarketBuy = 6, MarketList = 6, MarketCancel = 6", "MarketBuy = 1, MarketList = 1, MarketCancel = 1"),
+    # the market server's Config.RateLimits win over the window's Gaps (both 6 s): the mutation breaks the Config side
+    ("CONFIG", "Buy / List / Cancel wait 1 s only", "MarketList = 6, MarketBuy = 6, MarketCancel = 6,", "MarketList = 1, MarketBuy = 1, MarketCancel = 1,"),
     ("WIN", "Index every time", "S.WantIndex, S.IndexNext = false, now + L.IndexEvery", "S.WantIndex, S.IndexNext = false, now"),
     ("WIN", "update never pumps the requests", "\t\tMarketWindow.Pump()\n\t\tif VIEW.Resting ~= resting() then", "\t\tif VIEW.Resting ~= resting() then"),
     ("WIN", "update never redraws what changed", "\t\telseif sigOf(context()) ~= VIEW.Sig then\n\t\t\trefreshParts()\n", "\t\telseif false then\n"),

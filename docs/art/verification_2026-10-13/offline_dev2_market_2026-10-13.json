@@ -1,0 +1,1887 @@
+{
+  "status": "passed",
+  "mutationsSkipped": false,
+  "checks": 161,
+  "failedChecks": 0,
+  "namedChecks": 161,
+  "namedChecksFailing": 0,
+  "failing": [],
+  "named": [
+    {
+      "group": "config",
+      "check": "the switch ships off (Config.Features.Market)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-133: buy Lv5, sell Lv10 + 1 hour + a 7-day account, 10% fee",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "72 h listings, 10 open, 20 lists / 30 buys a day, 3 a day from one seller, 50 rows a page, index 30 s",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "the save keeps Pend / Pay rows",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "market gold is never 2x",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "rate limits 1 / 6 s (the window's gaps)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "materials, scrolls, tonics, treats can be listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "potions, unknown ids, other kinds: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "weapons: tier 2..9, +0..10 (tier 1 never), written plainly",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Jelly (Sell 2): Ref 6, 2..50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "Enh70: Ref 300, 60..1500",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T4 +2: 3000 x 1.6 = 4800, 960..24000",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "T8 (no price) 20000; T1 / potions none",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "A23-133: three market quests in the book",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "buy Lv5, list Lv10, get paid after MK2; Past steps",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "every market line is short English",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "config",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "Lv12, 1 hour, 30-day account: open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "Lv4: no buying, no selling",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "Lv9: buying only",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "under an hour of play",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "a 6-day account",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "10 open (or placing) listings: TooMany",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "a finished row does not count",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "20 listings today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "30 purchases today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "a new KST day starts over",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "no real saves (Studio memory mode): resting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "switch off: Off",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "gates",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "an Out row Open: 10 Jelly at 5 each, 72 hours",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "the Jelly left the bag",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "saved BEFORE the ledger: Pend, the bag already lighter",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "the ledger row: Open, seller, key, N, price, end",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "the key's map lists it (sorted by price)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "the index: lowest 5, 1 row",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "the notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "the Mine rows go back (Open, 72 h, Today 1)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "a price over Max: PriceRange",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "more than I have: NoItem",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "two weapons in a row: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "a spare I do not have: NoItem",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "refused lists take nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "a spare T4 +2 listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "inside 6 s: TooFast",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "broken arguments: nothing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "the save fails: undone, nothing public",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "Resting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "a ledger error with no row: no open listing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "and the Jelly is back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "no answer from the ledger: Pend (Checking)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "the round: no ledger row -> the Jelly back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "a taken id: the other row stays, mine waits (Pend)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "the round: not mine -> the Jelly back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "a map error: Open, not listed yet (Idx false)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "the round lists it",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "list failures",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "a page: 3 rows, Ref / Min / Max",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "cheapest first; Id, Price, N, Plus, Left (no seller)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "never the seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "my own rows are not in my page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "the index: { Key, Low, Count } + Gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "within 30 s: the cached index",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "after 30 s: the new low",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "page 3 of 3: rows 101-120",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "a page past the end: the last page",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "a key that cannot be listed: no answer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "browse and index",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the buyer pays 10 x 5 = 50 and gets 10 Jelly",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "saved BEFORE the ledger: In Pay, the gold already gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the ledger: Sold to the buyer",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the buyer's In row is done (Done, Buys, the pair count)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "off the map and the index",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the buyer's notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the seller gets 50 - 5 (10% fee) = 45 in the bank",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "as bank gold 'Market' (never 2x)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the ledger is marked Paid after the seller's save",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the seller's notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "the market quests hear MarketListed / MarketBought / MarketPaid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "paid once",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "Mine: Sold, Paid",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "a day later the Paid row is gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy and pay",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "my own listing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "another price",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "30 gold for 50",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "nothing changed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "995 + 10 Jelly > 999",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "Lv4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "owning T4: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "after 72 h: gone",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "an unknown id",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "broken arguments are ignored",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy refusals",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pair and day limits",
+      "check": "3 from one seller",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pair and day limits",
+      "check": "the 4th from the same seller: PairLimit",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pair and day limits",
+      "check": "the next KST day: again",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pair and day limits",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "pair and day limits",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two buyers",
+      "check": "buyer 1 wins",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two buyers",
+      "check": "buyer 2 gets the gold back, no Jelly",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two buyers",
+      "check": "MarketRefund",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two buyers",
+      "check": "a refund 'MarketRefund' to the bank (never 2x)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two buyers",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "two buyers",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "the save fails: the gold back, the listing open",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "written then an error: delivered",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "no answer: In Pay (Checking)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "Mine: Waiting 1",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "a failed read: still waiting",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "the round: never sold to me -> refund",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "ended after my read: never sold to me, gold back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "buy failures",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "cancel: the ledger Cancel, the Jelly back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "off the map, the notice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "a cancelled listing cannot be bought",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "no room: not cancelled",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "cancel a sold row: paid, not given back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "ended: Expired, the Jelly back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "MarketExpired",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "cancel and expire",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "Pend + a ledger row: Open and listed",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "Pend + no ledger row: 4 Jelly back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "Open + Sold while away: paid 20 - 2",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "In Pay + Sold to me: delivered; + still Open: refunded (310)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "a Paid row out of Done: never paid twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "an id in Done: never paid; a ledger Paid row: marked Paid, no gold",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "an In id in Done: never delivered or refunded twice",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "join check",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "the weapon in hand: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "T4 +4 packed: a spare '4:4', the tier not owned, its +N 0",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "and back: owned +4",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "unpacking a tier I own: no",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "a weapon listed (W:4:4)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "the buyer owns T4 +4 now (not equipped)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "the seller: 7000 - 700",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "weapons",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: no new listing",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: no index",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: a sale made before still pays",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: a seller can still take a listing back",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "off: no purchase",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "switch off",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mine rows",
+      "check": "newest first",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mine rows",
+      "check": "Key, N, Plus, State, Today",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mine rows",
+      "check": "Gate",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mine rows",
+      "check": "group ran to the end without a Lua error",
+      "pass": 1,
+      "fail": 0
+    },
+    {
+      "group": "mine rows",
+      "check": "no service warnings (pcall-swallowed handler errors)",
+      "pass": 1,
+      "fail": 0
+    }
+  ],
+  "findings": [],
+  "staticChecks": 13,
+  "staticFailures": [],
+  "mutations": {
+    "total": 72,
+    "applied": 72,
+    "caught": 72,
+    "skipped": false,
+    "results": [
+      {
+        "mutation": "config: the switch ships on",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the switch ships off (Config.Features.Market)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: buying from Lv1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: Lv4",
+          "config :: A23-133: buy Lv5, sell Lv10 + 1 hour + a 7-day account, 10% fee",
+          "gates :: Lv4: no buying, no selling"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "config: no playtime gate",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: A23-133: buy Lv5, sell Lv10 + 1 hour + a 7-day account, 10% fee",
+          "gates :: under an hour of play"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: a 20% fee",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: as bank gold 'Market' (never 2x)",
+          "buy and pay :: paid once",
+          "buy and pay :: the seller gets 50 - 5 (10% fee) = 45 in the bank",
+          "buy and pay :: the seller's notice",
+          "cancel and expire :: cancel a sold row: paid, not given back",
+          "config :: A23-133: buy Lv5, sell Lv10 + 1 hour + a 7-day account, 10% fee"
+        ],
+        "newFailingCount": 12
+      },
+      {
+        "mutation": "config: Pend rows dropped by the save",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: the save keeps Pend / Pay rows"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: market gold 2x",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: market gold is never 2x"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: tonics cannot be listed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: materials, scrolls, tonics, treats can be listed"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: tier 1 can be listed",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: T8 (no price) 20000; T1 / potions none",
+          "config :: weapons: tier 2..9, +0..10 (tier 1 never), written plainly"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "config: no plus cap",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: weapons: tier 2..9, +0..10 (tier 1 never), written plainly"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "config: a material's Min below its Sell",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "browse and index :: a page: 3 rows, Ref / Min / Max",
+          "config :: Jelly (Sell 2): Ref 6, 2..50",
+          "list :: a spare T4 +2 listed",
+          "list :: broken arguments: nothing",
+          "list :: refused lists take nothing"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "config: weapon Ref without the plus",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: T4 +2: 3000 x 1.6 = 4800, 960..24000"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: TakeSpare takes more than there is",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list :: a spare I do not have: NoItem",
+          "list :: a spare T4 +2 listed",
+          "list :: broken arguments: nothing",
+          "list :: refused lists take nothing"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "loot: a bought weapon without its +N",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: a weapon listed (W:4:4)",
+          "weapons :: and back: owned +4",
+          "weapons :: the buyer owns T4 +4 now (not equipped)",
+          "weapons :: the seller: 7000 - 700"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "loot: pack the weapon in hand",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: the weapon in hand: no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: pack keeps the tier owned",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: T4 +4 packed: a spare '4:4', the tier not owned, its +N 0",
+          "weapons :: and back: owned +4"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "loot: pack keeps the +N on the tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: T4 +4 packed: a spare '4:4', the tier not owned, its +N 0"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "loot: unpack an owned tier",
+        "file": "src/ServerScriptService/LootService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "weapons :: unpacking a tier I own: no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gate: no buy level",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: Lv4",
+          "gates :: Lv4: no buying, no selling"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gate: no account age",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gates :: a 6-day account"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gate: no open cap",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gates :: 10 open (or placing) listings: TooMany"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gate: no daily buys",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gates :: 30 purchases today"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gate: the day never resets",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gates :: a new KST day starts over",
+          "pair and day limits :: the next KST day: again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "gate: the pair counts kept over days",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pair and day limits :: the next KST day: again"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "gate: Studio memory mode open",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gates :: no real saves (Studio memory mode): resting"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "list: no price range",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list :: a price over Max: PriceRange",
+          "list :: a spare T4 +2 listed",
+          "list :: broken arguments: nothing",
+          "list :: refused lists take nothing"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "list: several weapons in a row",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list :: two weapons in a row: no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "list: the ledger before the save",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list :: saved BEFORE the ledger: Pend, the bag already lighter",
+          "list failures :: Resting",
+          "list failures :: and the Jelly is back",
+          "list failures :: the save fails: undone, nothing public"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "list: a failed save keeps the things away",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list failures :: and the Jelly is back",
+          "list failures :: the save fails: undone, nothing public"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "list: the ledger row overwritten",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list failures :: a taken id: the other row stays, mine waits (Pend)",
+          "list failures :: the round: not mine -> the Jelly back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "list: a map error loses the listing",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "list failures :: a map error: Open, not listed yet (Idx false)",
+          "list failures :: the round lists it"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "buy: my own listing",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: my own listing"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buy: any price",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: another price"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buy: an owned weapon tier",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: owning T4: no"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buy: no room check",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: 995 + 10 Jelly > 999"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buy: no pair limit",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "pair and day limits :: the 4th from the same seller: PairLimit",
+          "pair and day limits :: the next KST day: again"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "buy: one unit's price for the row",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: saved BEFORE the ledger: In Pay, the gold already gone",
+          "buy and pay :: the buyer pays 10 x 5 = 50 and gets 10 Jelly",
+          "buy failures :: the round: never sold to me -> refund",
+          "buy refusals :: 30 gold for 50",
+          "buy refusals :: 995 + 10 Jelly > 999",
+          "buy refusals :: nothing changed"
+        ],
+        "newFailingCount": 8
+      },
+      {
+        "mutation": "buy: an ended listing sold",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy failures :: ended after my read: never sold to me, gold back"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buy: an expired read still bought",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy refusals :: after 72 h: gone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "buy: the ledger before the save",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: saved BEFORE the ledger: In Pay, the gold already gone",
+          "buy failures :: the save fails: the gold back, the listing open"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "buy: a failed save keeps the gold",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy failures :: the round: never sold to me -> refund",
+          "buy failures :: the save fails: the gold back, the listing open"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "buy: a sold row bought again (two winners)",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two buyers :: MarketRefund",
+          "two buyers :: a refund 'MarketRefund' to the bank (never 2x)",
+          "two buyers :: buyer 1 wins",
+          "two buyers :: buyer 2 gets the gold back, no Jelly"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "buy: a written-then-error buy refunded",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy failures :: the round: never sold to me -> refund",
+          "buy failures :: written then an error: delivered"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "buy: no answer refunded at once",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy failures :: Mine: Waiting 1",
+          "buy failures :: a failed read: still waiting",
+          "buy failures :: no answer: In Pay (Checking)"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "buy: no seller hint",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: as bank gold 'Market' (never 2x)",
+          "buy and pay :: the ledger is marked Paid after the seller's save",
+          "buy and pay :: the market quests hear MarketListed / MarketBought / MarketPaid",
+          "buy and pay :: the seller gets 50 - 5 (10% fee) = 45 in the bank",
+          "buy and pay :: the seller's notice",
+          "switch off :: off: a sale made before still pays"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "buy: stays on the map",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: off the map and the index"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: no fee",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: as bank gold 'Market' (never 2x)",
+          "buy and pay :: paid once",
+          "buy and pay :: the seller gets 50 - 5 (10% fee) = 45 in the bank",
+          "buy and pay :: the seller's notice",
+          "cancel and expire :: cancel a sold row: paid, not given back",
+          "join check :: Open + Sold while away: paid 20 - 2"
+        ],
+        "newFailingCount": 11
+      },
+      {
+        "mutation": "pay: as 2x-able gold",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: as bank gold 'Market' (never 2x)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "refund: no Done check",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: Open + Sold while away: paid 20 - 2",
+          "join check :: a Paid row out of Done: never paid twice",
+          "join check :: an In id in Done: never delivered or refunded twice",
+          "join check :: an id in Done: never paid; a ledger Paid row: marked Paid, no gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pay: a Paid row paid again",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: Open + Sold while away: paid 20 - 2",
+          "join check :: a Paid row out of Done: never paid twice",
+          "join check :: an In id in Done: never delivered or refunded twice",
+          "join check :: an id in Done: never paid; a ledger Paid row: marked Paid, no gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "pay: the ledger Paid before the save",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: the ledger is marked Paid after the seller's save"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "pay: a ledger Paid row paid",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: Open + Sold while away: paid 20 - 2",
+          "join check :: a Paid row out of Done: never paid twice",
+          "join check :: an In id in Done: never delivered or refunded twice",
+          "join check :: an id in Done: never paid; a ledger Paid row: marked Paid, no gold"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "deliver: twice",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: In Pay + Sold to me: delivered; + still Open: refunded (310)",
+          "join check :: an In id in Done: never delivered or refunded twice"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "refund: to the pocket",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "two buyers :: a refund 'MarketRefund' to the bank (never 2x)"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "settle: a Pend row without a ledger row stays",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: Pend + no ledger row: 4 Jelly back",
+          "list failures :: a ledger error with no row: no open listing",
+          "list failures :: and the Jelly is back",
+          "list failures :: the round: no ledger row -> the Jelly back",
+          "list failures :: the round: not mine -> the Jelly back"
+        ],
+        "newFailingCount": 5
+      },
+      {
+        "mutation": "settle: a Pend row with a ledger row given back",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: Pend + a ledger row: Open and listed",
+          "join check :: Pend + no ledger row: 4 Jelly back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "settle: an In row with a still-open listing delivered",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy failures :: the round: never sold to me -> refund",
+          "join check :: In Pay + Sold to me: delivered; + still Open: refunded (310)",
+          "join check :: Open + Sold while away: paid 20 - 2",
+          "join check :: a Paid row out of Done: never paid twice",
+          "join check :: an In id in Done: never delivered or refunded twice",
+          "join check :: an id in Done: never paid; a ledger Paid row: marked Paid, no gold"
+        ],
+        "newFailingCount": 6
+      },
+      {
+        "mutation": "expire: never",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "cancel and expire :: MarketExpired",
+          "cancel and expire :: ended: Expired, the Jelly back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "cancel: no room check",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "cancel and expire :: cancel a sold row: paid, not given back",
+          "cancel and expire :: ended: Expired, the Jelly back",
+          "cancel and expire :: no room: not cancelled"
+        ],
+        "newFailingCount": 3
+      },
+      {
+        "mutation": "cancel: a sold row given back",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "cancel and expire :: cancel a sold row: paid, not given back",
+          "cancel and expire :: ended: Expired, the Jelly back"
+        ],
+        "newFailingCount": 2
+      },
+      {
+        "mutation": "round: no join check",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "join check :: In Pay + Sold to me: delivered; + still Open: refunded (310)",
+          "join check :: Open + Sold while away: paid 20 - 2",
+          "join check :: Pend + a ledger row: Open and listed",
+          "join check :: Pend + no ledger row: 4 Jelly back",
+          "join check :: a Paid row out of Done: never paid twice",
+          "join check :: an In id in Done: never delivered or refunded twice"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "round: hints ignored",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: as bank gold 'Market' (never 2x)",
+          "buy and pay :: the ledger is marked Paid after the seller's save",
+          "buy and pay :: the market quests hear MarketListed / MarketBought / MarketPaid",
+          "buy and pay :: the seller gets 50 - 5 (10% fee) = 45 in the bank",
+          "buy and pay :: the seller's notice",
+          "switch off :: off: a sale made before still pays"
+        ],
+        "newFailingCount": 7
+      },
+      {
+        "mutation": "round: finished rows kept forever",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: a day later the Paid row is gone"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "page: my own rows shown",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "browse and index :: my own rows are not in my page"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "page: the seller in the rows",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "browse and index :: never the seller"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "index: no cache",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "browse and index :: within 30 s: the cached index"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "mine: Paid shown as Paid state",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: Mine: Sold, Paid"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "quest: no MarketPaid happening",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: the market quests hear MarketListed / MarketBought / MarketPaid"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "quest: no MarketBought happening",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: the market quests hear MarketListed / MarketBought / MarketPaid"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "quest: no MarketListed happening",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "buy and pay :: the market quests hear MarketListed / MarketBought / MarketPaid"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "quest: the buy quest at Lv1",
+        "file": "src/ReplicatedStorage/Shared/Config.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "config :: buy Lv5, list Lv10, get paid after MK2; Past steps"
+        ],
+        "newFailingCount": 1
+      },
+      {
+        "mutation": "switch: off still lists",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "gates :: switch off: Off",
+          "switch off :: off: a seller can still take a listing back",
+          "switch off :: off: no new listing",
+          "switch off :: off: no purchase"
+        ],
+        "newFailingCount": 4
+      },
+      {
+        "mutation": "switch: off stops the payouts",
+        "file": "src/ServerScriptService/MarketService.luau",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "switch off :: off: a sale made before still pays"
+        ],
+        "newFailingCount": 1
+      }
+    ]
+  },
+  "compileOk": true,
+  "compileErrors": "",
+  "runtimeError": null,
+  "sourceSHA256": {
+    "src/ReplicatedStorage/Shared/Config.luau": "28d4c9617fbd542c9919c8084d4eef6136e03e760e29efa6e509cac8121436cf",
+    "src/ReplicatedStorage/Shared/Util.luau": "c0fe5bf4c8407246a819f962fa7f09cfef105a90448af80a18885d3d87638ea8",
+    "src/ServerScriptService/LootService.luau": "2cc1a0599ce1ba7fe828918233f7124e17cfb75173b00ccd5d4e7fe65ef82ae8",
+    "src/ServerScriptService/MarketService.luau": "f68b095ec637f37bfe6bd8ab6e363032d165c10eded840ebd5a6b5f694477ef7"
+  },
+  "fixtureSHA256": "b09d333a705a1e6f4006551b7e713f8dc126ffaaf93243f8877d368119695325",
+  "sourcesChangedDuringRun": [],
+  "studioCalls": 0,
+  "apiCalls": 0,
+  "contract": "C-5 / C-7: one market for every server. Ledger DataStore 'L_<id>' { Id, Seller, K, N, Price (one unit), At, Exp, St, Buyer, SoldAt, Paid } = the truth; MemoryStore maps (key map sorted by price, index { L, C }, sold hints) only list. List: checks (A23-133 gates, 72 h, 10 open, 20 a day, range) -> things out, Out Pend -> SAVE -> ledger row only if none -> Open -> map. Buy: checks (Lv5, own, price, room, owned weapon, 3 a day per seller, gold) -> gold out, In Pay -> SAVE -> one UpdateAsync Open -> Sold + Buyer (an ended / sold row never) -> deliver, or refund 'MarketRefund'. The seller's server pays total - 10% as bank gold 'Market' once (Done / Paid row), then marks the ledger Paid after its save. Cancel / end -> things back (room checked, owed rows wait). The join check settles Pend / Pay / Sold / ended rows. Switch off: no new listing / purchase, settling goes on.",
+  "limitations": "The market quests (A23-133: first buy / first list / first sale paid) hook MarketService.Listed / Bought / Paid in their own commit; telemetry events are not in yet. MemoryStore limits (memory, requests) are only modelled as errors; the real budget is checked in Studio with API access."
+}

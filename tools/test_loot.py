@@ -129,6 +129,9 @@ MUTATIONS = [
      "data.LootFlags[fd.Flag] = true", "data.LootFlags[fd.Flag] = nil"),
     ("first Brute / Knight paid when the tier is owned", "LOOT_SOURCE",
      "if validTier(fd.Tier) and not owns(data, fd.Tier) then", "if validTier(fd.Tier) then"),
+    # review 10/14 BLOCK 3: a pity drop resets its counter
+    ("pity: the counter never starts over", "LOOT_SOURCE", "\t\t\t\tdata.WeaponPity[key] = 0\n", ""),
+    ("pity: a second luck drop of a tier", "LOOT_SOURCE", "\t\t\t\tif data.LootFlags[flag] ~= true then\n", "\t\t\t\tif true then\n"),
     ("jackpot for every monster kind", "LOOT_SOURCE",
      "jackpot.Monsters[info.Kind] and", "true and"),
     # A23-22 bully drop penalty (review item 3): rows AND the jackpot x DropMult while BullyStacks >= 1
