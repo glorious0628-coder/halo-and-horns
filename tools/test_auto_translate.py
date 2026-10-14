@@ -33,20 +33,24 @@ ALLOWED = [
     (SPS + "PlayerListUI.luau", "AutoLocalize = false, -- A23-179: a player's name"),
     (SPS + "SupporterBoard.luau", "row.AutoLocalize = false"),
     (SPS + "Panels.luau", 'Name = "NicknameInput", Parent = u.InputArt, AutoLocalize = false'),
-    (SPS + "MarketWindow.luau", "tb.AutoLocalize = false"),
-    (SPS + "UIKit.luau", "if props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end"),
+    # review 10/14: number-only labels say it themselves (UIKit's Number = the font only)
+    (SPS + "HUD.luau", "Number = true, AutoLocalize = false,"),
+    (SPS + "AttendanceUI.luau", "Number = true, AutoLocalize = false,"),
+    (SPS + "VitalsUI.luau", "Number = true, AutoLocalize = false,"),
+    (SPS + "PlayerListUI.luau", "Number = true, AutoLocalize = false,"),
+    (SPS + "CharacterUI.luau", "nickLabel.AutoLocalize = false"),
     (SPS + "UIKit.luau", "pcall(function() inst.AutoLocalize = false end)"),
 ]
 REQUIRED = [
     ("the nametag's name line stays as it is", "ServerScriptService/CharacterVisuals.luau", "line1.AutoLocalize = false"),
-    ("number labels stay as they are (artText Number)", SPS + "UIKit.luau",
-     "if props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end"),
+    ("the HUD level number stays as it is", SPS + "HUD.luau", "Number = true, AutoLocalize = false,"),
+    ("the character window's nickname stays as it is", SPS + "CharacterUI.luau", "nickLabel.AutoLocalize = false"),
+    ("the nametag's title is its own translated label", "ServerScriptService/CharacterVisuals.luau", 'titleLabel.Name = "Title"'),
     ("damage numbers stay as they are", SPS + "Fx.luau", "gui.AutoLocalize = false"),
     ("a loot line on the number pool is translated", SPS + "Fx.luau", "e.Gui.AutoLocalize = look ~= nil"),
     ("the Tab list name stays as it is", SPS + "PlayerListUI.luau", "AutoLocalize = false, -- A23-179: a player's name"),
     ("supporters' names stay as they are", SPS + "SupporterBoard.luau", "row.AutoLocalize = false"),
     ("the nickname box (typed) stays as it is", SPS + "Panels.luau", "AutoLocalize = false"),
-    ("the market box (typed) stays as it is", SPS + "MarketWindow.luau", "tb.AutoLocalize = false"),
     ("the skill seconds stay as they are", SPS + "SkillBar.luau", "AutoLocalize = false, -- A23-179: seconds only"),
     ("the Altar of Fate prompt is translated again", "ServerScriptService/MapBuilder.luau", "prompt.AutoLocalize = true"),
     ("UIKit.NoTranslate exists", SPS + "UIKit.luau", "function UIKit.NoTranslate(inst)"),
@@ -58,7 +62,12 @@ MUTATIONS = [
     ("a plain text label switched off", SPS + "Panels.luau", "\tl.TextXAlignment = opts.Align or Enum.TextXAlignment.Left\n",
      "\tl.TextXAlignment = opts.Align or Enum.TextXAlignment.Left\n\tl.AutoLocalize = false\n"),
     ("the name line translated", "ServerScriptService/CharacterVisuals.luau", "\tline1.AutoLocalize = false", "\tline1.AutoLocalize = true"),
-    ("numbers translated", SPS + "UIKit.luau", "if props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end", ""),
+    ("the Number font switches translation off again", SPS + "UIKit.luau", "\t-- A23-179 (review 10/14): Number = the number font only;",
+     "\tif props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end\n\t-- A23-179 (review 10/14): Number = the number font only;"),
+    ("the title back inside the name line", "ServerScriptService/CharacterVisuals.luau", "local line1 = Util.PlayerDisplayName(player)",
+     'local line1 = "[" .. tostring(title) .. "] " .. Util.PlayerDisplayName(player)'),
+    ("the Power line switched off", SPS + "HUD.luau", "Name = \"PowerUp\",", "Name = \"PowerUp\", AutoLocalize = false,"),
+    ("the character window's name translated", SPS + "CharacterUI.luau", "pcall(function() nickLabel.AutoLocalize = false end)", "local _ = nickLabel"),
     ("loot lines never translated", SPS + "Fx.luau", "e.Gui.AutoLocalize = look ~= nil", "e.Gui.AutoLocalize = false"),
     ("the altar prompt off again", "ServerScriptService/MapBuilder.luau", "prompt.AutoLocalize = true", "prompt.AutoLocalize = false"),
     ("the Language row back in Order", "ReplicatedStorage/Shared/Config.luau", '"Tags", "BagSort", "Cam" },', '"Tags", "Lang", "BagSort", "Cam" },'),
@@ -118,6 +127,16 @@ def check(src: dict[str, str]) -> list[tuple[str, bool, str]]:
     rows.append(("the faction picker keeps no crafting words of its own (Config.UIArt.FactionPerks / Factions.Neutral.Note)",
                  not re.search(r'"Craft(ing)?( \(soon\)| soon| \(coming soon\))?"', fp) and "Crafting (coming soon)" not in fp, ""))
     rows.append(("the Artisan note has no code copy", 'local NEUTRAL_NOTE = ""' in fp, ""))
+    # review 10/14: the Number font never switches translation off by itself; the nametag's line 1 is the name alone
+    ui = strip(src.get(SPS + "UIKit.luau", ""))
+    rows.append(("UIKit's Number font does not turn translation off", "props.Number and props.AutoLocalize" not in ui, ""))
+    cv = src.get("ServerScriptService/CharacterVisuals.luau", "")
+    rows.append(("nametag line 1 = the name alone (the title is not in it)",
+                 "local line1 = Util.PlayerDisplayName(player)" in cv and '"[" .. tostring(title) .. "] " ..' not in cv
+                 and "titleLabel.AutoLocalize" not in cv, ""))
+    hud = strip(src.get(SPS + "HUD.luau", ""))
+    rows.append(("the HUD switches translation off only on its 5 number-only labels (not the Power line)",
+                 len(re.findall(r"AutoLocalize\s*=\s*false", hud)) == 5, str(len(re.findall(r"AutoLocalize\s*=\s*false", hud)))))
     return rows
 
 

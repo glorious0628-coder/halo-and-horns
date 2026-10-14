@@ -607,7 +607,6 @@ local function inputBox(parent, name, text, placeholder, props)
 	local art = kit.ArtFrame("InputField", aprops, { BackgroundColor3 = Color3.fromRGB(236, 226, 200), CornerRadius = UDim.new(0, 8) })
 	local tb = Instance.new("TextBox")
 	tb.Name = "Input"
-	tb.AutoLocalize = false -- A23-179: what a player types stays as it is
 	tb.BackgroundTransparency = 1
 	tb.BorderSizePixel = 0
 	tb.ClearTextOnFocus = false

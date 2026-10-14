@@ -811,8 +811,9 @@ local function drawLeft(frame, ctx)
 	-- [Change] -> the Panels "Nickname" window
 	local nick = attr("Nickname", "")
 	nick = (type(nick) == "string" and nick ~= "") and nick or LocalPlayer.DisplayName
-	label(frame, nick, L.Size.Name, colorOf("Text"), { Name = "Nickname", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),
+	local nickLabel = label(frame, nick, L.Size.Name, colorOf("Text"), { Name = "Nickname", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),
 		TextXAlignment = Enum.TextXAlignment.Center, TextWrapped = false, LayoutOrder = nextOrder() })
+	if typeof(nickLabel) == "Instance" then pcall(function() nickLabel.AutoLocalize = false end) end -- A23-179: a name
 	local pk = VIEW.Kit
 	if type(pk) == "table" and type(pk.Button) == "function" and type(pk.Open) == "function" then
 		local change = pk.Button(frame, tx(TXT, "Change"), pk.Palette.Button, UDim2.fromOffset(L.ChangeW, L.ChangeH), function()

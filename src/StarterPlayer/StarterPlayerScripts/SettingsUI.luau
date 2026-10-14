@@ -275,6 +275,24 @@ local function buildMain(kit, frame)
 		cb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
 	end)
 
+	-- 2-C #9 (최종 검수 10/14): the two rows the Settings blob always had but the window never showed - damage numbers
+	-- (All / Off; Fx MOTION.DamageNumbersOn) and other players' name tags (All -> Nearby only -> Off; NameTagPrefs)
+	local _, hd = row(kit, frame, ST.DmgNumEn or ST.DmgNum)
+	local db = button(kit, hd, W.On, nil, function()
+		settingsSet("DmgNum", settingsGet("DmgNum", "All") == "Off" and "All" or "Off")
+	end)
+	table.insert(refresh, function() paintToggle(kit, db, settingsGet("DmgNum", "All") ~= "Off") end)
+	local _, ht = row(kit, frame, ST.TagsEn or ST.Tags)
+	local tb = button(kit, ht, "", nil, function()
+		local cur = settingsGet("Tags", "All")
+		settingsSet("Tags", cur == "All" and "Near" or cur == "Near" and "Off" or "All")
+	end)
+	table.insert(refresh, function()
+		local v = settingsGet("Tags", "All")
+		v = (v == "Near" or v == "Off") and v or "All"
+		tb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
+	end)
+
 	if UserInputService.KeyboardEnabled then
 		local _, hb = row(kit, frame, ST.KeyBadgesEn or ST.KeyBadges)
 		local kb = button(kit, hb, W.On, nil, function() settingsSet("KeyBadges", settingsGet("KeyBadges", true) == false) end)

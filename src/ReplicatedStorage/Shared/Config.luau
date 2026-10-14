@@ -4729,6 +4729,7 @@ Config.Visuals = {
 	SackThresholdsPerLevel = { 10, 40, 120, 300, 800 }, -- sack tier = count of thresholds t with gold >= t * level
 	SackSizes = { 0.8, 1.2, 1.6, 2.1, 2.8 }, -- ball diameter per tier (tier 0 = no sack)
 	NametagMaxDistance = 120,
+	NametagNearDistance = 40, -- 2-C #9: Settings "Other players' name tags" = Nearby only (NameTagPrefs, this client only)
 	MaxDamagePopups = 25,
 	FxCullDistance = 150,
 	GrudgeSackColor = Color3.fromRGB(110, 40, 150),
