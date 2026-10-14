@@ -260,6 +260,7 @@ Config.Data = {
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
 		"TutorialStep", "TutorialKills", -- addendum A4 (kills: meadow guide after a mid-mission death)
 		"IntroSeen", -- A23-9
+		"HuntFame", -- 10/14 dev1: the Hero window's hunt bar (units toward the next Honor / Infamy point; HuntFameService keeps it)
 		"AutoCombatUnlocked", "AutoCombatEnabled", -- A23-1
 		"SkillSlots", -- SKL-2: the SkillBar shows these slots
 		"BagSlots", -- bag slots (game dev 2, 10/14): the bag draws this many open slots

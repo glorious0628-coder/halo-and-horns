@@ -5,7 +5,8 @@
 -- level counts nothing. Every KillsPerPoint units = Points of the player's own score through PlayerService.GrantFame (ctx
 -- Hunt: RankingService puts it on no board - the boards count fair PvP only) and one "Honor +1 from hunting!" line.
 -- Neutral / None: nothing (Neutral has its artisan fame). Personal / practice monsters: nothing. The units are saved
--- (data.HuntFame, additive), so they carry over sessions and servers.
+-- (data.HuntFame, additive), so they carry over sessions and servers. Player attribute "HuntFame" = the same count (the Hero
+-- window's bar, 0..KillsPerPoint-1): PlayerService sets it on load (Config.Data.Mirrored), OnKilled after each count.
 --   HuntFameService.Counts(level, zoneId) -> bool   .OnKilled(player, info)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -57,6 +58,7 @@ function HuntFameService.OnKilled(player, info)
 	local have = math.max(0, num(data.HuntFame)) + (info.Golden == true and num(H.GoldenUnits, 5) or num(H.Units, 1))
 	local whole = math.floor(have / per)
 	data.HuntFame = have - whole * per
+	player:SetAttribute("HuntFame", data.HuntFame)
 	if whole <= 0 then return end
 	local points = whole * math.max(1, math.floor(num(H.Points, 1)))
 	S.PlayerService.GrantFame(player, stat, points, { Hunt = true })
