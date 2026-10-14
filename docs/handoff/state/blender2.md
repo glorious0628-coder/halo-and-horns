@@ -8,6 +8,9 @@
 - **바꾼 Tripo 설정(최종 검수 OK 10/14, 사용자에게 보일 것):** 전 = 텍스처 꺼짐 · 부분별 생성 켬(체험 ×1, 정밀) · 폴리곤 50000 → 버튼 60(줄)→0. 후 = 텍스처 켬 4K · 조명 제거 켬 · PBR 켬 · 부분별 생성 끔(체험 ×1 안 씀) · 울트라 켬 · 삼각형 · 폴리곤 12000/8000 → 버튼 '55'. 지금 마지막 값 = 12000.
 - **HD 13개 생성(20,190 → 19,475 = 13×55):** WhiteRock_a 498f66d3 · b 78f0c1d6 · c a6b39726 (12000) · ArmoryBarrel e08980ed (8000) · Fountain3 Basin 0e2d4eb8 · MidTier cb8a51d3 (12000) · Top 4f330660 (8000) · TreePlanter 052facfa · TreeFruit 24e1eae7 · RoundTree_E_Trunk e3a13cd9 · G_Trunk a777bbed (8000) · E_Canopy 14f82dd5 · G_Canopy a5d8ebce (12000). records 키 <이름>_web2_hd (GLB 아직 디스크에 없음). 목록 scratchpad hd_q.txt.
 - 받기 대기: 로컬 네트워크 '허용' 뒤 13개 + 사람 3개 GLB → recv3.py → PBR 시트. 단순 14 = 이름 목록이 문서에 없음 → 최종 검수에 물음.
+- **10:20 화분·꽃 20개 생성(④, 최종 검수 큐 추가):** 그릇 7(Daisy_Pot 8000, 나머지 12000)·잎 6(12000)·공유 꽃 7(8000). 합계 오늘 33개 = 1,815점, 잔액 20,190 → 18,375. id는 records <이름>_web2_hd, 목록 scratchpad hd_q.txt.
+- **로컬 네트워크 허용됨(사용자) → 받기 됨:** 페이지 window.__pump()(assets API → model_url fetch → 127.0.0.1:8765 recv3.py) → art/models/tripo/web/<이름>_HD_pbr_src.glb. 10:19 26개 받음(JuiceMan·MailBoy·OldSailor + 소품 23). 사람 3 = records '통짜 HD, 사용자 방식 아님'. 나머지 10개는 Tripo에서 도는 중 → 끝나면 __pump() 다시.
+- PBR 시트: pbr_gate.py 512/2048 → art/review/design/pbr_gate_hd_1014/r → pbr_gate_sheet.py → 같은 폴더 jpg → 디자인 검수.
 - 다음: 최종 검수 '전달함, 시작' 뒤 Chrome(Tripo) 큐 — JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) → 단순 14 → 분수 부품 → 나무 부품. 설정 = HD 탭, 4K('55'), 조명 제거, PBR, 삼각형.
 
 
