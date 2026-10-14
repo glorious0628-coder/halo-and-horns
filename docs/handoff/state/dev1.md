@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 2 — fix/goal-chips-3 6dc8edd0 (다 됨·push, 최신)
+- d31252ac 위 6dc8edd0: Config.luau GotHonor/GotHonorEn을 '-- Config.Plural' 주석 밖 자기 줄로. origin/main과 병합 깨끗(main은 2f8ccc12 뒤 src·시험 안 바꿈).
+- 시험 18개 모두 0 failing·MISSED 0: goal_chips 51·19/19, death_screen 15·9/9, ko_screen 52/52·30/30, story_text errors 0, first_ko 225, first_ko_king 300(314), first_look 16·16/16, hud_layout 11970, hud_reveal 25·15/15, quest_lines 27/27, phone_first10 23·18/18, phone_text 19·11/11, comeback_client 17·9/9, english 81, l10n 92·29/29, fit_text 7/7, camera_input 42/42, place_english(--place) 한글 0.
+- 최종 검수 병합 대기 → 메인 반영 1 사진 `HH_MAIN_STUDIO=1 py tools/play_goal_chips_photos.py [phone]`.
+- 다음: ④ 공용 선택 카드 창 준비 + MINOR 1 Held(아래 10/14 새벽 2), origin/main 위 새 가지. 켜기는 10/17 뒤.
+
 ## 10/14 밤 — fix/goal-chips-3 d31252ac (WIP, 최신; 사용자 계정 옮김으로 정리)
 - 가지 **fix/goal-chips-3 d31252ac**(origin/main 2f8ccc12 위, worktree ../wt_dev1merge), 2-A ①②③(A23-167):
   - ① HUD 칩 2·3층: HUD L.GoalTiers(순수)·L.RefreshGoalTiers·L.GoalTierSize·L.GoalTiersOn, 추적기(QuestTracker) 안 GoalTier2/3(LayoutOrder 4·5), 작은 PC 창 높이 계산에 포함. Config.GoalChips(Steps·Text, 폰 TouchTiers=1).
