@@ -3595,10 +3595,13 @@ end
 function UIKit.Tr(key, ...)
 	local n = select("#", ...)
 	local tr = UIKit.TR.Translator
-	if tr and n > 0 and not UIKit.TR.English and type(key) == "string" then
+	-- 최종 검수 10/14 (publish5 Korean photo: 'Next: Lv 5 · first skill', 'Big goal: Win the Crown' kept their inner pieces
+	-- in English): a piece WITHOUT arguments goes by its key too - it is often put inside another sentence (the goal
+	-- chips' step / side word), where Roblox's automatic translation of drawn labels never reaches it
+	if tr and not UIKit.TR.English and type(key) == "string" then
 		local fmt = UIKit.L10n.Get(key, "en")
 		if type(fmt) == "string" and fmt ~= key then
-			local ok, out = pcall(tr.FormatByKey, tr, key, UIKit.TrArgs(fmt, ...))
+			local ok, out = pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})
 			if ok and type(out) == "string" and out ~= "" then return out end
 		end
 	end
@@ -3622,8 +3625,7 @@ function UIKit.Tx(t, key, ...)
 	if type(key) == "string" and (t[key] ~= nil or t[key .. "En"] ~= nil) then
 		local path = UIKit.L10n.PathOf(t)
 		if path ~= nil then
-			if select("#", ...) > 0 then return UIKit.Tr(path .. "." .. key, ...) end -- 10/14: by key (translated)
-			return UIKit.L10n.T(path .. "." .. key, nil, UIKit.Lang())
+			return UIKit.Tr(path .. "." .. key, ...) -- 10/14: by key (translated), with or without arguments
 		end
 	end
 	local s = t[key .. "En"] or t[key]

@@ -92,7 +92,11 @@ check(out == "KO[Config.GoalChips.Text.Zone]5|Woods" and fcalls[1] == "Config.Go
 check(UIKit.Tr("Unknown.Key", 1):sub(1, 3) == "EN:" and #fcalls == 1, "an unknown key: English, the translator not asked")
 TEMPLATES["Bad.Key"] = "x %s"
 check(UIKit.Tr("Bad.Key", 1):sub(1, 3) == "EN:" and #fcalls == 2, "the translator fails: English")
-check(UIKit.Tr("Config.GoalChips.Text.Zone"):sub(1, 3) == "EN:" and #fcalls == 2, "no arguments: the plain sentence (auto translation)")
+-- 10/14 (publish5): a piece without arguments goes by its key too (it may sit inside another sentence)
+out = UIKit.Tr("Config.GoalChips.Text.Zone")
+check(out == "KO[Config.GoalChips.Text.Zone]" and #fcalls == 3, "no arguments: by its key too (FormatByKey, no arguments)", out)
+table.remove(fcalls)
+check(UIKit.Tr("Unknown.Word"):sub(1, 3) == "EN:" and #fcalls == 2, "no arguments, unknown key: English, not asked")
 TEMPLATES["Config.X.Up"] = "Up %.1f%%"
 out = UIKit.Tr("Config.X.Up", 2.345)
 check(out == "KO[Config.X.Up]2.3", "the table gets the printed number (2.3), not the raw one", out)
@@ -101,7 +105,26 @@ table.remove(fcalls)
 local Craft = { __path = "CraftWindow.TXT", Power = "Power %s → %s", Title = "Crafting" }
 out = UIKit.Tx(Craft, "Power", "120", "150")
 check(out == "KO[CraftWindow.TXT.Power]120|150", "UIKit.Tx with arguments -> UIKit.Tr by its key", out)
-check(UIKit.Tx(Craft, "Title"):sub(1, 3) == "EN:" and #fcalls == 3, "UIKit.Tx without arguments: as before")
+TEMPLATES["CraftWindow.TXT.Title"] = "Crafting"
+out = UIKit.Tx(Craft, "Title")
+check(out == "KO[CraftWindow.TXT.Title]" and #fcalls == 4, "UIKit.Tx without arguments: by its key too", out)
+-- 5. the goal chips (HUD L.GoalTiers, the real function): the inner pieces (the step, the side word) are translated
+-- by their keys BEFORE they go into 'Next: %s' / 'Big goal: %s' (publish5: they stayed English)
+for k, v in { Next = "Next: %s", Big = "Big goal: %s", FirstSkill = "Lv %d · first skill", Halo = "Win the Crown" } do
+	TEMPLATES["Config.GoalChips.Text." .. k] = v
+end
+local Config = { GoalChips = { Enabled = true, Steps = { { Kind = "Skill", Slot = "Q" } },
+	Text = { __path = "Config.GoalChips.Text", Next = "Next: %s", Big = "Big goal: %s", FirstSkill = "Lv %d · first skill",
+		Skill = "Lv %d · new skill", Halo = "Win the Crown", Horns = "Win the Crown" } },
+	Skills = { Order = { "Q", "Z", "X" }, Unlock = { Q = 5 } }, Zones = {} }
+local L = {}
+function L.Tx(t, key, ...) return UIKit.Tx(t, key, ...) end
+local fg = assert(loadstring(GOAL, "=GoalTiers"))
+setfenv(fg, setmetatable({ L = L, Config = Config }, { __index = getfenv() }))
+fg()
+local nextLine, big = L.GoalTiers(1, 0, 0, "Halo", nil)
+check(nextLine == "KO[Config.GoalChips.Text.Next]KO[Config.GoalChips.Text.FirstSkill]5", "goal chip tier 2: the step inside is translated too", nextLine)
+check(big == "KO[Config.GoalChips.Text.Big]KO[Config.GoalChips.Text.Halo]", "goal chip tier 3: the side word inside is translated too", big)
 print(("UI_TR_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -110,12 +133,13 @@ MUTATIONS = [
     ("a bad argument breaks the list", "out[i] = ok and s or tostring(v)", "out[i] = s"),
     ("the form keeps %%", 's = string.gsub(s, UIKit.TR.Pct, "%%")', "s = s"),
     ("A: '70% gives' read as a slot again (the space flag)", 'Spec = "%%[-+#0]*', 'Spec = "%%[-+ #0]*'),
-    ("an English player asks the translator", "if tr and n > 0 and not UIKit.TR.English and", "if tr and n > 0 and"),
+    ("an English player asks the translator", "if tr and not UIKit.TR.English and type(key)", "if tr and type(key)"),
     ("an unknown key asks the translator", 'if type(fmt) == "string" and fmt ~= key then', 'if type(fmt) == "string" then'),
-    ("a translator error not caught", "local ok, out = pcall(tr.FormatByKey, tr, key, UIKit.TrArgs(fmt, ...))",
-     "local ok, out = true, tr:FormatByKey(key, UIKit.TrArgs(fmt, ...))"),
-    ("raw arguments to the table", "pcall(tr.FormatByKey, tr, key, UIKit.TrArgs(fmt, ...))", "pcall(tr.FormatByKey, tr, key, { ... })"),
-    ("Tx skips Tr", 'if select("#", ...) > 0 then return UIKit.Tr(path .. "." .. key, ...) end', ""),
+    ("a translator error not caught", "local ok, out = pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})",
+     "local ok, out = true, tr:FormatByKey(key, n > 0 and UIKit.TrArgs(fmt, ...) or {})"),
+    ("raw arguments to the table", "pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})", "pcall(tr.FormatByKey, tr, key, { ... })"),
+    ("Tx skips Tr", '\t\t\treturn UIKit.Tr(path .. "." .. key, ...) -- 10/14', '\t\t\treturn UIKit.L10n.T(path .. "." .. key, nil, UIKit.Lang()) -- 10/14'),
+    ("a piece without arguments stays English (publish5)", "if tr and not UIKit.TR.English and type(key)", "if tr and n > 0 and not UIKit.TR.English and type(key)"),
     ("no translator asked at start", "\ttask.spawn(UIKit.TrStart) -- 10/14", "\t-- task.spawn(UIKit.TrStart) -- 10/14"),
 ]
 
@@ -196,11 +220,16 @@ def first_minutes() -> list[tuple[str, bool]]:
     ]
 
 
+def goal_cut() -> str:
+    hud = (SPS_DIR / "HUD.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    return cut(hud, "function L.GoalTiers(", "\nend\n", keep_end=True)
+
+
 def run(src: str) -> tuple[int, int, str]:
     part, tx = cut(src, *CUT), cut(src, *TX_CUT, keep_end=True)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "ui_tr.luau"
-        p.write_text("local PART = " + lua_str(part) + "\nlocal TX = " + lua_str(tx) + "\n" + samples_lua() + FIXTURE, encoding="utf-8")
+        p.write_text("local PART = " + lua_str(part) + "\nlocal TX = " + lua_str(tx) + "\nlocal GOAL = " + lua_str(goal_cut()) + "\n" + samples_lua() + FIXTURE, encoding="utf-8")
         proc = subprocess.run([str(BINARY), str(p)], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     out = proc.stdout + proc.stderr
     m = re.search(r"UI_TR_SUMMARY checks=(\d+) failed=(\d+)", out)
