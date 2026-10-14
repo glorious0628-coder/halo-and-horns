@@ -133,6 +133,8 @@ end
 function WeaponPose.MemeLook(tool, meme)
 	local handle = tool:FindFirstChild("Handle")
 	local look = tool:FindFirstChild(T.MemeLook)
+	-- dev1-weapon-mesh: the server's Tripo joke weapon (WeaponMesh) is the look itself: no code look, nothing hidden
+	if tool:FindFirstChild("WeaponMesh") then meme = nil end
 	if look and look:GetAttribute("Meme") ~= meme then
 		look:Destroy()
 		look = nil

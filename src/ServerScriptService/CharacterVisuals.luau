@@ -938,6 +938,77 @@ function SHAPES.ShortBow(H, sc, w, color)
 	return buildBow(H, sc, w, color, 0.75)
 end
 
+-- dev1-weapon-mesh (최종 검수 10/14): an uploaded Tripo weapon (Config.WeaponMeshFor) rides on the code shape's Handle: the
+-- code parts stay (the grip, the muzzle, the bow nock, the lights) but go invisible, the MeshPart "WeaponMesh" is sized
+-- to the code shape's length and its grip point sits on the Handle's grip point; no mesh = the code shape as before.
+-- Templates load once at Start (WMESH.Load, AssetService, pcall): buildWeapon never waits (not loaded yet = code)
+local WMESH = { Cache = {}, Loading = {}, Name = "WeaponMesh" }
+
+function WMESH.Load(entry)
+	local id = entry.MeshId
+	if WMESH.Cache[id] or WMESH.Loading[id] then return WMESH.Cache[id] end
+	WMESH.Loading[id] = true
+	local ok, part = pcall(function()
+		return game:GetService("AssetService"):CreateMeshPartAsync(id, { CollisionFidelity = Enum.CollisionFidelity.Box })
+	end)
+	WMESH.Loading[id] = nil
+	if not (ok and typeof(part) == "Instance" and part:IsA("MeshPart")) then
+		Util.Warn(TAG, "weapon mesh did not load: " .. tostring(id) .. " " .. tostring(part))
+		return nil
+	end
+	if type(entry.TextureId) == "string" and entry.TextureId ~= "" then pcall(function() part.TextureID = entry.TextureId end) end
+	WMESH.Cache[id] = part
+	return part
+end
+
+function WMESH.PreloadAll()
+	local M = Config.WeaponMeshes
+	for _, row in type(M) == "table" and M or {} do
+		for _, e in type(row) == "table" and row or {} do
+			if type(e) == "table" and type(e.MeshId) == "string" and e.MeshId ~= "" then WMESH.Load(e) end
+		end
+	end
+end
+
+-- (pure) the code shape's length (studs) along the Handle's +Y: the lowest to the highest end of every part, each
+-- measured in the Handle's space (its centre +- half its size along the Handle's axis)
+function WMESH.CodeLength(parts, handle)
+	local lo, hi = math.huge, -math.huge
+	for _, p in parts do
+		local rel = handle.CFrame:ToObjectSpace(p.CFrame)
+		local up = rel.UpVector
+		local half = (math.abs(up.Y) * p.Size.Y + math.abs(rel.RightVector.Y) * p.Size.X + math.abs(rel.LookVector.Y) * p.Size.Z) / 2
+		lo = math.min(lo, rel.Position.Y - half)
+		hi = math.max(hi, rel.Position.Y + half)
+	end
+	return hi > lo and hi - lo or handle.Size.Y
+end
+
+-- (pure) the mesh's scale (code length / its own) and its centre's offset up the Handle from the Handle's centre: the
+-- grip point of the code (Point of the Handle) = the mesh's grip point (Pivot of its length, scaled)
+function WMESH.Fit(entry, codeLen, handleLen, point)
+	local scale = codeLen / entry.Length
+	local grip = (point - 0.5) * handleLen
+	return scale, grip + (0.5 - entry.Pivot) * entry.Length * scale
+end
+
+-- the mesh on the placed Handle (parts already where the hand holds them): returns the MeshPart (added to `parts`) or nil
+function WMESH.Attach(parts, handle, entry, point)
+	local template = entry and WMESH.Cache[entry.MeshId]
+	if not template then return nil end
+	local scale, dy = WMESH.Fit(entry, WMESH.CodeLength(parts, handle), handle.Size.Y, point)
+	if not (scale > 0 and scale < 100) then return nil end
+	local mesh = template:Clone()
+	mesh.Name = WMESH.Name
+	mesh.Size = template.Size * scale
+	mesh.CFrame = handle.CFrame * CFrame.new(0, dy, 0)
+	mesh.Anchored, mesh.CanCollide, mesh.CanQuery, mesh.CanTouch, mesh.Massless = false, false, false, false, true
+	mesh.CastShadow = false
+	for _, p in parts do p.Transparency = 1 end
+	table.insert(parts, mesh)
+	return mesh
+end
+
 local function buildWeapon(player, character)
 	clearChild(character, "WeaponModel")
 	-- a Tool the engine moved to the Backpack (an unequip) never comes back by itself: dropped with the old one
@@ -991,6 +1062,10 @@ local function buildWeapon(player, character)
 	for _, p in parts do
 		p.CFrame = place * p.CFrame
 	end
+	-- dev1-weapon-mesh: the uploaded Tripo weapon over the code shape (the joke weapons by their Meme key)
+	local meshEntry = type(Config.WeaponMeshFor) == "function"
+		and Config.WeaponMeshFor(gkey, tier, type(w) == "table" and w.Meme or nil) or nil
+	if meshEntry then pcall(WMESH.Attach, parts, handle, meshEntry, point) end
 
 	local glow = type(w) == "table" and not w.Meme -- A23-186: a joke weapon (tier 10 / 11) never glows like T6+
 	if glow and tier >= 6 and main then
@@ -1497,6 +1572,7 @@ function CharacterVisuals.Init(registry)
 end
 
 function CharacterVisuals.Start()
+	task.spawn(WMESH.PreloadAll) -- dev1-weapon-mesh: the weapon meshes load once (buildWeapon never waits)
 	print("[CharacterVisuals] started")
 end
 
