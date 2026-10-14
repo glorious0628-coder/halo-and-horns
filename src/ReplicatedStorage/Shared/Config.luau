@@ -316,6 +316,16 @@ Config.WeaponMemes = {
 	Pan = { Sound = "Bonk", SoundId = "", Push = 1.5 },
 	Chicken = { Sound = "Squeak", SoundId = "", Particle = "Feathers", ParticleId = "" },
 }
+-- A23-186 the screen side (game dev 1): the Forge row's one line under a joke weapon, and the code-drawn look while the
+-- art is not made (WeaponPose.MemeLook, this client only, over the server's class-shaped model; held like a sword)
+Config.WeaponMemeScreen = {
+	Line = "Just for fun: not stronger, just funny!",
+	Look = {
+		Pan = { Pan = { Size = { 0.25, 1.7, 1.7 }, Color = { 40, 40, 46 } }, Handle = { Size = { 0.25, 1.4, 0.25 }, Color = { 90, 60, 40 } } },
+		Chicken = { Body = { Size = { 0.8, 1.9, 0.8 }, Color = { 255, 214, 60 } }, Comb = { Size = { 0.2, 0.35, 0.45 }, Color = { 220, 40, 40 } },
+			Beak = { Size = { 0.2, 0.2, 0.3 }, Color = { 255, 150, 30 } } },
+	},
+}
 -- A23-186: true for a tier the Forge sells for gold (2..MaxSoldTier and every Meme row; tier 1 is the M1_1 gift)
 function Config.WeaponSoldAtForge(tier)
 	local def = type(tier) == "number" and Config.Weapons[tier] or nil
