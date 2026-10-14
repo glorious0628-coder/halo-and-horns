@@ -135,8 +135,8 @@ def check(src: dict[str, str]) -> list[tuple[str, bool, str]]:
                  "local line1 = Util.PlayerDisplayName(player)" in cv and '"[" .. tostring(title) .. "] " ..' not in cv
                  and "titleLabel.AutoLocalize" not in cv, ""))
     hud = strip(src.get(SPS + "HUD.luau", ""))
-    rows.append(("the HUD switches translation off only on its 5 number-only labels (not the Power line)",
-                 len(re.findall(r"AutoLocalize\s*=\s*false", hud)) == 5, str(len(re.findall(r"AutoLocalize\s*=\s*false", hud)))))
+    rows.append(("the HUD switches translation off only on its 6 number-only labels (+ the war bar time, A23-130; not the Power line)",
+                 len(re.findall(r"AutoLocalize\s*=\s*false", hud)) == 6, str(len(re.findall(r"AutoLocalize\s*=\s*false", hud)))))
     return rows
 
 

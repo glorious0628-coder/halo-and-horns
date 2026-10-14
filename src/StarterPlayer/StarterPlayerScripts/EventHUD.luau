@@ -56,7 +56,11 @@ local LAYOUT_EVERY = 2
 -- art layout (logical px at UIScale 1)
 local L = {
 	PillH = 28, -- goose countdown / kaiju pills
-	IconW = 30, IconH = 34, -- goose icon sticking out of the pill's left end (mockup)
+	IconW = 30, IconH = 34, -- the tug bar's goose icon (sticking out of its left end, mockup)
+	-- 최종 검수 10/14 (user: "오리가 낑김" - the chip's goose was cut by its left rim): the goose chip's icon INSIDE the chip,
+	-- Left / Right inner padding, the icon = the chip's height x IconK, Gap before the words, the chip PlusH taller than a
+	-- pill, as wide as its whole line needs (never narrower than GOOSE_CHIP_W) - SQ.FitGoose / SQ.GooseNeed
+	GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.75, PlusH = 4 },
 	StripGap = 6, -- gap under HUD's war meter
 	SubHTouch = 15, -- tug hint line on touch (15 logical = 11 real px at UIScale 0.75)
 	TugSide = 74, -- rescue / poach label width inside the tug bar (at the full STRIP_W; scales with the strip, CR-L36)
@@ -497,24 +501,24 @@ local function build()
 		Name = "GooseChip",
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.fromScale(0.5, 0),
-		Size = UDim2.fromOffset(GOOSE_CHIP_W, L.PillH),
+		Size = UDim2.fromOffset(GOOSE_CHIP_W, L.PillH + L.GooseChip.PlusH),
 		Visible = false,
 		ZIndex = 3,
 	}, { CornerRadius = UDim.new(0.5, 0) }, ui.Strip)
-	local gooseIcon = Art.image("IconGoose", {
+	ui.GooseIcon = Art.image("IconGoose", {
 		Name = "GooseIcon",
 		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, -6, 0.5, -1),
-		Size = UDim2.fromOffset(L.IconW, L.IconH),
+		Position = UDim2.new(0, L.GooseChip.Left, 0.5, 0),
+		Size = UDim2.fromOffset(L.IconW, L.IconW),
 		ZIndex = 5,
 	}, ui.GooseChip)
-	local chipTextX = gooseIcon and 28 or 12
 	ui.GooseChipText = Art.text("ink", {
 		Name = "Text",
-		Position = UDim2.fromOffset(chipTextX, 1),
-		Size = UDim2.new(1, -chipTextX - 12, 1, -2), -- the line's whole height: 18 px phone line, 14 px phone text
+		Position = UDim2.fromOffset(L.GooseChip.Left, 1),
+		Size = UDim2.new(1, -L.GooseChip.Left - L.GooseChip.Right, 1, -2), -- the line's whole height
 		ZIndex = 4,
 	}, 16, ui.GooseChip)
+	SQ.FitGoose(L.PillH + L.GooseChip.PlusH)
 	if not Art.On then ui.GooseChipText.TextColor3 = GOLD end
 
 	-- goose tug-of-war: navy BarTrack capsule, gold rescue fill over the red poach fill. As wide as the strip, which
@@ -1101,12 +1105,47 @@ function SQ.update()
 	setVisible(btn, true)
 end
 
+-- the goose chip's insides for its height h (du): icon h x IconK at Left, the words after it + Gap up to Right.
+-- -> the room the chip keeps around its words (du)
+function SQ.FitGoose(h)
+	local G = L.GooseChip
+	local icon, label = ui.GooseIcon, ui.GooseChipText
+	local iw = icon and math.max(8, math.floor((tonumber(h) or L.PillH) * G.IconK + 0.5)) or 0
+	if icon then
+		local size, pos = UDim2.fromOffset(iw, iw), UDim2.new(0, G.Left, 0.5, 0)
+		if icon.Size ~= size then icon.Size = size end
+		if icon.Position ~= pos then icon.Position = pos end
+	end
+	local x = G.Left + (icon and (iw + G.Gap) or 0)
+	if label then
+		local pos, size = UDim2.fromOffset(x, 1), UDim2.new(1, -(x + G.Right), 1, -2)
+		if label.Position ~= pos then label.Position = pos end
+		if label.Size ~= size then label.Size = size end
+	end
+	return x + G.Right
+end
+
+-- the goose chip's width (du) for its whole line ("Golden Goose 3:43") at height h: never narrower than GOOSE_CHIP_W
+function SQ.GooseNeed(h)
+	local G = L.GooseChip
+	local room = G.Left + (ui.GooseIcon and (math.max(8, math.floor((tonumber(h) or L.PillH) * G.IconK + 0.5)) + G.Gap) or 0) + G.Right
+	local label, kit = ui.GooseChipText, C and C.UIKit
+	local text = SQ.FullLine or (label and label.Text) or ""
+	if not (label and text ~= "" and type(kit) == "table" and type(kit.MeasureText) == "function") then return GOOSE_CHIP_W end
+	local c = label:FindFirstChildOfClass("UITextSizeConstraint")
+	local size = math.max(label.TextSize, c and c.MinTextSize or 0)
+	local ok, _, w = pcall(kit.MeasureText, (string.gsub(text, "%d", "0")), size, label.FontFace, 100000)
+	if not (ok and type(w) == "number" and w > 0) then return GOOSE_CHIP_W end
+	return math.max(GOOSE_CHIP_W, math.ceil(room + w + 2))
+end
+
 -- A23-145 (phone photos 10/13): "Golden Goose 117:23" lost its time on a phone (the text floor is bigger than the
 -- chip): the longest line that fits the chip at its smallest text size - "Golden Goose 1:57:23" -> "Goose 1:57:23" ->
 -- "1:57:23" (the goose icon says what)
 function SQ.chipLine(seconds)
 	local t = Util.FormatTime(seconds)
 	local lines = { string.format(TXT.GooseNext, t), string.format(TXT.GooseNextShort, t), t }
+	SQ.FullLine = lines[1] -- the chip's width asks for the whole line (SQ.GooseNeed)
 	local label, kit = ui.GooseChipText, C and C.UIKit
 	if not (label and type(kit) == "table" and type(kit.MeasureText) == "function") then return lines[1] end
 	local c = label:FindFirstChildOfClass("UITextSizeConstraint")
@@ -1676,6 +1715,7 @@ function V2.put(inst, anchor, pos, size)
 	if inst.AnchorPoint ~= anchor then inst.AnchorPoint = anchor end
 	if inst.Position ~= pos then inst.Position = pos end
 	if inst.Size ~= size then inst.Size = size end
+	if inst == ui.GooseChip then SQ.FitGoose(size.Y.Offset) end -- the icon and the words follow the chip's height
 end
 
 -- switch to the column: remember the build-time / legacy spot of every moved element (V2.leave puts them back)
@@ -1690,7 +1730,7 @@ function V2.enter()
 		{ Inst = ui.Tug, W = STRIP_W, H = BAR_H, Strip = true, Tail = ui.TugSub, TailH = subH },
 		{ Inst = ui.KaijuChip, W = KAIJU_CHIP_W, H = L.PillH, Strip = true },
 		{ Inst = ui.KingChip, W = L.KingW, H = L.PillH, Strip = true, King = true },
-		{ Inst = ui.GooseChip, W = GOOSE_CHIP_W, H = L.PillH, Strip = true },
+		{ Inst = ui.GooseChip, W = GOOSE_CHIP_W, H = L.PillH + L.GooseChip.PlusH, Strip = true, Goose = true },
 	}
 	V2.Saved = {}
 	for _, inst in { ui.Strip, ui.Personal, ui.Siren, ui.SirenText, ui.Tug, ui.TugSub, ui.KaijuChip, ui.KingChip,
@@ -1776,14 +1816,15 @@ function V2.stack()
 		elseif goose then
 			eventInst = ui.GooseChip
 		end
+		local evH = num(ev.H) + (eventInst == ui.GooseChip and L.GooseChip.PlusH or 0)
 		local natural = eventInst == ui.KingChip
-			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or GOOSE_CHIP_W
+			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or SQ.GooseNeed(evH)
 		V2.EventBottom = nil
 		if eventInst then
 			local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)
 			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(evY - top + 0.5)),
-				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))
-			V2.EventBottom = evY + num(ev.H)
+				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(evH + 0.5)))
+			V2.EventBottom = evY + evH
 		end
 		setVisible(ui.KingChip, eventInst == ui.KingChip)
 		setVisible(ui.GooseChip, eventInst == ui.GooseChip)
@@ -1794,6 +1835,7 @@ function V2.stack()
 		if ev and (inst == ui.KingChip or inst == ui.GooseChip) then continue end -- the event line owns them
 		local w = row.W
 		if row.King then w = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text)) end
+		if row.Goose then w = SQ.GooseNeed(row.H) end
 		w = math.floor(math.min(w, col.W) + 0.5)
 		local h = row.H
 		if row.Flex then h = math.floor(math.min(row.H, bottom - y)) end
