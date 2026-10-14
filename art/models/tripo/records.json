@@ -12092,6 +12092,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_HD_src.glb",
    "bytes": 11946556,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind sword (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T1/Weapon_Horns_Berserker_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0772,
+    0.2652,
+    0.9827
+   ],
+   "after_studs": [
+    0.81,
+    0.236,
+    3.0
+   ],
+   "pivot_share": 0.155,
+   "tris": 14271,
+   "code_len": 3.85,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_Berserker_T2_web_hd_mv4": [
@@ -12140,6 +12163,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_HD_src.glb",
    "bytes": 11004288,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind sword (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_Berserker_T2/Weapon_Horns_Berserker_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0806,
+    0.3201,
+    0.9803
+   ],
+   "after_studs": [
+    1.143,
+    0.288,
+    3.5
+   ],
+   "pivot_share": 0.192,
+   "tris": 13660,
+   "code_len": 3.95,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_Berserker_T3_web_hd_mv4": [
@@ -12188,6 +12234,12 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_Berserker_T3/Weapon_Horns_Berserker_T3_HD_src.glb",
    "bytes": 11705188,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "judge_fail",
+   "by": "최종 검수 10/14",
+   "why": "pinhole through the blade groove (see-through = FAIL), art/review/weapon_design/Berserker_T3_pinhole.png",
+   "next": "new HD with A23-174 settings (55)"
   }
  ],
  "Weapon_Horns_DarkMage_T1_web_hd_mv4": [
@@ -12240,6 +12292,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_HD_src.glb",
    "bytes": 11983056,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T1/Weapon_Horns_DarkMage_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0781,
+    0.1892,
+    0.9813
+   ],
+   "after_studs": [
+    0.578,
+    0.239,
+    3.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14384,
+   "code_len": 3.367,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_DarkMage_T2_web_hd_mv4": [
@@ -12289,6 +12364,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_HD_src.glb",
    "bytes": 11772332,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T2/Weapon_Horns_DarkMage_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0876,
+    0.2048,
+    0.9801
+   ],
+   "after_studs": [
+    0.732,
+    0.313,
+    3.5
+   ],
+   "pivot_share": 0.45,
+   "tris": 14510,
+   "code_len": 3.441,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_DarkMage_T3_web_hd_mv4": [
@@ -12341,6 +12439,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_HD_src.glb",
    "bytes": 12503504,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind staff --grip 0.45 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_DarkMage_T3/Weapon_Horns_DarkMage_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0919,
+    0.2303,
+    0.9793
+   ],
+   "after_studs": [
+    0.941,
+    0.376,
+    4.0
+   ],
+   "pivot_share": 0.45,
+   "tris": 14488,
+   "code_len": 3.515,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_ShadowHunter_T1_web_hd_mv4": [
@@ -12389,6 +12510,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_HD_src.glb",
    "bytes": 12421940,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T1/Weapon_Horns_ShadowHunter_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0665,
+    0.2158,
+    0.9812
+   ],
+   "after_studs": [
+    0.66,
+    0.203,
+    3.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 14430,
+   "code_len": 2.325,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_ShadowHunter_T2_web_hd_mv4": [
@@ -12437,6 +12581,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_HD_src.glb",
    "bytes": 10142420,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T2/Weapon_Horns_ShadowHunter_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0727,
+    0.2142,
+    0.9807
+   ],
+   "after_studs": [
+    0.765,
+    0.259,
+    3.5
+   ],
+   "pivot_share": 0.5,
+   "tris": 13842,
+   "code_len": 2.518,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Horns_ShadowHunter_T3_web_hd_mv4": [
@@ -12485,6 +12652,29 @@
    "file": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_HD_src.glb",
    "bytes": 12563916,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py --kind bow --grip 0.5 (size / pivot / orientation only)",
+   "judge": "최종 검수 10/14: PASS",
+   "out": "art/models/tripo/weapons/Weapon_Horns_ShadowHunter_T3/Weapon_Horns_ShadowHunter_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0706,
+    0.2153,
+    0.9789
+   ],
+   "after_studs": [
+    0.88,
+    0.289,
+    4.0
+   ],
+   "pivot_share": 0.5,
+   "tris": 14202,
+   "code_len": 2.711,
+   "check": "art/review/weapon_design/chunk_Horns_fit_a.png / _b.png"
   }
  ],
  "Weapon_Neutral_Blacksmith_T1_web_hd_mv4": [

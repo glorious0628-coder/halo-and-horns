@@ -19,7 +19,7 @@
 - 2 LightMage: 최종 검수 통과(T2 각진 보석 허용) → 맞춤 끝(--kind staff --grip 0.45, 길이 3/3.5/4), 확인 `chunk2_LightMage_fit.png`. 닫힌 틈(T1 220px·T2 4,148px)은 2D에도 있는 고리 틈. T2 구슬이 3D에선 각진 보석.
 
 - 3 Ranger: 통과 → 맞춤 끝(--kind bow --grip 0.5), 확인 `chunk3_Ranger_fit.png`. 각 _HD_fit.json에 code_len(`tools/weapon_code_len.py`, 최종 검수: 넣을 때 코드가 MeshPart 크기 맞춤 = 개발 1).
-- 4~6 Horns: 시트 `chunk_Horns_{Berserker,DarkMage,ShadowHunter}.jpg` 보고, 판정 대기. Berserker T3 칼날 바늘구멍(`Berserker_T3_pinhole.png`) = 구멍 규칙상 떨어짐 후보.
+- 4~6 Horns: 8개 통과 → 맞춤 끝(확인 `chunk_Horns_fit_a/b.png`). **Berserker_T3 떨어짐**(칼날 바늘구멍) → A23-174 설정 새 HD 1개(55점) 할 차례; 새 것도 구멍이면 Codex 2D 다시.
 - 7~9 Neutral: 시트 `chunk_Neutral_{Blacksmith,Alchemist,PetTamer}.jpg` 보고, 판정 대기. Blacksmith T2 왼쪽 때리는 면이 3D는 둥근 구리판(2D는 네모 쇠). 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
 - 주의: 게임 코드(CharacterVisuals tierLen)는 Config Length를 그대로 안 씀: 칼 ≈3.85~4.55, 지팡이 = 아바타 키 0.65~0.75, 활 3.1~4.9 스터드. GLB는 Config Length로 맞췄음(최종 검수 지시) — 넣을 때 MeshPart 크기로 맞추면 됨.
 
