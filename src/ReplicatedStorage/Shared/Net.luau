@@ -104,6 +104,7 @@ Net.Names = {
 	"MarketCancel", -- c->s (listing id)
 	"PackWeapon", -- c->s (tier): an owned weapon (not in hand, not tier 1) -> a spare "T:P"
 	"UnpackSpare", -- c->s (spare key "T:P"): a spare of a tier I do not own -> owned
+	"ReviveSkip", -- 99N G c->s (): the KO'd player waiting for a friend gets up in town now (ReviveService)
 }
 
 Net.GameStateDefaults = {

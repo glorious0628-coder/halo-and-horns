@@ -8180,6 +8180,26 @@ end
 -- outside PvP zones; Name = the kaiju's PublicName) | "Monster" (Name = Config.MonsterTypes[kind].Name) | "Fall" | "Other"
 -- (a reset, the void without a fall, anything else). Lost = carried gold actually lost by this KO, Sack = a grudge sack
 -- was carried (and is gone). Texts / tips for the client DeathScreen (BB14): KO/EN, the tip picked by the situation.
+-- 99N G (계획 8, 최종 검수 10/14): helping a friend up (ReviveService). A KO with a living friend of the same side within
+-- WaitNear studs waits Wait s (instead of Player.RespawnTime) with a G prompt on the body: a friend of the same side holds it
+-- Hold s within Range studs, uses one HP potion (Potion), and the KO'd player gets up there with HPPct of MaxHealth and
+-- Shield s of spawn shield; the helper gets Fame Honor / Infamy (Neutral: none), then waits Cooldown s. Never another side
+Config.Revive = {
+	Enabled = true,
+	Range = 6, RangeSlack = 2, Hold = 3, HoldSlack = 0.25, Cooldown = 10, HPPct = 0.3, Shield = 3,
+	Wait = 10, WaitNear = 40, Potion = "HP", Fame = 1, Rate = 0.5,
+	PromptName = "ReviveFriend",
+	Text = {
+		Action = "Help up",
+		Helped = "You helped %s up!",
+		HelpedHonor = "You helped %s up! +%d Honor",
+		HelpedInfamy = "You helped %s up! +%d Mischief",
+		HelpedBy = "%s helped you up!",
+		NoPotion = "You need an HP potion to help",
+		Cooldown = "You can help again in %d s",
+	},
+}
+
 Config.Death = {
 	SourceSeconds = 3, -- a monster / kaiju hit this recent is the cause
 	FallBelowFloor = 30, -- the body this far below its zone's floor (or in free fall) = a fall
