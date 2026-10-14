@@ -60,7 +60,7 @@ local L = {
 	-- 최종 검수 10/14 (user: "오리가 낑김" - the chip's goose was cut by its left rim): the goose chip's icon INSIDE the chip,
 	-- Left / Right inner padding, the icon = the chip's height x IconK, Gap before the words, the chip PlusH taller than a
 	-- pill, as wide as its whole line needs (never narrower than GOOSE_CHIP_W) - SQ.FitGoose / SQ.GooseNeed
-	GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.75, PlusH = 4 },
+	GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.65, PlusH = 4 }, -- 1안 ③: a 26 px goose in the 40 px chip
 	StripGap = 6, -- gap under HUD's war meter
 	SubHTouch = 15, -- tug hint line on touch (15 logical = 11 real px at UIScale 0.75)
 	TugSide = 74, -- rescue / poach label width inside the tug bar (at the full STRIP_W; scales with the strip, CR-L36)
@@ -1133,7 +1133,8 @@ function SQ.FitGoose(h)
 	end
 	local x = G.Left + (icon and (iw + G.Gap) or 0)
 	if label then
-		local pos, size = UDim2.fromOffset(x, 1), UDim2.new(1, -(x + G.Right), 1, -2)
+		local right = G.Right + ((SQ.NewRes or 0) > 0 and (SQ.NewRes - G.Right) or 0) -- 1안 ③: the NEW! room
+		local pos, size = UDim2.fromOffset(x, 1), UDim2.new(1, -(x + right), 1, -2)
 		if label.Position ~= pos then label.Position = pos end
 		if label.Size ~= size then label.Size = size end
 	end
@@ -1689,6 +1690,48 @@ end
 -- above the drawn bottom of the top-centre HUD (HUD.TopBottom: the war meter with its info line / plate, the chips row)
 -- plus Gap - one column, top to bottom, on PCs and phones. Pure (tools/test_hud_top_overlap.py)
 V2.TopGap = 6
+-- 최종 검수 10/14 상단 HUD 1안 ③ / ④ (real px): the event chip H tall (phone HTouch = the touch target), its words at
+-- least TextPx, the NEW! tag INSIDE its right end (NewW wide, NewGap from the words, NewRight from the end; dropped
+-- first when the chip cannot widen for it), shown NewSeconds
+L.EventTop = { H = 40, HTouch = 44, TextPx = 18, TextPxTouch = 19, NewW = 58, NewWTouch = 62, NewGap = 8, NewRight = 10,
+	NewSeconds = 6 }
+
+-- (pure) 1안 ③: ONE event chip - cands = { { Inst, Class, In } }: Class 2 = a danger on me now (the kaiju), 3 = an event
+-- I can join now (the live king, the open goose), 4 = the nearest coming one (In = seconds); the lowest class wins, then
+-- the soonest; a tie (same class; class 4: the same second) keeps the chip shown now (`current`: no swapping each tick)
+function V2.PickEvent(cands, current)
+	local best = nil
+	for _, c in cands do
+		if not best or c.Class < best.Class or (c.Class == best.Class and num(c.In) < num(best.In)) then best = c end
+	end
+	if not best then return nil end
+	for _, c in cands do
+		if c.Inst == current and c.Class == best.Class and (c.Class < 4 or math.abs(num(c.In) - num(best.In)) < 1) then
+			return current
+		end
+	end
+	return best.Inst
+end
+
+-- the event chips' words at least L.EventTop.TextPx real px (their UITextSizeConstraints are screen px)
+function V2.EventMinText()
+	local px = IS_TOUCH and L.EventTop.TextPxTouch or L.EventTop.TextPx
+	for _, label in { ui.GooseChipText, ui.KingChipText, ui.KaijuChipText } do
+		local c = label and label:FindFirstChildOfClass("UITextSizeConstraint")
+		if c then
+			if c.MaxTextSize < px then c.MaxTextSize = px end
+			c.MinTextSize = px
+		end
+	end
+end
+
+-- the NEW! room (du) the shown event chip keeps on its right while its tag shows, else 0
+function V2.NewRoom(inst)
+	if not (inst and V2.NewOn == inst and os.clock() < (V2.NewUntil or 0)) then return 0 end
+	local E = L.EventTop
+	return ((IS_TOUCH and E.NewWTouch or E.NewW) + E.NewGap + E.NewRight) / currentScale()
+end
+
 function V2.EventTop(evY, hudBottom, gap)
 	evY = num(evY)
 	if type(hudBottom) == "number" and hudBottom == hudBottom then
@@ -1735,6 +1778,13 @@ function V2.put(inst, anchor, pos, size)
 	if inst.Position ~= pos then inst.Position = pos end
 	if inst.Size ~= size then inst.Size = size end
 	if inst == ui.GooseChip then SQ.FitGoose(size.Y.Offset) end -- the icon and the words follow the chip's height
+	-- 1안 ③: the king / kaiju words keep clear of the NEW! room inside the right end
+	local words = inst == ui.KingChip and ui.KingChipText or inst == ui.KaijuChip and ui.KaijuChipText or nil
+	if words then
+		local res = V2.NewRoom(inst)
+		local want = UDim2.new(1, -(24 + (res > 0 and res - 12 or 0)), words.Size.Y.Scale, words.Size.Y.Offset)
+		if words.Size ~= want then words.Size = want end
+	end
 end
 
 -- switch to the column: remember the build-time / legacy spot of every moved element (V2.leave puts them back)
@@ -1810,6 +1860,7 @@ function V2.layout()
 		Bottom = ny + nh,
 	}
 	applyMinText(minText)
+	V2.EventMinText()
 	V2.stack()
 end
 
@@ -1828,30 +1879,53 @@ function V2.stack()
 	local ev = type(rects) == "table" and rects.event or nil
 	local eventInst = nil
 	if type(ev) == "table" and num(ev.W) > 0 and num(ev.H) > 0 then
-		local king = want[ui.KingChip] == true and V2.KingIn or nil
-		local goose = want[ui.GooseChip] == true and V2.GooseIn or nil
-		if king and (not goose or king <= goose) then
-			eventInst = ui.KingChip
-		elseif goose then
-			eventInst = ui.GooseChip
+		-- 1안 ③ (최종 검수 10/14): one event chip - the kaiju on me now > the live king / open goose > the nearest one
+		local cands = {}
+		if want[ui.KaijuChip] == true then table.insert(cands, { Inst = ui.KaijuChip, Class = 2, In = 0 }) end
+		if want[ui.KingChip] == true then
+			table.insert(cands, { Inst = ui.KingChip, Class = num(V2.KingIn) <= 0 and 3 or 4, In = num(V2.KingIn) })
 		end
-		local evH = num(ev.H) + (eventInst == ui.GooseChip and L.GooseChip.PlusH or 0)
-		local natural = eventInst == ui.KingChip
-			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or SQ.GooseNeed(evH)
+		if want[ui.GooseChip] == true then
+			table.insert(cands, { Inst = ui.GooseChip, Class = SQ.Out and 3 or 4, In = num(V2.GooseIn) })
+		end
+		eventInst = V2.PickEvent(cands, V2.EventCur)
+		V2.EventCur = eventInst
+		local s = currentScale()
+		local E = L.EventTop
+		local evH = math.max(num(ev.H) + (eventInst == ui.GooseChip and L.GooseChip.PlusH or 0), (IS_TOUCH and E.HTouch or E.H) / s)
+		local natural
+		if eventInst == ui.KingChip then
+			natural = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn())
+		elseif eventInst == ui.KaijuChip then
+			local tb = ui.KaijuChipText and ui.KaijuChipText.TextBounds.X or 0
+			natural = math.max(KAIJU_CHIP_W, math.ceil(tb / s + 26))
+		else
+			natural = SQ.GooseNeed(evH)
+		end
+		-- the NEW! room inside the right end: only when the chip can widen for it (else the tag goes, never the words)
+		local res = V2.NewRoom(eventInst)
+		if res > 0 and natural + res > num(ev.W) then
+			V2.NewOn, res = nil, 0
+			local tag = eventInst and eventInst:FindFirstChild("NewTag")
+			if tag then tag:Destroy() end
+		end
+		SQ.NewRes = eventInst == ui.GooseChip and res or 0
 		V2.EventBottom = nil
 		if eventInst then
 			local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)
 			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(evY - top + 0.5)),
-				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(evH + 0.5)))
+				UDim2.fromOffset(math.floor(math.min(natural + res, ev.W) + 0.5), math.floor(evH + 0.5)))
 			V2.EventBottom = evY + evH
 		end
 		setVisible(ui.KingChip, eventInst == ui.KingChip)
 		setVisible(ui.GooseChip, eventInst == ui.GooseChip)
+		setVisible(ui.KaijuChip, eventInst == ui.KaijuChip)
 	end
-	local y, last = top, nil
+	-- 1안 ⑤: the notify rows start under the event chip's drawn bottom (its rows grew to 40 / 44 px)
+	local y, last = math.max(top, V2.EventBottom and math.ceil(V2.EventBottom + gap) or top), nil
 	for _, row in V2.Rows do
 		local inst, tail = row.Inst, row.Tail
-		if ev and (inst == ui.KingChip or inst == ui.GooseChip) then continue end -- the event line owns them
+		if ev and (inst == ui.KingChip or inst == ui.GooseChip or inst == ui.KaijuChip) then continue end -- the event line owns them
 		local w = row.W
 		if row.King then w = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text)) end
 		if row.Goose then w = SQ.GooseNeed(row.H) end
@@ -1928,15 +2002,21 @@ function V2.InSquare()
 	return ok and inside == true
 end
 
+-- 1안 ③: the NEW! tag sits INSIDE the shown event chip's right end (UIKit.NewTag reads NewTagInside / NewTagRight, du);
+-- the chip widens for it first (V2.stack drops the tag when it cannot)
 function V2.NewTag()
 	local kit = C and C.UIKit
 	if type(kit) ~= "table" or type(kit.NewTag) ~= "function" then return end
-	for _, chip in { ui.KingChip, ui.GooseChip } do
-		if chip and chip.Visible and chip.AbsoluteSize.X > 4 then
-			pcall(kit.NewTag, chip)
-			return
-		end
-	end
+	local chip = V2.EventCur
+	if not (chip and chip.Visible and chip.AbsoluteSize.X > 4) then return end
+	local E = L.EventTop
+	V2.NewOn, V2.NewUntil = chip, os.clock() + E.NewSeconds
+	V2.stack()
+	if V2.NewOn ~= chip then return end -- no room: no tag
+	local s = currentScale()
+	chip:SetAttribute("NewTagInside", (IS_TOUCH and E.NewWTouch or E.NewW) / s)
+	chip:SetAttribute("NewTagRight", E.NewRight / s)
+	pcall(kit.NewTag, chip)
 end
 
 local function update()

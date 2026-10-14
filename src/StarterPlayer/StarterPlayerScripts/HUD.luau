@@ -1137,8 +1137,7 @@ local function buildWar(root)
 	-- the plate under everything (missing art: a navy rounded panel, the same idea)
 	local plate, plateArt = UIKit.ArtFrame("PanelCard", {
 		Name = "Plate",
-		Position = UDim2.fromOffset(0, -TB.PlateUp),
-		Size = UDim2.new(1, 0, 1, TB.PlateUp + TB.PlateDown),
+		Size = UDim2.fromScale(1, 1), -- L.LayoutWar: around the track only
 		SliceScale = TB.PlateSlice,
 		ZIndex = 0,
 		Parent = w,
@@ -1147,8 +1146,8 @@ local function buildWar(root)
 	-- Bar / Info follow the meter's width; L.LayoutWar fits them to its height
 	local bar, barArt = UIKit.ArtFrame("BarTrack", {
 		Name = "Bar",
-		Position = UDim2.fromOffset(TB.BarIn, barY),
-		Size = UDim2.new(1, -2 * TB.BarIn, 0, barH),
+		Position = UDim2.fromOffset(48, barY), -- L.LayoutWar places it
+		Size = UDim2.new(1, -96, 0, barH),
 		Parent = w,
 	}, {
 		Color = COL.WarFill,
@@ -1163,8 +1162,10 @@ local function buildWar(root)
 	if def and typeof(def.Inner) == "Rect" and typeof(def.Size) == "Vector2" and def.Size.Y > 0 then
 		top = def.Inner.Min.Y / def.Size.Y
 		bottom = (def.Size.Y - def.Inner.Max.Y) / def.Size.Y
-		side = math.floor(def.Inner.Min.X / def.Size.Y * barH + 0.5)
+		L.WarInnerSide = def.Inner.Min.X / def.Size.Y -- the capsule's end caps follow the track's height (L.LayoutWar)
+		side = math.floor(L.WarInnerSide * barH + 0.5)
 	end
+	L.WarInnerTop = top -- the fills' inset from the track's top (a share of its height): the crown floats over it
 	local inner = UIKit.Create("Frame", {
 		Name = "Inner",
 		BackgroundTransparency = 1,
@@ -1172,6 +1173,7 @@ local function buildWar(root)
 		Size = UDim2.new(1, -2 * side, 1 - top - bottom, 0),
 		Parent = bar,
 	})
+	ui.warInner = inner
 	local function fill(name, color, fromRight)
 		return UIKit.Create("Frame", {
 			Name = name,
@@ -1199,13 +1201,13 @@ local function buildWar(root)
 		ZIndex = 2,
 		Parent = inner,
 	}, { corner(UDim.new(0, 2)) })
-	-- crown on the split (WarCrownPip, 그림체 #15): the crown's base (0.74 of the art) at the bar's middle, its point
-	-- going down into the bar
+	-- crown over the split (WarCrownPip, 그림체 #15). 최종 검수 10/14 상단 HUD 1안 ①: it floats ABOVE the track (its
+	-- image rect L.WarTop.CrownGap clear of it), its x following the split (L.WarCrownFrac keeps it over the track)
 	ui.warCrown = UIKit.ArtImage("WarCrownPip", {
 		Name = "Crown",
-		AnchorPoint = Vector2.new(0.5, 0.74),
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.fromOffset(TB.Crown, TB.Crown),
+		AnchorPoint = Vector2.new(0.5, 1),
+		Position = UDim2.fromScale(0.5, 0),
+		Size = UDim2.fromOffset(TB.Crown, TB.Crown), -- L.LayoutWar sizes it (px / UIScale)
 		ZIndex = 3,
 		Parent = inner,
 	})
@@ -1216,7 +1218,7 @@ local function buildWar(root)
 		local badge = UIKit.ArtImage(s[1], {
 			Name = s[3],
 			AnchorPoint = Vector2.new(s[2], 0.5),
-			Position = UDim2.new(s[2], s[2] == 0 and -TB.BadgeOut or TB.BadgeOut, 0, barY + barH / 2),
+			Position = UDim2.new(s[2], 0, 0, barY + barH / 2), -- L.LayoutWar: inside the ends
 			Size = UDim2.fromOffset(TB.Badge, TB.Badge),
 			ZIndex = 3,
 			Parent = w,
@@ -1269,47 +1271,79 @@ local function buildWar(root)
 	open.Activated:Connect(function() pcall(L.OpenWarInfo) end)
 end
 
--- A23-184: the war's time and rules = the quest window's Event tab (QuestBook.Sections "Crown War: next crown in …")
+-- A23-184 / 상단 HUD 1안 ①: a press on the bar opens the small war window (L.RegisterWarInfo: the round's time and
+-- both scores); without it the quest window's Event tab ("Crown War: next crown in …")
 function L.OpenWarInfo()
+	if L.WarInfoOn and C.Panels and type(C.Panels.Open) == "function" then
+		C.Panels.Open(L.WarInfoId)
+		return
+	end
 	if not L.HasQuestBook() then return end
 	C.QuestBook.Toggle(true)
 	if type(C.QuestBook.ShowTab) == "function" then C.QuestBook.ShowTab(L.WarInfoTab) end
 end
-L.WarInfoTab = "Event"
+L.WarInfoTab, L.WarInfoId = "Event", "WarInfo"
 
--- the top bar plate hugs the bar (A23-130: nothing under the bar any more)
-function L.SizeWarPlate()
-	local plate, TB = ui.warPlate, L.WarTop
-	if not plate then return end
-	local k = L.WarK or 1
-	plate.Position = UDim2.fromOffset(0, -TB.PlateUp * k)
-	plate.Size = UDim2.new(1, 0, 0, (TB.PlateUp + 8 + 22 + TB.PlateFold) * k)
+-- (pure) 최종 검수 10/14 상단 HUD 1안 ① (Codex build/codex/hud_top_design.md): the war meter's pieces in du inside its
+-- frame (w x h du, UIScale s; the sizes in L.WarTop are REAL px like Roblox's top bar, so / s), top to bottom: the crown
+-- (Crown px, from Lift px over the frame's top), CrownGap px of air, the track (TrackH px) between the two badges (Badge
+-- px, inside the frame's ends, centred on the track; the track BadgeGap px from them); the plate around the track only
+-- (PlatePad px over / under it, never past the badges' bottom). -> { Crown = {Y, S}, Track = {X, Y, W, H}, Badge = {S, CY},
+-- Plate = {Y, H}, Bottom = the lowest drawn du (the badges) }
+function HUD.WarGeometry(w, h, s, touch)
+	local TB = L.WarTop
+	s = (type(s) == "number" and s > 0) and s or 1
+	local function px(key) return (touch and TB[key .. "Touch"] or TB[key]) / s end
+	local crown, badge, trackH = px("Crown"), px("Badge"), px("TrackH")
+	local crownY = -px("Lift")
+	local trackY = crownY + crown + px("CrownGap")
+	local cy = trackY + trackH / 2
+	local trackX = badge + px("BadgeGap")
+	local pad = px("PlatePad")
+	local plateY = trackY - pad
+	local plateH = math.min(trackH + 2 * pad, cy + badge / 2 - plateY)
+	return { Crown = { Y = crownY, S = crown }, Track = { X = trackX, Y = trackY, W = math.max(0, w - 2 * trackX), H = trackH },
+		Badge = { S = badge, CY = cy }, Plate = { Y = plateY, H = plateH }, Bottom = cy + badge / 2, H = h }
 end
 
--- 이미지 개발 10/10 (UiSandbox 991x451: the meter keeps ~42 real px in Roblox's bar, so at UIScale 0.5 its 84 du held a
--- 26 px badge with a 7 px score, an 11 px bar, a 20 px crown and an empty band under the line): past L.WarTop.DesignH du
--- the bar, the badges, the crown and the gaps grow with the meter's height (k, at most KMax; PCs at 0.8 and phones keep
--- k = 1); a grown badge moves out so it covers the bar's end no more than before
+-- the meter's pieces from HUD.WarGeometry (applyLayout: Rects.war_meter; the frame's width from it too)
 function L.LayoutWar(h)
 	L.WarH = h
-	local TB = L.WarTop
-	local k = math.clamp(h / TB.DesignH, 1, TB.KMax)
-	L.WarK = k
-	local barY, barH, gap = 8 * k, 22 * k, 3 * k
+	local wf = ui.war and ui.war.Size.X.Offset or 360
+	local g = HUD.WarGeometry(wf, h, currentScale(), IS_TOUCH)
+	L.WarGeo = g
+	local t = g.Track
 	if ui.warBar then
-		ui.warBar.Position = UDim2.fromOffset(TB.BarIn, barY)
-		ui.warBar.Size = UDim2.new(1, -2 * TB.BarIn, 0, barH)
+		ui.warBar.Position = UDim2.fromOffset(t.X, t.Y)
+		ui.warBar.Size = UDim2.new(1, -2 * t.X, 0, t.H)
 	end
-	local badge = TB.Badge * k
-	local out = TB.BadgeOut + (badge - TB.Badge) -- the badge's inner edge stays where it was on the bar
 	for i, b in { ui.warBadgeHalo, ui.warBadgeHorns } do
 		if b then
-			b.Size = UDim2.fromOffset(badge, badge)
-			b.Position = UDim2.new(i == 1 and 0 or 1, i == 1 and -out or out, 0, barY + barH / 2)
+			b.AnchorPoint = Vector2.new(i == 1 and 0 or 1, 0.5)
+			b.Size = UDim2.fromOffset(g.Badge.S, g.Badge.S)
+			b.Position = UDim2.new(i == 1 and 0 or 1, 0, 0, g.Badge.CY)
 		end
 	end
-	if ui.warCrown then ui.warCrown.Size = UDim2.fromOffset(TB.Crown * k, TB.Crown * k) end
-	L.SizeWarPlate()
+	if ui.warInner and L.WarInnerSide then
+		local side = math.floor(L.WarInnerSide * t.H + 0.5)
+		ui.warInner.Position = UDim2.new(0, side, ui.warInner.Position.Y.Scale, 0)
+		ui.warInner.Size = UDim2.new(1, -2 * side, ui.warInner.Size.Y.Scale, 0)
+	end
+	if ui.warCrown then ui.warCrown.Size = UDim2.fromOffset(g.Crown.S, g.Crown.S) end
+	if ui.warPlate then
+		ui.warPlate.Position = UDim2.fromOffset(0, g.Plate.Y)
+		ui.warPlate.Size = UDim2.new(1, 0, 0, g.Plate.H)
+	end
+	L.PlaceWarCrown()
+end
+
+-- the crown's bottom CrownGap over the track (inside the Inner frame, whose top sits L.WarInnerTop of the track down)
+function L.PlaceWarCrown()
+	local g, crown = L.WarGeo, ui.warCrown
+	if not (g and crown) then return end
+	local up = (g.Track.Y - (g.Crown.Y + g.Crown.S)) + (L.WarInnerTop or 0) * g.Track.H
+	local pos = UDim2.new(L.WarCrownX or 0.5, 0, 0, -up)
+	if crown.Position ~= pos then crown.Position = pos end
 end
 
 ----------------------------------------------------------------- building: status chips
@@ -1409,8 +1443,10 @@ local function buildChips(root)
 		VerticalAlignment = Enum.VerticalAlignment.Center,
 		SortOrder = Enum.SortOrder.LayoutOrder,
 		Padding = UDim.new(0, 6),
+		Wraps = true, -- 상단 HUD 1안 ②: a second row only when the danger names need it (L.CheckChipFit drops the rest first)
 		Parent = ui.chips,
 	})
+	ui.chips.AutomaticSize = Enum.AutomaticSize.Y
 	ui.chipList = chipList
 	chipList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() L.CheckChipFit() end)
 	ui.chips:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() L.CheckChipFit() end)
@@ -1429,32 +1465,30 @@ local function buildChips(root)
 	-- Zone · 2x XP · the sprout): the danger chips (Bully, Outlaw, Wanted, Combat) come FIRST, so they always show
 	L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost", "Private", "Rookie", "Protected", "Blessing",
 		"Size", "Kaiju" }
-	L.MaxChips = IS_TOUCH and 2 or 3 -- the phone row is 240 px wide
+	-- 최종 검수 10/14 상단 HUD 1안 ②: the danger chips (always words, never counted / folded / in '+N'; the PvP zone too,
+	-- HUD.ChipPlan), then the Safe Zone as its shield icon alone, then ONE buff as its icon (the first of ChipBuffs that
+	-- shows and has an icon), then '+N'; a press opens every chip with its words for L.ChipFold.TapSeconds
+	L.ChipDanger = { Bully = true, Outlaw = true, Wanted = true }
+	L.ChipBuffs = { "Boost", "Luck", "Blessing", "Rookie", "Private", "Protected", "Size" }
+	L.MaxChips = 2 -- 1안 ②: non-danger chips at most (closed: the Safe Zone icon + one buff icon)
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
 	ui.chipMore = makeChip("More", #L.ChipOrder + 1, nil)
 	L.BuildChipFold()
-	-- 검수 10/09: a press on the Lucky chip says what it means (one toast)
-	local luckChip = ui.chip.Luck and ui.chip.Luck.Frame
-	if luckChip then
-		luckChip.Active = true
-		luckChip.InputBegan:Connect(function(input)
-			local t = input.UserInputType
-			if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(UIKit.Toast, TXT.LuckTap, "info") end
-		end)
-	end
 	if ui.chip.Wanted and ui.chip.Wanted.Icon then ui.chip.Wanted.Icon.ImageColor3 = ac("StarGold", Theme.Gold) end
-	local privateChip = ui.chip.Private and ui.chip.Private.Frame -- a press: the whole private-server rule (A23-90)
-	if privateChip then
-		privateChip.Active = true
-		privateChip.InputBegan:Connect(function(input)
+	for key, chip in ui.chip do
+		chip.Frame.Active = true
+		chip.Frame.InputBegan:Connect(function(input)
 			local t = input.UserInputType
-			local ps = Config.PrivateServer
-			if (t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch) and type(ps) == "table"
-				and type(ps.Text) == "string" then pcall(UIKit.Toast, ps.Text, "info") end
+			if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(L.ChipPress, key) end
 		end)
 	end
+	ui.chipMore.Frame.Active = true
+	ui.chipMore.Frame.InputBegan:Connect(function(input)
+		local t = input.UserInputType
+		if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(L.ChipPress, "More") end
+	end)
 	L.ChipFit, L.ChipWantKey = L.MaxChips, ""
 end
 
@@ -1517,47 +1551,125 @@ function L.BuildChipFold()
 	ui.chipFold = fold
 end
 
--- folded: hide the chips (after refreshChips decided which want to show) and show their icons on the fold chip
-function L.ApplyChipFold()
-	local fold = ui.chipFold
-	if not fold then return end
-	local want = {}
-	if L.ChipFold.Folded then
-		for _, key in L.ChipOrder do
-			local chip = ui.chip[key]
-			if chip and chip.Frame.Visible then
-				table.insert(want, key)
-				chip.Frame.Visible = false
+-- (pure) 최종 검수 10/14 상단 HUD 1안 ②: keys = the chips that want to show (L.ChipOrder order); danger = { [key] = true }
+-- (+ the Zone chip in a PvP zone: zoneDanger); iconOK = { [key] = true } chips that have an icon (the Safe Zone only in
+-- town: safeZone); open = pressed open; fit = how many non-danger chips may show. -> { Show = { { Key, Icon } .. },
+-- More = how many wait behind '+N' }. Danger chips always show with their words and never count; closed, the Safe Zone
+-- shows as its icon, then one buff (the first of `buffs` that shows and has an icon) as its icon, the rest wait in '+N';
+-- open, the others show with their words up to `fit`. Nothing shows -> an empty Show (no row at all)
+function HUD.ChipPlan(keys, danger, iconOK, buffs, open, fit, safeZone, zoneDanger)
+	local show, rest, more = {}, {}, 0
+	for _, k in keys do
+		if danger[k] or (k == "Zone" and zoneDanger) then
+			table.insert(show, { Key = k, Icon = false, Danger = true })
+		else
+			table.insert(rest, k)
+		end
+	end
+	fit = math.max(0, tonumber(fit) or 0)
+	local used = 0
+	if open then
+		for _, k in rest do
+			if used < fit then
+				used += 1
+				table.insert(show, { Key = k, Icon = false })
+			else
+				more += 1
 			end
 		end
-		if ui.chipMore then ui.chipMore.Frame.Visible = false end
+		return { Show = show, More = more }
 	end
-	-- the icons: the chips' own art; a chip without one (In Combat, Bully, ...) shows the warning star
-	local shown = 0
-	for i, img in fold.Icons do
-		local key = want[i]
-		img.Visible = key ~= nil
-		if key then
-			shown += 1
-			local id = UIKit.ArtId(L.ChipIcons[key] or "Star")
-			if id then img.Image = id end
-			img.ImageColor3 = (L.ChipIcons[key] == nil or key == "Wanted") and ac("StarGold", Theme.Gold) or COL.White
+	local picked = {}
+	if table.find(rest, "Zone") and safeZone and iconOK.Zone then picked.Zone = true end
+	for _, b in buffs do
+		if table.find(rest, b) and iconOK[b] then
+			picked[b] = true
+			break
 		end
 	end
-	local extra = #want - shown
-	fold.More.Visible = extra > 0
-	fold.More.Text = extra > 0 and L.Tx(TXT, "MoreChips", extra) or ""
-	fold.Frame.Visible = #want > 0
+	for _, k in rest do
+		if picked[k] and used < fit then
+			used += 1
+			table.insert(show, { Key = k, Icon = true })
+		else
+			more += 1
+		end
+	end
+	return { Show = show, More = more }
 end
 
--- A23-40: the row is too wide for its rect -> one chip fewer (the '+N' chip takes it); refreshChips starts again from
--- L.MaxChips whenever the set of chips that want to show changes
+-- refreshChips' last step: the plan on the chips (setChip already set their words / colours / visibility)
+function L.ApplyChipFold()
+	if ui.chipFold then ui.chipFold.Frame.Visible = false end -- the old icons chip: 1안 shows the chips themselves
+	local keys, iconOK = {}, {}
+	for _, key in L.ChipOrder do
+		local chip = ui.chip[key]
+		if chip and chip.Frame.Visible then
+			table.insert(keys, key)
+			if chip.Icon then iconOK[key] = true end
+		end
+	end
+	local town, pvp = attr("ZoneTown", false) == true, attr("ZonePvP", false) == true and getFaction() ~= "Neutral"
+	local plan = HUD.ChipPlan(keys, L.ChipDanger, iconOK, L.ChipBuffs, not L.ChipFold.Folded, L.ChipFit, town, pvp)
+	L.ChipShown = plan
+	local on = {}
+	for _, row in plan.Show do on[row.Key] = row end
+	local s = currentScale()
+	local iconPx = (IS_TOUCH and L.ChipTop.IconTouch or L.ChipTop.Icon) / s
+	for _, key in L.ChipOrder do
+		local chip = ui.chip[key]
+		local row = chip and on[key]
+		if chip then
+			chip.Frame.Visible = row ~= nil
+			if row then
+				chip.Label.Visible = not row.Icon
+				if chip.Icon then
+					if row.Icon then chip.Icon.Visible = true end
+					chip.Icon.Size = UDim2.fromOffset(iconPx, iconPx)
+				end
+				local pad = row.Icon and math.max(2, ((L.ChipRowH or L.ChipH) - iconPx) / 2) or nil
+				if pad then
+					chip.Pad.PaddingLeft, chip.Pad.PaddingRight = UDim.new(0, pad), UDim.new(0, pad)
+				else
+					chip.Pad.PaddingRight = UDim.new(0, 10)
+				end
+			end
+		end
+	end
+	setChip(ui.chipMore, plan.More > 0, L.Tx(TXT, "MoreChips", plan.More), Theme.SubText)
+end
+
+-- a press on a chip: closed -> open (every chip with its words) for TapSeconds; open -> Luck / Private say their rule
+-- (one toast, a press only - never by itself), any other chip closes it again
+function L.ChipPress(key)
+	if L.ChipFold.Folded then
+		L.ChipFoldTap()
+		return
+	end
+	if key == "Luck" then
+		pcall(UIKit.Toast, TXT.LuckTap, "info")
+	elseif key == "Private" then
+		local ps = Config.PrivateServer
+		if type(ps) == "table" and type(ps.Text) == "string" then pcall(UIKit.Toast, ps.Text, "info") end
+	else
+		HUD.SetChipsFolded(true)
+	end
+end
+
+-- A23-40 / 1안 ②: the row needs a second line -> one non-danger chip fewer (the '+N' chip takes it); none left -> the
+-- short words (the Outlaw line on a small PC); still two lines -> they stay (the danger names are never hidden, the event
+-- line moves down: HUD.TopBottom measures the row). refreshChips starts again from L.MaxChips when the chip set changes
 function L.CheckChipFit()
 	if not ui.chips or not ui.chipList then return end
-	local content, room = ui.chipList.AbsoluteContentSize.X, ui.chips.AbsoluteSize.X
-	if room > 0 and content > room + 1 and (L.ChipFit > 1 or not L.ChipShort) then
-		-- one chip left and still too wide (the Outlaw line on a small PC): the short words
-		if L.ChipFit > 1 then L.ChipFit -= 1 else L.ChipShort = true end
+	local s = math.max(0.1, currentScale())
+	local rowPx = (L.ChipRowH or L.ChipH) * s
+	local over = ui.chipList.AbsoluteContentSize.Y > rowPx + 2 or ui.chipList.AbsoluteContentSize.X > ui.chips.AbsoluteSize.X + 1
+	local others = 0
+	for _, row in (L.ChipShown or { Show = {} }).Show do
+		if not row.Danger then others += 1 end
+	end
+	if ui.chips.AbsoluteSize.X > 0 and over and ((L.ChipFit > 0 and others > 0) or not L.ChipShort) then
+		if L.ChipFit > 0 and others > 0 then L.ChipFit -= 1 else L.ChipShort = true end
 		task.defer(function()
 			local ok, err = pcall(refreshChips)
 			if not ok then warnThrottled("chip fit failed: " .. tostring(err)) end
@@ -3657,18 +3769,6 @@ refreshChips = function()
 		L.ChipFit = L.MaxChips
 		L.ChipShort = false
 	end
-	local shownChips, folded = 0, 0
-	for _, key in L.ChipOrder do
-		local chip = ui.chip[key]
-		if chip and chip.Frame.Visible then
-			shownChips += 1
-			if shownChips > L.ChipFit then
-				chip.Frame.Visible = false
-				folded += 1
-			end
-		end
-	end
-	setChip(ui.chipMore, folded > 0, L.Tx(TXT, "MoreChips", folded), Theme.SubText)
 	L.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))
 	L.ApplyChipFold()
 end
@@ -3682,11 +3782,8 @@ L.ChipFoldSig = HUD.ChipFoldSig
 
 -- a new key unfolds the chips now and folds them ShowSeconds later (a newer change or a press restarts the wait)
 function L.WatchChipFold(sig)
-	local cf = L.ChipFold
-	if not cf.Auto or sig == cf.Sig then return end
-	cf.Sig = sig
-	cf.Folded = false -- refreshChips applies it right after
-	L.FoldLater(cf.ShowSeconds)
+	-- 1안 ② (최종 검수 10/14): a change no longer opens the row by itself (it shows what matters closed)
+	L.ChipFold.Sig = sig
 end
 
 function L.FoldLater(seconds)
@@ -3694,7 +3791,7 @@ function L.FoldLater(seconds)
 	cf.Token += 1
 	local token = cf.Token
 	task.delay(seconds, function()
-		if cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end
+		if cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays
 	end)
 end
 
@@ -3775,19 +3872,58 @@ local function fmtScore(v)
 end
 
 
--- 검수 10/09: near 0 : all or all : 0 the crown ran under a faction badge; it stops where its side meets the badge's
--- inner edge (the split line itself still shows the true share)
+-- 검수 10/09: near 0 : all or all : 0 the crown ran past the bar's end; 상단 HUD 1안 ①: its image stays over the track
+-- (half its width in from each end; the split line itself still shows the true share)
 function L.WarCrownFrac(frac)
-	local crown, a, b = ui.warCrown, ui.warBadgeHalo, ui.warBadgeHorns
+	local crown = ui.warCrown
 	local bar = crown and crown.Parent
-	if not (bar and a and b) or bar.AbsoluteSize.X < 1 then return frac end
-	local half = crown.AbsoluteSize.X / 2
-	local x0, w = bar.AbsolutePosition.X, bar.AbsoluteSize.X
-	local lo = (a.AbsolutePosition.X + a.AbsoluteSize.X * 0.8 + half - x0) / w
-	local hi = (b.AbsolutePosition.X + b.AbsoluteSize.X * 0.2 - half - x0) / w
-	if lo >= hi then return 0.5 end
-	return math.clamp(frac, lo, hi)
+	if not bar or bar.AbsoluteSize.X < 1 then return frac end
+	local half = crown.AbsoluteSize.X / 2 / bar.AbsoluteSize.X
+	if half >= 0.5 then return 0.5 end
+	return math.clamp(frac, half, 1 - half)
 end
+-- (pure) the war window's two lines (Config.WarInfo.Text): the round's time left (or NoRound) and "Halo 12 : 9 Horns"
+function HUD.WarInfoLines(endsAt, now, halo, horns)
+	local W = type(Config.WarInfo) == "table" and Config.WarInfo.Text or {}
+	local function side(f)
+		local def = type(Config.Factions) == "table" and Config.Factions[f] or nil
+		return type(def) == "table" and tostring(def.Name or f) or f
+	end
+	endsAt, now = tonumber(endsAt) or 0, tonumber(now) or 0
+	local time = endsAt > now and L.Tx(W, "Time", Util.FormatTime(endsAt - now)) or W.NoRound or ""
+	return time, L.Tx(W, "Score", side("Halo"), fmtScore(math.max(0, tonumber(halo) or 0)),
+		fmtScore(math.max(0, tonumber(horns) or 0)), side("Horns"))
+end
+
+-- 상단 HUD 1안 ① (최종 검수 10/14: "막대 누르면 전쟁 창(시간·점수)"): the small war window - Panels' own parts and texts,
+-- the words in Config.WarInfo; it redraws every second while open
+function L.RegisterWarInfo()
+	local P = C and C.Panels
+	local W = Config.WarInfo
+	if type(P) ~= "table" or type(P.Register) ~= "function" or type(W) ~= "table" or type(W.Text) ~= "table" then return false end
+	L.WarInfoOn = P.Register(L.WarInfoId, {
+		Title = function() return W.Text.Title end,
+		Width = W.Width,
+		Build = function(parent, k)
+			local time = k.Text(parent, "", { Name = "Time", Size = 22, Align = Enum.TextXAlignment.Center, Color = k.Theme.Gold })
+			local score = k.Text(parent, "", { Name = "Score", Size = 20, Align = Enum.TextXAlignment.Center })
+			k.Text(parent, W.Text.Note, { Name = "Note", Size = 15, Align = Enum.TextXAlignment.Center, Color = k.Theme.SubText })
+			local function draw()
+				time.Text, score.Text = HUD.WarInfoLines(UIKit.GameAttr("WarRoundEndsAt", 0), Util.Now(),
+					UIKit.GameAttr("WarHaloScore", 0), UIKit.GameAttr("WarHornsScore", 0))
+			end
+			draw()
+			task.spawn(function()
+				while time.Parent do
+					task.wait(1)
+					pcall(draw)
+				end
+			end)
+		end,
+	}) == true
+	return L.WarInfoOn
+end
+
 local function refreshWar()
 	local h = math.max(0, tonumber(UIKit.GameAttr("WarHaloScore", 0)) or 0)
 	local r = math.max(0, tonumber(UIKit.GameAttr("WarHornsScore", 0)) or 0)
@@ -3797,7 +3933,8 @@ local function refreshWar()
 	ui.haloFill.Visible = frac > 0.001
 	ui.hornsFill.Visible = frac < 0.999
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
-	if ui.warCrown then ui.warCrown.Position = UDim2.fromScale(L.WarCrownFrac(frac), 0.5) end
+	L.WarCrownX = L.WarCrownFrac(frac)
+	L.PlaceWarCrown()
 	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or L.Tx(TXT, "WarHalo", fmtScore(h))
 	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or L.Tx(TXT, "WarHorns", fmtScore(r))
 	refreshChips()
@@ -3918,13 +4055,11 @@ function L.ApplyFold(changed)
 		ui.war.Visible = not hideWar
 		if changed and not hideWar then -- it comes in during play: one short line says what it is (Config.Nudges.WarIntro)
 			if (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, "info") end
-			if type(UIKit.NewTag) == "function" then pcall(UIKit.NewTag, ui.war) end
 		end
 	end
 	local fold = L.RookieFold()
-	L.SizeWarPlate()
 	if changed and L.WasFolded == true and not fold and type(UIKit.NewTag) == "function" then
-		pcall(UIKit.NewTag, ui.warBar)
+		-- 1안: no NEW! on the war bar (it stuck out over the Horns shield); the quest lines keep theirs
 		task.delay(0.6, function() -- after the quest lines were rebuilt with the unfolded rows
 			if ui.questLines and ui.questLines.Visible then pcall(UIKit.NewTag, ui.questLines) end
 		end)
@@ -6252,11 +6387,14 @@ L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and
 	BodyMinK = IS_TOUCH and 0.66 or 0.8, GoalLines = 2, GoalMax = nil, GoalMin = nil,
 	ProgColor = Color3.fromRGB(255, 96, 72), Rect = nil }
 L.LineCache = { Lines = {}, N = 0 } -- L.TextLines: "text|size|width|font" -> lines (false = measuring)
-L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 } -- the folded status chips (HUD.SetChipsFolded)
+L.ChipFold = { Folded = true, OnTap = nil, MaxIcons = 3 } -- closed = 1안 ② (HUD.ChipPlan); HUD.SetChipsFolded
 -- 검수 10/09 (UI clutter review ③, when = 개발 1): the chips show ShowSeconds after they change, then fold; a press on
 -- the fold shows them TapSeconds. "A change" = the set of chips (the In Combat chip left out: every fight would
 -- unfold them), the zone kind or the luck words (L.ChipFoldSig). Auto = the rule is on
 L.ChipFold.Auto, L.ChipFold.ShowSeconds, L.ChipFold.TapSeconds, L.ChipFold.Token = true, 3, 5, 0
+-- 1안 ② / ④ (real px): the status row Row tall (phone RowTouch = the 44 px touch target), Gap under the war meter, the
+-- words at least TextPx (phone 19), an icon chip's art Icon px
+L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24 }
 L.ChipFold.OnTap = L.ChipFoldTap -- defined above (the chips section); HUD.OnChipsFoldTap may replace it
 -- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
 L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
@@ -6275,8 +6413,12 @@ L.QuickKeyPx = 12 -- A23-109: the quick slot numbers 1 · 2 · 3 in real px
 -- (their centres BadgeOut du outside the meter's ends... negative = inside), the bar and the info line BarIn du in from
 -- each end, the crown Crown du; DesignH = the meter height those sizes are for (PC 0.8), KMax = how much they may grow
 -- on a taller meter (small PC windows, L.LayoutWar)
-L.WarTop = { PlateUp = 4, PlateDown = 3, PlateFold = 7, PlateSlice = 0.3, Badge = 52, BadgeOut = 4, BarIn = 40, Crown = 40,
-	DesignH = 52.5, KMax = 1.8, ScoreMinPx = 12, ScoreMaxPx = 18 } -- the badge scores in real px (검수 10/10: >= 12)
+-- 최종 검수 10/14 상단 HUD 1안 ①: REAL px (Roblox's top bar does not follow our UIScale; HUD.WarGeometry divides by
+-- it): crown 24 (phone 22) Lift px over the meter's top, CrownGap 6 (4) of air, track TrackH 14, badges 40 (36) inside the
+-- ends with BadgeGap 8 to the track, the plate PlatePad around the track only
+L.WarTop = { PlateSlice = 0.3, ScoreMinPx = 12, ScoreMaxPx = 18, -- the badge scores in real px (검수 10/10: >= 12)
+	Crown = 24, CrownTouch = 22, Lift = 9, LiftTouch = 8, CrownGap = 6, CrownGapTouch = 4, TrackH = 14, TrackHTouch = 14,
+	Badge = 40, BadgeTouch = 36, BadgeGap = 8, BadgeGapTouch = 8, PlatePad = 7, PlatePadTouch = 6 }
 L.PortraitDrop, L.PortraitSpan = 0.5, 2.3 -- the Lv ring's bust (head + shoulders), L.PortraitRebuild
 
 -- A23-40: every block from HudLayout.Compute (H4 top inset, H5 live jump button, M1 UIScale, phone safe area)
@@ -6336,14 +6478,26 @@ applyLayout = function()
 	L.LayoutWar(wm.H)
 	HUD.TopCenterX, HUD.TopCenterW = math.floor(wm.X + wm.W / 2 + 0.5), wm.W
 	local ch = R.chips
-	ui.chips.Position = UDim2.fromOffset(ch.X + ch.W / 2, ch.Y)
-	ui.chips.Size = UDim2.fromOffset(ch.W, ch.H)
+	-- 1안 ② / ⑤ (최종 검수 10/14): the status row starts ChipTop.Gap px under the war meter's DRAWN bottom (its badges),
+	-- ChipTop.Row px tall (phones: the 44 px touch target), the words >= TextPx real px
+	local CT = L.ChipTop
+	local rowH = math.max(ch.H, (IS_TOUCH and CT.RowTouch or CT.Row) / s)
+	L.ChipRowH = rowH
+	local warBottom = (ui.war.Visible and L.WarGeo) and (wm.Y + L.WarGeo.Bottom + CT.Gap / s) or ch.Y
+	local chipsY = math.max(ch.Y, warBottom)
+	ui.chips.Position = UDim2.fromOffset(ch.X + ch.W / 2, chipsY)
+	ui.chips.Size = UDim2.fromOffset(ch.W, rowH)
+	ui.chipList.Padding = UDim.new(0, 6 / s)
+	local textDu = math.ceil((IS_TOUCH and CT.TextPxTouch or CT.TextPx) / s)
 	for _, chip in ui.chip do
-		chip.Frame.Size = UDim2.fromOffset(0, ch.H)
-		if chip.Icon then chip.Icon.Size = UDim2.fromOffset(ch.H - 2, ch.H - 2) end
+		chip.Frame.Size = UDim2.fromOffset(0, rowH)
+		if chip.Label then chip.Label.TextSize = textDu end
 	end
-	if ui.chipMore then ui.chipMore.Frame.Size = UDim2.fromOffset(0, ch.H) end
-	local chipsBottom = ch.Y + math.max(ch.H, ui.chips.AbsoluteSize.Y / s)
+	if ui.chipMore then
+		ui.chipMore.Frame.Size = UDim2.fromOffset(0, rowH)
+		ui.chipMore.Label.TextSize = textDu
+	end
+	local chipsBottom = chipsY + math.max(rowH, ui.chips.AbsoluteSize.Y / s)
 	local nt = R.notify
 	-- travel (3 s channel) rides the top of the notify column
 	ui.travel.AnchorPoint = Vector2.new(0.5, 0)
@@ -6655,6 +6809,7 @@ function HUD.Start()
 		Util.Warn("HUD", "HUD was not built (Init failed); HUD disabled")
 		return
 	end
+	pcall(L.RegisterWarInfo) -- 상단 HUD 1안 ①: the war bar's window (Panels is ready: every Init ran)
 
 	-- visibility itself is owned by the 0.2 s loop: the pickers start after HUD, so checking IsOpen() here could
 	-- flash the HUD for a frame before the faction picker opens

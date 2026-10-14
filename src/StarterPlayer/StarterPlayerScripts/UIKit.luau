@@ -3867,11 +3867,17 @@ function UIKit.ShowNewTag(target, text)
 	-- corner it climbed onto the row above (검수 2026-10-07: on phones it covered the war bar's Horns end; centred it still
 	-- touched the Horns shield hanging over the row by 2 px); taller ones (the quest lines) keep the corner
 	local thin = target.AbsoluteSize.Y / s <= h * cfg.ThinK
+	-- 최종 검수 10/14 상단 HUD 1안 ③: a target that keeps room for it (attributes NewTagInside = its width, NewTagRight =
+	-- the gap to the right end, du; EventHUD's event chip) wears it INSIDE its right end, never sticking out
+	local inside = tonumber(target:GetAttribute("NewTagInside"))
+	local tagW = inside or math.ceil(size * cfg.WidthEm)
+	if inside then h = math.min(h, math.max(12, target.AbsoluteSize.Y / s - 8)) end
 	local tag = UIKit.ArtFrame("Chip", {
 		Name = "NewTag",
-		AnchorPoint = thin and Vector2.new(0, 0.5) or Vector2.new(1, 0.5),
-		Position = thin and UDim2.new(1, 4, 0.5, cfg.ThinDY) or UDim2.new(1, 6, 0, 0),
-		Size = UDim2.fromOffset(math.ceil(size * cfg.WidthEm), h),
+		AnchorPoint = (thin and not inside) and Vector2.new(0, 0.5) or Vector2.new(1, 0.5),
+		Position = inside and UDim2.new(1, -(tonumber(target:GetAttribute("NewTagRight")) or 6), 0.5, 0)
+			or thin and UDim2.new(1, 4, 0.5, cfg.ThinDY) or UDim2.new(1, 6, 0, 0),
+		Size = UDim2.fromOffset(tagW, h),
 		ImageColor3 = cfg.Gold,
 		ZIndex = target.ZIndex + 6,
 		Active = false,

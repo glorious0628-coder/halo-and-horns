@@ -5,7 +5,7 @@ Runs, in the official Luau CLI (build/luau_cli_0_741), the CURRENT pure parts cu
     is carried, or from Lv5;
   * HUD.ChipFoldSig - what counts as a change of the status chips (the set without In Combat, the zone kind, the luck
     words).
-Static: the chips unfold on a change and fold ShowSeconds (3) later, a press shows them TapSeconds (5); the Lucky chip
+Static: the chips start closed (1안 ②, 10/14), a change does not open them, a press shows them TapSeconds (5); the Lucky chip
 says the bonus over the base rare chance and hides without one ("Lucky +%s%%"), a press says what it means; VitalsUI
 shows the potion row by Config.HudReveal and keeps it; HUD's pouch line too. Mutations: in-memory copies with one rule
 broken each; each must be caught.
@@ -32,19 +32,21 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-09/offline_hud_reveal_2026-10-09.json"
 
 STATIC = [
-    ("chips: a change unfolds now and folds 3 s later; a press shows them 5 s", "HUD", [
+    # 최종 검수 10/14 상단 HUD 1안 ②: the row starts closed (danger words, the Safe Zone icon, one buff icon, '+N'), a
+    # change no longer opens it by itself, a press opens it TapSeconds (5) and it closes again
+    ("chips: closed by default, a change does not open them, a press shows them 5 s", "HUD", [
         "L.ChipFold.Auto, L.ChipFold.ShowSeconds, L.ChipFold.TapSeconds, L.ChipFold.Token = true, 3, 5, 0\n",
-        "\tif not cf.Auto or sig == cf.Sig then return end\n", "\tcf.Folded = false -- refreshChips applies it right after\n",
-        "\tL.FoldLater(cf.ShowSeconds)\n", "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end\n",
+        "L.ChipFold = { Folded = true, OnTap = nil, MaxIcons = 3 }", "\tL.ChipFold.Sig = sig\nend\n",
+        "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays\n",
         "\tL.FoldLater(L.ChipFold.TapSeconds)\n", "L.ChipFold.OnTap = L.ChipFoldTap",
         '\tL.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))\n']),
     ("Lucky chip: the bonus only, hidden without one; a press explains", "EVENT", [
         '\tLuckShort = "Lucky +%s%%",\n',
         "\t\treturn Config.RareChance(events) - ((Config.Luck and Config.Luck.BaseRare) or 0)\n",
         "\tif not ok or type(bonus) ~= \"number\" or bonus <= 1e-9 then return nil end -- no bonus today: no chip\n"]),
-    ("Lucky chip press: one toast", "HUD", [
+    ("Lucky chip press (the row open): one toast", "HUD", [
         '\tLuckTap = "Rare drops come a bit more often today!",',
-        "if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then pcall(UIKit.Toast, TXT.LuckTap, \"info\") end"]),
+        "\tif key == \"Luck\" then\n\t\tpcall(UIKit.Toast, TXT.LuckTap, \"info\")\n"]),
     ("potion row: Config.HudReveal, kept once shown, Level watched", "VITALS", [
         "\tif ui.Row and not ui.PotionSeen then\n", "\t\tui.PotionSeen = Config.HudReveal.Shows(\"Potions\",",
         "\t\tif ui.Row.Visible ~= ui.PotionSeen then ui.Row.Visible = ui.PotionSeen end\n", "\tLevel = true,"]),
@@ -69,8 +71,8 @@ MUTATIONS = [
     ("HUD", "every fight unfolds the chips", '\tlocal keys = string.gsub(tostring(wantKey or ""), "Combat,", "")\n',
      '\tlocal keys = tostring(wantKey or "")\n'),
     ("HUD", "a zone change is no change", '(town and "T" or (pvp and "P" or "W"))', '"W"'),
-    ("HUD", "never folds", "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end\n", ""),
-    ("HUD", "a change does not unfold", "\tcf.Folded = false -- refreshChips applies it right after\n", ""),
+    ("HUD", "never folds", "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays\n", ""),
+    ("HUD", "the row starts open", "L.ChipFold = { Folded = true, OnTap = nil, MaxIcons = 3 }", "L.ChipFold = { Folded = false, OnTap = nil, MaxIcons = 3 }"),
     ("EVENT", "the total chance again", "\t\treturn Config.RareChance(events) - ((Config.Luck and Config.Luck.BaseRare) or 0)\n",
      "\t\treturn Config.RareChance(events)\n"),
     ("VITALS", "the potion row hides again", "\tif ui.Row and not ui.PotionSeen then\n", "\tif ui.Row then\n"),

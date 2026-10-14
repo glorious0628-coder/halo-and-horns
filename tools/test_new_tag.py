@@ -74,7 +74,7 @@ def main() -> int:
     print(out.strip())
     statics = []
     for name, file, text in [
-        ("HUD tags through UIKit.NewTag", "HUD.luau", "pcall(UIKit.NewTag, ui.war)"),
+        ("HUD tags through UIKit.NewTag (1안: not the war bar, the quest lines)", "HUD.luau", "pcall(UIKit.NewTag, ui.questLines)"),
         ("EventHUD tags through UIKit.NewTag", "EventHUD.luau", "pcall(kit.NewTag, chip)"),
         ("nobody calls ShowNewTag but the queue", None, None),
     ]:
