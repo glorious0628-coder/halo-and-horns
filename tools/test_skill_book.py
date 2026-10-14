@@ -39,6 +39,7 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-11/offline_skill_book_2026-10-11.json"
 
 MUTATIONS = [
+    ("BOOK", "[Where to hunt] for everyone (no Fast Travel check)", "if row.Locked and travelOn then", "if row.Locked then"),
     ("BOOK", "Z / X rows with their flags off", "\treturn s[T.Flag[slot]] == true or ctx.Preview == true\n", "\treturn true\n"),
     ("BOOK", "Q / Z get the X faction line", "\tif slot == \"X\" then\n\t\tif faction == \"Halo\" then return word(\"XHalo\") end",
      "\tif true then\n\t\tif faction == \"Halo\" then return word(\"XHalo\") end"),

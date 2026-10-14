@@ -422,7 +422,9 @@ local function drawRow(kit, parent, row, ctx)
 	view.State = label(kit, right, "", T.Body, kit.Theme.SubText, true)
 	view.State.Name = "StateText"
 	view.State.TextXAlignment = Enum.TextXAlignment.Center
-	if row.Locked then
+	local panels = C and C.Panels -- A23-182: the Travel window is Fast Travel (subscribers only): no button for the rest
+	local travelOn = type(panels) == "table" and type(panels.TravelOn) == "function" and panels.TravelOn() == true
+	if row.Locked and travelOn then
 		local b = kit.Button(right, word("WhereToHunt"), kit.Palette.Button, UDim2.fromOffset(T.RightW, T.ButtonH), function()
 			kit.Open("Travel")
 		end)
