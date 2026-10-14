@@ -7361,7 +7361,8 @@ Config.GoalChips = {
 	Text = {
 		Next = "Next: %s", Big = "Big goal: %s",
 		FirstSkill = "Lv %d · first skill", Skill = "Lv %d · new skill", Zone = "Lv %d · %s", Rebirth = "Lv %d · Rebirth",
-		Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",
+		-- 최종 검수 10/14 (user photo: 'Big goal: Win the Crown for the…' was cut): short; the side shows as the line's colour
+		Halo = "Win the Crown", Horns = "Win the Crown",
 	},
 }
 

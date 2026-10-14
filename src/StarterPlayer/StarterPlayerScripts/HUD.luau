@@ -2180,14 +2180,17 @@ function L.BuildTracker(root)
 		ZIndex = 5, Parent = prog }, { Color = Theme.Good, CornerRadius = UDim.new(0.5, 0) })
 	local claimText = UIKit.StyledLabel({ Name = "Text", Size = UDim2.fromScale(1, 1), Text = TXT.Claim, ZIndex = 6,
 		Parent = claim }, "Number")
-	-- A23-167 ①: goal chip tiers 2 'Next' and 3 'Big goal' under the 'now do' quest (L.RefreshGoalTiers; one line each).
-	-- 최종 검수 10/14 (MINOR): never wrapped - the small-PC room (L.LayoutTracker) counts one line each, and a second line
-	-- ('Big goal: Win the Crown for the Knights' in a narrow window) pushed the tracker up; a too-long line ends in "..."
+	-- A23-167 ①: goal chip tiers 2 'Next' and 3 'Big goal' under the 'now do' quest (L.RefreshGoalTiers).
+	-- 최종 검수 10/14 (user photo: 'Big goal: Win the Crown for the…' - a '…' on screen fails): a tier may wrap to two
+	-- lines, never cut; its height = its drawn text (L.FitTierHeight on TextBounds); the small-PC room (L.LayoutTracker)
+	-- counts tier 2 one line + tier 3 two lines
 	local tiers = {}
 	for i = 2, 3 do
 		tiers[i] = UIKit.StyledLabel({ Name = "GoalTier" .. i, LayoutOrder = 2 + i, Size = UDim2.new(1, 0, 0, 0),
-			AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd,
+			TextWrapped = true, TextTruncate = Enum.TextTruncate.None,
 			TextXAlignment = Enum.TextXAlignment.Left, Visible = false, ZIndex = 4, Parent = frame }, "Body")
+		local l = tiers[i]
+		l:GetPropertyChangedSignal("TextBounds"):Connect(function() L.FitTierHeight(l) end)
 	end
 	tiers[3].TextColor3 = ac("GoldText", Theme.Gold)
 	if IS_TOUCH then -- phones: the game's 11 px floor for the sentence and the numbers (the block sits beside the minimap)
@@ -2260,6 +2263,18 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 	return best and fmt(W.Next, best.Text) or nil, big
 end
 
+-- a tier's box = its drawn lines (TextBounds is screen px: back to du), at most TierLines lines; empty = one line
+function L.FitTierHeight(l)
+	if not l then return end
+	local one = math.ceil(l.TextSize * 1.2)
+	local h = math.ceil(l.TextBounds.Y / math.max(0.05, currentScale()))
+	if h <= 0 then h = one end
+	h = math.min(h, one * L.TierLines + 2)
+	local size = UDim2.new(1, 0, 0, h)
+	if l.Size ~= size then l.Size = size end
+end
+L.TierLines = 2
+
 -- tiers 2-3 text size (du) from the goal sentence's
 function L.GoalTierSize(bodySize)
 	local k = tonumber(type(Config.GoalChips) == "table" and Config.GoalChips.SizeK) or 0.85
@@ -2288,6 +2303,12 @@ function L.RefreshGoalTiers(e)
 		local text = words[i]
 		if text and l.Text ~= text then l.Text = text end
 		if l.Visible ~= (text ~= nil) then l.Visible = text ~= nil end
+		if i == 3 and text then -- 최종 검수 10/14: my side in the line's colour (the words no longer name it)
+			local f = getFaction()
+			local col = (f == "Halo" or f == "Horns") and factionColor(f) or ac("GoldText", Theme.Gold)
+			if l.TextColor3 ~= col then l.TextColor3 = col end
+		end
+		L.FitTierHeight(l)
 	end
 end
 
@@ -2337,7 +2358,7 @@ function L.LayoutTracker(q)
 	if not IS_TOUCH and R and R.power_line and R.minimap then
 		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
 			+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8 -- 검수 10/10: no head line, no room for it
-			+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) + T.Gap) * 2 or 0) -- A23-167 ① tiers 2-3
+			+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) * (1 + L.TierLines) + T.Gap * 2) or 0) -- ① tier 2: 1 line, 3: 2
 		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
 		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
 	end
@@ -2357,7 +2378,10 @@ function L.LayoutTracker(q)
 	if prog then prog.Size = UDim2.new(1, 0, 0, math.ceil(bodySize * 1.35)) end
 	t.Claim.Size = UDim2.fromOffset(math.floor(bodySize * 4.2), math.ceil(bodySize * 1.3))
 	t.ClaimText.TextSize = math.max(12, math.floor(bodySize * 0.85))
-	for _, l in t.Tiers or {} do l.TextSize = L.GoalTierSize(bodySize) end
+	for _, l in t.Tiers or {} do
+		l.TextSize = L.GoalTierSize(bodySize)
+		L.FitTierHeight(l)
+	end
 	T.Rect = q
 	L.FitGoal()
 	task.defer(L.PlaceTrackerHead)
