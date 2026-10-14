@@ -1,3 +1,11 @@
+# 이미지 생성 2 — 인계 (10/14 오전 10시, 최종 검수 새 지시 ①~④)
+## 10/14 10:00 (맨 위 = 이것부터)
+- **최종 검수 지시 순서**: ① 디스크에만 있던 부품 2D push → ② ④ 화분·꽃 마무리·시트 → ③ 사람 14명 부품(머리·몸·소품, 3~4명 묶음 시트) → ④ ⑤ 103장(+VegGarden 4부품 = 하기로 함, `jobs_b5_all.txt` 108).
+- **① 끝**: 부품 PNG 84·프롬프트 143·시트 2(1ac6e7f~f841674, 6묶음).
+- **② 끝·push(939e5b3)**: 공유 꽃 9종(WhiteDaisy·Blue5·Lilac·RedDaisy·PinkRose 4면, RedBud·RoseBud·TulipWhite·TulipBlue 1면 복사), 시트 `art/review/s2/parts_b4_pots_flowers_2026-10-14.jpg`, 물건마다 꽃 목록 `art/review/s2/parts_b4_flower_map_2026-10-14.md`. 꽃 옆면 방향: 왼 면 = 꽃이 화면 오른쪽을 봄(Blue5·RedDaisy raw는 뒤집어 맞춤, 원본 `pil_orig/*_left_raw_mirrored.png`). 판정 대기.
+- **③ 진행**: 프롬프트 생성기 `build/img2_next/parts_prompts_npc.py <1-4>`(머리 = 후광 없음, 몸 = 머리·소품 없음, 소품 = 캐릭터 기준 방향; 등에 메는 소품은 back 먼저 그리고 나머지는 그 raw를 ref1). 작업 목록 `jobs_npc_g1~4.txt`(1 SirGleam·BakerGranny·JuiceMan·FlowerGirl / 2 PotionMerchant·BellElder·StarScholar·OldSailor / 3 PondAngler·MailBoy·FlowerFarmer / 4 Folk4·HerbHusband·HerbWife). 소품: SirGleam Sword, FlowerGirl Bag, PotionMerchant PotionRack(등), BellElder Bell, StarScholar ScrollCase, OldSailor Rope·Spyglass, PondAngler FishingRod(등), MailBoy Satchel, HerbHusband Herbs, HerbWife Basket(등). 가방 끈은 몸 부품에 그림. 맞춤 `parts_fit.py <Name> --dir npc`.
+- **ChatGPT 사용량 끝(09:55) → 11:40 다시 열림.** 끝난 raw: SirGleam·PotionMerchant Head front·left. 11:41 자동 재개 대기(`build/img2_next/resume_1141.sh`, 두 줄: A = g1+g3, B = g2+g4, 그 뒤 ⑤). Firefly High는 쓰지 않음(최종 검수 지시).
+
 # 이미지 생성 2 — 인계 (10/14 오후, 부품 2D 큰 묶음)
 ## 10/14 오후 (맨 위 = 이것부터)
 - **최종 검수 지시(사용자 "가")**: 빛 마을 2D 부품 ①~⑤ 전부 Codex(0원). 규칙 = 난간 부품과 같음. 파일 `art/out/s2/noshadow/parts/<이름>_{front,left,right,back}_ns.png`, 프롬프트 `art/prompts/<이름>_<면>_ns.txt`. 묶음마다 시트 push + 최종 검수 보고, clear 말고 계속.
