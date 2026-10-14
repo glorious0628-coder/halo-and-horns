@@ -7834,6 +7834,8 @@ Config.Ranking = {
 		OutlawTag = "Outlaw", OutlawTagEn = "Outlaw",
 		OutlawChip = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
 		OutlawChipEn = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
+		OutlawChipShort = "Outlaw", -- the chip on a phone / a narrow PC row (the lock icon says no Auto Battle)
+		OutlawChipShortEn = "Outlaw",
 		RewardChip = "This week's %s #%d: XP and drops +10%% (until Monday)", -- (board name, rank)
 		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
 		OutlawStart = "Outlaw week: no Auto, half rewards, 2x bounty",
@@ -8255,6 +8257,7 @@ Config.Attendance = {
 		Collected = "Days collected: %d",
 		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
 		GoalTitle = "%s title",
+		GoalBorder = "Name frame", -- the 28-day ribbon by my name (NameTagPrefs.BorderOf)
 		Note = "Missed a day? No problem. Nothing resets.",
 		Box = "Weekly Box",
 	},

@@ -30,7 +30,7 @@ MUTATIONS = [
     ("a save load shows the moment", "\tif visible and b.Live and b.WasLocked == true then LEARN.Show(b, st) end\n",
      "\tif visible and b.WasLocked == true then LEARN.Show(b, st) end\n"),
     ("the moment repeats", "\tb.WasLocked = st.Locked\n", ""),
-    ("no banner", "\tif type(UIKit.Announce) == \"function\" then pcall(UIKit.Announce, string.format(TXT.NewSkill, st.Def.Name), LEARN.Banner) end\n", ""),
+    ("no banner", "\tif type(UIKit.Announce) == \"function\" then pcall(UIKit.Announce, trx(TXT, \"NewSkill\", st.Def.Name), LEARN.Banner) end\n", ""),
     ("no line on the button", "\tif type(hud) == \"table\" and type(hud.Hint) == \"function\" then pcall(hud.Hint, slot, line) end\n", ""),
     ("phones read 'Press Q'", "\tif not IS_TOUCH then\n\t\tlocal kb = C and C.Keybinds", "\tif true then\n\t\tlocal kb = C and C.Keybinds"),
     ("no PowerUp fallback", "\t\tif not (ok and played) then pcall(audio.Play, \"PowerUp\") end\n", ""),
