@@ -1471,7 +1471,7 @@ function NICK.Build()
 	u.Current = UIKit.InkText({ Name = "CurrentName", Parent = u.Body,
 		Text = "Current name: " .. Util.PlayerDisplayName(player), Outline = false })
 	u.InputArt = UIKit.ArtFrame("InputField", { Name = "InputFrame", Parent = u.Body })
-	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt,
+	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt, AutoLocalize = false, -- A23-179 typed
 		BackgroundTransparency = 1, BorderSizePixel = 0, ClearTextOnFocus = false, MultiLine = false,
 		Text = NICK.Draft, PlaceholderText = "StarKnight", RichText = false,
 		TextColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText,

@@ -327,7 +327,9 @@ local function createNametag(player)
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	layout.Parent = bb
 
-	makeLine("Line1", 1, 30, 22, Color3.new(1, 1, 1)).Parent = bb
+	local line1 = makeLine("Line1", 1, 30, 22, Color3.new(1, 1, 1))
+	line1.AutoLocalize = false -- A23-179: [title] + the player's name stays as it is (lines 2-3 are translated)
+	line1.Parent = bb
 	makeLine("Line2", 2, 24, 17, LINE2_COLOR).Parent = bb
 	makeLine("Line3", 3, 24, 17, LINE3_COLOR).Parent = bb
 	return bb
