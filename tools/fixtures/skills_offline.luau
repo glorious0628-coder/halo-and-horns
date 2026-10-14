@@ -246,6 +246,91 @@ runGroup("class tasks", function()
 	check(old:GetAttribute("SkillSlots") == 2, "a save that has Z already keeps it (never lowered)", show(attrs(old)))
 end)
 
+------------------------------------------------------------------ A23-193: a skill is learned from the side's teacher
+runGroup("teacher", function()
+	local L = C0.Skills.Learn
+	check(L.Enabled == true and L.Teachers.Halo == "Gleam" and L.Teachers.Horns == "Smokey" and L.Teachers.Neutral == "Otto"
+		and C0.SkillTeacherName("Halo") == "Sir Gleam" and C0.SkillTeacherName("Horns") == "Rose" and C0.SkillTeacherName("Neutral") == "Otto"
+		and C0.SkillTeacherName("None") == "", "Config: Sir Gleam / Rose / Otto teach (names from the town NPCs)", "")
+	local otto = nil
+	for _, e in C0.TownNpcs.List do if e.Id == "Otto" then otto = e end end
+	check(otto and otto.Story == "Otto" and otto.Anvil == true, "Otto gets a Talk prompt (Story Otto) and stays by the anvil", show(otto and otto.Story))
+	check(C0.SkillLearned(0, 5, 0) == false and C0.SkillLearned(1, 1, 0) == true and C0.SkillLearned(0, 1, 1) == true,
+		"SkillLearned: the level alone teaches nothing; the saved slot or a rebirth does", "")
+	check(#L.Text.Lines.Halo >= 1 and #L.Text.Lines.Halo <= 2 and L.Text.Lines.Horns[1]:find("%%s") ~= nil
+		and L.Text.Lines.Neutral[1]:find("%%s") ~= nil, "1-2 teacher lines per side, the first names the skill", "")
+	local w = skillWorld({ Z = true, RealUnlock = true })
+	local bodies = {}
+	w.Services.CollectionService = { GetTagged = function(_, tag) return tag == "StoryNpc" and bodies or {} end }
+	local function body(id, pos)
+		table.insert(bodies, { GetAttribute = function(_, k) return k == "NpcId" and id or nil end,
+			GetPivot = function() return { Position = pos } end })
+	end
+	body("Gleam", vec(0, 0, -6))
+	body("Smokey", vec(0, 0, -100))
+	local function a(p) return { p:GetAttribute("SkillSlots"), p:GetAttribute("SkillLearnReady"), p:GetAttribute("SkillTeacher") } end
+	local p, d = w:Hero(1, { Level = 4, Faction = "Halo" })
+	d = d or w.Data[p]
+	local f0 = #w.Fx
+	w.PS.SetStat(p, "Level", 5)
+	w.Registry.ProgressionService.LeveledUp:Fire(p, 5)
+	w:Flush()
+	check(p:GetAttribute("SkillSlots") == 0 and d.SkillSlots == 0 and p:GetAttribute("SkillLearnReady") == 1
+		and p:GetAttribute("SkillTeacher") == "Gleam" and #w:FxOf("SkillUnlocked", f0) == 0,
+		"Lv5: Q is ready, not learned (SkillLearnReady 1, SkillTeacher Gleam, no notice)", show(a(p)))
+	w:Monster("Slime", 4, 0, 9999)
+	w:Advance(0.6)
+	w:Use(p, "Q")
+	check(w:Count("Q") == 0, "before the teacher: Q does not cast", w:Count("Q"))
+	check(w.Skills.TryLearn(p, "Smokey") == false and p:GetAttribute("SkillSlots") == 0, "another side's teacher: nothing", show(a(p)))
+	check(w.Registry.StoryQuestService.TalkToNpc(p, "Gleam") == "SkillLearn", "talking to Sir Gleam teaches it (TalkToNpc)", "")
+	local learned = w:FxOf("SkillLearned", f0)
+	local un = w:FxOf("SkillUnlocked", f0)
+	check(p:GetAttribute("SkillSlots") == 1 and d.SkillSlots == 1 and p:GetAttribute("SkillLearnReady") == 0
+		and p:GetAttribute("SkillTeacher") == "" and #learned == 1 and learned[1].Data.Teacher == "Gleam"
+		and learned[1].Data.Slots[1] == "Q" and #learned[1].Data.Slots == 1 and #un == 1 and un[1].Data.Slot == "Q",
+		"learned: SkillSlots 1 saved, Fx SkillLearned { Slots Q, Teacher Gleam } + SkillUnlocked Q", show({ a(p), #learned, #un }))
+	check(w.Skills.TryLearn(p, "Gleam") == false and #w:FxOf("SkillLearned", f0) == 1, "a second talk teaches nothing more", "")
+	w:Advance(3.5)
+	w:Use(p, "Q")
+	check(w:Count("Q") == 1, "after the teacher: Q casts", w:Count("Q"))
+	-- too far from the teacher: nothing (Rose stands 100 studs away)
+	local h = w:Hero(2, { Level = 5, Faction = "Horns" })
+	check(h:GetAttribute("SkillSlots") == 0 and h:GetAttribute("SkillLearnReady") == 1 and h:GetAttribute("SkillTeacher") == "Smokey",
+		"a Lv5 save that never learned: ready at the join, teacher Rose", show(a(h)))
+	check(w.Skills.TryLearn(h, "Smokey") == false and h:GetAttribute("SkillSlots") == 0, "100 studs from Rose: too far", show(a(h)))
+	h.Character:FindFirstChild("HumanoidRootPart").Position = vec(0, 0, -90)
+	check(w.Skills.TryLearn(h, "Smokey") == true and h:GetAttribute("SkillSlots") == 1, "10 studs from Rose: learned", show(a(h)))
+	-- two at once (Lv4 -> 16): Q and Z together from one talk
+	local j = w:Hero(3, { Level = 4, Faction = "Halo" })
+	local f1 = #w.Fx
+	w.PS.SetStat(j, "Level", 16)
+	w.Registry.ProgressionService.LeveledUp:Fire(j, 16)
+	check(j:GetAttribute("SkillLearnReady") == 2 and j:GetAttribute("SkillSlots") == 0, "Lv4 -> 16: Q and Z wait", show(a(j)))
+	check(w.Skills.TryLearn(j, "Gleam") == true and j:GetAttribute("SkillSlots") == 2
+		and #w:FxOf("SkillLearned", f1) == 1 and #w:FxOf("SkillLearned", f1)[1].Data.Slots == 2, "one talk: both", show(a(j)))
+	-- old saves keep their skills; a rebirth needs no teacher; no teacher body here (Otto) = the slot opens at once
+	local old = w:Hero(4, { Level = 30, Faction = "Halo", Data = { SkillSlots = 3 } })
+	check(old:GetAttribute("SkillSlots") == 3 and old:GetAttribute("SkillLearnReady") == 0, "an old save with its skills: kept, nothing to learn", show(a(old)))
+	local rb = w:Hero(5, { Level = 1, Faction = "Halo", Data = { Rebirths = 1 } })
+	check(rb:GetAttribute("SkillSlots") == 3 and rb:GetAttribute("SkillLearnReady") == 0, "a rebirth: all three at once", show(a(rb)))
+	local n = w:Hero(6, { Level = 5, Faction = "Neutral", Class = "Warrior" })
+	check(n:GetAttribute("SkillSlots") == 1 and n:GetAttribute("SkillLearnReady") == 0, "Otto has no body in this world: Q at once (never stuck)", show(a(n)))
+	-- Learn off = the old rule
+	local w2 = skillWorld({ RealUnlock = true })
+	w2.Config.Skills.Learn.Enabled = false
+	w2.Services.CollectionService = w.Services.CollectionService
+	local o = w2:Hero(1, { Level = 5, Faction = "Halo" })
+	check(o:GetAttribute("SkillSlots") == 1, "Learn.Enabled off: Q at Lv5 as before", show(a(o)))
+	-- with the class tasks: a done Z task waits at the teacher (no task shown as running)
+	local w3 = skillWorld({ Z = true, RealUnlock = true, Tasks = true })
+	w3.Services.CollectionService = w.Services.CollectionService
+	local t = w3:Hero(1, { Level = 15, Faction = "Halo", Data = { SkillSlots = 1, SkillTask = { Z = 40 } } })
+	check(t:GetAttribute("SkillSlots") == 1 and t:GetAttribute("SkillLearnReady") == 2 and t:GetAttribute("SkillTaskSlot") == "",
+		"Z's task done: Z waits at the teacher, no task running", show({ a(t), t:GetAttribute("SkillTaskSlot") }))
+	check(w3.Skills.TryLearn(t, "Gleam") == true and t:GetAttribute("SkillSlots") == 2, "the teacher opens Z", show(a(t)))
+end)
+
 ------------------------------------------------------------------ the remote, the gap and the queue
 runGroup("gap and queue", function()
 	local w = skillWorld({ Z = true })
