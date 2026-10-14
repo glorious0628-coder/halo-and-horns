@@ -104,7 +104,7 @@ local L = {
 	IndexEvery = 30, -- s: MarketIndex is cached 30 s on the server
 	MineEvery = 10, -- s: the open window asks for its Mine rows again (a sale, Paid, Gate)
 	Timeout = 3, -- s after a Buy / List / Cancel: the answer is taken as in; Mine rows and the page are asked again
-	Fee = 0.10, -- A23-133: the market's cut of a sale
+	Fee = 0.07, -- A23-183 (user 10/14): the market's cut of a sale, until the server branch's Config.Market.Fee is here
 	MaxDigits = 9, MaxQuery = 24, HintRows = 3, MaxWaiting = 5,
 }
 
@@ -201,10 +201,16 @@ function MarketWindow.TimeText(sec)
 	return string.format("%d:%02d", sec // 60, sec % 60)
 end
 
--- the market's cut and what the seller gets (A23-133: price - floor(price x 10%))
+-- the market's cut and what the seller gets (A23-183: price - floor(price x Config.Market.Fee), 7%; under 1 gold = 0) -
+-- the server's own rate, so "You get" and a sold row match what the server pays; no / odd rate = L.Fee
+function MarketWindow.FeeRate()
+	local rate = type(Config.Market) == "table" and tonumber(Config.Market.Fee) or nil
+	return (rate and rate >= 0 and rate < 1) and rate or L.Fee
+end
+
 function MarketWindow.Fee(price)
 	price = math.max(0, math.floor(num(price, 0)))
-	local fee = math.floor(price * L.Fee)
+	local fee = math.floor(price * MarketWindow.FeeRate())
 	return fee, price - fee
 end
 
