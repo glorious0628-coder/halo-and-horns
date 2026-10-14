@@ -2706,9 +2706,9 @@ Config.Halloween = {
 	-- (LostFound), no King Diary / candy jar row (QuestBook), no news line. No code and no data is deleted: true brings it all back (a
 	-- new EndsAt too). The live switch Halloween can only turn it off further. A new zone with new monsters is to take the place.
 	Enabled = false,
-	-- 2-A ⑦: the 2026 dates below are past by the beta; bringing the season back (next Halloween) = new EndsAt + DayOneStart.
 	-- A23-28 HW-13: the season switches itself off at 2026-11-09 00:00 KST (= 2026-11-08 15:00 UTC) by the server clock:
 	-- no seasonal spawns, no king, no PumpkinPatch zone / sign after it. Candy already earned stays in the bag.
+	-- 2-A ⑦: the 2026 dates here are past by the beta; bringing the season back (next Halloween) = new EndsAt + DayOneStart.
 	EndsAt = 1794150000,
 	King = "PumpkinKing", -- the miniboss kind (Config.MonsterTypes)
 	FirstDelay = 360,
