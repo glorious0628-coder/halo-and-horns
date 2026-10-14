@@ -287,3 +287,5 @@
 - (10/14 저녁, 정리 중 도착) **Bright 머리·몸 부품 2D 시범 끝**: `art/review/s2/parts_npc_bright_2026-10-14.jpg`(옛 통짜 4면 / 머리 4면 / 몸 4면), 파일 art/out/s2/noshadow/parts/npc/. 사용자에게 아직 안 보임 → 새 최종 검수가 보여 주고 OK 오면 나머지 14명 같은 방식(이미지 생성 2). 디자인 검수 state 정정 push됨(Rail·Base 축별 맞춤 끝).
 
 - **(끝) 사용자 지시로 이미지 생성 2·개발 1·개발 2 턴을 강제 정지**(정리 메시지가 큐에 있어 짧은 정리 턴이 돌 수 있음). 개발 1(HUD 목표 칩 3층)·개발 2(무기 운 보정)의 미완 코드는 각자 worktree 디스크에만 있을 수 있음 → 새 최종 검수는 `git worktree list`로 ../wt_* 를 찾아 `git status`로 미커밋 변경을 확인하고, 새 개발 세션이 그 worktree에서 이어가게 할 것. 이미지 생성 2는 ④⑤ 부품 2D 일부 미push 가능(art/out/s2/noshadow/parts/ 디스크 확인).
+
+- (정정) 개발 1은 정지 전에 push함: **fix/goal-chips-3 d31252ac WIP**(①칩 2·3층 ②패배 This run ③진영 3줄 + test_goal_chips·play_goal_chips_photos; 남은 고장 1 = Config 7642줄 GotHonor가 주석 안에 들어감 → 자기 줄로 빼기), state/dev1.md 5f1aa07. 개발 2·이미지 생성 2는 미커밋 가능성 그대로.
