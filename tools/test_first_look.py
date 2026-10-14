@@ -151,7 +151,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("each layout starts from the base geometry", "g.Size, g.Lines = g.BaseSize or g.Size, g.BaseLines or g.Lines" in h
          and "BaseSize = f.Size, BaseLines = f.Lines" in h),
         ("the Codex tile reads 'Monsters'", re.search(r'^\tTileCodex = "Monsters",', h, re.M) is not None),
-        ("EventHUD places the next-event line with V2.eventY", "local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y" in e),
+        ("EventHUD places the next-event line with V2.eventY", "local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)" in e),
         ("HUD.ChipsShown exists", "function HUD.ChipsShown()" in h),
         # user 10/14: the PC fold in one line - every row tile (Monsters included) in the PC row, the war meter steps
         # left for exactly the L.Fold squares
@@ -176,7 +176,7 @@ STATIC_MUTATIONS = [
     ("HUD", "names back to 10 px", "L.TileNamePxPC, L.TileNamePadPC = 8, 6", "L.TileNamePxPC, L.TileNamePadPC = 10, 6"),
     ("HUD", "no margin", "L.TileNamePxPC, L.TileNamePadPC = 8, 6", "L.TileNamePxPC, L.TileNamePadPC = 8, 0"),
     ("HUD", "the floor never reaches UIKit", '\t\tlabel:SetAttribute("FitMinPx", L.TileNamePxPC)\n', ""),
-    ("EVENT", "the line keeps its own row", "local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y", "local evY = ev.Y"),
+    ("EVENT", "the line keeps its own row", "local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)", "local evY = V2.EventTop(ev.Y, V2.hudBottom(), V2.TopGap)"),
 ]
 
 
