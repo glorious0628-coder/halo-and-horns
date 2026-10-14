@@ -19,7 +19,7 @@ Tripo 계정 2 · 사용자 Chrome(Claude Chrome 확장) · 역할 파일 `role_
 - 끝: 난간 4(CornerPost 최종 통과) + 사람 9(BakerGranny·BellElder·Bright·FlowerFarmer·FlowerGirl·Folk4·HerbHusband·HerbWife 판정 보냄). Tripo에서 도는 중: JuiceMan a94e810f · MailBoy 2065ea15 · OldSailor 4958667f. 남은 사람: PondAngler·PotionMerchant·SirGleam·StarScholar → 묶음 3(14).
 - 14:xx Chrome 탭 그룹 사라짐 → 그 뒤 Claude in Chrome 확장 '연결 안 됨'(사용자가 Chrome 다시 열어야). 잔액 20,190(마지막 확인).
 - **사람 = 사용자 최종(10/14):** 통짜 사람 생성 멈춤. 사람은 부품(머리·몸·소품) 2D를 이미지 생성 2가 따로 → 각각 HD 55(머리·몸 폴리곤 12000, 소품 8000) → Blender 합침. 스마트 메시 안 씀. 이미지 생성 2가 Bright로 시범 → 사용자 OK 뒤 최종 검수가 큐에 넣음. 만든 사람 HD는 파일만, records에 '통짜 HD, 사용자 방식 아님'. Rail·Base 두께 = 최종 검수가 Blender 축별 맞춤(다시 생성 안 함).
-- **다음 큐(연결되면):** JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 받기 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) (2D parts/<이름>_*_ns.png) → 단순 14(HD 55; 이름: HaloSign_SignBakery/SignFlower/SignPotion, HaloFlagpole_1, HaloReasonHQ_GuardPost, HaloChunk_* = noshadow/chunks/).
+- **다음 큐(연결되면):** JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f 파일만 받기 → NEW_WhiteRock_a·b·c(12000) → NEW_ArmoryBarrel(8000) (2D parts/<이름>_*_ns.png) → 단순 14 → 분수 부품 Town_Halo_Fountain3_Basin(12000)·_MidTier(12000)·_Top(8000) → 나무 부품 HaloVar3_TreePlanter(8000)·HaloVar3_TreeFruit(4000)·HaloVar3_RoundTree_E/F/G_Trunk(8000)·_E/F/G_Canopy(12000) (모두 parts/, HD 4K 55). 단순 14 = (HD 55; 이름: HaloSign_SignBakery/SignFlower/SignPotion, HaloFlagpole_1, HaloReasonHQ_GuardPost, HaloChunk_* = noshadow/chunks/).
 
 ## 지금 방식 (SPEC A23-174, 사용자 10/14 낮, 최종 검수 전달) — 다음 물건부터
 - **지금은 대기.** 다음 물건은 최종 검수가 목록·점수를 사용자에게 보인 뒤 보냄.
