@@ -1,4 +1,15 @@
-# Blender 손보기 2 — 상태 (2026-10-14 09:45)
+# Blender 손보기 2 — 상태 (2026-10-14 10:30, ⛔ 전부 멈춤)
+
+## ⛔ 멈춤 (최종 검수 10/14, 사용자 지시 A23-163: 디자인 10/20부터, Tripo·Blender 10/27부터)
+- 아무 버튼·Codex 안 돌림. 그 전 지시(보류 풀기·단순 16/13·④ 큐·난간 v2)는 모두 취소. 다음 지시 = 최종 검수가 10/27 전에.
+- **오늘 Tripo HD 생성 33개 = 1,815점, 계정 2 잔액 20,190 → 18,375.** 33개 모두 GLB 받음 → art/models/tripo/web/<이름>_HD_pbr_src.glb, records.json <이름>_web2_hd(project id 전체·점수·잔액·file_bytes).
+  - 13개(id 앞 8): WhiteRock_a 498f66d3 · b 78f0c1d6 · c a6b39726 · ArmoryBarrel e08980ed · Fountain3_Basin 0e2d4eb8 · MidTier cb8a51d3 · Top 4f330660 · TreePlanter 052facfa · TreeFruit 24e1eae7 · RoundTree_E_Trunk e3a13cd9 · G_Trunk a777bbed · E_Canopy 14f82dd5 · G_Canopy a5d8ebce.
+  - ④ 화분·꽃 20개(보류 메시지 전에 누름): Rose_Bowl 988738bb · F_Vase 4e1fdee7 · A_Bowl 801f725b · C_Urn 74e61dd9 · WoodBucket 8be5841f · SilverBucket 8dc11f60 · Daisy_Leaves 613b4061 · Rose_Leaves 674009f8 · A_Leaves fd7e900d · C_Leaves cf6f3620 · FlowerBushPot_Leaves 4ae47ca4 · NEW_FlowerBush_Leaves ef4a11c4 · Daisy_Pot 5f1df4ed · WhiteDaisy e9721480 · Blue5 6fe4a7e8 · Lilac a56ed802 · RedDaisy 0d04ff01 · PinkRose 6dcdf2d0 · RedBud 6fa78e85 · RoseBud 55f097a8. 이 중 Daisy_Pot·Rose_Bowl·A_Bowl = 2D 떨어짐 → records status 'not used'.
+  - 사람 3(JuiceMan a94e810f·MailBoy 2065ea15·OldSailor 4958667f, 아침 생성분) GLB도 받음, records '통짜 HD, 사용자 방식 아님'.
+- PBR 시트 33장 art/review/design/pbr_gate_hd_1014/(+ _overview_33_q34_bottom.jpg) → 디자인 검수에 보냄, 판정 아직. 내 걱정: Basin 아래 물 보임, A_Bowl 아래 틈, SilverBucket 아래 흐림.
+- 안 한 것: 단순 13(목록은 위 10:40 줄), RoundTree_F·꽃 3(새 2D 대기), 난간 v2(Codex 사용량 한도로 못 돌림; 지시문 build/codex_jobs/balustrade_v2/task.md 남김, 결과 파일 없음).
+- Tripo 계정 설정은 내가 바꾼 상태 그대로(텍스처 4K·조명 제거·PBR 켬, 부분별 생성 끔, 폴리곤 8000) — 아래 '바꾼 Tripo 설정' 줄 참고. Chrome 탭 닫음, 수신기 끔.
+
 
 ## 지금 (10/14 09:45)
 - **새 규칙(사용자 10/14 "블렌더 작업은 코덱스한테 시켜봐"):** Blender 일(assemble_parts.py·axis_fit_bar.py·크기·피벗·방향)은 내가 직접 안 돌리고 Codex CLI(`codex exec -C <Game> -s workspace-write --skip-git-repo-check -`, exe = tools/codex_image.py codex_exe())에 시킨다. 못 하면 보고하고 멈춤.
