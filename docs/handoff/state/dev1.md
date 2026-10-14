@@ -1,6 +1,15 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 낮 2 (최신)
+## 10/14 밤 — fix/goal-chips-3 d31252ac (WIP, 최신; 사용자 계정 옮김으로 정리)
+- 가지 **fix/goal-chips-3 d31252ac**(origin/main 2f8ccc12 위, worktree ../wt_dev1merge), 2-A ①②③(A23-167):
+  - ① HUD 칩 2·3층: HUD L.GoalTiers(순수)·L.RefreshGoalTiers·L.GoalTierSize·L.GoalTiersOn, 추적기(QuestTracker) 안 GoalTier2/3(LayoutOrder 4·5), 작은 PC 창 높이 계산에 포함. Config.GoalChips(Steps·Text, 폰 TouchTiers=1).
+  - ② 패배 화면 'This run': DeathScreen TotalXP/Tally/GotLines(순수), 속성 스냅숏 0.3초 묶음 + Fx Loot, CharacterAdded = 새 판, KO 때 Flush. Config.Death.Text Got*(+En), PluralWords items.
+  - ③ 진영 카드 밑 3줄: Config.FactionChanges, FactionPicker.ChangeLines/buildChanges, placeCards가 줄 자리(chH) 뺌, 마스코트는 카드 바닥 기준.
+- **남은 고장 1개:** Config.luau 7642줄 — GotHonor/GotHonorEn이 '-- Config.Plural' 주석 안에 들어감 → 자기 줄로 빼기. 그러면 test_goal_chips 2 실패가 없어질 것(확인 전).
+- 시험(고장 전 판): test_goal_chips 51·19/19, death_screen, ko_screen 52/52(En 짝 넣은 뒤), story_text(Plural 뒤), first_ko, first_ko_king, first_look, hud_layout, hud_reveal, quest_lines, phone_first10, phone_text, comeback_client, english, l10n, fit_text, camera_input, place_english(--place) 모두 0 failing·MISSED 0.
+- 다음: 위 한 줄 고침 → 시험 다시(위 목록) → 최종 검수 보고 → 병합 뒤 메인 반영 1 사진 `HH_MAIN_STUDIO=1 py tools/play_goal_chips_photos.py [phone]`(→ docs/art/verification_2026-10-14/goal_chips/). ④ 선택 카드 켜기는 10/17 뒤.
+
+## 10/14 낮 2
 - 메인 사진 3종(comeback·phone_first10·first_look_1014) = 최종 검수 판정 고장급 없음.
 - **fix/comeback-photo-wait 65433aa1**(origin/main b91b53ff 위, 사진 스크립트만): 05_back_line 대기 45초 + 없으면 가까운 화자 로그(NEAR). 최종 검수 병합 → 다음 사진 때 05 확인.
 - fix/quest-target-buy-test 82f2b585 = main b91b53ff가 같은 고침으로 대신함(버려도 됨).
