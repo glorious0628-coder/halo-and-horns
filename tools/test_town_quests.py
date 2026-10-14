@@ -49,6 +49,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("Codex B1: the trials row says 0/3 again", ST, "\t\t\telseif first == nil and type(sub.Text) == \"string\" then\n\t\t\t\tfirst = sub\n",
+     "\t\t\telseif false then\n\t\t\t\tfirst = sub\n"),
     # SKL-3 the practice subs SK1 / SK2
     ("SKL-3: SkillHit ignores the Slot", ST,
      "\t\tif obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)\n", ""),

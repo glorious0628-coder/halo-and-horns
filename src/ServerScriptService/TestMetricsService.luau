@@ -250,6 +250,33 @@ function TestMetricsService.OnLeave(player)
 	X.Conns[player] = nil
 end
 
+-- Codex B6 (최종 검수 10/14): a new account's XP by source (hunting = a kill's XP, everything else = quests / dailies /
+-- boards ...) up to Lv10, added to XP[Lv5 / Lv10] = { Hunt, Other, N } once when the account reaches that level (the
+-- level-up grant included: it is counted before the level is looked at). Per account: rec.X = { H, O, Done }
+function TestMetricsService.OnXP(player, amount, source)
+	local data = getData(player)
+	if not data then return end
+	local rec = recordOf(data)
+	if rec.N ~= true then return end
+	local n = math.max(0, math.floor(num(amount)))
+	if n <= 0 then return end
+	if type(rec.X) ~= "table" then rec.X = { H = 0, O = 0, Done = {} } end
+	local x = rec.X
+	if type(x.Done) ~= "table" then x.Done = {} end
+	if not x.Done.Lv10 then
+		if source == "Monster" then x.H = num(x.H) + n else x.O = num(x.O) + n end
+	end
+	for _, m in { "Lv5", "Lv10" } do
+		if not x.Done[m] and REACHED[m](player, data) then
+			x.Done[m] = true
+			local row = sub(sub(X.Delta, "XP"), m)
+			bump(row, "Hunt", num(x.H))
+			bump(row, "Other", num(x.O))
+			bump(row, "N", 1)
+		end
+	end
+end
+
 function TestMetricsService.OnPassBought(player, key)
 	key = passKey(key)
 	local data = key and getData(player)
@@ -294,6 +321,7 @@ function TestMetricsService.Start()
 	connect("PlayerService", "PlayerReady", TestMetricsService.OnJoin)
 	connect("PlayerService", "PlayerLeaving", TestMetricsService.OnLeave)
 	connect("MonetizationService", "PassBought", TestMetricsService.OnPassBought)
+	connect("ProgressionService", "XPEarned", TestMetricsService.OnXP) -- Codex B6
 	connect("TelemetryService", "ClientMetric", TestMetricsService.OnClientMetric)
 	task.spawn(function()
 		local every = math.max(30, num(M.FlushSeconds, 60))

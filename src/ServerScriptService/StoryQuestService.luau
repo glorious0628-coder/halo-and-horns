@@ -902,12 +902,24 @@ local function rowFor(player, data, id, track)
 		text = string.format(TXT.Claim, def.Title)
 		progress, target = 1, 1
 	elseif obj.Type == "Trials" then
-		local done = 0
+		local done, first = 0, nil
 		for _, sub in obj.List do
-			if num(track.T[sub.Key]) >= sub.Count then done += 1 end
+			if num(track.T[sub.Key]) >= sub.Count then
+				done += 1
+			elseif first == nil and type(sub.Text) == "string" then
+				first = sub
+			end
 		end
-		text = string.format(step.Text, done)
-		progress, target = done, #obj.List
+		if first then
+			-- Codex B1: the first trial not done yet, in its own words and numbers ("Beat slimes with basic attacks 1/3")
+			progress, target = math.floor(num(track.T[first.Key])), first.Count
+			template = first.Text
+			local okF, f = pcall(string.format, first.Text, progress, target)
+			text = okF and f or first.Text
+		else
+			text = string.format(step.Text, done)
+			progress, target = done, #obj.List
+		end
 	elseif obj.Type == "Level" then
 		text = string.format(step.Text, math.floor(num(data.Level, 1)))
 	elseif obj.Type == "Near" and num(obj.Stay) > 0 then

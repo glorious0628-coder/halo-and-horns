@@ -31,6 +31,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("Codex B6: quest XP counted as hunting", "METRICS_SOURCE", "if source == \"Monster\" then x.H = num(x.H) + n else x.O = num(x.O) + n end",
+     "x.H = num(x.H) + n"),
     # --- config
     ("the board is off", C, "Config.TestMetrics = {\n\tEnabled = true,", "Config.TestMetrics = {\n\tEnabled = false,"),
     ("fresh means 10 minutes", C, "\tFreshSeconds = 120,\n", "\tFreshSeconds = 600,\n"),

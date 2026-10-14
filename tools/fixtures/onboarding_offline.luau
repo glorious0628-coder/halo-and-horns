@@ -161,6 +161,7 @@ local function fixture(saved, opts)
 		AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end }
 	local registry = { PlayerService = ps, DataService = dataService, MonsterService = monster, ProgressionService = prog,
 		StoryQuestService = { QuestDone = signal() }, -- QuestService listens to the daily intro quest (A23-104)
+		FieldBossService = { SecondsUntil = function() return 0 end }, -- Codex B5: a King Slime is here (the iron drop line shows)
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end,
 			-- A23-68 #1: the accepted mission's move to the meadow (an instant Travel); arriving fires ZoneChanged

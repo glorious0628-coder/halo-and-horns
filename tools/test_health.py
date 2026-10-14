@@ -176,8 +176,8 @@ MUTATIONS = [
     ("Config: goose skew 90%", C, "GooseSkew = 0.75,", "GooseSkew = 0.9,"),
     ("Config: quiet after 6 hours", C, "QuietHours = 3 },", "QuietHours = 6 },"),
     # --- the real ProgressionService
-    ("XP is never fired", PR, "\tM.XPEarned:Fire(player, amount)\n", ""),
-    ("XP is fired double", PR, "\tM.XPEarned:Fire(player, amount)\n", "\tM.XPEarned:Fire(player, amount * 2)\n"),
+    ("XP is never fired", PR, "\tM.XPEarned:Fire(player, amount, source)\n", ""),
+    ("XP is fired double", PR, "\tM.XPEarned:Fire(player, amount, source)\n", "\tM.XPEarned:Fire(player, amount * 2, source)\n"),
 ]
 
 
@@ -238,10 +238,10 @@ def static() -> tuple[int, list[str]]:
     check(code.count("UpdateAsync") == 1 and "SetAsync" not in code, "documents are only merged (one UpdateAsync, no SetAsync)")
     prog = strip_comments(read(SSS / "ProgressionService.luau"))
     check("M.XPEarned = Util.Signal.new()" in prog, "ProgressionService.XPEarned exists")
-    fire = prog.find("M.XPEarned:Fire(player, amount)")
+    fire = prog.find("M.XPEarned:Fire(player, amount, source)")  # Codex B6: + the source
     add = prog.find("function M.AddXP")
     ret = prog.find("return amount", fire if fire > 0 else 0)
-    check(add >= 0 and fire > add and 0 < ret - fire < 80, "AddXP fires XPEarned(player, amount) right before it returns")
+    check(add >= 0 and fire > add and 0 < ret - fire < 80, "AddXP fires XPEarned(player, amount, source) right before it returns")
     check(prog.count("M.XPEarned:Fire") == 1, "XPEarned has one fire site (AddXP)")
     goose = strip_comments(read(SSS / "GooseService.luau"))
     check("GooseService.GooseRewarded = Util.Signal.new()" in goose, "GooseService.GooseRewarded exists")

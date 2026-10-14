@@ -140,6 +140,15 @@ def board(meta: dict) -> list[str]:
         lines.append("## 진영·기기 (새 계정)")
         lines += table(["무엇", "명"], [[f"진영 {k}", int(v)] for k, v in sorted(side.items())]
                        + [[f"기기 {k}", int(v)] for k, v in sorted(dev.items())])
+    xp = doc.get("XP") or {}
+    if xp:  # Codex B6: how much of the way to Lv5 / Lv10 came from hunting vs quests / dailies (new accounts)
+        lines.append("## 경험치 출처 (새 계정, 그 레벨까지)")
+        rows = []
+        for m in ("Lv5", "Lv10"):
+            r = xp.get(m) or {}
+            hunt, other, n = float(r.get("Hunt") or 0), float(r.get("Other") or 0), int(r.get("N") or 0)
+            rows.append([m, n, f"{hunt / n:.0f}" if n else "-", f"{other / n:.0f}" if n else "-", pct(hunt, hunt + other)])
+        lines += table(["레벨", "명", "사냥 XP(평균)", "퀘스트·일일 XP(평균)", "사냥 비율"], rows)
     passes = doc.get("Pass") or {}
     lines.append("## 패스 (산 뒤 다시 접속했을 때 혜택이 남았나)")
     if passes:
