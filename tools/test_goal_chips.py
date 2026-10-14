@@ -346,7 +346,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          and 'local col = (f == "Halo" or f == "Horns") and factionColor(f) or ac("GoldText", Theme.Gold)' in h
          and 'Halo = "Win the Crown", Horns = "Win the Crown",' in src["CONFIG"]),
         ("the KO screen draws the Got labels", 'S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i)' in ds),
-        ("the KO screen paints the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)" in ds),
+        ("the KO screen paints the run", "DeathScreen.Lines(S.Data, left, G, S.Faction" in ds),
         ("the run's attributes are watched", re.search(r'for _, k in \{ "Level", "XP", "CarriedGold", "BankGold", "Honor", "Infamy", '
                                                        r'"Faction", "Rebirths" \} do\n\t+LocalPlayer:GetAttributeChangedSignal\(k\):Connect\(onAttr\)', ds) is not None),
         ("the picker builds the lines under each side's card", "\tbuildChanges(c, id)\n" in fp),

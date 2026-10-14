@@ -151,7 +151,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("the fold shrink is PC only", "\t\tif not IS_TOUCH then\n\t\t\tlocal s, lines = L.FitFold(g.Lines, g.Size, g.Gap, g.Right, #list)" in h),
         ("each layout starts from the base geometry", "g.Size, g.Lines = g.BaseSize or g.Size, g.BaseLines or g.Lines" in h
          and "BaseSize = f.Size, BaseLines = f.Lines" in h),
-        ("the Codex tile reads 'Monsters'", re.search(r'^\tTileCodex = "Monsters",', h, re.M) is not None),
+        ("the Codex tile reads 'Monsters'", re.search(r'^\tTileCodex = "Monsters",', src["CONFIG"], re.M) is not None),
         ("EventHUD places the next-event line with V2.eventY", "local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)" in e),
         ("HUD.ChipsShown exists", "function HUD.ChipsShown()" in h),
         # user 10/14: the PC fold in one line - every row tile (Monsters included) in the PC row, the war meter steps
