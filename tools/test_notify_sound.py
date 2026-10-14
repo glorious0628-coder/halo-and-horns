@@ -35,6 +35,7 @@ ROUTES = [
     ("StoryQuestService.luau", "notify(player, msg, \"reward\", \"QuestDone\")", "QuestDone"),
     ("StoryQuestService.luau", "notify(player, TXT.Unlocked", "None"),
     ("StoryQuestService.luau", "if line then notify(player, line", "None"),
+    ("StoryQuestService.luau", "if given then notify(player, given", "None"),  # gameplay plan 1-A #2: a step's GiveItem
     ("StoryQuestService.luau", "TXT.NewTitle, Config.TitleDefs[titleId].Name", "RankUp"),
     ("StoryQuestService.luau", "notify(player, table.concat(parts, \" · \")", "None"),
     ("BoardService.luau", "T.Done or \"Job done!", "QuestDone"),
@@ -68,7 +69,6 @@ ROUTES = [
     ("LootService.luau", "TXT.DuplicateWeapon, weaponName(player, tier)", "GoldPickup"),
     ("LootService.luau", "TXT.FirstWeapon, name", "None"),
     ("LootService.luau", "TXT.FirstWeaponBag, name", "Equip"),
-    ("LootService.luau", "pcall(Net.Notify, player, line, \"reward\", num(first.NoticeSeconds, 6)", "None"),
     ("PetService.luau", "notify(player, text, \"reward\"", "None"),
     ("PetService.luau", "TXT.BecameFree or TXT.Became", "None"),
     ("PvPService.luau", "fmt(\"GraduateStart\")", "None"),

@@ -1,5 +1,23 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 아침 (Studio 열기·sync·사진 3종)
+- **Studio**: build/GoodEvil.rbxlx(10/13 23:28:22 판)로 열림(id 73c64908…, list_roblox_studios), Edit, Play 없음, 창 최소화, StudioFreshSave=true, **저장 안 함**(Save As = 10/16 저녁 사용자). 코드 = main 89255e8b sync(스크립트 12 새로 씀·161 그대로).
+- **사진**(docs/art/verification_2026-10-14/): comeback/(PC+phone 5장씩), phone_first10/(844·phone 11장씩), first_look_1014/(pc_01~03; menu_one_line/ 덮어쓴 것의 복사). 콘솔 오류 0.
+- 눈에 띈 것: 두 comeback 모두 `back line: no bubble`(Returned 말풍선 안 뜸, 최종 검수가 사진 보고 판정). phone first10 로그에 cut 2 / overlap 1~4 숫자 있음(판정은 최종 검수).
+- 다음: 최종 검수 요청대로. 10/16 저녁 Save As는 사용자.
+
+## 10/14 새벽 정리 (사용자: 컴퓨터 끔 — 최종 검수 전달)
+- **저장 기준:** build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/13 23:28:22, 44,601,218 B, SHA256 63f4aa56941e…daf5, push 956e521, 소스 = main 75890afd(src 173개 전부 일치). 그 뒤 병합(4baa63e6 메뉴 한 줄 2 등)은 저장 안 된 sync. Studio는 Edit·Play 없음·저장 안 함, 컴퓨터 꺼지면 사라짐.
+- **다음 일(내일 아침, 3줄):** ① Studio가 다시 열리면 로그인 확인(PC 재시작 때 로그인이 풀려 사용자가 눌러야 했음), 열기는 build/GoodEvil.rbxlx 인자 실행 뒤 list_roblox_studios로 id(창 제목이 "헤일로 & 혼스 (placeId: 81671223175574)"로 바뀔 수 있음, studio_mcp MAIN_NAMES에 이미 포함). ② `py tools/push_paths.py --sync` → 0 0 확인 → `HH_MAIN_STUDIO=1 STUDIO_ID=<id> py tools/sync_to_studio.py` → `py tools/play_phone_round_photos.py first10` + `py tools/play_first_look_photos.py`(결과는 menu_one_line/에 덮어쓰므로 끝나면 새 폴더로 복사) + build/mainapply_2026-10-09b/play_first10_1013.py(PC 첫 10분, git 무시). ③ 저장은 컴퓨터 제어 권한이 계속 거부(user_denied)라 사용자가 직접 File → Save to File As → build/GoodEvil.rbxlx(rbxlx, 44MB XML)로 저장(Ctrl+S는 build/헤일로 & 혼스.rbxl 바이너리로 감 = 우리 형식 아님) → '사용자 저장함' 오면 시간·해시·소스 173개 대조(py로 CDATA Source 비교) → place/ 복사 → push_paths.
+- **알아둔 것:** search_asset은 제작자 필터 없음(덤불 후보는 최종 검수에 보고 끝, "Roblox"+보이지 않는 글자 계정은 사칭). 큰 지도 b 업로드 id rbxassetid://114107691990380(개발 1 적용, asset_ids.json엔 안 적음). 시험 스크립트: build/mainapply_2026-10-09b/play_first10_1013.py·play_first_look2.py(git 무시), tools/play_first_look_photos.py·play_phone_round_photos.py first10.
+
+## 10/13 낮 (자가 클리어 직전)
+- **Studio**: build/GoodEvil.rbxlx(10/12 18:41 판) 셸로 열림(Get-Process RobloxStudioBeta MainWindowTitle -like '*GoodEvil*'; id는 list_roblox_studios로, 지금 205d8933…), Edit, Play 없음, 창 최소화(ShowWindowAsync 6), 기기 흉내 default, StudioFreshSave=true. 코드 = main 56c19428 sync(C2 드롭표·도감 화면·폰 Hero·무기 들기 Tool 포함) — **저장 안 된 sync**. 다른 세션의 WorldKit.rbxlx Studio도 따로 떠 있음(안 건드림).
+- **화면 조작 규칙(최종 검수 10/13 재공지)**: 창 복원·Play 앞으로·마우스·키보드는 **매번** 최종 검수에게 "메인 반영 1 / 무엇 / 몇 초" 신청 → "전달함, 시작" 받은 뒤에만. 미리 준 OK는 취소됨. 끝나면 창 최소화 + "끝".
+- **Save As 대기**: 컴퓨터 제어 권한(robloxstudiobeta.exe)을 사용자가 앱 창에서 누르는 순서. 최종 검수가 "전달함, 시작" 주면: 창 앞으로 → File → "새 이름으로 활성 로컬 파일 저장"(위 10/12 점심 절차) → build/GoodEvil.rbxlx(rbxlx 형식) → 시간·SHA·`</roblox>` 끝 확인 → place/ 복사 → push_paths. 저장 전 build/ 18:41(SHA 4b81750e…)와 place/ 14:53(e68e7e5a…)는 새 스크립트 5개만 다른 것으로 확인됨.
+- **오늘 통과한 촬영·시험(10/12~13)**: 무기 9종 들기·활 연사·거위 Leave·도감 서버·도감 화면(main/main2/main3)·폰 사진(phone_round·_hero2·_codex2)·C2 Prince 드롭. 시험 스크립트: build/mainapply_2026-10-09b/play_codex.py·play_prince.py·play_phone_codex2.py·play_phone_hero2.py(git 무시), tools/play_codex_photos.py·play_phone_round_photos.py·play_bow_rapid.py·play_tool_grip_ours.py(모두 끝에 StudioFreshSave true 유지).
+- **다음 일**: 최종 검수가 병합 알림 주면 `py tools/push_paths.py --sync` → `HH_MAIN_STUDIO=1 STUDIO_ID=<id> py tools/sync_to_studio.py` → 요청한 시험.
+
 ## 10/13 새벽 정리 (사용자 "정리하고 컴퓨터 꺼줘" — 최종 검수 전달)
 - **Studio**: Edit, Play 없음, 창 최소화, **저장하지 않음**. 코드는 main 310abb37·0aa6a0b7(도감 서버·저장 v5)까지 sync했지만 **저장 안 된 sync**: Studio가 꺼지면 사라짐 → 다음엔 build/GoodEvil.rbxlx를 열고 `py tools/push_paths.py --sync` → `py tools/sync_to_studio.py` 다시.
 - **build/GoodEvil.rbxlx**(18:41, 44,422,837 B, SHA256 4b81750e09fd…) = place/(14:53, e68e7e5a01a7…, f1928aad)와 구조 비교로 새 스크립트 5개(GooseEggs·GooseSquare·BubbleUI·HeroPreview·StickerUI)만 다름 → 안전. **place/ 는 그대로**(둘 다 덮어쓰지 않음).
@@ -51,3 +69,8 @@ skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bri
 
 ## 막힌 것 / 결정 대기
 - 없음. 새 검수(local_78581314) 큐 대기.
+
+## 큐 추가 (10/13, 최종 검수 → 게임성 계획 §5 '메인 반영 1')
+- 10/15: Save As 화면 제어가 필요하면 최종 검수에게 미리 신청(최종 검수가 사용자에게 알림).
+- 10/16 오후: 코드 == origin/main(`0 0`) → sync → PC·폰 첫 10분 재기(ForgeWalk 초, 막힌 곳 사진) → TextChatService(말풍선·VIP 채팅) 확인 → Save As `build/GoodEvil.rbxlx` → `place/` 복사·커밋. Publish는 사용자.
+- 그 전까지: 병합이 올 때 sync·사진만. 10/17~20 급한 고침만 sync. 10/21 주: 6단계 교체 → 10줄 점검 + 걷기 시간.

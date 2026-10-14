@@ -58,7 +58,7 @@ runGroup("config", function()
 		end
 	end
 	check(C.TitleDefs.RankPvP1 == nil, "the PvP board has no reward titles")
-	check(C.TitleDefs.RankHonor1.Name == "This week's Honor #1" and C.TitleDefs.RankInfamy3.Name == "This week's Infamy #3"
+	check(C.TitleDefs.RankHonor1.Name == "This week's Honor #1" and C.TitleDefs.RankInfamy3.Name == "This week's Mischief #3"
 		and C.TitleDefs.RankArtisan2.Name == "This week's Artisan #2", "title wording: 'This week's Honor #1' / 'This week's Artisan #N' (A23-22 / A23-24, A23-48)",
 		C.TitleDefs.RankArtisan2.Name)
 	check(R0.Text.OutlawChip == "Outlaw: no Auto Battle · half XP and drops (until Monday)", "HUD chip text from A23-23", R0.Text.OutlawChip)

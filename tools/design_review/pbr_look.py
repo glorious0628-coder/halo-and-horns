@@ -9,7 +9,7 @@ import bpy
 from mathutils import Vector
 
 a = sys.argv[sys.argv.index("--") + 1:]
-out = a[0]
+out = os.path.abspath(a[0])
 os.makedirs(out, exist_ok=True)
 for path in a[1:]:
     label = os.path.splitext(os.path.basename(path))[0]

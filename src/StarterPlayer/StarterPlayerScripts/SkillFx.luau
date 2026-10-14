@@ -741,7 +741,7 @@ function Z.Mage_Halo(c)
 	end)
 end
 
--- Flappy Zigzag: a round purple bat (pink rim, big dot eyes, no fangs) dashes monster to monster in straight
+-- Bat Zigzag (A23-138; was Flappy Zigzag): a round purple bat (pink rim, big dot eyes, no fangs) dashes monster to monster in straight
 -- zigzags with a purple-pink ribbon, plum smoke at each hit, then flies home to me (carrying a heart on a real steal)
 function Z.Mage_Horns(c)
 	if #c.Points == 0 then return end

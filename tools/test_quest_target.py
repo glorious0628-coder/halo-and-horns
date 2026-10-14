@@ -46,6 +46,12 @@ MUTATIONS = [
     ("English gold goal not seen",
      ' or string.find(string.lower(text), "gold", 1, true) ~= nil', ""),
     ("blacksmith label back in Korean", 'Blacksmith = "Forge",', 'Blacksmith = "대장간",'),
+    # A23-127 (plan 10/13 §1-A #2, 게임성 개발 1)
+    ("the iron goal sends to the anvil while the Forge sells nothing",
+     "\tif type(Config.WeaponShop) == \"table\" and Config.WeaponShop.Buy == false then return false end\n", ""),
+    ("the GoalKind ignored (text search only)",
+     "\tif type(entry.GoalKind) == \"string\" then return entry.GoalKind == \"IronGold\" end\n", ""),
+    ("the drop goal leads to my level's zone", "\tif entry.GoalKind == \"IronDrop\" then zone = K.GuideZone end\n", ""),
     ("hollow not routed through the patch",
      "\tif zoneId == K.Hollow.Zone then return hollowRoute(fromZone, pos or myPos()) end\n", ""),
     ("hollow gate moved off the fence gap",

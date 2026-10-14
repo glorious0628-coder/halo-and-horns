@@ -68,6 +68,12 @@ runGroup("no King Slime left", function()
 			for id in kingQuests do
 				if string.find(e.Path, ".Defs." .. id .. ".", 1, true) then allowed = true end
 			end
+			-- A23-127 (plan 10/13 §1-A #2): the iron weapon is the real King Slime's first drop (Config.MonsterTypes.SlimeKing):
+			-- the drop goal + its short name, the tier-3 source line (게임성 개발 1), the first King's weapon lines (게임성 개발 2)
+			for _, p in { "Config.Tutorial.Text.NextIronDrop", "Config.Tutorial.ShortNames.IronDrop", "Config.WeaponInfo.3.Source",
+				"Config.Loot.Text.FirstKingWeapon", "Config.Loot.Text.FirstKingEquip" } do
+				if e.Path == p then allowed = true end
+			end
 			if not allowed then table.insert(bad, e.Path .. " = " .. e.Text) end
 		end
 		seen += 1

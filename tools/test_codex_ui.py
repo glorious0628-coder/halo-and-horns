@@ -91,7 +91,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
                                                                                         block(screen, "Text = {"))),
         ("the HUD tile Codex opens the window 'Codex' (named TXT.TileCodex)",
          '{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },' in hud
-         and 'TileCodex = "Codex"' in hud and "Codex = TXT.TileCodex" in hud),
+         and 'TileCodex = "Monsters"' in hud and "Codex = TXT.TileCodex" in hud),
         ("ClientMain loads CodexUI once, after Panels", names.count("CodexUI") == 1 and "Panels" in names
          and names.index("Panels") < names.index("CodexUI")),
         ("the remotes are Net names (CodexOpen / Codex / CodexUp)", all(f'"{n}"' in net for n in ("CodexOpen", "Codex", "CodexUp"))
@@ -205,7 +205,7 @@ MUTATIONS = [
     ("CODEX", "the window never registered", "\tS.Ready = panels.Register(L.Window, {", "\tS.Ready = false and panels.Register(L.Window, {"),
     ("CONFIG", "the server's toast back on", "\tServerToast = false,", "\tServerToast = true,"),
     ("HUD", "no Codex tile", '\t\t{ Id = "Codex", Icon = "IconMonSlime", Window = "Codex", Keep = 7 },\n', ""),
-    ("MAIN", "CodexUI never loaded", '"KingDiary", "CodexUI", ', '"KingDiary", '),
+    ("MAIN", "CodexUI never loaded", '"AttendanceUI", "CodexUI", ', '"AttendanceUI", '),
     ("CODEX", "the server's model folder ignored", 'ReplicatedStorage:FindFirstChild(tostring(codex().ModelFolder or "CodexModels"))',
      'ReplicatedStorage:FindFirstChild("Models")'),
 ]

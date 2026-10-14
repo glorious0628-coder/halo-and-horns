@@ -66,6 +66,12 @@ local function onUpgradeWeapon(player, selectedTier)
 		Net.Notify(player, Config.Text.WeaponFromQuest, "info")
 		return
 	end
+	-- gameplay plan 2026-10-13 1-A #2 (A23-127): Buy = false = new weapons come from drops; only buying one not owned is
+	-- refused (equip / enhance / sell stay)
+	if not alreadyOwned and shop.Buy == false then
+		Net.Notify(player, Config.Text.WeaponDropOnly, "info")
+		return
+	end
 
 	-- A23-28: MinLevel gates the purchase AND the equip, an owned weapon too (after a rebirth / Lv5+ free class change
 	-- it is equippable again once the level is back; same rule as LootService.onEquipWeapon, Config.WeaponUsable)

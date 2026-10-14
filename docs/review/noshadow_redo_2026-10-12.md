@@ -1,20 +1,21 @@
-# 그림자 없이 다시 — 목록·순서 (최종 검수 2026-10-12, SPEC A23-150·A23-151)
+# 그림자 없이 다시 — 목록·순서 (최종 검수 2026-10-12, SPEC A23-150·A23-151, 3D 방법은 A23-154로 바뀜)
 
 사용자: "그림자 있게 생성된 물건들 싹 다 폐기하고, 다시 그린 다음에 내가 알려준 방법으로", "이미지 그릴 때 그림자 없이 … 모든것 다!".
 
 - 점검: 3D 물건의 2D 원본을 하나씩 열어 봄(워크플로 41 에이전트, 앞면 기준) + 빠진 것 찾기(물건·몬스터·타일 101개). 세션별 점검은 `docs/review/noshadow_check_<세션>_2026-10-12.md`.
 - 결과: **진함 268 · 약간 178 · 없음 9 · 원본 못 찾음 5** (총 460). 약간도 다시(입체 음영·AO가 색 맵에 구워짐). 없음 = 그대로 씀(대부분 바닥·벽 타일).
 
-## 다시 그리는 법 (이미지 생성 2)
-1. 확정 그림 = `py tools/codex_image.py --prompt-file art/prompts/<id>.txt --ref <옛 승인 2D> [--ref <같은 것의 새 앞면>] --out art/out/<...>.png` (사용자 ChatGPT 요금제, Codex 앱). 끝 코드 3 = ChatGPT 사용량 끝 → 그 그림은 Firefly 고급. 후보 탐색은 Firefly 중간.
+## 다시 그리는 법 (이미지 생성 2 = 집 덩어리·그 밖 2D, 이미지 생성 3 = 빛 마을 소품 4면도 그림)
+1. 확정 그림 = `py tools/codex_image.py --prompt-file art/prompts/<id>.txt --ref <옛 승인 2D> [--ref <같은 것의 새 앞면>] --out art/out/<...>.png` (사용자 ChatGPT 요금제, Codex 앱). 끝 코드 3 = ChatGPT 사용량 끝 → 그 그림은 Firefly 고급(받기는 `docs/handoff/firefly_autodownload_2026-10-13.md`: S3 주소 curl, Downloads 폴더 금지). 후보 탐색은 Firefly 중간.
 2. 4면(앞·왼·오른·뒤)을 그림. **앞면을 먼저** 그리고, 나머지 3면은 `--ref <옛 그 면> --ref <새 앞면>`으로. 방향은 말로 쓰지 말고 "ref1과 같은 시점·같은 방향"(10/12 시험: "왼쪽을 본다"고 쓰니 방향이 뒤집힘).
 3. **3D 렌더로, 그림자만 없이**(사용자 "3d 로 그려야지 왜 2d로 그려?"): 프롬프트에 꼭 "a 3D-rendered toy figure/object like the reference; keep the 3D look: real volume, rounded edges, soft gentle form shading, same material. Lighting: soft even studio light from all around (light box). NO cast shadows, NO ground/floor shadow, NO contact shadows, NO dark shadowed side, NO dark crevices. Bright true colours. Plain light grey background, no floor." 납작한 평면 색칠은 안 됨. 기준 = `art/review/codex/mailboy_front_original_flat_3d_1012.jpg` 오른쪽(프롬프트 본보기 `art/prompts/_noshadow_3d_example.txt`). 단정한 옷, 빛살 금지, 글자 없음.
-4. 판정(최종 검수): 옛 2D | 새 2D 나란히 — 모양·색 같고 그림자만 빠졌는지. 통과하면 옛 2D는 바로 지움(사용자 고름).
-5. 3D = Blender 손보기: 새 4면 → Tripo 스마트 메시 → 가장 잘 나온 흰 모델(사람은 얼굴 빈 것) → 왼쪽 메뉴 텍스처 '조명 없이' 체크, 8K.
+4. 판정: 디자인 검수가 먼저(옛 2D | 새 2D 나란히, 100% 크롭 — 모양·색 같고 그림자만 빠졌는지) → 통과한 묶음을 최종 검수가 마지막으로 봄. 통과하면 옛 2D는 바로 지움(사용자 고름, A23-150 3번).
+5. 3D = A23-154 다섯 단계만(Tripo 일은 전부 Blender 손보기·Blender 손보기 2, A23-155): ① 그림자 없는 2D 4면(앞·왼·오른·뒤) → Tripo 스마트 메시 ② 흰 모델 4개 중 디자인 검수가 고름(사람은 얼굴에 아무것도 없는 것) ③ 텍스처: 왼쪽 메뉴 첫 칸(그림 한 장)에 앞면 2D, '조명 없이' 체크, 8K(30점) ④ PBR(5점) → 디자인 검수 → 최종 검수가 한 번 더(2D와 나란히, 떨어지면 ②로) ⑤ 내려받기 → Blender는 크기·피벗·방향(대칭 짝 좌우 뒤집기 포함)만 → 이미지 생성 3이 Roblox에 넣고 재질을 더 좋게(2D와 나란히 낮·밤). 매직 브러시·붓 칠하기·Blender 색 고치기·Tripo 다시 올리기·텍스처와 PBR 사이 관문 없음. 얼룩은 그대로 두거나 ⑤에서 좋게, 모양이 망가지면 ②에서 다른 흰 모델.
 6. 건물 장식은 덩어리 목록 `docs/design/house_chunk_decor_2026-10-12.md` 단위로 그림(작은 조각은 한 장에 묶음).
 
 ## 순서
 (사용자 10/12 "인물은 맨 마지막에") 1 빛 마을 물건(게임·WorldKit에 쓰는 것 먼저) → 건물 장식 덩어리(`docs/design/house_chunk_decor_2026-10-12.md`) → 3 무기 → 4 꾸미기 → 5 뿔 마을 → 6 몬스터·펫 → 7 다른 구역 → 9 타일 색 맵(게임에 쓰는 것은 새 판을 넣을 때까지 그대로) → **2 사람(NPC·주민)은 맨 마지막**(MailBoy 2D 4면은 이미 통과, 3D는 보류).
+→ A23-154로 바뀜(10/13): 지금은 빛 마을만(1 빛 마을 물건 + 건물 장식 덩어리). 3 무기·4 꾸미기와 다른 구역은 빛 마을이 끝난 뒤(A23-155: 뿔 마을 미리는 멈춤, 빛 마을만 — 뿔 마을 2D도 빛 마을 뒤). 구역 순서는 A23-152: 뿔 마을 → 장인 마을(새로) → 교차로(+쌍둥이 교차로) → 슬라임 초원 → 고블린 숲 → 해골 폐허. 6의 새 구역 몬스터·펫(CaveBat·CoralCrab·CrystalGolem·CrystalHedgehog·CrystalLizard·GlowMushroom·HermitCrab·Jellyfish)과 호박밭·유령 숲 물건은 베타 뒤 업데이트라 맨 뒤.
 
 ### 1 빛 마을(지금 구역) — 181개 (진함 109 · 약간 72 · 없음 0 · 원본 없음 0)
 
@@ -317,7 +318,7 @@
 | GoldenGoose | 약간 | main,worldkit | 바닥 그림자 없음, 외곽선 만화풍, 왕관·몸 광택 하이라이트 약간 | 원래 front 경로 없음 - Goose 정면으로 대체 확인 | `art/out/s2/monsters4/HaloMon_Goose_front.png` |
 | SkeletonKnight | 약간 | main,worldkit | 그림자 없음, 갑옷 틈·아랫면 약간 어두움, 부드러운 음영 | 목록 front 없음, glob으로 찾음 | `art/out/s2/monsters4/HaloMon_SkeletonKnight_front.png` |
 | CaveBat | 진함 | New zone, borrows LittleGhost. Own Tripo queued, not made. | 발 아래 바닥 그림자, 크리스탈 날개 강한 반사광, 털 음영 |  | `art/out/s2/zones_set/monsters/crystal_views/Crys_Bat_front.png` |
-| CoralCrab | 진함 | New zone (replaces Pumpkin/Haunted for beta). Inert in Config, borrows the Goblin model. Own Tripo queued, not made. | 몸 아래 바닥 그림자, 집게·껍질 광택 반사, 집게 안쪽 어두움 |  | `art/out/s2/zones_set/monsters/coral_views/CoralA_Crab_front.png` |
+| CoralCrab | 진함 | New zone — after-beta update (A23-152), not in beta. Inert in Config, borrows the Goblin model. Own Tripo queued, not made. | 몸 아래 바닥 그림자, 집게·껍질 광택 반사, 집게 안쪽 어두움 |  | `art/out/s2/zones_set/monsters/coral_views/CoralA_Crab_front.png` |
 | CrystalGolem | 진함 | New zone, borrows SkeletonKnight. Own Tripo queued, not made. | 발 밑 바닥 그림자, 돌 틈 어두움(AO), 수정 반사광과 발광 |  | `art/out/s2/zones_set/monsters/crystal_views/Crys_Golem_front.png` |
 | CrystalHedgehog (pet) | 진함 | New-zone pet. Not in game yet, Tripo queued with the 8 new-zone monsters. | 발 밑 옅은 접촉 그림자, 몸 아래쪽 어두움, 수정 강한 반사광 |  | `art/out/s2/zones_set/monsters/crystal_views/Crys_Hedgehog_front.png` |
 | CrystalLizard | 진함 | New zone, borrows Goblin. Own Tripo queued, not made. | 발 밑 부드러운 바닥 그림자, 다리·배 아래 어두움, 수정 하이라이트 |  | `art/out/s2/zones_set/monsters/crystal_views/Crys_Lizard_front.png` |

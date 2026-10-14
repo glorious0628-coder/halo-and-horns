@@ -226,6 +226,25 @@ MUTATIONS = [
     # stayed MISSED alone too (95/96, Game-dev2-snap 10/11), not a concurrency flake. The guard stays as a cheap safety.)
     ("goose rest: zero days", "CONFIG_SOURCE", "\tGooseRestDays = 1,", "\tGooseRestDays = 0,"),
     ("goose rest: three days", "CONFIG_SOURCE", "\tGooseRestDays = 1,", "\tGooseRestDays = 3,"),
+    # gameplay plan 2026-10-13 1-A #3: the goose daily only near a hunt; PvP never the forced non-hunting slot
+    # 최종 검수 10/13: vacation XP alone never reaches Lv10
+    ("vacation: the early XP not scaled", "CONFIG_SOURCE",
+     "\t\tx = x * Config.Levels.EarlyMult / Config.Daily.VacationEarlyBase -- 최종 검수 10/13 (see Config.Daily)\n", ""),
+    ("vacation: no cap at the claim", "QUEST_SOURCE", "\tif room ~= nil then x = math.min(x, room) end\n\tg, x = payReward(player, g, x, room)",
+     "\tg, x = payReward(player, g, x)"),
+    ("vacation: the cap one level too high", "QUEST_SOURCE", "\tfor l = level, untilLv - 1 do room += Config.XPToNext(l) end",
+     "\tfor l = level, untilLv do room += Config.XPToNext(l) end"),
+    ("vacation: the cap lets Lv10 in", "QUEST_SOURCE", "\tlocal room = -math.max(0, num(data.XP)) - 1\n", "\tlocal room = -math.max(0, num(data.XP))\n"),
+    ("vacation: the pass passes the cap", "QUEST_SOURCE", "xp = S.ProgressionService.AddXP(player, xp, xpCap) or xp",
+     "xp = S.ProgressionService.AddXP(player, xp) or xp"),
+    ("vacation: the panel shows the full XP", "QUEST_SOURCE",
+     "\t\t\tlocal room = vacationXPRoom(data) -- the shown amount stops below Lv10 too (the claim checks again)\n\t\t\tif room ~= nil then x = math.min(x, room) end\n",
+     ""),
+    ("goose window: ignored", "QUEST_SOURCE", "if not active and not (nextAt > 0 and nextAt - Util.Now() <= window) then gooseResting = true end",
+     "local _ = active"),
+    ("goose window: a hunt on now does not count", "QUEST_SOURCE", "if not active and not (nextAt > 0", "if not (nextAt > 0"),
+    ("goose window: off in Config", "CONFIG_SOURCE", "	GooseWindow = 3600,", "	GooseWindow = 0,"),
+    ("PvP forced into the last slot again", "QUEST_SOURCE", "if rt and rt.NonHunt == true and not rt.PvP then", "if rt and rt.NonHunt == true then"),
     ("goose rest: no save field", "CONFIG_SOURCE", "Config.Data.Defaults.GooseDay = 0", "Config.Data.Defaults.GooseDay_ = 0"),
     ("PvP weight: the woods Hunt row is common again", "CONFIG_SOURCE", "{ Id = \"Hunt\", Weight = 0.4, Targets = { 1 } }", "{ Id = \"Hunt\", Weight = 1.5, Targets = { 1 } }"),
     ("PvP weight: the Hunt template is common again", "CONFIG_SOURCE", "{ Id = \"Hunt\", ShortName = \"Catch Wanted\", Weight = 3, Units", "{ Id = \"Hunt\", ShortName = \"Catch Wanted\", Weight = 40, Units"),
@@ -370,7 +389,7 @@ def main() -> int:
         "sourcesChangedDuringRun": changed,
         "studioCalls": 0, "apiCalls": 0,
         "contract": "A23-14 (user 2026-10-05): Lv1-9 dailies = three different short goals (king slime 3 strict / slime 12-15, "
-                    "skill hits 3-5, hunting gold 40-60), 72 gold + 120 XP each and a 144 + 240 chest (one day = 600 XP < 1381 "
+                    "skill hits 3-5, hunting gold 40-60), 72 gold + 120 XP each and a 144 + 240 chest (one day = 600 XP < 962 "
                     "for Lv10), vacation 252 + 420 per missed rookie day, chest capped to the generation band; golden goose "
                     "co-op when only one of Halo/Horns is present: target 20 x headcount, 70% of the winner reward, 0 war "
                     "points, 3 manual hits to be paid, Neutral excluded, GooseFinished still fired (quest credit), rival-left "

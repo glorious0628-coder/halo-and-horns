@@ -343,30 +343,47 @@ def bench_c():
     planks("Seat", 3.7, 1.2, 3, 0.3, 0.0, 0.6, -0.6, 1.4)
 
 
-@kit("HaloReasonHQ_PhotoDisc", 0.6, "art/out/s2/halo/reason_hq/HaloReasonHQ_PhotoDisc.png")
+@kit("HaloReasonHQ_PhotoDisc", 0.2, "art/out/s2/noshadow/HaloReasonHQ_PhotoDisc_front_ns.png")
 def photo_disc():
-    S = 10.0
-    box("Slab", S, S, 0.35, 0, 0, 0, "mblock")
-    cyl("Disc", 8.4, 0.12, 0, 0, 0.33, "gold")
-    cyl("Step", 7.4, 0.17, 0, 0, 0.33, "gold")
-    ring("Rim", 8.4, 7.9, 0.1, 0, 0, 0.5, "gold")
+    # 최종 검수 10/13: a floor tile, not Tripo. Measured on the shadow-free top view (713 px = 10 studs): 4x4 smooth marble
+    # tiles (edge tiles 2, middle 3) over a sunk grout slab, top only 0.08 above the ground (no trip); gold disc 7.57 with a
+    # raised rim, a raised dome band (8 domes in collars), a raised inner ring and a brushed centre, a thin dark-gold groove
+    # ring on every step (the lines of the 2D); 4 gold balls on the disc diagonals, 4 blue diamonds in gold frames in the
+    # corners, 8 short gold strips on the corner grid lines. Only the marble collides.
+    # 디자인 검수 10/13 v2: this kit's gold = bright yellow 255,196,60 (the town gold read brown-orange on the big flat disc);
+    # steps rim +0.18 / band +0.10 / inner ring +0.16 / centre +0.08 over the disc so the rings read from above.
+    S, T = 10.0, 0.08
+    G, GD = (255, 196, 60), (200, 130, 20)
+    box("Grout", S, S, 0.3 + T - 0.03, 0, 0, -0.3, "groove")
+    edges = (-S / 2, -3.02, 0.0, 3.02, S / 2)
+    for i in range(4):
+        for j in range(4):
+            x0, x1, y0, y1 = edges[i], edges[i + 1], edges[j], edges[j + 1]
+            box("Tile%d%d" % (i, j), x1 - x0 - 0.06, y1 - y0 - 0.06, 0.3 + T, (x0 + x1) / 2, (y0 + y1) / 2, -0.3, "marble")
+    D0 = 0.14  # disc top
+    cyl("Disc", 7.57, D0 + 0.02, 0, 0, -0.02, "gold", c=G, cc=False)
+    ring("Rim", 7.57, 6.45, 0.18 + 0.04, 0, 0, D0 + 0.18 / 2 - 0.02, "gold", c=G, cc=False)
+    cyl("Band", 6.45, 0.10 + 0.04, 0, 0, D0 - 0.04, "gold", c=G, cc=False)
+    ring("InnerRing", 4.2, 3.6, 0.16 + 0.04, 0, 0, D0 + 0.16 / 2 - 0.02, "gold", c=G, cc=False)
+    cyl("Centre", 3.6, 0.08 + 0.04, 0, 0, D0 - 0.04, "gold", c=G, cc=False)
+    # dark-gold grooves (2D lines) at the foot of each step, 0.05 wide, just over the lower surface
+    for n, d, top in (("GrooveRim", 6.45, D0 + 0.10), ("GrooveBand", 4.2, D0 + 0.10), ("GrooveCentre", 3.6, D0 + 0.08)):
+        ring(n, d + 0.02, d - 0.08, 0.02, 0, 0, top + 0.01, "gold", c=GD, cc=False)
     for k in range(8):
-        a = math.radians(22.5 + 45 * k)
-        ball("Stud%d" % k, 0.62, 3.05 * math.cos(a), 3.05 * math.sin(a), 0.5, "gold", cc=False)
-    cyl("Centre", 4.6, 0.22, 0, 0, 0.33, "gold")
-    ring("CentreRim", 4.6, 4.1, 0.08, 0, 0, 0.6, "gold")
-    cyl("Inner", 3.5, 0.26, 0, 0, 0.33, "gold")
+        a = math.radians(90 + 45 * k)
+        x, y = 2.67 * math.cos(a), 2.67 * math.sin(a)
+        ring("Collar%d" % k, 1.09, 0.87, 0.06, x, y, D0 + 0.10 + 0.02, "gold", c=G, cc=False)
+        ring("CollarGroove%d" % k, 1.11, 1.05, 0.02, x, y, D0 + 0.10 + 0.01, "gold", c=GD, cc=False)
+        ball("Dome%d" % k, 0.8, x, y, D0 + 0.10, "gold", c=G, cc=False)
     for sx in (-1, 1):
         for sy in (-1, 1):
-            x, y = sx * (S / 2 - 0.65), sy * (S / 2 - 0.65)
-            box("GemG%d%d" % (sx, sy), 1.0, 1.0, 0.06, x, y, 0.33, "gold")
-            box("Gem%d%d" % (sx, sy), 0.78, 0.78, 0.08, x, y, 0.33, "blue")
-            # gold strips from the gem along the two edges
-            box("StripX%d%d" % (sx, sy), 0.12, 1.1, 0.05, x - sx * 0.85, sy * (S / 2 - 0.55), 0.33, "gold")
-            box("StripY%d%d" % (sx, sy), 1.1, 0.12, 0.05, sx * (S / 2 - 0.55), y - sy * 0.85, 0.33, "gold")
-    for k, (x, y) in enumerate(((0, 4.45), (0, -4.45), (4.45, 0), (-4.45, 0))):
-        cyl("Knob%d" % k, 0.3, 0.45, x, y, 0.35, "gold", cc=False)
-        ball("KnobBall%d" % k, 0.5, x, y, 0.95, "gold", cc=False)
+            g = (sx * 4.1, sy * 4.1)
+            box("GemG%d%d" % (sx, sy), 0.91, 0.91, 0.05, g[0], g[1], T - 0.01, "gold", rot=45, c=G, cc=False)
+            box("Gem%d%d" % (sx, sy), 0.7, 0.7, 0.07, g[0], g[1], T - 0.01, "blue", rot=45, cc=False)
+            cyl("BallFoot%d%d" % (sx, sy), 0.95, 0.07, sx * 3.3, sy * 3.3, T - 0.01, "gold", c=G, cc=False)
+            ball("Ball%d%d" % (sx, sy), 0.84, sx * 3.3, sy * 3.3, T + 0.06 + 0.36, "gold", c=G, cc=False)
+            box("StripX%d%d" % (sx, sy), 0.3, 1.15, 0.04, sx * 3.12, sy * (S / 2 - 0.6), T - 0.01, "gold", c=G, cc=False)
+            box("StripY%d%d" % (sx, sy), 1.15, 0.3, 0.04, sx * (S / 2 - 0.6), sy * 3.12, T - 0.01, "gold", c=G, cc=False)
 
 
 def baluster(n, x, y, z0, h, d=0.62):

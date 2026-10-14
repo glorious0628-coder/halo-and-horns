@@ -282,15 +282,15 @@ end
 function CROWN.Place(player, label)
 	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
 	local id, artSize = CROWN.Part()
-	if player:GetAttribute(CROWN.Attr) ~= true or not id then
-		if crown then crown:Destroy() end
-		if pad then pad:Destroy() end
-		return
-	end
+	-- A23-179: the pad is always there (the title's room too); only the crown comes and goes
 	if not pad then
 		pad = Instance.new("UIPadding")
 		pad.Name = "VipPad"
 		pad.Parent = label
+	end
+	if player:GetAttribute(CROWN.Attr) ~= true or not id then
+		if crown then crown:Destroy() end
+		return
 	end
 	if not crown then
 		crown = Instance.new("ImageLabel")
@@ -327,7 +327,28 @@ local function createNametag(player)
 	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	layout.Parent = bb
 
-	makeLine("Line1", 1, 30, 22, Color3.new(1, 1, 1)).Parent = bb
+	-- A23-179 (review 10/14): line 1 = the player's name only (never translated); the "[title]" is its own child label
+	-- "Title" (translated), drawn left of the name (and of a VIP crown) by every client (ShopUI CROWN.Fit) inside the
+	-- line's left padding "VipPad", so title + crown + name stay one centred group
+	local line1 = makeLine("Line1", 1, 30, 22, Color3.new(1, 1, 1))
+	line1.AutoLocalize = false
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Name = "Title"
+	titleLabel.BackgroundTransparency = 1
+	tagFont(titleLabel, "Line1")
+	titleLabel.TextScaled = false
+	titleLabel.TextSize = 16
+	titleLabel.AutomaticSize = Enum.AutomaticSize.X
+	titleLabel.Size = UDim2.fromScale(0, 1)
+	titleLabel.AnchorPoint = Vector2.new(1, 0.5)
+	titleLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+	titleLabel.TextColor3 = Color3.new(1, 1, 1)
+	titleLabel.TextStrokeTransparency = 0.35
+	titleLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+	titleLabel.Visible = false -- the client shows it once it is placed
+	titleLabel.Text = ""
+	titleLabel.Parent = line1
+	line1.Parent = bb
 	makeLine("Line2", 2, 24, 17, LINE2_COLOR).Parent = bb
 	makeLine("Line3", 3, 24, 17, LINE3_COLOR).Parent = bb
 	return bb
@@ -348,9 +369,10 @@ local function updateNametag(player, bb)
 		attrStr(player, "SessionTitle", ""),
 		attrStr(player, "TitleSel", "")
 	)
-	local line1 = "[" .. tostring(title) .. "] " .. Util.PlayerDisplayName(player)
+	local line1 = Util.PlayerDisplayName(player) -- A23-179: the name alone; the title goes to the Title child label
+	local titleText = "[" .. tostring(title) .. "]"
 	if f == NEUTRAL_ID then
-		line1 = NEUTRAL_EMBLEM .. " " .. line1
+		titleText = NEUTRAL_EMBLEM .. " " .. titleText
 	end
 
 	local line2 = "Lv " .. level .. " · " .. Config.ClassName(classId, f)
@@ -390,6 +412,11 @@ local function updateNametag(player, bb)
 	if l1 then
 		l1.Text = esc(line1)
 		l1.TextColor3 = factionColor(f)
+		local tl = l1:FindFirstChild("Title")
+		if tl and tl:IsA("TextLabel") then
+			tl.Text = titleText
+			tl.TextColor3 = factionColor(f)
+		end
 		CROWN.Place(player, l1)
 	end
 	if l2 then

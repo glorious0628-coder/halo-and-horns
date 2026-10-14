@@ -1,11 +1,11 @@
 {
   "status": "passed",
-  "checks": 73,
-  "namedChecks": 73,
+  "checks": 84,
+  "namedChecks": 84,
   "failing": [],
   "mutations": {
-    "total": 32,
-    "caught": 32,
+    "total": 35,
+    "caught": 35,
     "results": [
       {
         "mutation": "a tagged landmark never wins",
@@ -60,6 +60,38 @@
         "crashed": false,
         "newFailingChecks": [
           "rows :: blacksmith label is English"
+        ]
+      },
+      {
+        "mutation": "the iron goal sends to the anvil while the Forge sells nothing",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: no weapon sold: IronGold row -> the meadow pad, not the anvil",
+          "rows :: no weapon sold: IronGold row is no gold goal",
+          "rows :: no weapon sold: nil row -> the meadow pad, not the anvil",
+          "rows :: no weapon sold: nil row is no gold goal"
+        ]
+      },
+      {
+        "mutation": "the GoalKind ignored (text search only)",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: GoalKind IronGold (no 'gold' in the words) -> the forge trip",
+          "rows :: another GoalKind with 'gold' in its words -> not the forge",
+          "rows :: selling again: the IronGold row is the gold goal"
+        ]
+      },
+      {
+        "mutation": "the drop goal leads to my level's zone",
+        "applied": true,
+        "caught": true,
+        "crashed": false,
+        "newFailingChecks": [
+          "rows :: the drop goal at Lv12 -> the meadow pad (the King Slime), not the woods"
         ]
       },
       {
@@ -353,9 +385,9 @@
   "compileErrors": "",
   "runtimeError": null,
   "sourceSHA256": {
-    "src/ReplicatedStorage/Shared/Config.luau": "402a818d826d19a513e4f15d6dbd9affab25fc2bb3b882d8e67508cb49692c60",
-    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "929a50e40a7b6c8d6132d4e9dc4ba7c449f0879b515845454ae2c71f02e21094",
-    "tools/fixtures/quest_target_offline.luau": "bf8cc238b20c1c7f420c0eaef92cbb151867823dea4b59894535c82561fbf718"
+    "src/ReplicatedStorage/Shared/Config.luau": "736f9ea3aa5996844dd3b11c1d9299aae3f081670c2f90812e9bfe8e8a83d906",
+    "src/StarterPlayer/StarterPlayerScripts/QuestTarget.luau": "a04e0d8a77447f312a7f0b4b72ec417bb84a1e8baca9b870292baac3e4076a26",
+    "tools/fixtures/quest_target_offline.luau": "db87c0fbb81b13cae0eaaa1ec34d379fe349a2c3fd1545b971a70b4810a4f764"
   },
   "sourcesChangedDuringRun": [],
   "studioCalls": 0,

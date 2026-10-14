@@ -85,6 +85,11 @@ Net.Names = {
 	-- s->c owner only, one per moment: { Event = "Card" | "Silver" | "Holo" | "Golden" | "Page" | "Glow", Kind?, Stage?,
 	-- Card? = { Kills, Golden, Stage, First }, Gold, XP (added), Title?, Page?, Key, Args, Text, Debug? }
 	"CodexUp",
+	-- 게임성 개발 2 (2026-10-14) A23-178 the village fund (VillageFundService, docs/design/village_fund_server_2026-10-14.md):
+	"FundGive", -- c->s, no arguments (anything sent is ignored): one gift of Config.VillageFund.Step at my side's fountain
+	-- s->c owner only { Faction, Today, PerDay, Step, Gold, Can, Why?, Week, Sum, Goals, Level }: after the fountain prompt
+	-- and after every gift (Why = "Poor" | "Full" | "Closed" when Can is false)
+	"FundOpen",
 	-- 게임성 개발 2 (2026-10-13) C-5 / C-7 the player market (MarketService; docs/design/market_server_2026-10-13.md,
 	-- MarketWindow contract docs/design/market_window_2026-10-12.md §6). MarketIndex / MarketMine go both ways (c->s ask, s->c
 	-- answer); MarketPage answers MarketBrowse
@@ -100,6 +105,9 @@ Net.Names = {
 }
 
 Net.GameStateDefaults = {
+	-- A23-178 VillageFundService: this week's fund sums (every server, + this server's unsaved) and the town light level
+	-- (0 none, 1 lanterns, 2 lanterns + night fireworks); FundWeek = Config.WeekIndex of the sums
+	FundWeek = 0, FundHalo = 0, FundHorns = 0, FundLevelHalo = 0, FundLevelHorns = 0,
 	-- WarService
 	WarHaloScore = 0, WarHornsScore = 0, WarRoundEndsAt = 0, WarMode = "Idle", WarBlessing = "None",
 	-- FactionService
@@ -134,6 +142,9 @@ Net.GameStateDefaults = {
 	DayPhase = "Day", NightLevel = 0, Weather = "Clear",
 	-- SettingsService (BB3 footer): false while this server runs without a DataStore (DataService memory mode)
 	SaveOK = true,
+	-- Net.CreateAll (게임성 개발 1 10/13): true in a private server (game.PrivateServerId ~= "", which the client cannot read);
+	-- the shop card and the HUD line read it
+	PrivateServer = false,
 }
 
 -- server only; call once, first thing in Main.server.luau
@@ -155,6 +166,8 @@ function Net.CreateAll()
 	for k, v in Net.GameStateDefaults do
 		if gs:GetAttribute(k) == nil then gs:SetAttribute(k, v) end
 	end
+	local okP, privateId = pcall(function() return game.PrivateServerId end)
+	gs:SetAttribute("PrivateServer", okP and type(privateId) == "string" and privateId ~= "")
 	gs.Parent = ReplicatedStorage
 end
 

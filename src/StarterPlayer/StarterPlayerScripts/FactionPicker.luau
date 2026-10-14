@@ -90,7 +90,8 @@ local LAY = {
 	PerkTiny = {
 		Halo = { "XP +30%", "HP +20% · Regen", "Heal allies", "Auto gold" },
 		Horns = { "Gold +25%", { "ATK +15% · Lifesteal", "ATK +15% Lifesteal", "ATK+15% Lifesteal" }, "Guard loot gold", "5★ = Kaiju" },
-		Neutral = { "No fight buffs", "Safe (no PvP)", "No loot or Wanted", { "Crafting (soon)", "Crafting soon", "Crafting", "Craft" } },
+		-- A23-179 stale text: the crafting row's words come from Config.UIArt.FactionPerks.Neutral (Text / Short) only
+		Neutral = { "No fight buffs", "Safe (no PvP)", "No loot or Wanted" },
 	},
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
 	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
@@ -120,6 +121,9 @@ local LAY = {
 	SoonInk = Color3.fromRGB(196, 198, 206),
 	SoonDim = Color3.fromRGB(150, 152, 162),
 	SoonRegions = { Title = { 0.06, 0.07, 0.88, 0.11 }, Soon = { 0.08, 0.64, 0.84, 0.1 }, Sub = { 0.1, 0.76, 0.8, 0.065 } },
+	-- A23-167 ④: the 'what this pick changes' lines under each side's card (Config.FactionChanges): text size = the
+	-- readable floor x ChangesK, line height = size x ChangesLineK, ChangesGap du between the card and the lines
+	ChangesK = 1.15, ChangesLineK = 1.3, ChangesGap = 4,
 }
 
 -- per-faction text style on the card art ("ink" = brown on parchment, "light" = white with a dark outline,
@@ -144,7 +148,7 @@ local NEUTRAL_FALLBACK = {
 	Color = Color3.fromRGB(40, 200, 190), Perks = {}, Pitch = "",
 }
 local NEUTRAL_LORE = "Those who shape the shards instead of grabbing them."
-local NEUTRAL_NOTE = "No fight buffs · No PvP · Crafting (coming soon)"
+local NEUTRAL_NOTE = "" -- A23-179 stale text: the note is Config.Factions.Neutral.Note only (no copy in code)
 
 local T = {
 	Title = "Choose your side!",
@@ -987,7 +991,7 @@ local function buildOldCard(c, id)
 	end
 	if id == "Neutral" then
 		local noteText = (type(def.Note) == "string" and def.Note ~= "") and def.Note or NEUTRAL_NOTE
-		listText(scroll, noteText, 15, theme.Gold, order2, theme.Font)
+		if noteText ~= "" then listText(scroll, noteText, 15, theme.Gold, order2, theme.Font) end
 		order2 += 1
 	end
 
@@ -1002,6 +1006,37 @@ local function buildOldCard(c, id)
 end
 
 -- one card slot in the row: Body (scaled on hover / press) holding the art card or the code-styled card + glow
+-- A23-167 ④ (pure): the 'what this pick changes' lines of a side (Config.FactionChanges[id], strings only, up to 3)
+function FactionPicker.ChangeLines(id)
+	local all = Config.FactionChanges
+	local list = type(all) == "table" and all[id] or nil
+	local out = {}
+	for _, line in type(list) == "table" and list or {} do
+		if type(line) == "string" and line ~= "" and #out < 3 then table.insert(out, line) end
+	end
+	return out
+end
+
+-- the lines under a card: one light outlined label each, in the card row (placeCards lays them out under the card)
+local function buildChanges(c, id)
+	local lines = FactionPicker.ChangeLines(id)
+	if #lines == 0 then return end
+	local frame = Instance.new("Frame")
+	frame.Name = "Changes_" .. id
+	frame.BackgroundTransparency = 1
+	frame.BorderSizePixel = 0
+	frame.Parent = cardsRow
+	c.Changes = { Frame = frame, Labels = {} }
+	for i, line in lines do
+		local l = artLabel(frame, "Line" .. i, 3)
+		l.TextScaled = false
+		l.TextWrapped = false
+		l.Text = line
+		styleText(l, "light", 1)
+		table.insert(c.Changes.Labels, l)
+	end
+end
+
 local function buildCard(id, order)
 	local slot = Instance.new("Frame")
 	slot.Name = "Card_" .. id
@@ -1038,6 +1073,7 @@ local function buildCard(id, order)
 		end
 	end
 	if not c.Art then buildOldCard(c, id) end
+	buildChanges(c, id)
 	buildGlow(c)
 	wireHover(c)
 	cards[id] = c
@@ -1535,6 +1571,17 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 		end
 	end
 	if n == 0 then return end
+	-- A23-167 ④: room under the cards for the 'what this pick changes' lines (the most lines of a card)
+	local chLines = 0
+	for _, id in FACTION_IDS do
+		local c = cards[id]
+		if c and c.Changes then chLines = math.max(chLines, #c.Changes.Labels) end
+	end
+	local chSize = math.ceil(minT * LAY.ChangesK)
+	local chLineH = math.ceil(chSize * LAY.ChangesLineK)
+	local chH = chLines > 0 and (LAY.ChangesGap + chLines * chLineH) or 0
+	areaH = math.max(1, areaH - chH)
+	LAY.ChangesH = chH -- placeMascots: the mascots stand on the cards, not on the lines
 	local gaps = LAY.Gap * (n - 1)
 	local phone = UserInputService.TouchEnabled and areaW * s < 700
 	local cardH = fittedCardHeight(areaW, areaH, sumA, gaps, LAY.BalancedHeight, s)
@@ -1546,11 +1593,11 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 		local c = rowCard(id)
 		if c then canvasW += math.floor(cardH * LAY.CardAspect) end
 	end
-	local canvasH = math.ceil(cardH * LAY.BalancedHeight) + 2 * lift
-	local frameH, frameW = math.min(areaH, canvasH), math.min(areaW, canvasW)
+	local canvasH = math.ceil(cardH * LAY.BalancedHeight) + 2 * lift + chH
+	local frameH, frameW = math.min(areaH + chH, canvasH), math.min(areaW, canvasW)
 	local scrollX, scrollY = phone and canvasW > frameW, phone and canvasH > frameH
 	local scroll = scrollX or scrollY
-	place(cardsRow, x + (areaW - frameW) / 2, y + math.max(0, (areaH - frameH) / 2), frameW, frameH)
+	place(cardsRow, x + (areaW - frameW) / 2, y + math.max(0, (areaH + chH - frameH) / 2), frameW, frameH)
 	cardsRow.CanvasSize = UDim2.fromOffset(canvasW, canvasH)
 	cardsRow.ScrollingDirection = scrollY and Enum.ScrollingDirection.XY or Enum.ScrollingDirection.X
 	cardsRow.ScrollingEnabled = scroll
@@ -1575,6 +1622,14 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 				layoutOldCard(c, ch < 420, s)
 			end
 			c.LayoutArgs = { cw, ch }
+			if c.Changes then -- A23-167 ④: under the card row's common bottom, one line each, centred on the card
+				local y0 = lift + math.ceil(cardH * LAY.BalancedHeight) + lift + LAY.ChangesGap
+				place(c.Changes.Frame, cx, y0, cw, chH - LAY.ChangesGap)
+				for i, l in c.Changes.Labels do
+					place(l, 0, (i - 1) * chLineH, cw, chLineH)
+					setTextRange(l, minT, chSize)
+				end
+			end
 			cx += cw + LAY.Gap
 		end
 	end
@@ -1602,7 +1657,7 @@ local function placeMascots(w)
 	local list = LAY.Mascots
 	if not list or #list == 0 then return end
 	local cx, cy = cardsRow.Position.X.Offset, cardsRow.Position.Y.Offset
-	local cw, ch = cardsRow.Size.X.Offset, cardsRow.Size.Y.Offset
+	local cw, ch = cardsRow.Size.X.Offset, math.max(1, cardsRow.Size.Y.Offset - (LAY.ChangesH or 0))
 	local h = math.floor(ch * LAY.MascotH)
 	-- 검수 10/10 (fair to both sides): one scale for both mascots - the smaller room decides; both hide together
 	local scale = 1

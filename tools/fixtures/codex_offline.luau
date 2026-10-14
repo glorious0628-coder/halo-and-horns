@@ -420,6 +420,50 @@ runGroup("every card gold holo", function()
 	check(not touched, "no stat attribute changed (cosmetic only)", "")
 end)
 
+------------------------------------------------------------------ gameplay plan 2026-10-13 1-A #7: kinds that appear now
+runGroup("only kinds that appear now", function()
+	local w = codexWorld()
+	local C = w.Config
+	check(C.Mobs3Ranged == false and C.CodexCounts("SlingshotGoblin") == false and C.CodexCounts("SkeletonArcher") == false
+		and C.CodexCounts("Goblin") == true and C.CodexCounts("SlimeKing") == true and C.CodexCounts("CaptainClatter") == true
+		and C.CodexCounts("Nobody") == false and C.CodexCounts(5) == false,
+		"Config.CodexCounts: a field boss or a kind with a spawn count (the ranged kinds spawn 0 while Mobs3Ranged is off)", "")
+	-- the woods page finishes without the Slingshot Goblin
+	local p = hero(w, 21)
+	kill(w, p, "Goblin")
+	local f0 = #w.Fired
+	kill(w, p, "GoblinBrute")
+	check(events(w, p, f0) == "Card,Page", "Goblin + Goblin Brute finish the woods page (no Slingshot Goblin spawns)", events(w, p, f0))
+	-- the glow: every card that can appear at Gold Holo (the two ranged kinds still Silver)
+	local cards = {}
+	for _, kind in C.Codex.Order do
+		cards[kind] = { Kills = C.MonsterTypes[kind].Boss and 29 or 999, Golden = 0, Stage = 2, First = 1 }
+	end
+	local g = hero(w, 22, { Codex = cards })
+	local last
+	for _, kind in C.Codex.Order do
+		if C.CodexCounts(kind) then last = kind end
+	end
+	for _, kind in C.Codex.Order do
+		if C.CodexCounts(kind) and kind ~= last then kill(w, g, kind) end
+	end
+	check(g:GetAttribute("CodexGlow") == false, "one counted card short of Gold Holo: no glow yet", "")
+	local f1 = #w.Fired
+	kill(w, g, last)
+	check(string.find(events(w, g, f1), "Glow", 1, true) ~= nil and g:GetAttribute("CodexGlow") == true,
+		"the last card that can appear lights the glow (the Slingshot Goblin / Skeleton Archer cards still Silver)", events(w, g, f1))
+	-- the ranged kinds on (Count back): the page waits for them again
+	local r = codexWorld({ EditConfig = function(c) c.MonsterTypes.SlingshotGoblin.Count = 3 end })
+	local q = hero(r, 23)
+	kill(r, q, "Goblin")
+	local f2 = #r.Fired
+	kill(r, q, "GoblinBrute")
+	check(events(r, q, f2) == "Card", "with the Slingshot Goblin spawning: Goblin + Brute do not finish the page", events(r, q, f2))
+	local f3 = #r.Fired
+	kill(r, q, "SlingshotGoblin")
+	check(events(r, q, f3) == "Card,Page", "... the Slingshot Goblin's card does", events(r, q, f3))
+end)
+
 ------------------------------------------------------------------ what does not count
 runGroup("what does not count", function()
 	local w = codexWorld()

@@ -9,7 +9,7 @@ tools/fixtures/story_client_offline.luau with the installed official Luau CLI (b
   and every real LinesBy step has lines for each Var and both factions;
 - a dialogue line types in (UIKit.Typewriter, 40 letters / s, the speaker's voice), a refresh never retypes it, a tap
   (the line, [Next] or an answer button) first shows the whole line; without UIKit.Typewriter it shows at once;
-- the choice hint is the faction's A23-58 line (Halo: Honor +Good / -Evil, Horns: Infamy -Good / +Evil), the guild's
+- the choice hint is the faction's A23-58 line (Halo: Honor +Good / -Evil, Horns: Mischief -Good / +Evil), the guild's
   no-points line, the lean line for two 0-point picks (E5), ChoiceHint for an older Config; no "%" left on real cards;
 - 검수 2026-10-07: the speaker's portrait (STORY.PortraitKey): Otto, Fizzby, Bright, Smokey, Tiny, Kit and the two
   faction guides show their Config.UIArt face; shards, kids, goblins, Gleam, Rex, an empty art id or no UIKit: no slot.

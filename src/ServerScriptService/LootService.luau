@@ -5,6 +5,7 @@
 --                                               never shown or usable — review B10, so a renamed id is recoverable)
 --   data.WeaponEnhance = { [tier] = 0..MaxEnhance }  (array by weapon tier; kept through rebirth)
 --   data.LootFlags = { FirstScroll = true }
+--   data.WeaponPity = { ["T<tier>"] = luck so far }  (2-A ⑤ weapon luck, Config.Loot.WeaponPity; additive)
 --   data.Spares = { ["T:P"] = n }  (C1 spare weapons: SpareRoom / AddSpare; the save repair is Config.SanitizeSpares)
 -- Client mirror (display only, review B11): the owner-only "Inventory" remote { Items, Enhance, ..., Spares } and the numeric
 -- WeaponEnhance attribute (+N of the EQUIPPED tier; CombatService / JusticeService / PvPService read it).
@@ -110,10 +111,16 @@ local function sanitize(data)
 	for k, v in data.LootFlags do
 		if type(k) ~= "string" or v ~= true then data.LootFlags[k] = nil end
 	end
+	-- 2-A ⑤ weapon luck: "T<tier>" -> a finite number >= 0 (anything else dropped; additive, so never lowered here)
+	if type(data.WeaponPity) ~= "table" then data.WeaponPity = {} end
+	for k, v in data.WeaponPity do
+		if type(k) ~= "string" or #k > 4 or num(v, -1) < 0 then data.WeaponPity[k] = nil end
+	end
 end
 
 local function ensureTables(data)
-	if type(data.Items) ~= "table" or type(data.WeaponEnhance) ~= "table" or type(data.LootFlags) ~= "table" then
+	if type(data.Items) ~= "table" or type(data.WeaponEnhance) ~= "table" or type(data.LootFlags) ~= "table"
+		or type(data.WeaponPity) ~= "table" then
 		sanitize(data)
 	end
 end
@@ -315,9 +322,10 @@ local function grantWeapon(player, data, tier, gained, isJackpot, kind)
 	end
 end
 
--- C2: the first Slime Prince's guaranteed weapon: owned (saved first), in this kill's Loot list, equipped when it beats
--- the weapon in hand (bare hands, or a lower damage at this level with its +N)
-local function grantFirstDrop(player, data, tier, gained)
+-- C2: the first Slime Prince's guaranteed weapon (1-A #2: and the first King Slime's): owned (saved first), in this kill's
+-- Loot list, equipped when it beats the weapon in hand (bare hands, or a lower damage at this level with its +N).
+-- plain / equip = the toast lines (default: the Prince's)
+local function grantFirstDrop(player, data, tier, gained, plain, equip)
 	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
 	local name = weaponName(player, tier)
 	table.insert(gained, { Weapon = tier, Name = name })
@@ -330,7 +338,33 @@ local function grantFirstDrop(player, data, tier, gained)
 		publish(player, data)
 		pcall(Net.Fx, player, "Upgrade", { Tier = tier })
 	end
-	notify(player, string.format(better and TXT.FirstDropEquip or TXT.FirstDropWeapon, name), "reward", better and "None" or "Equip")
+	local line = better and (equip or TXT.FirstDropEquip) or (plain or TXT.FirstDropWeapon)
+	notify(player, string.format(line, name), "reward", better and "None" or "Equip")
+end
+
+-- 2-A ⑤ (Config.Loot.WeaponPity): after this kill's rows, every weapon row of a tier still not owned that was rolled adds
+-- its chance (x GoldenMult, at most 1) to data.WeaponPity["T<tier>"]; at At[tier] that tier drops for sure, the way the
+-- first drops do. info.Level is set (RollKill). Tiers in order, so one kill's grants are always the same.
+local function weaponPity(player, data, info, gained)
+	local pity = LOOT.WeaponPity
+	if type(pity) ~= "table" or pity.Enabled ~= true or type(pity.At) ~= "table" then return end
+	local mult = (info.Golden == true) and LOOT.GoldenMult or 1 -- brackets: apart from the roll's line (test_loot mutations)
+	local adds = {}
+	for _, row in LOOT.Tables[info.Kind] or {} do
+		local tier = row.Weapon
+		if validTier(tier) and num(pity.At[tier]) > 0 and not owns(data, tier)
+			and not (type(row.BelowLevel) == "table" and not Config.WeaponUsable(tier, info.Level)) then
+			adds[tier] = (adds[tier] or 0) + math.min(1, math.max(0, num(row.P)) * mult)
+		end
+	end
+	for tier = 1, Config.MaxWeaponTier do
+		if adds[tier] then
+			local key = "T" .. tier
+			local have = math.max(0, num(data.WeaponPity[key])) + adds[tier]
+			data.WeaponPity[key] = have
+			if have >= num(pity.At[tier]) then grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip) end
+		end
+	end
 end
 
 -- A23-34: the M1_1 blacksmith gift (StoryQuestService, Config.StoryQuests.Defs.M1_1.GiveWeapon) = the class basic
@@ -431,11 +465,8 @@ function LootService.RollKill(player, info)
 		if giveItem(first.Item, 1) > 0 then
 			data.LootFlags.FirstScroll = true
 			firstNow = true
-			-- the one-time guide (A23-12). The Loot Fx below carries First = true so the client skips its own
-			-- "where to use it" toast for this scroll (one toast, not two)
-			-- A23-34: no weapon owned yet (the M1_1 gift comes later) -> the hint says where the first weapon comes from
-			local line = math.floor(num(data.WeaponOwnedMask, 0)) == 0 and TXT.FirstScrollBare or TXT.FirstScroll
-			pcall(Net.Notify, player, line, "reward", num(first.NoticeSeconds, 6), "None") -- the drop has its own sound
+			-- A23-130 (user 10/13 night): no hint line any more. The Loot Fx below carries First = true so the client skips
+			-- its own "where to use it" toast too: only the "+Enhance Scroll" pop shows
 		end
 	end
 
@@ -444,6 +475,24 @@ function LootService.RollKill(player, info)
 	if fw and info.Kind == fw.Monster and data.LootFlags.FirstWeapon ~= true then
 		data.LootFlags.FirstWeapon = true
 		if validTier(fw.Tier) and not owns(data, fw.Tier) then grantFirstDrop(player, data, fw.Tier, gained) end
+	end
+	-- gameplay plan 2026-10-13 1-A #2: the first King Slime always drops the tier-3 weapon, the same way
+	local fk = LOOT.FirstKingDrop
+	if fk and info.Kind == fk.Monster and data.LootFlags.FirstKingWeapon ~= true then
+		data.LootFlags.FirstKingWeapon = true
+		if validTier(fk.Tier) and not owns(data, fk.Tier) then
+			grantFirstDrop(player, data, fk.Tier, gained, TXT.FirstKingWeapon, TXT.FirstKingEquip)
+		end
+	end
+	-- 2-A ⑤: the first Goblin Brute (tier 4) and the first Skeleton Knight or Captain Clatter (tier 5), the same way
+	for _, fd in LOOT.FirstTierDrops or {} do
+		local who = type(fd) == "table" and type(fd.Monsters) == "table" and fd.Monsters[info.Kind] or nil
+		if type(who) == "string" and type(fd.Flag) == "string" and data.LootFlags[fd.Flag] ~= true then
+			data.LootFlags[fd.Flag] = true
+			if validTier(fd.Tier) and not owns(data, fd.Tier) then
+				grantFirstDrop(player, data, fd.Tier, gained, TXT["First" .. who .. "Weapon"], TXT["First" .. who .. "Equip"])
+			end
+		end
 	end
 
 	info = table.clone(info) -- the caller's info stays untouched
@@ -468,6 +517,7 @@ function LootService.RollKill(player, info)
 			grantWeapon(player, data, row.Weapon, gained, isJackpot, info.Kind)
 		end
 	end)
+	weaponPity(player, data, info, gained) -- 2-A ⑤: after the rows (a row that dropped the tier owns it: no count)
 
 	for _, id in LOOT.Order do
 		local n = itemCounts[id]
@@ -553,6 +603,13 @@ local function useEnhance(player, data, id, def, tier)
 	end
 	pcall(Net.Fx, player, "Enhance", { Item = id, Tier = tier, Before = before, After = after, Success = success })
 	LootService.Enhanced:Fire(player, tier, before, after, success, id)
+	-- gameplay plan 2026-10-13 1-A #2: a scroll used on a weapon, success or not = the story's ScrollUsed (M1_1 step 2),
+	-- reported softly like the potion events
+	local story = S.StoryQuestService
+	if type(story) == "table" and type(story.Event) == "function" then
+		local okEvent, errEvent = pcall(story.Event, player, "ScrollUsed", { Tier = tier, Success = success })
+		if not okEvent then Util.Warn(TAG, "ScrollUsed: " .. tostring(errEvent)) end
+	end
 end
 
 local function useTransfer(player, data, id, def, fromTier, toTier)
@@ -948,7 +1005,7 @@ end
 function LootService.DebugReset(player, mask)
 	local data = getData(player)
 	if not data then return "no data" end
-	data.Items, data.WeaponEnhance, data.LootFlags = {}, {}, {}
+	data.Items, data.WeaponEnhance, data.LootFlags, data.WeaponPity = {}, {}, {}, {}
 	sanitize(data)
 	-- A23-34: mask 0 = a new bare-handed player (nothing owned); an unowned equipped tier -> the best usable owned one
 	mask = math.floor(num(mask, 0))

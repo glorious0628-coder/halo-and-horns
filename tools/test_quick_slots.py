@@ -73,7 +73,7 @@ def statics(src: dict) -> list[dict]:
          "if not mode and C and type(C.QuickSlots) == \"table\" and type(C.QuickSlots.BagRows) == \"function\" then" in src["PANELS"]
          and "pcall(C.QuickSlots.BagRows, parent, REG.Kit())" in src["PANELS"]},
         {"check": "A23-110 KO1 rows: Guide QuickSlot opens the bag (H-1: Bag on its Use tab), PotionShop shows the way to the seller", "ok":
-         'if g == "PotionShop" or g == "QuickSlot" then' in src["HUD"]
+         'if g == "PotionShop" or g == "QuickSlot" or g == "Bag" then' in src["HUD"]  # (+ M1_1's scroll step, A23-127)
          and 'panels.Open(bag and "Bag" or "Items", bag and { Tab = "Use" } or nil)' in src["HUD"]
          and "pcall(vitals.ShowShopWay)" in src["HUD"] and "function VitalsUI.ShowShopWay()" in src["VITALS"]},
         {"check": "A23-110 KO1: while PotionSip is set a full bar may still drink (the server's practice sip)", "ok":

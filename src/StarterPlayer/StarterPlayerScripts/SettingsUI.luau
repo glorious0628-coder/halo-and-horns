@@ -275,6 +275,24 @@ local function buildMain(kit, frame)
 		cb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
 	end)
 
+	-- 2-C #9 (최종 검수 10/14): the two rows the Settings blob always had but the window never showed - damage numbers
+	-- (All / Off; Fx MOTION.DamageNumbersOn) and other players' name tags (All -> Nearby only -> Off; NameTagPrefs)
+	local _, hd = row(kit, frame, ST.DmgNumEn or ST.DmgNum)
+	local db = button(kit, hd, W.On, nil, function()
+		settingsSet("DmgNum", settingsGet("DmgNum", "All") == "Off" and "All" or "Off")
+	end)
+	table.insert(refresh, function() paintToggle(kit, db, settingsGet("DmgNum", "All") ~= "Off") end)
+	local _, ht = row(kit, frame, ST.TagsEn or ST.Tags)
+	local tb = button(kit, ht, "", nil, function()
+		local cur = settingsGet("Tags", "All")
+		settingsSet("Tags", cur == "All" and "Near" or cur == "Near" and "Off" or "All")
+	end)
+	table.insert(refresh, function()
+		local v = settingsGet("Tags", "All")
+		v = (v == "Near" or v == "Off") and v or "All"
+		tb.Text = ST.Options[v .. "En"] or ST.Options[v] or v
+	end)
+
 	if UserInputService.KeyboardEnabled then
 		local _, hb = row(kit, frame, ST.KeyBadgesEn or ST.KeyBadges)
 		local kb = button(kit, hb, W.On, nil, function() settingsSet("KeyBadges", settingsGet("KeyBadges", true) == false) end)
@@ -451,6 +469,15 @@ function H.ControlLines()
 	return lines
 end
 
+-- a topic's lines: Controls from my live keys; a touch-only device (no keyboard: no Esc, no Tab) reads the topic's
+-- Config.Help.TouchTopics lines where it has them (A23-145, 최종 검수 10/13)
+function H.TopicLines(t)
+	if t.Id == "Controls" then return H.ControlLines() end
+	local touch = Config.Help.TouchTopics
+	if not UserInputService.KeyboardEnabled and type(touch) == "table" and type(touch[t.Id]) == "table" then return touch[t.Id] end
+	return t.Lines
+end
+
 function H.Topic(kit, parent, title, lines)
 	header(kit, parent, title)
 	for _, line in lines do
@@ -496,7 +523,7 @@ function H.BuildHelp(parent, kit)
 		return nil
 	end
 	for _, t in help.Topics do
-		H.Topic(kit, parent, t.Title, t.Id == "Controls" and H.ControlLines() or t.Lines)
+		H.Topic(kit, parent, t.Title, H.TopicLines(t))
 	end
 	local row1 = Instance.new("Frame")
 	row1.BackgroundTransparency = 1

@@ -40,7 +40,7 @@ STATIC = [
      ['\tlocal h = Instance.new("Highlight")\n', '\th.Adornee = pad\n', '\th.FillTransparency = 0.85\n',
       'pads:FindFirstChild("Pad_" .. TUT_GUIDE_ZONE)']),
     ("[Menu] + Travel pulse with the rule; a press on Travel ends it", "HUD",
-     ['\tL.SetGlow("menu", ui.menuGlow, settings or travel)\n', '\tL.SetGlow("travel", ui.travelGlow, travel)\n',
+     ['\tL.SetGlow("menu", ui.menuGlow, settings or travel or attend)\n', '\tL.SetGlow("travel", ui.travelGlow, travel)\n',
       '\t\t\tif copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done\n',
       '\t\tif def.Id == "Travel" and not row then ui.travelGlow = makeGlow(b, UDim.new(0, 10)) end -- A23-88\n']),
     # 빛 마을 점검 #52 (2026-10-10): the town plazas' own pads on the big map and the minimap (the pad glyph)

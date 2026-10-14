@@ -1,40 +1,62 @@
-# 게임성 개발 2 — 상태 (2026-10-13 정리)
+# 게임성 개발 2 — 상태 (2026-10-14 밤, 장인 길드 최소판 계약 보고)
 
-## 10/13 정리 (사용자: "이제 정리하고 컴퓨터 꺼줘")
-- **도감 카드 서버(A23-153) 끝 = dev2-codex 3481c431 → main 0aa6a0b7 병합, 메인 Play 확인 통과(최종 검수).**
-  CodexService(새) + 저장 v5(옛 저장은 KillLog.ByKind에서 카드 한 번, 보상 없음) + 원격 CodexOpen/Codex/CodexUp +
-  속성 CodexCards/CodexGlow + Config.Codex(11종·3페이지, 단계 1/100/1000, **보스 1/10/30**, 보상 3/20/100마리 몫·보스 1/3/10·포일 5,
-  작은 몫(info.Minor) 단계 보상 × MinorShare, XPCapBelowLevel 아래면 카드 XP 한 레벨까지, 칭호 Slime/Goblin/Skeleton Scholar).
-  약속 문서 `docs/design/codex_cards_contract_2026-10-13.md`(화면 = 게임성 개발 1). 시험 test_codex 139 + 정적 13, 변이 60/60.
-  저장 v5로 옛 시험(버전 4 고정) 16개 fixture + save_v4_tables·stats·weapon_ladder·gamepass 고쳐 함께 들어감.
-  최종 검수 결정: 뒷면 이야기 33줄은 카드 화면 만들 때 다듬기, ServerToast = true 그대로(카드 순간 화면 들어오면 개발 1이 false).
-- **C2 = dev2-c2 eb3c2633 (push함)**: 491ef614(드롭표·첫 무기 드롭 BigSlime T2·겹친 무기 → Spares) + main 병합 2번(마지막 eb3c2633, 충돌 없음).
-  아직 보고 안 함. 할 일: 최신 main 병합 → 전체 시험 하나씩 → 실패(new_zones 무기 줄 비교, 경제·첫 10분 등) 고치기 → 숫자와 함께 최종 검수 보고.
-- **지금 큐는 멈춤(사용자 상시 지시 10/12 22:30: 이미지→Tripo 먼저):** C2·거래소 등 새 일은 Tripo 끝난 뒤 최종 검수가 부르면 시작.
-- 전체 시험 기준(10/13, main 기준): 183개 중 원래 실패 9개 = costume_physics·skin_binding(은퇴), halloween·shop_layout(그림 필요),
-  place_english(place 필요), rank_marks, ops_safety 변이 "Halloween is not applied", skeleton_ground(build/wk/halo_walls.json 없음),
-  studio_guard 변이 "only GoodEvil is main"(0번 맞음). api_agent·claude_doc_worker는 건너뜀(도구 자체 시험).
-- **지우지 못한 worktree 5개**(병합 끝, 시험 출력 파일만 남음; 자동 모드 분류기가 `git worktree remove` 막음, 최종 검수도 막힘 → 그냥 둠):
-  ../wt_goose_square, ../wt_stickers, ../wt_lesstext_server, ../wt_c1, ../wt_famecap. 그 밖에 ../wt_codex(병합 끝), ../wt_base(main 기준 시험용, detached).
+## 지금 (10/14 저녁)
+| 가지 | tip | 무엇 | 어디까지 |
+|---|---|---|---|
+| dev2-weapon-luck | ba755029 | 2-A ⑤ 무기 운(첫 브루트 T4·첫 기사/Clatter T5·운 카운터·숲 서브 GW9·GW10) + 변이 고침(황금 배수 줄 겹침, 새 변이 8) | **main 병합됨(d05f09c8)**. loot 630 / 134·commission 77 / 46·town_quests 1036 / 241 |
+| dev2-launch-dates | 8b04abec | 2-A ⑦ 날짜 값(PioneerUntil 2100, 스위치 PioneerTitle, 배지 7개) + WIP 마무리(시험 3개 고침) | 최종 검수 병합 진행. return 245 / 121·beta_basics 232 / 35 |
+| dev2-village-fund | e30da8fa | A23-178 B 마을 기금 서버(VillageFundService, 계약 `docs/design/village_fund_server_2026-10-14.md`), launch-dates 합침 위. Net 이름 FundGive·FundOpen + GameState 기본값 = 이 가지(개발 1 dev1-village-fund 864cf867은 Net 안 건드림) | 반박 검토 FIX 1 + MINOR 2 고침 보고함(분수 모델 `Town_Halo_Fountain3` 피벗 = 자리, 대체 Pos (34.55, 20, -566); 닫힐 때 도는 쓰기 기다림; 첫 읽기 성공 전 단계 글 없음). test_village_fund 114 / 46. 개척자 스위치 병합 뒤 main 합침(스위치 줄 둘 다), 전체 197 = 원래 실패만. **main 병합됨(e35d32b9)** |
+| dev2-stats3 | f1aeeb48 | 2-A ⑧ 스탯 2단계를 main 위로(옛 dev2-stats2 91a7dd8d, 리베이스 없음) + 장비 배수와 곱하기 + CombatPowerOf 레벨·스탯 덮어쓰기 + main 합침 1번. 스위치 꺼짐 | 보고함. stat_service 70 / 37·stats 77 / 46·gear_slots 203 / 109. main 합친 뒤 전체 196개 = 원래 실패 8개만(costume_physics·halloween·metrics_board·place_english·rank_marks·skeleton_ground·skin_binding_studio·walk_forge_client) |
+| dev2-gold-sinks | 8f53be76 | 2-A ⑥ 안 → 사용자 A23-178: 마을 기금(B)만, 주문서 구매(A) 안 함(소모품 = 연금술사) | 끝 |
+| fix/pioneer-switch-ready | cd7e3331 | launch-dates 2차 검토 FIX: 스위치 정의 `Unread`(첫 읽기 성공 전 값), PioneerTitle Unread = false + `SwitchService.HasRead()`; TitleService가 Changed(켬) 때 접속 중인 아이에게 다시 줌 | **main 병합됨(0783dbbd)** |
+| dev2-stale-text | 6637e536 | 2-C #12 낡은 글(S): 장인 길드 베타 포함(A23-162)·자동 번역 켬(A23-179)에 맞춰 Config 10곳(화면 글 3: Legend 출처, 장인 카드 'Crafting') + 서버 로그 2곳 | 보고함. 전체 = 원래 실패만. 개발 1 몫 4개 넘김(설정 Lang 줄, FactionPicker 직접 쓴 글, 제단 AutoLocalize, TextKo/L10n 잔재) |
+| fix/skill-no-reject | 5bd777c5 | 사용자 10/14 '서버가 거절을 안 하게': 대상 없음 = 허공 쓰기(Fx Air, MP·재사용·간격·피해·셈 없음), 재사용 ≤ PressBuffer 0.35초 = Queued, 나머지 조용히 false, SkillPress = Queued만 | 보고함. skills 162 / 100, skills_x 167 / 93, 전체 196 = 원래 실패만 |
+- 스탯 가지(stats3)는 '큰 병합 하루 하나' 규칙으로 10/15 검토.
+- **장인 길드 최소판(사용자 10/14 '중립 애들 작업도', 2-B 11/06 판정 취소):** 계약 `docs/design/artisan_min_server_2026-10-14.md` 보고함 → 최종 검수 OK 기다림. OK 뒤 순서: ① SellItem(채집 재료 판매)+일일 채집·제작 2줄+N1/N2 막힘 고침 → ② 퀘스트 목표 Gather·Craft·SellMat + N0/N0b/N4 → ③ 거래소 dev2-market main 합치기+끄기 키+죽이기 시험+UnpackSpare → ④ 작업대 3개 → 스위치 켜기 시험. worktree ../wt_artisan(dev2-artisan-min, origin/main 1335aa8d, 아직 커밋 없음).
+- worktree: ../wt_wluck, ../wt_dates, ../wt_vfund, ../wt_stats3, ../wt_pioneer, ../wt_stale, ../wt_skill (+ 옛 것). 시험 실행기는 스크래치 sweep.py(세션마다 다시 만듦: `<wt> <out> [--jobs N] [--mut] [이름…]`).
+- **다음:** 10/15 패스 ID 9개 오면 그것 먼저 = origin/main 위 새 가지 dev2-pass-ids-2(9b90130c는 main에 있음)에 `py tools/set_pass_ids.py …` 커밋 1개 → test_gamepass(변이)·passes·pass_text·shop_layout·health → 보고. 그 밖엔 최종 검수가 정함.
+- 주의: worktree에서 git이 쓴 파일(merge·checkout·apply)은 CRLF가 될 수 있음 → first_ko_king 'LF tabs' 정적 검사가 잡음. 커밋 전 바꾼 파일 LF 확인.
+- 숲 서브 GW9·GW10은 영·한 대본(`docs/script/`)에 아직 없음 → ⑬ 때.
 
-서버 전용·Studio 금지·main에 코드 push 금지(검수가 병합). **보고처 = '최종 검수'**(id는 list_sessions). 보고는 묶음마다 한 번.
-시험은 한 번에 하나씩(PC 렉), 서브에이전트·워크플로 쓰지 않음(최종 검수 10/13). 대화가 길어지면 이 파일 적고 push → clear_session("self").
-- API(api_agent) 거의 바닥(남은 것은 최종 검수의 최종 병합 검토용) → 큰 일도 앱에서 직접.
+서버 전용·Studio 금지·main에 코드 push 금지(최종 검수가 병합). 보고처 = '최종 검수'(list_sessions, send_message). 덩어리마다 한 번.
+읽는 순서: `docs/handoff/README.md`(새 입구) → `role_prompts/03_dev2.md` → 이 파일 → `docs/design/six_week_plan_2026-10-13.md`(주별 몫).
 
-## 다음 큐 (Tripo 끝난 뒤, 최종 검수가 부르면)
-1. **C2** 위 그대로.
-2. 거래소 서버(C-5/C-7): 개발 4 계약 `origin/dev4-market` `docs/design/market_window_2026-10-12.md` §6 합의(MarketIndex 30초 캐시·요약 맵,
-   무기 키 "T:P", Pages·Paid·Today, Gate { Buy, List, ListIn }, 거래소 퀘스트 3개는 내 몫, 거절 키 + TooFast·Off).
-3. `api/dev2-l10n-a` 정리(한국어 모드 취소 A23-146 → 필요한 것만), 제작 설계 `api/dev2-crafting-design` ea0ce9bc 정리(A23-127).
-4. A23-138 영어 밈 서버 쪽(fix/meme-en-server).
-- 알아 둘 것: 개발 3이 내 파일에 넣은 줄 — 연금 물약 BuffService.Mult 4줄(Combat·Loot·Progression), 조련사 PetService(SummonPet·AddPetXP·
-  PetRoll, findSpecies는 소환 펫 제외), 장비 api/dev3-gear — 모두 검토 OK. 보스 재료도 행운 물약에 오름(빼려면 `def.Source == nil`, 결정 대기).
+## 가지 (모두 push, 최종 검수 병합 대기·진행)
+| 가지 | tip | 무엇 | 상태 |
+|---|---|---|---|
+| fix/test-prep-server | e43370e2 | 1-A 서버 몫 + 시험 스위치 | main 병합됨 |
+| fix/test-prep-server-2 | bd50ad74 | 시험 숫자판(TestMetricsService, tools/test_metrics_board.py), set_pass_ids, 검토 고침 3개 + main 합침(bag_ui = 개발 1 판) | 검토 MERGE, 병합 중 |
+| fix/mischief-name | 61d7c162 | A23-166 보이는 Infamy → Mischief(Config.FameName/FameLabel) + 검토 MINOR 3개(숫자판 Live 끔, Kept = Roblox 실제 답만 = MonetizationService.PassAnswer·'Unknown', 주문서 칸 가득 차면 표시 유지) | 보고함 |
+| fix/scroll-toast-off | 696088cf | 첫 Slime Prince 주문서 안내 토스트 삭제(A23-130, Loot.Text.FirstScroll* 키 삭제) | 보고함 |
+| dev2-honor-crown | 555e1a56 | 2-A #4 HuntFameService + #5 왕관 새 점수(WarService.AddKill/PersonalAdded) — mischief 위. 검토 FIX FIRST 고침: 처치 수 저장(data.CrownUnits), M2_1 15·GW4 100마리, KO 상한 UserId, PvP 정수, 점수 두 자리(HUD 한 줄), ZoneLevel, Minor 제외 | 고침 보고함. 설명 `docs/design/honor_crown_server_2026-10-14.md` |
+| dev2-early-xp | 36396af8 (main 9264ae44) | A23-167 첫 10분 2배 XP(Config.EarlyXP, ProgressionService.XPBoost = 패스와 큰 쪽) + 내일 또 오기 서버(Fx TomorrowGift, 속성 Returned, WelcomeBack Days·News, AttendanceService.NextSlots, 소식 DataStore HaloHorns_News_v1) — origin/main 4f88cc5a 위 | 보고함. 설명 `docs/design/comeback_server_2026-10-14.md`. 화면은 개발 1 몫(문서 끝 4줄) |
+| dev2-early-xp-2 | 20569434 | early-xp 후속: 빈 거위 판(Mode Pending) 소식 안 셈, BindToClose가 도는 쓰기 기다린 뒤 씀, crown-small 체리픽, NextSlots·Config TomorrowDay 주석 — origin/main 5e157bf7 위, ../wt_earlyxp2 | 보고함(return 244·121/121) |
+| dev2-crown-small | 53e28b6a | API 사후 검토 낮음 2개: PvP KO 상한 칸은 AddPoints가 실제로 더했을 때만(AddPoints true/false), PersonalAdded 주석 — origin/main 893d8d37 위 | main 병합됨(10/14). early-xp-2의 체리픽 890994fe = 같은 내용 |
+| dev2-metrics-howto | 078a0a3a | 시험 숫자판 점검: 매일 한 줄 안내 `docs/design/test_metrics_howto_2026-10-14.md` + board stderr UTF-8 — origin/main 89255e8b 위, ../wt_metrics | 최종 검수가 병합함(10/14) |
+| dev2-pass-ids | 9b90130c (push함, ID 9개 모두 0) | test_gamepass가 진짜 패스 ID에서도 통과(세계마다 ID 0으로 시작, 설정 확인 '0 또는 정수>0·겹침 없음', 가격 변이 3개 ID 무관) — ../wt_passids | 최종 검수 지시로 시험 고침만 먼저 push(10/14, 232/232·116/116 다시 확인) → 병합 대기. ID 9개는 그 위에 커밋 하나 |
+| dev2-halo-stage6 | bd903c79 | 빛 마을 6단계 서버 | 2주 차 교체 날 병합(map_v2 2개 = 새 큰 지도 그림 기다림) |
+
+- 날짜 박힌 값 목록(3주 차 '아주 먼 날짜 + 출시 날 스위치', 2-A #12): BuildLabel, Beta.PioneerUntil 12/19, 하늘 주석 '12/19 launch',
+  Halloween EndsAt 11/09·Banter DayOneStart 10/31, Badges Order Halloween2026, 할로윈 주석 'beta 2026-12-01', 글 "launch date is set in December".
+- **내일 이어갈 자리(10/14 낮):** 네 가지 다 main(early-xp-2 포함). 오늘 1·2 끝: dev2-metrics-howto push·보고, dev2-pass-ids 로컬 커밋.
+  10/15 패스 ID 오면: ../wt_passids에서 `py tools/set_pass_ids.py XP2=… Gold2=… VIP=… Stickers=… Bubbles=… HaloIce=… HaloGold=… HornsLava=… HornsShadow=…`
+  (9b90130c가 main에 병합됐으면 먼저 `git merge origin/main`, 리베이스 금지) → test_gamepass(변이 포함)·passes·pass_text·shop_layout·health 다시 → `git checkout -- docs/art/` → 커밋(-- Config.luau) → push → 최종 검수 보고.
+  (10/14 확인: 가짜 ID 9개로 관련 시험 15개 통과. 9b90130c는 10/14 push함.) 주간 사용량 73% → 새 일 시작 안 함.
+- **다음 일:** 최종 검수가 정함. dev2-early-xp 병합됨, 후속 dev2-early-xp-2(20569434) 보고함 → 병합 기다림(고칠 것이 오면 그 가지 위에 커밋, 리베이스 금지).
+  dev2-honor-crown 555e1a56 = main 병합됨(4fe62394). 같이 잡은 몹 사냥 명예 나누기 = 11/7 전 사용자 결정(backlog, 지금 그대로).
+  2배 XP 속도: 계산상 Lv10이 슬라임만 약 16분 → 약 8분(퀘스트 보상도 2배) — 10/17 숫자판 'Lv5까지 분'으로 확인, 빠르면 최종 검수가 EarlyMult/Seconds 결정.
+- 그 뒤 후보(최종 검수가 정함): 6단계 서버 병합, 무기 운 보정(2-A #6), 골드 쓸 곳(#7), 스탯 서버(#9), 날짜 값(#12), 보스 경쟁·황금 시간(crown_war_content).
+- A23-168: 덩어리 보고 뒤 기다릴 일만 남으면 이 파일 적고 push → clear_session("self").
 
 ## worktree·도구
-- 가벼운 worktree: `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
+- ../wt_prep(test-prep-server-2), ../wt_prep_t(전체 시험 고정판), ../wt_mischief, ../wt_scroll, ../wt_honor, ../wt_halo6, ../wt_earlyxp, ../wt_crownsmall, ../wt_base1014(4f88cc5a 비교용). 병합 끝난 것은 그냥 둠.
+- 가벼운 worktree: Game에서 `git worktree add --no-checkout -b <가지> ../wt_<이름> origin/main` → `MSYS_NO_PATHCONV=1 git sparse-checkout set
   --no-cone /src/ /tools/ /docs/ /AGENTS.md` → `git read-tree -mu HEAD` → `cp -r ../Game/build/luau_cli_0_741 build/`.
-  worktree 안에서 `git add <새 파일>` + `git commit -m … -- <경로>`(docs/art 시험 출력은 빼고, 내 새 보고서만).
-- 고치기: Write 도구로 스크래치에 python 정확 치환 스크립트(Bash heredoc은 `\t`·`\n`·작은따옴표를 망침). Python write_text는 CRLF로 씀 →
-  git이 LF로 맞춰 줌(경고만). 시험 줄 상세에 플레이어 객체를 show()하면 스택 넘침.
-- 전체 시험: 스크래치에 run_all_tests.py(`<worktree> <outdir> [시험 이름…]`, 하나씩, a23_14는 --no-mutations) — 스크래치는 세션마다
-  지워지니 다시 만들 것(tools/test_*.py 차례로 `py tools/<t>` 실행, rc·로그 저장). **시험 도는 중엔 그 worktree 파일을 고치지 말 것**.
+- 시험 실행기: 스크래치 run_tests.py(`<worktree> <outdir> [이름…]`, 하나씩; rc·CHECK_FAIL·failing·MISSED 요약). 스크래치는 세션마다 다시 만듦.
+  시험 도는 worktree 파일은 고치지 말 것. 커밋 전 `git checkout -- docs/art/`(시험 보고서 되돌림).
+- **Bash 도구는 `\n`·`\b`를 진짜 줄바꿈·백스페이스로 바꿈** → 백슬래시가 든 고침은 Edit 도구나 Write로 만든 py 파일로.
+- 시험 상세에 플레이어 객체를 show()하면 스택 넘침 → 플레이어 뺀 복사본으로.
+- 새 저장 칸·새 연결은 다른 시험 세계에서 경고가 나지 않게 '부드럽게' 찾기(PvP 훅처럼).
+- 원래 실패(main): costume_physics(은퇴), halloween(그림 필요), ops_safety 변이 'Halloween is not applied', place_english, rank_marks,
+  skeleton_ground, studio_guard 변이, skin_binding(_studio), quest_target(rows 2개), walk_forge_client, metrics_board(인자 필요 = 시험 아님).
+- 전체 시험: 스크래치 sweep.py(`<worktree> <outdir> [이름…]`, 6개 동시, --no-mutations 되는 것만) → summary.txt. 10/14 새벽 192개 중 183 통과·9 = 위 원래 실패.

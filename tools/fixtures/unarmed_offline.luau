@@ -83,7 +83,7 @@ runGroup("config", function()
 	end
 	for _, pair in {
 		{ C.Text, "BareHands" }, { C.Text, "WeaponFromQuest" }, { C.Loot.Text, "JackpotEquip" },
-		{ C.Loot.Text, "FirstScrollBare" }, { C.Loot.Text, "FirstWeapon" }, { C.Loot.Text, "FirstWeaponBag" },
+		{ C.Loot.Text, "FirstWeapon" }, { C.Loot.Text, "FirstWeaponBag" },
 		{ C.Loot.Text, "BareEquip" }, { C.Tutorial.Text, "VisitBlacksmith" }, { C.Tutorial.Text, "VisitBlacksmithArmed" },
 	} do
 		check(same(pair[1][pair[2]], pair[1][pair[2] .. "En"]), "text " .. pair[2] .. " has KO + EN with the same placeholders")
@@ -349,6 +349,8 @@ end)
 ------------------------------------------------------------------ 6. the blacksmith: buy / sell / tier 1
 runGroup("shop", function()
 	local w = bareWorld()
+	-- gameplay plan 2026-10-13 1-A #2 ships Config.WeaponShop.Buy = false; the buy rules below are for Buy back on
+	w.Config.WeaponShop.Buy = true
 	local p, d = w:Join(401, { Carried = 160, Bank = 0 })
 	local n0 = #w.Notices
 	w:Buy(p, 1)
@@ -380,7 +382,7 @@ runGroup("shop", function()
 	w3:Sell(r, 3)
 	check(f.WeaponOwnedMask == 0 and f.WeaponTier == 0 and f.CarriedGold == 80, "bare-handed seller of an unusable T3 (+80)",
 		show({ f.WeaponOwnedMask, f.WeaponTier, f.CarriedGold }))
-	-- the anvil prompt finishes an active M1_1 before the shop opens
+	-- the anvil prompt passes M1_1's visit (1-A #2: the weapon comes with it, step 2 = Otto's scroll) before the shop opens
 	local w4 = bareWorld()
 	local s, g = w4:Join(404, { Level = 2 })
 	w4.Story.Refresh(s)
@@ -401,14 +403,20 @@ runGroup("shop", function()
 		if w4.Fired[i].Remote == "OpenPanel" then opened = w4.Fired[i] end
 	end
 	check(opened ~= nil and opened.Payload == "WeaponShop", "the anvil opens the weapon shop")
-	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Done.M1_1 == true,
-		"the M1_1 gift is in hand by the time the shop opens", show({ g.WeaponTier, g.WeaponOwnedMask }))
+	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Main.Id == "M1_1" and g.Story.Main.St == 2,
+		"the M1_1 gift is in hand by the time the shop opens (M1_1 at step 2)", show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main }))
 end)
 
 ------------------------------------------------------------------ 7. the M1_1 gift (both orders)
 runGroup("gift", function()
-	-- (a) the free tier 1 first, then the wood weapon
+	-- (a) the free tier 1 first, then the wood weapon (Buy back on: 1-A #2 ships Buy = false)
 	local w = bareWorld()
+	w.Config.WeaponShop.Buy = true
+	local function useScroll(world, pl, tier)
+		world:Advance(1) -- RateLimits.UseItem
+		world.Net.Get("UseItem").OnServerEvent:Fire(pl, "Enh70", tier)
+		world:Flush()
+	end
 	local p, d = w:Join(501, { Level = 2, Carried = 150 })
 	w.Story.Refresh(p)
 	check(d.Story.Main.Id == "M1_1" and d.WeaponTier == 0, "M1_1 active, still bare-handed")
@@ -418,22 +426,28 @@ runGroup("gift", function()
 	w:Flush()
 	local list = notices(w, p, n0)
 	local line = string.format(C0.Loot.Text.FirstWeapon, "Twig", "12", "300")
-	check(d.WeaponOwnedMask == 1 and d.WeaponTier == 1 and p:GetAttribute("WeaponTier") == 1 and d.Story.Done.M1_1 == true,
-		"(a) M1_1 done: tier 1 owned and equipped", show({ d.WeaponOwnedMask, d.WeaponTier }))
+	check(d.WeaponOwnedMask == 1 and d.WeaponTier == 1 and p:GetAttribute("WeaponTier") == 1 and d.Story.Main.St == 2 and not d.Story.Done.M1_1,
+		"(a) the visit: tier 1 owned and equipped, M1_1 at step 2 (1-A #2: the weapon comes with the visit)", show({ d.WeaponOwnedMask, d.WeaponTier }))
 	check(p:GetAttribute("WeaponOwnedMask") == 1, "(a) the ownership attribute follows (item list / telemetry read it)",
 		p:GetAttribute("WeaponOwnedMask"))
-	check(d.WeaponSeq and d.WeaponSeq[1] == 1 and d.ItemSeqNext == 1, "(a) the gift is noted once in '얻은 순' (no double count)",
+	-- 1-A #2: Otto's scroll comes right after the weapon (the 2nd gain)
+	check(d.WeaponSeq and d.WeaponSeq[1] == 1 and d.ItemSeqNext == 2, "(a) the gift is noted once in '얻은 순' (no double count; Otto's scroll is the 2nd gain)",
 		show({ d.WeaponSeq and d.WeaponSeq[1], d.ItemSeqNext }))
-	-- A23-130: no blacksmith (Finish) line; the quest's reward line, then the weapon line
-	local iDone, iWeapon = nil, indexOf(list, line)
-	for i, t in list do
-		if iDone == nil and string.find(t, " done!", 1, true) then iDone = i end
-	end
+	-- A23-130: no blacksmith (Finish) line; 1-A #2: the weapon line at the visit, then Otto's scroll line
+	local iWeapon = indexOf(list, line)
+	local iScroll = indexOf(list, string.format(C0.Loot.Text.Got, C0.Loot.Items.Enh70.Name))
 	check(iWeapon ~= nil and indexOf(list, C0.StoryQuests.Defs.M1_1.Finish) == nil, "(a) notice 'First weapon: [Twig]!', no Finish line",
 		show(list))
-	check(iDone ~= nil and iWeapon ~= nil and iDone < iWeapon, "(a) the weapon line comes after the quest's reward line", show(list))
+	check(iWeapon ~= nil and iScroll ~= nil and iWeapon < iScroll, "(a) the weapon line comes before Otto's scroll line", show(list))
 	check(#w:FxOf("Upgrade", fx0) == 1 and w:FxOf("Upgrade", fx0)[1].Data.Tier == 1, "(a) the equip Fx (Upgrade, Tier 1)")
 	check(w.Justice.GetCombatPower(p) == 300, "(a) power attribute source: Lv2 T1 = 300", w.Justice.GetCombatPower(p))
+	local nUse = #w.Notices
+	useScroll(w, p, 1)
+	local used = notices(w, p, nUse)
+	local done = false
+	for _, t in used do if string.find(t, " done!", 1, true) then done = true end end
+	check(d.Story.Done.M1_1 == true and done and indexOf(used, line) == nil and d.WeaponOwnedMask == 1,
+		"(a) the scroll used on Twig finishes M1_1 (its reward line, no second weapon line)", show(used))
 	w:Buy(p, 2)
 	check(d.WeaponOwnedMask == 3 and d.WeaponTier == 2 and d.CarriedGold == 0, "(a) then the wood weapon: T1 + T2, T2 held")
 	-- paid once: a second grant / refresh / rejoin changes nothing (T2 held now, so a repeat would say the bag line)
@@ -450,6 +464,7 @@ runGroup("gift", function()
 
 	-- (b) the wood weapon first, then the free tier 1 (in the bag, no power line)
 	local w2 = bareWorld()
+	w2.Config.WeaponShop.Buy = true
 	local q, e = w2:Join(502, { Level = 2, Carried = 150 })
 	w2.Story.Refresh(q)
 	w2:Buy(q, 2)
@@ -474,6 +489,7 @@ runGroup("gift", function()
 	local k0 = #w3.Notices
 	w3.PS.SetStat(r, "BlacksmithVisited", true)
 	w3.Story.Refresh(r)
+	useScroll(w3, r, 1) -- 1-A #2: step 2, Otto's scroll on the weapon
 	local list3 = notices(w3, r, k0)
 	check(f.Story.Done.M1_1 == true and f.WeaponOwnedMask == 1 and f.WeaponTier == 1, "(c) legacy save: M1_1 done, nothing added")
 	for _, t in list3 do
@@ -541,13 +557,20 @@ runGroup("drops", function()
 	local s = w4:Join(604, { Level = 1, Tutorial = 0 })
 	local k0 = #w4.Notices
 	w4:Drop(s, "BigSlime", nil)
-	check(indexOf(notices(w4, s, k0), C0.Loot.Text.FirstScrollBare) ~= nil, "first scroll bare-handed: the first-weapon hint",
-		show(notices(w4, s, k0)))
+	local function scrollHint(list)
+		for _, line in list do
+			if type(line) == "string" and string.find(line, "You got a scroll", 1, true) then return true end
+		end
+		return false
+	end
+	check(not scrollHint(notices(w4, s, k0)) and C0.Loot.Text.FirstScrollBare == nil,
+		"first scroll bare-handed: no hint line (A23-130, user 10/13 night)", show(notices(w4, s, k0)))
 	local w5 = bareWorld()
 	local t = w5:Join(605, { Level = 1, Tier = 1, Mask = 1, Tutorial = 0 })
 	local j0 = #w5.Notices
 	w5:Drop(t, "BigSlime", nil)
-	check(indexOf(notices(w5, t, j0), C0.Loot.Text.FirstScroll) ~= nil, "first scroll with a weapon: the enhance hint")
+	check(not scrollHint(notices(w5, t, j0)) and C0.Loot.Text.FirstScroll == nil, "first scroll with a weapon: no hint line (A23-130)",
+		show(notices(w5, t, j0)))
 	-- the level fit: only T3 owned (bought, the M1_1 gift never came), level back to 1 -> never bare hands again
 	-- (A23-34: a rebirth / class change does not send a weapon owner back to bare hands): the free tier 1, equipped
 	local w6 = bareWorld()

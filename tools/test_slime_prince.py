@@ -62,7 +62,12 @@ def static() -> tuple[int, list[str]]:
             code = line.split("--", 1)[0]
             # the new boss's own words: a line that names SlimeKing, and the rows of KO1 'The King's Hop' (A23-110: the rows say
             # 'Defeat the King Slime' = the new boss, the personal King; the Slime Princes stay BigSlime)
-            if re.search(r"king slime(?! hill)", code, re.I) and "SlimeKing" not in code and 'Text = "Defeat the King Slime"' not in code:
+            # A23-127 (plan 10/13 §1-A #2): the iron weapon is the real King Slime's first drop - the drop goal / its short
+            # name (게임성 개발 1), the tier-3 source line, the first King's weapon lines (게임성 개발 2)
+            drop = re.search(r"\b(NextIronDrop|IronDrop|FirstKingWeapon|FirstKingEquip) = ", code) \
+                or 'Source = "King Slime drop' in code
+            if re.search(r"king slime(?! hill)", code, re.I) and "SlimeKing" not in code and 'Text = "Defeat the King Slime"' not in code \
+                    and not drop:
                 hits.append(f"{path.relative_to(ROOT).as_posix()}:{n}")
     check(not hits, "no script writes 'King Slime' in code: " + ", ".join(hits[:5]))
     glossary = read(ROOT / "docs/design/glossary_en_2026-10-06.md")

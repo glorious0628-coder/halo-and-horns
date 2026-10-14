@@ -108,6 +108,7 @@ local AC = {
 -- private strings (TECH_SPEC §4.23 EventHUD; A23-48: English only, names from docs/design/glossary_en_2026-10-06.md)
 local TXT = {
 	GooseNext = "Golden Goose %s", -- the phone's next-event line is 150 px
+	GooseNextShort = "Goose %s", -- A23-145: a chip too narrow for the whole line (SQ.chipLine), then the time alone
 	GooseTitle = "Golden Goose Tug! %s",
 	EggScore = "%d", -- A23-131 황금 알 (Eggs mode): a side's points on the bar
 	EggCoop = "%d / %d", -- ... co-op: our points / the goal
@@ -1100,6 +1101,26 @@ function SQ.update()
 	setVisible(btn, true)
 end
 
+-- A23-145 (phone photos 10/13): "Golden Goose 117:23" lost its time on a phone (the text floor is bigger than the
+-- chip): the longest line that fits the chip at its smallest text size - "Golden Goose 1:57:23" -> "Goose 1:57:23" ->
+-- "1:57:23" (the goose icon says what)
+function SQ.chipLine(seconds)
+	local t = Util.FormatTime(seconds)
+	local lines = { string.format(TXT.GooseNext, t), string.format(TXT.GooseNextShort, t), t }
+	local label, kit = ui.GooseChipText, C and C.UIKit
+	if not (label and type(kit) == "table" and type(kit.MeasureText) == "function") then return lines[1] end
+	local c = label:FindFirstChildOfClass("UITextSizeConstraint")
+	local size = c and c.MinTextSize or label.TextSize
+	local w = label.AbsoluteSize.X
+	if w <= 0 or size <= 0 then return lines[1] end
+	for _, line in lines do
+		-- every digit as a 0: one measure per length (the time changes every second; MeasureText caches)
+		local ok, _, lw = pcall(kit.MeasureText, (string.gsub(line, "%d", "0")), size, label.FontFace, 100000)
+		if ok and type(lw) == "number" and lw <= w + 1 then return line end
+	end
+	return t
+end
+
 ----------------------------------------------------------------- per-tick updates
 local function updateGoose(now)
 	SQ.Out = false
@@ -1115,7 +1136,7 @@ local function updateGoose(now)
 			if ui.TugCrown then setVisible(ui.TugCrown, false) end
 			local endAt = eggFx.TickEnd(gsAttr("GooseEndsAt", 0), gsAttr("GooseOvertimeUntil", 0), now)
 			setVisible(ui.GooseChip, true)
-			setText(ui.GooseChipText, string.format(TXT.GooseNext, Util.FormatTime(math.max(0, num(endAt) - now))))
+			setText(ui.GooseChipText, SQ.chipLine(math.max(0, num(endAt) - now)))
 			return
 		end
 		setVisible(ui.GooseChip, false)
@@ -1220,7 +1241,7 @@ local function updateGoose(now)
 		local inside = type(eggFx) == "table" and type(eggFx.Inside) == "function" and eggFx.Inside() == true
 		if nextAt > 0 then
 			setVisible(ui.GooseChip, true)
-			setText(ui.GooseChipText, string.format(TXT.GooseNext, Util.FormatTime(nextAt - now)))
+			setText(ui.GooseChipText, SQ.chipLine(nextAt - now))
 		elseif inside then
 			setVisible(ui.GooseChip, true)
 			setText(ui.GooseChipText, "")
@@ -1606,6 +1627,27 @@ function V2.rects()
 	return nil
 end
 
+-- the next-event line's top (du): its own row (Rects.event), or the status chip row's when that row is empty (user
+-- 10/13 first look: out of town the goose pill floated a whole empty row under the war meter). chipsShown = HUD's answer
+-- (nil = unknown -> its own row). Pure (tools/test_event_lift.py)
+function V2.eventY(rects, chipsShown)
+	local ev = type(rects) == "table" and rects.event or nil
+	if type(ev) ~= "table" then return nil end
+	local chips = rects.chips
+	if chipsShown == false and type(chips) == "table" and type(chips.Y) == "number" and chips.Y < num(ev.Y) then
+		return chips.Y
+	end
+	return num(ev.Y)
+end
+
+function V2.chipsShown()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.ChipsShown) ~= "function" then return nil end
+	local ok, shown = pcall(hud.ChipsShown)
+	if not ok then return nil end
+	return shown == true
+end
+
 function V2.put(inst, anchor, pos, size)
 	if inst.AnchorPoint ~= anchor then inst.AnchorPoint = anchor end
 	if inst.Position ~= pos then inst.Position = pos end
@@ -1713,7 +1755,8 @@ function V2.stack()
 		local natural = eventInst == ui.KingChip
 			and math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text), KING.drawn()) or GOOSE_CHIP_W
 		if eventInst then
-			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(ev.Y - top + 0.5)),
+			local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y
+			V2.put(eventInst, anchor, UDim2.new(0.5, 0, 0, math.floor(evY - top + 0.5)),
 				UDim2.fromOffset(math.floor(math.min(natural, ev.W) + 0.5), math.floor(ev.H + 0.5)))
 		end
 		setVisible(ui.KingChip, eventInst == ui.KingChip)

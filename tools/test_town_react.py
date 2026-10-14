@@ -6,7 +6,8 @@ line from Config.TownReactLines for my faction / rank; it waits Every s before s
 (Show s); nothing while a window is open, before DataLoaded / ClassChosen, or beyond Range; a new TownPick is said first
 once (the join's saved one is not); the same person never says the same line twice in a row; the bubble is MonsterLabels'
 B.Make with the sentence size and goes after Show s. Static: ClientMain loads it after MonsterLabels; B.Make takes the
-size. Mutations: each must be caught.
+size. TownReact.Clear (10/14): the bubble lands in the open middle; phones use a 160 x 70 bubble and miss the
+buttons shown now (first 10 min on 749x361: Bright's head mid-view speaks). Mutations: each must be caught.
 
 Usage: py tools/test_town_react.py
 Report: docs/art/verification_2026-10-10/offline_town_react_2026-10-10.json
@@ -91,6 +92,7 @@ local env = {
 	game = { GetService = function(_, n) return service(n) end },
 	require = function() return Config end,
 	workspace = {},
+	Vector3 = Vector3, -- inView's lift over the head
 	math = setmetatable({ random = function(a, b) return a end }, { __index = math }), -- the first of the pool
 	task = { spawn = function() end, wait = function() end, delay = function(t, fn) table.insert(delays, { T = t, Fn = fn }) end },
 }
@@ -157,6 +159,23 @@ folk = { npc("Far", Vector3.new(R.Range + 5, 0, 0), "HaloTown") }
 check(TR.Step(9000) == nil, "beyond Range: nothing", "")
 folk = back
 
+-- A23-167 ②: a real return (attribute Returned) - the first town person who speaks says a back line, once
+local backLines = Config.Return.Text.BackLines
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+TR.State.Pick = { Init = true, Value = ATTR.TownPick, At = -1e9, Said = true }
+ATTR.Returned = true
+local _, b1 = TR.Step(30000)
+check(b1 ~= nil and table.find(backLines, b1) ~= nil, "back: the first line after a return is a back line", b1)
+local _, b2 = TR.Step(30000 + R.Show + 1)
+check(b2 ~= nil and table.find(backLines, b2) == nil, "back: once (the next person says the usual line)", b2)
+ATTR.Returned = nil
+local one = function() return 1 end
+check(TR.BackLine(nil, false, backLines, one) == nil and TR.BackLine(true, true, backLines, one) == nil
+	and TR.BackLine(true, false, {}, one) == nil and TR.BackLine(true, false, nil, one) == nil,
+	"BackLine: no return / already said / no lines = none", "")
+check(TR.BackLine(true, false, { "a", "b" }, function(n) return n end) == "b", "BackLine: the rolled line", "")
+
 -- 개발 3: every TownNpcs body speaks (tag NPC + HHC_TownNpc), with its id as p.Npc; the decorative Otto never
 local bright = npc("BrightBody", Vector3.new(3, 0, 0), "HaloTown")
 bright.Attr.HHC_TownNpc = "Bright"
@@ -175,6 +194,68 @@ check(who == bright, "a story NPC body (tag NPC + HHC_TownNpc) speaks; Otto and 
 check(seenNpc == "Bright", "its id goes to TownReactLines as p.Npc", seenNpc)
 check(TR.Step(20000 + R.Show + 1) == nil, "Otto (decorative) never speaks", "")
 Config.TownReactLines = realLines
+
+-- final review 10/14 (phone photos: Bright's bubble under the minimap / quest card): the whole bubble must land in the
+-- open middle of the view (TownReact.Clear), else that person waits
+check(TR.Clear(300, 150, true, 749, 361, 196, 86, true), "phone: a head in the middle may speak")
+check(not TR.Clear(120, 200, true, 749, 361, 196, 86, true), "phone: under the minimap / quest card: no")
+check(not TR.Clear(500, 200, true, 749, 361, 196, 86, true), "phone: the bubble would run into the thumb ring: no")
+check(not TR.Clear(300, 60, true, 749, 361, 196, 86, true), "phone: under the war meter: no")
+check(not TR.Clear(300, 150, false, 749, 361, 196, 86, true), "behind the camera: no")
+-- final review 10/14 (2): on the 749x361 sheet the quest card ends at x 248 and the ghost / Q / Z start at x 475 from
+-- y 161 down: a bubble that reaches below that row stays left of 0.6 W
+check(not TR.Clear(240, 150, true, 749, 361, 196, 86, true) and TR.Clear(256, 150, true, 749, 361, 196, 86, true),
+	"phone: the bubble starts right of the quest card (x 248)")
+check(not TR.Clear(300, 200, true, 749, 361, 196, 86, true), "phone: low in the view the bubble would reach the ghost / Q / Z: no")
+check(TR.Clear(330, 250, true, 926, 428, 196, 86, true) and not TR.Clear(380, 250, true, 926, 428, 196, 86, true),
+	"wide phone, low in the view: only left of 0.6 W")
+check(TR.Clear(300, 158, true, 749, 361, 196, 86, true), "phone: a bubble ending above the ghost's top may reach 0.85 W")
+-- final review 10/14 (3): that left a 19 px band on 749x361 - phones use a 160 x 70 bubble and read the buttons shown
+-- now (749x361 sheet rects + Roblox's 70 px jump button): in the first 10 minutes (no ghost, no Q / Z yet) Bright's head
+-- in the middle of the view speaks from 0.35 H (the war meter / chips row above ends at 0.15 H + the bubble's 70 px) to
+-- 0.5 H; with the ghost and Q shown, a low head beside them waits
+local ps = TR.SizeFor(true)
+check(ps and ps[1] == 160 and ps[2] == 70 and TR.SizeFor(false)[1] == 196, "phones: a 160 x 70 bubble, PCs keep 196 x 86",
+	ps and (ps[1] .. "x" .. ps[2]))
+local first10 = { { X = 8, Y = 62, W = 80, H = 80 }, { X = 8, Y = 146, W = 240, H = 45 }, { X = 692, Y = 12, W = 45, H = 45 },
+	{ X = 550, Y = 248, W = 98, H = 98 }, { X = 500, Y = 305, W = 46, H = 46 }, { X = 496, Y = 254, W = 46, H = 46 },
+	{ X = 654, Y = 271, W = 70, H = 70 }, { X = 225, Y = 296, W = 190, H = 45 } }
+local allMid = true
+for i = 0, 6 do
+	local y = 361 * (0.35 + i * 0.025)
+	if not TR.Clear(749 / 2, y, true, 749, 361, ps[1], ps[2], true, first10) then allMid = false end
+end
+check(allMid, "749x361 first 10 min: Bright's head mid-view (0.35-0.5 H) speaks")
+check(not TR.Clear(749 / 2, 361 * 0.3, true, 749, 361, ps[1], ps[2], true, first10), "... not at 0.3 H (under the war meter / chips)")
+local later = table.clone(first10)
+table.insert(later, { X = 475, Y = 161, W = 50, H = 50 }) -- the ghost
+table.insert(later, { X = 523, Y = 204, W = 54, H = 54 }) -- Q
+check(not TR.Clear(749 / 2, 361 * 0.62, true, 749, 361, ps[1], ps[2], true, later)
+	and TR.Clear(749 / 2, 361 * 0.4, true, 749, 361, ps[1], ps[2], true, later),
+	"ghost + Q shown: a low head beside them waits, a higher one still speaks")
+check(not TR.Clear(260, 200, true, 749, 361, ps[1], ps[2], true, { { X = 300, Y = 150, W = 40, H = 40 } }),
+	"a button under the bubble blocks it")
+check(not TR.Clear(260, 200, true, 749, 361, ps[1], ps[2], true, { { X = 260 + 160 + 3, Y = 150, W = 40, H = 40 } })
+	and TR.Clear(260, 200, true, 749, 361, ps[1], ps[2], true, { { X = 260 + 160 + 8, Y = 150, W = 40, H = 40 } }),
+	"... and keeps a 6 px gap")
+check(TR.Clear(400, 230, true, 749, 361, ps[1], ps[2], true, {}), "phone, nothing shown low right: the read zone reaches 0.85 W")
+check(not TR.Clear(210, 200, true, 749, 361, 196, 86, true) and TR.Clear(210, 200, true, 749, 361, 196, 86, false),
+	"the phone zone is narrower on the left (the thumbstick / quest card) than the PC one")
+check(TR.Clear(500, 400, true, 1280, 720, 196, 86, false), "PC: the middle may speak")
+check(not TR.Clear(200, 400, true, 1280, 720, 196, 86, false), "PC: the left column (quest tracker): no")
+check(not TR.Clear(nil, 400, true, 1280, 720, 196, 86, false), "no point: no")
+local camAt = { X = 100, Y = 400, Z = 5 }
+env.workspace.CurrentCamera = { ViewportSize = { X = 1280, Y = 720 },
+	WorldToViewportPoint = function() return camAt, true end }
+NPCS = { bright }
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+check(TR.Step(30000) == nil, "Step: the nearest person far left on screen does not speak")
+camAt = { X = 500, Y = 400, Z = 5 }
+TR.State.NextAt = {}
+TR.State.BusyUntil = 0
+check(TR.Step(30100) == bright, "Step: in the middle it speaks")
+env.workspace.CurrentCamera = nil
 print(("TOWN_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -193,7 +274,24 @@ MUTATIONS = [
     ("Otto speaks", "if type(e) == \"table\" and e.Anvil == true and type(e.Id) == \"string\" then out[e.Id] = true end", ""),
     ("only TownFolk speak", "for _, m in CollectionService:GetTagged(\"NPC\") do", "for _, m in {} do"),
     ("no p.Npc", "Npc = best:GetAttribute(\"HHC_TownNpc\") })", "Npc = nil })"),
-    ("bark-sized bubble", "pcall(B.Make, head, T.Lift, line, nil, T.Size)", "pcall(B.Make, head, T.Lift, line, nil, nil)"),
+    ("bark-sized bubble", "pcall(B.Make, head, T.Lift, line, nil,\n", "pcall(B.Make, head, T.Lift, line, nil, nil,\n"),
+    ("speaks anywhere on screen", "if d <= bestD and inView(npc, touch, blockers) then", "if d <= bestD then"),
+    ("the bubble's width ignored", "x >= W * z.L and x + w <= W * right", "x >= W * z.L and x <= W * right"),
+    # A23-167 ②
+    ("the back line never said", "\tif line then S.BackSaid = true else line = TownReact.Choose",
+     "\tif false then S.BackSaid = true else line = TownReact.Choose"),
+    ("the back line every time", "\tif line then S.BackSaid = true else", "\tif line then else"),
+    ("a back line without a return", "if returned ~= true or said or", "if said or"),
+    ("phones use the PC zone", "local z = touch and T.Clear.Touch or T.Clear.PC", "local z = T.Clear.PC"),
+    ("the low band reaches the thumb ring", "local right = (not read and z.RLow and z.RowY and y > H * z.RowY) and z.RLow or z.R",
+     "local right = z.R"),
+    # final review 10/14 (3): the phone bubble and the buttons shown now
+    ("phones keep the PC bubble", "return touch and T.SizeTouch or T.Size", "return T.Size"),
+    ("the shown buttons never block", "if x < b.X + b.W + g and x + w > b.X - g and y - h < b.Y + b.H + g and y > b.Y - g then",
+     "if false then"),
+    ("no gap around a button", "local g = z.Gap or 0", "local g = 0"),
+    ("the read buttons still cut the low band", "local right = (not read and z.RLow", "local right = (z.RLow"),
+    ("the quest card edge back to 0.3", "Touch = { L = 0.34,", "Touch = { L = 0.3,"),
 ]
 STATIC = [
     ("ClientMain loads TownReact after MonsterLabels", lambda m, s, lb: '"StoryNpcs", "TownReact", ' in m

@@ -24,8 +24,9 @@ FILES = {
     "INVITE_SOURCE": SSS / "InviteService.luau",
     "DIARY_SOURCE": SSS / "DiaryService.luau",
     "TITLE_SOURCE": SSS / "TitleService.luau",
+    "ATTEND_SOURCE": SSS / "AttendanceService.luau",  # A23-167 ②: the tomorrow card reads NextSlots
 }
-C, R, I, D = "CONFIG_SOURCE", "RETURN_SOURCE", "INVITE_SOURCE", "DIARY_SOURCE"
+C, R, I, D, A = "CONFIG_SOURCE", "RETURN_SOURCE", "INVITE_SOURCE", "DIARY_SOURCE", "ATTEND_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
@@ -41,6 +42,45 @@ JOKE_FIRST, JOKE_AFTER = JOKE + AB, AB + JOKE
 
 
 MUTATIONS = [
+    # --- #6 A23-167 ② 내일 또 오기 (게임성 개발 2, 2026-10-14)
+    ("tomorrow: the card at once", R, "\ttask.delay(num(TM.After, 600), tomorrowCard, player, T.JoinedAt[player], 0)\n",
+     "\ttask.delay(1, tomorrowCard, player, T.JoinedAt[player], 0)\n"),
+    ("tomorrow: every session", R, "\tif r.TomorrowDay >= day then return end\n", ""),
+    ("tomorrow: after the first week", R, "\tif num(days) >= num(TM.MaxDays, 7) then return end\n", ""),
+    ("tomorrow: in a fight", R, "or num(data.TutorialStep) ~= 99 or inCombat(player)\n", "or num(data.TutorialStep) ~= 99\n"),
+    ("tomorrow: before the first mission", R, "\tlocal busy = data.ClassChosen ~= true or num(data.TutorialStep) ~= 99 or ",
+     "\tlocal busy = data.ClassChosen ~= true or "),
+    ("tomorrow: no MinGap after a card", R, "\t\tor (T.CardAt[player] ~= nil and now - T.CardAt[player] < num(R.MinGap, 120))\n", ""),
+    ("tomorrow: right after a purchase prompt", R, "\t\tor (T.BuyAt[player] ~= nil and now - T.BuyAt[player] < num(N.Calm, 60))\n", ""),
+    ("tomorrow: takes no MinGap itself", R, "\tr.TomorrowDay = day\n\tT.CardAt[player] = now\n", "\tr.TomorrowDay = day\n"),
+    ("tomorrow: no retry", R, "\t\t\ttask.delay(num(TM.RetrySeconds, 30), tomorrowCard, player, joinedAt, tries + 1)\n", "\t\t\tlocal _ = tries\n"),
+    ("tomorrow: endless retries", R, "\t\tif tries < num(TM.Retries, 20) then\n", "\t\tif true then\n"),
+    ("tomorrow: the switch ignored", R, "\tif not data or TM.Enabled == false then return end\n\tlocal r = record(data)\n\tlocal day",
+     "\tif not data then return end\n\tlocal r = record(data)\n\tlocal day"),
+    ("tomorrow: the day not saved", R, "\tr.TomorrowDay = day\n", ""),
+    ("tomorrow: Today = tomorrow's slot", A, "\tif canClaim(data, a, today()) then return a.Slot, a.Slot % SLOTS + 1, a.Days end\n",
+     "\tif canClaim(data, a, today()) then return a.Slot, a.Slot, a.Days end\n"),
+    ("tomorrow: claimed today, one slot too far", A, "\treturn nil, a.Slot, a.Days\nend\n", "\treturn nil, a.Slot % SLOTS + 1, a.Days\nend\n"),
+    ("tomorrow: no wrap after slot 7", A, "\tif canClaim(data, a, today()) then return a.Slot, a.Slot % SLOTS + 1, a.Days end\n",
+     "\tif canClaim(data, a, today()) then return a.Slot, a.Slot + 1, a.Days end\n"),
+    ("back: no Returned attribute", R, "\t\tplayer:SetAttribute(\"Returned\", true) -- A23-167 ②: the guide's \"You're back!\" line (client)\n", ""),
+    ("back: Days in hours", R, "math.floor((os.time() - num(since)) / 86400)", "math.floor((os.time() - num(since)) / 3600)"),
+    ("news: a draw is a Halo win", R, "\tif winner == \"Halo\" or winner == \"Horns\" then newsAdd(winner) end", "\tnewsAdd(winner == \"None\" and \"Halo\" or winner)"),
+    ("news: no goose", R, "\t\tnewsAdd(\"Goose\") -- A23-167 ② news\n", ""),
+    ("news: an empty goose round counts", R, "\t\tif type(info) == \"table\" and info.Mode == \"Pending\" then return end", "\t\tlocal _ = info"),
+    ("news: the close skips an in-flight write", R, "\t\t\tif not T.News.Flushing then break end\n\t\t\ttask.wait(0.25)\n", "\t\t\tbreak\n"),
+    ("news: private servers count", R, "\treturn NW.Enabled ~= false and game.PrivateServerId == \"\"", "\treturn NW.Enabled ~= false"),
+    ("news: a failed write loses the counts", R, "\t\tnewsMerge(nws.Pending, batch, math.floor(os.time() / 3600)) -- back in line, with what came meanwhile\n", ""),
+    ("news: the hours before the leave count", R, "\tlocal from = math.floor(num(since) / 3600) + 1 -- the hours after the leave hour\n", "\tlocal from = 0\n"),
+    ("news: this server's unwritten counts ignored", R, "\tlocal all = newsMerge(newsMerge({}, row, nowHour), T.News.Pending, nowHour)\n",
+     "\tlocal all = newsMerge({}, row, nowHour)\n"),
+    ("news: read for every returner", R, "\tif nws.CacheAt == nil or os.clock() - nws.CacheAt >= num(NW.ReadGap, 300) then\n", "\tif true then\n"),
+    ("news: old hours kept", R, "\t\tif not h or h <= nowHour - keep then into[hour] = nil end\n", "\t\tif not h then into[hour] = nil end\n"),
+    ("news: Halo always first", R, "\t\tlocal mine = player:GetAttribute(\"Faction\") == \"Horns\" and \"Horns\" or \"Halo\"\n", "\t\tlocal mine = \"Halo\"\n"),
+    ("news: the pending batch written twice", R, "\tlocal batch = nws.Pending\n\tnws.Pending = {}\n", "\tlocal batch = nws.Pending\n"),
+    ("news: not written at the close", R, "\t\tlocal ok, err = pcall(newsFlush)\n\t\tif not ok then Util.Warn(TAG, \"news close: \"", "\t\tlocal ok, err = true, nil\n\t\tif not ok then Util.Warn(TAG, \"news close: \""),
+    ("news: Config keeps 1 day", C, "KeepHours = 168,", "KeepHours = 24,"),
+    ("tomorrow: Config after 1 minute", C, "Tomorrow = { Enabled = true, After = 600,", "Tomorrow = { Enabled = true, After = 60,"),
     # --- #1 pause card / welcome back
     ("a card for every main quest", R, "\tif T.ChapterEnd[id] then queueCard(player, \"Chapter\") end\n", "\tqueueCard(player, \"Chapter\")\n"),
     ("the first main of a chapter counts as its end", R, "\t\tif ch and ch > 0 then last[ch] = id end\n",
@@ -62,7 +102,7 @@ MUTATIONS = [
     ("welcome back for a brand-new save", R, "\tif last > 0 and os.time() - last >= num(R.WelcomeAfter, 6 * 3600)",
      "\tif os.time() - last >= num(R.WelcomeAfter, 6 * 3600)"),
     ("welcome back before the first mission", R, "\t\tand num(data.TutorialStep) == 99 then\n", "\t\tthen\n"),
-    ("welcome back at once", R, "\t\ttask.delay(num(R.WelcomeDelay, 4), welcomeBack, player)\n", "\t\twelcomeBack(player)\n"),
+    ("welcome back at once", R, "\t\ttask.delay(num(R.WelcomeDelay, 4), welcomeBack, player, last)\n", "\t\twelcomeBack(player, last)\n"),
     ("[Go] into the other side's town", R,
      "\t\treturn Config.HomeZoneId(player:GetAttribute(\"Faction\")) == zoneId and \"Home\" or nil\n", "\t\treturn zoneId\n"),
     ("[Go] past a level gate", R, "\tif num(player:GetAttribute(\"Level\"), 1) < num(zone.MinLevel, 1) then return nil end\n", ""),
@@ -233,7 +273,11 @@ SUITE = Suite(
              "saved once, failures retried after 300 s, caught up at join); the opt-in moment once (10 min played, 60 s "
              "after a KO / failed scroll / purchase prompt, 'cannot' again after 30 days, a shown prompt -> the asked "
              "DataStore list); invite joins from LaunchData (digits, not mine, the first kept) + PlayedTogether at 10 "
-             "minutes; GoToFriend(userId): ready, 3 s, a friend / invite pair here, PvP zones only from Lv15, never the "
+             "minutes; A23-167 ②: Fx TomorrowGift { Tomorrow, Today?, Days } once a KST day 10 min into a session "
+             "(first mission done, first attendance week, waits out a fight / a card within 120 s / a purchase prompt "
+             "within 60 s, retry 30 s x20), attribute Returned on a real return, WelcomeBack + Days + News (crown wars won "
+             "per side / goose rounds of public servers since the leave hour, one shared per-hour DataStore row written "
+             "every 5 min and at close, read at most every 5 min, 7 days kept, private servers never); GoToFriend(userId): ready, 3 s, a friend / invite pair here, PvP zones only from Lv15, never the "
              "other town, ZoneService.Travel with the channel; King Diary pages per king beaten together up to today's "
              "page in the season, page 9 title once; candy jar titles for candy, after the season too.",
     limitations="The cards / book / jar windows and the opt-in prompt are client work (game dev 1; PauseCard.luau exists). "

@@ -1,7 +1,8 @@
 -- TitleService.luau : BB16 (docs/design/beta_basics_2026-10-05.md) owned titles + the one shown on the nametag.
 -- data.Titles = { [id] = os.time() first owned }, data.TitleSel = "" (automatic: faction rank / gray legend) or an owned
--- id from Config.TitleDefs. Titles never give stats. Grants: BetaPioneer (joined before the full launch, A23-18; the old
--- boolean data.BetaPioneer migrates here) and GrayLegend (fall + redeem marks, kept once earned).
+-- id from Config.TitleDefs. Titles never give stats. Grants: BetaPioneer (joined before the full launch, A23-18: while
+-- Config.Beta.GrantPioneer, before PioneerUntil and the live switch PioneerTitle is on; the old boolean data.BetaPioneer
+-- migrates here) and GrayLegend (fall + redeem marks, kept once earned).
 -- Remote c->s "SetTitle"(id): one string <= 32 chars, owned or "" (anything else is ignored).
 -- The client reads the TitleSel attribute (mirrored) and TitlesOwned ("id,id", for the BB8 picker).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -62,10 +63,26 @@ local function checkGrayLegend(player)
 	end
 end
 
-local function onReady(player, data)
+-- 2-A ⑦: the live switch PioneerTitle (Config.Switches; the full-launch day turns it off). No switchboard (or a failing
+-- one) = on, like every other switch
+local function pioneerSwitchOn()
+	local sw = S and S.SwitchService
+	if type(sw) ~= "table" or type(sw.On) ~= "function" then return true end
+	local ok, on = pcall(sw.On, "PioneerTitle")
+	return not ok or on ~= false
+end
+
+-- the Beta Pioneer grant (join, and again when the switch turns on: review 10/14 - the switch is off until the server's
+-- first good read, so a child who joined during that wait still gets it)
+local function grantPioneer(player, data)
 	local beta = Config.Beta
-	local pioneer = data.BetaPioneer == true or (beta.GrantPioneer == true and os.time() < beta.PioneerUntil)
+	local pioneer = data.BetaPioneer == true
+		or (beta.GrantPioneer == true and os.time() < beta.PioneerUntil and pioneerSwitchOn())
 	if pioneer then TitleService.Grant(player, "BetaPioneer") end
+end
+
+local function onReady(player, data)
+	grantPioneer(player, data)
 	-- review 381f6a1: the faction rank (GDD §0) stays the default title; the pioneer shows as a small mark on the
 	-- nametag's second line instead. A TitleSel the player never picked (data.TitleSelAt, set only by SetTitle) was the
 	-- old one-time auto-select: back to automatic once. Owned titles stay.
@@ -109,6 +126,20 @@ function TitleService.Start()
 		for _, c in CONNS[player] or {} do c:Disconnect() end
 		CONNS[player] = nil
 	end)
+	local sw = S.SwitchService
+	if type(sw) == "table" and type(sw.Changed) == "table" then
+		sw.Changed:Connect(function(key, value)
+			if key ~= "PioneerTitle" or value ~= true then return end
+			local okList, list = pcall(S.PlayerService.GetReadyPlayers)
+			for _, p in okList and list or {} do
+				local ok, err = pcall(function()
+					local data = S.PlayerService.GetData(p)
+					if type(data) == "table" then grantPioneer(p, data) end
+				end)
+				if not ok then Util.Warn("TitleService", "pioneer switch: " .. tostring(err)) end
+			end
+		end)
+	end
 	Net.Get("SetTitle").OnServerEvent:Connect(function(player, ...)
 		local ok, err = pcall(onSetTitle, player, ...)
 		if not ok then Util.Warn("TitleService", "SetTitle: " .. tostring(err)) end

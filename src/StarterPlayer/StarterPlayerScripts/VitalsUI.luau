@@ -108,7 +108,9 @@ function VitalsUI.BuildStats(parent, touch)
 			Size = UDim2.fromOffset(touch and 200 or 262, (touch and 18 or 22) - (i - 1) * 3), Color = COL[kind],
 			TextSize = touch and 15 or 12 })
 		text.TextWrapped = false
-		C.HUD.FitText(text, 11, nil, nil, true) -- 2026-10-08: real 11 px on small PC windows too (HudLayout's bar floor)
+		-- 2026-10-08: real 11 px on small PC windows too (HudLayout's bar floor); final review 10/14 (phone first-10 photos:
+		-- '156/156' thin and ~9 px): phones get bold numbers up to 13 px in their taller bars (HudLayout TOUCH_BAR)
+		C.HUD.FitText(text, touch and 13 or 11, touch == true, nil, true)
 		ui[kind] = { Frame = frame, Set = set, Text = text }
 	end
 end
@@ -170,7 +172,7 @@ function VitalsUI.BuildPotions(parent, touch)
 			Size = square and UDim2.fromScale(0.66, 0.66) or UDim2.fromScale(0.56, 0.56), ZIndex = 3 })
 		local count = UIKit.LightText({ Name = "Count", Parent = button, Text = "0",
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromOffset(22, 18),
-			TextScaled = true, Number = true, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
+			TextScaled = true, Number = true, AutoLocalize = false, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
 		local status = UIKit.LightText({ Name = "Status", Parent = button, Text = "",
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(60, 18),
 			TextScaled = true, Title = true, MaxTextSize = touch and 16 or 14, ZIndex = 6, Visible = false })

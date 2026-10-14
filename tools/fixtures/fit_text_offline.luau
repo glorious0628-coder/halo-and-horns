@@ -113,7 +113,7 @@ local function newLabel(props)
 			if key == "TextBounds" then return Vector2.new(props.Width(data.TextSize), data.TextSize) end
 			if key == "GetPropertyChangedSignal" then return function(_, name) return sig(name) end end
 			if key == "Destroying" then return sig("Destroying") end
-			if key == "GetAttribute" then return function() return nil end end
+			if key == "GetAttribute" then return function(_, name) return props.Attrs and props.Attrs[name] end end
 			if key == "SetAttribute" then return function() end end
 			if key == "FindFirstChild" or key == "FindFirstChildOfClass" then return function() return nil end end
 			return data[key]
@@ -224,6 +224,30 @@ do
 	label.Text = "Change Class!"
 	framesUntilQuiet(240)
 	check("change: refits the wider words", wide(data.TextSize) <= 120, "size " .. tostring(data.TextSize))
+end
+
+-- 4. 10/14 (PC tile names): FitMinPx lowers a label's floor under MIN_TEXT_SIZE (the picker minimum 12 is a small
+-- window's 9px / UIScale, which MIN_TEXT_SIZE used to cap - the constraint reads it as real px); PickerFitPaddingX keeps a margin
+do
+	local wide = function(size) return size * 10 end -- needs size <= 5 for a 56 px box less 6 px of margin
+	local label, data = newLabel({ Start = 13, Width = wide, Box = function() return 56, 30 end,
+		Attrs = { FitMinPx = 4, PickerFitPaddingX = 6 } })
+	UIKit.FitText(label, 12, 13)
+	framesUntilQuiet(240)
+	check("floor: FitMinPx goes under MIN_TEXT_SIZE", data.TextSize < MIN_TEXT_SIZE and wide(data.TextSize) <= 50,
+		"size " .. tostring(data.TextSize))
+	local fit = Art.TextFits[label]
+	check("floor: the picker minimum is the label's floor", fit and fit.Min == 4 and fit.FloorPx == 4, fit and fit.Min)
+	local plain, pdata = newLabel({ Start = 13, Width = wide, Box = function() return 56, 30 end })
+	UIKit.FitText(plain, 12, 13)
+	framesUntilQuiet(240)
+	check("floor: without it MIN_TEXT_SIZE stays the floor", pdata.TextSize == MIN_TEXT_SIZE, "size " .. tostring(pdata.TextSize))
+	local pad, padData = newLabel({ Start = 13, Width = wide, Box = function() return 104, 30 end,
+		Attrs = { FitMinPx = 4, PickerFitPaddingX = 6 } })
+	UIKit.FitText(pad, 12, 13)
+	framesUntilQuiet(240)
+	check("margin: PickerFitPaddingX leaves room inside the box", wide(padData.TextSize) <= 98 and padData.TextSize >= 9,
+		"size " .. tostring(padData.TextSize))
 end
 
 print(("FIT_SUMMARY checks=%d failed=%d"):format(checks, failed))

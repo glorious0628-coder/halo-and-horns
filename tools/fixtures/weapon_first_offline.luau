@@ -271,20 +271,72 @@ runGroup("weapon first", function()
 		show({ step(p), d.BankGold, d.BlacksmithVisited }))
 	check(count(w:NoticesFor(p, n2), string.format(T.Text.Claimed, "150")) == 1, "the claim line: +150 gold (A23-130)",
 		show(w:NoticesFor(p, n2)))
-	-- M1_1: the jelly to Otto (a new visit), his lines, then the shop where the 150 gold buy tier 2
+	-- M1_1: the jelly to Otto (a new visit). Gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon is sold any more, so the
+	-- visit opens step 2 with Otto's one Enhance Scroll, and a scroll used on the weapon finishes M1_1
 	w.Story.Refresh(p)
 	local st = d.Story
 	check(st.Main.Id == "M1_1" and not st.Done.M1_1, "M1_1 waits for a new visit (the first one was before the claim)", show(st.Main))
+	local LT = w.Config.Loot
+	local scrollName = LT.Items.Enh70.Name
+	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
+	local had = scrolls()
+	-- 최종 검수 10/13 review: the gift can give nothing because of a failure (here: GrantItem throws) - then it is not marked
+	-- given and the next join tries again; a FULL stack stays marked (no "full" line every join)
 	local n3, f3 = #w.Notices, #w.Fired
+	local lootSvc = w.Registry.LootService
+	local grantItem, asked = lootSvc.GrantItem, {}
+	lootSvc.GrantItem = function(pl, id, n)
+		table.insert(asked, id)
+		error("offline GrantItem failure")
+	end
 	w:Press(p)
-	check(st.Done.M1_1 == true and w:Panels(p, "WeaponShop", f3) == 1, "the visit finishes M1_1, then the shop opens",
-		show({ st.Done.M1_1, w:Panels(p, "WeaponShop", f3) }))
-	local lines = w:NoticesFor(p, n3)
-	check(lines[1] ~= nil and string.find(lines[1], " done!", 1, true) ~= nil and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
+	lootSvc.GrantItem = grantItem
+	w.Warnings = {} -- the expected GrantItem warning
+	check(#asked == 1 and asked[1] == "Enh70", "the step opening asks for Otto's scroll once (it fails here)", show(asked))
+	check(not st.Done.M1_1 and st.Main.Id == "M1_1" and st.Main.St == 2 and w:Panels(p, "WeaponShop", f3) == 1,
+		"the visit passes step 1: step 2 'Use the Enhance Scroll' opens, the Forge window opens", show({ st.Main, st.Done.M1_1 }))
+	check(st.First.GiveM1_12 == nil and scrolls() == had and count(w:NoticesFor(p, n3), string.format(LT.Text.Got, scrollName)) == 0,
+		"a gift that failed is not marked given and shows no '+item' line", show({ st.First.GiveM1_12, w:NoticesFor(p, n3) }))
+	local n3b = #w.Notices
+	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
+	w:Flush()
+	check(scrolls() == had + 1 and st.First.GiveM1_12 == true and count(w:NoticesFor(p, n3b), string.format(LT.Text.Got, scrollName)) == 1,
+		"the next join (RetryGifts) gives Otto's one Enhance Scroll with one '+item' line", show({ had, scrolls(), w:NoticesFor(p, n3b) }))
+	w.Story.RetryGifts(p) -- what the join (PlayerReady) runs
+	w:Flush()
+	check(scrolls() == had + 1, "another join gives no second scroll", show({ had, scrolls() }))
+	-- a full stack: nothing given, but it stays marked (the player holds scrolls), so later joins ask nothing
+	local keep = scrolls()
+	st.First.GiveM1_12 = nil
+	d.Items.Enh70 = LT.ItemCap
+	asked = {}
+	lootSvc.GrantItem = function(pl, id, n)
+		table.insert(asked, id)
+		return grantItem(pl, id, n)
+	end
+	w.Story.RetryGifts(p)
+	w.Story.RetryGifts(p)
+	w:Flush()
+	lootSvc.GrantItem = grantItem
+	check(#asked == 1 and st.First.GiveM1_12 == true and d.Items.Enh70 == LT.ItemCap,
+		"a full stack: asked once, then marked given (no retry, no repeated 'full' line)", show({ asked, st.First.GiveM1_12 }))
+	d.Items.Enh70 = keep
+	local n4 = #w.Notices
+	w:Buy(p, 2)
+	check(d.WeaponTier == 1 and d.WeaponOwnedMask == 1 and d.BankGold >= 150
+		and count(w:NoticesFor(p, n4), w.Config.Text.WeaponDropOnly) == 1,
+		"WeaponShop.Buy = false: buying the tier-2 weapon is refused with one line, no gold spent", show({ d.WeaponTier, d.BankGold, w:NoticesFor(p, n4) }))
+	w:Press(p)
+	check(scrolls() == had + 1 and st.Main.St == 2, "a second visit gives no second scroll", show({ scrolls(), st.Main }))
+	local n5 = #w.Notices
+	w:Remote(p, "UseItem", "Enh70", 1)
+	check(st.Done.M1_1 == true and scrolls() == had, "the scroll used on the weapon (success or not) finishes M1_1", show({ st.Done.M1_1, scrolls() }))
+	local lines = w:NoticesFor(p, n5)
+	local done = false
+	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
+	check(done and d.WeaponTier == 1 and d.WeaponOwnedMask == 1,
 		"M1_1's reward line (A23-130: no Otto lines); no second weapon (the gift is only the safety net)", show(lines))
 	check(d.BankGold > 150, "M1_1 pays a little gold (Reward Gold 1)", d.BankGold)
-	w:Buy(p, 2)
-	check(d.WeaponTier == 2 and d.WeaponOwnedMask == 3, "the 150 gold buy the tier-2 weapon right there", show({ d.WeaponTier, d.WeaponOwnedMask }))
 end)
 
 ------------------------------------------------------------------ 3. the forge walk (A23-88): nothing moves, the arrival is a metric

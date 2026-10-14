@@ -159,7 +159,9 @@ end
 -- counts for a sold pass until Roblox answers about it (PASS.Owned), so grants paid while the player joins see it.
 -- PASS.Debug[player][key] = true / false: a Studio DebugCommand "Pass" override (never saved, never on the board).
 -- PASS.Want / Queued / Wrote [UserId]: the shared supporter list's pending change, its queued write, the last write.
-local PASS = { Owned = {}, Seen = {}, Debug = {}, Board = {}, Store = nil, Want = {}, Queued = {}, Wrote = {}, Tries = {} }
+-- PASS.Real[player][key] = true / false: what Roblox itself answered this session (the join check, a confirmed purchase);
+-- never the saved fallback (PassAnswer, 최종 검수 10/13 review)
+local PASS = { Owned = {}, Seen = {}, Debug = {}, Board = {}, Store = nil, Want = {}, Queued = {}, Wrote = {}, Tries = {}, Real = {} }
 
 -- the passes this server sells: { { Key = kind or look id, Id = game pass id } }
 function PASS.Sold()
@@ -209,6 +211,17 @@ function MonetizationService.HasPass(player, key)
 	if o ~= nil and o[key] ~= nil then return o[key] == true end
 	local s = PASS.Seen[player] -- not answered yet this session: the last saved answer (A23-75 review 2026-10-08)
 	return s ~= nil and s[key] == true
+end
+
+-- Roblox's own answer about the pass `key` THIS session (the join check or a confirmed purchase): true / false, or nil while
+-- it has not answered (HasPass then uses the saved last answer). A Studio override counts as the answer. TestMetricsService's
+-- "still works after a rejoin" counts only this (최종 검수 10/13 review)
+function MonetizationService.PassAnswer(player, key)
+	local d = PASS.Debug[player]
+	if d and d[key] ~= nil then return d[key] == true end
+	local r = PASS.Real[player]
+	if r ~= nil and r[key] ~= nil then return r[key] == true end
+	return nil
 end
 
 -- A23-75 review 2026-10-08: PlayerReady, before every later handler (QuestService's day check pays finished dailies and
@@ -320,6 +333,9 @@ function PASS.Check(player)
 		else
 			-- A23-75 review 2026-10-08 (2nd look): a purchase while Roblox was asked keeps its saved yes
 			seenTable(data)[p.Key] = answer or owned[p.Key] == true
+			local real = PASS.Real[player] or {}
+			PASS.Real[player] = real
+			if real[p.Key] ~= true then real[p.Key] = answer end -- a purchase meanwhile is never taken back
 		end
 		if owned[p.Key] ~= true then owned[p.Key] = answer end -- a purchase meanwhile is never taken back
 	end
@@ -373,6 +389,11 @@ function PASS.Purchased(player, passId, purchased)
 		owned[p.Key] = true
 		local data = S.PlayerService.GetData(player)
 		if answer == true and data then seenTable(data)[p.Key] = true end
+		if answer == true then
+			local real = PASS.Real[player] or {}
+			PASS.Real[player] = real
+			real[p.Key] = true
+		end
 		PASS.Publish(player)
 		if p.Key == "VIP" then PASS.AddSupporter(player, answer ~= true) end
 		if answer == true then
@@ -644,7 +665,7 @@ function MonetizationService.Start()
 		end)
 	end
 	S.PlayerService.PlayerLeaving:Connect(function(player)
-		PASS.Owned[player], PASS.Seen[player], PASS.Debug[player] = nil, nil, nil
+		PASS.Owned[player], PASS.Seen[player], PASS.Debug[player], PASS.Real[player] = nil, nil, nil, nil
 	end)
 	task.spawn(function() -- the shared supporter board, now and every RefreshSeconds
 		while true do

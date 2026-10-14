@@ -1,0 +1,37 @@
+# 빛 마을 Tripo HD 목록 (최종 검수 2026-10-14 낮, SPEC A23-174·175 기준 65점/생성)
+
+> **사용자 "가" 10/14 낮: 1번 + 2번(부품 방식) 전부.** 진행 순서는 SPEC A23-175 끝 줄. 진행 기록은 `art/models/tripo/records.json`(account 2, event hd_oneshot) + 이 파일 아래 체크.
+
+읽기 전용 조사(사용자 "가" 전): 통과 111개는 그대로 씀. 아래는 **아직 없거나 다시 만들어야 하는 것**. 자료가 서로 다른 곳은 맨 아래.
+
+## 1. 꼭 하는 것 — 생성 23번 ≈ 1,495점 (추천: 사용자 "가" 때 이 묶음부터)
+| # | 물건 | 왜 | 2D 4면(그림자 없음) | 단순/복잡 | 생성 수 |
+|---|---|---|---|---|---|
+| 1 | NEW_ArmoryBarrels 통 | 구멍으로 통과 취소(10/13) | 있음 `art/out/s2/noshadow/NEW_ArmoryBarrels_*_ns.png` | 복잡: 통 1(Tripo) + 상자 = Studio 나무 판(0점) | 1 |
+| 2 | 난간 부품 CornerPost·EndPost·RailSegment·BaseSegment | A23-175 실제 난간 = HD 부품(Baluster는 통과본 있음) | 있음 `art/out/s2/noshadow/parts/HaloVar4_<부품>_*_ns.png`(Rail·Base = 최종 검수 통과 10/14) | 부품 4 | 4 |
+| 3 | 빛 마을 사람 14 + MailBoy | 2D 15명 승인(10/13), 3D 없음(옛 HD는 그림자 2D) | 있음 `art/out/s2/noshadow/npc/<이름>_*_ns.png` | 단순(사람 1 = 통짜 1) | 15 |
+| 4 | NEW_WhiteRock a·b·c | 구역 계획 8곳, 그림자 없는 2D 없음 | **먼저 2D 3장(이미지 생성 2, 0원)** | 단순 | 3 |
+| | **합계** | | | | **23 = 1,495점** |
+
+## 2. 선택 — 통과했지만 뒤·옆이 약한 51개 (`docs/review/multiview_redo_triage_2026-10-13.md`)
+- 통짜로 다시: 51 × 65 = 3,315. 부품 방식(식물·수레·선반 나눔)이면 생성 101번 = 6,565.
+- **추천: 지금 안 함.** 10/21 주 6단계 교체 뒤 실제로 뒤·옆이 보이는 자리만 골라 다시(대개 10~15개 ≈ 1,000점 안).
+
+## 3. 2D·목록부터 (0원)
+- 대성당 장식 덩어리 목록(아직 없음, 10/12엔 회색 덩어리) → 이미지 생성 2가 참고표 → 4면.
+- 성 후광 고리: 파트 골격으로(Tripo 0).
+- HaloDeco_* 6·바닥 무늬 Medallion: 평면 → 2D만 다시(Tripo 0).
+- Var3 난간 E·F, Var4 A·B·D: 통과본 통짜 그대로 두고, 교체 뒤 보이는 자리만 부품 난간으로.
+
+## 점수
+- 계정 2 ≈ 21,130(10/14), 계정 1 ≈ 1,355. 1번 묶음 1,495 → 남음 ≈ 19,600.
+
+## 자료끼리 안 맞는 곳(정리 필요, 지금은 셈에 반영함)
+1. `halo_spend_2026-10-13.md` "통과 95" vs 실제 쓸 수 있는 111(관문 1의 13 + Baluster 빠짐). 2. `pbr_final_2026-10-13.md`에 ArmoryBarrels v2 '통과'가 남아 있으나 사용자 취소. 3. 멀티뷰 다시 38 vs triage 56(25점 단가는 A23-174로 없어짐). 4. NPC 수 6/12/15 — 승인 2D 기준 15. 5. `art/approved.json`에 그림자 없는 4면 약 110세트가 안 적혀 있음(state 메시지에만) → 이미지 생성 2가 채울 것. 6. 단가 125/135 → 65.
+
+## 2-a. 2번 중 '단순'(통짜 HD) 확정 목록 — 최종 검수 2026-10-14 12:40 (A23-171 판단; 55점/개, 2D 4면 있음)
+8000: HaloSign_SignBakery · HaloSign_SignFlower · HaloSign_SignPotion · HaloReasonHQ_PotionCrate · NEW_CandleCrate · NEW_SteppingStone · HaloReasonHQ_BenchB · NEW_NoticeBoard
+12000: HaloFlagpole_1 · HaloReasonHQ_GuardPost · HaloChunk_ChimneyLantern · HaloChunk_DomeBrick · HaloChunk_Greenhouse · HaloReasonHQ_Woodpile · NEW_BreadBasket · NEW_CafeTable
+= 16개 880점(Blender 손보기 2 큐, 화분·꽃 ④ 뒤). '복잡'(부품 2D 먼저, 이미지 생성 2 ⑤): JuiceStand·WeatherVane·Easel·BellFrame·Clothesline·RackShieldSword·Halo_Statue(머리·몸·소품)·FlowerCart·FruitStall·BreadDisplay·PotionDisplay·RoseArch·RoseTrellis·SunflowerBed·VegGarden·난간 E/F/A/B/D.
+진행(12:40): 1번 묶음 중 흰 바위 3·통 1 생성(HD 13 = 715점, 잔액 19,475), 사람 15는 부품 방식(A23-177)으로 2D 다시 → 생성은 그 뒤.
+

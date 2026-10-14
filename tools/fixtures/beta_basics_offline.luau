@@ -311,7 +311,8 @@ local function newWorld(opts)
 	ps.AddStat = real.AddStat
 	w.PS = ps
 
-	local registry = { PlayerService = ps, DataService = ds }
+	-- opts.Switch = a SwitchService double present before TitleService.Start (it connects to Changed there)
+	local registry = { PlayerService = ps, DataService = ds, SwitchService = opts.Switch }
 	local justice = execute("JusticeService", JUSTICE_SOURCE, newEnv())
 	local title = execute("TitleService", TITLE_SOURCE, newEnv())
 	w.Justice, w.Title, w.Registry = justice, title, registry
@@ -860,8 +861,11 @@ runGroup("title-config", function()
 	check(C.TitleDefs.GrayLegend and C.TitleDefs.GrayLegend.Name == C.Story.GrayLegendTitle,
 		"GrayLegend name = Config.Story.GrayLegendTitle (Gray Legend)", show(C.TitleDefs.GrayLegend))
 	check(C.Beta.GrantPioneer == true, "Config.Beta.GrantPioneer = true")
-	check(C.Beta.PioneerUntil == 1797645600 and utcStamp(2026, 12, 19, 2) == C.Beta.PioneerUntil,
-		"PioneerUntil = 1797645600 = 2026-12-19 11:00 KST (02:00 UTC)", show({ C.Beta.PioneerUntil, utcStamp(2026, 12, 19, 2) }))
+	-- 2-A ⑦ (A23-162: the launch day is set in January): a far date; the launch day turns the live switch PioneerTitle off
+	check(C.Beta.PioneerUntil == 4102444800 and utcStamp(2100, 1, 1, 0) == C.Beta.PioneerUntil,
+		"PioneerUntil = 4102444800 = 2100-01-01 00:00 UTC (no launch date in the code)", show({ C.Beta.PioneerUntil, utcStamp(2100, 1, 1, 0) }))
+	local sw = C.Switches.Defs.PioneerTitle
+	check(type(sw) == "table" and sw.Type == "Bool" and sw.Default == true, "live switch PioneerTitle: Bool, on by default", show(sw))
 	check(C.RateLimits.SetTitle == 0.5, "RateLimits.SetTitle = 0.5", C.RateLimits.SetTitle)
 	local D = C.Data.Defaults
 	check(type(D.Titles) == "table" and next(D.Titles) == nil, "Data.Defaults.Titles = {}", show(D.Titles))
@@ -960,6 +964,43 @@ runGroup("title-pioneer", function()
 	check(dlo.Titles.BetaPioneer ~= nil, "GrantPioneer = false: the legacy boolean still migrates (it is an owned title)",
 		show(dlo.Titles))
 	check(fresh:GetAttribute("TitlesOwned") == "", "GrantPioneer = false: TitlesOwned \"\"", fresh:GetAttribute("TitlesOwned"))
+	-- 2-A ⑦ the live switch PioneerTitle: off = no new grant (owned titles stay); a failing switchboard = on
+	local ws = newWorld({ Time = UNTIL - 86400 })
+	ws.Registry.SwitchService = { On = function(key) return key ~= "PioneerTitle" end }
+	ws.Rows[ws:Key(9261)] = row({ Titles = { BetaPioneer = 1790000000 } })
+	local ps1, ds1 = ws:Join(9260)
+	check(next(ds1.Titles) == nil and ps1:GetAttribute("TitlesOwned") == "", "switch PioneerTitle off: no new grant", show(ds1.Titles))
+	local ps2, ds2 = ws:Join(9261)
+	check(ds2.Titles.BetaPioneer == 1790000000 and ps2:GetAttribute("TitlesOwned") == "BetaPioneer",
+		"switch PioneerTitle off: an owned pioneer title stays", show(ds2.Titles))
+	local wf = newWorld({ Time = UNTIL - 86400 })
+	wf.Registry.SwitchService = { On = function() error("switchboard down") end }
+	local _, dfail = wf:Join(9262)
+	check(dfail.Titles.BetaPioneer ~= nil, "a failing switchboard counts as on: granted", show(dfail.Titles))
+	local wn = newWorld({ Time = UNTIL - 86400 })
+	wn.Registry.SwitchService = { On = function() return true end }
+	local _, don = wn:Join(9263)
+	check(don.Titles.BetaPioneer ~= nil, "switch PioneerTitle on: granted", show(don.Titles))
+	-- review 10/14: the switch is off until the server's first good read; when the read turns it on, every child already
+	-- in game gets the title then (and a later off -> nobody new)
+	local swOn = false
+	local sig = rbxSignal({})
+	local wr = newWorld({ Time = UNTIL - 86400, Switch = { On = function(key) return key ~= "PioneerTitle" or swOn end,
+		Changed = sig } })
+	local pr, dr = wr:Join(9264)
+	check(next(dr.Titles) == nil and pr:GetAttribute("TitlesOwned") == "", "before the first read (switch off): no title at the join",
+		show(dr.Titles))
+	swOn = true
+	sig:Fire("PioneerTitle", true)
+	check(dr.Titles.BetaPioneer ~= nil and pr:GetAttribute("TitlesOwned") == "BetaPioneer",
+		"the read turns it on: the child already in game gets it", show(dr.Titles))
+	sig:Fire("PioneerTitle", true)
+	sig:Fire("Goose", true)
+	check(wr.Warnings[1] == nil, "a second on / another switch: nothing (no warning)", table.concat(wr.Warnings, " | "))
+	local wl = newWorld({ Time = UNTIL + 86400, Switch = { On = function() return true end, Changed = rbxSignal({}) } })
+	local _, dl = wl:Join(9265)
+	wl.Registry.SwitchService.Changed:Fire("PioneerTitle", true)
+	check(next(dl.Titles) == nil, "after PioneerUntil: the switch turning on gives nothing", show(dl.Titles))
 	-- a newly granted pioneer title never replaces another selected title
 	local wg = newWorld({ Time = UNTIL - 86400 })
 	wg.Rows[wg:Key(9240)] = row({ Titles = { GrayLegend = 1780000000 }, TitleSel = "GrayLegend" })

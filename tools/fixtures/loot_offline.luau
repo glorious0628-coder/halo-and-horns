@@ -626,6 +626,15 @@ local function weaponNotices(x, key)
 end
 
 ------------------------------------------------------------------ group runner
+-- A23-130 (user 10/13 night): the first-scroll hint line is gone; any "You got a scroll!" notice counts here
+local function hints(f)
+	local n = 0
+	for _, e in f.Notices do
+		if type(e.Text) == "string" and string.find(e.Text, "You got a scroll", 1, true) then n += 1 end
+	end
+	return n
+end
+
 local function runGroup(name, fn)
 	currentGroup = name
 	groupFixtures = {}
@@ -733,7 +742,8 @@ runGroup("config", function()
 		perKill * 300, perKill * 720))
 	check(perKill * 300 > 0 and perKill * 300 <= 14, "B13 meadow potions per manual hour (5 kills/min) at most 14", perKill * 300)
 	check(L.FullNoticeSeconds == 300, "B7 FullNoticeSeconds is 300 (5 min per item id)", L.FullNoticeSeconds)
-	check(L.FirstScroll.NoticeSeconds == 6, "first-scroll guide shows 6 s", L.FirstScroll.NoticeSeconds)
+	check(L.FirstScroll.NoticeSeconds == nil and L.Text.FirstScroll == nil and L.Text.FirstScrollBare == nil,
+		"A23-130: no first-scroll hint text any more", show(L.FirstScroll))
 	for _, key in { "UseCombat", "EquipDead", "EquipCombat", "ItemFull", "ItemFullUse" } do
 		check(type(L.Text[key]) == "string" and L.Text[key] ~= "", "Config.Loot.Text." .. key .. " is a Korean string", key)
 	end
@@ -1056,7 +1066,7 @@ runGroup("rollkill", function()
 		k.Data.LootFlags.FirstScroll = true
 		local function kingRoll(level, const, golden, info)
 			k:Set("Level", level)
-			k.Data.Items, k.Data.HPPotionCount, k.Data.MPPotionCount, k.Data.WeaponOwnedMask = {}, 0, 0, 1
+			k.Data.Items, k.Data.HPPotionCount, k.Data.MPPotionCount, k.Data.WeaponOwnedMask = {}, 0, 0, 1; k.Data.WeaponPity = {} -- 2-A ⑤ (checked on its own)
 			k.ScriptConst, k.Draws, k.Notices, k.Announces = const, 0, {}, {}
 			local g
 			if info then g = k.Loot.RollKill(k.Player, info) else g = k:Roll("PumpkinKing", golden) end
@@ -1106,6 +1116,8 @@ runGroup("rollkill", function()
 	local t = fixture()
 	t.Data.LootFlags.FirstScroll = true
 	t.Data.LootFlags.FirstWeapon = true -- C2: the first Prince's weapon is not a row
+	t.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
+	t.Data.LootFlags.FirstBruteWeapon, t.Data.LootFlags.FirstKnightWeapon = true, true -- 2-A ⑤ (checked on its own)
 	t:Set("Level", 50) -- every row draws (the C2 tier-3 rows have a BelowLevel)
 	for _, kind in { "Slime", "BigSlime", "Goblin" } do
 		local rows = L.Tables[kind]
@@ -1118,7 +1130,7 @@ runGroup("rollkill", function()
 						for j in rows do script2[j] = j == i and case[1] or 0.999999 end
 						if L.Jackpot.Monsters[kind] then table.insert(script2, 0.999999) end
 						t.Script = script2
-						t.Data.Items, t.Data.HPPotionCount, t.Data.MPPotionCount, t.Data.WeaponOwnedMask = {}, 0, 0, 1
+						t.Data.Items, t.Data.HPPotionCount, t.Data.MPPotionCount, t.Data.WeaponOwnedMask = {}, 0, 0, 1; t.Data.WeaponPity = {} -- 2-A ⑤ (checked on its own)
 						local g = t:Roll(kind, golden)
 						t.Script = {}
 						local got = (row.Item and t:Gained(g, "Item", row.Item)) or (row.Potion and t:Gained(g, "Potion", row.Potion))
@@ -1147,12 +1159,14 @@ runGroup("rollkill", function()
 		local s = fixture()
 		s.Data.LootFlags.FirstScroll = true
 		s.Data.LootFlags.FirstWeapon = true -- C2
+		s.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
+		s.Data.LootFlags.FirstBruteWeapon, s.Data.LootFlags.FirstKnightWeapon = true, true -- 2-A ⑤ (checked on its own)
 		s:Set("Level", 50) -- every row draws (C2 BelowLevel rows)
 		math.randomseed(seed)
 		local counts, events = {}, {}
 		local info = { Kind = kind, Golden = golden }
 		for _ = 1, nRolls do
-			s.Data.Items, s.Data.HPPotionCount, s.Data.MPPotionCount, s.Data.WeaponOwnedMask = {}, 0, 0, 1
+			s.Data.Items, s.Data.HPPotionCount, s.Data.MPPotionCount, s.Data.WeaponOwnedMask = {}, 0, 0, 1; s.Data.WeaponPity = {} -- 2-A ⑤ (checked on its own)
 			s.Notices, s.FxLog = {}, {}
 			for _, e in s.Loot.RollKill(s.Player, info) do
 				local key = e.Item or (e.Potion and "Potion" .. e.Potion) or ("Weapon" .. tostring(e.Weapon))
@@ -1247,11 +1261,7 @@ runGroup("rollkill", function()
 	fs.FxLog = {}
 	fs:Kill("BigSlime")
 	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true, "first BigSlime kill guarantees exactly one Enh70", fs:Count("Enh70"))
-	check(fs:Noticed(L.Text.FirstScroll) == 1, "first-scroll hint shown once")
-	local firstNote = nil
-	for _, e in fs.Notices do if e.Text == L.Text.FirstScroll then firstNote = e end end
-	check(firstNote and firstNote.Duration == L.FirstScroll.NoticeSeconds and firstNote.Duration == 6,
-		"first-scroll hint stays 6 s (Config.Loot.FirstScroll.NoticeSeconds)", firstNote and firstNote.Duration)
+	check(hints(fs) == 0, "A23-130: no first-scroll hint line (the drop's own pop only)", hints(fs))
 	local lootFx = fs.FxLog[#fs.FxLog]
 	check(lootFx and lootFx.Kind == "Loot" and lootFx.Data.First == true, "that kill's Loot Fx carries First = true (client skips its own toast)",
 		show(lootFx and lootFx.Data and lootFx.Data.First))
@@ -1263,14 +1273,14 @@ runGroup("rollkill", function()
 	check(laterFx and laterFx.Kind == "Loot" and laterFx.Data.First == nil, "later Loot Fx never carries First", show(laterFx and laterFx.Data.First))
 	fs.Data.Items.Enh70 = 1
 	for _ = 1, 50 do fs:Kill("BigSlime") end
-	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "the guarantee is never paid twice in a session", fs:Count("Enh70"))
+	check(fs:Count("Enh70") == 1 and hints(fs) == 0, "the guarantee is never paid twice in a session", fs:Count("Enh70"))
 	fs:Release()
 	check(fs.Rows["P_" .. fs.UserId].LootFlags.FirstScroll == true, "LootFlags.FirstScroll is in the saved record")
 	local re = fixture({ Rows = fs.Rows, UserId = fs.UserId })
 	re.ScriptConst = 0.999999
 	check(re.Data.LootFlags.FirstScroll == true and re:Count("Enh70") == 1, "LootFlags and the scroll survive reload")
 	for _ = 1, 10 do re:Kill("BigSlime") end
-	check(re:Count("Enh70") == 1 and re:Noticed(L.Text.FirstScroll) == 0, "no second guarantee after reload", re:Count("Enh70"))
+	check(re:Count("Enh70") == 1 and hints(re) == 0, "no second guarantee after reload", re:Count("Enh70"))
 	local had = fixture()
 	had.ScriptConst = 0.999999
 	had:Give("Enh70", 4)
@@ -1281,14 +1291,14 @@ runGroup("rollkill", function()
 	full.ScriptConst = 0.999999
 	full:Give("Enh70", full.L.ItemCap)
 	full:Kill("BigSlime")
-	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll ~= true and full:Noticed(L.Text.FirstScroll) == 0,
-		"B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no guide", show(full.Data.LootFlags))
+	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll ~= true and hints(full) == 0,
+		"B8 full Enh70 stack: no grant, FirstScroll flag NOT set, no hint", show(full.Data.LootFlags))
 	full.Data.Items.Enh70 = full.L.ItemCap - 1
 	full:Kill("BigSlime")
-	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll == true and full:Noticed(L.Text.FirstScroll) == 1,
-		"B8 the kept guarantee pays on the next king slime once there is room", full:Count("Enh70"))
+	check(full:Count("Enh70") == full.L.ItemCap and full.Data.LootFlags.FirstScroll == true and hints(full) == 0,
+		"B8 the kept guarantee pays on the next king slime once there is room (no hint line)", full:Count("Enh70"))
 	full:Kill("BigSlime")
-	check(full:Noticed(L.Text.FirstScroll) == 1, "B8 the guarantee is still paid only once", full:Noticed(L.Text.FirstScroll))
+	check(full:Count("Enh70") == full.L.ItemCap and hints(full) == 0, "B8 the guarantee is still paid only once", full:Count("Enh70"))
 
 	-- jackpot exists only for Slime kinds (the level-1 slime and its seasonal stand-in, the pumpkin slime)
 	for kind in L.Tables do
@@ -1359,7 +1369,7 @@ runGroup("bully", function()
 		for j in L.Tables[kind] do script[j] = (j == index) and draw or 0.999999 end
 		if L.Jackpot.Monsters[kind] then table.insert(script, jackpotDraw or 0.999999) end
 		t.Script, t.Draws = script, 0
-		t.Data.Items, t.Data.HPPotionCount, t.Data.MPPotionCount, t.Data.WeaponOwnedMask = {}, 0, 0, 1
+		t.Data.Items, t.Data.HPPotionCount, t.Data.MPPotionCount, t.Data.WeaponOwnedMask = {}, 0, 0, 1; t.Data.WeaponPity = {} -- 2-A ⑤ (checked on its own)
 		local g = t:Roll(kind, golden)
 		local left = #t.Script
 		t.Script = {}
@@ -1463,13 +1473,13 @@ runGroup("bully", function()
 	fs.Player:SetAttribute("BullyStacks", 1)
 	fs.ScriptConst, fs.Draws = 0.999999, 0
 	fs:Kill("BigSlime")
-	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true and fs:Noticed(L.Text.FirstScroll) == 1,
-		"BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag + guide)",
-		show({ fs:Count("Enh70"), fs.Data.LootFlags.FirstScroll, fs:Noticed(L.Text.FirstScroll) }))
+	check(fs:Count("Enh70") == 1 and fs.Data.LootFlags.FirstScroll == true and hints(fs) == 0,
+		"BullyStacks 1: the first king slime still guarantees exactly one Enh70 (flag, no hint line)",
+		show({ fs:Count("Enh70"), fs.Data.LootFlags.FirstScroll, hints(fs) }))
 	check(fs.Draws == #L.Tables.BigSlime - belowLevelRows(fs, "BigSlime", fs.Data.Level),
 		"BullyStacks 1: the first-scroll guarantee uses no draw (one draw per row only)", fs.Draws)
 	fs:Kill("BigSlime")
-	check(fs:Count("Enh70") == 1 and fs:Noticed(L.Text.FirstScroll) == 1, "BullyStacks 1: the guarantee is still paid only once",
+	check(fs:Count("Enh70") == 1 and hints(fs) == 0, "BullyStacks 1: the guarantee is still paid only once",
 		fs:Count("Enh70"))
 
 	-- A23-27 below Lv12: the king's T4 row is not drawn and pays its 3 BelowLevel candies (no draw, so no x0.5 either);
@@ -1478,7 +1488,7 @@ runGroup("bully", function()
 	setStacks(1)
 	local king = L.Tables.PumpkinKing
 	t.ScriptConst, t.Draws = 0.999999, 0
-	t.Data.Items, t.Data.WeaponOwnedMask = {}, 1
+	t.Data.Items, t.Data.WeaponOwnedMask = {}, 1; t.Data.WeaponPity = {} -- 2-A ⑤ (checked on its own)
 	local kg = t:Roll("PumpkinKing", false)
 	t.ScriptConst = nil
 	check(t:Gained(kg, "Item", "Candy") == 3 and t:Gained(kg, "Weapon", 4) == 0 and t.Draws == #king - 1,
@@ -1648,6 +1658,225 @@ runGroup("first weapon drop", function()
 	check(m.Data.LootFlags.FirstWeapon == nil and not bit32.btest(m.Data.WeaponOwnedMask, 2), "a free rider's share: no guarantee used", "")
 end)
 
+------------------------------------------------------------------ gameplay plan 2026-10-13 1-A #2: the first King Slime's weapon
+runGroup("first King weapon drop", function()
+	local f = fixture()
+	local L = f.L
+	f.Data.LootFlags.FirstScroll = true
+	f.Data.LootFlags.FirstWeapon = true
+	local fk = L.FirstKingDrop
+	check(fk and fk.Monster == "SlimeKing" and fk.Tier == 3, "Config.Loot.FirstKingDrop = the King Slime's tier 3", show(fk))
+	local min = f.Config.Weapons[3].MinLevel
+	f:Set("Level", min)
+	f.ScriptConst = 0.999999 -- no row drops: the weapon is the guarantee alone
+	local g = f:Roll("SlimeKing")
+	local name = f.Config.WeaponName(3, "Warrior", "Halo")
+	check(bit32.btest(f.Data.WeaponOwnedMask, 4) and f:Gained(g, "Weapon", 3) == 1 and f.Data.LootFlags.FirstKingWeapon == true,
+		"the first King kill: tier 3 owned, in the Loot list, the flag set", show({ f.Data.WeaponOwnedMask, f.Data.LootFlags }))
+	check(f.Data.WeaponTier == 3 and f:Noticed(string.format(L.Text.FirstKingEquip, name)) == 1
+		and f:Noticed(string.format(L.Text.FirstDropEquip, name)) == 0,
+		"at its level it beats the tier-1 weapon: equipped at once, the King's own line", show({ f.Data.WeaponTier }))
+	f.Data.WeaponOwnedMask, f.Data.WeaponTier = 1, 1
+	g = f:Roll("SlimeKing")
+	check(f:Gained(g, "Weapon", 3) == 0 and f.Data.WeaponOwnedMask == 1, "only the first King: never a second guarantee", "")
+	-- below the iron weapon's level: owned, not equipped, the plain line
+	local lo = fixture()
+	lo.Data.LootFlags.FirstScroll = true
+	lo.Data.LootFlags.FirstWeapon = true
+	lo:Set("Level", min - 1)
+	lo.ScriptConst = 0.999999
+	lo:Roll("SlimeKing")
+	check(bit32.btest(lo.Data.WeaponOwnedMask, 4) and lo.Data.WeaponTier == 1
+		and lo:Noticed(string.format(L.Text.FirstKingWeapon, name)) == 1, "below Lv" .. min .. ": owned, kept in the Bag, 'dropped' line",
+		show({ lo.Data.WeaponOwnedMask, lo.Data.WeaponTier }))
+	-- owned already: the chance is used up, nothing given
+	local o = fixture()
+	o.Data.LootFlags.FirstScroll = true
+	o.Data.LootFlags.FirstWeapon = true
+	o:Set("WeaponOwnedMask", 5)
+	o.ScriptConst = 0.999999
+	g = o:Roll("SlimeKing")
+	check(o.Data.LootFlags.FirstKingWeapon == true and o:Gained(g, "Weapon", 3) == 0, "tier 3 owned already: the flag is used, nothing given", "")
+	-- the practice King and a free rider's share roll nothing: the flag stays unused
+	for _, extra in { { Practice = true }, { Minor = true } } do
+		local m = fixture()
+		m.Data.LootFlags.FirstScroll = true
+		m:Roll("SlimeKing", false, extra)
+		check(m.Data.LootFlags.FirstKingWeapon == nil and not bit32.btest(m.Data.WeaponOwnedMask, 4),
+			"a practice King / a free rider's share: no guarantee used", show(extra))
+	end
+	-- the Prince never pays the King's weapon
+	local pr = fixture()
+	pr.Data.LootFlags.FirstScroll = true
+	pr.ScriptConst = 0.999999
+	pr:Roll("BigSlime")
+	check(pr.Data.LootFlags.FirstKingWeapon == nil and not bit32.btest(pr.Data.WeaponOwnedMask, 4), "a Prince kill leaves the King's guarantee", "")
+end)
+
+------------------------------------------------------------------ gameplay plan 2026-10-14 2-A ⑤: weapon luck (first Brute / Knight, pity)
+runGroup("first tier drops", function()
+	local f0 = fixture()
+	local L = f0.L
+	local fd = L.FirstTierDrops
+	check(type(fd) == "table" and #fd == 2 and fd[1].Tier == 4 and fd[1].Monsters.GoblinBrute == "Brute" and fd[1].Flag == "FirstBruteWeapon"
+		and fd[2].Tier == 5 and fd[2].Monsters.SkeletonKnight == "Knight" and fd[2].Monsters.CaptainClatter == "Clatter"
+		and fd[2].Flag == "FirstKnightWeapon", "Config.Loot.FirstTierDrops = first Brute T4, first Knight or Clatter T5 (one flag)", show(fd))
+	for _, who in { "Brute", "Knight", "Clatter" } do
+		for _, key in { "First" .. who .. "Weapon", "First" .. who .. "Equip" } do
+			check(type(L.Text[key]) == "string" and select(2, string.gsub(L.Text[key], "%%s", "")) == 1, "Text." .. key .. ": one %s", L.Text[key])
+		end
+	end
+	local function fresh(level)
+		local f = fixture()
+		f.Data.LootFlags.FirstScroll, f.Data.LootFlags.FirstWeapon, f.Data.LootFlags.FirstKingWeapon = true, true, true
+		f:Set("Level", level)
+		f.ScriptConst = 0.999999 -- no row drops: the weapon is the guarantee alone
+		return f
+	end
+	-- the first Brute at the tier-4 level: owned, equipped (beats tier 1), the Brute's line; never twice
+	local min4 = f0.Config.Weapons[4].MinLevel
+	local b = fresh(min4)
+	local g = b:Roll("GoblinBrute")
+	local name4 = b.Config.WeaponName(4, "Warrior", "Halo")
+	check(bit32.btest(b.Data.WeaponOwnedMask, 8) and b:Gained(g, "Weapon", 4) == 1 and b.Data.LootFlags.FirstBruteWeapon == true
+		and b.Data.WeaponTier == 4 and b:Noticed(string.format(L.Text.FirstBruteEquip, name4)) == 1,
+		"the first Brute: tier 4 owned, in the Loot list, equipped, its own line", show({ b.Data.WeaponOwnedMask, b.Data.WeaponTier }))
+	b.Data.WeaponOwnedMask, b.Data.WeaponTier = 1, 1
+	g = b:Roll("GoblinBrute")
+	check(b:Gained(g, "Weapon", 4) == 0 and not bit32.btest(b.Data.WeaponOwnedMask, 8), "only the first Brute: never a second guarantee", "")
+	-- below Lv12: owned, kept in the Bag, the plain line
+	local lo = fresh(min4 - 2)
+	lo:Roll("GoblinBrute")
+	check(bit32.btest(lo.Data.WeaponOwnedMask, 8) and lo.Data.WeaponTier == 1 and lo:Noticed(string.format(L.Text.FirstBruteWeapon, name4)) == 1,
+		"below Lv" .. min4 .. ": tier 4 owned, not equipped, 'dropped' line", show({ lo.Data.WeaponOwnedMask, lo.Data.WeaponTier }))
+	-- the first Knight pays tier 5; a later Clatter shares the flag
+	local name5 = f0.Config.WeaponName(5, "Warrior", "Halo")
+	local k = fresh(25)
+	g = k:Roll("SkeletonKnight")
+	check(bit32.btest(k.Data.WeaponOwnedMask, 16) and k:Gained(g, "Weapon", 5) == 1 and k.Data.LootFlags.FirstKnightWeapon == true
+		and k.Data.WeaponTier == 5 and k:Noticed(string.format(L.Text.FirstKnightEquip, name5)) == 1,
+		"the first Skeleton Knight: tier 5 owned, equipped, the Knight's line", show({ k.Data.WeaponOwnedMask, k.Data.WeaponTier }))
+	k.Data.WeaponOwnedMask, k.Data.WeaponTier = 1, 1
+	g = k:Roll("CaptainClatter")
+	check(k:Gained(g, "Weapon", 5) == 0 and not bit32.btest(k.Data.WeaponOwnedMask, 16), "a Clatter after the first Knight: no second guarantee", "")
+	local c = fresh(25)
+	g = c:Roll("CaptainClatter")
+	check(bit32.btest(c.Data.WeaponOwnedMask, 16) and c.Data.LootFlags.FirstKnightWeapon == true
+		and c:Noticed(string.format(L.Text.FirstClatterEquip, name5)) == 1, "the first Captain Clatter (no Knight yet): tier 5, Clatter's line",
+		show(c.Data.WeaponOwnedMask))
+	-- owned already: the chance is used, nothing given
+	local o = fresh(25)
+	o:Set("WeaponOwnedMask", 1 + 16)
+	g = o:Roll("SkeletonKnight")
+	check(o.Data.LootFlags.FirstKnightWeapon == true and o:Gained(g, "Weapon", 5) == 0, "tier 5 owned already: the flag is used, nothing given", "")
+	-- a practice boss / a free rider's share: no guarantee used
+	for _, extra in { { Practice = true }, { Minor = true } } do
+		local m = fresh(25)
+		m:Roll("CaptainClatter", false, extra)
+		m:Roll("GoblinBrute", false, extra)
+		check(m.Data.LootFlags.FirstKnightWeapon == nil and m.Data.LootFlags.FirstBruteWeapon == nil and m.Data.WeaponOwnedMask == 1,
+			"a practice boss / a free rider's share: no first drop used", show(extra))
+	end
+	-- other kinds never pay them
+	local n = fresh(25)
+	n:Roll("Goblin")
+	n:Roll("Skeleton")
+	check(n.Data.LootFlags.FirstBruteWeapon == nil and n.Data.LootFlags.FirstKnightWeapon == nil, "Goblin / Skeleton kills leave both guarantees", "")
+end)
+
+runGroup("weapon pity", function()
+	local f0 = fixture()
+	local L, C = f0.L, f0.Config
+	local P = L.WeaponPity
+	check(type(P) == "table" and P.Enabled == true and P.At[3] == 1.5 and P.At[4] == 1.5 and P.At[5] == 1.5 and P.At[6] == 1.5
+		and P.At[8] == nil, "Config.Loot.WeaponPity: on, 1.5 drops' worth for T3-T6, no jackpot pity", show(P))
+	check(type(C.Data.Defaults.WeaponPity) == "table" and next(C.Data.Defaults.WeaponPity) == nil and type(f0.Data.WeaponPity) == "table",
+		"WeaponPity is an additive save field (default {})", show(f0.Data.WeaponPity))
+	local function fresh(level)
+		local f = fixture()
+		for _, flag in { "FirstScroll", "FirstWeapon", "FirstKingWeapon", "FirstBruteWeapon", "FirstKnightWeapon" } do
+			f.Data.LootFlags[flag] = true
+		end
+		f:Set("Level", level)
+		f.ScriptConst = 0.999999 -- no row ever drops
+		return f
+	end
+	local function near(a, b) return type(a) == "number" and math.abs(a - b) < 1e-9 end
+	-- every rolled row of a tier not owned adds its chance; the guarantee comes exactly when the sum reaches At
+	local p4 = 0
+	for _, row in L.Tables.Goblin do if row.Weapon == 4 then p4 += row.P end end
+	local want, sum = 0, 0
+	repeat want += 1; sum += p4 until sum >= P.At[4]
+	local g4 = fresh(12)
+	local at, gotAt, lines = nil, nil, 0
+	for i = 1, want + 50 do
+		local g = g4:Roll("Goblin")
+		if not at and bit32.btest(g4.Data.WeaponOwnedMask, 8) then at, gotAt = i, g4:Gained(g, "Weapon", 4) end
+	end
+	local name4 = C.WeaponName(4, "Warrior", "Halo")
+	lines = g4:Noticed(string.format(L.Text.PityEquip, name4))
+	check(at == want and gotAt == 1 and lines == 1 and g4.Data.WeaponTier == 4, "Goblins: tier 4 for sure at kill " .. want
+		.. " (1.5 / " .. p4 .. "), in that kill's Loot list, equipped, one PityEquip line", show({ at, gotAt, lines, g4.Data.WeaponTier }))
+	check(near(g4.Data.WeaponPity.T4, sum), "the counter stops once the tier is owned (additive, never lowered)", show(g4.Data.WeaponPity))
+	-- golden x GoldenMult; a Brute's two rows count for their own tiers
+	local b = fresh(12)
+	b:Roll("GoblinBrute", true)
+	local pb4, pb5 = 0, 0
+	for _, row in L.Tables.GoblinBrute do
+		if row.Weapon == 4 then pb4 += row.P elseif row.Weapon == 5 then pb5 += row.P end
+	end
+	check(near(b.Data.WeaponPity.T4, pb4 * L.GoldenMult) and near(b.Data.WeaponPity.T5, pb5 * L.GoldenMult),
+		"a golden Brute adds its T4 and T5 chances x GoldenMult", show(b.Data.WeaponPity))
+	-- an owned tier adds nothing; the other row still counts
+	local k = fresh(25)
+	k:Set("WeaponOwnedMask", 1 + 16)
+	k:Roll("SkeletonKnight")
+	local pk6 = 0
+	for _, row in L.Tables.SkeletonKnight do if row.Weapon == 6 then pk6 += row.P end end
+	check(k.Data.WeaponPity.T5 == nil and near(k.Data.WeaponPity.T6, pk6), "owned tier 5: no count; tier 6 counts", show(k.Data.WeaponPity))
+	-- a BelowLevel row that is not rolled (Clatter below the weapon's level) adds nothing
+	local c = fresh(25)
+	c:Roll("CaptainClatter")
+	local pc5 = 0
+	for _, row in L.Tables.CaptainClatter do if row.Weapon == 5 then pc5 += row.P end end
+	check(near(c.Data.WeaponPity.T5, pc5) and c.Data.WeaponPity.T6 == nil, "Clatter at Lv25: T5 counts, T6 (Lv30 BelowLevel row) not",
+		show(c.Data.WeaponPity))
+	-- no weapon row (Flower Slime), the jackpot, a practice boss and a free rider's share: nothing
+	local z = fresh(25)
+	z:Roll("FlowerSlime")
+	z:Roll("CaptainClatter", false, { Practice = true })
+	z:Roll("GoblinBrute", false, { Minor = true })
+	check(next(z.Data.WeaponPity) == nil, "Flower Slime / practice boss / free rider: no luck added", show(z.Data.WeaponPity))
+	-- a natural drop owns the tier first: that kill adds nothing to it
+	local d = fresh(12)
+	local idx = rowIndex(L, "Goblin", "Weapon", 4)
+	local script = {}
+	for j in L.Tables.Goblin do script[j] = j == idx and 0 or 0.999999 end
+	d.Script, d.ScriptConst = script, nil
+	d:Roll("Goblin")
+	d.Script, d.ScriptConst = {}, 0.999999
+	check(bit32.btest(d.Data.WeaponOwnedMask, 8) and d.Data.WeaponPity.T4 == nil, "a natural tier-4 drop: no luck added for it", show(d.Data.WeaponPity))
+	-- a saved counter at the line pays on the next counting kill; switched off = nothing counts
+	local s = fresh(12)
+	s.Data.WeaponPity.T4 = P.At[4]
+	s:Roll("Goblin")
+	check(bit32.btest(s.Data.WeaponOwnedMask, 8), "a saved counter at At: the next Goblin pays tier 4", show(s.Data.WeaponPity))
+	local off = fresh(12)
+	off.L.WeaponPity.Enabled = false
+	off:Roll("Goblin")
+	check(next(off.Data.WeaponPity) == nil, "WeaponPity.Enabled = false: nothing counts", show(off.Data.WeaponPity))
+	-- the save repair: "T<n>" keys with finite numbers >= 0 stay
+	local saved = deepCopy(DEFAULT_ROW)
+	saved.WeaponPity = { T3 = 0.5, T4 = "x", T5 = -1, T6 = true, LongKey = 1 }
+	local r = fixture({ Saved = saved })
+	check(deepEqual(r.Data.WeaponPity, { T3 = 0.5 }), "stored garbage WeaponPity keeps only short string keys with numbers >= 0",
+		show(r.Data.WeaponPity))
+	local junk = deepCopy(DEFAULT_ROW)
+	junk.WeaponPity = "bad"
+	local j = fixture({ Saved = junk })
+	check(type(j.Data.WeaponPity) == "table" and next(j.Data.WeaponPity) == nil, "a non-table WeaponPity becomes {}", show(j.Data.WeaponPity))
+end)
+
 runGroup("weapons", function()
 	local f = fixture()
 	local L = f.L
@@ -1660,12 +1889,16 @@ runGroup("weapons", function()
 				local w = fixture()
 				w.Data.LootFlags.FirstScroll = true
 				w.Data.LootFlags.FirstWeapon = true -- C2: the first Prince's weapon is checked on its own
+				w.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
+				w.Data.LootFlags.FirstBruteWeapon, w.Data.LootFlags.FirstKnightWeapon = true, true -- 2-A ⑤ (checked on its own)
 				local bitMask = bit32.lshift(1, row.Weapon - 1)
 				if type(row.BelowLevel) == "table" then
 					-- A23-27: below the weapon's MinLevel this row pays BelowLevel with no draw (one script value unused)
 					local b = fixture()
 					b.Data.LootFlags.FirstScroll = true
 					b.Data.LootFlags.FirstWeapon = true
+					b.Data.LootFlags.FirstKingWeapon = true -- 1-A #2 (checked on its own)
+					b.Data.LootFlags.FirstBruteWeapon, b.Data.LootFlags.FirstKnightWeapon = true, true -- 2-A ⑤ (checked on its own)
 					local min = C.Weapons[row.Weapon].MinLevel
 					b:Set("Level", min - 1)
 					local bg, unused = b:Force(kind, { [i] = true })
@@ -2307,6 +2540,9 @@ runGroup("shop", function()
 	local f = fixture()
 	local C = f.Config
 	f:Set("CarriedGold", 5000)
+	-- gameplay plan 2026-10-13 1-A #2: the Forge ships with Buy = false (group "shop: no weapon sold" below); these checks are
+	-- the buy path for when it is switched back on
+	C.WeaponShop.Buy = true
 	local function attempt(tier)
 		f.Notices = {}
 		local gold = f.Data.CarriedGold + f.Data.BankGold
@@ -2344,6 +2580,31 @@ runGroup("shop", function()
 	spent = attempt(2)
 	check(f.Data.WeaponTier == 2 and spent == C.Weapons[2].Price and bit32.btest(f.Data.WeaponOwnedMask, 2),
 		"shop: an unowned tier 2 (MinLevel 1) is bought and equipped", show({ f.Data.WeaponTier, spent }))
+end)
+
+runGroup("shop: no weapon sold", function()
+	-- gameplay plan 2026-10-13 1-A #2 (A23-127): Config.WeaponShop.Buy = false: buying a weapon not owned is refused with one
+	-- line and no gold; an owned one still equips (the Forge keeps equip / enhance / sell)
+	local f = fixture()
+	local C = f.Config
+	check(C.WeaponShop.Buy == false and C.WeaponShop.MaxSoldTier == 3, "shipped: Buy = false, MaxSoldTier stays 3", show(C.WeaponShop))
+	f:Set("CarriedGold", 5000)
+	f:Set("Level", 5)
+	f:Set("WeaponOwnedMask", tierMask(1, 3))
+	for _, tier in { 2, 3 } do
+		f.Notices = {}
+		local gold = f.Data.CarriedGold + f.Data.BankGold
+		f:ShopBuy(tier)
+		local spent = gold - (f.Data.CarriedGold + f.Data.BankGold)
+		if tier == 2 then
+			check(spent == 0 and not bit32.btest(f.Data.WeaponOwnedMask, 2) and f.Data.WeaponTier == 1
+				and f:Noticed(C.Text.WeaponDropOnly) == 1, "an unowned tier 2: refused with 'New weapons drop from monsters!', no gold",
+				show({ spent, f.Data.WeaponOwnedMask, f.Notices }))
+		else
+			check(spent == 0 and f.Data.WeaponTier == 3 and f:Noticed(C.Text.WeaponDropOnly) == 0, "an owned tier 3 still equips for free",
+				show({ spent, f.Data.WeaponTier }))
+		end
+	end
 end)
 
 ------------------------------------------------------------------ 6b. A23-28 weapon level rule (auto-fit on a level drop, one notice per level-up crossing)
@@ -2392,6 +2653,7 @@ runGroup("levelrule", function()
 		local saved = deepCopy(DEFAULT_ROW)
 		saved.Level, saved.WeaponTier, saved.WeaponOwnedMask = level, tier, owned
 		saved.WeaponEnhance = enh or { 1, 2, 3, 4, 5, 6, 7, 8 }
+		saved.PlaytimeSeconds = 3600 -- past A23-167's first-minutes 2x XP (these checks count exact level-ups)
 		local x = fixture({ Saved = saved })
 		x.Data.LootFlags.FirstScroll = true
 		-- the real Config has the "You can now use ..." line off (Nudges.WeaponUsableNow, 검수 10/09): these checks look at the rule, so turn it on

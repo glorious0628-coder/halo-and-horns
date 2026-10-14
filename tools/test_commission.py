@@ -36,7 +36,7 @@ MUTATIONS = [
     ("config: T4 costs 2,000", C, "[4] = { Gold = 3000,", "[4] = { Gold = 2000,"),
     ("config: T4 needs 5 horns", C, "Items = { BruteHorn = 10, GoblinTooth = 20 }", "Items = { BruteHorn = 5, GoblinTooth = 20 }"),
     ("config: T5 asks for jelly", C, "Items = { KnightCrest = 12, Bone = 30 }", "Items = { Jelly = 12, Bone = 30 }"),
-    ("config: no commission in the T4 source", C, "Rare drop from Goblins and Goblin Brutes, or a Forge commission", "Rare drop from Goblins and Goblin Brutes"),
+    ("config: no commission in the T4 source", C, "(your first Goblin Brute always drops it), or a Forge commission", "(your first Goblin Brute always drops it)"),
     ("config: the card scroll is 2", C, 'Reward = { Item = "Enh70", N = 1 }, Points = 1, Done = "Otto\'s apprentice beams." }', 'Reward = { Item = "Enh70", N = 2 }, Points = 1, Done = "Otto\'s apprentice beams." }'),
     ("config: the discount is 5 minutes", C, "Reward = { GoldMin = 2 }", "Reward = { GoldMin = 5 }"),
     ("config: the card is timed", C, 'Title = "The apprentice scratched the hilt a little.",', 'Title = "The apprentice scratched the hilt a little.", Seconds = 10,'),

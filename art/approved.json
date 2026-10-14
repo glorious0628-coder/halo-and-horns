@@ -8162,48 +8162,83 @@
  },
  "NPC_HaloBright": {
   "status": "approved",
-  "date": "2026-10-10",
-  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
   "prompt": "art/prompts/NPC_HaloBright_A.txt",
   "original": "art/out/s2/npc/NPC_HaloBright_A_src.png",
-  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
-  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set1_2026-10-13.jpg). Bright: 주근깨 뺌, 땋은 머리 왼 면에서 뺌·뒤는 화면 오른쪽 어깨 / 이전: 사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloBright_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloBright_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloBright_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloBright_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloBright_right_ns.png"
+  }
  },
  "NPC_HaloSirGleam": {
   "status": "approved",
-  "date": "2026-10-10",
-  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
   "prompt": "art/prompts/NPC_HaloSirGleam_A.txt",
   "original": "art/out/s2/npc/NPC_HaloSirGleam_A_src.png",
-  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
-  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set1_2026-10-13.jpg). SirGleam: 오른 면 칼집 뺌(왼쪽 엉덩이) / 이전: 사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloSirGleam_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloSirGleam_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloSirGleam_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloSirGleam_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloSirGleam_right_ns.png"
+  }
  },
  "NPC_HaloBakerGranny": {
   "status": "approved",
-  "date": "2026-10-10",
-  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
   "prompt": "art/prompts/NPC_HaloBakerGranny_A.txt",
   "original": "art/out/s2/npc/NPC_HaloBakerGranny_A_src.png",
-  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
-  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set1_2026-10-13.jpg) / 이전: 사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloBakerGranny_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloBakerGranny_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloBakerGranny_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloBakerGranny_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloBakerGranny_right_ns.png"
+  }
  },
  "NPC_HaloFlowerGirl": {
   "status": "approved",
-  "date": "2026-10-10",
-  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
   "prompt": "art/prompts/NPC_HaloFlowerGirl_A.txt",
   "original": "art/out/s2/npc/NPC_HaloFlowerGirl_C_src.png",
-  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\", 꽃집 소녀는 2번(달걀 눈·살짝 웃음)=C",
-  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set1_2026-10-13.jpg). FlowerGirl: 주근깨 뺌, 뒤 = 좌우 뒤집기(가방 왼쪽 엉덩이), 오른 면 가방 뺌 / 이전: 사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\", 꽃집 소녀는 2번(달걀 눈·살짝 웃음)=C",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloFlowerGirl_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloFlowerGirl_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloFlowerGirl_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloFlowerGirl_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloFlowerGirl_right_ns.png"
+  }
  },
  "NPC_HaloJuiceMan": {
   "status": "approved",
-  "date": "2026-10-10",
-  "tool": "Adobe Firefly GPT Image 2.5 Sunburst, Medium candidate (0 credits); front view for multiview/Tripo",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
   "prompt": "art/prompts/NPC_HaloJuiceMan_A.txt",
   "original": "art/out/s2/npc/NPC_HaloJuiceMan_A_src.png",
-  "note": "사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
-  "next": "뒤·좌·우 고급 멀티뷰(앞면 참조) → 이미지 생성 1 Tripo"
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set1_2026-10-13.jpg) / 이전: 사용자 승인(검수 경유) 2026-10-10: \"5명 다 좋아\"",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_right_ns.png"
+  }
  },
  "HaloSign_Potion": {
   "status": "approved",
@@ -8695,5 +8730,158 @@
   },
   "note": "그림자 없는 4면, 최종 검수 4면 전체 크기 확인 통과 2026-10-12 밤 → Blender 손보기 Tripo. left 면 튤립 한 송이가 상자 밖으로 살짝 나옴(꽃다발 기울기, 통과).",
   "deleted": "옛 2D(art/out/s2/halo/flowerpots_hq/HaloFlowerPotHQ_Tulip.png) deleted 10/12 noshadow (최종 검수)"
+ },
+ "UIP_WorldMapV3_HaloNew": {
+  "status": "approved",
+  "file": "art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_b.png",
+  "picked": "b (최종 검수 직접 봄 2026-10-13 밤; a = 성 위 금고리 튐·빽빽)",
+  "use": "Config.UIArt world map, dev1-halo-stage6 only (10/20 주 교체)",
+  "rejected": [
+   "art/out/s2/worldmap/UIP_WorldMapV3_HaloNew_a.png"
+  ]
+ },
+ "NPC_HaloPotionMerchant": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloPotionMerchant_front_ns.txt",
+  "original": "art/out/s2/npc/NPC_HaloPotionMerchant_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set2_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). PotionMerchant: 후광 새로 넣음(옛 4면엔 없었음) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloPotionMerchant_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloPotionMerchant_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloPotionMerchant_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloPotionMerchant_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloPotionMerchant_right_ns.png"
+  }
+ },
+ "NPC_HaloBellElder": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloBellElder_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloBellElder_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set2_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). BellElder: 오른 면 종 뺌(종은 왼쪽 엉덩이) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloBellElder_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloBellElder_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloBellElder_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloBellElder_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloBellElder_right_ns.png"
+  }
+ },
+ "NPC_HaloStarScholar": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloStarScholar_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloStarScholar_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set2_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). StarScholar: 오른 면 통 뺌(두루마리 통은 왼쪽 엉덩이) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloStarScholar_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloStarScholar_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloStarScholar_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloStarScholar_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloStarScholar_right_ns.png"
+  }
+ },
+ "NPC_HaloOldSailor": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloOldSailor_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set2_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). OldSailor: 왼 면 망원경만·오른 면 밧줄만(밧줄 오른쪽·망원경 왼쪽 엉덩이) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_right_ns.png"
+  }
+ },
+ "NPC_HaloPondAngler": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloPondAngler_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloPondAngler_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set2_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). PondAngler: 낚싯대 왼 어깨, 뒤에서 화면 왼쪽 / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloPondAngler_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloPondAngler_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloPondAngler_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloPondAngler_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloPondAngler_right_ns.png"
+  }
+ },
+ "NPC_HaloFlowerFarmer": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloFlowerFarmer_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloFlowerFarmer_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set3_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). FlowerFarmer: 주근깨 뺌, 오른 면 모자·어깨 꽃 뺌(꽃은 왼쪽) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloFlowerFarmer_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloFlowerFarmer_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloFlowerFarmer_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloFlowerFarmer_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloFlowerFarmer_right_ns.png"
+  }
+ },
+ "NPC_HaloFolk4": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloFolk4_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloFolk4_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set3_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). Folk4: 왼 면 배경 밝은 회색으로, 오른 면 주머니 뺌(주머니는 왼쪽 엉덩이) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloFolk4_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloFolk4_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloFolk4_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloFolk4_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloFolk4_right_ns.png"
+  }
+ },
+ "NPC_HaloHerbHusband": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloHerbHusband_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloHerbHusband_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set3_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). HerbHusband: 오른 면 주머니만, 약초 다발 뺌(다발은 왼쪽) / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloHerbHusband_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloHerbHusband_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloHerbHusband_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloHerbHusband_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloHerbHusband_right_ns.png"
+  }
+ },
+ "NPC_HaloHerbWife": {
+  "status": "approved",
+  "date": "2026-10-13",
+  "tool": "ChatGPT plan via tools/codex_image.py (tools/_noshadow_npc.py), ref = old approved 4 views",
+  "prompt": "art/out/s2/noshadow/npc/NPC_HaloHerbWife_front_ns.txt",
+  "original": "art/out/s2/npc2_hq/NPC_HaloHerbWife_front_HQ_src.png",
+  "note": "noshadow 2026-10-13, 최종 검수 통과 (SPEC A23-150, 시트 art/review/s2/npc_halo_noshadow_set3_2026-10-13.jpg; 4면 방향 규칙: 왼 면 = 화면 오른쪽 봄, 한쪽 물건은 그쪽 면에만, 뒤는 좌우 바뀜). HerbWife: 등 바구니 대칭, 4면 그대로 / 이전: 주민·상인 4면 사용자 승인(검수 경유) 2026-10-10~11",
+  "next": "2D까지만(Tripo 멈춤, A23-160)",
+  "file": "art/out/s2/noshadow/npc/NPC_HaloHerbWife_front_ns.png",
+  "views": {
+   "front": "art/out/s2/noshadow/npc/NPC_HaloHerbWife_front_ns.png",
+   "back": "art/out/s2/noshadow/npc/NPC_HaloHerbWife_back_ns.png",
+   "left": "art/out/s2/noshadow/npc/NPC_HaloHerbWife_left_ns.png",
+   "right": "art/out/s2/noshadow/npc/NPC_HaloHerbWife_right_ns.png"
+  }
  }
 }

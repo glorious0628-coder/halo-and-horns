@@ -146,6 +146,9 @@ local TOP_BAR = { war_meter = true, menu = true }
 local ROBLOX_BUTTON_PX = 44 -- Roblox's top bar button height in a 58 px bar (Inset - 4 in smaller bars)
 local MENU_EDGE_PX = 12 -- [메뉴] keeps this from the bar's free right end
 local ROW_TILES = 6 -- 캐릭터 · 가방 · 스킬 · 지도 · 랭킹 · 펫
+-- user 10/14 (최종 검수): the PC row holds the Monsters tile too (7), so the [메뉴] fold is one line of its 8 squares
+local PC_ROW_TILES = 7
+local PC_FOLD_SQUARES = 8 -- HUD L.Fold: Shop · Invite · Gifts · News · Diary · Travel · Help · Settings
 -- touch thumbstick zone: x < STICK_X W and y > STICK_Y H (2026-10-07 phone layout: the quest lines hang under the minimap
 -- above it; Roblox's thumbstick appears where the thumb lands in the lower left and rests around STICK_MID W). 검수
 -- 2026-10-07: the phone bottom group sits centred between that rest and the thumb ring, nothing pressable left of 0.3 W
@@ -350,6 +353,9 @@ for _, case in CASES do
 					limit = math.min(limit, r.X - GROUP_GAP)
 				end
 			end
+			-- final review 10/14 (phone first-10 photos): the HP / MP numbers need taller bars on phones
+			check(g, "phone HP / MP bars at least 15 px tall", out.hp_bar.H * s >= 15 - 0.5 and out.mp_bar.H * s >= 15 - 0.5,
+				("%.1f / %.1f px"):format(out.hp_bar.H * s, out.mp_bar.H * s))
 			check(g, "phone row at most six tiles wide", tileOk and row.W <= ROW_TILES * row.Size + (ROW_TILES - 1) * row.Gap + 0.01,
 				fmt(row))
 			check(g, "phone group no wider than the room right of 0.4 W", row.W <= math.max(0, limit - 0.4 * W) + 0.5,
@@ -383,19 +389,19 @@ for _, case in CASES do
 			check(g, "face group centred or stepped aside", centred or aside,
 				("group %.1f..%.1f W/2 %.1f cluster %.1f"):format(minX, maxX, W / 2, clusterLeft))
 			check(g, "face group left margin", minX >= 8 - 0.01, ("group %.1f..%.1f"):format(minX, maxX))
-			check(g, "all 6 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= ROW_TILES),
+			check(g, "all 7 tiles on 16:9 PCs", (W / H < 1.7) or (tileOk and t.Count >= PC_ROW_TILES),
 				fmt(t) .. " count " .. tostring(t.Count))
 			-- every PC row holds the six tiles; a declared narrow window may give up its right end (the rest fold out of
 			-- [메뉴]) but keeps at least four
-			local pcName = "at least 6 tiles on every PC"
+			local pcName = "at least 7 tiles on every PC"
 			local ePc = excepted(case, pcName)
-			if tileOk and t.Count >= ROW_TILES then
+			if tileOk and t.Count >= PC_ROW_TILES then
 				check(g, pcName, true)
-				if ePc then check(g, "exception still needed: " .. pcName, false, "6 tiles fit; drop the exception") end
+				if ePc then check(g, "exception still needed: " .. pcName, false, "7 tiles fit; drop the exception") end
 			elseif ePc then
 				check(g, "at least 4 tiles on narrow PC windows", tileOk and t.Count >= 4, fmt(t) .. " count " .. tostring(t.Count))
 				table.insert(exceptions, { Screen = g, Check = pcName, Reason = ePc.Reason, Measured = tileOk and t.Count or 0,
-					Need = ROW_TILES })
+					Need = PC_ROW_TILES })
 			else
 				check(g, pcName, false, fmt(t) .. " count " .. tostring(t.Count))
 			end
@@ -578,9 +584,25 @@ for _, case in CASES do
 			else
 				check(g, lineName, false, ("cols %d total %d"):format(f.Cols, total))
 			end
-			local overflow = math.max(0, ROW_TILES - (tileOk and t.Count or 0))
+			local overflow = math.max(0, (touch and ROW_TILES or PC_ROW_TILES) - (tileOk and t.Count or 0))
 			check(g, "fold holds the row overflow", total >= MENU_TILES + overflow,
 				("total %d need %d"):format(total, MENU_TILES + overflow))
+			-- user 10/14: on wide PC screens (the main Studio window 991x451 included) the war meter steps left (never narrower)
+			-- so the first line beside [메뉴] holds all the fold squares; a declared screen keeps the old rule (HUD L.FitFold
+			-- shrinks the squares to that line)
+			if not touch and W / H >= 1.7 then
+				local wName = "PC fold holds all its squares in one line"
+				local eW = excepted(case, wName)
+				if f.Cols >= PC_FOLD_SQUARES then
+					check(g, wName, true)
+					if eW then check(g, "exception still needed: " .. wName, false, "they fit; drop the exception") end
+				elseif eW then
+					check(g, "PC fold first line still holds the menu tiles", f.Cols >= MENU_TILES, ("cols %d"):format(f.Cols))
+					table.insert(exceptions, { Screen = g, Check = wName, Reason = eW.Reason, Measured = f.Cols, Need = PC_FOLD_SQUARES })
+				else
+					check(g, wName, false, ("cols %d need %d"):format(f.Cols, PC_FOLD_SQUARES))
+				end
+			end
 		end
 	end
 
@@ -600,7 +622,7 @@ for _, case in CASES do
 		check(g, "matches sheet tile gap", tileOk and math.abs(t.Gap * s - TILE_GAP_PX) <= 0.51, ("gap %.2f px"):format((t.Gap or 0) * s))
 		-- phones: 4 tiles in the bottom row (2026-10-07 layout; [메뉴] in the top bar); PCs: the six tiles exactly (the
 		-- potions follow right after them)
-		check(g, "reference tile count", tileOk and t.Count == (touch and 4 or ROW_TILES), fmt(t) .. " count " .. tostring(t.Count))
+		check(g, "reference tile count", tileOk and t.Count == (touch and 4 or PC_ROW_TILES), fmt(t) .. " count " .. tostring(t.Count))
 	end
 
 	-- 8. hiding the auto button (before the crown-shard quest) never moves another item

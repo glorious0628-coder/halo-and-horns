@@ -4,6 +4,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 
 local Net = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Net"))
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
+Config.ApplyTestServer() -- A23-156: the private test server's settings (Config.TestServer), before any service reads them
 Net.CreateAll() -- remotes + GameState folder exist before anything else runs
 
 local INIT_ORDER = {
@@ -17,6 +18,7 @@ local INIT_ORDER = {
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79
 	"FinisherService", -- 게임성 개발 2: the field bosses' finisher card (points: Deeds)
 	"FieldBossService", -- 게임성 개발 2: the year-round field bosses (the King Slime, ...)
+	"HuntFameService", -- 게임성 개발 2: 2-A #4 Honor / Infamy from own-level hunting (A23-135)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (Deeds before ChoiceCard)
 	"KillCardService", -- 게임성 개발 2: A23-87 cards some kills offer (after ChoiceCard)
 	"QuickSlotService", -- 게임성 개발 2: A23-109 quick slots 1·2·3 (the save + the SetQuickSlot remote)
@@ -31,6 +33,8 @@ local INIT_ORDER = {
 	"HealthService", -- 게임성 개발 3: the hourly health report (2026-10-09)
 	"DayCycleService", -- 게임성 개발 2: A23-105 the day and the weather (a crown-war sky covers its look, the clock turns on)
 	"CodexService", -- 게임성 개발 2: A23-153 the monster codex (listens to MonsterKilled; pays through ProgressionService)
+	"TestMetricsService", -- 게임성 개발 2: A23-160 the private test's numbers board (read-only observer)
+	"VillageFundService", -- 게임성 개발 2: A23-178 the village fund (the fountain gifts, the week's sums)
 	"MarketService", -- 게임성 개발 2: C-5 / C-7 the player market (after DataService, LootService, ProgressionService)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
@@ -45,6 +49,7 @@ local START_ORDER = {
 	"AttendanceService", -- 게임성 개발 3: A23-77 (before PlayerService: it listens to PlayerReady)
 	"ReturnService", "InviteService", "DiaryService", -- 게임성 개발 3: A23-79 (before PlayerService too)
 	"FinisherService", "FieldBossService", -- 게임성 개발 2 (before PlayerService too)
+	"HuntFameService", -- 게임성 개발 2: 2-A #4 (before PlayerService too)
 	"Deeds", "ChoiceCard", "CommissionService", "KillLog", -- 게임성 개발 3: A23-86 (before PlayerService too)
 	"KillCardService", -- 게임성 개발 2: A23-87 (before PlayerService too)
 	"QuickSlotService", -- 게임성 개발 2: A23-109 (before PlayerService too: it listens to PlayerReady)
@@ -59,6 +64,8 @@ local START_ORDER = {
 	"HealthService", -- 게임성 개발 3: the hourly health report (before PlayerService: it listens to PlayerReady)
 	"DayCycleService", -- 게임성 개발 2: A23-105 (after WarService, whose Start bootstraps the light and hands Neutral to it)
 	"CodexService", -- 게임성 개발 2: A23-153 (before PlayerService too: it listens to PlayerReady)
+	"TestMetricsService", -- 게임성 개발 2: A23-160 (before PlayerService too: it listens to PlayerReady)
+	"VillageFundService", -- 게임성 개발 2: A23-178 (after SwitchService: it asks the switch VillageFund)
 	"MarketService", -- 게임성 개발 2: C-5 / C-7 (before PlayerService too: the join check at PlayerReady)
 	"PlayerService",
 }

@@ -47,22 +47,24 @@ local ITEMS = {
 	event = { "TC", { 496, 88, 288, 22 }, { 255, 81, 240, 18 } },
 	notify = { "TC", { 496, 116, 288, 46 }, { 255, 100, 240, 34 } },
 	-- A23-109 (user 10/10 "네모를 조금 더 키우고, 물약은 빼야겠어 … 1·2·3은 가로로" + "MP 칸 밑에 있으면 안 되고 옆에"): on PCs
-	-- the group sits 8 px higher, the six tiles are 60 px (were 52) with their names under the icons, the bars as wide as
+	-- the group sits 8 px higher, the tiles are 60 px (were 52) with their names under the icons, the bars as wide as
 	-- the tile row right above it, and the quick slots 1 · 2 · 3 (keys, 개발 1) right of the bars' end (PC_FLOOR / QUICK)
-	portrait = { "BC", { 424, 578, 50, 50 }, { 225, 248, 45, 45 } },
-	power_line = { "BC", { 482, 570, 375, 16 }, { 275, 250, 140, 14 } },
-	hp_bar = { "BC", { 482, 590, 184, 20 }, { 275, 267, 68, 12 } },
-	mp_bar = { "BC", { 673, 590, 184, 20 }, { 347, 267, 68, 12 } },
-	xp_bar = { "BC", { 482, 614, 375, 8 }, { 275, 282, 140, 5 } },
-	tiles = { "BC", { 482, 634, 375, 60 }, { 225, 296, 190, 45 } },
+	-- user 10/14 (최종 검수: the [Menu] fold was two lines): the PC row holds 7 tiles (Monsters too, was in the fold); on
+	-- 1280x720 the group steps 26 px left of the centre for the ghost (the rects below are that result)
+	portrait = { "BC", { 366, 578, 50, 50 }, { 225, 245, 45, 45 } },
+	power_line = { "BC", { 424, 570, 438, 16 }, { 275, 247, 140, 14 } },
+	hp_bar = { "BC", { 424, 590, 215, 20 }, { 275, 264, 68, 15 } },
+	mp_bar = { "BC", { 646, 590, 215, 20 }, { 347, 264, 68, 15 } },
+	xp_bar = { "BC", { 424, 614, 438, 8 }, { 275, 282, 140, 5 } },
+	tiles = { "BC", { 424, 634, 438, 60 }, { 225, 296, 190, 45 } },
 	-- PC only (phones keep the potion ring until the phone round, A23-98): three squares, one row with the tiles
-	quick = { "BC", { 873, 642, 166, 52 }, { 225, 296, 1, 1 } },
+	quick = { "BC", { 878, 642, 166, 52 }, { 225, 296, 1, 1 } },
 	-- A23-40 정정 + 보강: [메뉴] in the top bar's right end (TB anchor; size and position come from TOPBAR, the rects are
 	-- the 1280x720 / 749x361 results). out.fold = its fold-out room
 	menu = { "TB", { 1224, 12, 44, 44 }, { 692, 12, 45, 45 } },
 	combo = { "BC", { 580, 463, 120, 24 }, { 520, 110, 144, 20 }, "BR" },
 	-- PC combat (검수 2026-10-07 with the user's reference shot: "이렇게 … 똑같이 하지 말고 더 낫게"): a mouse / keyboard player
-	-- reads keys, not thumbs. The potions (keys 1 · 2) sit right after the icon row (six tiles wide), part of the
+	-- reads keys, not thumbs. The potions (keys 1 · 2) sit right after the icon row (seven tiles wide), part of the
 	-- bottom-centre group: face, bars and the tiles + potions row make one block centred on the screen; the
 	-- skills Q · Z · X are one column on the right edge (their key badges in reading order, like an action bar); the
 	-- attack (left click / F) is a smaller disc under the column with 자동 and the grudge ghost left of it.
@@ -73,8 +75,8 @@ local ITEMS = {
 	-- X, docs/design/skill_kit_beta_2026-10-06.md). The two potions are round buttons of their own (out.potions = the
 	-- box around both with Cells, for VitalsUI.PlacePotions)
 	-- PCs (A23-109): the pair are quick slots 1 · 2 (their rects = quick.Cells[1] / [2]); phones: the thumb ring
-	potion_hp = { "BC", { 873, 642, 52, 52 }, { 500, 305, 46, 46 }, "BR" },
-	potion_mp = { "BC", { 930, 642, 52, 52 }, { 496, 254, 46, 46 }, "BR" },
+	potion_hp = { "BC", { 878, 642, 52, 52 }, { 500, 305, 46, 46 }, "BR" },
+	potion_mp = { "BC", { 935, 642, 52, 52 }, { 496, 254, 46, 46 }, "BR" },
 	ghost = { "BR", { 1050, 630, 61, 61 }, { 475, 161, 50, 50 } },
 	q = { "BR", { 1199, 392, 66, 66 }, { 523, 204, 54, 54 } },
 	z = { "BR", { 1199, 466, 66, 66 }, { 580, 188, 54, 54 } },
@@ -93,6 +95,9 @@ local CENTER = { "war_meter", "chips", "event", "notify" }
 local TOPBAR = { Left = 164, Button = 44, Bottom = 2, Edge = 12, Tap = 45 }
 HudLayout.Topbar = TOPBAR
 local FOLD_MIN = 4 -- the [메뉴] squares that must fit beside it on the bar (새 소식 · 이동 · 도움말 · 설정)
+-- user 10/14 (최종 검수, PC fold in two lines on the main Studio window): on PCs the centre column steps left, never
+-- narrower, as far as it may so that all of HUD's L.Fold squares (Shop … Settings) fit beside [메뉴] in one line
+local FOLD_WANT_PC = 8
 local MIN_CENTER = 240 -- logical units: narrowest centre column (the war meter stays >= 240du)
 -- review 2026-10-07 (user: "이거 위치 왜이래?" on a short Studio window): a mouse / keyboard PC always lays out on the
 -- desktop sheet, however small the window; short windows get a smaller UIScale instead (Config.UI.DesktopScaleMin 0.5),
@@ -132,6 +137,9 @@ local ROW_MAX = 6 -- touch: the bottom group grows up to this many tiles wide wh
 -- Tile / Quick (A23-109): real px floors of a PC tile (its name always fits under the icon: the 10/08 small-window rule
 -- hid the names under 40 px, user 10/10 "왜 네모 안에 글씨 사라졌냐") and of a quick slot; a taller row grows upwards
 local PC_FLOOR = { QuestW = 250, Bar = 14, NotifyW = 288, Tile = 46, Quick = 40, Squeeze = 40 }
+-- final review 10/14 (phone first-10 photos: '156/156' read ~9 px in the 12 px phone bars): phone HP / MP bars are
+-- at least TOUCH_BAR real px, grown upwards with the power line and the face (like PC_FLOOR.Bar)
+local TOUCH_BAR = 15
 -- [메뉴] fold-out: lines of squares as big as [메뉴], filled from [메뉴] to the left. The first line is [메뉴]'s own (in the
 -- top bar, never over Roblox's buttons); more lines go down (A23-38's "위쪽에서만": [메뉴] is the topmost thing now).
 -- While open it may run over the centre column's info rows (chips / next event / notify), but never over the war meter,
@@ -264,6 +272,14 @@ function HudLayout.Compute(env)
 	end
 
 	if touch then
+		local hb, mb = out.hp_bar, out.mp_bar
+		local d = TOUCH_BAR / s - hb.H
+		if d > 0 then
+			hb.Y, hb.H = hb.Y - d, hb.H + d
+			mb.Y, mb.H = mb.Y - d, mb.H + d
+			out.power_line.Y -= d
+			out.portrait.Y -= d
+		end
 		-- quest lines: one MIN_TAP target (two text lines), grown downward
 		if out.quest.H < MIN_TAP then out.quest.H = MIN_TAP end
 		for _, id in ROUND_TAPS do
@@ -314,7 +330,7 @@ function HudLayout.Compute(env)
 		out.mp_bar.X, out.mp_bar.W = bx + half + barGap, half
 	end
 
-	-- A23-109 PC row (user 10/10 with a drawing: "1·2·3 이거는 MP 칸 밑에 있으면 안 되고 옆에"): the six tiles are as wide
+	-- A23-109 PC row (user 10/10 with a drawing: "1·2·3 이거는 MP 칸 밑에 있으면 안 되고 옆에"): the tiles (7, user 10/14) are as wide
 	-- as the HP / MP / XP bars and sit right under them (tiles >= PC_FLOOR.Tile real px; a taller row lifts the face, the
 	-- power line and the bars by as much, so the row keeps its bottom); the face + bars + tiles block stays centred on the
 	-- screen and the quick slots (>= PC_FLOOR.Quick) sit QUICK.Sep right of the bars' right end, bottom-aligned with the tiles
@@ -414,6 +430,7 @@ function HudLayout.Compute(env)
 	-- squares beside it (the war meter never takes the fold's first line)
 	local leftEdge, rightEdge = 0, W
 	local fGapRow = FOLD_GAP * k
+	local rightWant = W -- PCs: where the column's right end would leave FOLD_WANT_PC fold squares (moves it, never narrows)
 	for _, id in CENTER do
 		local c = out[id]
 		for oid, o in out do
@@ -424,6 +441,7 @@ function HudLayout.Compute(env)
 					leftEdge = math.max(leftEdge, o.X + o.W + GAP)
 				elseif oid == "menu" then
 					rightEdge = math.min(rightEdge, o.X - FOLD_MIN * (o.W + fGapRow) - GAP)
+					if not sheet then rightWant = math.min(rightWant, o.X - FOLD_WANT_PC * (o.W + fGapRow) - GAP) end
 				else
 					rightEdge = math.min(rightEdge, o.X - GAP)
 				end
@@ -438,7 +456,8 @@ function HudLayout.Compute(env)
 		r.W = w
 		widest = math.max(widest, w)
 	end
-	local cx = math.clamp(W / 2, leftEdge + widest / 2, math.max(leftEdge + widest / 2, rightEdge - widest / 2))
+	local cx = math.clamp(W / 2, leftEdge + widest / 2,
+		math.max(leftEdge + widest / 2, math.min(rightEdge, rightWant) - widest / 2))
 	for _, id in CENTER do
 		local r = out[id]
 		r.X = cx - r.W / 2

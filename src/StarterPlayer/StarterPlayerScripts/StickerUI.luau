@@ -147,9 +147,10 @@ local function closePicker()
 	if S.Gui then S.Gui.Visible = false end
 end
 
-local function openShop()
+-- plan 10/13 §1-A #6: the Shop opens on the pass that unlocks it (kind = Config.Stickers.Pass / Config.Bubbles.Pass)
+local function openShop(kind)
 	local panels = C and C.Panels
-	if type(panels) == "table" and type(panels.Open) == "function" then pcall(panels.Open, "Shop") end
+	if type(panels) == "table" and type(panels.Open) == "function" then pcall(panels.Open, "Shop", { Focus = kind }) end
 end
 
 local function bubbleUI()
@@ -210,7 +211,7 @@ local function buildPicker()
 			local cell = S.Cells[key]
 			if cell and cell.Locked then
 				closePicker()
-				openShop()
+				openShop(Config.Stickers.Pass)
 				return
 			end
 			if StickerUI.Send(key) then closePicker() end
@@ -236,7 +237,7 @@ local function buildPicker()
 			local cell = S.Bubbles[key]
 			if cell and cell.Locked then
 				closePicker()
-				openShop()
+				openShop(Config.Bubbles.Pass)
 				return
 			end
 			local ok, sent = pcall(b.Pick, key)

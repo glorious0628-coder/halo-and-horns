@@ -10,6 +10,7 @@
 
 local C0 = execute("Config", CONFIG_SOURCE, nativeEnv())
 local EPS = 1e-9
+local function okPassId(id) return type(id) == "number" and id >= 0 and id == math.floor(id) end
 
 -- the world. opts: Ids = { [kind or look id] = pass id } (EditConfig), Owns = { [userId] = { [passId] = true } },
 -- FailAll = { [passId] = true } (every ask errors), FailTimes = { [passId] = n } (the first n asks error), Studio = true
@@ -17,6 +18,9 @@ local EPS = 1e-9
 local function passWorld(opts)
 	opts = opts or {}
 	local w = newWorld({ Studio = opts.Studio == true, EditConfig = function(cfg)
+		-- 10/14 (set_pass_ids): every world starts "not sold yet" whatever ids Config holds; a group sets the ids it needs
+		for _, pass in cfg.GamePasses do pass.Id = 0 end
+		for _, look in cfg.Looks do if look.PassId ~= nil then look.PassId = 0 end end
 		for key, id in opts.Ids or {} do
 			if cfg.GamePasses[key] then cfg.GamePasses[key].Id = id else cfg.Looks[key].PassId = id end
 		end
@@ -111,6 +115,7 @@ local function passWorld(opts)
 		d.Faction = o.Faction or "Halo"
 		d.Level = o.Level or 10
 		d.HideAnnounceName = o.Hide == true
+		d.PlaytimeSeconds = 3600 -- past A23-167's first-minutes 2x XP (its own group sets o.Data.PlaytimeSeconds)
 		for k, v in o.Data or {} do d[k] = v end
 		d.Looks, d.PassSeen = cfg.SanitizeLooks(d.Looks, d.PassSeen)
 		self.Data[p] = d
@@ -164,11 +169,22 @@ runGroup("config", function()
 		show({ GP.XP2.Price, GP.Gold2.Price, GP.VIP.Price }))
 	check(GP.XP2.Attr == "PassXP2" and GP.Gold2.Attr == "PassGold2" and GP.VIP.Attr == "PassVIP",
 		"attributes PassXP2 / PassGold2 / PassVIP (the screen's names)")
-	check(GP.XP2.Id == 0 and GP.Gold2.Id == 0 and GP.VIP.Id == 0, "ids 0 until the user makes the passes (Coming soon)")
+	-- 10/14: 0 = not made yet (Coming soon), else the user's pass id (tools/set_pass_ids.py): a whole number > 0, never twice
+	local ids, seenIds, idsOk = {}, {}, true
+	local function addId(key, id)
+		ids[key] = id
+		if not okPassId(id) then idsOk = false elseif id > 0 then
+			if seenIds[id] then idsOk = false end
+			seenIds[id] = true
+		end
+	end
+	for key, pass in GP do addId(key, pass.Id) end
+	for key, look in C0.Looks do if look.PassId ~= nil then addId(key, look.PassId) end end
+	check(idsOk, "pass ids: 0 until the user makes the pass (Coming soon), else a whole number > 0, no id twice", show(ids))
 	local n = 0
 	for _ in GP do n += 1 end
-	check(n == 5 and GP.Stickers.Price == 99 and GP.Stickers.Attr == "PassStickers" and GP.Stickers.Id == 0
-		and GP.Bubbles.Price == 99 and GP.Bubbles.Attr == "PassBubbles" and GP.Bubbles.Id == 0,
+	check(n == 5 and GP.Stickers.Price == 99 and GP.Stickers.Attr == "PassStickers"
+		and GP.Bubbles.Price == 99 and GP.Bubbles.Attr == "PassBubbles",
 		"five passes: XP2, Gold2, VIP, the Sticker Pack and the Bubble Pack (99 R$ each; A23-143 / A23-144)", n)
 	local B = C0.PassBoost
 	check(B.Mult == 2, "the passes double (2x)", B.Mult)
@@ -194,7 +210,7 @@ runGroup("config", function()
 		if type(look.Icon) ~= "string" or type(look.Order) ~= "number" then table.insert(bad, id .. " icon/order") end
 		if look.PassId ~= nil then
 			sold += 1
-			if look.Price ~= 99 or look.PassId ~= 0 or look.Unlock ~= nil then table.insert(bad, id .. " sale") end
+			if look.Price ~= 99 or not okPassId(look.PassId) or look.Unlock ~= nil then table.insert(bad, id .. " sale") end
 		else
 			local days = type(look.Unlock) == "table" and look.Unlock.Attendance
 			if not days then table.insert(bad, id .. " unlock") else att[days] = (att[days] or 0) + 1 end
@@ -202,7 +218,7 @@ runGroup("config", function()
 		end
 	end
 	check(sold == 4 and att[14] == 2 and att[50] == 2 and att[100] == 2 and #bad == 0,
-		"looks: 4 sold (99 each, pass id 0), attendance-only 14 / 50 / 100 days (a halo and horns each)", show({ sold, att, bad }))
+		"looks: 4 sold (99 each, one pass id), attendance-only 14 / 50 / 100 days (a halo and horns each)", show({ sold, att, bad }))
 	check(C0.Looks.HaloIce.Name == "Ice Halo" and C0.Looks.HaloGold.Name == "Gold Halo" and C0.Looks.HornsLava.Name == "Lava Horns"
 		and C0.Looks.HornsShadow.Name == "Shadow Horns", "the user's four picks keep their names")
 	local order = C0.LookOrder()
@@ -1021,6 +1037,60 @@ runGroup("bubbles", function()
 	local saved = w:Join(704, { Faction = "Horns", Data = { Bubble = "BubbleTestPack" } })
 	check(saved:GetAttribute("BubbleOn") == "BubbleHorns" and w.Data[saved].Bubble == "BubbleTestPack",
 		"a saved pack skin without the pass shows the free one (the pick waits for the pass)", "")
+end)
+
+------------------------------------------------------------------ A23-167 the first minutes x2 XP (게임성 개발 2, 2026-10-14)
+runGroup("A23-167 first minutes 2x XP", function()
+	local E = C0.EarlyXP
+	check(type(E) == "table" and E.Enabled == true and E.Seconds == 600 and E.Mult == 2,
+		"Config.EarlyXP: on, the first 600 s of play (10 minutes, not 30), x2", show(E))
+	local w = passWorld({ Ids = { XP2 = 11 }, Owns = { [602] = { [11] = true } } })
+	local Prog = w.Prog
+	local p = w:Join(601, { Level = 10, Data = { PlaytimeSeconds = 0, XP = 0 } })
+	local d = w.Data[p]
+	check(Prog.EarlyXPLeft(p) == 600 and Prog.XPBoost(p) == 2, "a new save: 600 s left, x2", show({ Prog.EarlyXPLeft(p), Prog.XPBoost(p) }))
+	check(Prog.AddXP(p, 7) == 14 and d.XP == 14, "a new save: 7 XP -> 14 added and returned", show({ d.XP }))
+	check(Prog.AddXP(p, 7.9) == 14, "the amount is floored before the boost (7 -> 14)")
+	d.PlaytimeSeconds = 595
+	check(Prog.EarlyXPLeft(p) == 5 and Prog.AddXP(p, 5) == 10, "595 s played: 5 s left, still x2", Prog.EarlyXPLeft(p))
+	d.PlaytimeSeconds = 600
+	check(Prog.EarlyXPLeft(p) == 0 and Prog.XPBoost(p) == 1 and Prog.AddXP(p, 5) == 5, "600 s played: over, x1",
+		show({ Prog.EarlyXPLeft(p), Prog.XPBoost(p) }))
+	d.PlaytimeSeconds = 99999
+	check(Prog.EarlyXPLeft(p) == 0 and Prog.AddXP(p, 5) == 5, "an old save: never")
+	-- the 2x XP pass in the first minutes: x2 once, never x4 (A23-167)
+	local q = w:Join(602, { Level = 1, Data = { PlaytimeSeconds = 0, XP = 0 } })
+	check(q:GetAttribute("PassXP2") == true and Prog.XPBoost(q) == 2 and Prog.AddXP(q, 5) == 10,
+		"the 2x XP pass in the first minutes: x2 once (never x4)", show({ Prog.XPBoost(q) }))
+	w.Data[q].PlaytimeSeconds = 5000
+	check(Prog.AddXP(q, 5) == 10, "the pass after the first minutes: still x2")
+	-- the cap comes after the boost: a grant capped at its own amount (choice cards, the bench) stays as it is
+	local r = w:Join(603, { Level = 1, Data = { PlaytimeSeconds = 0, XP = 0 } })
+	check(Prog.AddXP(r, 30, 30) == 30 and Prog.AddXP(r, 30, 45) == 45 and Prog.AddXP(r, 10, 45) == 20,
+		"the cap holds after the boost (own-amount caps never doubled)")
+	-- gold and the multipliers are untouched
+	check(Prog.AddBankGold(r, 100, "Monster") == 100 and Prog.AddCarriedGold(r, 50, "Quest") == 50,
+		"the first minutes double XP only (gold x1)")
+	check(Prog.GetXPMult(r) == Prog.GetXPMult(p), "GetXPMult leaves the first minutes out (applied once, in the grant)",
+		show({ Prog.GetXPMult(r), Prog.GetXPMult(p) }))
+	-- a kill: the reward line shows the doubled XP that was added
+	w.Reg.MonsterService.MonsterKilled:Fire(r, { Gold = 10, XP = 4, Kind = "Slime", Position = vec(1, 2, 3) })
+	local fx = w.Fx[#w.Fx]
+	check(fx and fx.Kind == "Reward" and fx.Data.XP == 8 and fx.Data.Gold == 10, "a kill in the first minutes: +8 XP shown, +10 gold",
+		show(fx and fx.Data))
+	-- the one-level cap of a kill (A23-27) holds
+	local lv1 = w:Join(604, { Level = 1, Data = { PlaytimeSeconds = 0, XP = 0 } })
+	w.Reg.MonsterService.MonsterKilled:Fire(lv1, { Gold = 0, XP = 100000, Kind = "PumpkinKing", Position = vec(0, 0, 0) })
+	fx = w.Fx[#w.Fx]
+	check(fx.Data.XP == math.floor(C0.XPToNext(1)), "a Lv1 king kill in the first minutes: still one level's XP", fx.Data.XP)
+	-- the switch
+	local w2 = passWorld({ EditConfig = function(c) c.EarlyXP.Enabled = false end })
+	local s = w2:Join(605, { Level = 1, Data = { PlaytimeSeconds = 0, XP = 0 } })
+	check(w2.Prog.EarlyXPLeft(s) == 0 and w2.Prog.AddXP(s, 5) == 5, "EarlyXP.Enabled = false: x1")
+	-- a missing table (an old Config) is off, never an error
+	local w3 = passWorld({ EditConfig = function(c) c.EarlyXP = nil end })
+	local t = w3:Join(606, { Level = 1, Data = { PlaytimeSeconds = 0, XP = 0 } })
+	check(w3.Prog.AddXP(t, 5) == 5, "no Config.EarlyXP: x1")
 end)
 
 finish()

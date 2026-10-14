@@ -273,13 +273,14 @@ def english_checks():
     mb = (ROOT / "src/ServerScriptService/MapBuilder.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     fp_code = "\n".join(line.split("--")[0] for line in fp.splitlines())
     return [
-        ("ClientMain turns AutoLocalize off for every GUI object and ProximityPrompt under PlayerGui and in the world",
-         'if inst:IsA("GuiBase2d") or inst:IsA("ProximityPrompt") then inst.AutoLocalize = false end' in cm
-         and 'watch(game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))' in cm
-         and "task.spawn(watch, workspace)" in cm and cm.index("AutoLocalize") < cm.index("local ORDER = {")),
+        # A23-179 (user 10/14): Roblox's automatic translation is ON again - no game-wide AutoLocalize = false watcher
+        # (the narrow name / number / typed-text list is tools/test_auto_translate.py)
+        ("ClientMain no longer turns AutoLocalize off game-wide (A23-179: Roblox auto translation on)",
+         "AutoLocalize = false" not in "\n".join(line.split("--")[0] for line in cm.splitlines())
+         and "DescendantAdded:Connect(off)" not in cm),
         ("FactionPicker has no Korean in its code (warnings / errors are English)", HANGUL.search(fp_code) is None),
-        ("the Altar of Fate prompt opens on E at once and is never auto-translated (검수 audit 2026-10-08)",
-         "\tprompt.HoldDuration = 0\n\tprompt.AutoLocalize = false\n" in mb[mb.find("local function ensureAltarPrompt(altar)"):]),
+        ("the Altar of Fate prompt opens on E at once and is auto-translated again (A23-179; the saved place had it off)",
+         "\tprompt.HoldDuration = 0\n\tprompt.AutoLocalize = true" in mb[mb.find("local function ensureAltarPrompt(altar)"):]),
     ]
 
 

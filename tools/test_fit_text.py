@@ -32,6 +32,10 @@ MUTATIONS = [
     ("no last pass after a capped burst", "\t\t\t\t\tif not fit.Settle then\n", "\t\t\t\t\tif false then\n"),
     ("the follow-up pass is dropped", "then fit.Pending = false; fit.Request(false) end",
      "then fit.Pending = false end"),
+    # 10/14: a label's own floor (FitMinPx, PC tile names)
+    ("FitMinPx ignored", "math.min(math.floor(minSize), fit.FloorPx or MIN_TEXT_SIZE)",
+     "math.min(math.floor(minSize), MIN_TEXT_SIZE)"),
+    ("FitMinPx never read", 'local floorPx = tonumber(label:GetAttribute("FitMinPx"))', "local floorPx = nil"),
 ]
 
 

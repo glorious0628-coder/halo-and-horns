@@ -50,6 +50,15 @@ local function skillWorld(o)
 		end
 		return table.concat(out, ",")
 	end
+	-- user 10/14: the air casts p made (Fx "Skill" with Air = true, sent to the caster)
+	function w:Air(p, from)
+		local n = 0
+		for i = (from or 0) + 1, #self.Fx do
+			local f = self.Fx[i]
+			if f.Kind == "Skill" and f.Player == p and type(f.Data) == "table" and f.Data.Air == true then n += 1 end
+		end
+		return n
+	end
 	function w:ManaSpent(p, from)
 		local n = 0
 		for i = (from or 0) + 1, #self.Mana do
@@ -103,7 +112,7 @@ runGroup("slots", function()
 	-- before Lv5: Q is refused ('Locked', no MP), the old Release remote too
 	w:Monster("Slime", 4, 0, 9999)
 	w:Use(p1, "Q")
-	check(w:Count("Q") == 0 and w:Press(p1) == "Q:Locked" and w:ManaSpent(p1) == 0, "Lv1: Q is locked ('Locked'), no MP",
+	check(w:Count("Q") == 0 and w:Press(p1) == "" and w:ManaSpent(p1) == 0, "Lv1: Q is locked: silently nothing (user 10/14), no MP",
 		show({ w:Count("Q"), w:Press(p1), w:ManaSpent(p1) }))
 	w:Advance(0.6)
 	w.Net.Get("Release").OnServerEvent:Fire(p1)
@@ -145,14 +154,14 @@ runGroup("slots", function()
 	check(q15:GetAttribute("SkillSlots") == 2, "ZEnabled off: the slot is still saved", q15:GetAttribute("SkillSlots"))
 	w2:Monster("Slime", 8, 0, 9999)
 	w2:Use(q15, "Z")
-	check(w2:Count("Z") == 0 and w2:Press(q15) == "Z:Locked" and w2:ManaSpent(q15) == 0, "ZEnabled off: Z is refused ('Locked'), no MP",
+	check(w2:Count("Z") == 0 and w2:Press(q15) == "" and w2:ManaSpent(q15) == 0, "ZEnabled off: Z silently nothing, no MP",
 		show({ w2:Count("Z"), w2:Press(q15) }))
 	-- not unlocked yet: Lv14
 	local w3 = skillWorld({ Z = true, RealUnlock = true })
 	local q14 = w3:Hero(1, { Level = 14 })
 	w3:Monster("Slime", 8, 0, 9999)
 	w3:Use(q14, "Z")
-	check(w3:Count("Z") == 0 and w3:Press(q14) == "Z:Locked", "Lv14: Z is locked", w3:Press(q14))
+	check(w3:Count("Z") == 0 and w3:Press(q14) == "" and w3:Air(q14) == 0, "Lv14: Z is locked (silently, no air cast)", w3:Press(q14))
 	-- auto combat before the first skill: it swings, but never casts
 	local w4 = skillWorld({ Z = true, RealUnlock = true })
 	local a1 = w4:Hero(1, { Level = 3, Tier = 1, Mask = 1, Class = "Warrior",
@@ -208,7 +217,7 @@ runGroup("gap and queue", function()
 		w:Press(p, f1))
 	-- the gap counts from Q too
 	w:Advance(0.2) -- the queued Q goes off on time: Q is still on its 3 s cooldown
-	check(w:Count("Q") == 2 and w:Press(p, f1) == "Q:Queued,Q:Cooldown", "a queued Q that comes due on cooldown says 'Cooldown'",
+	check(w:Count("Q") == 2 and w:Press(p, f1) == "Q:Queued", "a queued Q that comes due on a long cooldown: silently nothing",
 		w:Press(p, f1))
 	w:Advance(3)
 	w:Use(p, "Q")
@@ -243,30 +252,69 @@ runGroup("refusals", function()
 	w:Advance(3)
 	local f0 = #w.Fx
 	w:Use(p, "Z")
-	check(w:Count("Z") == 1 and w:Press(p, f0) == "Z:Cooldown" and w:ManaSpent(p) == spent, "Z on its 6 s cooldown: 'Cooldown', no MP",
+	check(w:Count("Z") == 1 and w:Press(p, f0) == "" and w:ManaSpent(p) == spent, "Z with 3 s of cooldown left: silently nothing, no MP",
 		show({ w:Press(p, f0), w:ManaSpent(p) }))
+	w:Advance(2.3)
+	w:Use(p, "Z") -- 0.48 s left (more than PressBuffer 0.35)
+	w:Advance(1)
+	check(w:Count("Z") == 1 and w:Press(p, f0) == "", "0.48 s left: silently nothing, never later", show({ w:Count("Z"), w:Press(p, f0) }))
+	w:Use(p, "Z")
+	check(w:Count("Z") == 2, "setup: Z again", w:Count("Z"))
+	spent = w:ManaSpent(p)
+	w:Advance(5.58) -- 0.3 s left after the press's own 0.11 s
+	f0 = #w.Fx
+	w:Use(p, "Z")
+	check(w:Count("Z") == 2 and w:Press(p, f0) == "Z:Queued" and w:ManaSpent(p) == spent, "0.3 s left: 'Queued' (nothing spent yet)",
+		show({ w:Press(p, f0), w:ManaSpent(p) }))
+	w:Advance(0.35)
+	check(w:Count("Z") == 3 and w:ManaSpent(p) == spent + 25, "the queued Z goes off when the cooldown ends", show({ w:Count("Z"), w:ManaSpent(p) }))
+	w:Advance(6.5)
 	w:Advance(3)
 	p:SetAttribute("Mana", 24)
 	f0 = #w.Fx
 	w:Use(p, "Z")
-	check(w:Count("Z") == 1 and w:Press(p, f0) == "Z:NoMP" and w:ManaSpent(p) == spent, "24 MP for a 25 MP skill: 'NoMP', nothing spent",
+	check(w:Count("Z") == 3 and w:Press(p, f0) == "" and w:ManaSpent(p) == spent + 25, "24 MP for a 25 MP skill: silently nothing spent",
 		w:Press(p, f0))
 	p:SetAttribute("Mana", 19)
 	f0 = #w.Fx
 	w:Use(p, "Q")
-	check(w:Count("Q") == 0 and w:Press(p, f0) == "Q:NoMP", "Q with 19 MP: 'NoMP' (before CombatService)", w:Press(p, f0))
+	check(w:Count("Q") == 0 and w:Press(p, f0) == "", "Q with 19 MP: silently nothing (before CombatService)", w:Press(p, f0))
 	p:SetAttribute("Mana", 100)
 	w:Use(p, "Q")
 	w:Advance(1)
 	f0 = #w.Fx
 	w:Use(p, "Q")
-	check(w:Count("Q") == 1 and w:Press(p, f0) == "Q:Cooldown", "Q on its 3 s cooldown: 'Cooldown'", w:Press(p, f0))
+	check(w:Count("Q") == 1 and w:Press(p, f0) == "", "Q with 2 s of cooldown left: silently nothing", w:Press(p, f0))
+	w:Advance(1.6) -- 0.18 s left after the press's own 0.11 s
+	f0 = #w.Fx
+	w:Use(p, "Q")
+	check(w:Count("Q") == 1 and w:Press(p, f0) == "Q:Queued", "Q with 0.18 s left: 'Queued'", w:Press(p, f0))
+	w:Advance(0.35)
+	check(w:Count("Q") == 2, "the queued Q goes off when its cooldown ends", w:Count("Q"))
 	-- Chain needs a target: no MP, no cooldown
 	local m = skillWorld({ Z = true })
 	local mage = m:Hero(1, { Level = 5, Tier = 1, Mask = 1, Class = "Mage" })
 	m:Use(mage, "Z")
-	check(m:Count("Z") == 0 and m:Press(mage) == "Z:NoTarget" and m:ManaSpent(mage) == 0 and (mage:GetAttribute("SkillReadyAtZ") or 0) == 0,
-		"Chain Bolt with nothing in range: 'NoTarget', no MP, no cooldown", show({ m:Press(mage), m:ManaSpent(mage) }))
+	local air = m:FxOf("Skill")
+	local a1 = air[#air] and air[#air].Data or {}
+	check(m:Count("Z") == 0 and m:Press(mage) == "" and m:ManaSpent(mage) == 0 and (mage:GetAttribute("SkillReadyAtZ") or 0) == 0
+		and m:Air(mage) == 1, "Chain Bolt with nothing in range: an air cast (user 10/14) - no MP, no cooldown, never counted",
+		show({ m:Press(mage), m:ManaSpent(mage), m:Air(mage) }))
+	check(a1.Air == true and a1.Shape == "Chain" and a1.Slot == "Z" and a1.Total == 0 and #a1.Hits == 0 and type(a1.Points) == "table"
+		and #a1.Points == 1 and a1.Stole == 0 and #a1.Healed == 0, "the air cast's Fx: the Chain move toward my facing, 0 damage",
+		show({ a1.Shape, a1.Total, a1.Points and #a1.Points }))
+	local p0 = a1.Points and a1.Points[1]
+	check(p0 ~= nil and math.abs(p0.Z + 12) < 0.01 and math.abs(p0.X) < 0.01, "12 studs (AirReach) straight ahead", show(p0 and { p0.X, p0.Z }))
+	m:Use(mage, "Z")
+	check(m:Air(mage) == 1, "a second air cast inside the gap: nothing (Fx spam guard)", m:Air(mage))
+	-- the air cast takes no gap: a real target 0.11 s later casts at once (not 'Queued')
+	local g = skillWorld({ Z = true })
+	local gm = g:Hero(1, { Level = 5, Tier = 1, Mask = 1, Class = "Mage" })
+	g:Use(gm, "Z")
+	g:Monster("Slime", 30, 0, 99999)
+	g:Use(gm, "Z")
+	check(g:Air(gm) == 1 and g:Count("Z") == 1 and g:Press(gm) == "" and g:ManaSpent(gm) == 25,
+		"the air cast takes no gap: a target right after casts at once", show({ g:Air(gm), g:Count("Z"), g:Press(gm) }))
 	m:Monster("Slime", 30, 0, 99999)
 	m:Use(mage, "Z")
 	check(m:Count("Z") == 1 and m:ManaSpent(mage) == 25, "a monster 30 studs ahead: the chain goes (MP 25)", m:Count("Z"))
@@ -275,7 +323,13 @@ runGroup("refusals", function()
 	local mage2 = b:Hero(1, { Level = 5, Tier = 1, Mask = 1, Class = "Mage" })
 	b:Monster("Slime", -36, 0, 99999)
 	b:Use(mage2, "Z")
-	check(b:Count("Z") == 0 and b:Press(mage2) == "Z:NoTarget", "a monster behind beyond 35 studs is no target", b:Press(mage2))
+	check(b:Count("Z") == 0 and b:Press(mage2) == "" and b:Air(mage2) == 1 and b:ManaSpent(mage2) == 0,
+		"a monster behind beyond 35 studs is no target: an air cast", b:Press(mage2))
+	-- auto combat never casts into the air
+	local au = skillWorld({ Z = true })
+	local am = au:Hero(1, { Level = 5, Tier = 1, Mask = 1, Class = "Mage" })
+	check(au.Skills.Cast(am, "Z", true) == false and au:Air(am) == 0 and au:ManaSpent(am) == 0, "an auto Z with no target: nothing (no air cast)",
+		au:Air(am))
 	-- SKL-3: with XEnabled the Warrior's X is Guardian Roar (MP 30); its rules are in tools/test_skills_x.py
 	local x = skillWorld({ Z = true, X = true })
 	local px = x:Hero(1, { Level = 9, Tier = 1, Mask = 1 })
@@ -755,8 +809,8 @@ runGroup("aim behind", function()
 	local atk2 = v2:Hero(1, { Level = 5, Tier = 1, Mask = 1, Class = "Mage", Faction = "Halo" })
 	local vic2 = v2:Hero(2, { Level = 5, Tier = 1, Mask = 1, Class = "Warrior", Faction = "Horns", Pos = vec(0, 0, 20) })
 	v2:Use(atk2, "Z")
-	check(v2:Count("Z") == 0 and v2:Press(atk2) == "Z:NoTarget" and vic2.Character:FindFirstChild("Humanoid").Health == 100,
-		"only an enemy behind: 'No target' (players never pull the aim)", v2:Press(atk2))
+	check(v2:Count("Z") == 0 and v2:Press(atk2) == "" and v2:Air(atk2) == 1 and vic2.Character:FindFirstChild("Humanoid").Health == 100,
+		"only an enemy behind: an air cast (players never pull the aim), nobody hurt", v2:Press(atk2))
 	-- auto: a slime behind is in reach for an auto Meteor / Chain Bolt
 	local a = skillWorld({ Z = true })
 	a:Hero(1, { Level = 5, Tier = 1, Mask = 1, Class = "Mage", Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true } })

@@ -1033,6 +1033,7 @@ local function buildPool()
 		})
 		local gui = Instance.new("BillboardGui")
 		gui.Name = "Number"
+		gui.AutoLocalize = false -- A23-179: numbers stay as they are (spawnNumber turns it on for a loot line's words)
 		gui.Adornee = part
 		gui.AlwaysOnTop = true
 		gui.LightInfluence = 0
@@ -1123,6 +1124,7 @@ local function spawnNumber(worldPos, text, color, scale, pop, merge, look)
 	e.Life = look and math.clamp(asNum(look.Life, NUMBER_LIFE), 0.5, 4) or nil
 	e.Wide = look and math.clamp(asNum(look.Wide, 1), 1, 3) or nil
 	e.Gui.SizeOffset = Vector2.new(0, look and math.clamp(asNum(look.Stack, 0), 0, 8) or 0)
+	e.Gui.AutoLocalize = look ~= nil -- A23-179: a loot line (item words) is translated, a number is not
 	e.Part.CFrame = CFrame.new(worldPos)
 	e.Label.Text = tostring(text or "")
 	e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE
@@ -1169,6 +1171,7 @@ end
 -- style = { Key, Prefix?, Suffix?, Color, Scale, Pop?, Crit? }
 local function showAmount(worldPos, amount, style)
 	if typeof(worldPos) ~= "Vector3" or not nearCamera(worldPos) then return end
+	if MOTION.IsDamageKey(style.Key) and not MOTION.DamageNumbersOn() then return end -- 2-C #9 Settings DmgNum
 	amount = asNum(amount, 0)
 	local ok, err = pcall(function()
 		ensurePool()
@@ -4187,7 +4190,7 @@ handlers.Release = function(data)
 			showHits(data.Hits, own, true, data.Auto ~= true and { Stop = classId == "Warrior", Kick = true } or nil)
 			local total = asNum(data.Total, 0)
 			local top = pos + Vector3.new(0, 6, 0)
-			if total > 0 then
+			if total > 0 and MOTION.DamageNumbersOn() then
 				-- A9-2: my Release numbers pop (PopScale -> 1 in PopTime)
 				Fx.ShowNumber(top, Util.FormatNumber(total), own and COLOR_GOLD or WHITE, HUGE_SCALE, { Pop = own })
 			end
@@ -4633,6 +4636,18 @@ function MOTION.EdgeStep()
 		f.BackgroundColor3 = COLOR_HURT
 		f.BackgroundTransparency = t
 	end
+end
+
+-- 2-C #9 (최종 검수 10/14): the Settings row "Damage numbers" (DmgNum "All" | "Off") - saved since BB2 but never read
+-- until now. Off hides every damage number (my hits M / PvP P, the Release total, the hits I take H); gold / XP / loot
+-- lines (G, RG, RX, ShowNumber gold) stay
+MOTION.DamageKeys = { M = true, P = true, H = true }
+function MOTION.IsDamageKey(key)
+	return type(key) == "string" and MOTION.DamageKeys[string.sub(key, 1, 1)] == true
+end
+
+function MOTION.DamageNumbersOn()
+	return MOTION.Pref("DmgNum", "All") ~= "Off"
 end
 
 function MOTION.ShakeAllowed()
