@@ -34,6 +34,7 @@ local INIT_ORDER = {
 	"DayCycleService", -- 게임성 개발 2: A23-105 the day and the weather (a crown-war sky covers its look, the clock turns on)
 	"CodexService", -- 게임성 개발 2: A23-153 the monster codex (listens to MonsterKilled; pays through ProgressionService)
 	"TestMetricsService", -- 게임성 개발 2: A23-160 the private test's numbers board (read-only observer)
+	"VillageFundService", -- 게임성 개발 2: A23-178 the village fund (the fountain gifts, the week's sums)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -63,6 +64,7 @@ local START_ORDER = {
 	"DayCycleService", -- 게임성 개발 2: A23-105 (after WarService, whose Start bootstraps the light and hands Neutral to it)
 	"CodexService", -- 게임성 개발 2: A23-153 (before PlayerService too: it listens to PlayerReady)
 	"TestMetricsService", -- 게임성 개발 2: A23-160 (before PlayerService too: it listens to PlayerReady)
+	"VillageFundService", -- 게임성 개발 2: A23-178 (after SwitchService: it asks the switch VillageFund)
 	"PlayerService",
 }
 

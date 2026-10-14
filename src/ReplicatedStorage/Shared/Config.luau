@@ -1395,6 +1395,50 @@ Config.HuntFame = {
 	},
 }
 Config.Data.Defaults.HuntFame = 0
+
+-- A23-178 (user 2026-10-14 "마을 기금은 좋아"; contract docs/design/village_fund_server_2026-10-14.md): the village fund, a gold
+-- sink with no power. A Halo child gives Step gold at the Halo town fountain ('Share'), a Horns child at the Horns town
+-- fountain ('Show off'); each gift = Points of the own score (Honor / Infamy, shown as Mischief) through
+-- PlayerService.GrantFame (ctx Fund: never on the weekly boards), at most PerDay gifts a KST day (Config.DayIndex, the
+-- attendance day). Neutral / no side: no fund. A side's weekly sum over every server (DataStore Store, key "W<week>",
+-- merged by adding) lights its town: >= Goals.Lanterns = lanterns, >= Goals.Fireworks = lanterns + night fireworks (looks
+-- only; round sparkles, never rays). Spots[side] = nil = that side has no fund yet (Horns until its town is rebuilt,
+-- A23-155). The live switch VillageFund stops new gifts only. Spot Pos = the pool centre; the prompt sits there.
+Config.VillageFund = {
+	Enabled = true,
+	Step = 1000,
+	PerDay = 3,
+	Points = 1,
+	Spots = {
+		-- review 10/14: the spot is the pivot of the model Town_Halo_Fountain3 wherever it stands (today's main place:
+		-- Map/Decor/HaloProps/Cell_0_-9, pivot (34.55, 20, -566), the plaza at Y 20; the stage-6 map moves it to (22, 10, -590),
+		-- halo_fixed_points_v2); Pos = the fallback until the model is found. The prompt sits Lift studs above it and
+		-- reaches Radius studs
+		Halo = { Model = "Town_Halo_Fountain3", Pos = Vector3.new(34.55, 20, -566), Lift = 3, Radius = 16, Zone = "HaloTown" },
+		-- Horns: off until the Horns town is rebuilt (A23-155; final review 10/14)
+	},
+	Goals = { Lanterns = 30000, Fireworks = 100000 }, -- a side's weekly sum (gold); tune after the 10/17~20 test
+	Store = "HaloHorns_VillageFund_v1",
+	FlushSeconds = 60, -- x0.5..1.5: this server's unsaved gifts are added to the week's document
+	ReadSeconds = 60, -- the week's document is read again (the shown sums = stored + this server's unsaved)
+	CloseWait = 20, -- s the close waits for a weekly write still running before it writes the rest
+	Stat = { Halo = "Honor", Horns = "Infamy" },
+	Text = {
+		Halo = { Prompt = "Share gold", Give = "Share %s gold", Done = "You shared %s gold! Honor +%d",
+			Lanterns = "Halo Citadel's lanterns are lit!", Fireworks = "Fireworks over Halo Citadel tonight!" },
+		Horns = { Prompt = "Show off gold", Give = "Show off %s gold", Done = "You showed off %s gold! Mischief +%d",
+			Lanterns = "Horns Den's lanterns are lit!", Fireworks = "Fireworks over Horns Den tonight!" },
+		Title = "Village Fund",
+		Today = "Today %d/%d",
+		Poor = "You need %s gold.",
+		Full = "That's %d for today. Come back tomorrow!",
+		Closed = "The fund is closed right now.",
+	},
+}
+-- the player's fund record (additive keys): the KST day of the last gift, gifts that day, all gold given
+Config.Data.Defaults.FundDay = 0
+Config.Data.Defaults.FundToday = 0
+Config.Data.Defaults.FundGiven = 0
 -- A23-135: kill units toward the next whole personal crown point (WarService.AddKill), additive, kept over rounds and
 -- sessions; a side switch clears it
 Config.Data.Defaults.CrownUnits = 0
@@ -5285,6 +5329,8 @@ Config.Switches = {
 		-- value until this server's first good read of the board (review 10/14: a new server after the launch, or a
 		-- DataStore outage, must never hand out the title on the Default)
 		PioneerTitle = { Type = "Bool", Default = true, Unread = false },
+		-- A23-178: off = no new village fund gifts (the week's sums and the town lights stay)
+		VillageFund = { Type = "Bool", Default = true },
 	},
 }
 
@@ -8523,6 +8569,19 @@ Config.ChoiceCard.Screen = {
 	-- the score names on the card (the cards send the stat key; A23-166: Infamy shows as "Mischief", the key stays)
 	Stat = { Honor = "Honor", Infamy = "Mischief" },
 }
+-- A23-178 B (게임성 개발 1, 2026-10-14; contract docs/design/village_fund_server_2026-10-14.md §8): the village fund card's
+-- own extra words (VillageFundUI). Title, Today, the [Give] words, Poor / Full / Closed, the prompt and the notices - and
+-- every number - live in Config.VillageFund.Text (게임성 개발 2); this table is the rest of the card. Lead: %d = points.
+Config.VillageFundScreen = {
+	Lead = { Halo = "Share gold with Halo Citadel. Honor +%d each time.", Horns = "Show off your gold in Horns Den. Mischief +%d each time." },
+	Far = "Walk up to the fountain.", -- [Give] is grey past the fountain's reach (the server takes gifts only inside it)
+	Gold = "Your gold: %s",
+	Close = "Close",
+	Week = "Town this week: %s gold",
+	Marks = "%s %s · %s %s", -- (lanterns word, goal, fireworks word, goal)
+	Lanterns = "Lanterns",
+	Fireworks = "Fireworks",
+}
 -- A23-86 D (content_beyond_10min D): the monster kill record from the first beta day (KillLog.luau). Additive save field
 -- (Version stays 3): KillLog = { Total, M (by hand), A (auto combat), Golden, ByKind = { [monster kind] = n },
 -- ByTier = { ["tier"] = { M, A } } }. The sticker book screen comes 11/04; nothing is paid for it here.
@@ -9696,6 +9755,7 @@ for i, page in Config.Codex.Pages do
 end
 Config.Data.Defaults.Codex = {} -- save v5 (the version step: DataService.migrate)
 Config.RateLimits.CodexOpen = 1 -- c->s "CodexOpen" (no arguments): the answer is the "Codex" snapshot
+Config.RateLimits.FundGive = 1 -- A23-178 c->s "FundGive" (no arguments): one village fund gift (VillageFundService)
 Config.PassBoost.GoldSources.Codex = true -- earned gold (the 2x Gold pass doubles it)
 Config.TitleDefs.SlimeScholar = { Name = "Slime Scholar", NameEn = "Slime Scholar", Color = Color3.fromRGB(140, 220, 140) }
 Config.TitleDefs.GoblinScholar = { Name = "Goblin Scholar", NameEn = "Goblin Scholar", Color = Color3.fromRGB(170, 200, 90) }

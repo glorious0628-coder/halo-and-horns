@@ -85,9 +85,17 @@ Net.Names = {
 	-- s->c owner only, one per moment: { Event = "Card" | "Silver" | "Holo" | "Golden" | "Page" | "Glow", Kind?, Stage?,
 	-- Card? = { Kills, Golden, Stage, First }, Gold, XP (added), Title?, Page?, Key, Args, Text, Debug? }
 	"CodexUp",
+	-- 게임성 개발 2 (2026-10-14) A23-178 the village fund (VillageFundService, docs/design/village_fund_server_2026-10-14.md):
+	"FundGive", -- c->s, no arguments (anything sent is ignored): one gift of Config.VillageFund.Step at my side's fountain
+	-- s->c owner only { Faction, Today, PerDay, Step, Gold, Can, Why?, Week, Sum, Goals, Level }: after the fountain prompt
+	-- and after every gift (Why = "Poor" | "Full" | "Closed" when Can is false)
+	"FundOpen",
 }
 
 Net.GameStateDefaults = {
+	-- A23-178 VillageFundService: this week's fund sums (every server, + this server's unsaved) and the town light level
+	-- (0 none, 1 lanterns, 2 lanterns + night fireworks); FundWeek = Config.WeekIndex of the sums
+	FundWeek = 0, FundHalo = 0, FundHorns = 0, FundLevelHalo = 0, FundLevelHorns = 0,
 	-- WarService
 	WarHaloScore = 0, WarHornsScore = 0, WarRoundEndsAt = 0, WarMode = "Idle", WarBlessing = "None",
 	-- FactionService

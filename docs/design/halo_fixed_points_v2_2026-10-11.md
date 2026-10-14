@@ -31,6 +31,7 @@
 | 훈련장 표시 (새) | 없음 | `Vector3.new(-130, 2, -446)` (Landmark `TrainingYard` + 허수아비 표적; M1_4 귀환 뒤 들르는 곳 — 퀘스트가 가리키게 할지는 코드 변경 요청, 검수 결정) | 새 Landmark, 게임성 개발 |
 | 폭포 소리 | 6곳 (±188,3,-493) (±190,7,-582) (±190,11,-660) | 3곳 `Vector3.new(-85, 1, -340), Vector3.new(-38, 21, -699), Vector3.new(288, 12, -641)` (W1 성문 서쪽 1단 → 바다, W2 계단 폭포 3단, W3 동쪽 절벽 2단) — 또는 `Map.Decor` 바로 아래 이름이 `…Waterfall`인 것 | `Config.Audio.Ambient.Waterfall.Spots` (5576) |
 | 분수 | (22,..) 옛 | 풀 중심 `Vector3.new(22, 10, -590)`, 반지름 9 (2단, 이름 `Town_Halo_Fountain3`) | 새 분수 모델(5단계) |
+| 마을 기금 자리 (A23-178, 10/14) | `Config.VillageFund.Spots.Halo.Pos` (34.55, 20, -566) = 지금 main의 분수 피벗(대체값) | 서버가 `Town_Halo_Fountain3` 모델을 찾아 그 피벗을 씀 → 6단계 교체 때 고칠 것 없음(대체값만 (22, 10, -590)으로 바꿔 둬도 됨) | `VillageFundService` resolveSpots |
 
 ## C. 넓힘 (땅이 커졌다: x -300..295, z -853..-325)
 
