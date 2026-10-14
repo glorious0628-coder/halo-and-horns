@@ -56,8 +56,9 @@ MUTATIONS = [
      "\t\tif true then\n\t\t\trecord._manualAt = record._manualAt or {}\n"),
     ("Manual ignores the window", M, "i.Manual = manualAt[e.Player] ~= nil and now - manualAt[e.Player] <= window",
      "i.Manual = manualAt[e.Player] ~= nil"),
-    ("the kill keeps the manual hits", M, "rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt = {}, {}, {}, {}, {}",
-     "rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}"),
+    ("the kill keeps the manual hits", M,
+     "rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt, rec._firstAt = {}, {}, {}, {}, {}, {}",
+     "rec._contributors, rec._hits, rec._dmg, rec._share, rec._firstAt = {}, {}, {}, {}, {}"),
     ("a refused hit marked manual", M, "\tif record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then return false end",
      "\tif record.Owner == nil and player and zoneIdOf(player) ~= record.ZoneId then\n"
      "\t\tif manual == true then record._manualAt = record._manualAt or {}; record._manualAt[player] = os.clock() end\n"
@@ -163,6 +164,16 @@ MUTATIONS = [
     ("the Slime Prince gives a card", C, "\tKinds = {},", "\tKinds = { BigSlime = true },"),
     ("the card back on before its window", C, "\tKinds = {},", "\tKinds = { SlimeKing = true, CaptainClatter = true },"),
     ("cap 50", C, "Config.Deeds = {\n\tPerDay = 6,", "Config.Deeds = {\n\tPerDay = 50,"),
+    # A23-181: one first hitter a kill
+    ("first hit: the finisher is First", M, "\t\ti.First = e.Player == firstP -- A23-181\n",
+     "\t\ti.First = e.Player == player -- A23-181\n"),
+    ("first hit: everyone is First", M, "\t\ti.First = e.Player == firstP -- A23-181\n", "\t\ti.First = true -- A23-181\n"),
+    ("first hit: the latest hitter wins", M, "\t\tif firstP == nil or n < firstN then firstP, firstN = cand.Player, n end\n",
+     "\t\tif firstP == nil or n > firstN then firstP, firstN = cand.Player, n end\n"),
+    ("first hit: the time moves with every hit", M, "\t\tif record._firstAt[player] == nil then\n",
+     "\t\tif true then\n"),
+    ("first hit: an out-of-window first hitter keeps it", M, "\tfor _, cand in eligible do\n\t\tlocal n = tonumber(firstAt[cand.Player]) or math.huge",
+     "\tfor q in firstAt do\n\t\tlocal cand = { Player = q }\n\t\tlocal n = tonumber(firstAt[cand.Player]) or math.huge"),
 ]
 
 

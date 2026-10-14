@@ -528,7 +528,13 @@ function WarService.Init(registry)
 	if S.MonsterService and S.MonsterService.MonsterKilled then
 		S.MonsterService.MonsterKilled:Connect(function(player, info)
 			if type(info) == "table" then
-				WarService.AddKill(player, info.WarPoints, info.WarShare) -- kill units; CR-M18: pool share per contributor
+				-- A23-181: a shared kill's crown units go to its first hitter only (info.First; nil = an older caller: as
+				-- before), the whole kill (no pool split: nobody else is credited)
+				if info.First == true then
+					WarService.AddKill(player, info.WarPoints, info.WarPoints)
+				elseif info.First == nil then
+					WarService.AddKill(player, info.WarPoints, info.WarShare) -- kill units; CR-M18: pool share per contributor
+				end
 			end
 		end)
 	else

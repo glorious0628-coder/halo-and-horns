@@ -1567,7 +1567,7 @@ local function killRecord(rec)
 	if rec.Quiet == true then
 		-- A23-110: a quiet personal monster (FirstKOService's King) pays nothing and counts nowhere; its service hears it
 		rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}
-		rec._manualAt = nil
+		rec._manualAt, rec._firstAt = nil, nil
 		deathPop(rec, true)
 		removePersonalRef(rec)
 		if rec._onKilled then
@@ -1650,7 +1650,16 @@ local function killRecord(rec)
 	end
 	rec.FactionDamage = sideDmg
 	local manualAt = type(rec._manualAt) == "table" and rec._manualAt or {}
-	rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt = {}, {}, {}, {}, {}
+	-- A23-181 (user 10/14: 같이 잡은 몹의 사냥 명예·처치 수는 처음 친 사람 한 명에게): of the players this kill pays, the one
+	-- who hit it first gets info.First = true (HuntFameService / WarService count only that one); a first hitter who left
+	-- or fell out of the window = the earliest of those still paid. Drops, XP, gold, quests, codex, pets: every one as before
+	local firstAt = type(rec._firstAt) == "table" and rec._firstAt or {}
+	local firstP, firstN = nil, math.huge
+	for _, cand in eligible do
+		local n = tonumber(firstAt[cand.Player]) or math.huge
+		if firstP == nil or n < firstN then firstP, firstN = cand.Player, n end
+	end
+	rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt, rec._firstAt = {}, {}, {}, {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
 		i.WarShare = info.WarPoints / math.max(1, perFaction[e.Faction] or 1)
@@ -1662,6 +1671,7 @@ local function killRecord(rec)
 		for _, o in eligible do
 			if o.Player ~= e.Player then table.insert(i.Others, o.Player) end
 		end
+		i.First = e.Player == firstP -- A23-181
 		MonsterService.MonsterKilled:Fire(e.Player, i)
 	end
 	-- the free riders' small share (MinorShare of XP / gold only; LootService rolls nothing for info.Minor)
@@ -1672,6 +1682,7 @@ local function killRecord(rec)
 		i.WarPoints, i.WarShare = 0, 0
 		i.Manual, i.SkillHit = false, false
 		i.Party, i.Others = #eligible, {}
+		i.First = false -- A23-181: a free rider is never the first hitter's credit
 		MonsterService.MonsterKilled:Fire(p, i)
 	end
 
@@ -1713,6 +1724,12 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 	if record._hidden then MOB3.Show(record) end -- A23-87: a hit flower slime pops out
 	if player then
 		record._contributors[player] = os.clock()
+		-- A23-181: when each player FIRST hit it (the kill's hunt honor / crown units go to one player: the earliest)
+		record._firstAt = record._firstAt or {}
+		if record._firstAt[player] == nil then
+			record._firstSeq = (record._firstSeq or 0) + 1
+			record._firstAt[player] = record._firstSeq
+		end
 		if manual == true then
 			record._manualAt = record._manualAt or {}
 			record._manualAt[player] = os.clock()

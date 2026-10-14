@@ -62,7 +62,7 @@ local function crownWorld(o)
 		local units = opts.Golden and C.War.GoldenPoints or C.War.MonsterPoints
 		self.Reg.MonsterService.MonsterKilled:Fire(p, { Kind = opts.Kind or "Slime", ZoneId = opts.Zone or "SlimeMeadow",
 			Golden = opts.Golden == true, WarPoints = opts.Personal and 0 or units, WarShare = opts.Share or units,
-			Personal = opts.Personal == true, Practice = opts.Practice, Minor = opts.Minor })
+			Personal = opts.Personal == true, Practice = opts.Practice, Minor = opts.Minor, First = opts.First })
 	end
 	function w:Kills(p, n, opts) for _ = 1, n do self:Kill(p, opts) end end
 	function w:Round() -- past the round end, one tick
@@ -317,6 +317,23 @@ runGroup("hunt fame", function()
 	check(H.Counts(12, "CrystalWoods") and not H.Counts(25, "CrystalWoods") and H.Counts(5, "CoralCoast") and not H.Counts(12, "CoralCoast")
 		and H.Counts(5, "HauntedHollow") and H.Counts(5, "PumpkinPatch") and not H.Counts(12, "PumpkinPatch"),
 		"Crystal Cave Woods counts for Lv12; Coral Coast / Haunted Hollow for the meadow levels", "")
+end)
+
+-- A23-181: a shared kill's hunt honor and crown units go to its first hitter only
+runGroup("first hitter", function()
+	local w = crownWorld()
+	local p, pd = hero(w, 1, "Halo", 5)
+	local q, qd = hero(w, 2, "Halo", 5)
+	w:Kills(q, 40, { First = false, Share = 0.5 })
+	check(w.War.GetKillUnits(q) == 0 and (qd.HuntFame or 0) == 0, "First = false: no crown units, no hunt honor units",
+		show({ w.War.GetKillUnits(q), qd.HuntFame }))
+	w:Kills(p, 40, { First = true, Share = 0.5 })
+	check(w.War.GetKillUnits(p) == 40 * w.Config.War.MonsterPoints and pd.HuntFame == 40,
+		"First = true: the whole kill's units (no pool split), hunt honor counted", show({ w.War.GetKillUnits(p), pd.HuntFame }))
+	local r, rd2 = hero(w, 3, "Halo", 5)
+	w:Kills(r, 3)
+	check(w.War.GetKillUnits(r) == 3 * w.Config.War.MonsterPoints and rd2.HuntFame == 3, "First = nil (an older caller): counted as before",
+		show({ w.War.GetKillUnits(r), rd2.HuntFame }))
 end)
 
 runGroup("hunt fame off", function()
