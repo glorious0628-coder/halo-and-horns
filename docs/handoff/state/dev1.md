@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 13 — fix/skill-press-gate 097d69c2 (다 됨·push, 최신)
+- A23-180(사용자 "서버가 거절을 안 하게 해야지"; 서버 개발 2 fix/skill-no-reject 5bd777c5). SkillBar: 거절 글·흔들기·떠오르는 말 라벨·OnPress·skillWord·No 소리 전부 삭제. 새 순수 SkillBar.Gate(st, buffer): 안 배움 / MP 부족 / 재사용 > PressBuffer(Config.Skills.PressBuffer, 없으면 0.35) / Hop 칸(Shape Hop)에서 짐(SackGold>0, KaijuState Siren·Active, EggCarry>0) → 안 보냄·말 없음; 0.35초 이하 남음 → 보냄. 짐이면 Hop 칸 흐림(MP 부족처럼), SackGold·KaijuState·EggCarry 바뀌면 다시 칠함. 잠금 그림 옆 'Lv N' 글 숨김. Config.Skills.Text NotReady·NotNow 삭제. SkillPress Fx는 이제 아무것도 안 그림(Hop Fx는 그대로).
+- 남긴 것: 첫 스킬 전 스킬 키 → "Skills come at Lv N" 토스트(A23-71 LEARN.Tell, test_skill_learn이 지킴) — 버튼 거절 글이 아니라 배우기 안내라 둠(최종 검수 판단 대기).
+- 시험: test_skill_press 31·18/18(새로 씀: 게이트 4조건, 0.35 경계, 짐 3종, 말·소리 없음, 서버 답 무표시), skill_learn 27/27, skills, skills_x, skill_fx 109·18/18, skill_book 67·32/32, skill_signals, hud_layout, phone_first10, english, l10n, first_ko, story_text 통과. fix/skill-no-reject와 합친 임시판에서 skill_press·skills·skill_learn 통과. main·서버 가지 merge-tree 깨끗.
+
 ## 10/14 밤 12 — fix/settings-apply 7ab6e07e (다 됨·push, 최신)
 - 병합됨: skill-press-reject(0783dbbd), auto-translate-on(bcde9e91), 마을 기금(e35d32b9).
 - fix/settings-apply = fe85439a(연결) + be336a32(설정 창 두 줄) + 1d04f52c(NameTagPrefs 강한 표 + ApplyAll 때 각 플레이어 Head Nametag 다시 찾기) + main 병합 9345953f + 8c60718e 자동 번역 후속 + main 병합 7ab6e07e(ClientMain ORDER: ChatTags, NameTagPrefs … VillageFundUI 둘 다).
