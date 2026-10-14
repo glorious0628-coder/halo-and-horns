@@ -65,6 +65,7 @@ local L = {
 	Fallback = { "Armor", "Ring", "PetArmor", "PetAcc" }, -- the empty cells drawn when there is no GearSlots
 	RowH = 74, Icon = 52, ButtonW = 112, BtnH = 40,
 	StatH = 26, StatLabelW = 200,
+	StatBtnW = 110, StatBtnH = 32, StatPlusW = 44, StatNameW = 90, HuntBarH = 10, -- 최종 검수 10/15: the point panel / hunt bar
 	CardW = 132, CardH = 50, CardIcon = 26, TraitW = 132, TraitH = 28, -- the Stats tab's cards and chips (ref_rpg_ui #5)
 	RibbonH = 34, BarH = 18, BarIcon = 22, -- the title ribbon and the next rank bar (ref_rpg_ui #9)
 	-- the locked titles (CharacterUI.LockedTitles): past / season ones left out, side ones only for that side, at most this many
@@ -85,7 +86,8 @@ local L = {
 CharacterUI.Watch = { Level = true, Class = true, Faction = true, WeaponTier = true, WeaponOwnedMask = true, WeaponEnhance = true,
 	CombatPower = true, Nickname = true, EquippedPet = true, PetLv = true, TitleSel = true, TitlesOwned = true, SizeMult = true, BullyStacks = true,
 	WantedStars = true, RevengeUntil = true, Rebirths = true, RebirthBonus = true, FallMarks = true, RedeemMarks = true,
-	Honor = true, Infamy = true, MaxMana = true, InCombatUntil = true, StatAtk = true, StatHp = true, DataLoaded = true }
+	Honor = true, Infamy = true, MaxMana = true, InCombatUntil = true, StatAtk = true, StatHp = true, DataLoaded = true,
+	StatFree = true, AutoStat = true, HuntFame = true }
 
 local S = {
 	Ready = false,
@@ -295,9 +297,70 @@ end
 -- -> rows { Kind = "Head" | "Card" | "Chip" | "Row", Id?, Icon?, Label?, Value?, Text? }; a value with no source leaves its
 -- row out. 최종 검수 10/13 (ref_rpg_ui #5: the text wall): the core numbers are cards (an icon, the number, one word), the
 -- class / side traits and the effects on now are short chips made from the numbers ("XP +30%"), no perk sentences
+-- (pure) 최종 검수 10/15 (계획 5, 2-C #3; StatService dev2-stats3): the Stats tab's point panel - nil while
+-- Config.Features.StatPoints is off (no 'soon': hidden). ctx: StatOn, StatAtk, StatHp, StatFree, AutoStat, PowerNow,
+-- PowerWith(a, h) -> the power with that split. -> { Free, Auto, CanReset, Rows = { { Letter, Name, Points, Line, Next,
+-- CanAdd, CanAdd5 } A, H } }
+function CharacterUI.StatPanel(ctx)
+	if type(ctx) ~= "table" or ctx.StatOn ~= true then return nil end
+	local ST = type(Config.Stats) == "table" and Config.Stats or {}
+	local W = type(ST.Text) == "table" and ST.Text or {}
+	local a, h = math.max(0, math.floor(num(ctx.StatAtk, 0))), math.max(0, math.floor(num(ctx.StatHp, 0)))
+	local free = math.max(0, math.floor(num(ctx.StatFree, 0)))
+	local auto = ctx.AutoStat ~= false
+	local now = math.floor(num(ctx.PowerNow, 0))
+	local out = { Free = free, Auto = auto, CanReset = not auto and (a + h) > 0, Rows = {} }
+	for _, letter in { "A", "H" } do
+		local pts = letter == "A" and a or h
+		local with = nil
+		if type(ctx.PowerWith) == "function" then
+			local ok, v = pcall(ctx.PowerWith, letter == "A" and a + 1 or a, letter == "H" and h + 1 or h)
+			if ok and type(v) == "number" then with = math.floor(v) end
+		end
+		local maxed = pts >= (tonumber(ST.MaxPoints) or 99)
+		table.insert(out.Rows, { Letter = letter, Name = type(W.Names) == "table" and tx(W.Names, letter) or letter, Points = pts,
+			Line = tx(W, "Points", pts, pct(Config.StatBonus(pts))),
+			Next = (with and not maxed) and tx(W, "NextPower", Util.FormatInt(now), Util.FormatInt(with)) or nil,
+			CanAdd = not auto and free >= 1 and not maxed, CanAdd5 = not auto and free >= 2 and not maxed })
+	end
+	return out
+end
+
+-- (pure) the hunting fame bar (HuntFameService's units toward the next point; attribute HuntFame) - nil without it, for
+-- Neutral / None, or while Config.HuntFame is off. -> { Have, Per, Frac, Label, Value }
+function CharacterUI.HuntBar(ctx)
+	local HF = Config.HuntFame
+	if type(ctx) ~= "table" or type(HF) ~= "table" or HF.Enabled == false then return nil end
+	if ctx.Faction ~= "Halo" and ctx.Faction ~= "Horns" then return nil end
+	local have = tonumber(ctx.HuntFame)
+	if have == nil or have ~= have then return nil end
+	local per = math.max(1, math.floor(num(HF.KillsPerPoint, 100)))
+	have = math.clamp(math.floor(have), 0, per)
+	local W = type(Config.Stats) == "table" and type(Config.Stats.Text) == "table" and Config.Stats.Text or {}
+	return { Have = have, Per = per, Frac = have / per, Label = tx(W, "Hunt"), Value = tx(W, "HuntValue", have, per) }
+end
+
+-- c->s StatAction(op, arg) (StatService: "add" / "add5" "A" | "H", "reset", "auto" true | false); Auto on asks first
+function CharacterUI.StatAction(op, arg)
+	if not VIEW.Kit then return false end
+	if op == "auto" and arg == true then
+		local W = type(Config.Stats) == "table" and type(Config.Stats.Text) == "table" and Config.Stats.Text or {}
+		if type(VIEW.Kit.Confirm) == "function" then
+			VIEW.Kit.Confirm(tx(W, "AutoAsk"), tx(W, "AutoAskBody"), tx(W, "AutoAskOk"), function() send("StatAction", nil, "auto", true) end)
+			return true
+		end
+	end
+	return send("StatAction", nil, op, arg)
+end
+
 function CharacterUI.StatRows(ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	local rows = {}
+	-- 최종 검수 10/15: the point panel and the hunting fame bar first (each only when it applies)
+	local panel = CharacterUI.StatPanel(ctx)
+	if panel then table.insert(rows, { Kind = "StatPanel", Id = "Points", Panel = panel }) end
+	local hunt = CharacterUI.HuntBar(ctx)
+	if hunt then table.insert(rows, { Kind = "HuntBar", Id = "Hunt", Bar = hunt }) end
 	local function head(id) table.insert(rows, { Kind = "Head", Id = id, Text = tx(TXT.Heads, id) }) end
 	local function row(id, value) table.insert(rows, { Kind = "Row", Id = id, Label = tx(TXT.Stat, id), Value = value }) end
 	local function card(id, icon, value)
@@ -446,7 +509,11 @@ local function context()
 		Owned = tostring(attr("TitlesOwned", "")), Sel = tostring(attr("TitleSel", "")),
 		-- 최종 검수 10/13 (ref_rpg_ui #1): the power's two parts and what goes into them
 		Attack = parts and parts.A or 0, Health = parts and parts.H or 0, Plus = math.floor(plus),
-		Alloc = okAl and alloc or nil, Gear = okG and { A = ga, H = gh } or nil }
+		Alloc = okAl and alloc or nil, Gear = okG and { A = ga, H = gh } or nil,
+		-- 최종 검수 10/15: the point panel (StatService) and the hunting fame bar (HuntFameService)
+		StatOn = Config.FeatureOn("StatPoints"), StatAtk = num(attr("StatAtk"), 0), StatHp = num(attr("StatHp"), 0),
+		StatFree = num(attr("StatFree"), 0), AutoStat = attr("AutoStat") ~= false, HuntFame = attr("HuntFame"),
+		PowerWith = function(a, h) return Config.CombatPowerOf(LocalPlayer, nil, nil, nil, { A = a, H = h }) end }
 end
 
 ---------------------------------------------------------------------------------------------------- requests
@@ -1030,6 +1097,13 @@ local function drawStats(frame, rows)
 		end
 		group, groupKind = nil, nil
 		order += 1
+		if r.Kind == "StatPanel" then
+			CharacterUI.DrawPanel(frame, r.Panel, order)
+			continue
+		elseif r.Kind == "HuntBar" then
+			CharacterUI.DrawHunt(frame, r.Bar, order)
+			continue
+		end
 		if r.Kind == "Head" then
 			label(frame, r.Text, L.Size.Head, colorOf("Gold"), { Name = "Head_" .. r.Id, Size = UDim2.new(1, -8, 0, L.Size.Head + 14),
 				TextWrapped = false, TextYAlignment = Enum.TextYAlignment.Bottom, LayoutOrder = order })
@@ -1048,6 +1122,98 @@ local function drawStats(frame, rows)
 				AutomaticSize = Enum.AutomaticSize.Y, LayoutOrder = order })
 		end
 	end
+end
+
+-- 최종 검수 10/15: the point panel - a head, the free points with [Auto] and [Reset], then a row per stat: its name,
+-- points · bonus, [+] [+5] and what one more point gives (Power A → B); every press goes through CharacterUI.StatAction
+function CharacterUI.DrawPanel(frame, p, order)
+	local kit = VIEW.Kit
+	local W = type(Config.Stats) == "table" and type(Config.Stats.Text) == "table" and Config.Stats.Text or {}
+	local box = Instance.new("Frame")
+	box.Name = "StatPanel"
+	box.BackgroundTransparency = 1
+	box.Size = UDim2.new(1, -8, 0, 0)
+	box.AutomaticSize = Enum.AutomaticSize.Y
+	box.LayoutOrder = order
+	box.Parent = frame
+	listLayout(box, 4, false)
+	label(box, tx(W, "Head"), L.Size.Head, colorOf("Gold"), { Name = "Head", Size = UDim2.new(1, 0, 0, L.Size.Head + 10), TextWrapped = false,
+		LayoutOrder = 1 })
+	local top = Instance.new("Frame")
+	top.Name = "Top"
+	top.BackgroundTransparency = 1
+	top.Size = UDim2.new(1, 0, 0, L.StatBtnH)
+	top.LayoutOrder = 2
+	top.Parent = box
+	label(top, tx(W, "Free", p.Free), L.Size.Body, colorOf(p.Free > 0 and "Gold" or "Sub"), { Name = "Free",
+		Size = UDim2.new(1, -(2 * L.StatBtnW + 12), 1, 0), TextWrapped = false })
+	if kit and type(kit.Button) == "function" then
+		local auto = kit.Button(top, p.Auto and tx(W, "AutoOn") or tx(W, "AutoOff"), kit.Palette.Button, UDim2.fromOffset(L.StatBtnW, L.StatBtnH),
+			function() CharacterUI.StatAction("auto", not p.Auto) end)
+		auto.Name = "Auto"
+		auto.AnchorPoint, auto.Position = Vector2.new(1, 0), UDim2.new(1, -(L.StatBtnW + 6), 0, 0)
+		local reset = kit.Button(top, tx(W, "Reset"), kit.Palette.Button, UDim2.fromOffset(L.StatBtnW, L.StatBtnH),
+			function() CharacterUI.StatAction("reset") end)
+		reset.Name = "Reset"
+		reset.AnchorPoint, reset.Position = Vector2.new(1, 0), UDim2.fromScale(1, 0)
+		if type(kit.SetEnabled) == "function" then pcall(kit.SetEnabled, reset, p.CanReset) end
+	end
+	for i, r in p.Rows do
+		local f = Instance.new("Frame")
+		f.Name = "Stat_" .. r.Letter
+		f.BackgroundTransparency = 1
+		f.Size = UDim2.new(1, 0, 0, L.StatBtnH + (r.Next and L.Size.Small + 4 or 0))
+		f.LayoutOrder = 2 + i
+		f.Parent = box
+		label(f, r.Name, L.Size.Body, colorOf("Text"), { Name = "Name", Size = UDim2.new(0, L.StatNameW, 0, L.StatBtnH), TextWrapped = false })
+		label(f, r.Line, L.Size.Body, colorOf("Sub"), { Name = "Line", Position = UDim2.fromOffset(L.StatNameW, 0),
+			Size = UDim2.new(1, -(L.StatNameW + 2 * L.StatPlusW + 12), 0, L.StatBtnH), TextWrapped = false })
+		if r.Next then
+			label(f, r.Next, L.Size.Small, colorOf("Sub"), { Name = "Next", Position = UDim2.fromOffset(L.StatNameW, L.StatBtnH),
+				Size = UDim2.new(1, -L.StatNameW, 0, L.Size.Small + 4), TextWrapped = false })
+		end
+		if kit and type(kit.Button) == "function" then
+			for j, b in { { "add", "Plus", r.CanAdd }, { "add5", "Plus5", r.CanAdd5 } } do
+				local btn = kit.Button(f, tx(W, b[2]), kit.Palette.Free, UDim2.fromOffset(L.StatPlusW, L.StatBtnH),
+					function() CharacterUI.StatAction(b[1], r.Letter) end)
+				btn.Name = b[2]
+				btn.AnchorPoint, btn.Position = Vector2.new(1, 0), UDim2.new(1, j == 1 and -(L.StatPlusW + 6) or 0, 0, 0)
+				if type(kit.SetEnabled) == "function" then pcall(kit.SetEnabled, btn, b[3]) end
+			end
+		end
+	end
+end
+
+-- 최종 검수 10/15: the hunting fame bar - its words, a thin bar (the share to the next point), 'have / per'
+function CharacterUI.DrawHunt(frame, b, order)
+	local f = Instance.new("Frame")
+	f.Name = "HuntBar"
+	f.BackgroundTransparency = 1
+	f.Size = UDim2.new(1, -8, 0, L.StatH + L.HuntBarH + 4)
+	f.LayoutOrder = order
+	f.Parent = frame
+	label(f, b.Label, L.Size.Body, colorOf("Sub"), { Name = "Label", Size = UDim2.new(0.6, 0, 0, L.StatH), TextWrapped = false })
+	label(f, b.Value, L.Size.Body, colorOf("Text"), { Name = "Value", AnchorPoint = Vector2.new(1, 0), Position = UDim2.fromScale(1, 0),
+		Size = UDim2.new(0.4, 0, 0, L.StatH), TextXAlignment = Enum.TextXAlignment.Right, TextWrapped = false, Style = "Number" })
+	local track = Instance.new("Frame")
+	track.Name = "Track"
+	track.BackgroundColor3 = Color3.fromRGB(40, 46, 72)
+	track.BorderSizePixel = 0
+	track.Position = UDim2.fromOffset(0, L.StatH + 2)
+	track.Size = UDim2.new(1, 0, 0, L.HuntBarH)
+	track.Parent = f
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0.5, 0)
+	c.Parent = track
+	local fill = Instance.new("Frame")
+	fill.Name = "Fill"
+	fill.BackgroundColor3 = colorOf("Gold")
+	fill.BorderSizePixel = 0
+	fill.Size = UDim2.fromScale(math.clamp(b.Frac, 0, 1), 1)
+	fill.Parent = track
+	local c2 = Instance.new("UICorner")
+	c2.CornerRadius = UDim.new(0.5, 0)
+	c2.Parent = fill
 end
 
 local function paintTabs()
