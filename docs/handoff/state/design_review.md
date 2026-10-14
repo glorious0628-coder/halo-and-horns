@@ -105,3 +105,5 @@
   - 얇은 받침 두 겹 틈, 장식판 빠짐
 - 시트 크롭이 맞닿으면 가짜 이음선처럼 보임 → 크롭 사이 틈(도구 고침).
 - 메시지가 밀려 '못 받았다'고 하면 메시지 id로 다시 적어 줌.
+
+- **최종 검수 정정(10/14 저녁):** Rail·Base는 사용자 (가) = 축별 맞춤으로 끝남(`tools/axis_fit_bar.py`, 결과 build/tripo_parts/*_fit.glb, 재생성 없음). 난간 5부품 합친 판 = build/tripo_parts/HaloVar4_Balustrade_C_tripo.glb. 다음 판정 = 소품 HD(바위·통·단순 14·분수·나무)와 Bright 머리·몸 2D.
