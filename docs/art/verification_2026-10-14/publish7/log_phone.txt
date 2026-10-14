@@ -1,0 +1,37 @@
+device: samsung_galaxy_s22_ultra
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+TutorialStep 99
+chips: Level='1' | Text='156/156' | Text='100/100' | Power='Lv 1 · Power 0' | Count='0' | Count='0' | HaloScore='0' | HornsScore='0' | Text='Sprout Shield' | Text='Revive Shield' | Text='+2' | Chevron='▼' | Label='Close' | Label='Claim' | Label='Swap' | Label='Attack' | Sub='Skill' | Label='Bag' | Label='Map' | Label='Lv 2' | Label='Menu' | Label='Auto OFF' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='Golden Goose 3:53' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Knights of Light' | Motto='Heal & catch!' | Text='XP +30%' | Text='HP +20% · Regen' | Text='Heal allies' | Text='Auto gold' | ChooseLabel='Join this side!' | Text='Smaller side bonus: +300 gold and a bigger body' | Line1='Home: Halo Citadel' | Line2='On your head: a gold halo' | Line3='Your guide: Hallie' | FactionName='Horn Legion' | Motto='PvP gold!' | Text='Gold +25%' | Text='ATK+15% Lifesteal' | Text='Guard loot gold' | Text='5★ = Kaiju' | ChooseLabel='Join this side!' | Text='Smaller side bonus: +300 gold and a bigger body' | Line1='Home: Horns Den' | Line2='On your head: little horns' | Line3='Your guide: Magpie' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Text='Switch sides later at the Altar of Fate.' | Desc='Get close and smash everything in front' | ChooseLabel='Pick this class!' | Text='Warrior' | Text='Best for beginners' | Text='Outfit coming later' | Desc='Stay back and blast a wide area' | ChooseLabel='Pick this class!' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | ChooseLabel='Pick this class!' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | Text='Change class later: Menu > Change Class' | PassLabel='Mountain Pass' | Name='Squishy Meadow' | Info='Lv 1+ · Safe' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · Map button / Esc: close' | Legend4='▲ Me'
+saved phone_01_top_hud
+outlaw on
+chips outlaw: Level='1' | Text='156/156' | Text='100/100' | Power='Lv 1 · Power 0' | Count='0' | Count='0' | HaloScore='0' | HornsScore='0' | Text='Outlaw' | Text='Sprout Shield' | Text='Revive Shield' | Text='+1' | Chevron='▼' | Label='Close' | Label='Claim' | Label='Swap' | Label='Attack' | Sub='Skill' | Label='Bag' | Label='Map' | Label='Lv 2' | Label='Menu' | Label='Auto OFF' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='Golden Goose 3:47' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Knights of Light' | Motto='Heal & catch!' | Text='XP +30%' | Text='HP +20% · Regen' | Text='Heal allies' | Text='Auto gold' | ChooseLabel='Join this side!' | Text='Smaller side bonus: +300 gold and a bigger body' | Line1='Home: Halo Citadel' | Line2='On your head: a gold halo' | Line3='Your guide: Hallie' | FactionName='Horn Legion' | Motto='PvP gold!' | Text='Gold +25%' | Text='ATK+15% Lifesteal' | Text='Guard loot gold' | Text='5★ = Kaiju' | ChooseLabel='Join this side!' | Text='Smaller side bonus: +300 gold and a bigger body' | Line1='Home: Horns Den' | Line2='On your head: little horns' | Line3='Your guide: Magpie' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Text='Switch sides later at the Altar of Fate.' | Desc='Get close and smash everything in front' | ChooseLabel='Pick this class!' | Text='Warrior' | Text='Best for beginners' | Text='Outfit coming later' | Desc='Stay back and blast a wide area' | ChooseLabel='Pick this class!' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | ChooseLabel='Pick this class!' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | Text='Change class later: Menu > Change Class' | PassLabel='Mountain Pass' | Name='Squishy Meadow' | Info='Lv 1+ · Safe' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · Map button / Esc: close' | Legend4='▲ Me'
+saved phone_02_outlaw
+outlaw off
+gear: ok,ok
+yard
+pos: 39, 4.206787109375, 59
+benches (server): 0 stations: 
+saved phone_05_benches
+anvil 39, 1.5, 45
+buy 10
+plaza
+pos plaza: 34.546875, 23.74609375, -552
+eq 10
+meme model: Tool:WeaponModel Meme=nil ;   Part:Handle LTM=1 Transp=0 ;   Part:Guard LTM=1 Transp=0 ;   Part:Blade LTM=1 Transp=0 ;   Model:MemeLook ;     look Part:Handle 0.25, 1.399999976158142, 0.25 ;     look Part:Pan 0.25, 1.7000000476837158, 1.7000000476837158
+Class=Warrior WeaponTier=10 Mask=512 weapon=Tool parts=Handle,Guard,Blade
+saved phone_08_pan_hold
+anchored on
+cam side
+saved phone_08_pan_side
+reset
+anchored off
+swing
+saved phone_08_pan_swing
+console errors: [ServerErrorService] started
+play stopped
+device: default

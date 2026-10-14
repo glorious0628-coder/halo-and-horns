@@ -1,0 +1,35 @@
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+TutorialStep 99
+chips: HaloScore='0' | HornsScore='0' | Text='Sprout Shield' | Text='Revive Shield' | Text='+2' | Sub='Skill' | Label='Menu' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='8:03' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | Title='Guide · Take Back the Supply Road' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Horn Legion' | Motto='Tricks & PvP gold!' | Text='Gold +25%' | Text='ATK+15% Lifesteal' | Text='Guard loot gold' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Desc='Stay back and blast a wide area' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | PassLabel='Mountain Pass' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · M / Esc: close'
+saved pc_01_top_hud
+outlaw on
+chips outlaw: HaloScore='0' | HornsScore='0' | Text='Outlaw' | Text='Sprout Shield' | Text='Revive Shield' | Text='+3' | Sub='Skill' | Label='Menu' | Title='Players 0' | Label='Close' | Fame='Fame' | Rebirths='Rebirths' | Level='Level' | Power='Power' | NameHeader='Name' | Label='Invite a friend' | Text='7:56' | Luck='Today's Luck · Rare 5%' | CheerLabel='Cheer Stars' | CheerCount='0/5' | Title='Guide · Take Back the Supply Road' | PremiseLine1='They say someone broke the Crown of Balance.' | PremiseLine2='Some who picked up its shards grew a halo. Others grew horns.' | PremiseLine3='Now each side says the other did it.' | Text='Choose your side!' | FactionName='Horn Legion' | Motto='Tricks & PvP gold!' | Text='Gold +25%' | Text='ATK+15% Lifesteal' | Text='Guard loot gold' | Text='Smaller side bonus: +300 gold and a bigger body' | FactionName='Artisan Guild' | Soon='Coming soon' | Sub='Crafting update' | Desc='Stay back and blast a wide area' | Text='Mage' | Text='Outfit coming later' | Desc='Shoot foes one by one from afar' | Text='Archer' | Text='Outfit coming later' | Title='Pick a class!' | PassLabel='Mountain Pass' | Name='Goblin Woods' | Info='Lv 10+ · PvP' | Name='Skeleton Ruins' | Info='Lv 25+ · Safe' | Hint='Drag: move · Wheel: zoom · M / Esc: close'
+saved pc_02_outlaw
+outlaw off
+gear: ok,ok
+yard
+pos: 39, 4.206787109375, 59
+benches (server): 0 stations: 
+saved pc_05_benches
+anvil 39, 1.5, 45
+buy 10
+plaza
+pos plaza: 34.55078125, 23.74609375, -552
+eq 10
+meme model: Tool:WeaponModel Meme=nil ;   Part:Handle LTM=1 Transp=0 ;   Part:Guard LTM=1 Transp=0 ;   Part:Blade LTM=1 Transp=0 ;   Model:MemeLook ;     look Part:Handle 0.25, 1.399999976158142, 0.25 ;     look Part:Pan 0.25, 1.7000000476837158, 1.7000000476837158
+Class=Warrior WeaponTier=10 Mask=512 weapon=Tool parts=Handle,Guard,Blade
+saved pc_08_pan_hold
+anchored on
+cam side
+saved pc_08_pan_side
+reset
+anchored off
+swing
+saved pc_08_pan_swing
+console errors: [ServerErrorService] started
+play stopped
