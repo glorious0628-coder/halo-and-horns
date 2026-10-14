@@ -3561,7 +3561,7 @@ end
 -- argument is formatted here as its own English token would (string.format of that one %d / %.1f / %s), then
 -- Translator:FormatByKey(key, { ... }). An English player, no translator yet, an unknown key or an error = the English
 -- line exactly as before (L10n.T: Config.Plural etc.). Give such a label AutoLocalize = false (it is translated already).
-UIKit.TR = { Translator = nil, English = true, Spec = "%%[-+ #0]*%d*%.?%d*[sdifgxXcq]", Pct = "\1" }
+UIKit.TR = { Translator = nil, English = true, Spec = "%%[-+#0]*%d*%.?%d*[sdifgxXcq]", Pct = "\1" }
 
 -- (pure) the arguments as their English tokens print them: ("Lv %d · %s", 5.0, "Woods") -> { "5", "Woods" }
 function UIKit.TrArgs(fmt, ...)

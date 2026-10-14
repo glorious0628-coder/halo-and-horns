@@ -177,7 +177,7 @@ local TXT = {
 	Bully = "Bully Lv %d",
 	BullyPenalty = "Bully penalty: no Auto Battle · half XP & drops (%d min)", -- A23-22
 	KaijuQueued = "Kaiju waiting",
-	QuestHeader = IS_TOUCH and "Dailies %d/%d" or "Daily Quests %d/%d", -- phones: the 150 px block beside the map
+	QuestHeader = "Daily Quests %d/%d", QuestHeaderTouch = "Dailies %d/%d", -- phones: the 150 px block beside the map
 	QuestAllDone = "Dailies done! Bonus quests on",
 	QuestClaimable = " · Claim %d",
 	QuestTouchClaim = "Claim %d quests!",
@@ -4752,7 +4752,7 @@ refreshQuests = function()
 	end
 
 	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
-	local head = (claims >= slots) and TXT.QuestAllDone or L.Tx(TXT, "QuestHeader", claims, slots)
+	local head = (claims >= slots) and TXT.QuestAllDone or L.Tx(TXT, IS_TOUCH and "QuestHeaderTouch" or "QuestHeader", claims, slots)
 	if claimable > 0 then head ..= L.Tx(TXT, "QuestClaimable", claimable) end
 	local hot = claimable > 0
 	if IS_TOUCH then
