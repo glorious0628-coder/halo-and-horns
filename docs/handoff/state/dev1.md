@@ -4,7 +4,8 @@
 - **dev1-village-fund 23660dc6** = 1e68b071(검토 고침) + origin/main 병합(merge-tree가 Config 충돌로 봐서; 실제 merge는 자동). 고침: FIX 1 S.Prompts 강한 표 + 진영 바뀔 때 월드 FundPrompt 다시 consider; MINOR ① cardCtx(KO → Closed, Radius 밖 → 새 Screen.Far "Walk up to the fountain.") [Give] 흐림, 폴마다 다시 그림; ② Lead 'Halo Citadel'/'Horns Den'; 개발 2 07ca5b92 따라 분수 자리 = Workspace.VillageFund.FundSpot_<진영> 위치 − Lift(없으면 Config Pos), 자리가 움직이면 등불 다시 지음. 시험 village_fund_ui 74·29/29.
 - **개발 2 dev2-village-fund 07ca5b92는 main과 Config 충돌**(Switches PioneerTitle Unread 줄 옆 VillageFund 스위치) → 개발 2에 main 병합 부탁함(풀이: main 줄 그대로 + VillageFund 2줄). 임시판으로 풀어 돌림: village_fund 114/114, village_fund_ui 74·29/29(진짜 Config), english 통과.
 - **fix/auto-translate-on 292d184b** = 70cd9694 + Config.Settings.Order "Lang" 뺌(설정 창은 원래 Lang 줄 없음) + FactionPicker Crafting 변형·NEUTRAL_NOTE 사본 삭제(Config에서만, 비면 줄 없음). test_auto_translate 17·10/10.
-- 발견: 설정 창(SettingsUI)에 DmgNum·Tags 줄이 없음 → 다음 = fix/settings-apply 위 커밋으로 두 줄 추가.
+- 설정 창 줄: **fix/settings-apply be336a32** = SettingsUI에 피해 숫자(All/Off)·남 이름표(All→Near→Off) 줄 추가, test_settings_apply 25·14/14, character_ui·quest_window·keys_settings·audio·phone_text·english 통과. dev1-village-fund와 ClientMain ORDER 한 줄 충돌(먼저 안 들어간 쪽에 main 병합).
+- 대기 3개: fix/auto-translate-on 292d184b, dev1-village-fund 23660dc6(+개발 2 main 병합), fix/settings-apply be336a32. 다음: 패스 ID 오면 2-C #10.
 
 ## 10/14 밤 10 — fix/auto-translate-on 70cd9694 (급함, 다 됨·push, 최신)
 - SPEC A23-179(사용자 "누가 자동 번역까지 끄래"): ClientMain의 전체 AutoLocalize=false watcher(69f1fe45) 삭제 → Roblox 자동 번역 켜짐.
