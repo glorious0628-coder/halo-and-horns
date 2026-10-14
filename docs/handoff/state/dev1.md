@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 16 — Fast Travel 구독 화면 + 장인 ② 가방 팔기 (push, 최신)
+- **fix/fast-travel-pass-ui ca659495** (A23-182, 월 구독): Panels.TravelOn() = 속성 SubFastTravel == true; Panels.Open("Travel") 막음, 메뉴 Travel 줄 뺌, HUD 타일 숨김(속성 바뀌면 펼침 다시), 스킬북 [Where to hunt] 숨김. ShopUI.SubCards(): Config.SubscriptionInfo.FastTravel { Id "EXP-…" 문자열, Name, Line, Price, Attr?, Icon? } → 카드 한 장, PromptSubscriptionPurchase, 구독 중 Owned. 새 test_fast_travel_ui 16·11/11, skill_book 68·33/33. Config.SubscriptionInfo·SubFastTravel·서버 Travel 거절 = 개발 2.
+- **dev1-artisan-sell 651e54e1** (계약 ②): BagUI.SellPlan + [Sell 1]·[Sell all] → SellItem(itemId, n), 모루 프롬프트(Config.WeaponShop.PromptName) PromptShown일 때만 켬, Net에 SellItem 없으면 안 보임. test_bag_ui 198·91/91. 개발 2 dev2-artisan-sell과 같이 병합.
+- 기다림: 검 사진 화면 사용 '전달함, 시작', 장인 ③(dev2-market UnpackSpare push) ⑤(목표 Gather/Craft/SellMat).
+
 ## 10/14 밤 15 — 사용자 플레이 지적 2개 (코드 push, 검 사진 기다림, 최신)
 - **fix/hud-top-overlap 77d8b04b**: HUD.TopBottom()(전쟁 막대+판+정보 줄+보이는 칩 줄의 실제 그린 아래 끝, du) → EventHUD 거위/호박왕 칩 = max(자기 줄, 그 아래 끝+6)(V2.EventTop, 매 틱), EventHUD.TopBottom() = 칩 아래 끝 → QuestMarker '위 금지 띠'(QuestMarker.TopLimit: 아래 끝들 + 8 + 아이콘 반) 아래로 화면 안 마커 클램프·가장자리 트랙 시작. 새 test_hud_top_overlap 12·11/11, first_look 정적 글귀 갱신. walk_forge_client는 main도 같은 정적 실패(내 것 아님).
 - **fix/sword-hold ad40b932**: 칼·어둠 검 Point 0.75 → 0.5, Rest = {130,0,0}(Config.WeaponGrip(kind, len, "Rest")); WeaponPose.RestStep(0.1초, 모든 캐릭터): 공격 클립 없으면(Fx.AttackPlaying) toolnone 트랙(ToolNoneAnim) 가중치 0.001 + Grip Rest, 공격 중이면 1 + 원래 Grip. test_tool_grip(새 검사 5·변이 8), weapon_motion 269(칼 검사 가운데 이상) 등 통과. **엔진 사진 4장 대기**: 최종 검수에 화면 사용 요청(시험 Studio 새 창 = build/GoodEvil.rbxlx 복사본 SwordTest, 메인 금지). 볼 것: 실제 대기 손 방향에서 날이 위·뒤인지, toolnone 0이 팔을 내리는지, Grip 바뀔 때 튐.
