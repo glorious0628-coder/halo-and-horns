@@ -174,16 +174,21 @@ local function spawnCFrame(zoneId, faceOut)
 end
 
 -- A23-110: a get-up a service holds for this player (FirstKOService.GetUp: the lossless first KO gets up near where it
--- fell after its own delay) -> { Delay = s, CFrame = CFrame? } or nil
+-- fell after its own delay; 99N G ReviveService.GetUp: the wait while a friend may help, then the body's spot) ->
+-- { Delay = s, CFrame = CFrame? } or nil. The first KO comes first
 local function getUp(player)
-	local svc = S and S.FirstKOService
-	if type(svc) ~= "table" or type(svc.GetUp) ~= "function" then return nil end
-	local ok, g = pcall(svc.GetUp, player)
-	if not ok then
-		loopWarn("GetUp", g)
-		return nil
+	for _, name in { "FirstKOService", "ReviveService" } do
+		local svc = S and S[name]
+		if type(svc) == "table" and type(svc.GetUp) == "function" then
+			local ok, g = pcall(svc.GetUp, player)
+			if not ok then
+				loopWarn("GetUp", g)
+			elseif type(g) == "table" then
+				return g
+			end
+		end
 	end
-	return type(g) == "table" and g or nil
+	return nil
 end
 
 -- where a real (re)spawn stands: the held get-up (A23-110), else the zone spawn (A23-68 #1 / zone_check_halo #43)
