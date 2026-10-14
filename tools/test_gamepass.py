@@ -204,8 +204,9 @@ def static() -> tuple[int, list[str]]:
     check(0 <= studio < pass_key and studio < look_key and "S.MonetizationService.DebugSetPass(player, k," in main,
           "DebugCommand Pass / LookGrant: Studio only")
     money = strip_comments(read(SSS / "MonetizationService.luau"))
-    check(money.count("MarketplaceService.ProcessReceipt = processReceipt") == 1
-          and "PromptGamePassPurchaseFinished:Connect" in money, "MonetizationService: one ProcessReceipt, the purchase signal")
+    check("ProcessReceipt" not in money and "Config.Products" not in money
+          and "PromptGamePassPurchaseFinished:Connect" in money,
+          "MonetizationService: no ProcessReceipt / Developer Product (A23-28: no Robux change tickets), the pass purchase signal")
     services = [p for p in SSS.glob("*.luau") if p.name != "MonetizationService.luau"]
     check(not any("UserOwnsGamePassAsync" in read(p) or "PromptGamePassPurchaseFinished" in read(p) for p in services),
           "no other server file asks Roblox about passes")
