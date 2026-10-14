@@ -4502,11 +4502,11 @@ end
 -- Attr = the Player attribute (true / false) the server keeps while the player owns it. No stat is ever sold (A23-75):
 -- 2x XP / 2x Gold double what is EARNED, and that counts for the level cap and the rankings as it is.
 Config.GamePasses = {
-	XP2 = { Id = 0, Price = 199, Name = "2x XP", Attr = "PassXP2" },
-	Gold2 = { Id = 0, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
-	VIP = { Id = 0, Price = 249, Name = "VIP", Attr = "PassVIP" },
-	Stickers = { Id = 0, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
-	Bubbles = { Id = 0, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
+	XP2 = { Id = 2037356271, Price = 199, Name = "2x XP", Attr = "PassXP2" },
+	Gold2 = { Id = 2036360276, Price = 149, Name = "2x Gold", Attr = "PassGold2" },
+	VIP = { Id = 2037986277, Price = 249, Name = "VIP", Attr = "PassVIP" },
+	Stickers = { Id = 2037920281, Price = 99, Name = "Sticker Pack", Attr = "PassStickers" }, -- A23-143: 12 stickers + GG
+	Bubbles = { Id = 2038178270, Price = 99, Name = "Bubble Pack", Attr = "PassBubbles" }, -- A23-144: every chat bubble skin
 }
 -- where the 2x counts (ProgressionService, once per grant): every XP grant, and gold from these EARNED sources (kills,
 -- quests / dailies / vacation / boards / story, the goose, bounties, war chests, drops, the newly made part of the kaiju
@@ -4639,15 +4639,35 @@ function Config.BubbleSide(key)
 	end
 	return nil
 end
+
+-- A23-182 (user 2026-10-14: 이동 = 월 구독, 패스 아님): Fast Travel = a monthly in-experience subscription. Id = the number
+-- Creator Hub shows (the API gets "EXP-<Id>"; a string Id is used as it is); 0 = off. MonetizationService asks Roblox at
+-- PlayerReady and on Players.UserSubscriptionStatusChanged (GetUserSubscriptionStatusAsync, pcall: a failure / Studio = not
+-- subscribed) and mirrors the answer as the player attribute Attr (the screen reads it). The Travel remote (the menu's
+-- teleport) works only while subscribed; the glowing pads (ZoneService pads, the PvP pads) stay free for everyone.
+Config.Subscriptions = {
+	FastTravel = { Id = 118606392447792, Attr = "SubFastTravel" },
+}
+-- the shop card (game dev 1, fix/fast-travel-pass-ui): Id = the api id ("EXP-<Id>", "" = off: no card) made from
+-- Config.Subscriptions below (one source), Price = R$ a month (set on Creator Hub; shown only), Attr / Icon
+Config.SubscriptionInfo = {
+	FastTravel = { Name = "Fast Travel", Line = "Teleport to any zone you have unlocked from the menu. No stats are for sale.",
+		Price = 149, Attr = "SubFastTravel", Icon = "IconTravel" },
+}
+for key, info in Config.SubscriptionInfo do
+	local id = Config.Subscriptions[key] and Config.Subscriptions[key].Id
+	info.Id = (type(id) == "number" and id > 0) and string.format("EXP-%d", id) or (type(id) == "string" and id ~= "0" and id or "")
+end
+
 -- A23-75 faction looks (halo / horns textures; image dev's Config.LookThemes sets, same ids): sold one game pass each
 -- (PassId, Price 99), or A23-77 attendance-only (Unlock.Attendance = days collected, never sold). Name <= 12 letters
 -- (the shop slot); Icon = a Config.UIArt key; Order = the shop order. Owned looks: Player attribute LooksOwned (ids,
 -- comma-separated, in Order); worn: LookOn (an id of the player's own faction, or "").
 Config.Looks = {
-	HaloIce = { Faction = "Halo", PassId = 0, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
-	HaloGold = { Faction = "Halo", PassId = 0, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
-	HornsLava = { Faction = "Horns", PassId = 0, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
-	HornsShadow = { Faction = "Horns", PassId = 0, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
+	HaloIce = { Faction = "Halo", PassId = 2036084293, Price = 99, Name = "Ice Halo", Icon = "LookHaloIce", Order = 1 },
+	HaloGold = { Faction = "Halo", PassId = 2036414290, Price = 99, Name = "Gold Halo", Icon = "LookHaloGold", Order = 2 },
+	HornsLava = { Faction = "Horns", PassId = 2036582289, Price = 99, Name = "Lava Horns", Icon = "LookHornsLava", Order = 3 },
+	HornsShadow = { Faction = "Horns", PassId = 2037344272, Price = 99, Name = "Shadow Horns", Icon = "LookHornsShadow", Order = 4 },
 	HaloSprout = { Faction = "Halo", Unlock = { Attendance = 14 }, Name = "Sprout Halo", Icon = "LookHaloSprout", Order = 5 },
 	HornsSprout = { Faction = "Horns", Unlock = { Attendance = 14 }, Name = "Sprout Horns", Icon = "LookHornsSprout", Order = 6 },
 	HaloStarlight = { Faction = "Halo", Unlock = { Attendance = 50 }, Name = "Star Halo", Icon = "LookHaloStarlight", Order = 7 },

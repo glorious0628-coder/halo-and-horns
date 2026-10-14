@@ -28,11 +28,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         raise ValueError("ZoneService must end with a single 'return ZoneService'")
     # a test-only hook (never in src): the loop body and the probes the fixture drives
     hook = ("\nZoneService.__WaterTest = { updateZone = updateZone, cleanup = cleanup, water = water, "
-            "waterProbe = waterProbe, move = move, nearTown = nearTown }")
+            "waterProbe = waterProbe, move = move, nearTown = nearTown, onTravel = onTravelRemote }")
     return {C: sources[C], U: sources[U], "ZONE_WATER_SOURCE": zone[:-len(tail)] + hook + tail}
 
 
 MUTATIONS = [
+    # A23-182: the menu's teleport is the Fast Travel subscription's
+    ('travel without the subscription', Z,
+     '\tif not (type(mon) == "table" and type(mon.HasSub) == "function" and mon.HasSub(player, "FastTravel") == true) then return end\n', ''),
+    ('travel for any subscription answer', Z, 'mon.HasSub(player, "FastTravel") == true) then return end', 'mon.HasSub(player, "FastTravel") ~= nil) then return end'),
     ('no water tick in the zone loop', Z, '\tlocal okW, errW = pcall(waterTick, player, root)\n',
      '\tlocal okW, errW = true, nil\n'),
     ('no pcall around the water tick', Z, 'pcall(waterTick, player, root)',

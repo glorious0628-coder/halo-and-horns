@@ -224,6 +224,46 @@ function MonetizationService.PassAnswer(player, key)
 	return nil
 end
 
+------------------------------------------------------------------ A23-182 subscriptions (Fast Travel)
+local SUB = { Active = setmetatable({}, { __mode = "k" }) } -- [Player] = { [key] = true / false } Roblox's answer this session
+
+-- the id Roblox's API takes: "EXP-<number>" for a number Id > 0, a non-empty string as it is; nil = off (0 / missing)
+function MonetizationService.SubscriptionApiId(key)
+	local def = type(Config.Subscriptions) == "table" and Config.Subscriptions[key] or nil
+	local id = type(def) == "table" and def.Id or nil
+	if type(id) == "number" and id == id and id > 0 and id == math.floor(id) then return string.format("EXP-%d", id) end
+	if type(id) == "string" and id ~= "" and id ~= "0" then return id end
+	return nil
+end
+
+-- asks Roblox about one subscription and mirrors it (attribute Attr); a failure, an off id or Studio's error = false
+function SUB.Check(player, key)
+	local def = Config.Subscriptions[key]
+	local apiId = MonetizationService.SubscriptionApiId(key)
+	local on = false
+	if apiId then
+		local ok, res = pcall(MarketplaceService.GetUserSubscriptionStatusAsync, MarketplaceService, player, apiId)
+		on = ok and type(res) == "table" and res.IsSubscribed == true
+	end
+	if player.Parent == nil then return end
+	SUB.Active[player] = SUB.Active[player] or {}
+	SUB.Active[player][key] = on
+	if type(def.Attr) == "string" then player:SetAttribute(def.Attr, on) end
+end
+
+function SUB.CheckAll(player)
+	for key in type(Config.Subscriptions) == "table" and Config.Subscriptions or {} do
+		local ok, err = pcall(SUB.Check, player, key)
+		if not ok then Util.Warn(TAG, "subscription " .. tostring(key) .. ": " .. tostring(err)) end
+	end
+end
+
+-- true while Roblox said this session that the player is subscribed to `key` (Config.Subscriptions)
+function MonetizationService.HasSub(player, key)
+	local a = SUB.Active[player]
+	return a ~= nil and a[key] == true
+end
+
 -- A23-75 review 2026-10-08: PlayerReady, before every later handler (QuestService's day check pays finished dailies and
 -- the chest there, attendance pays at join): the saved answers of the sold passes count at once. PASS.Check then
 -- replaces each with Roblox's answer (a refund turns it off).
@@ -637,6 +677,7 @@ function MonetizationService.Init(registry)
 			local ok, err = pcall(PASS.Check, player)
 			if not ok then Util.Warn(TAG, "pass check: " .. tostring(err)) end
 		end)
+		task.spawn(SUB.CheckAll, player) -- A23-182: subscriptions, every join
 	end)
 end
 
@@ -666,7 +707,20 @@ function MonetizationService.Start()
 	end
 	S.PlayerService.PlayerLeaving:Connect(function(player)
 		PASS.Owned[player], PASS.Seen[player], PASS.Debug[player], PASS.Real[player] = nil, nil, nil, nil
+		SUB.Active[player] = nil
 	end)
+	-- A23-182: a subscription bought / ended during the session (Roblox fires it on the server)
+	local okSig, sig = pcall(function() return Players.UserSubscriptionStatusChanged end)
+	if okSig and typeof(sig) == "RBXScriptSignal" then
+		sig:Connect(function(player, subscriptionId)
+			for key in type(Config.Subscriptions) == "table" and Config.Subscriptions or {} do
+				if MonetizationService.SubscriptionApiId(key) == subscriptionId then
+					local ok, err = pcall(SUB.Check, player, key)
+					if not ok then Util.Warn(TAG, "subscription change: " .. tostring(err)) end
+				end
+			end
+		end)
+	end
 	task.spawn(function() -- the shared supporter board, now and every RefreshSeconds
 		while true do
 			local ok, err = pcall(PASS.Refresh)
