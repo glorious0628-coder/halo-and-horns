@@ -434,7 +434,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     out = [
         # A23-187: joints are written only for a resting hold (Config.HoldPoses on top of the animation, after it)
         ("WeaponPose writes joints only while a weapon rests (Config.HoldPoses, Stepped), no ClassGrips pose",
-         "if m and m:IsA(\"Motor6D\") then m.Transform = m.Transform * cf end" in wp and 'S.Rest[tool] == "Rest"' in wp
+         "\t\t\t\t\tm.Transform = out\n" in wp and "local now = m.Transform" in wp and 'S.Rest[tool] == "Rest"' in wp
          and "RunService.Stepped:Connect(function()" in wp and wp.count("m.Transform") == 2 and "ClassGrips" not in wp
          and "SolveArm" not in wp),
         ("WeaponPose: the grip probe runs in Studio only, with GripProbe", 'RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true' in wp),
