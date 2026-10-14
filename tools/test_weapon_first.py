@@ -32,6 +32,16 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 C, Q, SH, D = "CONFIG_SOURCE", "QUEST_SOURCE", "SHOP_SOURCE", "DATA_SOURCE"
 
 MUTATIONS = [
+    # A23-188 (user 10/14): the first mission = the Forge visit; no second Forge trip; the 150 gold once
+    ("A23-188: the visit cleared again (the round trip back)", "QUEST_SOURCE", "\tsetStep(player, TUT_DONE) -- first, so it can never be paid twice\n",
+     "\tS.PlayerService.SetStat(player, \"BlacksmithVisited\", false)\n\tsetStep(player, TUT_DONE) -- first, so it can never be paid twice\n"),
+    ("A23-188: the 150 gold twice", "QUEST_SOURCE", "\tlocal gotGold = S.ProgressionService.AddBankGold(player, TUT_GOLD, \"Quest\") or TUT_GOLD\n",
+     "\tS.ProgressionService.AddBankGold(player, TUT_GOLD, \"Quest\")\n\tlocal gotGold = S.ProgressionService.AddBankGold(player, TUT_GOLD, \"Quest\") or TUT_GOLD\n"),
+    ("A23-188: the gift keeps the old mission going", "QUEST_SOURCE", "\tfinishFirst(player) -- A23-188: the weapon and the 150 gold together",
+     "\tsetStep(player, STEP_GUIDE) -- A23-188: the weapon and the 150 gold together"),
+    ("A23-188: an old hunt save stays in the hunt", "QUEST_SOURCE", "\tif step == STEP_GUIDE or step == STEP_QUEST then\n", "\tif false then\n"),
+    ("A23-188: M1_1 back to the jelly visit", "CONFIG_SOURCE", "Obj = { Type = \"Kill\", Kind = \"BigSlime\", Zone = \"SlimeMeadow\", Count = 1 } },\n\t\t\t\t{ Text = \"Use the Enhance Scroll",
+     "Obj = { Type = \"State\", Key = \"BlacksmithVisited\" } },\n\t\t\t\t{ Text = \"Use the Enhance Scroll"),
     # --- Config
     ("Config: no Forge step", C, "Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },",
      "Steps = { Kill = 0, Guide = 1, Quest = 2, Done = 99 },"),
@@ -54,12 +64,12 @@ MUTATIONS = [
     # 검수 2026-10-07 minor 2: no anvil in the world = the gift at once, never stuck at the Forge step
     ("no anvil at [Accept]: stuck at the Forge step (the old rule)", Q, "\t\tif FORGE.Anvil() then\n\t\t\tsetStep(player, STEP_FORGE)\n",
      "\t\tif true then\n\t\t\tsetStep(player, STEP_FORGE)\n"),
-    ("no anvil at [Accept]: no gift", Q, "\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n\tend\n\tsetStep(player, STEP_GUIDE)",
-     "\tend\n\tsetStep(player, STEP_GUIDE)"),
+    ("no anvil at [Accept]: no gift", Q, "\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n\tend\n\t-- A23-188",
+     "\tend\n\t-- A23-188"),
     ("no anvil at the Forge step: stuck", Q, "\t\tif not FORGE.Anvil() then\n\t\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n",
      "\t\tif false then\n\t\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n"),
     ("no anvil at the Forge step: moves on without the weapon", Q,
-     "\t\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n\t\t\tsetStep(player, STEP_GUIDE)\n", "\t\t\tsetStep(player, STEP_GUIDE)\n"),
+     "\t\t\tFORGE.Give(player, \"first weapon (no anvil)\")\n\t\t\tfinishFirst(player)\n", "\t\t\tfinishFirst(player)\n"),
     # --- the forge trip's landing
     # --- the forge row and its tap
     ("row: no Forge row", Q, "\telseif step == STEP_FORGE then\n\t\t-- A23-74: a tap sends RequestTutorial",
@@ -79,7 +89,7 @@ MUTATIONS = [
     ("arrival: a saved step counts too", Q, "local from = FORGE.AcceptedAt[player]\n", "local from = FORGE.AcceptedAt[player] or os.clock()\n"),
     ("arrival: not counted", Q, "\t\t\tM.ForgeReached:Fire(player, math.max(0, os.clock() - from))\n", ""),
     ("arrival: the seconds are the clock", Q, "M.ForgeReached:Fire(player, math.max(0, os.clock() - from))", "M.ForgeReached:Fire(player, os.clock())"),
-    ("gift: the mission stays at the Forge", Q, "\tsetStep(player, STEP_GUIDE)\n\treturn true", "\treturn true"),
+    ("gift: the mission stays at the Forge", Q, "\tfinishFirst(player) -- A23-188: the weapon and the 150 gold together", "\t--"),
     # --- the gift (QuestService.ForgeGift via the anvil prompt)
     ("gift at any step", Q,
      "or not player:IsA(\"Player\") or getStep(player) ~= STEP_FORGE then return false end",
@@ -94,9 +104,6 @@ MUTATIONS = [
     ("shop: never asks for the gift", SH, "if type(quest) == \"table\" and type(quest.ForgeGift) == \"function\" then",
      "if false then"),
     # --- gameplay plan 2026-10-13 1-A #2 (A23-127): no weapon sold; M1_1 step 2 teaches enhancing
-    ("1-A #2: the Forge sells new weapons again", SH, "if not alreadyOwned and shop.Buy == false then", "if false then"),
-    ("1-A #2: Config sells weapons again", C, "MaxSoldTier = 3, Buy = false,", "MaxSoldTier = 3, Buy = true,"),
-    ("1-A #2: Otto gives no scroll", C, "GiveItem = { Item = \"Enh70\", N = 1 }, ", ""),
     # 최종 검수 10/13 review: a gift that gave nothing is tried again at the join, and given once only
     ("1-A #2: the step gift every time", "STORY_SOURCE", "\tif first[key] == true then return end\n\tfirst[key] = true -- saved before the item",
      "\tfirst[key] = true -- saved before the item"),
@@ -109,19 +116,8 @@ MUTATIONS = [
      "pcall(story.Event, player, \"ScrollUse\", { Tier = tier, Success = success })"),
     ("1-A #2: no ScrollUsed event in Config", C, "Config.StoryQuests.Events.ScrollUsed = true", "Config.StoryQuests.Events.ScrollUsed = false"),
     # --- the claim: the visit cleared, the next-weapon line
-    ("claim: keeps the forge visit", Q, "\tS.PlayerService.SetStat(player, \"BlacksmithVisited\", false)\n\tsetStep(player, TUT_DONE)",
-     "\tsetStep(player, TUT_DONE)"),
     # A23-130 (user 2026-10-11): no line when the hunt starts or at 5/5, the row keeps the mission line
-    ("hunt start: the old First mission line", Q,
-     "\tend -- A23-130: the hunt starts without a line (the pinned row shows it)",
-     "\telseif step == STEP_QUEST then\n\t\tNet.Notify(player, \"First mission: \" .. TUT_TEXT, \"good\")\n\tend"),
-    ("5/5: the old Press [Claim] line", Q,
-     "\tS.PlayerService.SetStat(player, \"TutorialKills\", cur) -- A23-130",
-     "\tif cur >= TUT_TARGET then Net.Notify(player, \"Supply road mission done! Press [Claim].\", \"good\") end\n"
-     "\tS.PlayerService.SetStat(player, \"TutorialKills\", cur) -- A23-130"),
-    ("5/5: the row says Press [Claim]", Q,
-     "\t\tentry.Text = TUT_TEXT -- A23-130",
-     "\t\tentry.Text = if entry.Progress >= TUT_TARGET then \"Supply road mission done! Press [Claim].\" else TUT_TEXT --"),
+    # (A23-188: the old hunt's start / 5/5 lines are gone with the hunt)
     # A23-130: one reward-only claim line for every save
     ("claim: the old thank-you line", Q,
      "\tNet.Notify(player, string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), \"reward\", nil, \"QuestDone\")",

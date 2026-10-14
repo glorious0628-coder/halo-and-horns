@@ -473,7 +473,7 @@ runGroup("personal", function()
 	w:Kill(q, "BigSlime", { Personal = true })
 	check(m.P == 0, "a personal Slime Prince does not count for M1_2", show(m))
 	w:Kill(q, "BigSlime", { Personal = false })
-	check(m.P == 1, "a shared one does", show(m))
+	check(qd.Story.Done.M1_2 == true, "a shared one does (A23-188: one Prince is the whole of M1_2)", show(qd.Story))
 end)
 
 ------------------------------------------------------------------ 7. Studio test aids (Main's DebugCommand StorySub / StoryDone)

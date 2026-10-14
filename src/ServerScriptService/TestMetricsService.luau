@@ -6,7 +6,7 @@
 -- (Config.StoreName(Config.TestMetrics.Store); Studio: its own "_STUDIO" copy; key = the round):
 --   Players (accounts seen this round), New (of them, fresh saves), Joins,
 --   Intro / Faction (new accounts that finished the intro / picked a side = the first screen),
---   Min[milestone][minute] (new accounts reaching Lv5 / Lv10 / Weapon (first dropped weapon, tier 2+) / Claim (the first
+--   Min[milestone][minute] (new accounts reaching Lv5 / Lv10 / Weapon (the first weapon: the Forge's tier 1, A23-188) / Claim (the first
 --   mission claimed) at that whole minute of play, capped at MaxMinute), Ten (new accounts with Lv5 + Weapon + Claim all
 --   before TenMinutes), Side[faction] / Device[device] (a new account's first side / first Perf sample's device),
 --   Pass[key] = { Bought, Back (bought, then joined again), Kept (on that later join Roblox said it is owned), Unknown (Roblox
@@ -146,7 +146,8 @@ end
 local REACHED = {
 	Lv5 = function(p, d) return num(attr(p, d, "Level"), 1) >= 5 end,
 	Lv10 = function(p, d) return num(attr(p, d, "Level"), 1) >= 10 end,
-	Weapon = function(p, d) return num(attr(p, d, "WeaponOwnedMask")) >= 2 end, -- a bit above tier 1 = a dropped weapon
+	-- A23-188 (최종 검수 10/14): the first weapon = the Forge's T1 gift (any weapon owned); the first mission is that visit
+	Weapon = function(p, d) return num(attr(p, d, "WeaponOwnedMask")) >= 1 end,
 	Claim = function(p, d) return num(attr(p, d, "TutorialStep")) == 99 end, -- Config.Tutorial.Steps.Done = claimed
 }
 

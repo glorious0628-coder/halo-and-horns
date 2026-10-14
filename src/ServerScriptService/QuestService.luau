@@ -79,6 +79,7 @@ local welcomeShown = {} -- [Player] = true after this session's first automatic 
 -- F10-4: [Player] = os.clock() when this server first saw the first mission at 5/5 unclaimed (safety-net timer)
 local TUT_READY_AT = {}
 local claimTutorial -- defined with the claim code below; the tutorial loop (safety net) calls it
+local finishFirst -- A23-188: the first mission done (the Forge visit); defined with the claim code below
 
 ------------------------------------------------------------------ helpers
 local function num(v, default)
@@ -607,7 +608,8 @@ local function onAcceptTutorial(player, ...)
 		end
 		FORGE.Give(player, "first weapon (no anvil)")
 	end
-	setStep(player, STEP_GUIDE) -- acceptance in the meadow can enter step 2, without crediting any kill
+	-- A23-188: the first mission IS the Forge visit; one who holds a weapon already (or a world without an anvil) is done
+	finishFirst(player)
 end
 
 -- A23-74: ShopService runs this when the anvil prompt is used. At the Forge step the blacksmith hands over the class
@@ -624,7 +626,7 @@ function M.ForgeGift(player)
 		local ok, err = pcall(loot.GrantFirstWeapon, player, 1)
 		if not ok then Util.Warn(TAG, "GrantFirstWeapon: " .. tostring(err)) end
 	end
-	setStep(player, STEP_GUIDE)
+	finishFirst(player) -- A23-188: the weapon and the 150 gold together; the meadow is the story's next (M1_1)
 	return true
 end
 
@@ -650,29 +652,17 @@ local function tryTutorial(player)
 		dirty[player] = true
 		return
 	end
-	if step == STEP_GUIDE then
-		if S.ZoneService.GetZoneId(player) == TUT_ZONE then
-			setStep(player, STEP_QUEST)
-		end
-		return
-	end
-	if step == STEP_QUEST then
-		-- F10-4 safety net: a finished first mission is never left unpaid (the [받기] row stays the normal way)
-		if getTutorialKills(data) >= TUT_TARGET then
-			TUT_READY_AT[player] = TUT_READY_AT[player] or os.clock()
-			if os.clock() - TUT_READY_AT[player] >= num(TUT_CFG.AutoClaimSeconds, 60) then
-				claimTutorial(player, true)
-			end
-		else
-			TUT_READY_AT[player] = nil
-		end
+	if step == STEP_GUIDE or step == STEP_QUEST then
+		-- A23-188: a save from the old flow (past the Forge, on the way to / in the "5 slimes" hunt) is done at once with the
+		-- same 150 gold: the slimes are hunted in the meadow anyway, the next is the story (M1_1)
+		finishFirst(player)
 		return
 	end
 	if step == STEP_FORGE then
-		-- 검수 2026-10-07: the weapon shop gone (no anvil): the gift comes at once and the mission goes on, never stuck
+		-- 검수 2026-10-07: the weapon shop gone (no anvil): the gift comes at once and the mission is done, never stuck
 		if not FORGE.Anvil() then
 			FORGE.Give(player, "first weapon (no anvil)")
-			setStep(player, STEP_GUIDE)
+			finishFirst(player)
 			return
 		end
 		-- A23-88: the first time the walker stands at the anvil (a metric: seconds since [I'm In!]; only for a walk begun
@@ -699,13 +689,10 @@ local function tutorialKill(player, info)
 	dirty[player] = true
 end
 
--- auto = the F10-4 safety net paid it (Tutorial.AutoClaimSeconds after 5/5 without a claim)
-function claimTutorial(player, auto)
-	if getStep(player) ~= STEP_QUEST then return end
-	if getTutorialKills(getData(player)) < TUT_TARGET then return end
-	-- A23-34 / A23-74: M1_1 (show the jelly to the smith) needs a smithy visit made after this claim: the first-weapon
-	-- visit before the hunt never finishes it from the meadow (the pinned row sends the player there)
-	S.PlayerService.SetStat(player, "BlacksmithVisited", false)
+-- A23-188: the first mission done (the Forge visit, or an old save past it): 150 gold, once (the step is saved first)
+function finishFirst(player)
+	local step = getStep(player)
+	if step == TUT_DONE or not getData(player) then return end
 	setStep(player, TUT_DONE) -- first, so it can never be paid twice
 	TUT_READY_AT[player] = nil
 	-- A23-75: the line shows what was added (the 2x Gold pass doubles the 150)
@@ -715,6 +702,12 @@ function claimTutorial(player, auto)
 	end
 	-- A23-130: the reward only, the same for a [Claim] and the F10-4 safety net
 	Net.Notify(player, string.format(TUT_CLAIMED_TEXT, Util.FormatNumber(gotGold)), "reward", nil, "QuestDone")
+end
+
+-- an old client's [Claim] (the "5 slimes" row of the old flow): the mission is the Forge visit now (A23-188)
+function claimTutorial(player, auto)
+	if getStep(player) ~= STEP_QUEST then return end
+	finishFirst(player)
 end
 
 -- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).

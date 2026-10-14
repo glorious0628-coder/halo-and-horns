@@ -123,8 +123,8 @@ end)
 
 runGroup("objectives unchanged (the first 10 minutes)", function()
 	local function count(id) local n = 0; for _, p in princeSteps(id) do n += p[2].Obj.Count or 1 end; return n end
-	check(count("S0") >= 1 and count("M1_2") == 2 and count("M2_6") == 2 and count("XR1") == 1 and count("R5") == 1
-		and count("H1") >= 1, "S0 / M1_2 / M2_6 / H1 / XR1 / R5 still count BigSlime",
+	check(count("S0") >= 1 and count("M1_1") + count("M1_2") == 2 and count("M2_6") == 2 and count("XR1") == 1 and count("R5") == 1
+		and count("H1") >= 1, "S0 / M1_1 + M1_2 (two in all, A23-188) / M2_6 / H1 / XR1 / R5 still count BigSlime",
 		show({ count("S0"), count("M1_2"), count("M2_6"), count("H1"), count("XR1"), count("R5") }))
 	check(C.Loot.FirstScroll.Monster == "BigSlime", "the first 70% scroll still drops from the first Slime Prince",
 		tostring(C.Loot.FirstScroll.Monster))

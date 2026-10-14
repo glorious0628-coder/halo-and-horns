@@ -2930,21 +2930,21 @@ Config.Tutorial = {
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Hallie here! Now you know my name. Welcome to the Knights!",
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"First, get a weapon from Otto the Blacksmith!\nThen beat 5 slimes to free the supply road.", -- A23-74: weapon first
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
 			},
 		},
@@ -3179,16 +3179,20 @@ Config.StoryQuests = {
 		-- goes to potions
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
-			Steps = { { Text = "Show the jelly to the Blacksmith", Guide = "Blacksmith", Obj = { Type = "State", Key = "BlacksmithVisited" } },
+			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
+			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
+			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
+			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
-					GiveItem = { Item = "Enh70", N = 1 }, Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
+					Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
 			Reward = { Gold = 1 },
 		},
 		M1_2 = {
 			Kind = "Main", Chapter = 1, Title = "The Prince Who Ate the Dust", ShortName = "Slime Princes",
 			Start = "Slime Princes full of shard dust guard their little brothers and sisters.",
-			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 2 } } },
+			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } } }, -- A23-188: one more (M1_1 had the first: two in all)
 			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
