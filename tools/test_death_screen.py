@@ -169,7 +169,7 @@ MUTATIONS = [
     ("DS", "the fun tip shown", "\tif type(left) == \"number\" and left > 0 then\n", "\tout.Tip = data.Tip\n\tif type(left) == \"number\" and left > 0 then\n"),
     ("DS", "pouch gold lost reads as nothing lost", "\telseif lost >= 1 then\n", "\telseif false then\n"),
     ("DS", "nothing lost: no line", "\t\tout.Lost = txt(\"LostNone\")", "\t\tout.Lost = nil"),
-    ("DS", "no name for a monster", "local f = txt(by)\n\t\tout.Cause = f and string.format(f, name) or nil", "out.Cause = txt(\"Other\")"),
+    ("DS", "no name for a monster", "local f = txt(by)\n\t\tout.Cause = f and trx(TX, by, name) or nil", "out.Cause = txt(\"Other\")"),
     ("DS", "the countdown never ends", "\tif type(left) == \"number\" and left > 0 then\n", "\tif type(left) == \"number\" then\n"),
     ("DS", "everyone's KO shows", "data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return false end",
      "false then return false end"),

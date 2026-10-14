@@ -102,6 +102,21 @@ local TXT = {
 	KeysTip = "Tip: You can change your keys in Settings!",
 	KeysTipGo = "Open Settings",
 }
+
+-- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
+-- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
+-- English exactly as before); without UIKit (offline tests) string.format; a failed format = the words as they are
+local function trx(t, key, ...)
+	local f = type(t) == "table" and (t[key .. "En"] or t[key]) or nil
+	if type(f) ~= "string" then return nil end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.Tx) == "function" then
+		local ok, out = pcall(kit.Tx, t, key, ...)
+		if ok and type(out) == "string" then return out end
+	end
+	local ok, out = pcall(string.format, f, ...)
+	return ok and out or f
+end
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 local LEARN = { Banner = 3, Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1,
@@ -660,7 +675,7 @@ end
 ----------------------------------------------------------------- A23-71 learn moment
 function LEARN.Show(b, st)
 	local slot = b.Slot
-	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, string.format(TXT.NewSkill, st.Def.Name), LEARN.Banner) end
+	if type(UIKit.Announce) == "function" then pcall(UIKit.Announce, trx(TXT, "NewSkill", st.Def.Name), LEARN.Banner) end
 	-- the button pops in (no bounce with 'Screen shake' off)
 	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
 	if not reduced then
@@ -676,7 +691,7 @@ function LEARN.Show(b, st)
 		local kb = C and C.Keybinds
 		local ok, label = false, nil
 		if type(kb) == "table" and type(kb.Label) == "function" then ok, label = pcall(kb.Label, T.Action[slot]) end
-		line = string.format(TXT.LearnKey, (ok and type(label) == "string" and label ~= "") and label or slot)
+		line = trx(TXT, "LearnKey", (ok and type(label) == "string" and label ~= "") and label or slot)
 	end
 	LEARN.HintWait[slot] = line
 	task.delay(LEARN.HintAfter, LEARN.LateHint, slot)
@@ -722,7 +737,7 @@ end
 function LEARN.Tell(level)
 	if os.clock() - LEARN.TellAt < LEARN.TellGap then return end
 	LEARN.TellAt = os.clock()
-	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, string.format(TXT.Later, level), "info", 2.5) end
+	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, trx(TXT, "Later", level), "info", 2.5) end
 end
 
 ----------------------------------------------------------------- public API
@@ -839,6 +854,7 @@ end
 
 function SkillBar.Init(registry)
 	C = registry
+	pcall(function() C.UIKit.L10n.Register("SkillBar.TXT", TXT) end) -- 10/14: the words' keys "SkillBar.TXT.<key>" (trx)
 end
 
 function SkillBar.Start()

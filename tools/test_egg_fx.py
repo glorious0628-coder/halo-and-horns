@@ -459,7 +459,7 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and "S.PreviewAt = os.clock()\n\t\t\tcarry += slotsOf(rec.Kind)" in egg, ""),
         ("EggFx: '+N' only for my own delivery", "if data.UserId ~= LocalPlayer.UserId then return end" in egg, ""),
         ("EventHUD: the Eggs bar comes from EggFx.Bar, the line under it hidden, no explanation text",
-         "eggFx.Bar(" in branch and "setVisible(ui.TugSub, false)" in branch and "TXT.EggCoop" in branch
+         "eggFx.Bar(" in branch and "setVisible(ui.TugSub, false)" in branch and ("TXT.EggCoop" in branch or '"EggCoop"' in branch)
          and "Hint" not in branch and "MyCount" not in branch, ""),
         ("EventHUD: the overtime clock gold with the approved crown", 'Art.image("Crown"' in hud and "b.Overtime and GOLD" in hud, ""),
         ("Audio: deliveries / tags (my side's sound, others within EggRange, stand-ins)",

@@ -152,6 +152,33 @@ def statics(src: str) -> list[tuple[str, bool]]:
         ("the format list tool writes the table form (json + csv) with the same token rule",
          "def roblox_form(" in tool and 'with_suffix(".csv")' in tool and r'SPEC = re.compile(r"%%|%[-+ #0]*\d*(?:\.\d+)?[sdifgxXcq]")' in tool
          and 'Spec = "%%[-+ #0]*%d*%.?%d*[sdifgxXcq]"' in src),
+    ] + first_minutes()
+
+
+SPS_DIR = ROOT / "src/StarterPlayer/StarterPlayerScripts"
+
+
+def first_minutes() -> list[tuple[str, bool]]:
+    """최종 검수 10/14 (1): the first-10-minute screens put their %-sentences through the table by key (L.Tx / trx ->
+    UIKit.Tx -> UIKit.Tr), and their word tables have key paths"""
+    def read(name: str) -> str:
+        p = SPS_DIR / name
+        return p.read_text(encoding="utf-8-sig").replace("\r\n", "\n") if p.exists() else ""
+    hud, ev, ds = read("HUD.luau"), read("EventHUD.luau"), read("DeathScreen.luau")
+    sb, fs, pc = read("SkillBar.luau"), read("FirstSteps.luau"), read("PauseCard.luau")
+    plain = re.compile(r"string\.format\((?:TXT|T\.Text)\.\w+")
+    return [
+        ("HUD: no %-sentence of its words by plain string.format; HUD.TXT registered; goal chips by key",
+         not plain.search(hud) and 'UIKit.L10n.Register("HUD.TXT", TXT)' in hud and "function L.Tx(t, key, ...)" in hud
+         and 'fmt("Next", best.Text)' in hud and 'fmt("Big", sideWord)' in hud),
+        ("EventHUD: its sentences by key (L.Tx), EventHUD.TXT registered",
+         not plain.search(ev) and 'C.UIKit.L10n.Register("EventHUD.TXT", TXT)' in ev),
+        ("KO screen: cause / lost / back / 'This run' by key (Config.Death.Text)",
+         "out.Cause = f and trx(TX, by, name) or nil" in ds and 'trx(TX, "Respawn"' in ds and "trx(TX, key," in ds),
+        ("skill bar, first steps, pause cards: by key, their tables registered",
+         not plain.search(sb) and not plain.search(fs) and not plain.search(pc)
+         and 'Register("SkillBar.TXT", TXT)' in sb and 'Register("FirstSteps.TXT", TXT)' in fs
+         and 'Register("PauseCard.T.Text", T.Text)' in pc),
     ]
 
 
