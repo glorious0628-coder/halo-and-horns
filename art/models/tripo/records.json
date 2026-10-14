@@ -11432,6 +11432,33 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_src.glb",
    "bytes": 11659284,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T1/Weapon_Halo_Paladin_T1_HD_fit.glb",
+   "length_studs": 3.0,
+   "before_raw": [
+    0.0864,
+    0.2509,
+    0.9801
+   ],
+   "after_studs": [
+    0.768,
+    0.264,
+    3.0
+   ],
+   "grip": [
+    0.065,
+    0.275
+   ],
+   "pivot_share": 0.17,
+   "tris": 14746,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_Paladin_T2_web_hd_mv4": [
@@ -11480,6 +11507,33 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_src.glb",
    "bytes": 8685568,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T2/Weapon_Halo_Paladin_T2_HD_fit.glb",
+   "length_studs": 3.5,
+   "before_raw": [
+    0.0713,
+    0.3143,
+    0.98
+   ],
+   "after_studs": [
+    1.122,
+    0.255,
+    3.5
+   ],
+   "grip": [
+    0.07,
+    0.225
+   ],
+   "pivot_share": 0.147,
+   "tris": 13172,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_Paladin_T3_web_hd_mv4": [
@@ -11528,6 +11582,33 @@
    "file": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_src.glb",
    "bytes": 9677644,
    "approval": "최종 검수 10/14 결정 A: 옛 HD 0점 다시 받아 판정"
+  },
+  {
+   "event": "blender_fit",
+   "by": "무기 디자인",
+   "at": "2026-10-14 evening",
+   "tool": "tools/weapon_hd_fit.py (size / pivot / orientation only, A23-187)",
+   "judge": "최종 검수 10/14: PASS (T3 groove = brighten in Roblox material)",
+   "out": "art/models/tripo/weapons/Weapon_Halo_Paladin_T3/Weapon_Halo_Paladin_T3_HD_fit.glb",
+   "length_studs": 4.0,
+   "before_raw": [
+    0.0753,
+    0.3328,
+    0.9791
+   ],
+   "after_studs": [
+    1.36,
+    0.307,
+    4.0
+   ],
+   "grip": [
+    0.09,
+    0.29
+   ],
+   "pivot_share": 0.19,
+   "tris": 12825,
+   "frame": "origin = grip point; Roblox +Y (glTF +Y) = tip; Roblox -Z = 2D front face",
+   "check": "art/review/weapon_design/chunk1_Paladin_fit.png"
   }
  ],
  "Weapon_Halo_LightMage_T1_web_hd_mv4": [
