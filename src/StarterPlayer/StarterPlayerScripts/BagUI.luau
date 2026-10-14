@@ -14,8 +14,11 @@
 --   bottom  : my gold (bank + carried), the sort (Newest · Name · Grade · Type, saved as Settings.BagSort, Newest =
 --             the server's ItemSeq / WeaponSeq order) and narrow (4 columns) / wide (8 columns) (Settings.BagWide)
 -- Data: the owner's "Inventory" remote ({ Items, Enhance, Seen, ItemSeq, WeaponSeq, Spares? }; bound here too) + the
--- player attributes. Display only: the server checks every request. No selling here yet (A23-127: Otto buys
--- materials and spares; that screen comes with the server's SellItem / spares).
+-- player attributes. Display only: the server checks every request. Artisan contract ② (10/14, docs/design/
+-- artisan_min_server_2026-10-14.md): a gathered material (Kind Material with a Source) sells one at a time or all at the
+-- Forge's anvil - [Sell 1] / [Sell all] -> SellItem(itemId, n) (game dev 2's remote; no remote = no buttons), on only while
+-- the anvil's prompt (Config.WeaponShop.PromptName) shows to me (the server's own distance); the answer is the
+-- Inventory update + the server's notice. Monster materials keep the anvil's sell-all.
 -- Text: short English in TXT (L10n key "BagUI.TXT.*", A23-111); item names through Config (UIKit.Tx). PC first (A23-98).
 -- Public API: BagUI.Init(C), BagUI.Start(), BagUI.IsReady(), BagUI.Open(tab?), BagUI.OnInventory(payload),
 -- pure: BagUI.Cells(ctx) -> cells, BagUI.Sort(cells, mode) -> cells, BagUI.Columns(widthDu, wide) -> n,
@@ -29,6 +32,8 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
 local L10n = require(Shared:WaitForChild("L10n"))
+local Net = require(Shared:WaitForChild("Net"))
+local ProximityPromptService = game:GetService("ProximityPromptService")
 
 local BagUI = {}
 local C = nil
@@ -61,6 +66,9 @@ local TXT = {
 	FailDown = "A fail may drop it 1 step. Weapons never break!",
 	FailKeep = "Nothing changes on a fail.",
 	SellsFor = "Sells for %s each",
+	SellOne = "Sell 1", -- artisan contract ②: a gathered material at the anvil
+	SellAll = "Sell all",
+	SellWhere = "Sell it at the Forge's anvil.",
 	From = "From: %s",
 }
 L10n.Register("BagUI.TXT", TXT)
@@ -115,6 +123,7 @@ local S = {
 	Note = nil, -- one status line (a timeout)
 	Result = nil, ResultAt = -math.huge, -- the last scroll result Panels got (Panels.LastEnhance)
 	Shown = {}, -- [tab] = true: shown since the window opened (its new things count as seen when it is left)
+	NearAnvil = false, -- artisan contract ②: the Forge anvil's prompt shows to me (ProximityPromptService)
 }
 local pullInventory -- (defined with the data below)
 local VIEW = {} -- the open window: Kit, Parent, Body, Grid, Detail, Bar, Tabs = { [tab] = button }, Sig
@@ -446,6 +455,18 @@ end
 -- time it ends }, Now = the server time, TonicsOn = Config.FeatureOn("Tonics") }. view = { Title, Color, Sub,
 -- SubColor, Lines = { { Text, Color? } }, Actions = { { Id, Text, Enabled, Color = "Free" | "Buy" | "Button" } },
 -- Quick = item? (the quick slot row), Status = { Text, Color }? }
+-- artisan contract ② (pure): may a picked material be sold one at a time here? -> nil (not a gathered material with a
+-- price, or the server has no SellItem: ctx.SellOn) or { Near = the anvil's prompt shows (ctx.Near), One = [Sell 1] on,
+-- All = [Sell all] on } - both off away from the anvil, while a request waits (ctx.Pending) or with none left
+function BagUI.SellPlan(cell, def, ctx)
+	ctx = type(ctx) == "table" and ctx or {}
+	if type(cell) ~= "table" or type(def) ~= "table" or ctx.SellOn ~= true then return nil end
+	if def.Kind ~= "Material" or def.Source == nil or num(def.Sell, 0) <= 0 then return nil end
+	local n = math.floor(num(cell.Count, 0))
+	local on = ctx.Near == true and ctx.Pending == nil and n >= 1
+	return { Near = ctx.Near == true, One = on, All = on }
+end
+
 function BagUI.Detail(cell, ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	local view = { Lines = {}, Actions = {} }
@@ -573,9 +594,17 @@ function BagUI.Detail(cell, ctx)
 	else
 		local def = Config.Loot.Items[cell.Id]
 		line(tx(TXT, "Count", cell.Count))
-		-- the Forge's sell-all takes monster materials only: a gathered / boss thing (a Source) shows no price until it can be
-		-- sold one at a time (SellItem, later) - 게임성 검수 10/12
-		if def and def.Source == nil and num(def.Sell, 0) > 0 then line(tx(TXT, "SellsFor", Util.FormatInt(math.floor(def.Sell)))) end
+		-- the Forge's sell-all takes monster materials only (게임성 검수 10/12); a gathered / boss thing (a Source) sells one
+		-- at a time at the anvil once the server has SellItem (artisan contract ②)
+		local price = def and math.floor(num(def.Sell, 0)) or 0
+		if def and def.Source == nil and price > 0 then line(tx(TXT, "SellsFor", Util.FormatInt(price))) end
+		local plan = BagUI.SellPlan(cell, def, ctx)
+		if plan then
+			line(tx(TXT, "SellsFor", Util.FormatInt(price)))
+			if not plan.Near then line(tx(TXT, "SellWhere"), "Sub") end
+			act("SellOne", tx(TXT, "SellOne"), plan.One, "Buy")
+			act("SellAll", tx(TXT, "SellAll"), plan.All, "Buy")
+		end
 		local from = dropsFrom(cell.Id, ctx.Seen)
 		if from then line(tx(TXT, "From", from), "Sub") end
 	end
@@ -729,6 +758,8 @@ local function checkPending()
 			done = math.floor(num(S.Data.Items[p.Item], 0)) ~= p.Count or S.ResultAt > p.SentAt
 		elseif p.Kind == "Equip" then
 			done = math.floor(num(attr("WeaponTier"), 0)) ~= p.WeaponTier
+		elseif p.Kind == "Sell" then -- artisan contract ②: the count went down (the server's notice says how much)
+			done = math.floor(num(S.Data.Items[p.Item], 0)) ~= p.Count
 		elseif p.Kind == "Tonic" then
 			done = math.floor(num(S.Data.Items[p.Item], 0)) ~= p.Count or num(attr("Buff_" .. p.Item), 0) ~= p.Ends
 		end
@@ -1022,6 +1053,7 @@ local function drawDetail(frame, all, picked)
 		Power = function(tier, plus) return Config.CombatPowerOf(LocalPlayer, tier, plus) end,
 		Potion = potionInput,
 		Tonics = tonicEnds(), Now = workspace:GetServerTimeNow(), TonicsOn = tonicsOn(),
+		Near = S.NearAnvil, SellOn = type(Net) == "table" and type(Net.Names) == "table" and table.find(Net.Names, "SellItem") ~= nil,
 	})
 	VIEW.DetailSig = nil
 	if not view.Title then return view end
@@ -1308,6 +1340,11 @@ function BagUI.Act(id, cell)
 		S.Mode, S.Result, S.Note = { Item = cell.Id }, nil, nil
 		S.Tab = "Gear"
 		BagUI.Redraw()
+	elseif (id == "SellOne" or id == "SellAll") and type(cell) == "table" and cell.Kind == "Material" then
+		local count = math.floor(num(S.Data.Items[cell.Id], 0))
+		if not S.NearAnvil or count < 1 then return end
+		local n = id == "SellAll" and count or 1
+		if send("SellItem", { Kind = "Sell", Item = cell.Id, Count = count }, cell.Id, n) then BagUI.Redraw() end
 	elseif id == "Cancel" then
 		local item = S.Mode and S.Mode.Item
 		S.Mode, S.Result, S.Note = nil, nil, nil
@@ -1465,6 +1502,17 @@ end
 
 function BagUI.Start()
 	pullInventory()
+	-- artisan contract ②: the anvil's prompt showing to me = in selling reach (the server checks the same distance)
+	local name = type(Config.WeaponShop) == "table" and Config.WeaponShop.PromptName or nil
+	local function near(prompt, on)
+		if typeof(prompt) ~= "Instance" or prompt.Name ~= name or S.NearAnvil == on then return end
+		S.NearAnvil = on
+		if VIEW.Kit and VIEW.Detail then pcall(BagUI.RedrawDetail) end
+	end
+	pcall(function()
+		ProximityPromptService.PromptShown:Connect(function(p) near(p, true) end)
+		ProximityPromptService.PromptHidden:Connect(function(p) near(p, false) end)
+	end)
 end
 
 -- offline tests
