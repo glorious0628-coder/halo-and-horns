@@ -620,6 +620,9 @@ Config.Skills = {
 	ZEnabled = false, XEnabled = false, PvPZX = false,
 	MoveSkills = true, Fields = true, Taunt = true,
 	Order = { "Q", "Z", "X" }, Unlock = { Q = 5, Z = 15, X = 25 }, GlobalGap = 0.5, MPStealCap = 20,
+	-- user 10/14 (SkillService: no refusals): a manual press within PressBuffer s of a cooldown's end is queued (fires
+	-- when it ends); AirReach = how far ahead an air cast (nothing to aim at) shows its move
+	PressBuffer = 0.35, AirReach = 12,
 	Kits = { "Warrior", "Mage", "Archer", "Blacksmith", "Alchemist", "Tamer" },
 	Defs = {
 		Warrior = {

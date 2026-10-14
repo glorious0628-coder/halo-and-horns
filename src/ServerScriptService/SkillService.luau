@@ -4,9 +4,12 @@
 --   client's pick, A23-91) and auto combat:
 --     - the shared GlobalGap (0.5 s) between any two skills: a manual press inside it is queued once (it fires when the
 --       gap ends), an auto cast simply waits;
---     - every refusal comes before MP is spent (locked / switched off / cooldown / no MP / no target) and tells the
---       presser: Net.Fx "SkillPress" { Slot, Result = "Queued" | "Locked" | "Cooldown" | "NoMP" | "NoTarget" |
---       "TooHeavy" | "CantHop" }.
+--     - user 10/14 "스킬 거절 알림 말고 서버가 거절을 안 하게 해야지": the server refuses nothing out loud. A manual press
+--       inside the last Config.Skills.PressBuffer s of its cooldown is queued like the gap (it fires when the cooldown
+--       ends); a longer cooldown, no MP, a locked slot, the sack / kaiju or a short hop return false SILENTLY (the
+--       screen blocks those first, game dev 1); a manual Z / X with nothing to aim at goes off into the air (airCast:
+--       the same move and Fx toward my facing, no MP, no cooldown, no gap, no damage, never counted). The only press
+--       answer left is Net.Fx "SkillPress" { Slot, Result = "Queued" } (every check still comes before MP is spent).
 --   Q = CombatService.Release (Config.BasicSkill numbers, unchanged). Z / X shapes run here. SKL-2: Line (a band Len x
 --   Width toward the nearest target within Range / Len in the aim cone, else straight ahead) and Chain (the nearest
 --   target within Range in the aim cone, then jumps of Jump studs to the nearest new target, Hits in all; no first target
@@ -107,7 +110,7 @@ local function flagOn(slot)
 	return slot == "Q" or K[FLAG[slot]] == true
 end
 
--- the presser's answer (manual casts only): the client shakes the button / shows the short word / the queued ring
+-- the presser's answer (manual casts only): since 10/14 only "Queued" (the queued ring on the button)
 local function press(player, slot, result)
 	local ok, err = pcall(Net.Fx, player, "SkillPress", { Slot = slot, Result = result })
 	if not ok then Util.Warn(TAG, "press: " .. tostring(err)) end
@@ -473,9 +476,12 @@ local function resolve(ctx, plan)
 		end
 	end
 	if playersHit > 0 then S.PvPService.BreakProtection(player) end
-	local healed, healedIds = kit.Heal(player, ctx.Pos, TUNE.HealRadius, total) -- A23-116: healedIds = Fx Healed
-	local stole = kit.Steal(player, total) -- A23-116: Fx Stole
-	local statuses = (def.Shape == "Roar" or def.Shape == "Hop") and xEffects(ctx, plan, monstersHit) or {}
+	local healed, healedIds, stole = 0, {}, 0
+	if not ctx.Air then -- an air cast (no target) heals and steals nothing
+		healed, healedIds = kit.Heal(player, ctx.Pos, TUNE.HealRadius, total) -- A23-116: healedIds = Fx Healed
+		stole = kit.Steal(player, total) -- A23-116: Fx Stole
+	end
+	local statuses = (not ctx.Air and (def.Shape == "Roar" or def.Shape == "Hop")) and xEffects(ctx, plan, monstersHit) or {}
 	if not ctx.Auto then S.PlayerService.MarkActive(player) end
 	local extent = math.max(num(plan.Len), num(def.Range), num(plan.Radius), num(def.TauntRadius), num(plan.Hop))
 	kit.FxNear(player, "Skill", plan.Center or ctx.Pos, extent, {
@@ -505,7 +511,9 @@ local function resolve(ctx, plan)
 		LaunchDelay = ctx.Launch,
 		Healed = healedIds, -- A23-116: UserIds whose HP really went up (the caster too, nearest 5 first)
 		Stole = stole, -- A23-116: HP the Horns life steal really gave the caster (0 = none)
+		Air = ctx.Air == true, -- 10/14: a press with nothing to aim at (no damage, nothing spent)
 	})
+	if ctx.Air then return end -- never a skill use for quests / auto / the field boss (A23-1: only skills that hit count)
 	CS.Released:Fire(player, {
 		Slot = ctx.Slot,
 		Stacks = 0, -- legacy event compatibility
@@ -664,17 +672,54 @@ function SkillService.GuardOf(player)
 	return math.clamp(g.Pct, 0, 0.9)
 end
 
+-- user 10/14 ("서버가 거절을 안 하게"): a manual Z / X with nothing to aim at goes off into the air - the same move and Fx
+-- toward where I face (Config.Skills.AirReach studs), no MP, no cooldown, no gap, no damage, no heal / steal, never
+-- counted (no Released: skill-use quests count only skills that hit, A23-1). One air cast per GlobalGap (Fx spam guard).
+-- True when it went off.
+local function airCast(ctx)
+	local s = stateOf(ctx.Player)
+	local now = os.clock()
+	if now < (s.AirAt or -math.huge) then return false end
+	s.AirAt = now + num(K.GlobalGap, 0.5)
+	local def = ctx.Def
+	local dir = flatDir(ctx.Root.CFrame.LookVector)
+	local at = ctx.Pos + dir * math.min(num(def.Range, 35), num(K.AirReach, 12))
+	ctx.Air = true
+	resolve(ctx, { Center = at, Dir = dir, Radius = num(def.Jump, 10), Points = { at }, Monsters = {}, Players = {} })
+	return true
+end
+
+-- one manual press that waits `wait` s (the gap, or the cooldown's last PressBuffer s) and then casts; one at a time.
+-- hint: Q's client pick (A23-91), kept. Returns false (the cast happens later)
+local function queue(player, s, slot, wait, hint)
+	if s.Queued ~= nil then return false end
+	s.Queued = slot
+	press(player, slot, "Queued")
+	local character = Util.GetCharacter(player)
+	task.delay(wait, function()
+		if s.Queued ~= slot then return end
+		s.Queued = nil
+		if player.Parent == nil or Util.GetCharacter(player) ~= character then return end
+		local ok, err = pcall(SkillService.Cast, player, slot, false, hint)
+		if not ok then Util.Warn(TAG, "queued cast: " .. tostring(err)) end
+	end)
+	return false
+end
+
+local function pressBuffer()
+	return math.max(0, num(K.PressBuffer, 0.35))
+end
+
 local function castQ(player, s, isAuto, hint)
 	local skill = Config.BasicSkill or {}
 	if not isAuto then
-		if Util.Now() < num(player:GetAttribute("SkillReadyAt"), 0) then
-			press(player, "Q", "Cooldown")
+		local left = num(player:GetAttribute("SkillReadyAt"), 0) - Util.Now()
+		if left > 0 then
+			-- 10/14: the cooldown's last moment = queued (fires when it ends); longer = silently nothing
+			if left <= pressBuffer() then return queue(player, s, "Q", left + 0.02, hint) end
 			return false
 		end
-		if num(player:GetAttribute("Mana"), 0) < num(skill.ManaCost, 20) then
-			press(player, "Q", "NoMP")
-			return false
-		end
+		if num(player:GetAttribute("Mana"), 0) < num(skill.ManaCost, 20) then return false end -- the screen blocks it
 	end
 	local ok = S.CombatService.Release(player, isAuto, hint) == true
 	if ok then s.LastAt = os.clock() end
@@ -692,15 +737,15 @@ local function castZX(player, s, slot, isAuto)
 	local kit = S.CombatService.Kit
 	if not root or kit.Blocked(player, root, "Skill") then return false end
 	local now = os.clock()
-	if now < (s.ReadyAt[slot] or -math.huge) then
-		if not isAuto then press(player, slot, "Cooldown") end
+	local readyAt = s.ReadyAt[slot] or -math.huge
+	if now < readyAt then
+		if isAuto then return false end
+		-- 10/14: the cooldown's last moment = queued (fires when it ends); longer = silently nothing
+		if readyAt - now <= pressBuffer() then return queue(player, s, slot, readyAt - now + 0.02, nil) end
 		return false
 	end
 	local cost = num(def.MP)
-	if num(player:GetAttribute("Mana"), 0) < cost then
-		if not isAuto then press(player, slot, "NoMP") end
-		return false
-	end
+	if num(player:GetAttribute("Mana"), 0) < cost then return false end -- the screen blocks it (game dev 1)
 	local ctx = { Player = player, Class = c, Faction = fac, Def = def, Slot = slot, Auto = isAuto, Root = root,
 		Pos = root.Position, PvP = not isAuto and K.PvPZX == true and PVP[fac] == true }
 	-- A23-116: the slot's contact / launch times (the same table as Q; the pet tamer's pet does its Z / X like its Q)
@@ -709,14 +754,12 @@ local function castZX(player, s, slot, isAuto)
 	end
 	local plan, why = shape(ctx)
 	if not plan then
-		if not isAuto and why then press(player, slot, why) end
+		-- 10/14: a manual press with nothing to aim at goes off into the air (TooHeavy / CantHop: silently nothing)
+		if not isAuto and why == "NoTarget" then return airCast(ctx) end
 		return false
 	end
 	if isAuto and not autoRule(ctx, plan) then return false end
-	if not S.VitalsService.TrySpendMana(player, cost, true) then
-		if not isAuto then press(player, slot, "NoMP") end
-		return false
-	end
+	if not S.VitalsService.TrySpendMana(player, cost, true) then return false end
 	local cd = num(def.CD, 1)
 	s.LastAt = now
 	s.ReadyAt[slot] = now + cd
@@ -740,25 +783,12 @@ function SkillService.Cast(player, slot, isAuto, hint)
 	if not S.PlayerService.IsReady(player) or player:GetAttribute("ClassChosen") ~= true or not Util.IsAlive(player) then
 		return false
 	end
-	if not flagOn(slot) or SLOT[slot] > slotsOf(player) then
-		if not isAuto then press(player, slot, "Locked") end
-		return false
-	end
+	if not flagOn(slot) or SLOT[slot] > slotsOf(player) then return false end -- locked: the screen shows no button
 	local s = stateOf(player)
 	local wait = num(K.GlobalGap, 0.5) - (os.clock() - s.LastAt)
 	if wait > 0.001 then
-		if isAuto or s.Queued ~= nil then return false end -- auto waits; one queued press at a time
-		s.Queued = slot
-		press(player, slot, "Queued")
-		local character = Util.GetCharacter(player)
-		task.delay(wait, function()
-			if s.Queued ~= slot then return end
-			s.Queued = nil
-			if player.Parent == nil or Util.GetCharacter(player) ~= character then return end
-			local ok, err = pcall(SkillService.Cast, player, slot, false, hint)
-			if not ok then Util.Warn(TAG, "queued cast: " .. tostring(err)) end
-		end)
-		return false
+		if isAuto then return false end -- auto waits
+		return queue(player, s, slot, wait, hint) -- one queued press at a time
 	end
 	if slot == "Q" then return castQ(player, s, isAuto, hint) end
 	return castZX(player, s, slot, isAuto)
