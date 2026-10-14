@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 9 — fix/settings-apply fe85439a (다 됨·push, 최신)
+- 계획 2-C #9 앞 두 개. 확인: 설정 DmgNum(All/Off)·Tags(All/Near/Off)는 저장만 되고 클라 어디서도 안 읽었음(Settings.luau 말고 0곳).
+- 피해 숫자: Fx MOTION.DamageNumbersOn()(Settings DmgNum, 기본 All) + MOTION.IsDamageKey(M 내 타격·P PvP·H 받은 피해) → showAmount 맨 앞에서 Off면 안 그림, Release 합계(ShowNumber)도. 골드·XP·전리품(G·RG·RX) 그대로.
+- 남 이름표: 새 모듈 NameTagPrefs(ClientMain ChatTags 뒤): 서버 CharacterVisuals의 머리 "Nametag" 중 남의 것만(PlayerToHideFrom ~= 나) All = MaxDistance 120(Config.Visuals.NametagMaxDistance), Near = 새 Config.Visuals.NametagNearDistance 40, Off = Enabled false; 나중에 다시 만든 이름표·새 플레이어·설정 바꿈 바로 적용, 유령 글 등 다른 billboard 안 건드림.
+- 시험: 새 test_settings_apply 23·12/12(+정적 3), fx_edges, skill_fx 109·18/18, skill_signals, hit_ring, king_drop, weapon_motion 269, keys_settings, english, l10n 통과; luau-compile Fx·NameTagPrefs·HUD OK.
+- 병합 주의: dev1-village-fund와 ClientMain ORDER 한 줄 충돌(둘 다 모듈 추가) → 마을 기금 먼저 병합되면 내가 이 가지에 origin/main 병합해 한 줄 풀기. main·skill-press-reject와는 깨끗.
+
 ## 10/14 밤 8 — fix/skill-press-reject 3468b49c (다 됨·push, 최신)
 - 81e1d003 위 3468b49c = 최종 검수 MINOR 2개(목표 칩): ① HUD L.GoalTiers Big 줄은 Halo/Horns 글이 있을 때만(Neutral/None/nil 명시로 없음) ② 칩 2·3층 TextWrapped=false + TextTruncate AtEnd(작은 PC 방 계산이 한 줄씩이라 두 줄로 밀리지 않음, 긴 줄은 "...").
 - 시험: goal_chips 52·21/21(새 검사 1 + 돌연변이 2: format 에러 기대기, 두 줄 감기), hud_layout, hud_reveal, quest_lines, phone_first10, phone_text, first_look, comeback_client, fit_text, english, l10n, skill_press, skill_learn 통과.
