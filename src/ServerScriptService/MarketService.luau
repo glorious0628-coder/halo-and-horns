@@ -46,6 +46,7 @@ local ST = {
 	ListAt = {}, -- [player] = os.clock() of the last accepted List
 	LedgerAt = {}, -- [player] = os.clock() of the last full ledger read of its open rows
 	Warned = {}, -- [what] = os.clock() (warnings at most once a minute)
+	GetOpts = nil, -- review 10/14: DataStoreGetOptions with UseCache = false (false = could not make one)
 }
 
 ------------------------------------------------------------------ small helpers
@@ -122,7 +123,7 @@ end
 local function openRows(m)
 	local n = 0
 	for _, r in m.Out do
-		if r.St == "Open" or r.St == "Pend" then n += 1 end
+		if r.St == "Open" then n += 1 end -- a Pend row is an Open row with Pend = true
 	end
 	return n
 end
@@ -199,11 +200,25 @@ local function ledger()
 	return ST.Ledger or nil
 end
 
+-- review 10/14: the ledger is read past the server's ~4 s GetAsync cache (a write that errored but landed is seen)
+local function getOpts()
+	if ST.GetOpts == nil then
+		local ok, o = pcall(Instance.new, "DataStoreGetOptions")
+		if ok and o then
+			local okU = pcall(function() o.UseCache = false end)
+			ST.GetOpts = okU and o or false
+		else
+			ST.GetOpts = false
+		end
+	end
+	return ST.GetOpts or nil
+end
+
 -- (ok, record): ok = the read worked (record nil = no row)
 local function lget(id)
 	local store = ledger()
 	if not store then return false, nil end
-	local ok, v = pcall(store.GetAsync, store, "L_" .. id)
+	local ok, v = pcall(store.GetAsync, store, "L_" .. id, getOpts())
 	if not ok then
 		warnOnce("ledger read", v)
 		return false, nil
@@ -437,8 +452,28 @@ local function settleOut(player, data, id, rec)
 		return
 	end
 	if row.St == "Paid" or row.St == "Cancel" or row.St == "Expired" then return end -- finished (kept for the Mine tab)
+	if rec == nil and row.Pend == true then
+		-- review 10/14 BLOCK 1: "no ledger row" is decided IN the ledger: a tombstone (Cancel) is written where the row would
+		-- be, so a listing write still on its way (another session of mine, a closing server) can never create it later
+		local uid, won = player.UserId, false
+		local ok = lupdate(id, function(old)
+			won = false
+			if old ~= nil then return nil end
+			won = true
+			return { Id = id, Seller = uid, St = "Cancel", At = os.time(), Tomb = true }
+		end)
+		if not ok then return end -- tried again at the next round
+		if won then
+			giveBack(player, data, id, row, "Cancel") -- never published: the things come back
+			return
+		end
+		local okR, now = lget(id) -- the listing landed after all: settle it as it is
+		if okR and now and now.Seller == player.UserId then settleOut(player, data, id, now) end
+		return
+	end
 	if rec == nil or rec.Seller ~= player.UserId then
-		if row.St == "Pend" then giveBack(player, data, id, row, "Cancel") end -- never published: the things come back
+		-- a row under my id that is someone else's: my listing never landed (never public): the things come back
+		if rec ~= nil and row.Pend == true then giveBack(player, data, id, row, "Cancel") end
 		return
 	end
 	if rec.Paid == true then -- paid by a save of ours already (the ledger is marked only after that save)
@@ -447,8 +482,8 @@ local function settleOut(player, data, id, rec)
 		return
 	end
 	if rec.St == "Open" then
-		if row.St == "Pend" then
-			row.St, row.Idx = "Open", false
+		if row.Pend == true then
+			row.Pend, row.Idx = nil, false
 		end
 		if os.time() >= num(rec.Exp, 0) then
 			local won = false
@@ -534,11 +569,41 @@ local function settleIn(player, data, id, rec)
 		deliver(player, data, id, row)
 		return
 	end
-	if rec and rec.St == "Sold" and rec.Buyer == player.UserId then
+	local uid = player.UserId
+	if rec and rec.St == "Sold" and rec.Buyer == uid then
 		deliver(player, data, id, row)
-	else
-		refund(player, data, id, row) -- the purchase never landed (gone, ended, someone else's, or still open)
+		return
 	end
+	if rec and rec.St == "Open" then
+		-- review 10/14 BLOCK 2: the listing is still open, so this attempt's write may still be on its way: void the attempt
+		-- (Void[Tok]) in the ledger first; the purchase write refuses a voided attempt. A row without a token waits.
+		local tok = row.Tok
+		if type(tok) ~= "string" or tok == "" then return end
+		local voided, mine = false, false
+		local ok = lupdate(id, function(old)
+			voided, mine = false, false
+			if old and old.St == "Sold" and old.Buyer == uid then
+				mine = true
+				return nil
+			end
+			if old and old.St == "Open" then
+				old.Void = type(old.Void) == "table" and old.Void or {}
+				old.Void[tok] = true
+				voided = true
+				return old
+			end
+			voided = true -- ended or someone else's: this attempt can never land
+			return nil
+		end)
+		if not ok then return end -- tried again at the next round
+		if mine then
+			deliver(player, data, id, row)
+		elseif voided then
+			refund(player, data, id, row)
+		end
+		return
+	end
+	refund(player, data, id, row) -- the purchase never landed (gone, ended or someone else's): it never can now
 end
 
 ------------------------------------------------------------------ the owner's round (hints, ended rows, retries, join)
@@ -558,7 +623,7 @@ local function round(player, full)
 		for _, id in ids do
 			local row = m.Out[id]
 			if row and not isDone(m, id) then
-				local due = full or hinted[id] or row.St == "Pend" or row.Ret or row.Idx == false
+				local due = full or hinted[id] or row.Pend == true or row.Ret or row.Idx == false
 					or ((row.St == "Open") and now >= num(row.Exp, 0))
 				if due then
 					if row.Ret then
@@ -578,7 +643,7 @@ local function round(player, full)
 			if row then
 				if row.Ret then
 					settleIn(player, data, id, nil)
-				elseif full or row.St == "Pay" then
+				elseif full or row.Pay == true then
 					local okR, rec = lget(id)
 					if okR then settleIn(player, data, id, rec) end
 				end
@@ -616,7 +681,7 @@ local function sendMine(player)
 	end)
 	for _, id in ids do
 		local r = m.Out[id]
-		local state = (r.St == "Pend" or r.St == "Open") and "Open" or (r.St == "Paid" and "Sold" or r.St)
+		local state = r.St == "Open" and "Open" or (r.St == "Paid" and "Sold" or r.St)
 		table.insert(rows, { Id = id, Key = r.K, N = r.N, Plus = plusOf(r.K), Price = r.Price, State = state,
 			Left = state == "Open" and math.max(0, num(r.Exp, now) - now) or 0, Paid = r.St == "Paid" })
 	end
@@ -709,14 +774,19 @@ local function doList(player, data, kind, id, n, price)
 	local m = marketOf(data)
 	local lid = string.gsub(HttpService:GenerateGUID(false), "[{}]", "")
 	local now = os.time()
-	local row = { K = key, N = n, Price = price, St = "Pend", At = now, Exp = now + M.Hours * 3600 }
+	local row = { K = key, N = n, Price = price, St = "Open", Pend = true, At = now, Exp = now + M.Hours * 3600 }
 	m.Out[lid] = row
 	m.Lists += 1
 	ST.ListAt[player] = os.clock()
 	if not saveNow(player) then -- nothing is public yet: undo
-		m.Out[lid] = nil
 		m.Lists -= 1
-		giveThing(player, data, key, n)
+		-- review 10/14 FIX: what does not fit back (the bag filled while the save waited) stays owed (Ret), never lost
+		local left = giveThing(player, data, key, n)
+		if left > 0 then
+			row.St, row.Pend, row.N, row.Ret = "Cancel", nil, left, true
+		else
+			m.Out[lid] = nil
+		end
 		return note(player, "Resting")
 	end
 	local rec = { Id = lid, Seller = player.UserId, K = key, N = n, Price = price, At = now, Exp = row.Exp, St = "Open" }
@@ -737,7 +807,7 @@ local function doList(player, data, kind, id, n, price)
 	elseif not created then
 		return note(player, "Checking")
 	end
-	row.St = "Open"
+	row.Pend = nil
 	if not mapPut(lid, rec) then row.Idx = false end
 	note(player, "MarketListed")
 	happened(player, MarketService.Listed, "MarketListed")
@@ -765,7 +835,8 @@ local function doBuy(player, data, id, price)
 	if math.floor(num(m[pairKey], 0)) >= M.PairDay then return note(player, "PairLimit") end
 	local total = price * n
 	if not S.ProgressionService.SpendGold(player, total, "Market") then return note(player, "NotEnoughGold") end
-	local row = { Price = total, St = "Pay", K = rec.K, N = n }
+	local tok = string.sub(string.gsub(HttpService:GenerateGUID(false), "[{}%-]", ""), 1, 16) -- review 10/14 BLOCK 2
+	local row = { Price = total, St = "Sold", Pay = true, K = rec.K, N = n, Tok = tok }
 	m.In[id] = row
 	m.Buys += 1
 	m[pairKey] = math.floor(num(m[pairKey], 0)) + 1
@@ -781,7 +852,7 @@ local function doBuy(player, data, id, price)
 	local ok, after = lupdate(id, function(old)
 		won = false
 		if old and old.St == "Open" and os.time() < num(old.Exp, 0) and old.Seller ~= uid and old.Price == rec.Price
-			and old.N == rec.N then
+			and old.N == rec.N and not (type(old.Void) == "table" and old.Void[tok]) then
 			old.St, old.Buyer, old.SoldAt = "Sold", uid, os.time()
 			won = true
 			return old
@@ -888,7 +959,8 @@ local HANDLERS = {
 		local info = type(key) == "string" and Config.MarketParse("W:" .. key) or nil
 		if not info then return end
 		local data = begin(player, "UnpackSpare")
-		if not data or not switchOn() then return end
+		-- review 10/14: a crafted weapon is taken out with Crafting on, the market switched off or not
+		if not data or not (switchOn() or Config.FeatureOn("Crafting")) then return end
 		local r = S.LootService.UnpackSpare(player, info.Tier, info.Plus)
 		if r ~= true then note(player, r) end
 	end,

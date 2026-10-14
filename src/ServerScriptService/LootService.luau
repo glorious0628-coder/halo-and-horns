@@ -362,7 +362,12 @@ local function weaponPity(player, data, info, gained)
 			local key = "T" .. tier
 			local have = math.max(0, num(data.WeaponPity[key])) + adds[tier]
 			data.WeaponPity[key] = have
-			if have >= num(pity.At[tier]) then grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip) end
+			if have >= num(pity.At[tier]) then
+				-- review 10/14 BLOCK 3: the counter starts over once it pays (else a weapon packed for the market would be
+				-- paid again on the next kill, again and again)
+				data.WeaponPity[key] = 0
+				grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip)
+			end
 		end
 	end
 end

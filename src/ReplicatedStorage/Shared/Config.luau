@@ -9312,7 +9312,9 @@ Config.SaveV4 = {
 	MarketMaxN = 999, -- items in one market row
 	-- C-5 (MarketService): Pend = an Out row saved before its ledger record (the join check finishes it), Pay = an In row
 	-- paid before the ledger said Sold (the join check delivers or refunds)
-	MarketStates = { Open = true, Sold = true, Cancel = true, Expired = true, Paid = true, Pend = true, Pay = true },
+	-- review 10/14: the states an older server knows too (a listing not public yet = Open + Pend, a purchase paid and not
+	-- settled = Sold + Pay: flags keepExtra keeps), so a save loaded by a server from before the market loses no row
+	MarketStates = { Open = true, Sold = true, Cancel = true, Expired = true, Paid = true },
 }
 -- Craft: a craft level per artisan role + Rep (lifetime artisan points: the rank; the weekly board is Rank.Artisan) +
 -- Made (recipe id -> times made). Research: the tamer's points (Pts) and summons (Sum) per monster family (QuestKind).
@@ -9856,7 +9858,7 @@ Config.Market = {
 	IndexMap = "HHMktIndex", -- market key -> { L = lowest price, C = open rows } (a hint, rebuilt from the key's map)
 	SoldMap = "HHMktSold", -- seller UserId -> listing ids sold and not paid yet (a hint: the seller's server pays sooner)
 	Hours = 72, -- a listing stays open this long
-	Fee = 0.10, -- A23-133
+	Fee = 0.07, -- A23-183 (user 10/14): 7% of the sale, floored
 	BuyLevel = 5, ListLevel = 10, ListPlaySeconds = 3600, ListAccountDays = 7, -- A23-133 gates
 	OpenMax = 10, -- open listings of one player
 	DayLists = 20, DayBuys = 30, -- a KST day
@@ -9884,7 +9886,9 @@ Config.Market = {
 		MarketPaid = "Sold on the Market! +%s gold", -- (what the seller got)
 		MarketCancelled = "Listing cancelled. It's back in your bag.",
 		MarketExpired = "A listing ended. It's back in your bag.",
-		MarketRefund = "Someone was faster. +%s gold back.", -- (the refund)
+		-- A23-183 (user 10/14): no player refund / undo exists; a purchase that failed inside (lost the race, cut off) puts the
+		-- gold back by itself and says only this
+		MarketRefund = "Purchase failed.",
 		Checking = "Checking the Market…",
 		NeedLevelBuy = "You can buy from Lv 5.",
 		NeedLevelList = "You can sell from Lv 10.",

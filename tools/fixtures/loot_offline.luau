@@ -1817,7 +1817,15 @@ runGroup("weapon pity", function()
 	lines = g4:Noticed(string.format(L.Text.PityEquip, name4))
 	check(at == want and gotAt == 1 and lines == 1 and g4.Data.WeaponTier == 4, "Goblins: tier 4 for sure at kill " .. want
 		.. " (1.5 / " .. p4 .. "), in that kill's Loot list, equipped, one PityEquip line", show({ at, gotAt, lines, g4.Data.WeaponTier }))
-	check(near(g4.Data.WeaponPity.T4, sum), "the counter stops once the tier is owned (additive, never lowered)", show(g4.Data.WeaponPity))
+	-- review 10/14 BLOCK 3: the counter starts over once it pays, and stays there while the tier is owned
+	check(near(g4.Data.WeaponPity.T4, 0), "the counter is 0 after it paid and stays 0 while the tier is owned", show(g4.Data.WeaponPity))
+	-- a weapon given away (packed for the market) has to be earned again: the next Goblin pays nothing for sure
+	g4:Set("WeaponTier", 1)
+	g4:Set("WeaponOwnedMask", bit32.band(g4.Data.WeaponOwnedMask, bit32.bnot(8)))
+	local again = g4:Force("Goblin", {}, false) -- no row hits: only the luck counter can pay
+	check(not bit32.btest(g4.Data.WeaponOwnedMask, 8) and g4:Gained(again, "Weapon", 4) == 0,
+		"after giving it away: the next Goblin pays no instant tier 4", show(g4.Data.WeaponPity))
+	check(near(g4.Data.WeaponPity.T4, p4), "... the counter restarted from 0 (one Goblin's chance)", show(g4.Data.WeaponPity))
 	-- golden x GoldenMult; a Brute's two rows count for their own tiers
 	local b = fresh(12)
 	b:Roll("GoblinBrute", true)

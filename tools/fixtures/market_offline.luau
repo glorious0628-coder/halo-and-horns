@@ -97,6 +97,11 @@ local function marketWorld(o)
 		local store = plainGet(self, name, scope)
 		if name ~= w.LedgerName then return store end
 		local proxy = setmetatable({}, { __index = store })
+		-- review 10/14: the read options MarketService passes (UseCache = false) are kept for a check
+		function proxy.GetAsync(s, key, opts)
+			w.GetOpts = opts
+			return store.GetAsync(s, key)
+		end
 		function proxy.UpdateAsync(s, key, fn)
 			if (w.LedgerFailArmGet or 0) > 0 then -- an error before the write; the next n reads fail too
 				w.Fail[w.LedgerName .. ":Get"] = w.LedgerFailArmGet
@@ -240,11 +245,16 @@ runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local M = C.Market
 	check(C.Features.Market == false, "the switch ships off (Config.Features.Market)", "")
-	check(M.BuyLevel == 5 and M.ListLevel == 10 and M.ListPlaySeconds == 3600 and M.ListAccountDays == 7 and M.Fee == 0.10,
+	check(M.BuyLevel == 5 and M.ListLevel == 10 and M.ListPlaySeconds == 3600 and M.ListAccountDays == 7 and M.Fee == 0.07,
 		"A23-133: buy Lv5, sell Lv10 + 1 hour + a 7-day account, 10% fee", "")
 	check(M.Hours == 72 and M.OpenMax == 10 and M.DayLists == 20 and M.DayBuys == 30 and M.PairDay == 3 and M.PageRows == 50
 		and M.IndexCache == 30, "72 h listings, 10 open, 20 lists / 30 buys a day, 3 a day from one seller, 50 rows a page, index 30 s", "")
-	check(C.SaveV4.MarketStates.Pend == true and C.SaveV4.MarketStates.Pay == true, "the save keeps Pend / Pay rows", "")
+	-- review 10/14: only the states an older server knows; Pend / Pay are flags on Open / Sold rows (keepExtra keeps them)
+	check(C.SaveV4.MarketStates.Pend == nil and C.SaveV4.MarketStates.Pay == nil, "no new St (an older server keeps every row)", "")
+	local kept = C.SanitizeMarket({ Out = { x1 = { K = "I:Jelly", N = 1, Price = 2, St = "Open", Pend = true } },
+		In = { y1 = { Price = 5, St = "Sold", Pay = true, K = "I:Jelly", N = 1, Tok = "abcdef0123456789" } } })
+	check(kept.Out.x1 and kept.Out.x1.Pend == true and kept.In.y1 and kept.In.y1.Pay == true and kept.In.y1.Tok == "abcdef0123456789",
+		"the save keeps the Pend / Pay flags and the attempt token", show(kept))
 	check(C.PassBoost.GoldSources.Market == nil and C.PassBoost.GoldSources.MarketRefund == nil, "market gold is never 2x", "")
 	local rl = C.RateLimits
 	check(rl.MarketIndex == 1 and rl.MarketBrowse == 1 and rl.MarketMine == 1 and rl.MarketList == 6 and rl.MarketBuy == 6
@@ -294,7 +304,7 @@ runGroup("gates", function()
 	p.AccountAge = 6
 	check(G(p, d).List == "NeedAccountAge", "a 6-day account", show(G(p, d)))
 	p.AccountAge = 7
-	for i = 1, 10 do d.Market.Out["o" .. i] = { K = "I:Jelly", N = 1, Price = 2, St = i % 2 == 0 and "Open" or "Pend", At = NOW, Exp = NOW + 99 } end
+	for i = 1, 10 do d.Market.Out["o" .. i] = { K = "I:Jelly", N = 1, Price = 2, St = "Open", Pend = i % 2 == 1 or nil, At = NOW, Exp = NOW + 99 } end
 	check(G(p, d).List == "TooMany", "10 open (or placing) listings: TooMany", show(G(p, d)))
 	d.Market.Out.o1.St = "Paid"
 	check(G(p, d).List == "", "a finished row does not count", show(G(p, d)))
@@ -323,7 +333,8 @@ runGroup("list", function()
 		"an Out row Open: 10 Jelly at 5 each, 72 hours", show(row))
 	check(d.Items.Jelly == 20, "the Jelly left the bag", show(d.Items))
 	local saved = w.Saved[3] and w.Saved[3].Market.Out[id]
-	check(saved and saved.St == "Pend" and w.Saved[3].Items.Jelly == 20, "saved BEFORE the ledger: Pend, the bag already lighter", show(saved))
+	check(saved and saved.St == "Open" and saved.Pend == true and w.Saved[3].Items.Jelly == 20,
+		"saved BEFORE the ledger: Open + Pend, the bag already lighter", show(saved))
 	local rec = ledgerOf(w, id)
 	check(rec and rec.St == "Open" and rec.Seller == 3 and rec.K == "I:Jelly" and rec.N == 10 and rec.Price == 5 and rec.Exp == row.Exp,
 		"the ledger row: Open, seller, key, N, price, end", show(rec))
@@ -389,7 +400,7 @@ runGroup("list failures", function()
 	w2.Fail[w2.LedgerName .. ":Get"] = 1
 	local n1 = #w2.Notices
 	local id = listJelly(w2, q)
-	check(id and qd.Market.Out[id].St == "Pend" and qd.Items.Jelly == 20 and notes(w2, q, n1) == "Checking the Market…",
+	check(id and qd.Market.Out[id].Pend == true and qd.Items.Jelly == 20 and notes(w2, q, n1) == "Checking the Market…",
 		"no answer from the ledger: Pend (Checking)", show(qd.Market.Out))
 	w2:Tick(w2.Config.Market.PollSeconds)
 	check(qd.Market.Out[id].St == "Cancel" and qd.Items.Jelly == 30, "the round: no ledger row -> the Jelly back", show(qd.Market.Out[id]))
@@ -407,7 +418,7 @@ runGroup("list failures", function()
 	local n4 = #w4.Notices
 	local id4 = listJelly(w4, u)
 	w4.BeforeUpdate = nil
-	check(foreign ~= nil and w4.Stores[w4.LedgerName].Rows[foreign].Seller == 999 and ud.Market.Out[id4].St == "Pend"
+	check(foreign ~= nil and w4.Stores[w4.LedgerName].Rows[foreign].Seller == 999 and ud.Market.Out[id4].Pend == true
 		and string.find(notes(w4, u, n4), "Checking", 1, true) ~= nil, "a taken id: the other row stays, mine waits (Pend)", show(ud.Market.Out[id4]))
 	w4:Tick(w4.Config.Market.PollSeconds)
 	check(ud.Market.Out[id4].St == "Cancel" and ud.Items.Jelly == 30, "the round: not mine -> the Jelly back", show(ud.Market.Out[id4]))
@@ -482,7 +493,7 @@ runGroup("buy and pay", function()
 	check(bd.Items.Jelly == 10 and bd.BankGold + bd.CarriedGold == 70 and b.Spent == 50, "the buyer pays 10 x 5 = 50 and gets 10 Jelly",
 		show({ bd.Items, bd.BankGold, bd.CarriedGold }))
 	local saved = b.Saved[11] and b.Saved[11].Market.In[id]
-	check(saved and saved.St == "Pay" and saved.Price == 50 and b.Saved[11].BankGold + b.Saved[11].CarriedGold == 70,
+	check(saved and saved.St == "Sold" and saved.Pay == true and type(saved.Tok) == "string" and #saved.Tok >= 1 and #saved.Tok <= 16 and saved.Price == 50 and b.Saved[11].BankGold + b.Saved[11].CarriedGold == 70,
 		"saved BEFORE the ledger: In Pay, the gold already gone", show(saved))
 	local rec = ledgerOf(b, id)
 	check(rec.St == "Sold" and rec.Buyer == 11 and type(rec.SoldAt) == "number", "the ledger: Sold to the buyer", show(rec))
@@ -493,18 +504,18 @@ runGroup("buy and pay", function()
 	-- the seller's server pays on its next round (the sold hint)
 	local n1 = #a.Notices
 	a:Tick(a.Config.Market.PollSeconds)
-	check(sd.BankGold == 1045 and sd.Market.Out[id].St == "Paid" and table.find(sd.Market.Done, id) ~= nil,
-		"the seller gets 50 - 5 (10% fee) = 45 in the bank", show({ sd.BankGold, sd.Market.Out[id] }))
+	check(sd.BankGold == 1047 and sd.Market.Out[id].St == "Paid" and table.find(sd.Market.Done, id) ~= nil,
+		"the seller gets 50 - 3 (7% fee, floored) = 47 in the bank", show({ sd.BankGold, sd.Market.Out[id] }))
 	local g = a.Gold[#a.Gold]
-	check(g and g.Src == "Market" and g.N == 45, "as bank gold 'Market' (never 2x)", show(g and { g.Src, g.N }))
+	check(g and g.Src == "Market" and g.N == 47, "as bank gold 'Market' (never 2x)", show(g and { g.Src, g.N }))
 	check(ledgerOf(a, id).Paid == true and a.Saved[10].Market.Out[id].St == "Paid", "the ledger is marked Paid after the seller's save", show(ledgerOf(a, id)))
-	check(string.find(notes(a, s, n1), "Sold on the Market! +45 gold", 1, true) ~= nil, "the seller's notice", notes(a, s, n1))
+	check(string.find(notes(a, s, n1), "Sold on the Market! +47 gold", 1, true) ~= nil, "the seller's notice", notes(a, s, n1))
 	check(table.find(a.QuestEvents, "10:MarketListed") ~= nil and table.find(b.QuestEvents, "11:MarketBought") ~= nil
 		and table.find(a.QuestEvents, "10:MarketPaid") ~= nil, "the market quests hear MarketListed / MarketBought / MarketPaid",
 		show({ a.QuestEvents, b.QuestEvents }))
 	a:Tick(a.Config.Market.PollSeconds)
 	a:Tick(a.Config.Market.LedgerSeconds)
-	check(sd.BankGold == 1045, "paid once", sd.BankGold)
+	check(sd.BankGold == 1047, "paid once", sd.BankGold)
 	a:Remote("MarketMine", s)
 	local mine = last(a, "MarketMine", s)
 	check(mine.Rows[1].State == "Sold" and mine.Rows[1].Paid == true, "Mine: Sold, Paid", show(mine.Rows[1]))
@@ -599,7 +610,7 @@ runGroup("two buyers", function()
 	check(b1d.Items.Jelly == 10 and ledgerOf(a, id).Buyer == 17, "buyer 1 wins", show(ledgerOf(a, id)))
 	check((b2d.Items.Jelly or 0) == 0 and b2d.BankGold == 1000 and b2d.Market.In[id] == nil and table.find(b2d.Market.Done, id) ~= nil,
 		"buyer 2 gets the gold back, no Jelly", show({ b2d.Items, b2d.BankGold }))
-	check(string.find(notes(c, b2, n), "Someone was faster. +50 gold back.", 1, true) ~= nil, "MarketRefund", notes(c, b2, n))
+	check(string.find(notes(c, b2, n), "Purchase failed.", 1, true) ~= nil, "MarketRefund", notes(c, b2, n))
 	local g = c.Gold[#c.Gold]
 	check(g and g.Src == "MarketRefund" and g.N == 50 and not c.Carried, "a refund 'MarketRefund' to the bank (never 2x)", show(g and g.Src))
 end)
@@ -631,7 +642,7 @@ runGroup("buy failures", function()
 	b.LedgerFailArmGet = 2 -- the write errors; the check after it and the round's first read fail too
 	n = #b.Notices
 	b:Remote("MarketBuy", buyer, id2, 6)
-	check(bd.Market.In[id2] and bd.Market.In[id2].St == "Pay" and string.find(notes(b, buyer, n), "Checking", 1, true) ~= nil,
+	check(bd.Market.In[id2] and bd.Market.In[id2].Pay == true and string.find(notes(b, buyer, n), "Checking", 1, true) ~= nil,
 		"no answer: In Pay (Checking)", show(bd.Market.In))
 	b:Remote("MarketMine", buyer)
 	check(last(b, "MarketMine", buyer).Waiting == 1, "Mine: Waiting 1", "")
@@ -682,7 +693,7 @@ runGroup("cancel and expire", function()
 	for k in hints do hints[k] = nil end -- the hint is lost
 	n = #a.Notices
 	a:Remote("MarketCancel", s, id2)
-	check(sd.Market.Out[id2].St == "Paid" and sd.BankGold == 1045 and sd.Items.Jelly == 20, "cancel a sold row: paid, not given back",
+	check(sd.Market.Out[id2].St == "Paid" and sd.BankGold == 1047 and sd.Items.Jelly == 20, "cancel a sold row: paid, not given back",
 		show(sd.Market.Out[id2]))
 	-- the end after 72 hours: back in the bag
 	local id3 = listJelly(a, s, 5, 4)
@@ -722,24 +733,100 @@ runGroup("join check", function()
 	-- an Out row already paid (save + Paid) whose id fell out of Done: never paid again
 	L.Rows["L_d1"] = { Id = "d1", Seller = 30, K = "I:Jelly", N = 1, Price = 50, At = NOW, Exp = exp, St = "Sold", Buyer = 31, Paid = true }
 	local market = { Day = 0, Lists = 0, Buys = 0, Done = { "o2", "i3", "i4" },
-		Out = { p1 = { K = "I:Jelly", N = 5, Price = 3, St = "Pend", At = NOW, Exp = exp }, p2 = { K = "I:Jelly", N = 4, Price = 3, St = "Pend", At = NOW, Exp = exp },
+		Out = { p1 = { K = "I:Jelly", N = 5, Price = 3, St = "Open", Pend = true, At = NOW, Exp = exp },
+			p2 = { K = "I:Jelly", N = 4, Price = 3, St = "Open", Pend = true, At = NOW, Exp = exp },
 			o1 = { K = "I:Jelly", N = 2, Price = 10, St = "Open", At = NOW, Exp = exp }, d1 = { K = "I:Jelly", N = 1, Price = 50, St = "Paid", At = NOW, Exp = exp, Fin = NOW },
 			o2 = { K = "I:Jelly", N = 1, Price = 40, St = "Open", At = NOW, Exp = exp }, o3 = { K = "I:Jelly", N = 1, Price = 60, St = "Open", At = NOW, Exp = exp },
 			d2 = { K = "I:Jelly", N = 1, Price = 70, St = "Paid", At = NOW, Exp = exp, Fin = NOW } },
-		In = { i1 = { Price = 300, St = "Pay", K = "I:Enh70", N = 1 }, i2 = { Price = 310, St = "Pay", K = "I:Enh70", N = 1 },
-			i3 = { Price = 300, St = "Pay", K = "I:Enh70", N = 1 }, i4 = { Price = 320, St = "Pay", K = "I:Enh70", N = 1 } } }
+		In = { i1 = { Price = 300, St = "Sold", Pay = true, Tok = "t1", K = "I:Enh70", N = 1 },
+			i2 = { Price = 310, St = "Sold", Pay = true, Tok = "t2", K = "I:Enh70", N = 1 },
+			i3 = { Price = 300, St = "Sold", Pay = true, Tok = "t3", K = "I:Enh70", N = 1 },
+			i4 = { Price = 320, St = "Sold", Pay = true, Tok = "t4", K = "I:Enh70", N = 1 } } }
 	local p, d = hero(a, 30, { Items = { Jelly = 10 }, BankGold = 0, Market = market })
 	check(d.Market.Out.p1.St == "Open" and mapRows(a, "I:Jelly").p1 ~= nil, "Pend + a ledger row: Open and listed", show(d.Market.Out.p1))
 	check(d.Market.Out.p2.St == "Cancel" and d.Items.Jelly == 14, "Pend + no ledger row: 4 Jelly back", show({ d.Market.Out.p2, d.Items }))
-	check(d.Market.Out.o1.St == "Paid" and d.BankGold == 18 + 310 and table.find(d.Market.Done, "o1") ~= nil,
-		"Open + Sold while away: paid 20 - 2", show({ d.Market.Out.o1, d.BankGold }))
+	local tomb = L.Rows["L_p2"]
+	check(tomb and tomb.St == "Cancel" and tomb.Tomb == true and tomb.Seller == 30,
+		"review 10/14: ... and a tombstone where the row would be (a late listing write can never open it)", show(tomb))
+	check(d.Market.Out.o1.St == "Paid" and d.BankGold == 19 + 310 and table.find(d.Market.Done, "o1") ~= nil,
+		"Open + Sold while away: paid 20 - 1 (7% floored)", show({ d.Market.Out.o1, d.BankGold }))
+	check(L.Rows["L_i2"].St == "Open" and type(L.Rows["L_i2"].Void) == "table" and L.Rows["L_i2"].Void.t2 == true,
+		"review 10/14: the still-open purchase is voided in the ledger before its refund", show(L.Rows["L_i2"]))
 	check(d.Items.Enh70 == 1 and d.Market.In.i1 == nil and d.Market.In.i2 == nil, "In Pay + Sold to me: delivered; + still Open: refunded (310)",
 		show({ d.Items, d.Market.In }))
-	check(d.Market.Out.d1.St == "Paid" and d.Market.Out.d2.St == "Paid" and d.BankGold == 328, "a Paid row out of Done: never paid twice", show(d.BankGold))
-	check(d.Market.Out.o2.St == "Open" and d.Market.Out.o3.St == "Paid" and d.BankGold == 328,
+	check(d.Market.Out.d1.St == "Paid" and d.Market.Out.d2.St == "Paid" and d.BankGold == 329, "a Paid row out of Done: never paid twice", show(d.BankGold))
+	check(d.Market.Out.o2.St == "Open" and d.Market.Out.o3.St == "Paid" and d.BankGold == 329,
 		"an id in Done: never paid; a ledger Paid row: marked Paid, no gold", show({ d.Market.Out.o2, d.Market.Out.o3 }))
-	check(d.Market.In.i3 == nil and d.Market.In.i4 == nil and d.Items.Enh70 == 1 and d.BankGold == 328,
+	check(d.Market.In.i3 == nil and d.Market.In.i4 == nil and d.Items.Enh70 == 1 and d.BankGold == 329,
 		"an In id in Done: never delivered or refunded twice", show({ d.Market.In, d.Items, d.BankGold }))
+end)
+
+------------------------------------------------------------------ review 10/14: the duplication races (BLOCK 1 / 2, FIX)
+runGroup("races", function()
+	-- BLOCK 1: another session settles my Pend listing (tombstone) while this server's listing write is on its way
+	local mem, stores = {}, {}
+	local a = marketWorld({ Mem = mem, Stores = stores })
+	local s, sd = hero(a, 60)
+	a.BeforeUpdate = function(name, key)
+		if name ~= a.LedgerName then return end
+		a.BeforeUpdate = nil
+		a.Stores[name].Rows[key] = { Id = string.sub(key, 3), Seller = 60, St = "Cancel", At = NOW, Tomb = true }
+	end
+	local id = listJelly(a, s)
+	check(id and sd.Items.Jelly == 20 and sd.Market.Out[id].Pend == true, "the listing write lost to the tombstone: Pend, Checking", show(sd.Market.Out))
+	a:Tick(30)
+	local row = ledgerOf(a, id)
+	check(row.St == "Cancel" and sd.Items.Jelly == 30 and mapRows(a, "I:Jelly")[id] == nil,
+		"the round: the tombstone wins, the 10 Jelly come back ONCE, never listed", show({ row, sd.Items }))
+	-- BLOCK 1: the tombstone write fails: nothing comes back yet (the ledger has not decided), the next round settles it
+	local t = marketWorld()
+	t.AllowWarn = FAILWARN
+	local exp9 = NOW + 72 * 3600
+	t.Fail[t.LedgerName .. ":Update"] = 1
+	local tp, td = hero(t, 64, { Items = { Jelly = 10 }, Market = { Day = 0, Lists = 0, Buys = 0, Done = {}, In = {},
+		Out = { z9 = { K = "I:Jelly", N = 5, Price = 3, St = "Open", Pend = true, At = NOW, Exp = exp9 } } } })
+	check(td.Items.Jelly == 10 and td.Market.Out.z9.Pend == true and ledgerOf(t, "z9") == nil,
+		"the tombstone write fails: no Jelly back yet, still Pend", show({ td.Items.Jelly, td.Market.Out.z9 }))
+	t:Tick(30)
+	check(td.Items.Jelly == 15 and td.Market.Out.z9.St == "Cancel" and ledgerOf(t, "z9").Tomb == true,
+		"the next round: the tombstone, then the 5 Jelly back once", show({ td.Items.Jelly, ledgerOf(t, "z9") }))
+	-- BLOCK 2: my purchase attempt is voided by another session before this server's purchase write lands
+	local mem2, stores2 = {}, {}
+	local b = marketWorld({ Mem = mem2, Stores = stores2 })
+	local c = marketWorld({ Mem = mem2, Stores = stores2 })
+	local seller = hero(b, 61)
+	local lid = listJelly(b, seller)
+	local buyer, bd = hero(c, 62, { Items = {} })
+	local gold0 = bd.BankGold + bd.CarriedGold
+	c.BeforeUpdate = function(name, key)
+		if name ~= c.LedgerName or key ~= "L_" .. lid then return end
+		c.BeforeUpdate = nil
+		local tok = bd.Market.In[lid] and bd.Market.In[lid].Tok
+		local rec = c.Stores[name].Rows[key]
+		rec.Void = { [tok] = true }
+	end
+	c:Remote("MarketBuy", buyer, lid, 5)
+	check(ledgerOf(b, lid).St == "Open" and (bd.Items.Jelly or 0) == 0 and bd.BankGold + bd.CarriedGold == gold0,
+		"a voided attempt: the purchase write is refused, the buyer refunded once, the listing still open", show({ ledgerOf(b, lid), bd.BankGold }))
+	-- FIX: the ledger is read without the server cache
+	check(c.GetOpts ~= nil and c.GetOpts.UseCache == false, "ledger reads pass UseCache = false", show(c.GetOpts and c.GetOpts.UseCache))
+	-- FIX: a listing undone after a failed save keeps what no longer fits (owed, Ret)
+	local u = marketWorld()
+	u.AllowWarn = FAILWARN
+	local q, qd = hero(u, 63, { Items = { Jelly = 30 } })
+	u.SaveFail = true
+	local cap = u.Config.Loot.ItemCap
+	local realTake = u.Reg.LootService.TakeItem
+	u.Reg.LootService.TakeItem = function(pl, itemId, n2)
+		local ok = realTake(pl, itemId, n2)
+		u.Data[pl].Items.Jelly = cap -- the bag filled up again while the save waited
+		return ok
+	end
+	local lid2 = listJelly(u, q)
+	u.Reg.LootService.TakeItem = realTake
+	local owed = lid2 and qd.Market.Out[lid2]
+	check(qd.Items.Jelly == cap and owed and owed.St == "Cancel" and owed.Ret == true and owed.N == 10,
+		"the save fails with a full bag: the 10 Jelly stay owed (Ret), none lost", show({ qd.Items.Jelly, owed }))
 end)
 
 ------------------------------------------------------------------ weapons
@@ -774,7 +861,7 @@ runGroup("weapons", function()
 	check(bit32.btest(bd.WeaponOwnedMask, 8) and bd.WeaponEnhance[4] == 4 and bd.WeaponTier == 3 and bd.BankGold == 3000,
 		"the buyer owns T4 +4 now (not equipped)", show({ bd.WeaponOwnedMask, bd.WeaponEnhance }))
 	a:Tick(a.Config.Market.PollSeconds)
-	check(sd.BankGold == 1000 + 6300, "the seller: 7000 - 700", sd.BankGold)
+	check(sd.BankGold == 1000 + 6510, "the seller: 7000 - 490 (7%)", sd.BankGold)
 end)
 
 ------------------------------------------------------------------ the switch and Mine rows
@@ -793,7 +880,7 @@ runGroup("switch off", function()
 	a:Remote("MarketIndex", s)
 	check(last(a, "MarketIndex", s) == nil, "off: no index", "")
 	a:Tick(a.Config.Market.PollSeconds)
-	check(sd.Market.Out[id].St == "Paid" and sd.BankGold == 1045, "off: a sale made before still pays", show(sd.Market.Out[id]))
+	check(sd.Market.Out[id].St == "Paid" and sd.BankGold == 1047, "off: a sale made before still pays", show(sd.Market.Out[id]))
 	a.Config.Features.Market = true
 	local id2 = listJelly(a, s, 5, 5)
 	a.Config.Features.Market = false
@@ -803,6 +890,15 @@ runGroup("switch off", function()
 	n = #b.Notices
 	b:Remote("MarketBuy", buyer, id2, 5)
 	check(notes(b, buyer, n) == "The market is closed.", "off: no purchase", notes(b, buyer, n))
+	-- review 10/14: a crafted weapon (a spare) is taken out with Crafting on even while the market is off; both off = nothing
+	local u, ud = hero(a, 52, { WeaponOwnedMask = 7, Spares = { ["5:0"] = 1 } })
+	a.Config.Features.Crafting = false
+	a:Remote("UnpackSpare", u, "5:0")
+	check(ud.Spares["5:0"] == 1 and not bit32.btest(ud.WeaponOwnedMask, 16), "market and crafting off: the spare stays", show(ud.Spares))
+	a.Config.Features.Crafting = true
+	a:Remote("UnpackSpare", u, "5:0")
+	check(ud.Spares["5:0"] == nil and bit32.btest(ud.WeaponOwnedMask, 16), "market off, crafting on: the crafted weapon comes out", show(ud.Spares))
+	a.Config.Features.Crafting = false
 end)
 
 runGroup("mine rows", function()
