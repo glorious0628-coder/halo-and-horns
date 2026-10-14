@@ -1,0 +1,32 @@
+fresh on
+loaded: DataLoaded=true Faction=None ClassChosen=false TutorialStep=0 AttendReady=false
+fired IntroSeen
+fired ChooseFaction
+fired ChooseClass
+fired AcceptTutorial
+TutorialStep 99
+hud texts: 
+saved pc_01_hud
+potions: ok,ok,ok
+hud texts: 
+saved pc_02_hud_potions
+open Bag
+bag: Bag | Gear | Gear | Use | Use | 2 | Scrolls | Scrolls | Materials | Materials | Weapon | Armor | Ring | Pet | 300 | 0 / 12 | Newest
+saved pc_03_bag_gear
+modal hidden
+ok
+Level=5 SkillSlots=0 SkillLearnReady=0 SkillTeacher=
+saved pc_04_lv5
+gleam: -10.0,3.1,-372.0 prompt=Workspace.Map.NPCs.Npc_Gleam.HumanoidRootPart.TalkPrompt
+tp gleam
+saved pc_05_near_gleam
+talked false
+saved pc_06_gleam_dialog
+Level=5 SkillSlots=0 SkillLearnReady=0 SkillTeacher=
+texts: no modal visible
+saved pc_07_after_talk
+tp goose square
+pos: 6000, 206.74688720703125, 6020
+saved pc_08_goose_square
+console errors: [ServerErrorService] started
+play stopped
