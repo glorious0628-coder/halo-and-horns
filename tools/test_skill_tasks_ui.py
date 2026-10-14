@@ -103,8 +103,8 @@ print(("SKILL_TASKS_UI_SUMMARY checks=%d failed=%d"):format(checks, failed))
 MUTATIONS = [
     ("BOOK", "the book opens a slot by the level again", "\t\tif ok and num(n, 0) >= idx then return true end\n\tend\n\treturn false\nend",
      "\t\tif ok and num(n, 0) >= idx then return true end\n\tend\n\treturn num(ctx.Level, 1) >= unlockLevel(slot)\nend"),
-    ("BAR", "the bar opens a slot by the level again", "\tif type(slots) == \"number\" then locked = slots < (T.SlotIndex[slot] or 99) end\n",
-     "\tif locked and type(slots) == \"number\" and slots >= (T.SlotIndex[slot] or 99) then locked = false end\n"),
+    ("BAR", "the bar opens a slot by the level again", "\tif type(slots) == \"number\" then locked = slots < idx end\n",
+     "\tif locked and type(slots) == \"number\" and slots >= idx then locked = false end\n"),
     ("BOOK", "the book never shows the task", "if type(task) == \"string\" and task ~= \"\" and num(ctx.Level, 1) >= row.Unlock then return task, \"lock\" end", ""),
     ("HUD", "the goal chip ignores the task", "\t\t\t\t\tat, text = level + 0.001, task.Text\n", ""),
     ("BAR", "the slot name not by its key", 'and trx(TT.SlotName, def.Slot) or "a skill"', 'and "Skill" or "a skill"'),
@@ -132,15 +132,16 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     bar, book, hud = src["BAR"], src["BOOK"], src["HUD"]
     return [
         ("SkillBar: the lock = the saved SkillSlots; a locked key says the task line; the task attributes redraw it",
-         "\tif type(slots) == \"number\" then locked = slots < (T.SlotIndex[slot] or 99) end\n" in bar
+         "\tif type(slots) == \"number\" then locked = slots < idx end\n" in bar
          and "\tlocal line = task ~= \"\" and task or trx(TXT, \"Later\", level)\n" in bar
-         and '"SkillSlots", "SkillTaskSlot", "SkillTaskN" }, refreshAll)' in bar
+         and '"SkillSlots", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady" }, refreshAll)' in bar
          and "if st.On and st.Locked then LEARN.Tell(st.Unlock, slot) end" in bar),
         ("SkillBook: never the level alone; its context carries the task lines; the task attributes rebuild it",
          "\t\tif ok and num(n, 0) >= idx then return true end\n\tend\n\treturn false\nend" in book
          and "\t\tTasks = tasks," in book and "SkillTaskSlot = true, SkillTaskN = true," in book),
         ("HUD: the goal chip gets the running task (SkillBar.TaskFor) and redraws on its count",
-         "math.floor(num(\"SkillSlots\", 0)), getFaction(), e, task)" in hud and '"SkillTaskSlot", "SkillTaskN" }, function() L.RefreshGoalTiers() end)' in hud),
+         "math.floor(num(\"SkillSlots\", 0)), getFaction(), e, task," in hud
+         and '"SkillTaskSlot", "SkillTaskN", "SkillLearnReady", "SkillTeacher" }, function() L.RefreshGoalTiers() end)' in hud),
     ]
 
 

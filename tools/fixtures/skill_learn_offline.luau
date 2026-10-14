@@ -214,6 +214,21 @@ pcall(SB5.Use, "Q")
 runDelays(W5, 44, 46)
 check(#W5.Hints == 0, "검수 10/09: Q used within 45 s -> the learn line never comes", #W5.Hints)
 
+-- 3b2. A23-193: a slot waiting at the teacher (SkillSlots < i <= SkillLearnReady) shows locked; learning pops it in
+do
+	local bt = copy(base)
+	bt.Level, bt.SkillSlots, bt.SkillLearnReady = 5, 0, 1
+	local SBt, Wt, sett, holdert = run({ Attr = bt })
+	local q = holdert("Q")
+	check(q.Visible == true and holdert("Z").Visible == false, "A23-193: Q waiting at the teacher shows (Z stays hidden)", tostring(q.Visible))
+	local lock = q:FindFirstChild("Lock", true)
+	check(lock == nil or lock.Visible == true, "... with its lock", lock and tostring(lock.Visible))
+	check(SBt.Use("Q") == false and #Wt.Toasts == 1, "a press: one line where to learn it, nothing cast", Wt.Toasts[1])
+	sett("SkillSlots", 1)
+	sett("SkillLearnReady", 0)
+	check(q.Visible == true and q:FindFirstChild("LearnPop") ~= nil and #Wt.Announced == 0, "learned: it pops in (no banner)", "")
+end
+
 -- 3c. sound_gaps A10: a cooldown ending plays SkillReady (Fx's Click only while SkillReady has no file)
 do
 	local b6 = copy(base)

@@ -110,7 +110,7 @@ end
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 -- A23-191 (user 10/14): no banner, no "Press Q" line, no keys tip card - the button pops in and the sound plays
-local LEARN = { Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1 }
+local LEARN = { Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1, TeachLines = 2, TeachGap = 2.2 }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -451,12 +451,16 @@ local function stateOf(slot)
 	-- level rule only until the data is there
 	local slots = attr("SkillSlots", nil)
 	local locked = level < unlock
-	if type(slots) == "number" then locked = slots < (T.SlotIndex[slot] or 99) end
+	local idx = T.SlotIndex[slot] or 99
+	if type(slots) == "number" then locked = slots < idx end
+	-- A23-193: a slot the side's teacher will open (SkillSlots < idx <= SkillLearnReady) shows locked until I learn it
+	local teach = locked and type(slots) == "number" and idx <= num("SkillLearnReady", 0)
 	local readyAt = num(T.Ready[slot], 0)
 	local left = math.max(0, readyAt - Util.Now())
 	return {
 		On = slotOn(slot),
 		Locked = locked,
+		Teach = teach,
 		Unlock = unlock,
 		Left = left,
 		Frac = def.CD > 0 and math.clamp(left / def.CD, 0, 1) or 0,
@@ -487,11 +491,12 @@ end
 local function paintButton(b)
 	local st = stateOf(b.Slot)
 	b.State = st
-	local visible = st.On and not st.Locked -- A23-71: no locked slot on the screen
+	-- A23-71: no locked slot on the screen - A23-193: except one waiting at the teacher (the lock picture, no words)
+	local visible = st.On and (not st.Locked or st.Teach == true)
 	if b.Holder.Visible ~= visible then b.Holder.Visible = visible end
 	-- the learn moment: unlocked while I was already playing (a save loading past the level shows nothing)
 	local live = LocalPlayer:GetAttribute("DataLoaded") == true and LocalPlayer:GetAttribute("ClassChosen") == true
-	if visible and b.Live and b.WasLocked == true then LEARN.Show(b, st) end
+	if visible and not st.Locked and b.Live and b.WasLocked == true then LEARN.Show(b, st) end
 	b.WasLocked = st.Locked
 	b.Live = live
 	if not visible then return end
@@ -680,6 +685,60 @@ function LEARN.Tell(level, slot)
 	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "bad", 2.5) end -- A23-191: why the key did nothing
 end
 
+-- A23-193: a key waiting at the teacher: one short line now and then (Kind "bad": why the key did nothing)
+function LEARN.TellTeach()
+	if os.clock() < LEARN.TellAt + LEARN.TellGap then return end
+	LEARN.TellAt = os.clock()
+	local name = type(Config.SkillTeacherName) == "function" and Config.SkillTeacherName(myFaction()) or ""
+	if name == "" or type(UIKit.Toast) ~= "function" then return end
+	pcall(UIKit.Toast, trx(TXT, "Teach", name), "bad", 2.5)
+end
+
+-- A23-193: the teacher's NPC body (CollectionService StoryNpc with NpcId = id), or nil
+function LEARN.TeacherBody(id)
+	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
+	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
+	for _, m in ok and list or {} do
+		if m:IsA("Model") and m:GetAttribute("NpcId") == id then return m end
+	end
+	return nil
+end
+
+-- A23-193 Fx "SkillLearned" { Slots = { "Q", ... }, Teacher = NpcId }: the teacher says its 1-2 lines (NPC bubbles, %s =
+-- the first new skill's name) with a soft ring at its feet; the new button pops in by itself (SkillSlots -> LEARN.Show)
+-- and line 2 asks me to try it there
+function LEARN.Teach(data)
+	if type(data) ~= "table" or type(data.Teacher) ~= "string" then return end
+	local body = LEARN.TeacherBody(data.Teacher)
+	local learn = type(skills().Learn) == "table" and skills().Learn or {}
+	local lines = type(learn.Text) == "table" and type(learn.Text.Lines) == "table" and learn.Text.Lines[myFaction()] or nil
+	if not body or type(lines) ~= "table" then return end
+	local first = type(data.Slots) == "table" and data.Slots[1] or nil
+	local name = type(first) == "string" and T.SlotIndex[first] and defOf(first).Name or ""
+	local react = C and C.TownReact
+	local path = type(UIKit.L10n) == "table" and type(UIKit.L10n.PathOf) == "function" and UIKit.L10n.PathOf(lines) or nil
+	for i, line in lines do
+		if type(line) == "string" and i <= LEARN.TeachLines then
+			-- by its key when it has one (translated, the name inside too), else the English line
+			local text = nil
+			if path and type(UIKit.Tr) == "function" then
+				local ok, out = pcall(UIKit.Tr, path .. "." .. i, name)
+				if ok and type(out) == "string" and out ~= "" then text = out end
+			end
+			if not text then
+				local ok, out = pcall(string.format, line, name)
+				text = ok and out or line
+			end
+			task.delay((i - 1) * LEARN.TeachGap, function()
+				if type(react) == "table" and type(react.Say) == "function" then pcall(react.Say, body, text) end
+			end)
+		end
+	end
+	local root = body.PrimaryPart or body:FindFirstChild("HumanoidRootPart")
+	local sfx = C and C.SkillFx
+	if root and type(sfx) == "table" and type(sfx.Ring) == "function" then pcall(sfx.Ring, root.Position - Vector3.new(0, 2.5, 0)) end
+end
+
 ----------------------------------------------------------------- public API
 -- 99N D (pure on its arguments): a kit's class task line for `slot` with `done` counted ("Lv15 skill: Defeat 40 monsters
 -- with basic attacks (3/40)"; Config.SkillTaskLine's words and order, each piece by its key - the slot's name too - so
@@ -738,6 +797,10 @@ function SkillBar.Use(slot)
 	end
 	local st = stateOf(slot)
 	b.State = st
+	if st.Teach then
+		LEARN.TellTeach()
+		return false
+	end
 	-- A23-180: the screen gates first and says nothing (no shake, no word, no sound); a cooldown with PressBuffer s or
 	-- less left still goes - the server holds that press until the cooldown ends
 	if not SkillBar.Gate(st, pressBuffer()) then return false end
@@ -855,7 +918,7 @@ function SkillBar.Start()
 		if ui.root.Visible ~= shown then ui.root.Visible = shown end
 	end
 	UIKit.OnAttr({ "Mana", "MaxMana", "Level", "Class", "ClassChosen", "Faction", "SkillReadyAt", "SkillReadyAtZ",
-		"SkillReadyAtX", "SkillBarPreview", "SkillSlots", "SkillTaskSlot", "SkillTaskN" }, refreshAll)
+		"SkillReadyAtX", "SkillBarPreview", "SkillSlots", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady" }, refreshAll)
 	UIKit.OnAttr({ "SackGold", "KaijuState", "EggCarry" }, refreshAll) -- A23-180: what blocks the Hop slot
 	-- 2-C #8: the server's press answers and the X hop (Fx; the Remotes folder comes from the server)
 	task.spawn(function()
@@ -867,6 +930,8 @@ function SkillBar.Start()
 		fx.OnClientEvent:Connect(function(kind, data)
 			if kind == "Hop" then -- A23-180: "SkillPress" now only says "Queued" (the client's own line shows that)
 				guard(function() SkillBar.OnHop(data) end, "hop")
+			elseif kind == "SkillLearned" then -- A23-193: the teacher's lines
+				guard(function() LEARN.Teach(data) end, "teach")
 			end
 		end)
 	end)
