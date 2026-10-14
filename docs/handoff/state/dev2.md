@@ -12,7 +12,10 @@
 | dev2-stale-text | 6637e536 | 2-C #12 낡은 글(S): 장인 길드 베타 포함(A23-162)·자동 번역 켬(A23-179)에 맞춰 Config 10곳(화면 글 3: Legend 출처, 장인 카드 'Crafting') + 서버 로그 2곳 | 보고함. 전체 = 원래 실패만. 개발 1 몫 4개 넘김(설정 Lang 줄, FactionPicker 직접 쓴 글, 제단 AutoLocalize, TextKo/L10n 잔재) |
 | fix/skill-no-reject | 5bd777c5 | 사용자 10/14 '서버가 거절을 안 하게': 대상 없음 = 허공 쓰기(Fx Air, MP·재사용·간격·피해·셈 없음), 재사용 ≤ PressBuffer 0.35초 = Queued, 나머지 조용히 false, SkillPress = Queued만 | 보고함. skills 162 / 100, skills_x 167 / 93, 전체 196 = 원래 실패만 |
 - 스탯 가지(stats3)는 '큰 병합 하루 하나' 규칙으로 10/15 검토.
-- **장인 길드 최소판(사용자 10/14 '중립 애들 작업도', 2-B 11/06 판정 취소):** 계약 `docs/design/artisan_min_server_2026-10-14.md` 보고함 → 최종 검수 OK 기다림. OK 뒤 순서: ① SellItem(채집 재료 판매)+일일 채집·제작 2줄+N1/N2 막힘 고침 → ② 퀘스트 목표 Gather·Craft·SellMat + N0/N0b/N4 → ③ 거래소 dev2-market main 합치기+끄기 키+죽이기 시험+UnpackSpare → ④ 작업대 3개 → 스위치 켜기 시험. worktree ../wt_artisan(dev2-artisan-min, origin/main 1335aa8d, 아직 커밋 없음).
+- **장인 길드 최소판(사용자 10/14 '중립 애들 작업도', 2-B 11/06 판정 취소):** 계약 `docs/design/artisan_min_server_2026-10-14.md` 보고함 → 최종 검수 OK 기다림. OK 뒤 순서: ① SellItem(채집 재료 판매)+일일 채집·제작 2줄+N1/N2 막힘 고침 → ② 퀘스트 목표 Gather·Craft·SellMat + N0/N0b/N4 → ③ 거래소 dev2-market main 합치기+끄기 키+죽이기 시험+UnpackSpare → ④ 작업대 3개 → 스위치 켜기 시험. 최종 검수 OK(결정: W1 레시피 뺌·첫 제작 = 채집 재료만의 W2·N0 끝 150골드 + 자동 장착, 장인 마을 2단계는 빛→뿔→장인 순서 때).
+  - 진행: **dev2-market** = ../wt_market, main 합침 6495d64e(로컬, push 전; market 161 / 72/72, 전체 시험 도는 중) → push·보고.
+  - **dev2-artisan-sell**(① 판매 SellItem + 일일 Gather/Craft + N1/N2 주석) = ../wt_artisan, 커밋 전(loot 666, a23_14 329 통과; 변이 고침 2개 뒤 다시).
+  - 그 뒤 대기열(최종 검수 10/14 밤): A23-181 같이 잡은 몹 사냥 명예·처치 수 = 첫 타격자 한 명(MonsterService 첫 타격 기록 없음 → 추가, S) → A23-182 Travel 원격 = 새 패스 FastTravel(149 R$, ID 0) 전용·발판은 무료(S) → 장인 ②~④ → ⑤ 연금 소모품 ⑥ Gear 켜기 ⑦ 새 기능 끄기 키 묶음. 운영 메모(나중): Env.Names Beta/Live, 배지 7 ID, TestServer 되돌리기.
 - worktree: ../wt_wluck, ../wt_dates, ../wt_vfund, ../wt_stats3, ../wt_pioneer, ../wt_stale, ../wt_skill (+ 옛 것). 시험 실행기는 스크래치 sweep.py(세션마다 다시 만듦: `<wt> <out> [--jobs N] [--mut] [이름…]`).
 - **다음:** 10/15 패스 ID 9개 오면 그것 먼저 = origin/main 위 새 가지 dev2-pass-ids-2(9b90130c는 main에 있음)에 `py tools/set_pass_ids.py …` 커밋 1개 → test_gamepass(변이)·passes·pass_text·shop_layout·health → 보고. 그 밖엔 최종 검수가 정함.
 - 주의: worktree에서 git이 쓴 파일(merge·checkout·apply)은 CRLF가 될 수 있음 → first_ko_king 'LF tabs' 정적 검사가 잡음. 커밋 전 바꾼 파일 LF 확인.
