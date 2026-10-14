@@ -9474,7 +9474,7 @@ Config.Craft = {
 	Range = 12, -- studs from the role's workbench (CollectionService tag StationTag, attribute Role; else the Crossroads anvil)
 	StationTag = "CraftStation",
 	-- 장인 ④ (최종 검수 10/14): the guild yard's three workbenches. A role with no part tagged StationTag gets one (CraftService,
-	-- while Crafting is on): an anchored block Offset studs from the Crossroads anvil (ShopService.Anvil), in the anvil's
+	-- also while Crafting is off; only its Craft prompt waits for the switch): an anchored block Offset studs from the Crossroads anvil (ShopService.Anvil), in the anvil's
 	-- model, tagged + Role. Placeholder blocks (no art: a WorldKit bench with the tag wins); spots checked by photo
 	Benches = {
 		Smith = { Offset = Vector3.new(9, 0, -6), Size = Vector3.new(5, 3, 3), Material = Enum.Material.Metal, Color = Color3.fromRGB(110, 112, 120) },

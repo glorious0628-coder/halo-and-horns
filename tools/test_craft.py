@@ -38,14 +38,16 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
-    ("⑤: Crafting back on reads nobody", "CRAFT_SOURCE", "\t\t\tif k ~= \"Crafting\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
+    ("⑤: Crafting back on reads nobody", "CRAFT_SOURCE", "\t\t\tif k ~= \"Crafting\" then return end\n", "\t\t\tdo return end\n"),
+    ("bench: prompts stay when switched off", "CRAFT_SOURCE", "\t\t\t\t\tpcall(function() prompt:Destroy() end)\n", ""),
     ("GPT ①: SpareRoom ignores the freed slots", "LOOT_SOURCE", "Config.BagUsed(data) - math.max(0, math.floor(num(freed))) >= Config.BagSlotsOf(data) then return false end",
      "Config.BagUsed(data) >= Config.BagSlotsOf(data) then return false end"),
     ("GPT ①: a weapon recipe frees no slot", "CRAFT_SOURCE", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, 0)"),
     # 장인 ④ (2026-10-14): the benches
     ("bench: a second one over WorldKit's", R, "\t\tif type(role) == \"string\" then have[role] = true end\n", ""),
     ("bench: not tagged", R, "\t\t\tCollectionService:AddTag(part, K().StationTag)\n", ""),
-    ("bench: built while crafting is off", R, "local function ensureBenches()\n\tif not on() then return false end\n", "local function ensureBenches()\n"),
+    ("bench: none while crafting is off", R, "local function ensureBenches()\n\tif type(Config.Craft) ~= \"table\" then return false end\n", "local function ensureBenches()\n\tif not on() then return false end\n"),
+    ("bench: a prompt while crafting is off", R, "\tif not on() or typeof(part) ~= \"Instance\"", "\tif typeof(part) ~= \"Instance\""),
     # 장인 ⑤ (2026-10-14): potions
     ("potion: any potion name", R, "\t\tif type(r.Potion) ~= \"string\" or not Config.PotionStockKey(r.Potion) then return nil end\n", ""),
     ("potion: no cap at the start", R, "\t\treturn key ~= nil and have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Vitals.PotionInventoryCap\n", "\t\treturn key ~= nil\n"),

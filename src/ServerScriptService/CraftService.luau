@@ -584,9 +584,10 @@ local function addPrompt(part)
 end
 
 -- 장인 ④: every role gets a workbench: one with no tagged part gets a block beside the Crossroads anvil (Config.Craft.Benches;
--- placed once, never on top of a WorldKit bench of that role). true = the anvil was there (nothing more to try)
+-- placed once, never on top of a WorldKit bench of that role). true = the anvil was there (nothing more to try).
+-- 최종 검수 10/14: the benches stand even while Crafting is off (only the prompt waits for the switch: addPrompt)
 local function ensureBenches()
-	if not on() then return false end
+	if type(Config.Craft) ~= "table" then return false end
 	local shop = S and S.ShopService
 	local okA, anvil = false, nil
 	if type(shop) == "table" and type(shop.Anvil) == "function" then okA, anvil = pcall(shop.Anvil) end
@@ -689,7 +690,15 @@ function CraftService.Start()
 	local switches = S.SwitchService
 	if type(switches) == "table" and type(switches.Changed) == "table" and type(switches.Changed.Connect) == "function" then
 		switches.Changed:Connect(function(k, value)
-			if k ~= "Crafting" or value ~= true then return end
+			if k ~= "Crafting" then return end
+			if value ~= true then
+				-- switched off: the benches stay, their prompts go (back with the switch)
+				for prompt in ST.Prompts do
+					ST.Prompts[prompt] = nil
+					pcall(function() prompt:Destroy() end)
+				end
+				return
+			end
 			local ok, err = pcall(function()
 				for _, part in CollectionService:GetTagged(K().StationTag) do pcall(addPrompt, part) end
 				for _, p in Players:GetPlayers() do

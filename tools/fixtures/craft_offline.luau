@@ -642,11 +642,26 @@ runGroup("benches", function()
 		and smithBench.Position.X == 40 + B.Smith.Offset.X and smithBench.Position.Z == 50 + B.Smith.Offset.Z and prompts == 2,
 		"Workbench_Smith: anchored, in the guild model, beside the anvil, with its Craft prompt", show(smithBench and smithBench.Position))
 	check(w.C.EnsureBenches() == true and #w.Tagged.CraftStation == 3, "a second run adds nothing", #w.Tagged.CraftStation)
-	-- crafting off / no anvil: nothing
+	-- crafting off: benches without prompts; no anvil: nothing
 	local off = cWorld({ Off = true, Benches = true })
 	off.Reg.ShopService = off.Reg.ShopService or {}
 	off.Reg.ShopService.Anvil = function() return anvil end
-	check(off.C.EnsureBenches() == false and #off.Tagged.CraftStation == 0, "Crafting off: no bench", "")
+	off.Tagged.CraftStation = {}
+	check(off.C.EnsureBenches() == true and #off.Tagged.CraftStation == 3, "Crafting off: the three benches still stand", #off.Tagged.CraftStation)
+	local offPrompts = 0
+	for _, part in off.Tagged.CraftStation do if part:FindFirstChild("CraftPrompt") then offPrompts += 1 end end
+	check(offPrompts == 0, "Crafting off: no Craft prompt on them", offPrompts)
+	-- the live switch: on = prompts, off = prompts gone, benches stay
+	off.Config.Features.Crafting = true
+	off.Reg.SwitchService.Changed:Fire("Crafting", true)
+	local onPrompts = 0
+	for _, part in off.Tagged.CraftStation do if part:FindFirstChild("CraftPrompt") then onPrompts += 1 end end
+	check(onPrompts == 3, "switched on: each bench gets its Craft prompt", onPrompts)
+	off.Config.Features.Crafting = false
+	off.Reg.SwitchService.Changed:Fire("Crafting", false)
+	local left = 0
+	for _, part in off.Tagged.CraftStation do if part:FindFirstChild("CraftPrompt") then left += 1 end end
+	check(left == 0 and #off.Tagged.CraftStation == 3, "switched off: prompts gone, benches stay", left)
 	local none = cWorld({ Benches = true })
 	none.Reg.ShopService = none.Reg.ShopService or {}
 	none.Reg.ShopService.Anvil = function() return nil end
