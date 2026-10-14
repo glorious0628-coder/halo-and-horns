@@ -30,9 +30,7 @@ STATIC = [
     ("ApplyFold hides / shows the war bar by HUD.WarHidden",
      ['\tlocal hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)\n',
       "\tif ui.war and ui.war.Visible == hideWar then\n\t\tui.war.Visible = not hideWar\n"]),
-    ("coming in during play: one toast (1안 10/14: no NEW! tag on the war bar)",
-     ["\t\tif changed and not hideWar then", "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n",
-      "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n\t\tend\n"]),
+    ("coming in during play: no toast (A23-191, user 10/14)", ['\t\t-- A23-191 (user 10/14): no "Crown War" intro toast when it comes in\n']),
     ("the line is short English", ['\tWarIntro = "Crown War: win points for your side!",'], "CONFIG"),
     ("검수 10/09 (user: too kind): the toast is switched off in Config.Nudges", ["\tWarIntro = false, --"], "CONFIG"),
 ]
@@ -45,9 +43,7 @@ MUTATIONS = [
      "\treturn step ~= tonumber(steps.Done)\n"),
     ("hidden while not loaded", '\tif type(step) ~= "number" or type(steps) ~= "table" then return false end\n',
      '\tif type(step) ~= "number" or type(steps) ~= "table" then return true end\n'),
-    ("no toast", "\t\t\tif (Config.Nudges or {}).WarIntro ~= false then pcall(UIKit.Toast, TXT.WarIntro, \"info\") end\n", ""),
     ("the bar never hidden", "\t\tui.war.Visible = not hideWar\n", "\t\tui.war.Visible = true\n"),
-    ("a toast on every login", "\t\tif changed and not hideWar then", "\t\tif not hideWar then"),
 ]
 
 FIXTURE = r'''

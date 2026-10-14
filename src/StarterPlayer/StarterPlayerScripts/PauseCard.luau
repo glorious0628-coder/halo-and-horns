@@ -404,15 +404,9 @@ function PauseCard.Show(kind, data)
 	return true
 end
 
-function PauseCard.OnFx(kind, data)
-	if type(data) == "table" and data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return end
-	if kind == T.Fx.Pause then
-		PauseCard.Show("Pause", data)
-	elseif kind == T.Fx.Back then
-		PauseCard.Show("Back", data)
-	elseif kind == T.Fx.Tomorrow then
-		PauseCard.Show("Tomorrow", data)
-	end
+function PauseCard.OnFx(_kind, _data)
+	-- A23-191 (user 10/14 "다 삭제하라고"): no "Saved!" / "Welcome back!" / "Tomorrow" card any more (the server's Fx is
+	-- ignored); tips from other modules are gone too (their Show("Tip") calls were removed)
 end
 
 -- "hurt in the last HurtCalm s": the humanoid's health going down

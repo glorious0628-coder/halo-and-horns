@@ -346,26 +346,10 @@ function KingDiary.OnInventory(payload)
 	if VIEW.Body and S.Tab == "Jar" then pcall(drawBody) end
 end
 
-function KingDiary.OnFx(kind, data)
-	if kind == "DiaryPage" then
-		local page = type(data) == "table" and tonumber(data.Page) or nil
-		local pc = C and C.PauseCard
-		if not page or type(pc) ~= "table" or type(pc.Show) ~= "function" then return false end
-		page = math.floor(page)
-		return pc.Show("Tip", { Title = T.Text.CardTitle, Text = string.format(T.Text.CardPage, page),
-			Go = { Text = T.Text.CardRead, Window = T.Window, Arg = { Page = page } } })
-	elseif kind == "DiaryDone" then
-		local kit = C and C.UIKit
-		local def = Config.TitleDefs and Config.TitleDefs[Config.Diary and Config.Diary.Title or ""]
-		if type(kit) ~= "table" or type(kit.RewardPopup) ~= "function" or not def then return false end
-		local ok = pcall(kit.RewardPopup, {
-			Title = T.Text.Title,
-			Lines = { string.format(T.Text.DoneLine, #days()), string.format(T.Text.DoneTitle, def.NameEn or def.Name) },
-			Button = T.Text.DoneOK,
-			Faction = LocalPlayer and LocalPlayer:GetAttribute("Faction") or nil,
-		})
-		return ok
-	end
+function KingDiary.OnFx(kind, _data)
+	-- A23-191 (user 10/14 "설명이 뜨는 파란 UI 다 삭제"): no "new page" tip card and no "diary done" popup (the title
+	-- is still given by the server; the diary window shows the pages)
+	if kind == "DiaryPage" or kind == "DiaryDone" then return false end
 	return nil
 end
 

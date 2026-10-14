@@ -361,8 +361,8 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
     check("L.WindowSoon(action)" in window, "HUD L.WindowKey: an unregistered window answers through L.WindowSoon")
     soon = function_body(hud, "function L.WindowSoon")
     check('action == "Journal"' in soon and "toggleQuests()" in soon and "L.TileTap(def)" in soon
-          and "def.Key == action" in soon and "TXT.TileSoon" in soon,
-          "HUD L.WindowSoon: Q (Journal) = the HUD quest list, a tile's key = that tile, else 'Coming soon!'")
+          and "def.Key == action" in soon and "TXT.TileSoon" not in soon,
+          "HUD L.WindowSoon: Q (Journal) = the HUD quest list, a tile's key = that tile, else nothing (A23-191: no toast)")
     check("kb.Changed:Connect(L.RefreshKeys)" in hud and "KeyBadges" in hud,
           "HUD key badges follow Keybinds.Changed and Settings.KeyBadges")
     vitals = text_of("VITALS")

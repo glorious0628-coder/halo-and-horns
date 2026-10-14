@@ -151,8 +151,6 @@ local ANNOUNCE_ICON = 64 -- the same left of the big banner's text (UIKit.Announ
 -- CR-L38: short (phone) viewports keep fewer toasts; the stack never takes more than WidthFrac of the screen width
 local TOAST_PHONE = { Height = 500, Max = 2, WidthFrac = 0.45 }
 local DEFAULT_TOAST_SECONDS = 3 -- 검수 10/09 (UI clutter review ②): one toast at a time, 3 s (NOTIFY.OneAtATime)
-local DEFAULT_ANNOUNCE_SECONDS = 3.5
-local MAX_ANNOUNCE_QUEUE = 3
 
 local Z_ANNOUNCE = 90
 local Z_TOASTS = 95
@@ -172,9 +170,6 @@ local toasts = {} -- oldest first: { Frame, Label, Stroke, Text, Token, Dead }
 local toastCounter = 0
 local toastMax = MAX_TOASTS -- CR-L38: TOAST_PHONE.Max on short viewports (set by applyScale)
 
-local announceCurrent = nil -- { Text, Token }
-local announceQueue = {} -- { { Text, Duration } }
-local announceToken = 0
 
 local lastWarnAt = -math.huge
 
@@ -1631,6 +1626,15 @@ function UIKit.MeasureText(text, size, fontOrFontFace, width)
 	return height, widest, false
 end
 
+-- the words a label really draws: Roblox's automatic translation (A23-179) keeps .Text in English and draws
+-- .LocalizedText. 개발 1 10/14 (Korean client: numbers / words cut): fitting measured the English, the wider Korean was
+-- drawn and the label's clip cut it. Empty / unreadable = .Text
+function UIKit.ShownText(label)
+	local ok, s = pcall(function() return label.LocalizedText end)
+	if ok and type(s) == "string" and s ~= "" then return s end
+	return label.Text
+end
+
 -- TextSize is a canvas size. The rendered picker never goes below the observed physical 11px floor.
 -- Measure the complete text in those physical pixels before comparing it with AbsoluteSize / TextBounds.
 -- floorPx: a label's own physical floor (UIKit.FitText, attribute FitMinPx) instead of the 11px one
@@ -1702,11 +1706,11 @@ function UIKit.FitText(label, minSize, maxSize)
 					end
 					local bounds = label.TextBounds
 					if label:GetAttribute("PickerMeasureWhole") == true then
-						local text, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
-						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(text, size, face,
-							inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000, fit.FloorPx)
+						local src, face, wrapped, version = label.Text, label.FontFace, label.TextWrapped, fit.Version
+						local measuredH, measuredW, exact, pixelSize = UIKit.MeasureRenderedText(UIKit.ShownText(label), size,
+							face, inheritedScale(label), wrapped and math.max(1, box.X - 0.5) or 10000, fit.FloorPx)
 						-- Loading a font yields. Never apply an earlier text/layout/font measurement after a reset.
-						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= text
+						if fit.Dead or not label.Parent or fit.Version ~= version or label.Text ~= src
 							or label.FontFace.Family ~= face.Family or label.FontFace.Weight ~= face.Weight
 							or label.FontFace.Style ~= face.Style or label.TextWrapped ~= wrapped
 							or label.TextSize ~= size or label.AbsoluteSize ~= box then return end
@@ -1733,8 +1737,10 @@ function UIKit.FitText(label, minSize, maxSize)
 				if not fit.Dead and (fit.Pending or fit.Reset) then fit.Pending = false; fit.Request(false) end
 			end)
 		end
-		for _, property in { "Text", "AbsoluteSize", "TextWrapped", "FontFace" } do
-			table.insert(fit.Connections, label:GetPropertyChangedSignal(property):Connect(function() fit.Request(true) end))
+		for _, property in { "Text", "AbsoluteSize", "TextWrapped", "FontFace", "LocalizedText" } do
+			pcall(function() -- LocalizedText: the translation arrives after the English text (pcall: an older engine)
+				table.insert(fit.Connections, label:GetPropertyChangedSignal(property):Connect(function() fit.Request(true) end))
+			end)
 		end
 		table.insert(fit.Connections, label:GetPropertyChangedSignal("TextBounds"):Connect(function() fit.Request(false) end))
 		table.insert(fit.Connections, label.Destroying:Connect(function()
@@ -2534,7 +2540,7 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			if width <= 1 or not label.Parent then return end
 			local px = math.max(1, math.floor(label.TextSize * s + 0.5))
 			local params = Instance.new("GetTextBoundsParams")
-			params.Text = label.Text
+			params.Text = UIKit.ShownText(label) -- the drawn (translated) words
 			params.Font = label.FontFace
 			params.Size = px
 			-- a few px narrower than the box: the engine wraps a little earlier than TextService (991x451: TextService said
@@ -2559,8 +2565,8 @@ function UIKit.WrapHeight(label, maxLines, minH, onSized)
 			if onSized then onSized(h) end
 		end)
 	end
-	for _, property in { "Text", "TextSize", "FontFace" } do
-		label:GetPropertyChangedSignal(property):Connect(fit)
+	for _, property in { "Text", "TextSize", "FontFace", "LocalizedText" } do
+		pcall(function() label:GetPropertyChangedSignal(property):Connect(fit) end)
 	end
 	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 		local w = math.floor(label.AbsoluteSize.X + 0.5)
@@ -2937,6 +2943,9 @@ end
 -- top; default 2.5 s. icon (optional) = a Config.Loot.Items id or a UIArt key (UIKit.ItemIcon), drawn left of the text.
 -- A toast whose text is already on screen is refreshed instead of stacked twice.
 function UIKit.Toast(text, kind, duration, icon)
+	-- A23-191 (user 10/14 "설명이 뜨는 파란 UI 다 삭제"): notice / good / reward / tip toasts are not drawn at all; only a
+	-- failure line (kind "bad": why what I just did did not work) is
+	if kind ~= "bad" then return end
 	if text == nil then return end
 	text = tostring(text)
 	if text == "" or not toastHolder then return end
@@ -3045,55 +3054,9 @@ function UIKit.Toast(text, kind, duration, icon)
 end
 
 ----------------------------------------------------------------- announce banner
-local function related(a, b)
-	return string.sub(b, 1, #a) == a or string.sub(a, 1, #b) == b
-end
-
-local showAnnounce -- forward
-
-local function showNextAnnounce()
-	if announceCurrent then return end
-	local nxt = table.remove(announceQueue, 1)
-	if nxt then
-		showAnnounce(nxt.Text, nxt.Duration, nxt.Icon)
-	end
-end
-
-local function hideAnnounce(token)
-	if announceToken ~= token or not announceFrame then return end
-	announceCurrent = nil
-	local info = TweenInfo.new(0.25)
-	NOTIFY.BannerFade(info, false)
-	TweenService:Create(announceLabel, info, { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-	local icon = announceFrame:FindFirstChild("Icon")
-	if icon then TweenService:Create(icon, info, { ImageTransparency = 1 }):Play() end
-	task.delay(0.28, function()
-		if announceToken ~= token then return end
-		announceFrame.Visible = false
-		NOTIFY.PlaceToasts()
-		showNextAnnounce()
-	end)
-end
-
-local function armAnnounceTimer(duration)
-	announceToken += 1
-	local token = announceToken
-	if announceCurrent then announceCurrent.Token = token end
-	task.delay(duration, function()
-		hideAnnounce(token)
-	end)
-end
-
--- the banner's look fades in / out: the BannerAlert art when uploaded (the frame's own fill stays off), else the frame
-function NOTIFY.BannerFade(info, shown)
-	local art = NOTIFY.AlertImg
-	if art and art.Parent then
-		announceFrame.BackgroundTransparency = 1
-		TweenService:Create(art, info, { ImageTransparency = shown and 0 or 1 }):Play()
-	else
-		TweenService:Create(announceFrame, info, { BackgroundTransparency = shown and 0.3 or 1 }):Play()
-	end
-end
+-- A23-191 (user 10/14 "파란 UI 아예 나오지 않게 … 몇 번을 말하냐"): UIKit.Announce and its show / queue / timer are
+-- gone; nothing draws the big banner any more. The frame below is still built and laid out (never visible) so the
+-- notify column code keeps its shape; it can go with the next HUD clean-up.
 
 -- banner icon size + text box beside it (old path: ANNOUNCE_ICON; HUD v2: no taller than the shorter banner). With the
 -- BannerAlert art the forked tails and the gold rims grow with the banner's height (FitHeight): the icon and the words
@@ -3152,8 +3115,7 @@ end
 -- HUD v2: the banner and the toasts share the column top; while the banner shows, the toasts start under it (a taller
 -- wrapped banner used to cover the newest toast)
 function NOTIFY.BannerOffset()
-	if not (NOTIFY.Rect and announceFrame and announceFrame.Visible and announceCurrent) then return 0 end
-	return announceFrame.Size.Y.Offset + NOTIFY.ToastGap
+	return 0 -- A23-191: the banner never shows
 end
 
 function NOTIFY.PlaceToasts()
@@ -3202,91 +3164,6 @@ function UIKit.SetNotifyAvoid(rect)
 	end
 	NOTIFY.PlaceToasts()
 	NOTIFY.TrimToasts()
-end
-
--- icon (optional, UIKit.ItemIcon): item / monster art left of the banner text
-local function setAnnounceIcon(icon)
-	local old = announceFrame:FindFirstChild("Icon")
-	if old then old:Destroy() end
-	local img = type(icon) == "string" and UIKit.ItemIcon(icon, {
-		Name = "Icon",
-		AnchorPoint = Vector2.new(0, 0.5),
-		Position = UDim2.new(0, 28, 0.5, 0),
-		Size = UDim2.fromOffset(ANNOUNCE_ICON, ANNOUNCE_ICON),
-		ImageTransparency = 1,
-		ZIndex = Z_ANNOUNCE + 1,
-		Parent = announceFrame,
-	}) or nil
-	NOTIFY.LayoutAnnounceText(img)
-	return img
-end
-
-showAnnounce = function(text, duration, icon)
-	if not announceFrame then return end
-	announceCurrent = { Text = text, Token = 0 }
-	announceLabel.Text = text
-	local img = setAnnounceIcon(icon)
-	announceFrame.Visible = true
-	NOTIFY.PlaceToasts()
-	announceFrame.BackgroundTransparency = 1
-	if NOTIFY.AlertImg then NOTIFY.AlertImg.ImageTransparency = 1 end
-	announceLabel.TextTransparency = 1
-	announceLabel.TextStrokeTransparency = 1
-	announcePop.Scale = 0.85
-	local info = TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-	NOTIFY.BannerFade(info, true)
-	TweenService:Create(announceLabel, info, { TextTransparency = 0, TextStrokeTransparency = 0.2 }):Play()
-	if img then TweenService:Create(img, info, { ImageTransparency = 0 }):Play() end
-	TweenService:Create(announcePop, info, { Scale = 1 }):Play()
-	armAnnounceTimer(duration)
-end
-
--- large banner at 30% screen height; default 3.5 s. Announcements queue (max 3 waiting); a text that extends the
--- one on screen (or queued), e.g. "레벨 업! Lv 10" -> "레벨 업! Lv 10 · 해금! ...", replaces it instead of queueing.
--- icon (optional) = a Config.Loot.Items id or a UIArt key drawn left of the text (UIKit.ItemIcon).
-function UIKit.Announce(text, duration, icon)
-	if text == nil then return end
-	text = tostring(text)
-	if text == "" or not announceFrame then return end
-	duration = tonumber(duration) or DEFAULT_ANNOUNCE_SECONDS
-	if duration <= 0 then duration = DEFAULT_ANNOUNCE_SECONDS end
-	-- UI round 2 #4: a window is open - the big banner comes as the one line around it
-	if NOTIFY.Avoid then
-		UIKit.Toast(text, "reward", duration, icon)
-		return
-	end
-
-	if announceCurrent and related(announceCurrent.Text, text) then
-		if #text > #announceCurrent.Text then
-			announceCurrent.Text = text
-			announceLabel.Text = text
-		end
-		announceFrame.Visible = true
-		if NOTIFY.AlertImg and NOTIFY.AlertImg.Parent then
-			NOTIFY.AlertImg.ImageTransparency = 0
-		else
-			announceFrame.BackgroundTransparency = 0.3
-		end
-		announceLabel.TextTransparency = 0
-		announceLabel.TextStrokeTransparency = 0.2
-		armAnnounceTimer(math.max(duration, 1.5))
-		return
-	end
-	for _, q in announceQueue do
-		if related(q.Text, text) then
-			if #text > #q.Text then q.Text = text end
-			q.Duration = math.max(q.Duration, duration)
-			return
-		end
-	end
-	if announceCurrent then
-		table.insert(announceQueue, { Text = text, Duration = duration, Icon = icon })
-		while #announceQueue > MAX_ANNOUNCE_QUEUE do
-			table.remove(announceQueue, 1)
-		end
-		return
-	end
-	showAnnounce(text, duration, icon)
 end
 
 ----------------------------------------------------------------- HUD v2 notify column (A23-26)
@@ -3592,6 +3469,17 @@ function UIKit.TrForm(fmt)
 	return s, i
 end
 
+-- one English word / name from our tables in the player's language, by its English text (the localization table's
+-- Source: "Enhance" -> "강화", "Flower Slime" -> "꽃 슬라임"); an English player, no translator, no letters or no entry =
+-- the text as it is. 개발 1 10/14 (Korean client: '다음: Enhance', '출처: Flower Slime'): a format's arguments are
+-- inside the translated sentence, where Roblox's automatic translation never reaches them
+function UIKit.TrWord(s)
+	local tr = UIKit.TR.Translator
+	if not tr or UIKit.TR.English or type(s) ~= "string" or not string.find(s, "%a%a") then return s end
+	local ok, out = pcall(tr.Translate, tr, game, s)
+	return (ok and type(out) == "string" and out ~= "") and out or s
+end
+
 function UIKit.Tr(key, ...)
 	local n = select("#", ...)
 	local tr = UIKit.TR.Translator
@@ -3601,8 +3489,17 @@ function UIKit.Tr(key, ...)
 	if tr and not UIKit.TR.English and type(key) == "string" then
 		local fmt = UIKit.L10n.Get(key, "en")
 		if type(fmt) == "string" and fmt ~= key then
-			local ok, out = pcall(tr.FormatByKey, tr, key, n > 0 and UIKit.TrArgs(fmt, ...) or {})
+			local args = n > 0 and UIKit.TrArgs(fmt, ...) or {}
+			for i, a in args do args[i] = UIKit.TrWord(a) end -- the words inside: "Enhance", a monster's name
+			local ok, out = pcall(tr.FormatByKey, tr, key, args)
 			if ok and type(out) == "string" and out ~= "" then return out end
+		end
+		-- not in the table (a format with no words of its own, "· %s %s" = '· Pouch 0'): the English format with the
+		-- words inside translated
+		if n > 0 then
+			local vals = table.pack(...)
+			for i = 1, vals.n do vals[i] = UIKit.TrWord(vals[i]) end
+			return UIKit.L10n.T(key, vals, UIKit.Lang())
 		end
 	end
 	return UIKit.L10n.T(key, n > 0 and { ... } or nil, UIKit.Lang())
@@ -3616,6 +3513,8 @@ function UIKit.TrStart()
 	if ok and tr then
 		UIKit.TR.Translator = tr
 		UIKit.TR.English = string.sub(string.lower(tostring(tr.LocaleId)), 1, 2) == "en"
+		-- 개발 1 10/14: lines drawn before the translator came (the HUD's power / pouch line) draw again
+		if not UIKit.TR.English then UIKit.LangChanged:Fire(UIKit.Lang()) end
 	end
 	return ok
 end
@@ -4253,21 +4152,9 @@ function UIKit.RewardPopup(opts)
 	return handle
 end
 
--- show the held world banners (called when the first mission is accepted / the opening ends)
+-- A23-191 (user 10/14): world banners / held toasts are never shown; anything still held is dropped
 function UIKit.FlushBanners()
-	if type(UIKit.HeldBanners) ~= "table" or #UIKit.HeldBanners == 0 or UIKit.ShouldHoldBanners() then return end
-	local held = UIKit.HeldBanners
 	UIKit.HeldBanners = {}
-	task.delay(3, function()
-		for _, b in held do
-			if b[3] == "toast" then
-				UIKit.Toast(b[1], "reward", b[2], b[4]) -- held server-wide Epic toast (A23-15); b[4] = optional icon
-			else
-				UIKit.Announce(b[1], b[2], b[4])
-			end
-			task.wait(3)
-		end
-	end)
 end
 
 function UIKit.Start()
@@ -4318,19 +4205,9 @@ function UIKit.Start()
 				local okSkip, yes = pcall(skip, payload, text)
 				if okSkip and yes == true then return end
 			end
-			local duration = tonumber(payload.Duration)
-			if payload.Kind == "announce" then
-				-- A23-3 / A23-9: world banners (goose / war / kaiju / bounty) wait until the first mission is
-				-- accepted and while the opening plays
-				if UIKit.ShouldHoldBanners() then
-					table.insert(UIKit.HeldBanners, { text, duration })
-					if #UIKit.HeldBanners > 2 then table.remove(UIKit.HeldBanners, 1) end
-					return
-				end
-				UIKit.Announce(text, duration)
-			else
-				UIKit.Toast(text, payload.Kind, duration)
-			end
+			-- A23-191 (user 10/14 "다 삭제하라고"): no banner (Kind "announce") and no notice / reward / tip toast - only a
+			-- failure line (Kind "bad": why the server refused what I just did) is still drawn
+			if payload.Kind == "bad" then UIKit.Toast(text, "bad", tonumber(payload.Duration)) end
 		end)
 	end)
 

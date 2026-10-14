@@ -227,7 +227,6 @@ function ComeBack.OnMyWay(value)
 	if first or name == "" or name == before then return nil end
 	local line = string.format(T.Text.MyWay, name)
 	local kit = C and C.UIKit
-	if type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, line, "good", T.MyWaySeconds) end
 	return line
 end
 

@@ -38,7 +38,7 @@ end
 
 local function show(text)
 	local kit = C and C.UIKit
-	if type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, text, "good", T.ToastSeconds) end
+	-- A23-191 (user 10/14): no toast
 end
 
 -- one attribute change: a flag that turned on right after my purchase -> its line

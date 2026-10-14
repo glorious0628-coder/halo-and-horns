@@ -62,6 +62,7 @@ local L = {
 	Big = 84, -- the detail's slot
 	BtnH = 40, QuickW = 46,
 	Size = { Name = 19, Body = 16, Small = 15, Count = 16, Tab = 18 },
+	CountInset = 5, -- du: a cell's count / +N this far in from its rim (outline room, user 10/14)
 	-- the slot parts' icon box (Config.UIArt SlotCommon ... Inner = Rect(76, 80, 436, 436) of 512)
 	Inner = { X = 76 / 512, Y = 80 / 512, W = 360 / 512, H = 356 / 512 },
 	Slot = { Common = "SlotCommon", Fine = "SlotUncommon", Rare = "SlotRare", Epic = "SlotEpic", Legend = "SlotLegendary",
@@ -844,14 +845,18 @@ end
 -- the corner words of a cell: count bottom-right (not at 1), +N top-left
 local function corners(box, cell)
 	local z = (tonumber(box.ZIndex) or 1) + 3
+	-- user 10/14 evening (a potion's '3' cut at the cell's bottom-right): the number box follows its drawn text
+	-- (AutomaticSize; the style's size floor can make it taller than a fixed box) and sits L.CountInset in from the rim so
+	-- the outline stays inside the cell. Numbers only: never translated (A23-179)
 	if cell.Count > 1 or (cell.Kind == "Potion" and cell.Count <= 0) then
 		label(box, tostring(cell.Count), L.Size.Count, Color3.new(1, 1, 1), { Name = "Count", AnchorPoint = Vector2.new(1, 1),
-			Position = UDim2.new(1, -4, 1, -1), Size = UDim2.new(1, -8, 0, L.Size.Count + 2), TextXAlignment = Enum.TextXAlignment.Right,
-			TextWrapped = false, ZIndex = z, Style = "Number" })
+			Position = UDim2.new(1, -L.CountInset, 1, -L.CountInset), Size = UDim2.new(), AutomaticSize = Enum.AutomaticSize.XY,
+			TextXAlignment = Enum.TextXAlignment.Right, TextWrapped = false, AutoLocalize = false, ZIndex = z, Style = "Number" })
 	end
 	if cell.Plus > 0 then
-		label(box, "+" .. tostring(cell.Plus), L.Size.Count, colorOf("Gold"), { Name = "Plus", Position = UDim2.fromOffset(4, 1),
-			Size = UDim2.new(1, -8, 0, L.Size.Count + 2), TextWrapped = false, ZIndex = z, Style = "Number" })
+		label(box, "+" .. tostring(cell.Plus), L.Size.Count, colorOf("Gold"), { Name = "Plus",
+			Position = UDim2.fromOffset(L.CountInset, L.CountInset), Size = UDim2.new(), AutomaticSize = Enum.AutomaticSize.XY,
+			TextWrapped = false, AutoLocalize = false, ZIndex = z, Style = "Number" })
 	end
 	local kit = ui()
 	if cell.Equipped then
