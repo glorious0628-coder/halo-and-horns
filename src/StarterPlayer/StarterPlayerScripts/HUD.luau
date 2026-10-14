@@ -2258,7 +2258,7 @@ end
 -- A23-167 ① (pure; tools/test_goal_chips.py): the goal chips' tier 2 'Next' = the nearest Config.GoalChips.Steps level
 -- above `level` and above the level the tracker's own next-goal row `e` names (QuestService GoalKind), tier 3 'Big goal'
 -- = my side's crown line; nil = no line
-function L.GoalTiers(level, rebirths, skillSlots, faction, e)
+function L.GoalTiers(level, rebirths, skillSlots, faction, e, task)
 	local G = Config.GoalChips
 	if type(G) ~= "table" or G.Enabled ~= true then return nil, nil end
 	local W = type(G.Text) == "table" and G.Text or {}
@@ -2279,6 +2279,10 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e)
 			local need = tonumber((skills.Unlock or {})[s.Slot])
 			if i and need and rebirths < 1 and i > skillSlots and (s.Slot == "Q" or skills[s.Slot .. "Enabled"] == true) then
 				at, text = need, fmt(i == 1 and "FirstSkill" or "Skill", need)
+				-- 99N D (최종 검수 10/15): the level is there, the class task runs: the task line is the next goal
+				if type(task) == "table" and task.Slot == s.Slot and level >= need and type(task.Text) == "string" and task.Text ~= "" then
+					at, text = level + 0.001, task.Text
+				end
 			end
 		elseif s.Kind == "Zone" then
 			local z = Config.Zones[s.Zone]
@@ -2347,8 +2351,13 @@ function L.RefreshGoalTiers(e)
 	if e == nil and ui.qline and ui.qline[1] then e = ui.qline[1].Entry end
 	local nextText, bigText = nil, nil
 	if L.GoalTiersOn() and t.Frame.Visible then
+		-- 99N D: the running class task (SkillTaskSlot / SkillTaskN, its line from SkillBar.TaskFor)
+		local slot = attr("SkillTaskSlot", "")
+		local sb = C and C.SkillBar
+		local task = (slot == "Z" or slot == "X") and type(sb) == "table" and type(sb.TaskFor) == "function"
+			and { Slot = slot, Text = sb.TaskFor(slot) } or nil
 		nextText, bigText = L.GoalTiers(math.floor(num("Level", 1)), math.floor(num("Rebirths", 0)),
-			math.floor(num("SkillSlots", 0)), getFaction(), e)
+			math.floor(num("SkillSlots", 0)), getFaction(), e, task)
 	end
 	local words = { [2] = nextText, [3] = bigText }
 	for i = 2, 3 do
@@ -6874,7 +6883,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "TravelingUntil" }, refreshTravel)
 	UIKit.OnAttr({ "TutorialStep", "ZoneId", "BlacksmithVisited", "TutorialKills" }, refreshGuides)
 	UIKit.OnAttr({ "Level" }, onLevelChanged)
-	UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction" }, function() L.RefreshGoalTiers() end) -- A23-167 ①
+	UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction", "SkillTaskSlot", "SkillTaskN" }, function() L.RefreshGoalTiers() end) -- A23-167 ①
 	-- A23-68 #4: the first [Claim] unfolds the quest lines and the war meter's info line (NEW! tags)
 	UIKit.OnAttr({ "TutorialStep" }, function()
 		L.ApplyFold(true)

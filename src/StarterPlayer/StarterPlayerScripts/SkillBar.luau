@@ -473,9 +473,11 @@ local function stateOf(slot)
 	local def = defOf(slot)
 	local unlock = unlockLevel(slot)
 	local level = math.floor(num("Level", 1))
-	local locked = level < unlock
+	-- 99N D (최종 검수 10/15): the server's saved SkillSlots decide (Z / X need a class task as well as the level); the
+	-- level rule only until the data is there
 	local slots = attr("SkillSlots", nil)
-	if locked and type(slots) == "number" and slots >= (T.SlotIndex[slot] or 99) then locked = false end
+	local locked = level < unlock
+	if type(slots) == "number" then locked = slots < (T.SlotIndex[slot] or 99) end
 	local readyAt = num(T.Ready[slot], 0)
 	local left = math.max(0, readyAt - Util.Now())
 	return {
@@ -733,14 +735,47 @@ function LEARN.Sound()
 	end
 end
 
--- a skill key before the first skill: one short toast now and then
-function LEARN.Tell(level)
+-- a locked skill key: one short toast now and then - its class task once the level is there (99N D), else its level
+function LEARN.Tell(level, slot)
 	if os.clock() - LEARN.TellAt < LEARN.TellGap then return end
 	LEARN.TellAt = os.clock()
-	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, trx(TXT, "Later", level), "info", 2.5) end
+	local task = math.floor(num("Level", 1)) >= (tonumber(level) or 1) and SkillBar.TaskFor(slot) or ""
+	local line = task ~= "" and task or trx(TXT, "Later", level)
+	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "info", 2.5) end
 end
 
 ----------------------------------------------------------------- public API
+-- 99N D (pure on its arguments): a kit's class task line for `slot` with `done` counted ("Lv15 skill: Defeat 40 monsters
+-- with basic attacks (3/40)"; Config.SkillTaskLine's words and order, each piece by its key - the slot's name too - so
+-- a translated game translates the whole line); "" = no task (Q, the tasks off, an unknown kit)
+function SkillBar.TaskLine(kit, slot, done)
+	local def = type(Config.SkillTask) == "function" and Config.SkillTask(kit, slot) or nil
+	local TT = type(Config.Skills) == "table" and type(Config.Skills.Tasks) == "table" and Config.Skills.Tasks.Text or nil
+	if not (def and type(TT) == "table") then return "" end
+	local n = math.max(1, math.floor(tonumber(def.Count) or 1))
+	local line
+	if def.Kind == "BasicKills" then
+		line = trx(TT, "BasicKills", n)
+	elseif def.Kind == "SkillMulti" then
+		local name = type(TT.SlotName) == "table" and TT.SlotName[def.Slot] and trx(TT.SlotName, def.Slot) or "a skill"
+		line = trx(TT, "SkillMulti", math.floor(tonumber(def.Min) or 1), name, n)
+	elseif def.Kind == "FarKills" then
+		line = trx(TT, "FarKills", n, math.floor(tonumber(def.Dist) or 0))
+	else
+		return ""
+	end
+	local lv = math.floor(tonumber((Config.Skills.Unlock or {})[slot]) or 1)
+	return trx(TT, "Goal", lv, line, math.clamp(math.floor(tonumber(done) or 0), 0, n), n) or ""
+end
+
+-- my task line for `slot` (my class x side's kit; the count only while that slot's task runs: SkillTaskSlot / SkillTaskN)
+function SkillBar.TaskFor(slot)
+	if slot ~= "Z" and slot ~= "X" then return "" end
+	local kit = kitOf(attr("Class", "Warrior"), attr("Faction", "None"))
+	local done = attr("SkillTaskSlot", "") == slot and num("SkillTaskN", 0) or 0
+	return SkillBar.TaskLine(kit, slot, done)
+end
+
 function SkillBar.Owns(slot)
 	return S.built and ui.buttons[slot] ~= nil
 end
@@ -757,7 +792,7 @@ function SkillBar.Use(slot)
 	if not b then return false end
 	if not b.Holder.Visible then
 		local st = stateOf(slot)
-		if st.On and st.Locked then LEARN.Tell(st.Unlock) end
+		if st.On and st.Locked then LEARN.Tell(st.Unlock, slot) end
 		return false
 	end
 	LEARN.HintWait[slot] = nil -- used before the learn line came: it never comes
@@ -890,7 +925,7 @@ function SkillBar.Start()
 		if ui.root.Visible ~= shown then ui.root.Visible = shown end
 	end
 	UIKit.OnAttr({ "Mana", "MaxMana", "Level", "Class", "ClassChosen", "Faction", "SkillReadyAt", "SkillReadyAtZ",
-		"SkillReadyAtX", "SkillBarPreview", "SkillSlots" }, refreshAll)
+		"SkillReadyAtX", "SkillBarPreview", "SkillSlots", "SkillTaskSlot", "SkillTaskN" }, refreshAll)
 	UIKit.OnAttr({ "SackGold", "KaijuState", "EggCarry" }, refreshAll) -- A23-180: what blocks the Hop slot
 	-- 2-C #8: the server's press answers and the X hop (Fx; the Remotes folder comes from the server)
 	task.spawn(function()
