@@ -569,6 +569,46 @@ runGroup("results", function()
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
 end)
 
+------------------------------------------------------------------ 장인 ⑤ (A23-178): the alchemist's goods
+runGroup("alchemist goods", function()
+	local w = cWorld({ EditConfig = function(c)
+		c.Craft.Recipes.APX = { Role = "Alch", Kind = "Potion", Potion = "Nope", N = 1, Lv = 1, Gold = 1, Mats = { Herb = 1 }, XP = 1 }
+	end })
+	local C0 = w.Config
+	local K0 = C0.Craft.Recipes
+	check(K0.AP1.Role == "Alch" and K0.AP1.Kind == "Potion" and K0.AP1.Potion == "HP" and K0.AP1.N == 2 and K0.AP1.Mats.Herb == 2
+		and K0.AP1.Mats.Jelly == 3 and K0.AP2.Potion == "MP" and K0.AS1.Kind == "Item" and K0.AS1.Item == "Enh70"
+		and K0.AS1.Mats.Herb == 5 and K0.AS1.Mats.CopperOre == 3 and K0.AS1.Lv == 3,
+		"Config: HP / MP potions and the 70% scroll from the meadow's harvest and slimes (Alch)", show({ K0.AP1, K0.AS1 }))
+	check(w.C.RecipeOn("AP1") ~= nil and w.C.RecipeOn("AS1") ~= nil and w.C.RecipeOn("APX") == nil,
+		"a Potion recipe is on only for a real potion (HP / MP)", "")
+	local stock = { Herb = 40, Jelly = 20, CopperOre = 10, Petal = 10 }
+	local p, d = smith(w, 11, { Items = deepCopy(stock) }, "Mage")
+	local hp = C0.PotionStockKey("HP")
+	local before = d[hp] or 0
+	startAndHammer(w, p, HONEST, { Recipe = "AP1" })
+	local res = last(fired(w, "CraftResult", p))
+	check(res and res.Kind == "Potion" and res.Potion == "HP" and (d[hp] or 0) == before + 2 + res.Plus and p:GetAttribute(hp) == d[hp],
+		"AP1: 2 HP potions + the hammer's +N into the stock (attribute too); CraftResult says Potion HP", show({ res, d[hp] }))
+	check(d.Items.Herb == 38 and d.Items.Jelly == 17, "its materials went at the start (2 herbs, 3 jelly)", show(d.Items))
+	-- the cap: no start when N + 2 would pass it
+	w:Advance(61)
+	d[hp] = C0.Vitals.PotionInventoryCap - 3
+	check(w.C.TryStart(p, "AP1") == "full" and d.Items.Herb == 38, "near the potion cap: full, nothing taken", show(d.Items))
+	d[hp] = 0
+	-- the scroll waits for craft Lv3
+	check(w.C.TryStart(p, "AS1") == "level", "the 70% scroll needs alchemy Lv3", "")
+	d.Craft.Alch = { Lv = 3, XP = 0 }
+	local enh = d.Items.Enh70 or 0
+	startAndHammer(w, p, HONEST, { Recipe = "AS1" })
+	local res2 = last(fired(w, "CraftResult", p))
+	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 33 and d.Items.CopperOre == 7,
+		"AS1 at Lv3: 70% scrolls (1 + the hammer's +N) from 5 herbs + 3 copper", show({ res2, d.Items }))
+	-- a blacksmith cannot make them
+	local s = smith(w, 12, { Items = deepCopy(stock) })
+	check(w.C.TryStart(s, "AP1") == "role" and w.C.TryStart(s, "AS1") == "role", "a blacksmith cannot brew", "")
+end)
+
 ------------------------------------------------------------------ 장인 ④ (최종 검수 10/14): the guild yard's three benches
 runGroup("benches", function()
 	local w = cWorld({ Benches = true })
@@ -612,47 +652,9 @@ runGroup("benches", function()
 	none.Tagged.CraftStation = {}
 	check(none.C.EnsureBenches() == false and #none.Tagged.CraftStation == 0, "no anvil yet: nothing (tried again later)", "")
 	-- the built bench works: a blacksmith next to it may craft there
-	local p = smith(w, 21)
+	local p = smith(w, 21, { Items = (function() local t = table.clone(MATS); t.Herb = 50; return t end)() }) -- W2 takes herbs (장인 ②)
 	rootOf(p).Position = smithBench.Position
 	check(w.C.TryStart(p, "W2") == "ok", "next to the new Smith bench: a craft starts", "")
------------------------------------------------------------------- 장인 ⑤ (A23-178): the alchemist's goods
-runGroup("alchemist goods", function()
-	local w = cWorld({ EditConfig = function(c)
-		c.Craft.Recipes.APX = { Role = "Alch", Kind = "Potion", Potion = "Nope", N = 1, Lv = 1, Gold = 1, Mats = { Herb = 1 }, XP = 1 }
-	end })
-	local C0 = w.Config
-	local K0 = C0.Craft.Recipes
-	check(K0.AP1.Role == "Alch" and K0.AP1.Kind == "Potion" and K0.AP1.Potion == "HP" and K0.AP1.N == 2 and K0.AP1.Mats.Herb == 2
-		and K0.AP1.Mats.Jelly == 3 and K0.AP2.Potion == "MP" and K0.AS1.Kind == "Item" and K0.AS1.Item == "Enh70"
-		and K0.AS1.Mats.Herb == 5 and K0.AS1.Mats.CopperOre == 3 and K0.AS1.Lv == 3,
-		"Config: HP / MP potions and the 70% scroll from the meadow's harvest and slimes (Alch)", show({ K0.AP1, K0.AS1 }))
-	check(w.C.RecipeOn("AP1") ~= nil and w.C.RecipeOn("AS1") ~= nil and w.C.RecipeOn("APX") == nil,
-		"a Potion recipe is on only for a real potion (HP / MP)", "")
-	local stock = { Herb = 40, Jelly = 20, CopperOre = 10, Petal = 10 }
-	local p, d = smith(w, 11, { Items = deepCopy(stock) }, "Mage")
-	local hp = C0.PotionStockKey("HP")
-	local before = d[hp] or 0
-	startAndHammer(w, p, HONEST, { Recipe = "AP1" })
-	local res = last(fired(w, "CraftResult", p))
-	check(res and res.Kind == "Potion" and res.Potion == "HP" and (d[hp] or 0) == before + 2 + res.Plus and p:GetAttribute(hp) == d[hp],
-		"AP1: 2 HP potions + the hammer's +N into the stock (attribute too); CraftResult says Potion HP", show({ res, d[hp] }))
-	check(d.Items.Herb == 38 and d.Items.Jelly == 17, "its materials went at the start (2 herbs, 3 jelly)", show(d.Items))
-	-- the cap: no start when N + 2 would pass it
-	w:Advance(61)
-	d[hp] = C0.Vitals.PotionInventoryCap - 3
-	check(w.C.TryStart(p, "AP1") == "full" and d.Items.Herb == 38, "near the potion cap: full, nothing taken", show(d.Items))
-	d[hp] = 0
-	-- the scroll waits for craft Lv3
-	check(w.C.TryStart(p, "AS1") == "level", "the 70% scroll needs alchemy Lv3", "")
-	d.Craft.Alch = { Lv = 3, XP = 0 }
-	local enh = d.Items.Enh70 or 0
-	startAndHammer(w, p, HONEST, { Recipe = "AS1" })
-	local res2 = last(fired(w, "CraftResult", p))
-	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 33 and d.Items.CopperOre == 7,
-		"AS1 at Lv3: 70% scrolls (1 + the hammer's +N) from 5 herbs + 3 copper", show({ res2, d.Items }))
-	-- a blacksmith cannot make them
-	local s = smith(w, 12, { Items = deepCopy(stock) })
-	check(w.C.TryStart(s, "AP1") == "role" and w.C.TryStart(s, "AS1") == "role", "a blacksmith cannot brew", "")
 end)
 
 ------------------------------------------------------------------ craft XP
