@@ -1078,25 +1078,10 @@ function MOMENT.Card(payload, done)
 	task.delay(L.Moment.In + L.Moment.Evolve + hold, finish)
 end
 
--- a page done / every card Gold Holo: the shared reward popup with the line; done() when it closes
-function MOMENT.Popup(payload, done)
-	local popup = call("RewardPopup", {
-		Title = tostring(type(codex().Text) == "table" and codex().Text.Name or ""),
-		Lines = { tostring(payload.Text or "") },
-		Button = tx("Ok"),
-		Faction = faction(),
-	})
-	local frame = type(popup) == "table" and popup.Frame or nil
+-- a page done / every card Gold Holo: A23-191 (user 10/14 "완료! 류 다 삭제"): no popup / toast any more - the chime only
+function MOMENT.Popup(_payload, done)
 	chime()
-	if not frame then
-		call("Toast", tostring(payload.Text or ""), "reward")
-		done()
-		return
-	end
-	task.spawn(function()
-		while frame.Parent do task.wait(0.25) end
-		done()
-	end)
+	done()
 end
 
 -- shows the waiting moments one after another (on a quiet screen)
@@ -1142,8 +1127,7 @@ function CodexUI.OnUp(payload)
 			S.Foil = payload.Event == "Golden"
 		end
 		pcall(drawWindow)
-		call("Toast", tostring(payload.Text or ""), "reward")
-		chime()
+		chime() -- A23-191: no toast
 		return
 	end
 	CodexUI.Push(S.Queue, payload)

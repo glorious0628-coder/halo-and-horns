@@ -388,23 +388,23 @@ end
 ------------------------------------------------------------------ the window
 local function tapPass(kit, p)
 	local d = passDef(p)
-	if p.Info then kit.Toast(T.ServerToast, "info"); return end
-	if d.Attr and attrOf(d.Attr, false) == true then kit.Toast(T.OwnedToast, "info"); return end
-	if d.Id <= 0 then kit.Toast(T.SoonToast, "info"); return end
-	if not salesOn() then kit.Toast(T.OffToast, "info"); return end
+	if p.Info then kit.Toast(T.ServerToast, "bad"); return end
+	if d.Attr and attrOf(d.Attr, false) == true then kit.Toast(T.OwnedToast, "bad"); return end
+	if d.Id <= 0 then kit.Toast(T.SoonToast, "bad"); return end
+	if not salesOn() then kit.Toast(T.OffToast, "bad"); return end
 	prompt(d.Id, p.Kind)
 end
 
 local function tapLook(kit, look)
 	local id, def = look.Id, look.Def
 	if ownsLook(id) then
-		if not hasRemote("SetLook") then kit.Toast(T.SoonToast, "info"); return end
+		if not hasRemote("SetLook") then kit.Toast(T.SoonToast, "bad"); return end
 		kit.Fire("SetLook", attrOf("LookOn", "") == id and "" or id) -- tap the worn one again = take it off
 		return
 	end
 	local passId = math.floor(tonumber(def.PassId or def.Id) or 0)
-	if passId <= 0 then kit.Toast(T.SoonToast, "info"); return end
-	if not salesOn() then kit.Toast(T.OffToast, "info"); return end
+	if passId <= 0 then kit.Toast(T.SoonToast, "bad"); return end
+	if not salesOn() then kit.Toast(T.OffToast, "bad"); return end
 	prompt(passId, "Look")
 end
 
@@ -479,7 +479,7 @@ local function buildShop(parent, kit, arg)
 		local scards = grid(kit, parent, "Subscriptions", L.Cols, L.CardH, #subs)
 		for _, sd in subs do
 			local function tapSub()
-				if attrOf(sd.Attr, false) == true then kit.Toast(T.OwnedToast, "info"); return end
+				if attrOf(sd.Attr, false) == true then kit.Toast(T.OwnedToast, "bad"); return end
 				promptSub(sd.Id, sd.Kind)
 			end
 			local card = cardButton(u, kit, scards, "Sub" .. sd.Kind, tapSub, openedAt)

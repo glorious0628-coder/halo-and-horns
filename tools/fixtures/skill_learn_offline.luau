@@ -169,7 +169,7 @@ check(#W.Toasts == 1, "that toast is not spammed", #W.Toasts)
 -- 2. Lv5 while playing: the learn moment
 set("Level", 5)
 check(holder("Q").Visible == true, "Lv5: the Q button appears", tostring(holder("Q").Visible))
-check(#W.Announced == 1 and string.find(W.Announced[1], "^New skill! ") ~= nil, "a 'New skill! <name>' banner", W.Announced[1])
+check(#W.Announced == 0, "A23-191: no 'New skill!' banner", W.Announced[1])
 check(#W.Hints == 0, "검수 10/09: no line on the new button at once", #W.Hints)
 check(#W.Played == 0, "the learn sound waits for the level-up chime", table.concat(W.Played, ","))
 check(runDelays(W, 1.0, 1.2) == 1, "the learn sound comes about 1.1 s after the level up (sound_gaps A9)", #W.Delays)
@@ -179,14 +179,14 @@ for _, t in W.Tweens do
 	if t.Inst.Name == "LearnPop" and not t.Inst.Destroyed and type(t.Before) == "number" and t.Before < 0.5 and t.Goal.Scale == 1 then popped = true end
 end
 check(popped, "the button pops in (small -> full size)", #W.Tweens)
-check(runDelays(W, 44, 46) == 1, "the learn line waits 45 s", #W.Delays)
-check(#W.Hints == 1 and W.Hints[1][1] == "Q" and W.Hints[1][2] == "Press Q", "45 s later, still unused: one line 'Press Q'", W.Hints[1] and W.Hints[1][2])
+check(runDelays(W, 44, 46) == 0 and #W.Hints == 0, "A23-191: no 'Press Q' line later either", #W.Hints)
 set("Level", 6)
-check(#W.Announced == 1 and #W.Hints == 1, "the moment shows once", #W.Announced)
+check(#W.Announced == 0 and #W.Hints == 0, "Lv6: nothing new", #W.Announced)
 check(holder("Z").Visible == false, "Z still hidden at Lv6", "")
 set("Level", 15)
 runDelays(W, 44, 46)
-check(holder("Z").Visible == true and #W.Announced == 2 and W.Hints[2][1] == "Z", "Lv15: Z learned the same way", W.Hints[2] and W.Hints[2][1])
+check(holder("Z").Visible == true and #W.Announced == 0 and #W.Hints == 0
+	and holder("Z"):FindFirstChild("LearnPop") ~= nil, "Lv15: Z pops in the same way, no words", #W.Hints)
 
 -- 3. a save loading past the level: nothing
 local b2 = copy(base)
@@ -195,7 +195,8 @@ local SB2, W2, set2, holder2 = run({ Attr = b2 })
 set2("Level", 30)
 set2("DataLoaded", true)
 check(holder2("Q").Visible == true and holder2("X").Visible == true, "a loaded Lv30 save shows its skills", "")
-check(#W2.Announced == 0 and #W2.Hints == 0, "a save load shows no learn moment", #W2.Announced)
+check(#W2.Announced == 0 and #W2.Hints == 0 and holder2("Q"):FindFirstChild("LearnPop") == nil and #W2.Delays == 0,
+	"a save load shows no learn moment (no pop, no sound)", #W2.Delays)
 
 -- 3b. dev2 SkillSlots: a rebirth back at Lv1 keeps its skills (the slots never go down); slots open what the level does not
 local b4 = copy(base)
@@ -207,8 +208,8 @@ local b5 = copy(base)
 b5.SkillSlots = 0
 local SB5, W5, set5, holder5 = run({ Attr = b5 })
 set5("SkillSlots", 1)
-check(holder5("Q").Visible == true and #W5.Announced == 1 and holder5("Z").Visible == false,
-	"the server opening slot 1 (SkillSlots 1) shows Q with the learn moment, Z stays hidden", #W5.Announced)
+check(holder5("Q").Visible == true and holder5("Q"):FindFirstChild("LearnPop") ~= nil and #W5.Announced == 0
+	and holder5("Z").Visible == false, "the server opening slot 1 (SkillSlots 1) pops Q in, Z stays hidden", #W5.Announced)
 pcall(SB5.Use, "Q")
 runDelays(W5, 44, 46)
 check(#W5.Hints == 0, "검수 10/09: Q used within 45 s -> the learn line never comes", #W5.Hints)
@@ -236,11 +237,11 @@ do
 	check(#W6.FxSounds == 1, "a ready button stays quiet", #W6.FxSounds)
 end
 
--- 4. phones: 'Tap the new button'; reduced motion: no pop
+-- 4. phones: no line either (A23-191); reduced motion: no pop
 local SB3, W3, set3, holder3 = run({ Attr = copy(base), Touch = true, Reduced = true })
 set3("Level", 5)
 runDelays(W3, 44, 46)
-check(W3.Hints[1] and W3.Hints[1][2] == "Tap the new button", "phones: 'Tap the new button'", W3.Hints[1] and W3.Hints[1][2])
+check(#W3.Hints == 0, "phones: no 'Tap the new button' line (A23-191)", W3.Hints[1] and W3.Hints[1][2])
 check(holder3("Q"):FindFirstChild("LearnPop") == nil, "reduced motion: no pop", "")
 
 -- 5. A23-78 / 검수 10/08: the skill key badge follows Settings.KeyBadges ('Key hints', off by default) at once
@@ -260,47 +261,13 @@ do
 	check(key ~= nil and key.Visible == false, "Key hints off again: hidden (also redrawn on a key change)", key and tostring(key.Visible))
 end
 
--- 6. A23-81: the keys tip - once, on keyboards, 2.5 s after the first Q press (or 25 s after the learn moment), as a calm
--- PauseCard tip whose [Open Settings] opens Settings on its Keys tab
+-- 6. A23-191 (user 10/14): no keys tip card at all (A23-81's tip stays in Help), even with the old switch on
 do
-	local _, W7, set7 = run({ Attr = copy(base), KeysTip = true })
-	local SB7 = _
+	local SB7, W7, set7 = run({ Attr = copy(base), KeysTip = true })
 	set7("Level", 5)
-	check(#W7.Cards == 0, "no keys tip at the learn moment itself", #W7.Cards)
 	SB7.Use("Q")
-	check(#W7.Cards == 0, "...nor at the press itself", #W7.Cards)
-	runDelays(W7, 2, 3)
-	local c = W7.Cards[1]
-	check(#W7.Cards == 1 and c[1] == "Tip" and c[2].Text == "Tip: You can change your keys in Settings!" and c[2].Go.Text == "Open Settings"
-		and c[2].Go.Window == "Settings" and c[2].Go.Arg.Tab == "Keys", "2.5 s after the first Q press: the keys tip -> Settings / Keys",
-		#W7.Cards)
-	runDelays(W7, 20, 30)
-	SB7.Use("Q")
-	runDelays(W7, 2, 3)
-	check(#W7.Cards == 1, "the tip shows once (not again at 25 s, not on the next press)", #W7.Cards)
-	set7("Level", 15)
 	runDelays(W7, 0, 30)
-	check(#W7.Cards == 1, "a later skill (Z) brings no tip", #W7.Cards)
-end
-do
-	local _, W8, set8 = run({ Attr = copy(base), KeysTip = true })
-	set8("Level", 5)
-	runDelays(W8, 20, 30)
-	check(#W8.Cards == 1 and W8.Cards[1][1] == "Tip", "no press: the tip comes 25 s after the learn moment", #W8.Cards)
-end
-do
-	local SB9, W9, set9 = run({ Attr = copy(base), Touch = true, KeysTip = true })
-	set9("Level", 5)
-	SB9.Use("Q")
-	runDelays(W9, 0, 30)
-	check(#W9.Cards == 0, "phones: no keys tip", #W9.Cards)
-end
-do -- 검수 10/09 (user: too kind): the real Config has the keys tip card off (Config.Nudges.KeysTip = false)
-	local SB10, W10, set10 = run({ Attr = copy(base) })
-	set10("Level", 5)
-	SB10.Use("Q")
-	runDelays(W10, 0, 30)
-	check(#W10.Cards == 0, "the real Config: no keys tip card at all", #W10.Cards)
+	check(#W7.Cards == 0, "no keys tip card (A23-191)", #W7.Cards)
 end
 
 print(string.format("SKILL_LEARN_SUMMARY checks=%d failed=%d", checks, failed))

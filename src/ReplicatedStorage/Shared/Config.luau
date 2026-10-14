@@ -11049,7 +11049,7 @@ Config.ClientText.UIKit = {
 	Cancel = "Cancel", -- the confirm box's second button
 }
 Config.ClientText.ComeBack = { MyWay = "Your way: %s" }
-Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag (your weapon is safe even on a fail)" }
+Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag" }
 Config.ClientText.Invite = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" }
 Config.ClientText.PauseCard = {
 	PauseTitle = "Saved!",
@@ -11086,13 +11086,6 @@ Config.ClientText.SkillBook = {
 	ChangeKeys = "Change keys",
 	-- used only when Config.Skills.Text misses a word
 	Ready = "Ready", NeedMP = "Need MP", UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt",
-}
-Config.ClientText.PassesLines = {
-	PassXP2 = "Thank you! 2x XP is on.",
-	PassGold2 = "Thank you! 2x Gold is on.",
-	PassVIP = "Thank you! You are a VIP now: crown and chat tag.",
-	-- a bought look (LooksOwned grew)
-	Look = "New look unlocked! Pick it in the Shop.",
 }
 
 Config.ClientText.VitalsUI = {

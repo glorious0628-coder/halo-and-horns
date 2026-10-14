@@ -17,11 +17,10 @@
 --   auto). Only frames while the game window had focus count; a frame gap of 1..5 s is a freeze (a low second), a
 --   longer one the app away (dropped); under
 --   T.PerfActive s of such play in a window -> nothing sent. Nothing on screen changes.
---   My Way (#2): the MyWay attribute (ReturnService: the name from my own story picks, "" = none yet) changing after its
---   first value -> one 2 s line. No judging, no stats.
+--   My Way (#2): A23-191 (user 10/14) - no line any more (the MyWay attribute is not watched here).
 -- Presentation + the prompt only; the server owns every rule and record.
 -- Public API: ComeBack.Init(C), ComeBack.Start(), ComeBack.Metric(id, arg?), ComeBack.ArgOk(rule, arg),
--- ComeBack.OptIn(why), ComeBack.Calm() -> bool, ComeBack.OnFx(kind, data), ComeBack.OnMyWay(value) -> the line shown or nil,
+-- ComeBack.OptIn(why), ComeBack.Calm() -> bool, ComeBack.OnFx(kind, data),
 -- ComeBack.Bought() (a purchase window was used: the calm clock; Passes / ShopUI may call it too),
 -- ComeBack.PerfDevice(touch, keyboard, gamepad, shortSide) -> D, ComeBack.PerfPack(d, frames, active, seconds, mem, q) -> arg | nil,
 -- ComeBack.PerfFrame(dt) (one frame of the Perf window).
@@ -46,7 +45,6 @@ local T = {
 	WaitMax = 90, -- s the opt-in moment may wait for a calm screen
 	Poll = 0.5,
 	PromptMax = 300, -- s waiting for Roblox's opt-in window to close
-	MyWaySeconds = 2,
 	TabletPx = 600, -- a touch screen whose short side is this many px or more is a tablet
 	PerfActive = 60, -- s of focused play a Perf window needs (the contract)
 	PerfGapCut = 5, -- s: a longer frame gap is the app away (dropped); 1..5 s counts as a freeze (검수 10/10)
@@ -54,7 +52,6 @@ local T = {
 	Text = Config.ClientText.ComeBack, -- the words: Config.ClientText.ComeBack (moved 10/14)
 }
 local S = { SentAt = {}, OptInAsked = false, KOAt = -math.huge, FailAt = -math.huge, BuyAt = -math.huge,
-	MyWay = nil, MyWaySeen = false,
 	-- the Perf window: frames / active s counted, the current second's frames + time, the full seconds' FPS list
 	Perf = { Frames = 0, Active = 0, SecFrames = 0, SecTime = 0, Seconds = {}, Focused = true, Started = 0 } }
 
@@ -218,19 +215,6 @@ function ComeBack.OnFx(kind, data)
 	end
 end
 
--- MyWay changed: the first value (the join) is quiet; a new name gets its 2 s line
-function ComeBack.OnMyWay(value)
-	local name = type(value) == "string" and value or ""
-	local first = not S.MyWaySeen
-	local before = S.MyWay
-	S.MyWaySeen, S.MyWay = true, name
-	if first or name == "" or name == before then return nil end
-	local line = string.format(T.Text.MyWay, name)
-	local kit = C and C.UIKit
-	if type(kit) == "table" and type(kit.Toast) == "function" then pcall(kit.Toast, line, "good", T.MyWaySeconds) end
-	return line
-end
-
 local function watchKO(char)
 	local hum = char and char:WaitForChild("Humanoid", 10)
 	if not hum then return end
@@ -297,10 +281,6 @@ function ComeBack.Start()
 	end)
 	LocalPlayer.CharacterAdded:Connect(function(char) task.spawn(watchKO, char) end)
 	if LocalPlayer.Character then task.spawn(watchKO, LocalPlayer.Character) end
-	if LocalPlayer:GetAttribute("MyWay") ~= nil then ComeBack.OnMyWay(LocalPlayer:GetAttribute("MyWay")) end
-	LocalPlayer:GetAttributeChangedSignal("MyWay"):Connect(function()
-		pcall(ComeBack.OnMyWay, LocalPlayer:GetAttribute("MyWay"))
-	end)
 	pcall(function()
 		MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player)
 			if player == LocalPlayer then ComeBack.Bought() end

@@ -170,8 +170,9 @@ check(R.Revive == "A friend can help you up (7 s)" and R.Back == nil, "a friend 
 check(DS.Lines({ By = "Monster", Name = "Slime" }, 3, nil, nil, 0).Revive == nil, "no friend: no wait line")
 check(DS.PromptOn("Halo", 9, "Halo", 7) and not DS.PromptOn("Horns", 9, "Halo", 7) and not DS.PromptOn("Halo", 7, "Halo", 7)
 	and not DS.PromptOn(nil, 9, "Halo", 7), "the help prompt: my side only, never on my own body")
+local nToasts = #TOASTS
 FX.OnClientEvent:Fire("Revived", { By = 42 })
-check(TOASTS[#TOASTS] == "Bo helped you up!", "helped up: one line who did it", tostring(TOASTS[#TOASTS]))
+check(#TOASTS == nToasts, "helped up: no toast (A23-191, user 10/14)", tostring(TOASTS[#TOASTS]))
 print(("DEATH_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -193,7 +194,6 @@ MUTATIONS = [
     ("DS", "no wait line (a friend may help)", '\t\tout.Revive = trx(RX, "Wait", math.max(1, math.ceil(revive)))\n', ""),
     ("DS", "the help prompt for every side", "return type(side) == \"string\" and side == mySide and ownerId ~= myId",
      "return type(side) == \"string\" and ownerId ~= myId"),
-    ("DS", "nobody named when helped up", 'pcall(ui.Toast, trx(RX, "HelpedBy", by.DisplayName), "info", 3)', "local _ = by"),
     ("MAIN", "never loaded", '"EventHUD", "DeathScreen", "Panels"', '"EventHUD", "Panels"'),
 ]
 

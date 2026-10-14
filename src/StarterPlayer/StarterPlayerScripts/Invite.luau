@@ -176,11 +176,7 @@ local function onPlayerAdded(player)
 	if not ok or friend ~= true or player.Parent ~= Players or S.Seen[player.UserId] then return end
 	S.Seen[player.UserId] = true
 	Invite.FriendJoined:Fire(player)
-	if Invite.DefaultLine ~= true then return end
-	local kit = C and C.UIKit
-	if type(kit) == "table" and type(kit.Toast) == "function" then
-		pcall(kit.Toast, string.format(T.Text.Joined, Util.PlayerDisplayName(player)), "info", T.ToastSeconds)
-	end
+	-- A23-191 (user 10/14): no "a friend joined" toast
 end
 
 function Invite.Init(registry)

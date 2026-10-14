@@ -185,8 +185,18 @@ local function reset()
 	TRAVEL = {}
 end
 
--- 1) the pause card on a free screen
+-- 1) A23-191 (user 10/14 "다 삭제하라고"): the server's card Fx draws nothing any more (Pause / Back / Tomorrow)
 FX:Fire("PauseCard", { Next = "King Slime (2 of 3)", Why = "Chapter" })
+check("the server's pause card Fx opens nothing (A23-191)", not Card.IsOpen() and cards() == 0, cards())
+-- the rest drives the card engine directly with the old Fx payloads (A23-191: the server's Fx no longer reaches it;
+-- another player's payload is still dropped here so those checks keep their meaning)
+local KIND = { PauseCard = "Pause", WelcomeBack = "Back", TomorrowGift = "Tomorrow" }
+local function SHOW(kind, data)
+	if type(data) == "table" and data.UserId ~= nil and data.UserId ~= LP.UserId then return end
+	if KIND[kind] then Card.Show(KIND[kind], data) end
+end
+-- the card itself still works when shown directly (no caller today)
+Card.Show("Pause", { Next = "King Slime (2 of 3)", Why = "Chapter" })
 check("a pause card opens at once on a free screen", Card.IsOpen() and cards() == 1, cards())
 check("title Saved! and the next goal", text("Title") == "Saved!" and text("Body") == "Next time: King Slime (2 of 3)",
 	tostring(text("Title")) .. " | " .. tostring(text("Body")))
@@ -280,7 +290,7 @@ NOW += 1
 
 -- 3) Welcome back
 reset()
-FX:Fire("WelcomeBack", { Next = "King Slime (2 of 3)", Zone = "SlimeMeadow" })
+SHOW("WelcomeBack", { Next = "King Slime (2 of 3)", Zone = "SlimeMeadow" })
 check("Welcome back with the next goal", text("Title") == "Welcome back!" and text("Body") == "Next: King Slime (2 of 3)",
 	tostring(text("Title")) .. " | " .. tostring(text("Body")))
 check("[Go] and [OK]: the same size, the same look", BUTTONS.Go and BUTTONS.OK and BUTTONS.Go.Part == BUTTONS.OK.Part
@@ -289,24 +299,24 @@ click("Go")
 check("[Go] asks the server to travel to the zone", TRAVEL[1] == "SlimeMeadow" and not Card.IsOpen() and SHOWN[1]
 	and SHOWN[1][1] == "Back" and SHOWN[1][2] == "Go", TRAVEL[1])
 reset()
-FX:Fire("WelcomeBack", { Next = "Lv 10" })
+SHOW("WelcomeBack", { Next = "Lv 10" })
 check("no zone -> only [OK]", BUTTONS.OK ~= nil and BUTTONS.Go == nil)
 click("OK")
 check("[OK] never travels", #TRAVEL == 0)
 reset()
-FX:Fire("WelcomeBack", {})
+SHOW("WelcomeBack", {})
 check("no goal -> the plain welcome line", text("Body") == "Good to see you again!", text("Body"))
 click("OK")
 
 -- 4) whose card, which kinds, the goal text
 reset()
-FX:Fire("PauseCard", { Next = "Goal", UserId = 99 })
+SHOW("PauseCard", { Next = "Goal", UserId = 99 })
 check("another player's card is not mine", not Card.IsOpen())
-FX:Fire("PauseCard", { Next = "Goal", UserId = 7 })
+SHOW("PauseCard", { Next = "Goal", UserId = 7 })
 check("my own (UserId) card opens", Card.IsOpen())
 click("OK")
-FX:Fire("Enhance", { Success = false })
-FX:Fire("SomethingElse", { Next = "x" })
+SHOW("Enhance", { Success = false })
+SHOW("SomethingElse", { Next = "x" })
 check("other Fx kinds open nothing", not Card.IsOpen())
 check("an unknown card kind is refused", Card.Show("Shop", { Next = "x" }) == false and not Card.IsOpen())
 Card.Show("Pause", { Next = "<b>Iron</b>\nSword" })
@@ -345,43 +355,43 @@ reset()
 local CB = {}
 Cdouble.ComeBack = { Metric = function(id) table.insert(CB, "Metric:" .. tostring(id)) return true end,
 	OptIn = function(why) table.insert(CB, "OptIn:" .. tostring(why)) return true end }
-FX:Fire("PauseCard", { Why = "Daily", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
+SHOW("PauseCard", { Why = "Daily", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
 check("A23-130: the daily card is not shown (a chapter's end only)", not Card.IsOpen() and cards() == 0
 	and Card.Waiting() == false, cards())
 check("the dropped daily card still hands over the opt-in moment 'Daily', once", #CB == 1 and CB[1] == "OptIn:Daily",
 	table.concat(CB, ","))
 table.clear(CB)
-FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", OptIn = false })
+SHOW("PauseCard", { Why = "Daily", Next = "Goal", OptIn = false })
 check("a dropped card with OptIn false: no moment", #CB == 0 and not Card.IsOpen(), table.concat(CB, ","))
-FX:Fire("PauseCard", { Why = "Daily", Next = "Goal", OptIn = "yes" })
+SHOW("PauseCard", { Why = "Daily", Next = "Goal", OptIn = "yes" })
 check("a dropped card: OptIn must be true (a string is not)", #CB == 0 and not Card.IsOpen(), table.concat(CB, ","))
-FX:Fire("PauseCard", { Why = "War", Next = "Goal" })
+SHOW("PauseCard", { Why = "War", Next = "Goal" })
 check("A23-130: the war card is not shown", not Card.IsOpen() and cards() == 0 and #SHOWN == 0, cards())
-FX:Fire("PauseCard", { Why = "Chapter", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
+SHOW("PauseCard", { Why = "Chapter", Next = "Hunt and get stronger!", Tomorrow = "New dailies", OptIn = true })
 check("a chapter card: the next goal, then tomorrow's line", text("Body") == "Next time: Hunt and get stronger!\nTomorrow: New dailies",
 	text("Body"))
 check("no opt-in moment while the card is open", #CB == 0, table.concat(CB, ","))
 click("OK")
 check("the card closed -> the opt-in moment 'Daily', once", #CB == 1 and CB[1] == "OptIn:Daily" and not Card.IsOpen(), table.concat(CB, ","))
 table.clear(CB)
-FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "King Diary page 3", OptIn = false })
+SHOW("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "King Diary page 3", OptIn = false })
 check("the King Diary page as tomorrow's line", text("Body") == "Next time: Goal\nTomorrow: King Diary page 3", text("Body"))
 click("Keep")
 check("OptIn false: no moment", #CB == 0, table.concat(CB, ","))
-FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", OptIn = "yes" })
+SHOW("PauseCard", { Why = "Chapter", Next = "Goal", OptIn = "yes" })
 card().Activated:Fire()
 flush()
 check("OptIn must be true (a string is not)", #CB == 0, table.concat(CB, ","))
-FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "<b>" .. string.rep("z", 50) })
+SHOW("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "<b>" .. string.rep("z", 50) })
 check("tomorrow's line cleaned and cut at 40", text("Body") == "Next time: Goal\nTomorrow: b" .. string.rep("z", 39) .. "…", text("Body"))
 click("OK")
-FX:Fire("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "   " })
+SHOW("PauseCard", { Why = "Chapter", Next = "Goal", Tomorrow = "   " })
 check("an empty tomorrow line adds nothing", text("Body") == "Next time: Goal", text("Body"))
 click("OK")
-FX:Fire("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })
+SHOW("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })
 click("Go")
 check("[Go] on welcome back counts WelcomeBackGo", #CB == 1 and CB[1] == "Metric:WelcomeBackGo", table.concat(CB, ","))
-FX:Fire("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })
+SHOW("WelcomeBack", { Next = "Goal", Zone = "SlimeMeadow" })
 click("OK")
 Card.Show("Tip", { Text = "Hi", Go = { Text = "Open", Window = "Settings" } })
 click("Go")
@@ -399,7 +409,7 @@ click("OK")
 reset()
 ART.IconCoin = true
 ART.IconWeeklyBox = true
-FX:Fire("TomorrowGift", { Tomorrow = 3, Days = 2 })
+SHOW("TomorrowGift", { Tomorrow = 3, Days = 2 })
 check("tomorrow card: title and the slot's line", text("Title") == "Tomorrow's gift"
 	and text("Body") == "Come back tomorrow for your Day 3 gift!", tostring(text("Title")) .. " | " .. tostring(text("Body")))
 check("tomorrow card: that slot's art", card():FindFirstChild("Icon", true) ~= nil)
@@ -408,7 +418,7 @@ click("OK")
 check("tomorrow card closes and tells the metrics", not Card.IsOpen() and SHOWN[1] and SHOWN[1][1] == "Tomorrow"
 	and SHOWN[1][2] == "OK")
 reset()
-FX:Fire("TomorrowGift", { Tomorrow = 4, Today = 3, Days = 2 })
+SHOW("TomorrowGift", { Tomorrow = 4, Today = 3, Days = 2 })
 check("today still open: one more line", text("Body") == "Come back tomorrow for your Day 4 gift!\nToday's gift is waiting too!",
 	text("Body"))
 check("today still open: [Open] and [OK], the same look", BUTTONS.Go and BUTTONS.OK and BUTTONS.Go.Button.Text == "Open"
@@ -418,35 +428,35 @@ click("Go")
 check("[Open] opens the attendance window, no travel", ATT_OPENED == before + 1 and #TRAVEL == 0 and not Card.IsOpen(),
 	ATT_OPENED - before)
 reset()
-FX:Fire("TomorrowGift", { Tomorrow = 7 })
+SHOW("TomorrowGift", { Tomorrow = 7 })
 check("day 7: the weekly box art", card() ~= nil and card():FindFirstChild("Icon", true) ~= nil)
 click("OK")
 ART.IconCoin, ART.IconWeeklyBox = nil, nil
 reset()
 check("a broken slot shows nothing", Card.Show("Tomorrow", { Tomorrow = 2.5 }) == false and Card.Show("Tomorrow", {}) == false
 	and Card.Show("Tomorrow", { Tomorrow = 0 }) == false and not Card.IsOpen())
-FX:Fire("TomorrowGift", { Tomorrow = 2, Today = "x" })
+SHOW("TomorrowGift", { Tomorrow = 2, Today = "x" })
 check("a broken Today: no [Open]", Card.IsOpen() and BUTTONS.Go == nil)
 click("OK")
 reset()
-FX:Fire("TomorrowGift", { Tomorrow = 2, UserId = 999 })
+SHOW("TomorrowGift", { Tomorrow = 2, UserId = 999 })
 check("another player's tomorrow card does not show", not Card.IsOpen())
 reset()
 OPEN.Panels = true
-FX:Fire("TomorrowGift", { Tomorrow = 2 })
+SHOW("TomorrowGift", { Tomorrow = 2 })
 check("the tomorrow card waits behind a window like every card", not Card.IsOpen() and Card.Waiting())
 OPEN.Panels = false
 Card.Tick()
 click("OK")
 reset()
-FX:Fire("WelcomeBack", { Next = "Goal", News = "While you were away, crown wars won: Halo 3, Horns 1" })
+SHOW("WelcomeBack", { Next = "Goal", News = "While you were away, crown wars won: Halo 3, Horns 1" })
 check("welcome back: the News line under the goal",
 	text("Body") == "Next: Goal\nWhile you were away, crown wars won: Halo 3, Horns 1", text("Body"))
 click("OK")
-FX:Fire("WelcomeBack", { Next = "Goal" })
+SHOW("WelcomeBack", { Next = "Goal" })
 check("welcome back without News: the goal only", text("Body") == "Next: Goal", text("Body"))
 click("OK")
-FX:Fire("WelcomeBack", { Next = "Goal", News = "<b>" .. string.rep("n", 90) })
+SHOW("WelcomeBack", { Next = "Goal", News = "<b>" .. string.rep("n", 90) })
 check("the News line cleaned and cut at 80", text("Body") == "Next: Goal\nb" .. string.rep("n", 79) .. "…", text("Body"))
 click("OK")
 

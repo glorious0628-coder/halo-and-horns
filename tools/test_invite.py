@@ -37,7 +37,6 @@ MUTATIONS = [
      "\tif typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") then return false end\n"),
     ("Go to friend without the UserId", "\tlocal ok = pcall(remote.FireServer, remote, player.UserId)\n",
      "\tlocal ok = pcall(remote.FireServer, remote)\n"),
-    ("the plain line under the friend card too", "\tif Invite.DefaultLine ~= true then return end\n", ""),
     ("no InvitePrompt count", "\tif ok and source ~= nil then metric(\"InvitePrompt\", source) end\n", ""),
     ("InvitePrompt counted when nothing opened", "\tif ok and source ~= nil then metric(\"InvitePrompt\", source) end\n",
      "\tif source ~= nil then metric(\"InvitePrompt\", source) end\n"),

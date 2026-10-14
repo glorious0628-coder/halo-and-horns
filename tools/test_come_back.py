@@ -52,12 +52,6 @@ MUTATIONS = [
     ("'shown' before the window closed", "\tif closed then ComeBack.Metric(\"OptIn\", \"shown\") end\n", "\tComeBack.Metric(\"OptIn\", \"shown\")\n"),
     ("an erroring check counts as 'cannot'", "\tif not okCan then\n\t\tUtil.Warn(TAG, \"CanPromptOptInAsync failed: \" .. tostring(can))\n\t\treturn\n\tend\n", ""),
     ("Fx OptInMoment ignored", "\t\tComeBack.OptIn(type(data) == \"table\" and data.Why or nil)\n", ""),
-    ("My Way speaks at the join", "\tif first or name == \"\" or name == before then return nil end\n",
-     "\tif name == \"\" or name == before then return nil end\n"),
-    ("My Way speaks for no name", "\tif first or name == \"\" or name == before then return nil end\n",
-     "\tif first or name == before then return nil end\n"),
-    ("My Way repeats the same name", "\tif first or name == \"\" or name == before then return nil end\n", "\tif first or name == \"\" then return nil end\n"),
-    ("My Way line for 5 s", "\tMyWaySeconds = 2,\n", "\tMyWaySeconds = 5,\n"),
     # 빛 마을 점검 #32 (2026-10-10): the Perf sample
     ("Perf: W above F allowed", "and whole(arg.W, 0, arg.F)", "and whole(arg.W, 0, 240)"),
     ("Perf: an extra key allowed", "\t\t\tif k ~= \"D\" and k ~= \"F\" and k ~= \"W\" and k ~= \"M\" and k ~= \"Q\" then return false end\n", ""),
@@ -72,7 +66,6 @@ MUTATIONS = [
     ("Perf: sent before my data loads", "\tif LocalPlayer:GetAttribute(\"DataLoaded\") ~= true then\n\t\tP.Started = now\n",
      "\tif false then\n\t\tP.Started = now\n"),
     ("Perf: W is the average", "if type(v) == \"number\" then w = math.min(w, math.max(0, math.floor(v))) end", "if false then end"),
-    ("a name there at the start counts as new", "\tif LocalPlayer:GetAttribute(\"MyWay\") ~= nil then ComeBack.OnMyWay(LocalPlayer:GetAttribute(\"MyWay\")) end\n", ""),
 ]
 
 

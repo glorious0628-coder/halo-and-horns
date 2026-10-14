@@ -194,18 +194,12 @@ jar = Diary.JarRows({ Candy = 250, Titles = "Regular,CandyKeeperX" })
 check("enough candy, not owned: both can trade", jar[1].CanTrade and jar[2].CanTrade and not jar[2].Owned)
 
 -- 5) the Fx
+-- A23-191 (user 10/14 "다 삭제하라고"): no new-page card and no done popup any more
 FX:Fire("DiaryPage", { Page = 3, Today = 5, Late = true })
-local card = CARDS[1]
-check("a new page: a calm card 'Page 3 is open!' [Read] -> the book on page 3", card and card[1] == "Tip"
-	and card[2].Title == "King Diary" and card[2].Text == "Page 3 is open!" and card[2].Go.Text == "Read"
-	and card[2].Go.Window == "Diary" and card[2].Go.Arg.Page == 3, card and card[2].Text)
+check("a new page: no card (A23-191)", #CARDS == 0, #CARDS)
 FX:Fire("DiaryPage", {})
-check("no page number: no card", #CARDS == 1)
 FX:Fire("DiaryDone", {})
-local pop = POPUPS[1]
-check("the whole book: the reward popup with the new title", pop and pop.Title == "King Diary" and pop.Lines[1] == "You read all 9 pages!"
-	and pop.Lines[2] == "New title: Party Guest 2026" and (pop.Rewards == nil or #pop.Rewards == 0) and pop.Faction == "Halo",
-	pop and pop.Lines and pop.Lines[2])
+check("the whole book: no popup (A23-191)", #POPUPS == 0 and #CARDS == 0, #POPUPS)
 
 -- 6) trading
 check("[Trade] asks the server with the jar id", Diary.Trade("PumpkinPal") == true and TRADES[1] and TRADES[1].n == 1 and TRADES[1][1] == "PumpkinPal")

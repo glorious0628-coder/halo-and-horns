@@ -136,7 +136,8 @@ local function toastCollisions()
 		local def = KB.ById[id]
 		if def and not K.Toasted[id] then
 			K.Toasted[id] = true
-			toast(text("KeyCollision", actionName(def), Config.KeyLabel(def.Key, english())), "info", 7)
+			-- A23-191: kept as a warning line (a key that does not work), the only kind still drawn
+			toast(text("KeyCollision", actionName(def), Config.KeyLabel(def.Key, english())), "bad", 7)
 		end
 	end
 end
@@ -402,7 +403,8 @@ local function onCapture(cap, input)
 		local old = Keybinds.KeyName(cap.Action)
 		local ok, reason, other = Keybinds.SetLocal(cap.Action, name)
 		if ok and reason == "Swap" then
-			toast(text("Swapped", Config.KeyLabel(name, english()), Config.KeyLabel(old, english())), "info", 3)
+			-- A23-191: kept as a warning line (my other action's key moved)
+			toast(text("Swapped", Config.KeyLabel(name, english()), Config.KeyLabel(old, english())), "bad", 3)
 			Keybinds.EndCapture("Swap", name, other)
 		elseif ok then
 			Keybinds.EndCapture("Set", name)
