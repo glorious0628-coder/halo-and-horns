@@ -23,7 +23,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from l10n_format_keys import roblox_form  # noqa: E402
+from l10n_format_keys import module_rows, roblox_form  # noqa: E402
 
 FILE = ROOT / "src/StarterPlayer/StarterPlayerScripts/UIKit.luau"
 TOOL = ROOT / "tools/l10n_format_keys.py"
@@ -33,7 +33,7 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-14/offline_ui_tr_2026-10-14.json"
 CUT = ("UIKit.TR = { Translator = nil", "\n-- the player's translator (once")
 TX_CUT = ("function UIKit.Tx(t, key, ...)", "\nend\n")
-SAMPLES = ["Next: %s", "Lv %d · %s (100%%)", "%.1f%%", "%02d:%02d left", "Reborn! Gold, XP +%d%%", "Power %s → %s",
+SAMPLES = ["Enhance Scroll: 70% gives +1", "Next: %s", "Lv %d · %s (100%%)", "%.1f%%", "%02d:%02d left", "Reborn! Gold, XP +%d%%", "Power %s → %s",
            "Bought %s potion x%d!", "no tokens here", "%s stole %s gold"]
 
 FIXTURE = r'''
@@ -109,6 +109,7 @@ MUTATIONS = [
     ("%% taken as an argument", 'local clean = string.gsub(fmt, "%%%%", "")', "local clean = fmt"),
     ("a bad argument breaks the list", "out[i] = ok and s or tostring(v)", "out[i] = s"),
     ("the form keeps %%", 's = string.gsub(s, UIKit.TR.Pct, "%%")', "s = s"),
+    ("A: '70% gives' read as a slot again (the space flag)", 'Spec = "%%[-+#0]*', 'Spec = "%%[-+ #0]*'),
     ("an English player asks the translator", "if tr and n > 0 and not UIKit.TR.English and", "if tr and n > 0 and"),
     ("an unknown key asks the translator", 'if type(fmt) == "string" and fmt ~= key then', 'if type(fmt) == "string" then'),
     ("a translator error not caught", "local ok, out = pcall(tr.FormatByKey, tr, key, UIKit.TrArgs(fmt, ...))",
@@ -150,12 +151,25 @@ def statics(src: str) -> list[tuple[str, bool]]:
         ("UIKit.Start asks for the translator once (UIKit.TrStart, GetTranslatorForPlayerAsync in a pcall)",
          "\ttask.spawn(UIKit.TrStart) -- 10/14" in src and "GetTranslatorForPlayerAsync(LocalPlayer)" in src),
         ("the format list tool writes the table form (json + csv) with the same token rule",
-         "def roblox_form(" in tool and 'with_suffix(".csv")' in tool and r'SPEC = re.compile(r"%%|%[-+ #0]*\d*(?:\.\d+)?[sdifgxXcq]")' in tool
-         and 'Spec = "%%[-+ #0]*%d*%.?%d*[sdifgxXcq]"' in src),
+         "def roblox_form(" in tool and 'with_suffix(".csv")' in tool and r'SPEC = re.compile(r"%%|%[-+#0]*\d*(?:\.\d+)?[sdifgxXcq]")' in tool
+         and 'Spec = "%%[-+#0]*%d*%.?%d*[sdifgxXcq]"' in src),
+        # 최종 검수 10/14 A: '70% gives' is words, not a '% g' slot (no space flag, both sides)
+        ("'70% gives +1' has no slot (Python form)", roblox_form("Enhance Scroll: 70% gives +1")[1] == []),
+        # (2): the registered module word tables are in the list under their registered keys
+        ("the format list reads the modules' registered word tables (HUD.TXT, EventHUD.TXT, PauseCard.T.Text)",
+         module_keys() >= {"HUD.TXT.QuestHeader", "HUD.TXT.QuestHeaderTouch", "EventHUD.TXT.GooseNext", "PauseCard.T.Text.BackNext",
+                           "SkillBar.TXT.NewSkill", "CraftWindow.TXT.Power"}),
     ] + first_minutes()
 
 
 SPS_DIR = ROOT / "src/StarterPlayer/StarterPlayerScripts"
+
+
+def module_keys() -> set[str]:
+    try:
+        return {k for k, _ in module_rows()[0]}
+    except Exception:  # noqa: BLE001
+        return set()
 
 
 def first_minutes() -> list[tuple[str, bool]]:
