@@ -1,5 +1,6 @@
--- Offline checks for gameplay_plan 2-C #8 in SkillBar.luau: the server's Fx "SkillPress" refusals shake the button with
--- one short word (Config.Skills.Text), "Queued" says nothing, and the X hop prep (Fx "Hop" { To, T } moves my own
+-- Offline checks for SkillBar.luau: A23-180 (user 10/14 "서버가 거절을 안 하게 해야지") - no refusal words / shake; the
+-- screen gates first (not learned, MP, more than PressBuffer s of cooldown, the Hop slot while carrying) and sends
+-- nothing then; a press with PressBuffer s or less left goes; the server's "SkillPress" shows nothing - and the X hop prep (Fx "Hop" { To, T } moves my own
 -- character along a low arc to To at its ground height; far / broken / dead = no move). The real SkillBar.luau +
 -- Config.luau with small doubles (Remotes.Fx, the character, workspace:Raycast ground). Inputs: CONFIG_SOURCE, BAR_SOURCE.
 local checks, failed = 0, 0
@@ -99,6 +100,9 @@ local registry = {
 }
 local remotes = inst("Folder", { Name = "Remotes" })
 local FX = inst("RemoteEvent", { Name = "Fx", Parent = remotes })
+local USE = inst("RemoteEvent", { Name = "UseSkill", Parent = remotes })
+local SENT = {}
+rawset(USE, "FireServer", function(_, slot) table.insert(SENT, slot) end)
 local HEART = signal()
 local services = {
 	Players = { LocalPlayer = player },
@@ -169,57 +173,79 @@ local function shown(slot) local w = word(slot) return w and w.Visible == true a
 local function clear() for _, b in T.ui.buttons do if b.Word then b.Word.Visible = false b.Word.Text = "" end end end
 local function fx(kind, data) FX.OnClientEvent:Fire(kind, data) end
 
--- 0) wiring + words
-check(#FX.OnClientEvent.Fns == 1, "listens to Fx (Remotes)", #FX.OnClientEvent.Fns)
-check(TX.NotReady == "Not ready" and TX.NotNow == "Not now" and TX.NoMP == "Not enough MP" and TX.NoTarget == "No target",
-	"the short words live in Config.Skills.Text", tostring(TX.NotReady))
+-- 0) wiring
+check(#FX.OnClientEvent.Fns == 1, "listens to Fx (Remotes) for the hop", #FX.OnClientEvent.Fns)
 check(T.ui.buttons.Q and T.ui.buttons.Z and T.ui.buttons.X, "three buttons built", "")
+check(TX.NotReady == nil and TX.NotNow == nil, "the refusal-only words are gone from Config.Skills.Text", tostring(TX.NotReady))
+local function noWords()
+	for _, b in T.ui.buttons do
+		if b.Word ~= nil or (b.Holder and b.Holder:FindFirstChild("Word")) then return false end
+	end
+	return true
+end
+check(noWords(), "no floating refusal word on any button", "")
 
--- 1) server refusals
-fx("SkillPress", { Slot = "Z", Result = "NoTarget" })
-check(shown("Z") == TX.NoTarget, "no target: 'No target' over Z", shown("Z"))
-clear()
-fx("SkillPress", { Slot = "X", Result = "CantHop" })
-check(shown("X") == TX.CantHop, "can't hop: its word over X", shown("X"))
-clear()
-fx("SkillPress", { Slot = "X", Result = "TooHeavy" })
-check(shown("X") == TX.TooHeavy, "too heavy: its word", shown("X"))
-clear()
-fx("SkillPress", { Slot = "Q", Result = "Cooldown" })
-check(shown("Q") == TX.NotReady, "the server's cooldown: 'Not ready'", shown("Q"))
-clear()
+-- 1) the gate (pure)
+local G = SB.Gate
+local ok1, why1 = G({ Locked = true, Left = 0 }, 0.35)
+local ok2, why2 = G({ MPShort = true, Left = 0 }, 0.35)
+local ok3, why3 = G({ Heavy = true, Left = 0 }, 0.35)
+local ok4, why4 = G({ Left = 0.36 }, 0.35)
+check(not ok1 and why1 == "Locked" and not ok2 and why2 == "MP" and not ok3 and why3 == "Heavy" and not ok4 and why4 == "Cooldown",
+	"gate: not learned / MP / carrying (Hop) / more than 0.35 s of cooldown = no", tostring(why4))
+check(G({ Left = 0.35 }, 0.35) == true and G({ Left = 0 }, 0.35) == true and G({ Left = 0.2 }, nil) == true,
+	"gate: 0.35 s or less left = goes (the server holds it)", "")
+
+-- 2) presses (button / key = SkillBar.Use)
+local function press(slot)
+	W.Now += 1 -- past the 0.5 s gap between casts
+	local before = #SENT
+	local r = SB.Use(slot)
+	return r, #SENT - before
+end
 local played = #W.Played
-fx("SkillPress", { Slot = "Q", Result = "NoMP" })
-check(shown("Q") == TX.NoMP and W.Played[#W.Played] == "No" and #W.Played == played + 1, "the server's MP: 'Not enough MP' + the No sound", shown("Q"))
-clear()
-fx("SkillPress", { Slot = "Z", Result = "Locked" })
-check(shown("Z") == TX.NotNow, "a switched-off slot: 'Not now'", shown("Z"))
-clear()
-fx("SkillPress", { Slot = "Z", Result = "Queued" })
-check(shown("Z") == nil, "Queued says nothing", shown("Z"))
-fx("SkillPress", { Slot = "V", Result = "NoTarget" })
-fx("SkillPress", "junk")
-fx("SkillPress", { Slot = "Z", Result = "Weird" })
-check(shown("Z") == nil and shown("Q") == nil and shown("X") == nil, "unknown slots / results / junk show nothing", "")
--- a locked slot (level too low) refused as Locked reads its unlock level
+W.Attr.Mana = 5 -- every skill costs more
+local r, n = press("Z")
+check(r == false and n == 0 and #W.Played == played and noWords(), "MP short: nothing sent, nothing said, no sound", n)
+W.Attr.Mana = 100
+W.Attr.SkillReadyAtZ = W.Now + 1 + 2
+r, n = press("Z")
+check(r == false and n == 0 and noWords(), "2 s of cooldown left: nothing sent, nothing said", n)
+W.Attr.SkillReadyAtZ = W.Now + 1 + 0.3
+r, n = press("Z")
+check(r == true and n == 1 and SENT[#SENT] == "Z", "0.3 s of cooldown left: the press goes", n)
+W.Attr.SkillReadyAtZ = 0
+r, n = press("Z")
+check(r == true and n == 1, "ready: the press goes", n)
+-- the Hop slot (archer X) and what I carry
+check(T.StateOf("X").Def.Hop == true and T.StateOf("Z").Def.Hop == false, "the archer's X is the Hop slot", "")
+for _, c in { { "SackGold", 120, "the grudge sack" }, { "KaijuState", "Active", "a kaiju" }, { "EggCarry", 1, "a goose egg" } } do
+	W.Attr[c[1]] = c[2]
+	local rx, nx = press("X")
+	local rz, nz = press("Z")
+	check(rx == false and nx == 0 and T.StateOf("X").Heavy == true and rz == true and nz == 1,
+		"carrying " .. c[3] .. ": the Hop slot sends nothing (other skills still go)", tostring(nx))
+	W.Attr[c[1]] = (c[1] == "KaijuState") and "None" or 0
+end
+W.Attr.KaijuState = "Siren"
+check(T.StateOf("X").Heavy == true, "a kaiju siren also blocks the Hop", "")
+W.Attr.KaijuState = "None"
+r, n = press("X")
+check(r == true and n == 1 and SENT[#SENT] == "X", "nothing carried: the Hop goes", n)
+-- not learned: no words
 W.Attr.Level, W.Attr.SkillSlots = 20, 2
 for _, fn in W.AttrFns.Level or {} do fn() end
-fx("SkillPress", { Slot = "X", Result = "Locked" })
-check(shown("X") == string.format("Unlocks at Lv %d", 25), "a slot below its level: 'Unlocks at Lv 25'", shown("X"))
-clear()
+r, n = press("X")
+check(r == false and n == 0 and noWords(), "a slot not learned: nothing sent, no words", n)
 W.Attr.Level, W.Attr.SkillSlots = 30, 3
 for _, fn in W.AttrFns.Level or {} do fn() end
--- the client's own refusal words come from the same table
-W.Attr.SkillReadyAtZ = W.Now + 5
-SB.Use("Z")
-check(shown("Z") == TX.NotReady, "the client's own cooldown refusal: 'Not ready' (Config)", shown("Z"))
-clear()
-W.Attr.SkillReadyAtZ = 0
--- a refused press drops the press waiting behind it
-T.S.queued = "Z"
-fx("SkillPress", { Slot = "Z", Result = "NoTarget" })
-check(T.S.queued == nil, "a refusal clears the waiting press of that slot", tostring(T.S.queued))
-clear()
+-- the server's answers show nothing now
+for _, res in { "Queued", "NoTarget", "Cooldown", "NoMP", "TooHeavy", "CantHop", "Locked" } do
+	fx("SkillPress", { Slot = "Z", Result = res })
+end
+check(noWords() and #W.Played == played, "the server's SkillPress answers show nothing", "")
+-- the burden attributes repaint the bar
+check(W.AttrFns.SackGold ~= nil and W.AttrFns.KaijuState ~= nil and W.AttrFns.EggCarry ~= nil, "carrying changes repaint the Hop slot", "")
 
 -- 2) the X hop
 check(SB.HopLanding(v3(0, 3, 0), v3(10, 3, 0), 0, 2).Y == 5, "landing: To's ground + my height over the ground I left", SB.HopLanding(v3(0, 3, 0), v3(10, 3, 0), 0, 2).Y)
