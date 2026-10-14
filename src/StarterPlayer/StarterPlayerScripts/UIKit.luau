@@ -1276,6 +1276,8 @@ local function artText(props, color, outlineColor, outlineTransparency, thicknes
 			p[key] = value
 		end
 	end
+	-- A23-179: a number-only label is never sent to Roblox's translation (it stays as it is; no noise in the table)
+	if props.Number and props.AutoLocalize == nil then p.AutoLocalize = false end
 	if props.Font == nil then
 		if props.Number then
 			p.Font = artFont("Number", Enum.Font.FredokaOne)
@@ -1323,6 +1325,13 @@ end
 
 -- white text with a dark outline, for the navy card, bars, ribbon and round buttons (Color = ArtColors.GoldText for
 -- gold numbers). Same props as UIKit.InkText.
+-- A23-179: Roblox's automatic translation is on; this keeps one label / button / box as it is (a player's name, a
+-- number, typed text). Returns the object
+function UIKit.NoTranslate(inst)
+	if typeof(inst) == "Instance" then pcall(function() inst.AutoLocalize = false end) end
+	return inst
+end
+
 function UIKit.LightText(props)
 	return artText(props, artColor("Light", Color3.new(1, 1, 1)),
 		artColor("TextOutline", Color3.fromRGB(34, 20, 10)), 0, tonumber(Art.Cfg.OutlineLight) or 1.5)
@@ -1770,8 +1779,9 @@ end
 --    fixed TextSize is raised to it (the caller's own size comes back when the floor drops); a UIKit.FitText label
 --    gets it as its picker minimum instead. Floor and stroke re-run on TextSize / AbsoluteSize / TextBounds /
 --    TextScaled / parent changes and on every UIScale change (applyScale).
---  * Text is never touched. AutoLocalize is switched off game-wide by ClientMain (A23-48 English only: Roblox's
---    automatic translation would show the English text in the player's Roblox language).
+--  * Text is never touched. A23-179 (user 10/14): Roblox's automatic translation is ON (our English is translated for
+--    other languages); only names / numbers / typed text turn AutoLocalize off where they are made (UIKit.NoTranslate,
+--    artText Number = true).
 --  * UIGradient also tints a visible background: style transparent labels. To fade a dark-style label, tween its
 --    StyleStroke.Transparency with TextTransparency.
 -- Families come from FONT.Sets (A23-48 English only, A23-63): Denk One (Face = "Head") + Montserrat (Face = "Body").

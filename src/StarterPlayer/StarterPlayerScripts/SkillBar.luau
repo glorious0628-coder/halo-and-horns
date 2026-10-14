@@ -363,6 +363,7 @@ local function buildButton(slot)
 	b.Seconds = smallLabel({
 		Name = "Seconds", Text = "", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
 		Size = UDim2.fromScale(0.7, 0.42), TextScaled = true, ZIndex = 6, Visible = false, Parent = face,
+		AutoLocalize = false, -- A23-179: seconds only
 	}, "Number")
 
 	-- locked: lock glyph (+ "Lv N"); without the GlyphLock art a code lock (white body + shackle ring, IMG-R4, review

@@ -1033,6 +1033,7 @@ local function buildPool()
 		})
 		local gui = Instance.new("BillboardGui")
 		gui.Name = "Number"
+		gui.AutoLocalize = false -- A23-179: numbers stay as they are (spawnNumber turns it on for a loot line's words)
 		gui.Adornee = part
 		gui.AlwaysOnTop = true
 		gui.LightInfluence = 0
@@ -1123,6 +1124,7 @@ local function spawnNumber(worldPos, text, color, scale, pop, merge, look)
 	e.Life = look and math.clamp(asNum(look.Life, NUMBER_LIFE), 0.5, 4) or nil
 	e.Wide = look and math.clamp(asNum(look.Wide, 1), 1, 3) or nil
 	e.Gui.SizeOffset = Vector2.new(0, look and math.clamp(asNum(look.Stack, 0), 0, 8) or 0)
+	e.Gui.AutoLocalize = look ~= nil -- A23-179: a loot line (item words) is translated, a number is not
 	e.Part.CFrame = CFrame.new(worldPos)
 	e.Label.Text = tostring(text or "")
 	e.Label.TextColor3 = typeof(color) == "Color3" and color or WHITE

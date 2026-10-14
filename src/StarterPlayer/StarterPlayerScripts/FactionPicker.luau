@@ -90,7 +90,8 @@ local LAY = {
 	PerkTiny = {
 		Halo = { "XP +30%", "HP +20% · Regen", "Heal allies", "Auto gold" },
 		Horns = { "Gold +25%", { "ATK +15% · Lifesteal", "ATK +15% Lifesteal", "ATK+15% Lifesteal" }, "Guard loot gold", "5★ = Kaiju" },
-		Neutral = { "No fight buffs", "Safe (no PvP)", "No loot or Wanted", { "Crafting (soon)", "Crafting soon", "Crafting", "Craft" } },
+		-- A23-179 stale text: the crafting row's words come from Config.UIArt.FactionPerks.Neutral (Text / Short) only
+		Neutral = { "No fight buffs", "Safe (no PvP)", "No loot or Wanted" },
 	},
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
 	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
@@ -147,7 +148,7 @@ local NEUTRAL_FALLBACK = {
 	Color = Color3.fromRGB(40, 200, 190), Perks = {}, Pitch = "",
 }
 local NEUTRAL_LORE = "Those who shape the shards instead of grabbing them."
-local NEUTRAL_NOTE = "No fight buffs · No PvP · Crafting (coming soon)"
+local NEUTRAL_NOTE = "" -- A23-179 stale text: the note is Config.Factions.Neutral.Note only (no copy in code)
 
 local T = {
 	Title = "Choose your side!",
@@ -990,7 +991,7 @@ local function buildOldCard(c, id)
 	end
 	if id == "Neutral" then
 		local noteText = (type(def.Note) == "string" and def.Note ~= "") and def.Note or NEUTRAL_NOTE
-		listText(scroll, noteText, 15, theme.Gold, order2, theme.Font)
+		if noteText ~= "" then listText(scroll, noteText, 15, theme.Gold, order2, theme.Font) end
 		order2 += 1
 	end
 
