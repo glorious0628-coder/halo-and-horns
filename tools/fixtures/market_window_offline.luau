@@ -546,11 +546,25 @@ handlers.MarketPage(ENH)
 det = find(root, "Detail")
 check(find(det, "Hint1").Text == "×1  300" and find(det, "Hint2").Text == "×2  310" and find(det, "Hint3").Text == "×1  320" and find(det, "Hint4") == nil
 	and find(det, "OnSale") ~= nil, "the 3 cheapest rows as a hint", find(det, "Hint1") and find(det, "Hint1").Text)
-check(find(det, "Input").Text == "250" and find(det, "YouGet").Text == "You get 225", "the price starts at Ref; You get = price - 10%",
+check(find(det, "Input").Text == "250" and find(det, "YouGet").Text == "You get 233", "the price starts at Ref; You get = price - 7% (A23-183)",
 	find(det, "Input").Text .. " / " .. find(det, "YouGet").Text)
 check(find(det, "Range").Text == "100 – 900", "the range Min – Max", find(det, "Range").Text)
-check(select(2, MarketWindow.Fee(250)) == 225 and MarketWindow.Fee(250) == 25 and MarketWindow.Fee(9) == 0 and select(2, MarketWindow.Fee(15)) == 14
-	and select(2, MarketWindow.Fee(1)) == 1, "the fee is floor(price x 10%)")
+check(select(2, MarketWindow.Fee(250)) == 233 and MarketWindow.Fee(250) == 17 and MarketWindow.Fee(14) == 0 and select(2, MarketWindow.Fee(15)) == 14
+	and select(2, MarketWindow.Fee(1)) == 1, "the fee is floor(price x 7%), under 1 gold = 0 (A23-183)")
+do -- A23-183: the server's Config.Market.Fee wins (one value for both sides); none / odd = 7%
+	local keep = Config.Market
+	Config.Market = { Text = {}, Fee = 0.10 }
+	local ten = MarketWindow.Fee(250)
+	Config.Market.Fee = 2
+	local odd = MarketWindow.Fee(250)
+	Config.Market.Fee = "x"
+	local text = MarketWindow.Fee(250)
+	Config.Market = nil
+	local none = MarketWindow.Fee(250)
+	Config.Market = keep
+	check(ten == 25 and odd == 17 and text == 17 and none == 17, "the cut follows Config.Market.Fee; none / odd = 7%",
+		string.format("%s %s %s %s", tostring(ten), tostring(odd), tostring(text), tostring(none)))
+end
 check(find(det, "List").Text == "List" and find(det, "List").Enabled == true, "[List] on")
 -- how many
 check(find(det, "Count").Text == "1 / 2" and find(det, "Less").Enabled == false and find(det, "More").Enabled == true, "count 1 / 2: - off, + on")
@@ -568,10 +582,10 @@ det = find(root, "Detail")
 local tb = find(det, "Input")
 tb.OnFocused()
 tb.Text = "12ab3"
-check(tb.Text == "123" and S.SellPrice == 123 and find(det, "YouGet").Text == "You get 111", "the price box takes numbers only (12ab3 -> 123), You get 111",
+check(tb.Text == "123" and S.SellPrice == 123 and find(det, "YouGet").Text == "You get 115", "the price box takes numbers only (12ab3 -> 123), You get 115",
 	tb.Text .. " / " .. find(det, "YouGet").Text)
 tb.Text = "5"
-check(find(det, "YouGet").Text == "You get 90", "below Min: the line counts Min (100 -> 90)", find(det, "YouGet").Text)
+check(find(det, "YouGet").Text == "You get 93", "below Min: the line counts Min (100 -> 93)", find(det, "YouGet").Text)
 tb.OnFocusLost()
 check(tb.Text == "100" and S.SellPrice == 100, "leaving the box clamps it to Min", tb.Text)
 tb.OnFocused()
@@ -664,8 +678,8 @@ check(find(find(mine, "Mine_m2"), "State").Text == "Sold" and find(find(mine, "M
 	and find(find(mine, "Mine_m3"), "Paid").Text == "Paid" and find(find(mine, "Mine_m2"), "Cancel") == nil,
 	"Sold: Sold + Paying… / Paid; no [Cancel]")
 check(find(find(mine, "Mine_m2"), "Name").Text == Config.WeaponName(3, "Warrior", "Halo") .. " +2", "a sold weapon: its name and +N")
-check(find(find(mine, "Mine_m2"), "Price").Text == "432" and find(find(mine, "Mine_m3"), "Price").Text == "270"
-	and find(find(mine, "Mine_m1"), "Price").Text == "40", "a sold row shows what I get (price - 10%); an open row its price", find(find(mine, "Mine_m2"), "Price").Text)
+check(find(find(mine, "Mine_m2"), "Price").Text == "447" and find(find(mine, "Mine_m3"), "Price").Text == "279"
+	and find(find(mine, "Mine_m1"), "Price").Text == "40", "a sold row shows what I get (price - 7%); an open row its price", find(find(mine, "Mine_m2"), "Price").Text)
 check(find(find(mine, "Mine_m4"), "State").Text == "Back in your bag" and find(find(mine, "Mine_m5"), "State").Text == "Back in your bag"
 	and find(find(mine, "Mine_m4"), "Cancel") == nil, "Expired / Cancel: Back in your bag")
 check(find(mine, "Waiting1").Text == TXT.Checking and find(mine, "Waiting2").Text == TXT.Checking and find(mine, "Waiting3") == nil,
