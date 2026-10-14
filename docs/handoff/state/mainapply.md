@@ -1,5 +1,8 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/14 20:22 게시판 3 저장 (사용자 Save to File As)
+- build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/14 20:22:13, 44,969,519 B, SHA256 ecebfac6…c63b, push b52d2c4. 소스 179개 일치(main c7c3505a), 임시 시험 개체 0, 끝 `</roblox>`. 앞 판(13:44)을 새 판으로 덮음. 다음 = 사용자 Alt+P.
+
 ## 10/14 밤 (게시 준비 sync 대기)
 - **Studio**: 메인 창 = build/GoodEvil.rbxlx로 연 것(id 가변; list_roblox_studios, 창이 최소화되면 3D가 하얗게 찍히니 ShowWindowAsync 9로 복원), Edit, Play 없음, **저장 안 함**, main c7c3505a(= HEAD d05c8413 src 동일) sync 완료. build/·place/ = 13:44:07 판(소스 0703bbdd 시점).
 - **다음**: 사용자 Save to File As build/GoodEvil.rbxlx('저장했어') → 시간(sync 뒤)·해시·소스 대조(`py build/p2_cmp.py <rev>`, git 무시 — 없으면 CDATA Source를 git show <rev>:src/...와 sha1 대조) → place/ 복사 → `py tools/push_paths.py -m ...` → 사용자 Alt+P. 무기 메시 Model→MeshId/TextureId(build/weapon_mesh_ids.json)는 최종 검수가 build/weapon_model_ids.json 만든 뒤.
