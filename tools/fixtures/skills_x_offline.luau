@@ -549,8 +549,8 @@ runGroup("x hop", function()
 	local r = w3:Hero(1, { Class = "Archer", Faction = "Halo" })
 	w3.HopReach = 2.5
 	w3:Use(r, "X")
-	check(w3:Count("X") == 0 and w3:Press(r) == "X:CantHop" and w3:ManaSpent(r) == 0 and (r:GetAttribute("SkillReadyAtX") or 0) == 0
-		and #w3.Allowed == 0, "only 2.5 studs to hop: 'CantHop' before MP (no MP, no cooldown, no move allowed)",
+	check(w3:Count("X") == 0 and w3:Press(r) == "" and w3:ManaSpent(r) == 0 and (r:GetAttribute("SkillReadyAtX") or 0) == 0
+		and #w3.Allowed == 0, "only 2.5 studs to hop: silently nothing before MP (no MP, no cooldown, no move allowed)",
 		show({ w3:Press(r), w3:ManaSpent(r) }))
 	w3.HopReach = 3
 	w3:Advance(1)
@@ -568,8 +568,8 @@ runGroup("x hop", function()
 	w4.KaijuOf[s4] = "Active"
 	w4:Advance(1)
 	w4:Use(s4, "X")
-	check(w4:Count("X") == 0 and w4:Press(s4) == "X:TooHeavy,X:TooHeavy,X:TooHeavy" and w4:ManaSpent(s4) == 0 and #w4.HopAsks == 0,
-		"a grudge sack, a kaiju siren or an active kaiju: 'TooHeavy' (no MP, no hop asked)", w4:Press(s4))
+	check(w4:Count("X") == 0 and w4:Press(s4) == "" and w4:ManaSpent(s4) == 0 and #w4.HopAsks == 0,
+		"a grudge sack, a kaiju siren or an active kaiju: silently nothing (no MP, no hop asked)", w4:Press(s4))
 	w4.KaijuOf[s4] = nil
 	w4:Advance(1)
 	w4:Use(s4, "X")
@@ -671,7 +671,7 @@ runGroup("x auto", function()
 	local px = wx:Hero(1, { Class = "Warrior", Faction = "Halo" })
 	wx:Monster("Slime", 4, 0, 99999)
 	wx:Use(px, "X")
-	check(wx:Count("X") == 0 and wx:Press(px) == "X:Locked" and wx:ManaSpent(px) == 0, "XEnabled off: X is refused ('Locked'), no MP",
+	check(wx:Count("X") == 0 and wx:Press(px) == "" and wx:ManaSpent(px) == 0, "XEnabled off: X silently nothing, no MP",
 		wx:Press(px))
 	local wy = xWorld({ X = false })
 	wy:Hero(1, { Class = "Warrior", Faction = "Halo", Attrs = auto })
@@ -684,7 +684,7 @@ runGroup("x auto", function()
 	local pl = wl:Hero(1, { Class = "Warrior", Faction = "Halo", Level = 24 })
 	wl:Monster("Slime", 4, 0, 99999)
 	wl:Use(pl, "X")
-	check(pl:GetAttribute("SkillSlots") == 2 and wl:Count("X") == 0 and wl:Press(pl) == "X:Locked", "Lv24: two slots, X is locked",
+	check(pl:GetAttribute("SkillSlots") == 2 and wl:Count("X") == 0 and wl:Press(pl) == "", "Lv24: two slots, X is locked (silently)",
 		show({ pl:GetAttribute("SkillSlots"), wl:Press(pl) }))
 end)
 
