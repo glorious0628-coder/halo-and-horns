@@ -141,6 +141,9 @@ MUTATIONS = [
     ("bag: a 0 count is a slot", "CONFIG_SOURCE", "if def and counts[def.Kind] and (tonumber(c) or 0) >= 1 then n += 1 end",
      "if def and counts[def.Kind] then n += 1 end"),
     ("bag: one slot fewer", "CONFIG_SOURCE", "\treturn Config.BagUsed(data) < Config.BagSlotsOf(data)\n", "\treturn Config.BagUsed(data) < Config.BagSlotsOf(data) - 1\n"),
+    # review 10/14 BLOCK 3: a pity drop resets its counter
+    ("pity: the counter never starts over", "LOOT_SOURCE", "\t\t\t\tdata.WeaponPity[key] = 0\n", ""),
+    ("pity: a second luck drop of a tier", "LOOT_SOURCE", "\t\t\t\tif data.LootFlags[flag] ~= true then\n", "\t\t\t\tif true then\n"),
     ("jackpot for every monster kind", "LOOT_SOURCE",
      "jackpot.Monsters[info.Kind] and", "true and"),
     # A23-22 bully drop penalty (review item 3): rows AND the jackpot x DropMult while BullyStacks >= 1

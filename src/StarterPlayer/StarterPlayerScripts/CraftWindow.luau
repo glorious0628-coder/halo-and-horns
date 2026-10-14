@@ -29,6 +29,8 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
 local L10n = require(Shared:WaitForChild("L10n"))
+local okNet, Net = pcall(function() return require(Shared:WaitForChild("Net")) end)
+if not okNet then Net = nil end
 
 local CraftWindow = {}
 local C = nil
@@ -57,6 +59,11 @@ local TXT = {
 	PetSpeed = "Speed +%d–%d%%", -- a summon's random walk speed range (the hammer adds up to +2)
 	ResearchNeed = "%s research %s / %s",
 	Stage = "Stage %d",
+	-- artisan contract ③: a made weapon waits in the bag as a spare -> [Use it] makes it mine (UnpackSpare) and wears it
+	Power = "Power %s → %s",
+	Spare = "In your bag ×%d",
+	SpareOwned = "You already have this weapon.",
+	Use = "Use it",
 }
 L10n.Register("CraftWindow.TXT", TXT)
 
@@ -81,11 +88,13 @@ local L = {
 	Poll = 0.25, -- s: the ring watch (reopen after it)
 	Anvil = { "Map", "Landmarks", "ArtisanGuild", "Anvil" }, -- the server's fallback bench (ShopService.Anvil)
 	Prompt = "CraftPrompt", ActionKey = "ActionKey", ObjectKey = "ObjectKey", -- the bench's prompt (CraftService)
+	UnpackTimeout = 3, -- s: [Use it] waits this long for the weapon bit (no bit = the server's notice said why)
 }
 
 -- state: Info = the last CraftInfo (validated); Sel = the picked recipe id; Await = a start sent { Id, At, Phase =
 -- "sent" | "ring" } (the ring screen opened -> this window comes back after it); ReadyAt = os.clock() of the next start
 local S = { Ready = false, Info = nil, InfoVer = 0, Sel = nil, Await = nil, ReadyAt = 0, LastArg = nil, Started = false,
+	Unpack = nil, -- [Use it] sent: { Tier, Key, At, Equip } until the weapon bit comes (then EquipWeapon) or L.UnpackTimeout
 	Tamer = nil, TamerVer = 0, Tab = "Make", -- the last TamerInfo; the tamer's tab (Make | Research)
 	Stations = {} } -- [bench part] = its ChildAdded connection (the prompt the server adds)
 local VIEW = {} -- the open window: Kit, Parent, Head, Body, Bottom, List, Detail, Sig
@@ -278,6 +287,27 @@ function CraftWindow.LevelView(ctx)
 end
 
 -- the detail column of a recipe. ctx += { Level (hunting), Pending (a start waiting), Gap (the start's interval) }
+-- artisan contract ③ (pure): the spares of a weapon recipe's tier (Spares "T:P" -> n, made weapons wait there).
+-- -> nil (not a weapon, none in the bag, or the server has no UnpackSpare: ctx.UnpackOn) or { Key = the best +N's "T:P",
+-- Plus, Count = all of the tier, Owned = I own the tier already (UnpackSpare would say "Owned"), Use = [Use it] on }
+function CraftWindow.SparePlan(e, ctx)
+	ctx = type(ctx) == "table" and ctx or {}
+	if type(e) ~= "table" or e.Kind ~= "Weapon" or ctx.UnpackOn ~= true or type(e.Tier) ~= "number" then return nil end
+	local best, bestPlus, count = nil, -1, 0
+	for key, n in type(ctx.Spares) == "table" and ctx.Spares or {} do
+		local t, p = string.match(tostring(key), "^(%d+):(%d+)$")
+		local have = math.floor(num(n, 0))
+		if tonumber(t) == e.Tier and have > 0 then
+			count += have
+			if tonumber(p) > bestPlus then best, bestPlus = key, tonumber(p) end
+		end
+	end
+	if not best then return nil end
+	local owned = bit32.band(math.floor(num(ctx.Mask, 0)), bit32.lshift(1, e.Tier - 1)) ~= 0
+	return { Key = best, Plus = bestPlus, Count = count, Owned = owned,
+		Use = not owned and ctx.Unpacking ~= true and ctx.Pending ~= true }
+end
+
 function CraftWindow.Detail(e, ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	-- Lines above the cost (attack, the level to use it), Notes below it (craft XP, how many made)
@@ -299,10 +329,22 @@ function CraftWindow.Detail(e, ctx)
 	view.Sub = string.rep("★", g.Stars or 1) .. " " .. tx(g, "Name")
 	view.SubColor = g.Color
 	local level = math.max(1, math.floor(num(ctx.Level, 1)))
+	local spare = CraftWindow.SparePlan(e, ctx)
 	if e.Kind == "Weapon" then
-		line(tx(TXT, "Attack", Util.FormatInt(math.floor(Config.WeaponDamage(e.Tier, level, 0)))))
+		local plus = spare and spare.Plus or 0
+		line(tx(TXT, "Attack", Util.FormatInt(math.floor(Config.WeaponDamage(e.Tier, level, plus)))))
 		if not Config.WeaponUsable(e.Tier, level) then
 			line(tx(TXT, "UseFrom", math.floor(num(Config.Weapons[e.Tier].MinLevel, 1))), "Sub")
+		else -- contract ③: my power now -> with this weapon (+N of my best spare), coloured like the bag (Config.PowerDiff)
+			local now = type(ctx.PowerNow) == "number" and ctx.PowerNow or nil
+			local okWith, with = false, nil
+			if type(ctx.Power) == "function" then okWith, with = pcall(ctx.Power, e.Tier, plus) end
+			with = okWith and type(with) == "number" and with or nil
+			if now and with then
+				local _, tone = Config.PowerDiff(now, with)
+				line(tx(TXT, "Power", Util.FormatInt(math.floor(now + 0.5)), Util.FormatInt(math.floor(with + 0.5))),
+					tone == "Good" and "Good" or (tone == "Bad" and "Bad" or "Sub"))
+			end
 		end
 	elseif e.Kind == "Pet" then
 		if e.Spd then line(tx(TXT, "PetSpeed", e.Spd[1], e.Spd[2])) end
@@ -317,6 +359,14 @@ function CraftWindow.Detail(e, ctx)
 	local lv = levelOf(ctx, role)
 	if lv < Config.Craft.MaxLv and e.XP > 0 then note(tx(TXT, "GainXP", e.XP)) end
 	if e.Made > 0 then note(tx(TXT, "Made", e.Made)) end
+	if spare then
+		note(tx(TXT, "Spare", spare.Count))
+		if spare.Owned then
+			note(tx(TXT, "SpareOwned"))
+		else
+			view.Use = { Text = ctx.Unpacking and tx(TXT, "Checking") or tx(TXT, "Use"), Enabled = spare.Use, Key = spare.Key }
+		end
+	end
 	local why = CraftWindow.Reason(e, ctx)
 	if why then view.Status = { Text = tx(Config.Craft.Text, why), Color = "Bad" } end
 	local text = tx(TXT.Make, role)
@@ -425,12 +475,13 @@ function CraftWindow.OnInfo(payload)
 	if VIEW.Kit then CraftWindow.Redraw() end
 end
 
-local function items()
+local function inventoryOf(field)
 	local panels = C and C.Panels
 	if type(panels) ~= "table" or type(panels.LastInventory) ~= "function" then return {} end
 	local ok, payload = pcall(panels.LastInventory)
-	return (ok and type(payload) == "table" and type(payload.Items) == "table") and payload.Items or {}
+	return (ok and type(payload) == "table" and type(payload[field]) == "table") and payload[field] or {}
 end
+local function items() return inventoryOf("Items") end
 
 local function part(root, path)
 	local node = root
@@ -472,6 +523,14 @@ local function context()
 		Level = num(attr("Level"), 1),
 		Auto = attr("AutoCombatUnlocked") == true and attr("AutoCombatEnabled") == true,
 		Pending = pending(), Gap = os.clock() < S.ReadyAt }
+	-- contract ③: the spares, my weapons, my power now / with a tier (Config.CombatPowerOf, as the bag shows it)
+	ctx.Spares, ctx.Mask, ctx.Unpacking = inventoryOf("Spares"), num(attr("WeaponOwnedMask"), 0), S.Unpack ~= nil
+	ctx.UnpackOn = type(Net) == "table" and type(Net.Names) == "table" and table.find(Net.Names, "UnpackSpare") ~= nil
+	if type(Config.CombatPowerOf) == "function" then
+		local okNow, now = pcall(Config.CombatPowerOf, LocalPlayer)
+		ctx.PowerNow = okNow and type(now) == "number" and now or nil
+		ctx.Power = function(tier, plus) return Config.CombatPowerOf(LocalPlayer, tier, plus) end
+	end
 	local role = CraftWindow.RoleOf(ctx)
 	ctx.Far = role ~= nil and far(role)
 	return ctx
@@ -711,6 +770,16 @@ local function drawDetail(frame, e, ctx)
 		b.LayoutOrder = nextOrder()
 		kit.SetEnabled(b, view.Action.Enabled)
 	end
+	if view.Use and type(e) == "table" then -- contract ③: under the start button
+		local palette = kit.Palette or {}
+		local id = e.Id
+		local u = kit.Button(frame, view.Use.Text, palette.Free or palette.Button, UDim2.new(1, 0, 0, L.BtnH), function()
+			CraftWindow.Unpack(id)
+		end)
+		u.Name = "Use"
+		u.LayoutOrder = nextOrder()
+		kit.SetEnabled(u, view.Use.Enabled)
+	end
 	return view
 end
 
@@ -779,7 +848,12 @@ end
 -- what the window shows depends on (the redraw signature: the update redraws when it changes)
 local function sigOf(ctx, list)
 	local parts = { tostring(ctx.Faction), tostring(ctx.Class), tostring(ctx.ClassChosen), S.InfoVer, ctx.Gold, ctx.Level,
-		tostring(ctx.Auto), tostring(ctx.Far), tostring(ctx.Pending), tostring(ctx.Gap), tostring(S.Sel), S.TamerVer, S.Tab }
+		tostring(ctx.Auto), tostring(ctx.Far), tostring(ctx.Pending), tostring(ctx.Gap), tostring(S.Sel), S.TamerVer, S.Tab,
+		ctx.Mask, tostring(ctx.Unpacking), tostring(ctx.PowerNow) }
+	local spareKeys = {}
+	for key, n in type(ctx.Spares) == "table" and ctx.Spares or {} do table.insert(spareKeys, tostring(key) .. "=" .. tostring(n)) end
+	table.sort(spareKeys)
+	table.insert(parts, table.concat(spareKeys, ","))
 	for _, e in list do
 		table.insert(parts, e.Id)
 		for _, m in e.Mats do table.insert(parts, m.Have) end
@@ -891,6 +965,41 @@ function CraftWindow.Forge(id)
 	return true
 end
 
+-- contract ③ [Use it]: c->s UnpackSpare("T:P") once (the best +N of the recipe's tier); when the weapon bit comes the
+-- weapon is worn (EquipWeapon, only when my level can use it - the server checks again, a refusal is its notice)
+function CraftWindow.Unpack(id)
+	local kit = VIEW.Kit
+	if not kit or S.Unpack then return false end
+	local ctx = context()
+	local e = nil
+	for _, x in CraftWindow.Entries(ctx) do
+		if x.Id == id then e = x end
+	end
+	local plan = e and CraftWindow.SparePlan(e, ctx) or nil
+	if not (plan and plan.Use) then return false end
+	kit.Fire("UnpackSpare", plan.Key)
+	S.Unpack = { Tier = e.Tier, Key = plan.Key, At = os.clock(),
+		Equip = Config.WeaponUsable(e.Tier, math.max(1, math.floor(num(ctx.Level, 1)))) }
+	CraftWindow.Redraw()
+	return true
+end
+
+-- the [Use it] answer (the 0.25 s watch): the bit for the tier came -> wear it; none in L.UnpackTimeout -> stop waiting
+function CraftWindow.WatchUnpack()
+	local u = S.Unpack
+	if not u then return end
+	local mask = math.floor(num(attr("WeaponOwnedMask"), 0))
+	if bit32.band(mask, bit32.lshift(1, u.Tier - 1)) ~= 0 then
+		S.Unpack = nil
+		local kit = VIEW.Kit
+		if u.Equip and kit then kit.Fire("EquipWeapon", u.Tier) end
+		if kit then CraftWindow.Redraw() end
+	elseif os.clock() - u.At >= L.UnpackTimeout then
+		S.Unpack = nil
+		if VIEW.Kit then CraftWindow.Redraw() end
+	end
+end
+
 -- the start's answer: the ring screen opened (-> after it closes, this window opens again on the recipe) or nothing
 -- came (a refusal: its notice is on screen; the button comes back)
 function CraftWindow.Watch()
@@ -969,7 +1078,7 @@ end
 
 -- attributes that redraw the open window
 CraftWindow.Watched = { Faction = true, Class = true, ClassChosen = true, Level = true, BankGold = true, CarriedGold = true,
-	AutoCombatEnabled = true, AutoCombatUnlocked = true }
+	AutoCombatEnabled = true, AutoCombatUnlocked = true, WeaponOwnedMask = true, WeaponTier = true }
 
 local function cleanup()
 	VIEW = {}
@@ -1113,6 +1222,8 @@ function CraftWindow.Start()
 			task.wait(L.Poll)
 			local ok, err = pcall(CraftWindow.Watch)
 			if not ok then Util.Warn(TAG, "watch: " .. tostring(err)) end
+			local okU, errU = pcall(CraftWindow.WatchUnpack)
+			if not okU then Util.Warn(TAG, "unpack watch: " .. tostring(errU)) end
 		end
 	end)
 end

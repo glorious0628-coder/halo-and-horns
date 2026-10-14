@@ -367,7 +367,17 @@ local function weaponPity(player, data, info, gained)
 			local key = "T" .. tier
 			local have = math.max(0, num(data.WeaponPity[key])) + adds[tier]
 			data.WeaponPity[key] = have
-			if have >= num(pity.At[tier]) then grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip) end
+			if have >= num(pity.At[tier]) then
+				-- review 10/14 BLOCK 3: the counter starts over once it pays (else a weapon packed for the market would be
+				-- paid again on the next kill, again and again)
+				data.WeaponPity[key] = 0
+				-- review 10/14b: once a tier ever (LootFlags "Pity<tier>"), whatever an older save holds
+				local flag = "Pity" .. tier
+				if data.LootFlags[flag] ~= true then
+					data.LootFlags[flag] = true
+					grantFirstDrop(player, data, tier, gained, TXT.PityWeapon, TXT.PityEquip)
+				end
+			end
 		end
 	end
 end
@@ -926,6 +936,64 @@ function LootService.AddBagSlots(player, n)
 	if after <= before then return 0 end
 	S.PlayerService.SetStat(player, "BagSlots", after)
 	return after - before
+end
+
+-- C-5 market (게임성 개발 2, 2026-10-13): takes `n` spares of tier +plus; false = not that many (nothing taken)
+function LootService.TakeSpare(player, tier, plus, n)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	n = math.floor(num(n, 1))
+	if not data or n < 1 or type(data.Spares) ~= "table" then return false end
+	local have = math.max(0, math.floor(num(data.Spares[key])))
+	if have < n then return false end
+	data.Spares[key] = have > n and have - n or nil
+	publish(player, data)
+	return true
+end
+
+-- C-5 market: a weapon bought (tier +plus). A tier not owned yet becomes owned with that +N ("Owned"); a tier owned
+-- already (a drop came in between) becomes a Spare ("Spare"); nil = a bad tier / plus, no data or no room
+function LootService.GrantMarketWeapon(player, tier, plus)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	if not data then return nil end
+	ensureTables(data)
+	if owns(data, tier) then
+		return LootService.AddSpare(player, tier, plus) and "Spare" or nil
+	end
+	data.WeaponEnhance[tier] = plus
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
+	if not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end
+	publish(player, data)
+	return "Owned"
+end
+
+-- C-5 market (the bag's buttons): an owned weapon -> a Spare "T:P" with its +N (the tier is not owned any more, its +N
+-- 0). Never the weapon in hand or tier 1 (the guild's gift). true = done; else a Config.Market.Text refusal key
+function LootService.PackWeapon(player, tier)
+	local data = getData(player)
+	if not data or type(tier) ~= "number" or tier < 2 or not owns(data, tier) then return "NoItem" end
+	if math.floor(num(data.WeaponTier, 0)) == tier then return "InHand" end
+	ensureTables(data)
+	local plus = enhanceOf(data, tier)
+	local key = spareKey(tier, plus)
+	if not key or not spareFits(data, key) then return "CantReceive" end
+	data.WeaponEnhance[tier] = 0
+	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.band(math.floor(num(data.WeaponOwnedMask, 0)), bit32.bnot(bit32.lshift(1, tier - 1))))
+	if type(data.Spares) ~= "table" then data.Spares = {} end
+	data.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1
+	publish(player, data)
+	return true
+end
+
+-- C-5 market: a Spare tier +plus -> owned with that +N (only a tier not owned). true = done; else a refusal key
+function LootService.UnpackSpare(player, tier, plus)
+	local key = spareKey(tier, plus)
+	local data = key and getData(player)
+	if not data or type(data.Spares) ~= "table" or math.floor(num(data.Spares[key])) < 1 then return "NoItem" end
+	if owns(data, tier) then return "Owned" end
+	LootService.TakeSpare(player, tier, plus, 1)
+	return LootService.GrantMarketWeapon(player, tier, plus) == "Owned" or "NoItem"
 end
 
 -- re-mirror the owner's items / per-tier +N (Inventory remote) and the equipped WeaponEnhance attribute; for other
