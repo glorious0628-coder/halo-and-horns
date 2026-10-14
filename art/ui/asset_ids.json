@@ -1574,5 +1574,7 @@
   "SA_NPC_HaloBellElder_C": "rbxassetid://87114508249904",
   "SA_NPC_HaloBellElder_N": "rbxassetid://120993807011227",
   "SA_NPC_HaloBellElder_M": "rbxassetid://131260653500960",
-  "SA_NPC_HaloBellElder_R": "rbxassetid://115891570079755"
+  "SA_NPC_HaloBellElder_R": "rbxassetid://115891570079755",
+  "SA_NPC_HaloBakerGranny_NOTE": "통짜 HD 사람 맵(C N M R) — 사용 안 함 (사용자 10/14: 사람도 머리·몸·소품 따로 만들어 합침). 지우지 말고 참고만.",
+  "SA_NPC_HaloBellElder_NOTE": "통짜 HD 사람 맵(C N M R) — 사용 안 함 (사용자 10/14: 사람도 머리·몸·소품 따로 만들어 합침). 지우지 말고 참고만."
 }
