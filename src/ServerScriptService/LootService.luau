@@ -348,7 +348,7 @@ end
 local function weaponPity(player, data, info, gained)
 	local pity = LOOT.WeaponPity
 	if type(pity) ~= "table" or pity.Enabled ~= true or type(pity.At) ~= "table" then return end
-	local mult = info.Golden == true and LOOT.GoldenMult or 1
+	local mult = (info.Golden == true) and LOOT.GoldenMult or 1 -- brackets: apart from the roll's line (test_loot mutations)
 	local adds = {}
 	for _, row in LOOT.Tables[info.Kind] or {} do
 		local tier = row.Weapon
