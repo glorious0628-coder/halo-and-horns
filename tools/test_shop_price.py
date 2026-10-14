@@ -6,7 +6,7 @@ ShopUI.LivePrice(id, infoType, fallback[, fetch]) shows MarketplaceService:GetPr
 2. Each id is read ONCE per session in the background (pcall); until it answers the card shows the Config price.
 3. A failure or no price (not for sale) = the Config price, remembered (never asked again).
 4. A price read later repaints the open shop (PRICE.Refresh = the shop's refreshAll).
-5. Call sites: pass cards (GamePass), looks (GamePass), class/faction tickets (Product).
+5. Call sites: pass cards (GamePass), looks (GamePass). (The change-ticket rows are gone: A23-28, no tickets in the beta.)
 6. Subscription cards (A23-182): ShopUI.SubPrice(id "EXP-...", fallback) = GetSubscriptionProductInfoAsync(id) the same
    way (one shared reader PRICE.Ask): its DisplayPrice text (the player's local money, drawn with MonthTextF) or a
    PriceInRobux number (MonthF); id "" / failure / neither = the Config R$ price.
@@ -195,10 +195,8 @@ MUTATIONS = [
     ("the looks keep the Config price",
      "local price = ShopUI.LivePrice(def.PassId or def.Id, Enum.InfoType.GamePass, tonumber(def.Price) or 99)",
      "local price = tonumber(def.Price) or 99"),
-    ("the tickets read a pass price", "ShopUI.LivePrice(p.Id, Enum.InfoType.Product, p.PriceHint)",
-     "ShopUI.LivePrice(p.Id, Enum.InfoType.GamePass, p.PriceHint)"),
     ("the shop never registers its repaint", "\tPRICE.Refresh = refreshAll", "\t-- PRICE.Refresh = refreshAll"),
-    ("the ticket button not repainted", "if r.Button and r.PriceText then r.Button.Text = r.PriceText() end", ""),
+    ("the ticket rows back", "\tlocal function refreshAll()", "\tlocal function buildTickets() end\n\tlocal function refreshAll()"),
     ("an empty subscription id asks Roblox", 'if type(id) ~= "string" or id == "" or id == "0" then return fallback end',
      'if type(id) ~= "string" then return fallback end'),
     ("the subscription ignores Roblox's price text",
@@ -237,15 +235,14 @@ def statics(src: str) -> list[tuple[str, bool]]:
         ("looks: GamePass price from Roblox",
          "local price = ShopUI.LivePrice(def.PassId or def.Id, Enum.InfoType.GamePass, tonumber(def.Price) or 99)" in src
          and "Util.FormatInt(price)" in src),
-        ("tickets: Product price from Roblox", "ShopUI.LivePrice(p.Id, Enum.InfoType.Product, p.PriceHint)" in src),
+        ("A23-28: no change-ticket rows in the shop (no tickets in the beta)",
+         "buildTickets" not in src and "ticketsOnSale" not in src and "TicketF" not in src and 'Tickets = "Change Tickets"' not in CONFIG_TEXT),
         ("subscription cards: Roblox's price, text with MonthTextF, R$ with MonthF",
          "local price = ShopUI.SubPrice(cell.Sub.Id, cell.Sub.Price)" in src
          and 'type(price) == "string" and string.format(T.MonthTextF, price)' in src
          and "or string.format(T.MonthF, Util.FormatInt(price))" in src
          and re.search(r'\bMonthTextF = "%s / mo"', CONFIG_TEXT) is not None),
-        ("the shop registers its repaint and repaints ticket buttons",
-         "\tPRICE.Refresh = refreshAll" in src
-         and "if r.Button and r.PriceText then r.Button.Text = r.PriceText() end" in src),
+        ("the shop registers its repaint", "\tPRICE.Refresh = refreshAll" in src),
     ]
 
 
