@@ -1,23 +1,26 @@
 -- VillageFundUI.luau (게임성 개발 1, 2026-10-14; A23-178 B, user 10/14 "마을 기금은 좋아"): the village fund on this client.
 -- Server contract: docs/design/village_fund_server_2026-10-14.md (VillageFundService, 게임성 개발 2) - §8 is this module:
---   1. My own town's fountain has the server's ProximityPrompt "FundPrompt" (G; a prompt button on phones). This client
---      switches off every FundPrompt that is not my side's (Neutral / no side: all off; the server checks again). The
---      server answers a press with Net "FundOpen" state = { Faction, Today, PerDay, Step, Gold, Week, Goals, Level } ->
---      a small card (Panels window "VillageFund"): my side's line (Halo = Share / Horns = Show off), "Today n/3", my
---      gold, [Give 1,000] -> Net "FundGive":FireServer() (no arguments: the server decides amount, side and count) and
---      [Close]. A new FundOpen (the server sends one after every gift) redraws the open card in place.
---   2. Not enough gold / 3 gifts today: [Give] is greyed and one reason line shows (the server's own words:
---      Config.VillageFund.Text.Poor / .Full).
---   3. Under the card: my side's weekly total bar with two marks (lanterns, fireworks); numbers = the ReplicatedStorage
---      attributes FundHalo / FundHorns (live while the card is open; the state's Week until they come).
---   4. A town at level 1 (FundLevelHalo / FundLevelHorns) gets lanterns (always on), at level 2 also fireworks at night
+--   1. My own town's fountain has the server's ProximityPrompt "FundPrompt" (Workspace.VillageFund.FundSpot_<side>;
+--      G, a prompt button on phones; ActionText "" + attributes ActionKey / ObjectKey / Faction). This client writes its
+--      words (the Config path in the key) and switches off every FundPrompt that is not my side's (Neutral / no side:
+--      all off; the server ignores them anyway). The server answers a press - and every gift, done or not - with Net
+--      "FundOpen" state = { Faction, Today, PerDay, Step, Gold, Can, Why, Week (the week number), Sum (my side's total),
+--      Goals, Level } -> a small card (Panels window "VillageFund"): my side's line (Halo = Share / Horns = Show off),
+--      "Today n/3", my gold, [Share 1,000 gold] / [Show off 1,000 gold] -> Net "FundGive":FireServer() (no arguments:
+--      the server decides amount, side and count) and [Close]. A new FundOpen redraws the open card in place.
+--   2. Not enough gold / 3 gifts today / the fund switched off: [Give] is greyed and one reason line shows (the
+--      server's Why and its words Config.VillageFund.Text.Poor / .Full / .Closed).
+--   3. Under the card: my side's weekly total bar with two marks (lanterns, fireworks); numbers = the GameState
+--      attributes FundHalo / FundHorns (live while the card is open; the state's Sum until they come).
+--   4. A town at level 1 (GameState FundLevelHalo / FundLevelHorns) gets lanterns (always on), at level 2 also fireworks at night
 --      (GameState DayPhase "Night"): round soft glows, sparkles, stars and confetti only - nothing fans out as rays (user
 --      10/07). Anyone who walks into that town sees them. Phones / "Screen Shake: Off" / Reduced Motion: fewer particles
 --      (FountainFx's rule). Client-only parts (Anchored, no collision / queries / touch) in workspace "VillageFundFx".
--- Words: Config.VillageFund.Text (the server's table: Poor, Full) + Config.VillageFundScreen (this card's own words).
+-- Words: Config.VillageFund.Text (game dev 2's table: Title, Today, Poor, Full, Closed, [side].Give / .Prompt) +
+-- Config.VillageFundScreen (this card's own extra words: Lead, Gold, Close, the bar).
 -- New look: none - the Panels window, its kit buttons and UIKit.ArtBar; free Roblox particle textures only.
 -- API: VillageFundUI.Init(C), VillageFundUI.Start(), VillageFundUI.State() (the last FundOpen state or nil); pure:
--- VillageFundUI.Reason(state), VillageFundUI.CardLines(state), VillageFundUI.BarParts(total, goals),
+-- VillageFundUI.Reason(state), VillageFundUI.CardLines(state), VillageFundUI.BarParts(total, goals), VillageFundUI.Word(key),
 -- VillageFundUI.PromptOn(promptSide, mySide), VillageFundUI.FxPlan(level, phase, phone, calm).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -88,13 +91,17 @@ end
 local function side(v) return (v == "Halo" or v == "Horns") and v or nil end
 
 ---------------------------------------------------------------------------------------------------- pure
--- why [Give] is off for this state: "Full" (3 today - the stronger one), "Poor" (less gold than one gift) or nil
+-- why [Give] is off for this state: the server's Why ("Poor" / "Full" / "Closed") when it sends one, else worked out
+-- here: "Full" (PerDay today - the stronger one), "Poor" (less gold than one gift), "Closed" (the server says Can =
+-- false without a reason) or nil
 function VillageFundUI.Reason(state)
 	if type(state) ~= "table" then return "Full" end
+	if state.Why == "Poor" or state.Why == "Full" or state.Why == "Closed" then return state.Why end
 	local f = fund() or {}
 	local per, step = n(state.PerDay, n(f.PerDay, 3)), n(state.Step, n(f.Step, 1000))
 	if n(state.Today, 0) >= per then return "Full" end
 	if n(state.Gold, 0) < step then return "Poor" end
+	if state.Can == false then return "Closed" end
 	return nil
 end
 
@@ -105,15 +112,24 @@ function VillageFundUI.CardLines(state)
 	local w = words()
 	local my = side(state.Faction)
 	local per, step = n(state.PerDay, n(f.PerDay, 3)), n(state.Step, n(f.Step, 1000))
+	local t = serverText()
+	local mine = type(t[my or ""]) == "table" and t[my or ""] or {}
 	local lead = type(w.Lead) == "table" and w.Lead[my or ""] or nil
 	local why = VillageFundUI.Reason(state)
-	local why2 = why and serverText()[why] or nil
+	local reason = nil
+	if why == "Poor" then
+		reason = fmt(t.Poor, Util.FormatInt(step))
+	elseif why == "Full" then
+		reason = fmt(t.Full, per)
+	elseif why == "Closed" then
+		reason = fmt(t.Closed)
+	end
 	return {
 		Lead = fmt(lead, math.max(1, math.floor(n(f.Points, 1)))),
-		Today = fmt(w.Today, math.clamp(math.floor(n(state.Today, 0)), 0, per), per),
+		Today = fmt(t.Today, math.clamp(math.floor(n(state.Today, 0)), 0, per), per),
 		Gold = fmt(w.Gold, Util.FormatInt(math.max(0, math.floor(n(state.Gold, 0))))),
-		Give = fmt(w.Give, Util.FormatInt(step)),
-		Reason = type(why2) == "string" and why2 or nil,
+		Give = fmt(mine.Give, Util.FormatInt(step)),
+		Reason = (reason ~= nil and reason ~= "") and reason or nil,
 		CanGive = my ~= nil and why == nil,
 	}
 end
@@ -150,13 +166,11 @@ local function gameState()
 	return ok and gs or nil
 end
 
--- the fund attributes: ReplicatedStorage (contract §5), else the GameState folder
+-- the fund attributes: the GameState folder (VillageFundService; Net.GameStateDefaults), else ReplicatedStorage itself
 local function fundAttr(key)
-	local v = ReplicatedStorage:GetAttribute(key)
-	if v == nil then
-		local gs = gameState()
-		v = gs and gs:GetAttribute(key)
-	end
+	local gs = gameState()
+	local v = gs and gs:GetAttribute(key)
+	if v == nil then v = ReplicatedStorage:GetAttribute(key) end
 	return v
 end
 
@@ -221,8 +235,22 @@ local function applyPrompts()
 	end
 end
 
+-- a prompt word from its key: the Config path in the attribute ("Config.VillageFund.Text.Halo.Prompt"), "" if unknown
+function VillageFundUI.Word(key)
+	if type(key) ~= "string" or string.sub(key, 1, 7) ~= "Config." then return "" end
+	local v = Config
+	for part in string.gmatch(string.sub(key, 8), "[^%.]+") do
+		if type(v) ~= "table" then return "" end
+		v = v[part]
+	end
+	return type(v) == "string" and v or ""
+end
+
 local function consider(inst)
 	if not (inst:IsA("ProximityPrompt") and inst.Name == L.Prompt) then return end
+	local action, object = VillageFundUI.Word(inst:GetAttribute("ActionKey")), VillageFundUI.Word(inst:GetAttribute("ObjectKey"))
+	if action ~= "" then inst.ActionText = action end
+	if object ~= "" then inst.ObjectText = object end
 	S.Prompts[inst] = promptSide(inst) or false
 	local on = VillageFundUI.PromptOn(S.Prompts[inst], mySide())
 	if inst.Enabled ~= on then inst.Enabled = on end
@@ -249,7 +277,7 @@ end
 local function weekTotal(state)
 	local my = side(state and state.Faction)
 	local v = my and n(fundAttr("Fund" .. my), nil)
-	return v or n(state and state.Week, 0)
+	return v or n(state and state.Sum, 0)
 end
 
 local function paintBar()
@@ -527,7 +555,7 @@ function VillageFundUI.Init(registry)
 		return
 	end
 	S.Ready = p.Register(L.Window, {
-		Title = function() return words().Title or "" end,
+		Title = function() return fmt(serverText().Title) end,
 		Width = L.Width,
 		Build = build,
 		Cleanup = cleanup,
@@ -556,6 +584,10 @@ function VillageFundUI.Start()
 		for _, key in { "Fund" .. sd, "FundLevel" .. sd } do
 			pcall(function()
 				ReplicatedStorage:GetAttributeChangedSignal(key):Connect(function() pcall(paintBar) end)
+			end)
+			task.spawn(function()
+				local gs = ReplicatedStorage:WaitForChild("GameState", 30)
+				if gs then gs:GetAttributeChangedSignal(key):Connect(function() pcall(paintBar) end) end
 			end)
 		end
 	end

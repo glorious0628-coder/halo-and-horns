@@ -10,7 +10,8 @@ switch, Neutral, prompts made later), the card (opens on FundOpen, FundGive with
 or Wait, redrawn in place, grey + reason line, [Close], closes when I walk away or switch sides), the town glow
 (lanterns from level 1, fireworks bursts only at level 2 at night and not every poll, fewer on phones, gone at level 0,
 the other side's town too).
-Static: ClientMain loads it after Panels; Net has FundGive / FundOpen once; FundGive fires with no arguments; English
+Static: ClientMain loads it after Panels; Net has FundGive / FundOpen at most once (dev 2's branch adds them); FundGive
+fires with no arguments; English
 words; no shop near the card (A23-79); particle textures from the known list only, no Beam / Trail (no rays, user 10/07).
 Mutations: in-memory copies with one rule broken each; each must make a check fail.
 Report: docs/art/verification_2026-10-14/offline_village_fund_ui_2026-10-14.json (do not commit)
@@ -44,6 +45,10 @@ MUTATIONS = [
     ("the answer reopens the window", "\tif VIEW.Shown then\n\t\tpaint()\n\t\treturn true\n\tend\n", ""),
     ("the reason line hidden", "\t\tVIEW.Reason.Visible = lines.Reason ~= nil\n", "\t\tVIEW.Reason.Visible = false\n"),
     ("the bar ignores the live total", 'local v = my and n(fundAttr("Fund" .. my), nil)', "local v = nil"),
+    ("the bar reads the week number", "return v or n(state and state.Sum, 0)", "return v or n(state and state.Week, 0)"),
+    ("the server's Why ignored", '\tif state.Why == "Poor" or state.Why == "Full" or state.Why == "Closed" then return state.Why end\n', ""),
+    ("the prompt words never written", "\tif action ~= \"\" then inst.ActionText = action end\n", ""),
+    ("the Poor line without the amount", "reason = fmt(t.Poor, Util.FormatInt(step))", "reason = t.Poor"),
     ("the bar never follows the attribute",
      "ReplicatedStorage:GetAttributeChangedSignal(key):Connect(function() pcall(paintBar) end)", "local _ = key"),
     ("the card stays when I walk away", "\t\t\tif d > n(sp.Radius, 16) + L.Away then closeCard() end\n", ""),
@@ -106,7 +111,8 @@ def main():
     static = [
         ("ClientMain loads VillageFundUI after Panels", "VillageFundUI" in names and "Panels" in names
          and names.index("VillageFundUI") > names.index("Panels")),
-        ("Net has FundGive and FundOpen once each", net.count('"FundGive"') == 1 and net.count('"FundOpen"') == 1),
+        # game dev 2's server branch dev2-village-fund adds both names to Net.luau (this branch must not: one owner)
+        ("Net has FundGive and FundOpen at most once each", net.count('"FundGive"') <= 1 and net.count('"FundOpen"') <= 1),
         ("FundGive fires with no arguments", re.findall(r'Net\.Get\("FundGive"\):FireServer\(([^)]*)\)', code) == [""]),
         ("the card's words are English (A23-48)", words != "" and not re.search(r"[가-힣]", words)),
         ("nothing is sold near the card (A23-79)", "MarketplaceService" not in code and "Prompt" + "Purchase" not in code),

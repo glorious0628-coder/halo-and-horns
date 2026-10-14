@@ -3,8 +3,8 @@
 -- UI_SOURCE. Roblox is replaced by small doubles: Vector3 with + / - / Magnitude, Instance-like tables (attributes,
 -- IsA, FindFirstAncestorWhichIsA, Emit), workspace (descendants + DescendantAdded), ReplicatedStorage attributes and
 -- the GameState folder, the Panels / kit / UIKit.ArtBar doubles, Net (FireServer recorder + OnClientEvent), the player
--- and the character, os.clock as a number. When Config.VillageFund is not on this branch yet (게임성 개발 2's server
--- branch adds it), the contract §2 table is put in for the run.
+-- and the character, os.clock as a number. When Config.VillageFund is not on this branch yet (game dev 2's server
+-- branch dev2-village-fund adds it), its table as dev 2 wrote it (message 10/14: Text keys, Spots.Halo only) is put in.
 local checks, failed = 0, 0
 local function check(name, ok, detail)
 	checks += 1
@@ -140,8 +140,12 @@ if type(Config.VillageFund) ~= "table" then
 	Config.VillageFund = { Enabled = true, Step = 1000, PerDay = 3, Points = 1,
 		Spots = { Halo = { Pos = v3(22, 10, -590), Radius = 16, Zone = "HaloTown", Model = "Town_Halo_Fountain3" } },
 		Goals = { Lanterns = 30000, Fireworks = 100000 },
-		Text = { Halo = { Prompt = "Share 1,000 gold" }, Horns = { Prompt = "Show off 1,000 gold" },
-			Poor = "You need 1,000 gold.", Full = "That's 3 for today. Come back tomorrow!" } }
+		Text = { Title = "Village Fund", Today = "Today %d/%d", Poor = "You need %s gold.",
+			Full = "That's %d for today. Come back tomorrow!", Closed = "The village fund is closed for now.",
+			Halo = { Prompt = "Share gold", Give = "Share %s gold", Done = "You shared gold!", Lanterns = "Lanterns!",
+				Fireworks = "Fireworks!" },
+			Horns = { Prompt = "Show off gold", Give = "Show off %s gold", Done = "You showed off gold!",
+				Lanterns = "Lanterns!", Fireworks = "Fireworks!" } } }
 end
 local VF = Config.VillageFund
 -- the Horns fountain is placed when Horns town is rebuilt (contract §2): a test spot for this run only
@@ -169,7 +173,8 @@ local RS = {
 	GetAttributeChangedSignal = function(_, k) return rsSignal(k) end,
 	FindFirstChild = function(_, n) return n == "GameState" and GS or nil end,
 }
-local function setRS(k, v) RSATTR[k] = v rsSignal(k):Fire() end
+-- the fund attributes live on GameState (VillageFundService); the change signal is fired on both
+local function setRS(k, v) GS.Attrs[k] = v rsSignal(k):Fire() end
 local UIS = { TouchEnabled = false, KeyboardEnabled = true }
 local GUI = { ReducedMotionEnabled = false }
 
@@ -285,13 +290,15 @@ local env = setmetatable({
 local haloPart = inst("Part")
 haloPart.Position = HALO.Pos
 local haloPrompt = inst("ProximityPrompt")
-haloPrompt.Name, haloPrompt.Enabled, haloPrompt.Attrs = "FundPrompt", true, { Faction = "Halo" }
+haloPrompt.Name, haloPrompt.Enabled, haloPrompt.ActionText, haloPrompt.ObjectText = "FundPrompt", true, "", ""
+haloPrompt.Attrs = { Faction = "Halo", ActionKey = "Config.VillageFund.Text.Halo.Prompt", ObjectKey = "Config.VillageFund.Text.Title" }
 haloPrompt.Parent = haloPart
 haloPart.Parent = WS
 local hornsPart = inst("Part")
 hornsPart.Position = HORNS.Pos + v3(1, 0, 1)
 local hornsPrompt = inst("ProximityPrompt")
-hornsPrompt.Name, hornsPrompt.Enabled = "FundPrompt", true
+hornsPrompt.Name, hornsPrompt.Enabled, hornsPrompt.ActionText = "FundPrompt", true, ""
+hornsPrompt.Attrs = { ActionKey = "Config.VillageFund.Text.Nope.Prompt" }
 hornsPrompt.Parent = hornsPart
 hornsPart.Parent = WS
 local otherPrompt = inst("ProximityPrompt")
@@ -312,26 +319,38 @@ local function fundFired() local c = 0 for _, f in FIRED do if f[1] == "FundGive
 -- 0) wiring
 check("registers the Panels window 'VillageFund'", REGISTERED.VillageFund ~= nil and T.S.Ready == true)
 check("listens to FundOpen", #remote("FundOpen").OnClientEvent.Fns == 1)
-check("Config.VillageFundScreen words", type(SCR) == "table" and type(SCR.Today) == "string" and type(SCR.Give) == "string"
+check("Config.VillageFundScreen words", type(SCR) == "table" and type(SCR.Gold) == "string" and type(SCR.Close) == "string"
 	and type(SCR.Lead) == "table" and type(SCR.Lead.Halo) == "string" and type(SCR.Lead.Horns) == "string")
-check("the server's reason words exist (Config.VillageFund.Text Poor / Full)", type(VF.Text) == "table"
-	and type(VF.Text.Poor) == "string" and type(VF.Text.Full) == "string")
+check("no copy of the server's words in the card table", SCR.Title == nil and SCR.Today == nil and SCR.Give == nil
+	and SCR.Poor == nil and SCR.Full == nil)
+check("the server's words exist (Config.VillageFund.Text)", type(VF.Text) == "table" and type(VF.Text.Poor) == "string"
+	and type(VF.Text.Full) == "string" and type(VF.Text.Closed) == "string" and type(VF.Text.Today) == "string"
+	and type(VF.Text.Title) == "string" and type(VF.Text.Halo.Give) == "string" and type(VF.Text.Horns.Give) == "string")
+check("the window title is the server's Title", REGISTERED.VillageFund.Title() == VF.Text.Title)
 
 -- 1) pure
-local base = { Faction = "Halo", Today = 0, PerDay = 3, Step = 1000, Gold = 2500, Week = 12000,
+local base = { Faction = "Halo", Today = 0, PerDay = 3, Step = 1000, Gold = 2500, Week = 2900, Sum = 12000,
 	Goals = { Lanterns = 30000, Fireworks = 100000 }, Level = 0 }
 local function with(t) local s = table.clone(base) for k, v in t do s[k] = v end return s end
 check("reason: nothing in the way", UI.Reason(base) == nil, UI.Reason(base))
 check("reason: less gold than one gift = Poor", UI.Reason(with({ Gold = 999 })) == "Poor")
 check("reason: 3 today = Full (even when poor too)", UI.Reason(with({ Today = 3 })) == "Full" and UI.Reason(with({ Today = 3, Gold = 0 })) == "Full")
+check("reason: the server's Why wins", UI.Reason(with({ Why = "Closed", Can = false })) == "Closed"
+	and UI.Reason(with({ Why = "Poor", Gold = 99999 })) == "Poor")
+check("reason: Can = false without a Why = Closed", UI.Reason(with({ Can = false })) == "Closed" and UI.Reason(with({ Can = true })) == nil)
 local cl = UI.CardLines(base)
 check("Halo card: Share + Honor", string.find(cl.Lead, "Share", 1, true) ~= nil and string.find(cl.Lead, "Honor +1", 1, true) ~= nil, cl.Lead)
 check("Horns card: Show off + Mischief", string.find(UI.CardLines(with({ Faction = "Horns" })).Lead, "Show off", 1, true) ~= nil
 	and string.find(UI.CardLines(with({ Faction = "Horns" })).Lead, "Mischief +1", 1, true) ~= nil)
-check("Today 0/3, my gold, Give 1,000", cl.Today == "Today 0/3" and cl.Gold == "Your gold: 2,500" and cl.Give == "Give 1,000"
+check("Today 0/3, my gold, Share 1,000 gold", cl.Today == string.format(VF.Text.Today, 0, 3) and cl.Gold == "Your gold: 2,500"
+	and cl.Give == string.format(VF.Text.Halo.Give, "1,000") and UI.CardLines(with({ Faction = "Horns" })).Give
+	== string.format(VF.Text.Horns.Give, "1,000")
 	and cl.CanGive == true and cl.Reason == nil, cl.Today .. " | " .. cl.Gold .. " | " .. cl.Give)
-check("the reason line is the server's own words", UI.CardLines(with({ Gold = 10 })).Reason == VF.Text.Poor
-	and UI.CardLines(with({ Today = 3 })).Reason == VF.Text.Full and UI.CardLines(with({ Today = 3 })).CanGive == false)
+check("the reason line is the server's own words", UI.CardLines(with({ Gold = 10 })).Reason == string.format(VF.Text.Poor, "1,000")
+	and UI.CardLines(with({ Today = 3 })).Reason == string.format(VF.Text.Full, 3) and UI.CardLines(with({ Today = 3 })).CanGive == false
+	and UI.CardLines(with({ Why = "Closed", Can = false })).Reason == VF.Text.Closed)
+check("prompt words: the Config path in the key, unknown = empty", UI.Word("Config.VillageFund.Text.Halo.Prompt") == VF.Text.Halo.Prompt
+	and UI.Word("Config.VillageFund.Text.Nope") == "" and UI.Word("Config.VillageFund.Text") == "" and UI.Word("x") == "" and UI.Word(nil) == "")
 check("a Neutral / no-side state never gives", UI.CardLines(with({ Faction = "Neutral" })).CanGive == false
 	and UI.CardLines(with({ Faction = false })).CanGive == false)
 local b0, b1, b2 = UI.BarParts(0, base.Goals), UI.BarParts(30000, base.Goals), UI.BarParts(150000, base.Goals)
@@ -351,6 +370,8 @@ check("town: phones get fewer lanterns and particles", pp.Lights < p2n.Lights an
 check("my side's prompt stays on, the other side's goes off", haloPrompt.Enabled == true and hornsPrompt.Enabled == false,
 	tostring(haloPrompt.Enabled) .. "/" .. tostring(hornsPrompt.Enabled))
 check("other prompts are not touched", otherPrompt.Enabled == true)
+check("the prompt's words come from its keys", haloPrompt.ActionText == VF.Text.Halo.Prompt and haloPrompt.ObjectText == VF.Text.Title
+	and hornsPrompt.ActionText == "", haloPrompt.ActionText)
 setAttr("Faction", "Horns")
 check("a side switch swaps them (Horns found by its fountain spot)", haloPrompt.Enabled == false and hornsPrompt.Enabled == true)
 setAttr("Faction", "Neutral")
@@ -367,10 +388,11 @@ open(nil)
 check("broken / no-side states open nothing", CURRENT == nil and OPENS == 0)
 open(base)
 check("FundOpen opens the card", CURRENT == "VillageFund" and OPENS == 1 and UI.State() ~= nil)
-check("the card reads the lines", hasText(BODY, "Today 0/3") and hasText(BODY, "Your gold: 2,500") and give() and give().Text == "Give 1,000"
+check("the card reads the lines", hasText(BODY, "Today 0/3") and hasText(BODY, "Your gold: 2,500") and give()
+	and give().Text == string.format(VF.Text.Halo.Give, "1,000")
 	and hasText(BODY, SCR.Close), table.concat(texts(BODY or inst("Frame")), " | "))
 check("[Give] is on, no reason line", ENABLED[give()] == true and label("Reason").Visible == false)
-check("the weekly bar: the state's week until the attributes come", math.abs((BAR.Fraction or -1) - 0.12) < 1e-9
+check("the weekly bar: the state's Sum until the attributes come (not the week number)", math.abs((BAR.Fraction or -1) - 0.12) < 1e-9
 	and hasText(BODY, "Town this week: 12,000 gold"), BAR.Fraction)
 check("the lantern mark sits at 30%", label("LanternMark") and label("LanternMark").Position[1] == 0.3)
 give().Click()
@@ -391,11 +413,13 @@ T.Step(CLOCK)
 check("no answer within Wait: [Give] unlocks", ENABLED[give()] == true and fundFired() == 2)
 open(with({ Today = 2, Gold = 500 }))
 check("poor: [Give] grey + the server's Poor line", ENABLED[give()] == false and label("Reason").Visible == true
-	and label("Reason").Text == VF.Text.Poor)
+	and label("Reason").Text == string.format(VF.Text.Poor, "1,000"))
 give().Click()
 check("a grey [Give] sends nothing", fundFired() == 2)
 open(with({ Today = 3, Gold = 5000 }))
-check("3 today: [Give] grey + the server's Full line", ENABLED[give()] == false and label("Reason").Text == VF.Text.Full)
+check("3 today: [Give] grey + the server's Full line", ENABLED[give()] == false and label("Reason").Text == string.format(VF.Text.Full, 3))
+open(with({ Today = 0, Gold = 5000, Can = false, Why = "Closed" }))
+check("the fund switched off: [Give] grey + Closed", ENABLED[give()] == false and label("Reason").Text == VF.Text.Closed)
 setRS("FundHalo", 45000)
 check("the bar follows FundHalo live", math.abs((BAR.Fraction or -1) - 0.45) < 1e-9 and hasText(BODY, "Town this week: 45,000 gold"),
 	BAR.Fraction)

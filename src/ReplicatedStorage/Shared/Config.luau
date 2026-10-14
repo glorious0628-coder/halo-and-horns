@@ -8514,14 +8514,11 @@ Config.ChoiceCard.Screen = {
 	Stat = { Honor = "Honor", Infamy = "Mischief" },
 }
 -- A23-178 B (게임성 개발 1, 2026-10-14; contract docs/design/village_fund_server_2026-10-14.md §8): the village fund card's
--- own words (VillageFundUI). The server's words (prompt, done, Poor, Full, lanterns / fireworks notices) and every number
--- live in Config.VillageFund (게임성 개발 2); this table is the card only. Lead: %d = points per gift.
+-- own extra words (VillageFundUI). Title, Today, the [Give] words, Poor / Full / Closed, the prompt and the notices - and
+-- every number - live in Config.VillageFund.Text (게임성 개발 2); this table is the rest of the card. Lead: %d = points.
 Config.VillageFundScreen = {
-	Title = "Village Fund",
 	Lead = { Halo = "Share gold with Halo Town. Honor +%d each time.", Horns = "Show off your gold in Horns Town. Mischief +%d each time." },
-	Today = "Today %d/%d",
 	Gold = "Your gold: %s",
-	Give = "Give %s",
 	Close = "Close",
 	Week = "Town this week: %s gold",
 	Marks = "%s %s · %s %s", -- (lanterns word, goal, fireworks word, goal)
