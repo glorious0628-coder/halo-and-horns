@@ -335,3 +335,12 @@
 - 5번째 묶음 후보: dev2-stats3 544a2e82(스탯 서버, 스위치 꺼짐) · dev1-hold-pose-2 106320a9(사진 판정 뒤) · client-text-central(재올림) · 무기 MeshId 채움(키 권한 뒤). dev2 큐: 직업 과제 스킬 해금 서버 → 동료 살리기 → clear.
 
 - **10/14 저녁 병합 53~56(5번째 묶음) → main 85b9789b:** dev2-stats3 544a2e82(스탯 서버, 스위치 꺼짐) · dev2-skill-tasks c56594e0(직업 과제 Z/X 해금 서버, Config.Skills.Tasks) · dev2-revive 60c69182(ReviveService, Config.Revive) · dev1-hold-pose-2 526fc28d(관절 업그레이드 아바타 AnimationConstraint, 걷기 감쇠, 공격 전환; 사진 verification_2026-10-15/hold_pose2/ 통과). 28개 시험 통과(skill_signals는 트리에 git 없어 baseline 못 읽음 = 환경 실패, dev2 worktree에선 통과). 메인 반영 1 publish7/(4번째 묶음): HUD 1안 OK·Outlaw 칩 OK·프라이팬 MemeLook OK; 남은 S: 거위 칩 숫자만(dev1)·번역 안쪽 'Lv 5 · first skill'(dev1)·작업대 3개 안 생김(dev2 benches-2). 메인 Studio = 85b9789b sync 중 → 사용자 Save As·Alt+P·모든 서버 종료 대기. 개발 1 큐: client-text-central → 스킬 과제 화면 → 동료 살리기 화면. 개발 2: benches-2 → clear.
+
+- **10/14 밤(20:10) — 정리 후 최종 검수 세션 clear 예정(사용자 "중간중간 클리어").** 모델: 사용자가 이 세션을 Opus 5.5로 바꿈(주간 사용량 50%). 다음 최종 검수 시작 순서: AGENTS.md → 이 파일 끝 → 메모리(council-page, translation-review-with-gpt-astra, codex-discuss-user-complaints) → `ArtifactComments watch` https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1 (회의실).
+- **6번째 묶음 = 병합 끝 → main c7c3505a (병합 57~61):** fix/test-patterns d00d1b2d(= client-text-central-2 19845a80 + 시험 패턴·정적 검사 고침) · dev1-skill-tasks c8bc2c5d · dev1-revive 26d52549 · dev2-benches-2 2e6cb56e. 스크립트 scratchpad chain35.sh(세션 임시 폴더 — 사라질 수 있음; 같은 4개를 merge_chain build → 시험 → push).
+- **7번째 묶음 후보:** fix/goose-words 0814a10e · dev1-first-hunt-hint 4681edff · dev1-t2-feel 14e46874 · dev1-hero-stats cfd5f08a · dev2-huntfame-attr f56045ce.
+- **한국어:** 클라우드 표 우리 번역 ≈2,170줄 + 숫자 문장 ≈330 + NPC 이름 135. 사용자 규칙: 업로드 전 GPT 아스트라 검토(`codex exec -m gpt-6-astra -c model_reasoning_effort=high`), 게이머 영어(스킬·레벨·보스…)는 그대로. 아스트라 반영 397줄(ko_14/23/56_astra.csv). 숫자 문장은 다음 게시 뒤 화면에 나옴.
+- **사용자 할 일(대기):** Studio Save to File As build/GoodEvil.rbxlx(메인 Studio = 85b9789b까지 sync, 6번째 묶음 병합 뒤 메인 반영 1이 한 번 더 sync) → '저장했어' → 메인 반영 1 place/ 복사·push → Alt+P → Creator Hub '모든 서버 종료'(저장 v6) → Open Cloud 키에 Assets 읽기·쓰기(무기 FBX 30개 = tools/oc_asset_upload.py --creator-user 11753301316 → build/weapon_model_ids.json → 메인 반영 1이 MeshId 읽기 → dev1-weapon-mesh에 id 채움).
+- 세션: 게임성 개발 1·2 = 큐 끝나면 상태 파일 push + clear(사용량 50% 규칙). 무기 디자인 = clear. 메인 반영 1 = Save As 대기.
+
+- 20:12 메인 반영 1에 c7c3505a sync 요청(Play 없음). 그 뒤 사용자 Save As → place 복사·push → Alt+P → 모든 서버 종료. 오늘 병합 총 61개.
