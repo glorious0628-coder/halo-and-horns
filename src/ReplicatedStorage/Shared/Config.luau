@@ -1252,6 +1252,9 @@ Config.Power = {
 		-- PvPNote / PvPNoteEn: finished lines, filled from Config.PvP.PowerRatioMax / Min right after Config.PvP below
 		Up = "Power +%s", UpEn = "Power +%s",
 		Change = "Power %s → %s", ChangeEn = "Power %s → %s",
+		-- 최종 검수 10/15 (Codex C1): a better weapon (the T2 from the first Slime Prince...) says what it means - the power
+		-- and the basic hits a Slime takes before / after (HUD.WeaponUpLine; "1 hits" -> "1 hit" by Config.Plural)
+		WeaponUp = "Power %s → %s · Slime: %d hits → %d hits",
 		-- 최종 검수 10/13 (ref_rpg_ui #2): a choice's power change as one short coloured line (Config.PowerDiff)
 		Diff = { Up = "Power +%s", Down = "Power -%s", Same = "Power =" },
 	},

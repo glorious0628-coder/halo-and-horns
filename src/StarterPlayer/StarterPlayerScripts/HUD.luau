@@ -630,7 +630,8 @@ end
 -- Desktop: right half of the class row; touch: right half of the bank row. A rise floats a gold "+N" and counts the
 -- number up (not when the level changed in the same moment: the level-up banner already celebrates). Drops are silent.
 -- Changes within 0.4 s merge; while the opening / a picker is open one pending popup waits. Tap -> "Character" window.
-L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6 }
+L.Pow = { Shown = nil, Base = nil, Seq = 0, LevelAt = -10, MergeAt = 0, Pending = false, Merge = 0.4, Count = 0.6,
+	TierFrom = nil } -- TierFrom: the weapon tier before a better one came (L.TierChanged -> the next settle's line)
 L.PowerTap = 44 -- touch: the power line's tap area is at least this many real px tall (a finger)
 -- A23-68 #3 (user 2026-10-07: "슬라임 5대 > 2대 이런 거는 됐고 그냥 전투력이 올라야지"): the first weapon (WeaponTier
 -- 0 -> 1+, the M1_1 blacksmith's gift) gets one big moment: gold sparkles on me, the PowerUp sound, a big "Stronger!"
@@ -804,6 +805,19 @@ function L.PowerPopup(from, to, delta)
 end
 
 -- 0.4 s after the first change: compare with the value shown before it
+-- (pure) 최종 검수 10/15 (Codex C1): the line for a better weapon - "Power 120 → 180 · Slime: 10 hits → 6 hits"
+-- (Config.Power.Text.WeaponUp, by its key) - or nil: a joke weapon, unknown hits, or no fewer hits than before
+function HUD.WeaponUpLine(fromTier, toTier, level, classId, faction, powerFrom, powerTo)
+	local W = type(Config.Power) == "table" and Config.Power.Text or nil
+	local def = Config.Weapons[tonumber(toTier) or -1]
+	if type(W) ~= "table" or type(W.WeaponUp) ~= "string" or type(def) ~= "table" or def.Meme ~= nil then return nil end
+	if type(Config.SwingHitsToKill) ~= "function" then return nil end
+	local okA, before = pcall(Config.SwingHitsToKill, fromTier, level, classId, "Slime", faction)
+	local okB, after = pcall(Config.SwingHitsToKill, toTier, level, classId, "Slime", faction)
+	if not (okA and okB and type(before) == "number" and type(after) == "number") or after >= before then return nil end
+	return Config.Plural(L.Tx(W, "WeaponUp", Util.FormatInt(powerFrom), Util.FormatInt(powerTo), before, after))
+end
+
 function L.PowerSettle()
 	local P = L.Pow
 	if pickersOpen() then
@@ -817,6 +831,13 @@ function L.PowerSettle()
 	P.Base = n
 	if n > base and os.clock() - P.LevelAt > P.Merge + 0.3 then
 		L.PowerPopup(P.Shown or base, n, n - base)
+		-- a better weapon came with this rise (L.TierChanged): one line what it means for a Slime
+		if P.TierFrom then
+			local line = HUD.WeaponUpLine(P.TierFrom, math.floor(num("WeaponTier", 0)), math.floor(num("Level", 1)),
+				attr("Class", "Warrior"), getFaction(), base, n)
+			if line then pcall(UIKit.Toast, line, "good") end
+		end
+		P.TierFrom = nil
 	else
 		P.Seq += 1 -- stop a running count-up
 		L.PowerSet(n)
@@ -833,6 +854,7 @@ function L.TierChanged()
 		return
 	end
 	if F.Tier == nil then F.Tier = tier return end -- the first live reading is the baseline
+	if F.Tier >= 1 and tier > F.Tier then L.Pow.TierFrom = F.Tier end -- a better weapon: the settle's Slime line
 	if F.Tier <= 0 and tier >= 1 then
 		F.Pop = true
 		task.delay(F.Wait + L.Pow.Merge, function()
