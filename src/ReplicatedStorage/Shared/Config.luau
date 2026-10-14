@@ -6423,9 +6423,14 @@ Config.ClassGrips = {
 -- in CharacterVisuals is gone. The swords follow Roblox's ClassicSword (메인 반영 1 10/13, main_apply/classic_sword:
 -- Tool.Grip (0, 0, -1.5) on its 4-stud handle mesh; side photo: the fist's middle 74% up the hilt from the pommel end,
 -- its top against the guard): 0.75 of our 1.2-stud hilt (the table's first 0.6 left a gap under the guard).
+-- 최종 검수 10/14 (user while playing: from behind the swordsman held the blade straight up over the shoulder like a pole,
+-- the fist on the guard): the swords are held in the MIDDLE of the hilt (Point 0.5: the guard sits above the fist), and
+-- Rest = the turn in the fist while standing / walking (WeaponPose.RestStep fades the default toolnone out, so the arm
+-- hangs): the blade at the side, its tip up and back (130 degrees about the fist's X = 40 degrees back from upright);
+-- an attack clip brings back the plain grip (Turn) and toolnone
 Config.WeaponGrips = {
-	Sword = { Point = 0.75 },
-	DarkSword = { Point = 0.75 },
+	Sword = { Point = 0.5, Rest = { 130, 0, 0 } },
+	DarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },
 	Bow = { Point = 0.5 },
 	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
 	Staff = { Point = 0.45 },
@@ -6443,12 +6448,14 @@ function Config.WeaponGripOf(kind)
 end
 
 -- (pure) the Tool.Grip of a weapon kind whose Handle is len studs long: the grip point (0, (Point - 0.5) x len, 0) on the
--- Handle, turned by Turn. The engine then puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's
--- frame in the fist = CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
-function Config.WeaponGrip(kind, len)
+-- Handle, turned by Turn (mode "Rest" and a row with Rest: turned by Rest - the standing / walking hold). The engine then
+-- puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's frame in the fist =
+-- CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
+function Config.WeaponGrip(kind, len, mode)
 	local row = Config.WeaponGripOf(kind)
 	local point = math.clamp(tonumber(row.Point) or 0.5, 0, 1)
 	local turn = type(row.Turn) == "table" and row.Turn or {}
+	if mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end
 	local angles = CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
 	return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
 end
