@@ -16,7 +16,10 @@
 
 ## 덩어리 진행
 - 1 Paladin: 최종 검수 통과 → Blender 맞춤 끝 `<이름>_HD_fit.glb`(+ .json): T1 3 / T2 3.5 / T3 4 스터드, 원점 = 손잡이 가운데(폭 단면으로 찾음, 길이의 0.15~0.19), +Y 칼끝, 앞면 Roblox -Z. 확인 `art/review/weapon_design/chunk1_Paladin_fit.png`. 도구 `tools/weapon_hd_fit.py`, `tools/weapon_fit_check.py` + `tools/weapon_fit_check_sheet.py`.
-- 2 LightMage: 시트 `chunk2_LightMage.jpg` 보고, 판정 대기. 닫힌 틈(T1 220px·T2 4,148px)은 2D에도 있는 고리 틈. T2 구슬이 3D에선 각진 보석.
+- 2 LightMage: 최종 검수 통과(T2 각진 보석 허용) → 맞춤 끝(--kind staff --grip 0.45, 길이 3/3.5/4), 확인 `chunk2_LightMage_fit.png`. 닫힌 틈(T1 220px·T2 4,148px)은 2D에도 있는 고리 틈. T2 구슬이 3D에선 각진 보석.
+
+- 3 Ranger: 시트 `chunk3_Ranger.jpg` 보고, 판정 대기. 닫힌 틈 = 활과 시위 사이(정상). T3 시위가 아주 가늘어 틈이 안 닫히지만 끝까지 이어짐.
+- 주의: 게임 코드(CharacterVisuals tierLen)는 Config Length를 그대로 안 씀: 칼 ≈3.85~4.55, 지팡이 = 아바타 키 0.65~0.75, 활 3.1~4.9 스터드. GLB는 Config Length로 맞췄음(최종 검수 지시) — 넣을 때 MeshPart 크기로 맞추면 됨.
 
 ## 다음
 - 최종 검수의 Paladin 판정 → 통과면 Blender 크기·피벗·방향(Config.Weapons Length, 피벗 = 손잡이 중앙, +Y 칼끝).
