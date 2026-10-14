@@ -40,7 +40,7 @@ ROUTES = [
     ("StoryQuestService.luau", "notify(player, table.concat(parts, \" · \")", "None"),
     ("BoardService.luau", "T.Done or \"Job done!", "QuestDone"),
     ("BoardService.luau", "T.Bonus or \"%s\"", "None"),
-    ("GooseService.luau", "Net.Notify(p, msg, \"reward\", nil", "GoldPickup"), # GooseReward / CoopReward (+ Cheer Star)
+    # (GooseService's reward toast is gone: A23-191, 최종 검수 10/14 - the gold / XP numbers pop instead)
     ("WarService.luau", "Config.Text.WarChest", "GoldPickup"),
     ("KaijuService.luau", "Config.Text.KaijuReward", "GoldPickup"),
     ("KaijuService.luau", "Config.Text.KaijuSurviveReward", "GoldPickup"),

@@ -74,7 +74,8 @@ MUTATIONS = [
     # --- the remote
     ("remote: any argument count", Q, "\tif select(\"#\", ...) ~= 1 then return end\n", ""),
     ("remote: no rate limit", Q, "\tif not Util.RateLimit(p, \"GooseSquare\", Config.RateLimits.GooseSquare or 1) then return end\n", ""),
-    ("remote: refusal silent", Q, "\t\tif line then W.Notify(p, line) end\n", ""),
+    ("remote: a refusal toast is back", Q, "\tGooseSquare.Join(p) -- A23-191", "\tlocal _, k = GooseSquare.Join(p); if k then W.Notify(p, tostring(k)) end -- A23-191"),
+    ("count: CountIn counts everyone", Q, "\t\tif W.Faction(p) == faction then n += 1 end\n", "\t\tn += 1\n"),
     # --- leave / the way back
     ("leave: eggs never go back", Q, "\t\tlocal ok, err = pcall(H.OnLeave, p, reason)\n", "\t\tlocal ok, err = true, nil\n"),
     ("leave: attribute stays on", Q, "\t\tW.SetAttr(p, attrIn(), false)\n", ""),

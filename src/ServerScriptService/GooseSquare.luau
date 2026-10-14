@@ -309,6 +309,15 @@ function GooseSquare.Join(p)
 	return true, nil
 end
 
+-- ③: how many players of a faction stand in the square now
+function GooseSquare.CountIn(faction)
+	local n = 0
+	for p in Q.In do
+		if W.Faction(p) == faction then n += 1 end
+	end
+	return n
+end
+
 -- the way back: the remembered spot when it is still a fine place, else the own town start. A wanted player
 -- (NoTravelStars) always goes back to the spot (or the Crossroads): the square is never a free trip home
 function GooseSquare.WayBack(p)
@@ -427,11 +436,7 @@ function GooseSquare.OnRemote(p, ...)
 		GooseSquare.Leave(p, "Button")
 		return
 	end
-	local ok, key = GooseSquare.Join(p)
-	if not ok and key then
-		local line = textOf(key)
-		if line then W.Notify(p, line) end
-	end
+	GooseSquare.Join(p) -- A23-191 (최종 검수 10/14): a refusal says nothing (the Join button is dimmed: GooseJoinBlock)
 end
 
 -- a leaver / a death / a faction change (GooseService connects them); Forget drops the memo of a leaver

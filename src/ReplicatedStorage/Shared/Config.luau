@@ -1902,7 +1902,8 @@ Config.Goose.Egg = {
 	Crown = { At = 50, Min = 50, Share = 0.15, Gold = 4, Overtime = 8 },
 	Naps = { 15, 30, 45 }, NapTime = 2,
 	Chases = { 22, 38 }, ChaseTime = 4, ChaseAlert = 1, ChaseSpeed = 17, ChaseMinSlots = 2, ChaseHit = 3, ChaseBounce = { 6, 8 },
-	Walk = { Radius = 18, Lap = 24, MinFountain = 16, MaxRing = 46 }, -- the goose's circle (s per lap) and its limits
+	Walk = { Radius = 18, Lap = 24, MinFountain = 16, MaxRing = 46, MaxSpeed = 14 }, -- the goose's circle (s per lap) and its limits;
+	-- MaxSpeed = studs / s it walks at most (⑤ 최종 검수 10/14: to the crown rim / back from a chase it walks, never jumps)
 	RePick = 1.5, MoveWindow = 0.5, MoveMin = 1, PickRateLog = 3, -- a dropped egg: its dropper waits RePick s
 	-- cheat check: delivery time >= (last pick -> home ring edge) / (speed x SpeedSlack) - Grace; Enforce false = log only
 	Cheat = { SpeedSlack = 1.4, Grace = 0.3, Enforce = false },

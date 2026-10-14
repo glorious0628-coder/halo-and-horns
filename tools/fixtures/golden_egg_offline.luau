@@ -118,6 +118,34 @@ local function newWorld(opts)
 		Gold = {}, XP = {}, Stats = {}, Fame = {}, Finished = {}, Paid = {}, AllowWarn = {} }
 	local config = execute("Config", CONFIG_SOURCE, nativeEnv())
 	config.Goose.Mode = opts.Mode or "Eggs"
+	-- 최종 검수 10/14 ③: opts.Square = a GooseSquare stand-in (the marks on the ring's spots; w.Square.In[p] = in the square)
+	if opts.Square then
+		local sq = { In = {} }
+		local function v(x, z) return setmetatable({ X = x, Y = 0, Z = z }, getmetatable(vec(0, 0, 0))) end
+		function sq.Init() end
+		function sq.Ensure()
+			return { GooseSpot = v(0, 0), Nest = v(-30, -30), Cart = v(-30, 30), SpawnHalo = v(60, -40), SpawnHorns = v(60, 40),
+				SpawnNeutral = v(70, 0) }
+		end
+		function sq.Members()
+			local list = {}
+			for p in sq.In do table.insert(list, p) end
+			return list
+		end
+		function sq.IsIn(p) return sq.In[p] == true end
+		function sq.Leave(p) sq.In[p] = nil end
+		function sq.Forget() end
+		function sq.OnRemote() end
+		function sq.ReturnAll() sq.In = {} end
+		function sq.TakeJoins() return 0 end
+		function sq.Tick() end
+		function sq.CountIn(f)
+			local n = 0
+			for p in sq.In do if p.Faction == f then n += 1 end end
+			return n
+		end
+		w.Square = sq
+	end
 	if not opts.Live then -- a quiet goose (no laying, naps, chases or crown): the rule under test alone
 		local Q = config.Goose.Egg
 		Q.Rate = { Base = 0, PerPlayer = 0, Min = 0, Max = 0, Recount = 5 }
@@ -134,6 +162,7 @@ local function newWorld(opts)
 	function net.Notify(p, text, kind) table.insert(w.Notices, { Player = p, Text = text, Kind = kind }) end
 	function net.NotifyAll(text, kind, duration) table.insert(w.All, { Text = text, Kind = kind, Duration = duration }) end
 	function net.Fx(p, kind, data) table.insert(w.Fx, { Player = p, Kind = kind, Data = data }) end
+	function net.Get() return { OnServerEvent = { Connect = function() end } } end -- (the square's remote; opts.Square)
 	local util = { Signal = { new = signal }, Now = function() return w.Now end, FormatNumber = tostring,
 		PlayerDisplayName = function(p) return p.Name end, Random = { NextNumber = function() return 0.999 end },
 		Warn = function(tag, msg)
@@ -160,10 +189,13 @@ local function newWorld(opts)
 		e.os = setmetatable({ clock = function() return w.Clock end, time = function() return math.floor(w.Now) end }, { __index = os })
 		e.task = { spawn = function(fn) w.Loop = coroutine.create(fn) end, wait = function(d) return coroutine.yield(d) end,
 			delay = function() end, defer = function(fn, ...) fn(...) end }
-		e.script = { Parent = { FindFirstChild = function(_, n) return n == "GooseEggs" and "GooseEggs" or nil end } }
+		e.script = { Parent = { FindFirstChild = function(_, n)
+			if n == "GooseSquare" and w.Square then return "GooseSquare" end
+			return n == "GooseEggs" and "GooseEggs" or nil
+		end } }
 		e.require = function(name)
 			if name == "Config" then return config elseif name == "Util" then return util elseif name == "Net" then return net
-			elseif name == "GooseEggs" then return eggs end
+			elseif name == "GooseEggs" then return eggs elseif name == "GooseSquare" and w.Square then return w.Square end
 			error("unexpected require " .. tostring(name))
 		end
 		return e
@@ -758,10 +790,17 @@ runGroup("laying", function()
 	for _, egg in R.Eggs do if egg.Kind == "Crown" then crown = egg end end
 	check(crown ~= nil and crown.Points == 60 and crown.Pos.X < 0, "50 s: a crown egg = max(50, 15% of 400) on the west half", show(crown and { crown.Points, crown.Pos }))
 	check(crown and crown.LandAt - (R.T0 + 50) > 0.9, "the crown flies 1 s (nobody picks it as it lands)")
-	check(R.Goose.Act == "Lay" and R.Goose.Pos.X < 0 and math.abs(R.Goose.Pos.Z) < 1e-6, "the goose stops on the west rim")
+	check(R.Goose.Act == "Lay", "50 s: the goose lays (it walks to the west rim)")
 	local stop
 	w:Until(55)
+	check(R.Goose.Pos.X < 0 and math.abs(R.Goose.Pos.Z) < 1e-6, "the goose stops on the west rim (walked there)", show(R.Goose.Pos))
 	stop = R.NextId
+	-- ⑤ (최종 검수 10/14): it walks at most Walk.MaxSpeed studs a second, never jumps: pushed 20 studs off, half a second on
+	local rim = R.Goose.Pos
+	R.Goose.Pos = vec(rim.X, rim.Y, rim.Z + 20)
+	w:Until(55.5)
+	local back = flat(R.Goose.Pos, rim)
+	check(back < 20 and back >= 20 - E.Walk.MaxSpeed * 0.5 - 0.5, "the goose walks back to the rim, never jumps", back)
 	w:Until(59.75)
 	check(R.NextId == stop, "no egg after 55 s", R.NextId - stop)
 	-- the crown is anywhere on the west half (several rounds)
@@ -962,7 +1001,7 @@ runGroup("neutral-and-feathers", function()
 	for _, f in fx do
 		if f.Side == "Neutral" and f.N == 1 and f.Points == 0 then neutralFx += 1 end
 	end
-	check(neutralFx == 7, "Fx EggDeliver Side Neutral, N 1, Points 0 per egg", neutralFx)
+	check(neutralFx == 0 and #fx == 0, "② no EggDeliver for a Neutral pick (no '+0', no Halo bell): the bag pop says it", show({ neutralFx, #fx }))
 	w:Step(40)
 	check(w.Eggs.Round().P == 1 and w.Eggs.Round().Presence.Halo > 0, "Neutral never counts in P / N (only H1)", w.Eggs.Round().P)
 	local sum = w.Eggs.Finish(w.Now)
@@ -1079,7 +1118,17 @@ runGroup("service-versus", function()
 		"info: Delivered, ScoreGap, H, CrownFlip", show(fin and fin.Info))
 	check(#w.War == 1 and w.War[1][1] == "Halo" and w.War[1][2] == 30, "the winning side +30 crown-war points", show(w.War))
 	check(w.Gold[h] ~= nil and w.Gold[r] == nil and #w.Paid == 1, "2 eggs paid; 1 egg (10 points) not", show({ w.Gold[h], w.Gold[r] }))
-	check(w:NoticeTo(r, w.Config.Goose.Text.BringTwo) == 1 and w:NoticeTo(h, w.Config.Goose.Text.BringTwo) == 0, "'Bring 2 eggs for a reward.' only to the one short")
+	check(w:NoticeTo(r, w.Config.Goose.Text.BringTwo) == 0 and #w.Notices == 0 and #w.All == 0,
+		"A23-191: no toast at all (no start line, no reward / honor / 'bring 2 eggs' line)", show({ #w.Notices, #w.All }))
+	check(w.GS.Attrs.GooseResult == "Halo" and w.GS.Attrs.GooseResultHalo == 20 and w.GS.Attrs.GooseResultHorns == 10
+		and (w.GS.Attrs.GooseResultUntil or 0) > 0, "② the result stays on GameState (winner + the final bar) until the return",
+		show({ w.GS.Attrs.GooseResult, w.GS.Attrs.GooseResultHalo, w.GS.Attrs.GooseResultHorns }))
+	local endFx = nil
+	for _, f in w.Fx do if f.Kind == "GooseEnd" then endFx = f end end
+	check(endFx and endFx.Data and endFx.Data.Halo == 20 and endFx.Data.Horns == 10 and endFx.Data.Winner == "Halo",
+		"② GooseEnd carries the final numbers", show(endFx and endFx.Data))
+	check(fin and type(fin.Info.Took) == "table" and fin.Info.Took[h] == 2 and fin.Info.Took[r] == 1,
+		"④ info.Took: everyone who brought an egg home (paid or not) - the quest count", show(fin and fin.Info.Took))
 	local fame = w.Fame[#w.Fame]
 	check(fame and fame.P == h and fame.Key == "Honor" and fame.N == 5 and type(fame.Ctx) == "table" and fame.Ctx.RankPoints == 5,
 		"the +5 goes through GrantFame with RankPoints 5 (the weekly board, within WeekCap)", show(fame and fame.Ctx))
@@ -1160,6 +1209,39 @@ runGroup("service-coop-and-absent", function()
 	check(af.Info.Mode == "Coop" and af.Info.NeverCame == "Horns" and af.Info.Side == "Halo" and af.Info.Target == 80 and af.Result == "Halo"
 		and #a.War == 0, "a side that never came: the co-op rule (90 >= 80: success at 70%), no war points", show(af.Info))
 	local _ = r
+end)
+
+-- ③ (최종 검수 10/14): in the square, the mode = who is in it (both sides = versus, one = co-op), live and at the end
+runGroup("service-square-mode", function()
+	local w = serviceWorld({ Square = true })
+	local h = w:Add("H1", "Halo", vec(-30, 3, -10))
+	local r = w:Add("R1", "Horns", vec(-30, 3, 10))
+	w:Land()
+	w:STick(1)
+	check(w.GS.Attrs.GooseMode == "Versus" and w.Goose ~= nil, "nobody in the square yet: Pending (shown as the normal bar)", w.GS.Attrs.GooseMode)
+	w.Square.In[h] = true
+	w:STick(1)
+	check(w.GS.Attrs.GooseMode == "Coop" and w.GS.Attrs.GooseCoopSide == "Halo", "a Knight walks in: co-op for the Knights",
+		show({ w.GS.Attrs.GooseMode, w.GS.Attrs.GooseCoopSide }))
+	w.Square.In[r] = true
+	w:STick(2)
+	check(w.GS.Attrs.GooseMode == "Versus" and r.Attrs.EggCan ~= false, "a Legion player joins: versus at once, and may pick",
+		show({ w.GS.Attrs.GooseMode, r.Attrs.EggCan }))
+	w:SUntil(61)
+	local fin = w.Finished[#w.Finished]
+	check(fin and fin.Info.Mode == "Versus", "the verdict = the bar's versus (both still in the square)", show(fin and fin.Info))
+	-- one side only all round: co-op both on the bar and in the verdict
+	local c = serviceWorld({ Square = true })
+	local k = c:Add("H1", "Halo", vec(-30, 3, -10))
+	c:Add("R1", "Horns", vec(70, 3, 10)) -- on the server, never in the square
+	c:Land()
+	c.Square.In[k] = true
+	c:STick(2)
+	check(c.GS.Attrs.GooseMode == "Coop", "only Knights in the square: co-op (a Legion player elsewhere does not count)", c.GS.Attrs.GooseMode)
+	c:SUntil(61)
+	local cf = c.Finished[#c.Finished]
+	check(cf and cf.Info.Mode == "Coop" and cf.Info.Side == "Halo" and cf.Info.NeverCame == "Horns", "the verdict: the same co-op",
+		show(cf and cf.Info))
 end)
 
 runGroup("service-returns-crowd-overtime", function()

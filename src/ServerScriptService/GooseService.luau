@@ -571,6 +571,23 @@ end
 -- A23-14: fix a "Pending" event's mode from who is on the server right now: both tug factions -> Versus, exactly one
 -- -> Coop for it (target from its ready headcount now), nobody -> stays Pending. Once fixed it never changes for this
 -- event (no mid-event flips). A23-130: no line of its own (the start line was the only one; the top gauge shows the mode).
+-- 최종 검수 10/14 ③ (goose review): in the square, a side is IN this round while someone of it stands in the square, or
+-- it took an egg (entrants) and still has someone on the server. Both = Versus, one = Coop for it, none = Pending. The
+-- live mode (the bar, the egg rules) and finishEggs' verdict use this same rule, so the bar never shows a different
+-- match from the one that is judged (a late rival who joins turns a co-op into a versus)
+local function sidePresent(side, entr)
+	if GooseSquare and type(GooseSquare.CountIn) == "function" and GooseSquare.CountIn(side) > 0 then return true end
+	local halo, horns = factionCounts()
+	return (tonumber(entr[side]) or 0) > 0 and (side == "Halo" and halo or horns) > 0
+end
+
+local function squareMode(entr)
+	local h, r = sidePresent("Halo", entr), sidePresent("Horns", entr)
+	if h and r then return "Versus", "None" end
+	if h or r then return "Coop", h and "Halo" or "Horns" end
+	return "Pending", "None"
+end
+
 local function fixMode()
 	if mode ~= "Pending" then return end
 	local halo, horns = factionCounts()
@@ -600,7 +617,9 @@ local function start()
 	-- A23-14: mode first, so the HUD never shows an active goose with the previous event's mode
 	mode = "Pending"
 	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
-	fixMode()
+	if not squareOn() then fixMode() end -- ③: the square's mode waits for who comes in (Pending until then)
+	setGame("GooseResult", "")
+	setGame("GooseResultUntil", 0)
 	if eggsOn() then
 		-- A23-131: the co-op target grows with the side's ring entrants (none yet = 1 person)
 		if mode == "Coop" then coop.People, coop.Target = 0, coopTargetFor(0) end
@@ -626,9 +645,7 @@ local function start()
 	if not ok then
 		warnThrottled("spawn", "goose model failed: " .. tostring(err))
 	end
-	-- A23-130: one short line for 2 s, the same in every mode
-	local line = txt("Start")
-	if line then pcall(Net.NotifyAll, line, "announce", math.max(0.5, tonumber(Config.Goose.StartSeconds) or 2)) end
+	-- A23-191 (최종 검수 10/14): no start line at all (the event chip and the goose's honk say it)
 end
 
 -- forget a player's entry for this event; what they already pulled stays in the side totals (like a leaver)
@@ -667,18 +684,13 @@ local function rewardPlayer(p, result, f, share, judged)
 	local prog = S and S.ProgressionService
 	xp = math.floor(xp * (prog and type(prog.PrivateMult) == "function" and tonumber(prog.PrivateMult()) or 1))
 	if xp > 0 then xp = tonumber(call("ProgressionService", "AddXP", p, xp)) or xp end
-	local msg = (share ~= nil) and txt("CoopReward", f, Util.FormatNumber(gold), Util.FormatNumber(xp)) or nil
-	msg = msg or string.format(Config.Text.GooseReward, Util.FormatNumber(gold), Util.FormatNumber(xp))
-
-	if not won then -- loss or tie: +1 cheer star (A23-130: said on the reward line, one toast)
+	if not won then -- loss or tie: +1 cheer star
 		local cheer = getNum(p, "CheerStars")
 		if cheer < Config.Goose.CheerStarsForRare then
-			local newCount = call("PlayerService", "AddStat", p, "CheerStars", 1)
-			cheer = tonumber(newCount) or (cheer + 1)
+			call("PlayerService", "AddStat", p, "CheerStars", 1)
 		end
-		msg ..= " · " .. string.format(Config.Text.GooseCheer, math.floor(cheer))
 	end
-	Net.Notify(p, msg, "reward", nil, "GoldPickup")
+	-- A23-191 (최종 검수 10/14): no reward toast: the gold / XP numbers pop where they live (ProgressionService)
 
 	if rare then -- A23-130: the winner's Rare Fx only, no server-wide brag line (RareAnnounce)
 		Net.Fx(p, "Rare", { Gold = gold, XP = xp })
@@ -699,9 +711,7 @@ local function eggHonor(p, f)
 	-- A23-134 "(주간 상한 안)": the same path as PvP / the grudge sack - the stat + the weekly board within WeekCap
 	call("PlayerService", "GrantFame", p, f == "Halo" and "Honor" or "Infamy", pts, { RankPoints = pts })
 	call("PlayerService", "SetStat", p, "EggHonorAt", now)
-	local T = type(Config.StoryQuests) == "table" and Config.StoryQuests.Text or {}
-	local fmt = f == "Halo" and T.GooseFirstHalo or T.GooseFirstHorns
-	if type(fmt) == "string" then pcall(Net.Notify, p, string.format(fmt, pts), "good") end
+	-- A23-191: no toast (the Honor / Infamy number shows where it lives)
 end
 
 -- A23-131: a paid side player delivered MinDelivered eggs or MinPoints points (MinCrowd eggs once P reached CrowdFrom)
@@ -735,7 +745,18 @@ local function finishEggs()
 	-- verdict: a versus side that never came into the ring (or has nobody left) = the co-op rule for the other side
 	local judged, side, target, rivalLeft, neverCame = mode, coop.Side, coop.Target, false, nil
 	local result = "Tie"
-	if judged ~= "Coop" then
+	local liveMode, liveSide, liveFull, liveTarget = mode, coop.Side, coop.Full, coop.Target
+	if squareOn() then
+		-- ③: the same rule as the live bar (squareMode)
+		judged, side = squareMode(entr)
+		if judged == "Versus" then
+			result = (rescue > poach) and "Halo" or ((poach > rescue) and "Horns" or "Tie")
+		elseif judged == "Coop" then
+			local other = side == "Halo" and "Horns" or "Halo"
+			rivalLeft = liveMode == "Versus"
+			neverCame = (entr[other] or 0) <= 0 and other or nil
+		end
+	elseif judged ~= "Coop" then
 		local halo, horns = factionCounts()
 		local goneH = (entr.Halo or 0) <= 0 or halo <= 0
 		local goneR = (entr.Horns or 0) <= 0 or horns <= 0
@@ -753,7 +774,8 @@ local function finishEggs()
 	end
 	local success = false
 	if judged == "Coop" then
-		target = coopTargetFor(entr[side] or 0)
+		-- ③: a co-op bar that was full stays met (its target was frozen when it filled)
+		target = (liveMode == "Coop" and liveSide == side and liveFull) and liveTarget or coopTargetFor(entr[side] or 0)
 		success = isTugFaction(side) and sideTotal(side) >= target
 		result = success and side or "Tie"
 	end
@@ -762,9 +784,11 @@ local function finishEggs()
 	mode = "Idle"
 	coop = { Side = "None", People = 0, Target = 0, Full = false, Told = {} }
 
-	local rewarded = {}
+	local rewarded, took = {}, {}
 	for p, pts in sum.Points do
 		local f = sum.Side[p]
+		-- ④: the quest's "Join a Golden Egg hunt" = brought at least one egg home (paid or not)
+		if isReady(p) and isTugFaction(f) and (sum.Delivered[p] or 0) >= 1 then took[p] = sum.Delivered[p] end
 		if isReady(p) and factionOf(p) == f and (judged ~= "Coop" or f == side) then
 			local delivered = sum.Delivered[p] or 0
 			if eggPaid(delivered, pts, sum.PeakP) then
@@ -773,17 +797,22 @@ local function finishEggs()
 				if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
 				local okH, errH = pcall(eggHonor, p, f)
 				if not okH then warnThrottled("honor", "egg honor failed: " .. tostring(errH)) end
-			elseif delivered >= 1 then
-				local msg = txt("BringTwo") -- the one fail fact (A23-99)
-				if msg then pcall(Net.Notify, p, msg, "info") end
-			end
+			end -- A23-191: no "bring 2 eggs" toast
 		end
 	end
 	if judged == "Versus" and result ~= "Tie" then -- co-op / a side that never came: no war points
 		call("WarService", "AddFactionPoints", result, Config.Goose.WinWarPoints)
 	end
+	-- ② (최종 검수 10/14): the result stays readable until everyone is sent back: GameState GooseResult (Halo | Horns |
+	-- Tie) + the final bar GooseResultHalo / GooseResultHorns until GooseResultUntil; GooseEnd carries the same numbers
+	local resultUntil = Util.Now() + (squareOn() and math.max(0, tonumber(SQS.ReturnAfter) or 4) or 4)
+	setGame("GooseResult", result)
+	setGame("GooseResultHalo", rescue)
+	setGame("GooseResultHorns", poach)
+	setGame("GooseResultUntil", resultUntil)
 	local okSend, sendErr = pcall(function()
-		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop") })
+		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop"), Halo = rescue, Horns = poach,
+			Until = resultUntil })
 	end)
 	if not okSend then warnThrottled("send", "goose result broadcast failed: " .. tostring(sendErr)) end
 
@@ -810,6 +839,7 @@ local function finishEggs()
 		info.RivalLeft = rivalLeft
 	end
 	if squareOn() then info.Joins = GooseSquare.TakeJoins() end
+	info.Took = took -- ④ the quest count (QuestService / StoryQuestService)
 	GooseService.GooseFinished:Fire(result, rewarded, info)
 end
 
@@ -863,10 +893,7 @@ local function finish()
 					rewarded[p] = n
 					local ok, err = pcall(rewardPlayer, p, result, f, share, judged)
 					if not ok then warnThrottled("reward", "goose reward failed for " .. p.Name .. ": " .. tostring(err)) end
-				else
-					local msg = txt("NeedManual", nil, MIN_MANUAL_HITS)
-					if msg then pcall(Net.Notify, p, msg, "info") end
-				end
+				end -- A23-191: no "need manual hits" toast
 			end
 		end
 	end
@@ -922,7 +949,21 @@ local function tick()
 		return
 	end
 	if eggsOn() then
-		if mode == "Pending" then
+		if squareOn() then
+			-- ③: the mode follows who is in the square (squareMode), at once
+			local m, s = squareMode({ Halo = GooseEggs.Entrants("Halo"), Horns = GooseEggs.Entrants("Horns") })
+			if m ~= mode or (m == "Coop" and s ~= coop.Side) then
+				mode = m
+				if m == "Coop" then
+					coop.Side, coop.People, coop.Full = s, GooseEggs.Entrants(s), false
+					coop.Target = coopTargetFor(coop.People)
+				else
+					coop.Side, coop.People, coop.Target, coop.Full = "None", 0, 0, false
+				end
+				GooseEggs.SetMode(mode, coop.Side)
+				publishMode()
+			end
+		elseif mode == "Pending" then
 			fixMode()
 			if mode == "Coop" then coop.People, coop.Target = 0, coopTargetFor(0) end
 			if mode ~= "Pending" then GooseEggs.SetMode(mode, coop.Side) end
@@ -936,8 +977,10 @@ local function tick()
 		local res = GooseEggs.Step(now, { Tilt = sideOffset })
 		rescue, poach = GooseEggs.Totals()
 		if mode == "Coop" and isTugFaction(coop.Side) then
+			-- ③: a full bar stays full (the target no longer grows once it was met)
+			if not coop.Full and coop.Target > 0 and sideTotal(coop.Side) >= coop.Target then coop.Full = true end
 			local people = GooseEggs.Entrants(coop.Side)
-			if people ~= coop.People then
+			if people ~= coop.People and not coop.Full then
 				coop.People, coop.Target = people, coopTargetFor(people)
 				publishMode()
 			end
@@ -1104,11 +1147,7 @@ function GooseService.RegisterHit(player, isManual)
 	if mode == "Pending" then fixMode() end -- first eligible hit before the next tick fixed the mode
 	if mode == "Coop" and f ~= coop.Side then
 		-- A23-14: the rival side arrived after this goose became co-op -> no pull this time, told once per event
-		if not coop.Told[player] then
-			coop.Told[player] = true
-			local msg = txt("RivalWait", coop.Side)
-			if msg then pcall(Net.Notify, player, msg, "info") end
-		end
+		coop.Told[player] = true -- A23-191: no toast (the dimmed Join / bar say it)
 		return 0
 	end
 	if sideOf[player] ~= nil and sideOf[player] ~= f then
