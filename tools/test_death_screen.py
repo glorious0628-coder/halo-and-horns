@@ -78,7 +78,7 @@ function ME:GetAttribute(k) return self.Attrs[k] end
 local UIS = { TouchEnabled = false }
 local env = setmetatable(table.clone(base), { __index = getfenv() })
 env.game = { GetService = function(_, n)
-	if n == "Players" then return { LocalPlayer = ME } end
+	if n == "Players" then return { LocalPlayer = ME, GetPlayerByUserId = function(_, id) return id == 42 and { DisplayName = "Bo" } or nil end } end
 	if n == "ReplicatedStorage" then return { WaitForChild = function() return { WaitForChild = function(_, m) return m end } end } end
 	if n == "TweenService" then return { Create = function() return { Play = function() end } end } end
 	if n == "UserInputService" then return UIS end
@@ -96,7 +96,8 @@ env.task = { spawn = function(fn, ...) if SPAWN then fn(...) end end, wait = fun
 local f = assert(loadstring(DS_SOURCE, "=DeathScreen"))
 setfenv(f, env)
 local DS = f()
-DS.Init({ UIKit = { Gui = GUI, ReducedMotion = function() return true end } })
+local TOASTS = {}
+DS.Init({ UIKit = { Gui = GUI, ReducedMotion = function() return true end, Toast = function(t) table.insert(TOASTS, t) end } })
 SPAWN = true
 DS.Start()
 SPAWN = false
@@ -162,15 +163,24 @@ check(h == want and top >= 58 and bottom <= 361 - 8, "phone 361 px high: the box
 	("box %s want %s top %.0f bottom %.0f"):format(tostring(h), tostring(want), top, bottom))
 DS.Hide()
 UIS.TouchEnabled = false
+
+-- 99N G: a friend may help me up (dev2 ReviveService)
+local R = DS.Lines({ By = "Monster", Name = "Slime" }, 3, nil, nil, 6.2)
+check(R.Revive == "A friend can help you up (7 s)" and R.Back == nil, "a friend may help: the wait line, no countdown", tostring(R.Revive))
+check(DS.Lines({ By = "Monster", Name = "Slime" }, 3, nil, nil, 0).Revive == nil, "no friend: no wait line")
+check(DS.PromptOn("Halo", 9, "Halo", 7) and not DS.PromptOn("Horns", 9, "Halo", 7) and not DS.PromptOn("Halo", 7, "Halo", 7)
+	and not DS.PromptOn(nil, 9, "Halo", 7), "the help prompt: my side only, never on my own body")
+FX.OnClientEvent:Fire("Revived", { By = 42 })
+check(TOASTS[#TOASTS] == "Bo helped you up!", "helped up: one line who did it", tostring(TOASTS[#TOASTS]))
 print(("DEATH_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
-    ("DS", "the fun tip shown", "\tif type(left) == \"number\" and left > 0 then\n", "\tout.Tip = data.Tip\n\tif type(left) == \"number\" and left > 0 then\n"),
+    ("DS", "the fun tip shown", "\telseif type(left) == \"number\" and left > 0 then\n", "\telseif type(left) == \"number\" and left > 0 then\n\t\tout.Tip = data.Tip\n"),
     ("DS", "pouch gold lost reads as nothing lost", "\telseif lost >= 1 then\n", "\telseif false then\n"),
     ("DS", "nothing lost: no line", "\t\tout.Lost = txt(\"LostNone\")", "\t\tout.Lost = nil"),
     ("DS", "no name for a monster", "local f = txt(by)\n\t\tout.Cause = f and trx(TX, by, name) or nil", "out.Cause = txt(\"Other\")"),
-    ("DS", "the countdown never ends", "\tif type(left) == \"number\" and left > 0 then\n", "\tif type(left) == \"number\" then\n"),
+    ("DS", "the countdown never ends", "\telseif type(left) == \"number\" and left > 0 then\n", "\telseif type(left) == \"number\" then\n"),
     ("DS", "everyone's KO shows", "data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return false end",
      "false then return false end"),
     ("DS", "never closes on the new character", "LocalPlayer.CharacterAdded:Connect(function() DeathScreen.Hide() end)", "local _ = 0"),
@@ -180,6 +190,10 @@ MUTATIONS = [
     ("DS", "the phone box sits high", "GotSize = 19, MaxGot = 2, Y = 0.5 }", "GotSize = 19, MaxGot = 2, Y = 0.42 }"),
     ("DS", "the phone uses PC sizes", "local src = touch == true and T.Touch or T", "local src = T"),
     ("DS", "modal (blocks input)", "\tframe.Active = false\n", "\tframe.Active = true\n"),
+    ("DS", "no wait line (a friend may help)", '\t\tout.Revive = trx(RX, "Wait", math.max(1, math.ceil(revive)))\n', ""),
+    ("DS", "the help prompt for every side", "return type(side) == \"string\" and side == mySide and ownerId ~= myId",
+     "return type(side) == \"string\" and ownerId ~= myId"),
+    ("DS", "nobody named when helped up", 'pcall(ui.Toast, trx(RX, "HelpedBy", by.DisplayName), "info", 3)', "local _ = by"),
     ("MAIN", "never loaded", '"EventHUD", "DeathScreen", "Panels"', '"EventHUD", "Panels"'),
 ]
 

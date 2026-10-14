@@ -8224,6 +8224,9 @@ Config.Revive = {
 		HelpedBy = "%s helped you up!",
 		NoPotion = "You need an HP potion to help",
 		Cooldown = "You can help again in %d s",
+		-- the KO screen (DeathScreen, 게임성 개발 1): the wait while a friend may help, and the way out
+		Wait = "A friend can help you up (%d s)",
+		Skip = "Get up in town",
 	},
 }
 

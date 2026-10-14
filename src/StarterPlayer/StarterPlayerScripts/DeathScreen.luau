@@ -51,6 +51,7 @@ local T = {
 	Title = Config.ClientText.DeathScreen.Title, -- the words: Config.ClientText.DeathScreen
 	Linger = 2, -- s after RespawnIn: closes even if no character came
 	Tick = 0.25,
+	SkipW = 220, SkipH = 44, -- 99N G: the 'Get up in town' button (du; 44 = the phone touch size)
 	Dim = 0.45, -- the screen's dim (BackgroundTransparency)
 	ZIndex = 60, -- under the opening / the pickers, over the HUD
 	TitleSize = 72, CauseSize = 24, LostSize = 20, BackSize = 22, GotTitleSize = 20, GotSize = 18,
@@ -62,7 +63,11 @@ local T = {
 	-- (size + 8) holds the drawn text
 	Touch = { TitleSize = 56, CauseSize = 20, LostSize = 19, BackSize = 18, GotTitleSize = 22, GotSize = 19, MaxGot = 2, Y = 0.5 },
 }
-local S = { Gui = nil, Labels = nil, OpenedAt = 0, RespawnIn = 3, Data = nil, Token = 0, Box = nil, Look = nil }
+local S = { Gui = nil, Labels = nil, OpenedAt = 0, RespawnIn = 3, Data = nil, Token = 0, Box = nil, Look = nil,
+	ReviveAt = 0, Skip = nil, Prompts = setmetatable({}, { __mode = "k" }) }
+-- 99N G (dev2 ReviveService, 최종 검수 10/15): the friend-help words (Config.Revive.Text) and the prompt's name
+local RV = type(Config.Revive) == "table" and Config.Revive or {}
+local RX = type(RV.Text) == "table" and RV.Text or {}
 -- A23-167 ③: what this run (since my character came) gave me - XP / gold / items / Honor or Mischief; Base = the last
 -- attribute snapshot, Pending = a snapshot is waiting (Level + XP, Carried + Bank change one by one: read them together)
 local G = { XP = 0, Gold = 0, Items = 0, Fame = 0, Base = nil, Pending = false, Wait = 0.3, MaxGot = 4 }
@@ -107,8 +112,9 @@ function DeathScreen.GotLines(got, faction)
 end
 
 -- what the screen says (pure): left = seconds until I am back (nil = no countdown line); got / faction = the 'This run'
--- lines (A23-167 ③: GotTitle + Got1..GotN, none when nothing grew)
-function DeathScreen.Lines(data, left, got, faction)
+-- lines (A23-167 ③: GotTitle + Got1..GotN, none when nothing grew); revive = seconds a friend may still help me up
+-- (99N G: the 'A friend can help you up (N s)' line instead of the countdown)
+function DeathScreen.Lines(data, left, got, faction, revive)
 	data = type(data) == "table" and data or {}
 	local out = { Title = T.Title }
 	local by = data.By
@@ -136,11 +142,35 @@ function DeathScreen.Lines(data, left, got, faction)
 		local maxGot = (S.Look and S.Look.MaxGot) or G.MaxGot
 		for i = 1, math.min(#gotLines, maxGot) do out["Got" .. i] = gotLines[i] end
 	end
-	if type(left) == "number" and left > 0 then
+	if type(revive) == "number" and revive > 0 and type(RX.Wait) == "string" then
+		out.Revive = trx(RX, "Wait", math.max(1, math.ceil(revive)))
+	elseif type(left) == "number" and left > 0 then
 		local f = txt("Respawn")
 		out.Back = f and trx(TX, "Respawn", math.max(1, math.ceil(left))) or nil
 	end
 	return out
+end
+
+-- 99N G: seconds a friend may still help me up (the server's ReviveUntil, else the Fx ReviveWait's own clock); 0 = none
+function DeathScreen.ReviveLeft()
+	local untilT = tonumber(LocalPlayer and LocalPlayer:GetAttribute("ReviveUntil")) or 0
+	local left = 0
+	if untilT > 0 then left = untilT - Util.Now() end
+	return math.max(0, left, S.ReviveAt - os.clock())
+end
+
+-- 99N G: a friend's help prompt on a KO'd body shows only to my own side, never on my own body (the server refuses
+-- the rest anyway: ReviveService)
+function DeathScreen.PromptOn(side, ownerId, mySide, myId)
+	return type(side) == "string" and side == mySide and ownerId ~= myId
+end
+
+function DeathScreen.FitPrompt(prompt)
+	if not (typeof(prompt) == "Instance" and prompt:IsA("ProximityPrompt") and prompt.Name == RV.PromptName) then return end
+	S.Prompts[prompt] = true
+	local on = DeathScreen.PromptOn(prompt:GetAttribute("Side"), prompt:GetAttribute("ReviveUserId"),
+		LocalPlayer and LocalPlayer:GetAttribute("Faction"), LocalPlayer and LocalPlayer.UserId)
+	if prompt.Enabled ~= on then prompt.Enabled = on end
 end
 
 -- (pure) the sizes for a phone (touch == true) or a PC: TitleSize..GotSize, MaxGot, Y
@@ -163,6 +193,8 @@ function DeathScreen.BoxHeight(lines, look)
 	add("GotTitle", look.GotTitleSize)
 	for i = 1, look.MaxGot do add("Got" .. i, look.GotSize) end
 	add("Back", look.BackSize)
+	add("Revive", look.BackSize)
+	if type(lines.Revive) == "string" then h += T.SkipH + T.Pad end -- the 'Get up in town' button under it
 	return h + math.max(0, n - 1) * T.Pad
 end
 
@@ -211,7 +243,8 @@ end
 local function paint()
 	if not (S.Labels and S.Data) then return end
 	local left = S.RespawnIn - (os.clock() - S.OpenedAt)
-	local lines = DeathScreen.Lines(S.Data, left, G, S.Faction)
+	local lines = DeathScreen.Lines(S.Data, left, G, S.Faction, DeathScreen.ReviveLeft())
+	if S.Skip then S.Skip.Visible = lines.Revive ~= nil end
 	for key, l in S.Labels do
 		local text = lines[key]
 		l.Text = text or ""
@@ -256,7 +289,18 @@ function DeathScreen.Show(data)
 		Lost = label(ui, box, "Lost", look.LostSize, "Body", 3, T.Bad),
 		GotTitle = label(ui, box, "GotTitle", look.GotTitleSize, "Title", 4, T.Good),
 		Back = label(ui, box, "Back", look.BackSize, "Number", 10),
+		Revive = label(ui, box, "Revive", look.BackSize, "Body", 11, T.Good),
 	}
+	-- 99N G: 'Get up in town' while a friend may help (c->s ReviveSkip); the only press on this screen
+	S.Skip = nil
+	if type(RX.Skip) == "string" and type(ui.ArtButton) == "function" then
+		local okB, btn = pcall(ui.ArtButton, "BtnSecondary", { Name = "ReviveSkip", Text = RX.Skip, LayoutOrder = 12,
+			Size = UDim2.fromOffset(T.SkipW, T.SkipH), ZIndex = T.ZIndex + 1, Visible = false, Parent = box }, function()
+			local remote = Net.Get("ReviveSkip")
+			if remote then remote:FireServer() end
+		end)
+		if okB and btn then S.Skip = btn end
+	end
 	for i = 1, look.MaxGot do S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i) end
 	S.Box, S.Look = box, look
 	DeathScreen.Flush() -- A23-167 ③: the last change before the KO counts
@@ -282,7 +326,7 @@ function DeathScreen.Show(data)
 	task.spawn(function()
 		while S.Token == token and DeathScreen.IsOpen() do
 			paint()
-			if os.clock() - S.OpenedAt >= S.RespawnIn + T.Linger then
+			if os.clock() - S.OpenedAt >= S.RespawnIn + T.Linger and DeathScreen.ReviveLeft() <= 0 then
 				DeathScreen.Hide()
 				break
 			end
@@ -343,6 +387,20 @@ function DeathScreen.OnFx(kind, data)
 		end
 		return false
 	end
+	if kind == "ReviveWait" then -- 99N G: a friend is near - the screen waits Sec more (ReviveUntil follows)
+		S.ReviveAt = os.clock() + math.max(0, tonumber(type(data) == "table" and data.Sec) or 0)
+		pcall(paint)
+		return true
+	end
+	if kind == "Revived" then -- 99N G: one line who helped me up (the screen goes with my new character)
+		S.ReviveAt = 0
+		local by = type(data) == "table" and Players:GetPlayerByUserId(tonumber(data.By) or 0) or nil
+		local ui = kit()
+		if by and type(RX.HelpedBy) == "string" and ui and type(ui.Toast) == "function" then
+			pcall(ui.Toast, trx(RX, "HelpedBy", by.DisplayName), "info", 3)
+		end
+		return true
+	end
 	if kind ~= "KO" then return false end
 	if type(data) == "table" and data.UserId ~= nil and LocalPlayer and data.UserId ~= LocalPlayer.UserId then return false end
 	local ok, shown = pcall(DeathScreen.Show, data)
@@ -370,6 +428,17 @@ function DeathScreen.Start()
 		if not fx then return end
 		fx.OnClientEvent:Connect(function(kind, data) DeathScreen.OnFx(kind, data) end)
 	end)
+	-- 99N G: the friend-help prompts (on KO'd bodies) only for my side
+	if type(RV.PromptName) == "string" and typeof(workspace) == "Instance" then
+		workspace.DescendantAdded:Connect(function(d) pcall(DeathScreen.FitPrompt, d) end)
+		for _, d in workspace:GetDescendants() do pcall(DeathScreen.FitPrompt, d) end
+		if LocalPlayer and type(LocalPlayer.GetAttributeChangedSignal) == "function" then
+			LocalPlayer:GetAttributeChangedSignal("Faction"):Connect(function()
+				for prompt in S.Prompts do pcall(DeathScreen.FitPrompt, prompt) end
+			end)
+			LocalPlayer:GetAttributeChangedSignal("ReviveUntil"):Connect(function() pcall(paint) end)
+		end
+	end
 end
 
 return DeathScreen
