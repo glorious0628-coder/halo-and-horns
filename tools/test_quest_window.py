@@ -129,7 +129,7 @@ def main():
     names = re.findall(r'"([A-Za-z]+)"', order[1]) if order else []
     hud = HUD.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     settings_ui = (SCRIPTS / "SettingsUI.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
-    words = re.search(r"\tText = \{(.*?)\n\t\},", book, re.S)
+    words = re.search(r"\tText = \{(.*?)\n\t\},", book, re.S) or re.search(r"\nConfig\.ClientText\.QuestBook = \{(.*?)\n\}", CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n"), re.S)
     static = [
         ("ClientMain loads QuestBook after Panels and HUD", "QuestBook" in names and "Panels" in names and "HUD" in names
          and names.index("QuestBook") > names.index("Panels") and names.index("QuestBook") > names.index("HUD")),

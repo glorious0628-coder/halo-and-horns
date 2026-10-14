@@ -118,7 +118,7 @@ def main():
     order = re.search(r"local ORDER = \{([^}]*)\}", cm)
     names = re.findall(r'"([A-Za-z]+)"', order[1]) if order else []
     code = "\n".join(line.split("--", 1)[0] for line in src.splitlines())
-    words = re.search(r"\tText = \{(.*?)\n\t\},", src, re.S)
+    words = re.search(r"\tText = \{(.*?)\n\t\},", src, re.S) or re.search(r"\nConfig\.ClientText\.PauseCard = \{(.*?)\n\}", CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n"), re.S)
     static = [
         ("ClientMain loads PauseCard", "PauseCard" in names),
         ("no purchase prompt near the pause card (A23-79)",

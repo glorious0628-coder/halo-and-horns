@@ -114,7 +114,7 @@ def main():
     order = re.search(r"local ORDER = \{([^}]*)\}", cm)
     names = re.findall(r'"([A-Za-z]+)"', order[1]) if order else []
     code = "\n".join(line.split("--", 1)[0] for line in src.splitlines())
-    words = re.search(r"\tText = \{(.*?)\},", src, re.S)
+    words = re.search(r"\tText = \{(.*?)\},", src, re.S) or re.search(r"\nConfig\.ClientText\.ComeBack = \{(.*?)\n\}", CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n"), re.S)
     pause = (SCRIPTS / "PauseCard.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     invite = (SCRIPTS / "Invite.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
     panels = (SCRIPTS / "Panels.luau").read_text(encoding="utf-8-sig").replace("\r\n", "\n")
