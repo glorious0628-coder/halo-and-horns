@@ -27,7 +27,8 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SPS = "src/StarterPlayer/StarterPlayerScripts/"
 FILES = {"HUD": ROOT / (SPS + "HUD.luau"), "EVENT": ROOT / (SPS + "EventHUD.luau"),
-         "LAYOUT": ROOT / (SPS + "HudLayout.luau")}
+         "LAYOUT": ROOT / (SPS + "HudLayout.luau"),
+         "CONFIG": ROOT / "src/ReplicatedStorage/Shared/Config.luau"}
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -168,7 +169,7 @@ STATIC_MUTATIONS = [
     ("HUD", "both glow again", 'L.SetGlow("menu", ui.menuGlow, (settings or travel or attend) and ui.foldOpen ~= true)',
      'L.SetGlow("menu", ui.menuGlow, settings or travel or attend)'),
     ("HUD", "phones shrink too", "\t\tif not IS_TOUCH then\n\t\t\tlocal s, lines = L.FitFold(", "\t\tif true then\n\t\t\tlocal s, lines = L.FitFold("),
-    ("HUD", "the old word", '\tTileCodex = "Monsters",', '\tTileCodex = "Codex",'),
+    ("CONFIG", "the old word", '\tTileCodex = "Monsters",', '\tTileCodex = "Codex",'),
     ("LAYOUT", "the PC row back to six", 'tiles = { "BC", { 424, 634, 438, 60 }', 'tiles = { "BC", { 424, 634, 375, 60 }'),
     ("LAYOUT", "the meter steps for one square fewer", "local FOLD_WANT_PC = 8", "local FOLD_WANT_PC = 7"),
     ("HUD", "a ninth fold square nobody counted", '\t\t{ Id = "Settings", Icon = "IconSettings"',

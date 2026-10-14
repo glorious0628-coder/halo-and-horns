@@ -366,7 +366,7 @@ STATIC_MUTATIONS = [
      'Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",'),
     ("HUD", "no tier refresh with the tracker", "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n", "\tt.Frame.Visible = label ~= nil\n"),
     ("FP", "no room for the lines", "areaH = math.max(1, areaH - chH)", "areaH = math.max(1, areaH)"),
-    ("DS", "the KO screen ignores the run", "DeathScreen.Lines(S.Data, left, G, S.Faction)", "DeathScreen.Lines(S.Data, left)"),
+    ("DS", "the KO screen ignores the run", "DeathScreen.Lines(S.Data, left, G, S.Faction, DeathScreen.ReviveLeft())", "DeathScreen.Lines(S.Data, left)"),
 ]
 
 
