@@ -6,7 +6,8 @@ Net, PauseCard, Fx and the players are small doubles. Covers: the pure lines (re
 (timed: opens at once, its Config.Finisher.Cards words, countdown, one pick -> FinisherPick (id, Help|Tickle), locked
 until the end, closes on its end or when time is up), the ChoiceCard card (saved: waits for a calm screen - no fight,
 not busy, no other window, not dead -, closed by hand comes back after Screen.Later s, CardAction (id, Good|Evil), a pick
-without an answer unlocks after Wait), a timed card over a saved one holds it back and gives it back, broken payloads,
+without an answer unlocks after Wait), a timed card over a saved one holds it back and gives it back, a card from the other server while a timed card runs
+waits (MINOR 1, 최종 검수 10/14: the timed card is never closed, a newer same-server card replaces the waiting one), broken payloads,
 and the afterglow (gold sparkles / purple smoke at the feet, replaced, ends after Seconds, the Config switch).
 Static: ClientMain loads it after Panels / PauseCard / Fx; the Panels kit hands out the approved choice button; the
 remotes exist; nothing is sold near the card (A23-79); English words; built-in particle textures only (no ray art).
@@ -59,6 +60,9 @@ MUTATIONS = [
     ("any end closes any card", "\tif not card or card.Src ~= src or card.Id ~= id then return end\n", "\tif not card then return end\n"),
     ("a saved card lost under a timed one", "\tif old and not old.Ends and card.Ends and old.Src ~= card.Src then\n\t\tS.Held = old\n",
      "\tif false then\n\t\tS.Held = old\n"),
+    ("a card over a running timed card closes it", "\tif old and old.Ends and os.clock() < old.Ends and old.Src ~= card.Src then\n",
+     "\tif false then\n"),
+    ("the waiting card over a timed one dropped", "\t\tS.Held = card\n\t\treturn\n", "\t\treturn\n"),
     ("a held card kept after its end", "\tif held and held.Src == src and held.Id == id then S.Held = nil return end\n", ""),
     ("the countdown stands still", "\tif VIEW.Count then VIEW.Count.Text = fmt(screen().Seconds, math.ceil(left)) end\n", ""),
     ("the glow at the hips", "att.Position = Vector3.new(0, -(root.Size.Y / 2 + math.max(0, hum.HipHeight)) + 0.2, 0)",
