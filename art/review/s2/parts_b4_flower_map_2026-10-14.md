@@ -11,8 +11,8 @@
 | HaloVar4_PotFlowers_A | `_Bowl` | `_Leaves` | WhiteDaisy × 10, Blue5 × 8 |
 | HaloVar4_PotFlowers_C | `_Urn` | `_Leaves` | Blue5 × 12 |
 | HaloChunk_FlowerBuckets | `_WoodBucket`, `_SilverBucket` | — | 나무 통: TulipWhite × 3, TulipBlue × 2 / 은 통: Hydrangea(⑤ 묶음에서 그림) 흰 1·파랑 1 송이 |
-| HaloChunk_FlowerBushPot | — | `_Leaves` | WhiteDaisy × 6, Blue5 × 4 (작은 노란 꽃 4개는 너무 작아 뺌 제안) |
+| HaloChunk_FlowerBushPot | — | `_Leaves` | WhiteDaisy × 6, Blue5 × 4 (작은 노란 꽃 4개는 뺌 — 최종 검수 OK 10/14) |
 | NEW_FlowerBush | — | `_Leaves` | WhiteDaisy × 8, Lilac × 10 |
 
-공유 꽃 9종: WhiteDaisy·Blue5·Lilac·RedDaisy·PinkRose = 앞·옆·뒤 4면(오른 면 = 왼 면 뒤집기). RedBud·RoseBud·TulipWhite·TulipBlue = 돌려도 같아 앞 1장 → 4면 복사.
+공유 꽃 9종: WhiteDaisy·Blue5·Lilac·RedDaisy·PinkRose = 앞·옆·뒤 4면(오른 면 = 왼 면 뒤집기). RedBud·RoseBud = 돌려도 같아 앞 1장 → 4면 복사. TulipWhite·TulipBlue = 옆면 따로(잎이 앞뒤로 겹친 좁은 모습, 10/14 다시), 뒤 = 앞 뒤집기.
 꽃 4면 방향: 앞 = 꽃 얼굴, 옆 = 꽃이 화면 오른쪽(왼 면)을 봄, 뒤 = 꽃받침·줄기 끝.

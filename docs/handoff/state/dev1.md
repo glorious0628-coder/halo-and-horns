@@ -1,5 +1,47 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 10 — fix/auto-translate-on 70cd9694 (급함, 다 됨·push, 최신)
+- SPEC A23-179(사용자 "누가 자동 번역까지 끄래"): ClientMain의 전체 AutoLocalize=false watcher(69f1fe45) 삭제 → Roblox 자동 번역 켜짐.
+- 끈 채로 둔 것(만드는 곳에서만): 이름표 Line1("[칭호] 이름", CharacterVisuals; Line2·3은 번역), Tab 목록 PlayerName, 후원자 판 이름 줄, UIKit artText Number=true(숫자 라벨 전부, 호출자가 AutoLocalize 주면 그 값), 피해 숫자 풀(전리품 줄은 번역: e.Gui.AutoLocalize = look ~= nil), 스킬 초, 입력칸(닉네임·시장). 새 UIKit.NoTranslate(inst). 채팅 말풍선은 Roblox TextChatService 것이라 해당 없음.
+- 운명의 제단 프롬프트: 저장된 place에 AutoLocalize=false가 1개 남아 있어(rbxlx 유일) MapBuilder가 이제 true로 씀(지우기만 하면 place 값이 남음).
+- 시험: 새 test_auto_translate 14·7/7(전체 끄기 없음, DescendantAdded 안 끄기 없음, false는 허용 목록 9곳만, 필수 자리 11개), test_place_english 검사 2개 새 규칙으로, market_window 165·60/60, nickname 790, supporter_board, english, l10n, story_text, skill_learn, skill_fx, king_drop, hud_layout, phone_first10, fit_text, beta_basics, keys_settings, grudge, ranking, loot, golden_egg, goose_square, class_grips_server 통과; rank_marks 117/117(정적 10 = 성긴 worktree glb 없음, 거짓). luau-compile 바꾼 10파일 OK. 기다리는 가지 모두와 merge-tree 깨끗.
+- ⑤ 번역으로 글이 길어질 때 넘칠 곳(목록만):
+  1. **FitText·HUD L.FitGoal·L.TextLines·MeasureRenderedText는 TextService로 영어 원문을 잼** → 번역문이 길면 '맞춤' 라벨도 넘침(메뉴 칸 이름 FitMinPx 8, 퀘스트 목표 2줄, Faction/ClassPicker 카드). TextScaled 라벨은 실제 그린 글 기준이라 안전.
+  2. DeathScreen 줄: TextWrapped + 높이 size+8 고정 → 번역이 두 줄이면 다음 줄과 겹침(박스 높이 합은 줄마다 한 줄 기준).
+  3. HUD 목표 칩 2·3층: 한 줄 + "..." → 긴 번역은 잘림.
+  4. Panels 키트 버튼(ArtTextButton TextScaled, 바닥 12px): 좁은 버튼(마을 기금 190du, 출석 Claim, 상점 Buy)에서 긴 단어는 12px에서도 넘칠 수 있음.
+  5. TextTruncate 라벨(CharacterUI, PetWindow, PlayerListUI, Panels 일부): 넘치진 않고 잘림.
+  6. 자동 번역은 string.format으로 만든 문장(숫자·이름 낀 줄)은 통째로 한 항목 → Creator Hub에 숫자별 항목이 쌓일 수 있음(번역 안 될 수 있음).
+
+## 10/14 밤 9 — fix/settings-apply fe85439a (다 됨·push, 최신)
+- 계획 2-C #9 앞 두 개. 확인: 설정 DmgNum(All/Off)·Tags(All/Near/Off)는 저장만 되고 클라 어디서도 안 읽었음(Settings.luau 말고 0곳).
+- 피해 숫자: Fx MOTION.DamageNumbersOn()(Settings DmgNum, 기본 All) + MOTION.IsDamageKey(M 내 타격·P PvP·H 받은 피해) → showAmount 맨 앞에서 Off면 안 그림, Release 합계(ShowNumber)도. 골드·XP·전리품(G·RG·RX) 그대로.
+- 남 이름표: 새 모듈 NameTagPrefs(ClientMain ChatTags 뒤): 서버 CharacterVisuals의 머리 "Nametag" 중 남의 것만(PlayerToHideFrom ~= 나) All = MaxDistance 120(Config.Visuals.NametagMaxDistance), Near = 새 Config.Visuals.NametagNearDistance 40, Off = Enabled false; 나중에 다시 만든 이름표·새 플레이어·설정 바꿈 바로 적용, 유령 글 등 다른 billboard 안 건드림.
+- 시험: 새 test_settings_apply 23·12/12(+정적 3), fx_edges, skill_fx 109·18/18, skill_signals, hit_ring, king_drop, weapon_motion 269, keys_settings, english, l10n 통과; luau-compile Fx·NameTagPrefs·HUD OK.
+- 병합 주의: dev1-village-fund와 ClientMain ORDER 한 줄 충돌(둘 다 모듈 추가) → 마을 기금 먼저 병합되면 내가 이 가지에 origin/main 병합해 한 줄 풀기. main·skill-press-reject와는 깨끗.
+
+## 10/14 밤 8 — fix/skill-press-reject 3468b49c (다 됨·push, 최신)
+- 81e1d003 위 3468b49c = 최종 검수 MINOR 2개(목표 칩): ① HUD L.GoalTiers Big 줄은 Halo/Horns 글이 있을 때만(Neutral/None/nil 명시로 없음) ② 칩 2·3층 TextWrapped=false + TextTruncate AtEnd(작은 PC 방 계산이 한 줄씩이라 두 줄로 밀리지 않음, 긴 줄은 "...").
+- 시험: goal_chips 52·21/21(새 검사 1 + 돌연변이 2: format 에러 기대기, 두 줄 감기), hud_layout, hud_reveal, quest_lines, phone_first10, phone_text, first_look, comeback_client, fit_text, english, l10n, skill_press, skill_learn 통과.
+
+## 10/14 밤 7 — fix/skill-press-reject 81e1d003
+- 계획 2-C #8. 확인: 서버 SkillService.press가 Fx "SkillPress" { Slot, Result }를 이미 보내는데 클라에 받는 곳이 없었음 → 서버만 아는 거절(NoTarget·CantHop·TooHeavy·서버 쪽 Cooldown/NoMP·Locked)은 화면에 아무 표시 없었음. 서버 필드 바꿀 것 없음.
+- 고침(SkillBar): Fx 받기 → 버튼 흔들기 + 짧은 말(Config.Skills.Text: NoTarget, CantHop, TooHeavy, 새 NotReady "Not ready", NoMP + No 소리, 새 NotNow "Not now" / 레벨 아래면 "Unlocks at Lv N"), Queued·모르는 값 = 없음, 거절된 칸의 줄 선 누름 지움. 클라 자기 거절 글(옛 TXT "Not yet"/"Not enough MP")도 Config.Skills.Text로.
+- Hop 준비(X 켜기 아님): Fx "Hop" { To, T } → 내 캐릭터를 낮은 호로 To까지(T초, 0.1~0.6), 땅 높이 맞춤(레이캐스트, 오르막), 방향 유지, 끝나면 멈춤; 16스터드 넘음·깨진 값·KO·새 캐릭터 = 안 움직임.
+- 시험: 새 test_skill_press 26·15/15 + 정적 2, skill_learn 38·27/27, skills 151, skills_x 167, skill_kit, skill_fx 109·18/18, skill_book 67·32/32, skill_signals 142, english, l10n, story_text, hud_layout, phone_first10 = 0 failing·MISSED 0. main·dev1-village-fund와 merge-tree 깨끗.
+
+## 10/14 밤 6 — dev1-village-fund 864cf867 (다 됨·push, 최신)
+- 합친 판(864cf867 + dev2-village-fund 04ef28c7 + main) 시험 통과: village_fund_ui 61·23/23(진짜 Config), village_fund 99/99, english, l10n, story_text, choice_card_ui, place_english → 최종 검수에 같이 병합 요청함.
+- 개발 2 메시지(실제 서버 모양)에 맞춘 위 커밋 864cf867(f9afc184 위): Net.luau 뺌(개발 2가 FundGive/FundOpen + GameStateDefaults 넣음), 속성 = GameState 폴더, state Why("Poor"/"Full"/"Closed")·Can·Sum(막대; Week = 주 번호), 서버 글 Text.Title/Today/[side].Give/Poor(%s Step)/Full(%d PerDay)/Closed 사용, Config.VillageFundScreen은 Lead·Gold·Close·Week·Marks·Lanterns·Fireworks만, 프롬프트 ActionKey/ObjectKey Config 경로 → ActionText/ObjectText.
+- 시험 test_village_fund_ui 61·23/23 + 정적 8(Net 이름은 '많아야 1번'), english, l10n, story_text, place_english 통과. 개발 2 dev2-village-fund push 기다림 → 합친 판 시험 → 최종 검수 같이 병합.
+
+## 10/14 밤 5 — dev1-village-fund f9afc184
+- death-box(24eae591)·choice-card-held(84cefeeb) main 병합됨.
+- **마을 기금 화면**(A23-178 B, 계약 docs/design/village_fund_server_2026-10-14.md §8): 가지 **dev1-village-fund f9afc184**(origin/main 67ed5712 위 1커밋). 새 모듈 VillageFundUI(ClientMain ChoiceCardUI 뒤): ① FundPrompt는 내 진영 것만 Enabled(속성 Faction, 없으면 가까운 Spots), FundOpen → Panels 'VillageFund' 카드(Lead Share/Show off, Today n/3, 가진 골드, [Give 1,000] → FundGive:FireServer() 인자 없음, 1초 잠금, [Close]), 새 FundOpen = 제자리 갱신, 분수에서 Radius+8 멀어지거나 진영 바뀌면 닫힘 ② Poor/Full = [Give] 흐림 + 서버 글 Config.VillageFund.Text.Poor/Full ③ 주간 막대 UIKit.ArtBar(불꽃 목표까지 채움, 등불 30% 눈금, ReplicatedStorage FundHalo/FundHorns 실시간) ④ 등불(FundLevel≥1, 고리 8개·폰 4개, 둥근 반짝임+PointLight)·밤 불꽃(≥2 + DayPhase Night, 별·색종이 Emit 2.6~4.2초마다, 폰 5~7초·반), 빛줄기·Beam·Trail 없음.
+- Net: FundGive·FundOpen 내 가지가 넣음(개발 2에 알림). Config: 새 표 Config.VillageFundScreen만(카드 글). Config.VillageFund는 개발 2 몫 — 시험은 없으면 계약 §2 표를 넣고 돎.
+- 시험: test_village_fund_ui 54·19/19 + 정적 8, english, l10n, story_text, codex, choice_card_ui, fit_text, place_english(--place) 0 failing·MISSED 0.
+- 기다림: 개발 2 dev2-village-fund(+ FundPrompt 속성 Faction 부탁) → 최종 검수 같이 병합 → 메인 사진(아직 사진 스크립트 없음, 필요하면 만듦).
+
 ## 10/14 밤 4 — fix/choice-card-held fdbd7c19 (다 됨·push, 최신)
 - ④ 선택 카드 창 준비 = MINOR 1: **fix/choice-card-held fdbd7c19**(origin/main 6a4b3ae9 위 1커밋, death-box와 병합 깨끗). ChoiceCardUI offer: 시간 카드가 아직 시간 안이고 다른 출처 카드가 오면 시간 카드는 그대로 두고 새 카드는 S.Held(같은 출처 더 새 카드가 Held를 바꿈) → 시간 카드 끝나면 Held가 뜸.
 - 시험: test_choice_card_ui 61·27/27(새 검사 4·돌연변이 2), test_choice_card 133·68/68, english 81 = 0 failing·MISSED 0.

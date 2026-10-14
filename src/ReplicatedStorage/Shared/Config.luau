@@ -701,6 +701,8 @@ Config.Skills = {
 	Text = {
 		NewSkill = "New skill! %s (%s)", NewSkillTouch = "New skill! Tap the new button.", TryIt = "Try it",
 		NoMP = "Not enough MP", NoTarget = "No target", TooHeavy = "Too heavy to jump!", CantHop = "Can't hop here",
+		-- 2-C #8 (game dev 1, 10/14): the short word over a refused skill button (SkillBar; the server's Fx "SkillPress")
+		NotReady = "Not ready", NotNow = "Not now",
 		UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt", Guarded = "Guarded", MPGain = "+%d MP",
 		Cost = "Costs %d MP", Cooldown = "%s s cooldown", Ready = "Ready", NeedMP = "Need MP",
 		XHalo = "Halo: guards friends", XHorns = "Horns: steals MP", XArtisan = "Artisan: crafted look",
@@ -5318,8 +5320,10 @@ Config.Switches = {
 		Goose = { Type = "Bool", Default = true }, -- no new goose
 		DayCycle = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = the clock eases to Config.DayCycle.StartClock and stays
 		Weather = { Type = "Bool", Default = true }, -- A23-105 (DayCycleService): off = always clear
-		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay)
-		PioneerTitle = { Type = "Bool", Default = true },
+		-- 2-A ⑦: off on the full-launch day = no new Beta Pioneer titles (TitleService; owned titles stay). Unread = the
+		-- value until this server's first good read of the board (review 10/14: a new server after the launch, or a
+		-- DataStore outage, must never hand out the title on the Default)
+		PioneerTitle = { Type = "Bool", Default = true, Unread = false },
 		-- A23-178: off = no new village fund gifts (the week's sums and the town lights stay)
 		VillageFund = { Type = "Bool", Default = true },
 	},

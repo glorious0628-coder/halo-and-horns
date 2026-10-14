@@ -15759,5 +15759,836 @@
    "note": "raw HD GLB front = +X",
    "status": "통짜 HD, 사용자 방식 아님 (10/14 사용자: 사람 = 부품 방식 — 머리·몸 스마트 메시 + 소품 HD → Blender 합침). 파일만 둠."
   }
+ ],
+ "NEW_WhiteRock_a_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20190->20135",
+   "project": "498f66d3-3778-4b28-880c-c958f58a89f3",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/NEW_WhiteRock_a_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/NEW_WhiteRock_a_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/NEW_WhiteRock_a_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/NEW_WhiteRock_a_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NEW_WhiteRock_a_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7111836
+  }
+ ],
+ "NEW_WhiteRock_b_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20135->20080",
+   "project": "78f0c1d6-8c17-46a4-8f01-6bcf14c8f741",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/NEW_WhiteRock_b_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/NEW_WhiteRock_b_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/NEW_WhiteRock_b_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/NEW_WhiteRock_b_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NEW_WhiteRock_b_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6376372
+  }
+ ],
+ "NEW_WhiteRock_c_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20080->20025",
+   "project": "a6b39726-82fc-4055-9551-a19a1fbf75c6",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/NEW_WhiteRock_c_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/NEW_WhiteRock_c_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/NEW_WhiteRock_c_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/NEW_WhiteRock_c_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NEW_WhiteRock_c_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7504232
+  }
+ ],
+ "NEW_ArmoryBarrel_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20025->19970",
+   "project": "e08980ed-edbd-4458-a64c-44163d1caef5",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/NEW_ArmoryBarrel_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/NEW_ArmoryBarrel_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/NEW_ArmoryBarrel_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/NEW_ArmoryBarrel_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NEW_ArmoryBarrel_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 8720912
+  }
+ ],
+ "Town_Halo_Fountain3_Basin_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19970->19915",
+   "project": "0e2d4eb8-3bf1-4788-9cd6-ff019a18c4e6",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Basin_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Basin_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Basin_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Basin_back_ns.png"
+   },
+   "file": "art/models/tripo/web/Town_Halo_Fountain3_Basin_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 8076204
+  }
+ ],
+ "Town_Halo_Fountain3_MidTier_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19915->19860",
+   "project": "cb8a51d3-2d54-4896-99bf-9ffcd0c7bc95",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_MidTier_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_MidTier_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_MidTier_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_MidTier_back_ns.png"
+   },
+   "file": "art/models/tripo/web/Town_Halo_Fountain3_MidTier_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6514728
+  }
+ ],
+ "Town_Halo_Fountain3_Top_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19860->19805",
+   "project": "4f330660-f4be-4e8f-affb-a6c44ce8f324",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Top_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Top_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Top_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/Town_Halo_Fountain3_Top_back_ns.png"
+   },
+   "file": "art/models/tripo/web/Town_Halo_Fountain3_Top_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 5953672
+  }
+ ],
+ "HaloVar3_TreePlanter_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19805->19750",
+   "project": "052facfa-8c45-40ab-a594-a3eb5aa327db",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_TreePlanter_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_TreePlanter_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_TreePlanter_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_TreePlanter_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_TreePlanter_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6217236
+  }
+ ],
+ "HaloVar3_TreeFruit_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19750->19695",
+   "project": "24e1eae7-208a-473d-8c51-32e97b2e5fc8",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_TreeFruit_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_TreeFruit_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_TreeFruit_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_TreeFruit_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_TreeFruit_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 3341052
+  }
+ ],
+ "HaloVar3_RoundTree_E_Trunk_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19695->19640",
+   "project": "e3a13cd9-d811-4cf3-8ff8-636398a3cf18",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Trunk_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Trunk_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Trunk_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Trunk_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_Trunk_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7652004
+  }
+ ],
+ "HaloVar3_RoundTree_G_Trunk_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19640->19585",
+   "project": "a777bbed-d85d-43cc-ac34-3a6e13900c9a",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Trunk_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Trunk_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Trunk_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Trunk_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_Trunk_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 8256408
+  }
+ ],
+ "HaloVar3_RoundTree_E_Canopy_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19585->19530",
+   "project": "14f82dd5-b36e-4637-b3ee-cb512c31fdc0",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Canopy_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Canopy_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Canopy_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_E_Canopy_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_E_Canopy_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7849588
+  }
+ ],
+ "HaloVar3_RoundTree_G_Canopy_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19530->19475",
+   "project": "a5d8ebce-4abf-46ef-8818-e4ca1deb0de7",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Canopy_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Canopy_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Canopy_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_RoundTree_G_Canopy_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_RoundTree_G_Canopy_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 9262040
+  }
+ ],
+ "HaloFlowerPotHQ_Rose_Bowl_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19475->19420",
+   "project": "988738bb-e6d3-4e97-bbb0-58780834b39b",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Bowl_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Bowl_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Bowl_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Bowl_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_Bowl_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6995128,
+   "status": "not used - 2D failed re-check (최종 검수 10/14, 2D redraw); generated before the hold message"
+  }
+ ],
+ "HaloVar3_PotFlowers_F_Vase_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19420->19365",
+   "project": "4e1fdee7-e960-4444-8f03-58c77bc5b37b",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar3_PotFlowers_F_Vase_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar3_PotFlowers_F_Vase_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar3_PotFlowers_F_Vase_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar3_PotFlowers_F_Vase_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar3_PotFlowers_F_Vase_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7866104
+  }
+ ],
+ "HaloVar4_PotFlowers_A_Bowl_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19365->19310",
+   "project": "801f725b-fd64-49c3-af78-453f4b895212",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Bowl_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Bowl_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Bowl_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Bowl_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_Bowl_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6987960,
+   "status": "not used - 2D failed re-check (최종 검수 10/14, 2D redraw); generated before the hold message"
+  }
+ ],
+ "HaloVar4_PotFlowers_C_Urn_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19310->19255",
+   "project": "74e61dd9-95f8-450e-a4e9-824ae5d1ff27",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Urn_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Urn_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Urn_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Urn_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_Urn_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 8214440
+  }
+ ],
+ "HaloChunk_FlowerBuckets_WoodBucket_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19255->19200",
+   "project": "8be5841f-be9a-4e17-aedf-a0e5d4af440c",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_WoodBucket_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_WoodBucket_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_WoodBucket_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_WoodBucket_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_FlowerBuckets_WoodBucket_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6314456
+  }
+ ],
+ "HaloChunk_FlowerBuckets_SilverBucket_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19200->19145",
+   "project": "8dc11f60-f338-4d06-9e91-d4541663826e",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_SilverBucket_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_SilverBucket_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_SilverBucket_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloChunk_FlowerBuckets_SilverBucket_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_FlowerBuckets_SilverBucket_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 5071364
+  }
+ ],
+ "HaloFlowerPotHQ_Daisy_Leaves_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19145->19090",
+   "project": "613b4061-a17b-45c1-8ce8-9db71ccee27e",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Leaves_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Leaves_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Leaves_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Leaves_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_Leaves_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6199904
+  }
+ ],
+ "HaloFlowerPotHQ_Rose_Leaves_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19090->19035",
+   "project": "674009f8-492f-4457-b34b-598b458329b4",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Leaves_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Leaves_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Leaves_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Rose_Leaves_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Rose_Leaves_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6819112
+  }
+ ],
+ "HaloVar4_PotFlowers_A_Leaves_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "19035->18980",
+   "project": "fd7e900d-105e-4ca9-8663-408998bbc020",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Leaves_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Leaves_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Leaves_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_A_Leaves_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_A_Leaves_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6690860
+  }
+ ],
+ "HaloVar4_PotFlowers_C_Leaves_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18980->18925",
+   "project": "cf6f3620-2d10-4396-909f-d85d995eafce",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Leaves_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Leaves_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Leaves_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloVar4_PotFlowers_C_Leaves_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloVar4_PotFlowers_C_Leaves_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6971376
+  }
+ ],
+ "HaloChunk_FlowerBushPot_Leaves_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18925->18870",
+   "project": "4ae47ca4-5b10-480f-98de-ac3a2201d1e2",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloChunk_FlowerBushPot_Leaves_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloChunk_FlowerBushPot_Leaves_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloChunk_FlowerBushPot_Leaves_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloChunk_FlowerBushPot_Leaves_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloChunk_FlowerBushPot_Leaves_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7034792
+  }
+ ],
+ "NEW_FlowerBush_Leaves_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 12000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18870->18815",
+   "project": "ef4a11c4-d406-406f-a21e-72f7890c626c",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/NEW_FlowerBush_Leaves_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/NEW_FlowerBush_Leaves_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/NEW_FlowerBush_Leaves_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/NEW_FlowerBush_Leaves_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NEW_FlowerBush_Leaves_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 7234052
+  }
+ ],
+ "HaloFlowerPotHQ_Daisy_Pot_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18815->18760",
+   "project": "5f1df4ed-70c4-4e10-a34a-92bd44de0785",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Pot_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Pot_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Pot_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloFlowerPotHQ_Daisy_Pot_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloFlowerPotHQ_Daisy_Pot_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 8395248,
+   "status": "not used - 2D failed re-check (최종 검수 10/14, 2D redraw); generated before the hold message"
+  }
+ ],
+ "HaloPart_Flower_WhiteDaisy_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18760->18705",
+   "project": "e9721480-a67a-4ae3-b7c0-b4b43eedbbfe",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_WhiteDaisy_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_WhiteDaisy_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_WhiteDaisy_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_WhiteDaisy_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_WhiteDaisy_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 4706936
+  }
+ ],
+ "HaloPart_Flower_Blue5_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18705->18650",
+   "project": "6fe4a7e8-5ed0-4748-9d27-5a353a92b4fd",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_Blue5_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_Blue5_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_Blue5_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_Blue5_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_Blue5_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 4958700
+  }
+ ],
+ "HaloPart_Flower_Lilac_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18650->18595",
+   "project": "a56ed802-b872-43ff-a6cc-52107961e2cc",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_Lilac_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_Lilac_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_Lilac_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_Lilac_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_Lilac_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 5151920
+  }
+ ],
+ "HaloPart_Flower_RedDaisy_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18595->18540",
+   "project": "0d04ff01-cb59-4551-94e3-25ac93ae1baf",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_RedDaisy_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_RedDaisy_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_RedDaisy_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_RedDaisy_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_RedDaisy_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 4221904
+  }
+ ],
+ "HaloPart_Flower_PinkRose_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18540->18485",
+   "project": "6dcdf2d0-d527-486d-a9d6-820a9eb9fcb3",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_PinkRose_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_PinkRose_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_PinkRose_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_PinkRose_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_PinkRose_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6651644
+  }
+ ],
+ "HaloPart_Flower_RedBud_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18485->18430",
+   "project": "6fa78e85-8d69-489d-a2c0-49ab2a0763a1",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_RedBud_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_RedBud_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_RedBud_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_RedBud_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_RedBud_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 5190056
+  }
+ ],
+ "HaloPart_Flower_RoseBud_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 8000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "18430->18375",
+   "project": "55f097a8-e565-4bee-9329-6e202e59e3df",
+   "inputs": {
+    "front": "art/out/s2/noshadow/parts/HaloPart_Flower_RoseBud_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_RoseBud_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/parts/HaloPart_Flower_RoseBud_left_ns.png",
+    "back": "art/out/s2/noshadow/parts/HaloPart_Flower_RoseBud_back_ns.png"
+   },
+   "file": "art/models/tripo/web/HaloPart_Flower_RoseBud_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "note": "GLB received 2026-10-14 (page fetch -> local receiver, no browser download)",
+   "file_bytes": 6508196
+  }
+ ],
+ "NPC_HaloJuiceMan_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 20000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20355->20300",
+   "project": "a94e810f-9db6-46ce-880d-b8dea28f042e",
+   "inputs": {
+    "front": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_left_ns.png",
+    "back": "art/out/s2/noshadow/npc/NPC_HaloJuiceMan_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NPC_HaloJuiceMan_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 5211484,
+   "note": "통짜 HD, 사용자 방식 아님 (A23-177: people = head/body/props parts) - file kept, not used; generated 10/14 morning, GLB received 10/14 10:19"
+  }
+ ],
+ "NPC_HaloMailBoy_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 20000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20300->20245",
+   "project": "2065ea15-fea1-4c54-9d4d-a2139afdae2d",
+   "inputs": {
+    "front": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_left_ns.png",
+    "back": "art/out/s2/noshadow/npc/NPC_HaloMailBoy_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NPC_HaloMailBoy_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 5268392,
+   "note": "통짜 HD, 사용자 방식 아님 (A23-177: people = head/body/props parts) - file kept, not used; generated 10/14 morning, GLB received 10/14 10:19"
+  }
+ ],
+ "NPC_HaloOldSailor_web2_hd": [
+  {
+   "event": "hd_oneshot (A23-174/175)",
+   "at": "2026-10-14",
+   "account": "Tripo account 2",
+   "site": "studio.tripo3d.ai (user Chrome, Claude Chrome extension)",
+   "by": "Blender 손보기 2",
+   "settings": "HD model tab, multi-view 4, ultra mesh on, texture 4K, delight on, PBR on, triangle, polygon 20000 (AI completion switch not shown in multi-view mode)",
+   "points": 55,
+   "balance": "20245->20190",
+   "project": "4958667f-d97b-4de9-86e3-6e97c94c4c95",
+   "inputs": {
+    "front": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_front_ns.png",
+    "left_slot": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_right_ns.png",
+    "right_slot": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_left_ns.png",
+    "back": "art/out/s2/noshadow/npc/NPC_HaloOldSailor_back_ns.png"
+   },
+   "file": "art/models/tripo/web/NPC_HaloOldSailor_HD_pbr_src.glb",
+   "file_note": "Tripo model_url = meshopt GLB (no FBX for HD), disk only",
+   "file_bytes": 5666008,
+   "note": "통짜 HD, 사용자 방식 아님 (A23-177: people = head/body/props parts) - file kept, not used; generated 10/14 morning, GLB received 10/14 10:19"
+  }
  ]
 }

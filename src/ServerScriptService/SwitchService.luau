@@ -29,6 +29,7 @@ local W = Config.Switches or {}
 local VALUES = {} -- [key] = the applied value
 local ORIGINAL = {} -- values the config had before a switch touched them (Halloween.Enabled)
 local STORE = nil
+local READ = false -- true after this server's first good read of the board (until then a def's Unread, if any, applies)
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -61,12 +62,23 @@ function SwitchService.Parse(doc)
 	return out
 end
 
+-- a switch's value while nothing better is known: its Unread until the first good read (if it has one), else its Default
+local function fallback(def)
+	if not READ and def.Unread ~= nil then return def.Unread end
+	return def.Default
+end
+
 function SwitchService.Value(key)
 	local def = defs()[key]
 	if def == nil then return true end
 	local v = VALUES[key]
-	if v == nil then return def.Default end
+	if v == nil then return fallback(def) end
 	return v
+end
+
+-- true once this server has read the board (an empty board counts: every switch on its Default)
+function SwitchService.HasRead()
+	return READ
 end
 
 function SwitchService.On(key)
@@ -122,6 +134,7 @@ function SwitchService.Refresh()
 		Util.Warn(TAG, "read: " .. tostring(doc))
 		return false
 	end
+	READ = true
 	SwitchService.Apply(SwitchService.Parse(doc))
 	return true
 end
@@ -132,7 +145,7 @@ end
 
 function SwitchService.Start()
 	for key, def in defs() do
-		VALUES[key] = def.Default
+		VALUES[key] = fallback(def)
 		publish(key)
 	end
 	task.spawn(function()

@@ -28,3 +28,10 @@
 
 ## 자료끼리 안 맞는 곳(정리 필요, 지금은 셈에 반영함)
 1. `halo_spend_2026-10-13.md` "통과 95" vs 실제 쓸 수 있는 111(관문 1의 13 + Baluster 빠짐). 2. `pbr_final_2026-10-13.md`에 ArmoryBarrels v2 '통과'가 남아 있으나 사용자 취소. 3. 멀티뷰 다시 38 vs triage 56(25점 단가는 A23-174로 없어짐). 4. NPC 수 6/12/15 — 승인 2D 기준 15. 5. `art/approved.json`에 그림자 없는 4면 약 110세트가 안 적혀 있음(state 메시지에만) → 이미지 생성 2가 채울 것. 6. 단가 125/135 → 65.
+
+## 2-a. 2번 중 '단순'(통짜 HD) 확정 목록 — 최종 검수 2026-10-14 12:40 (A23-171 판단; 55점/개, 2D 4면 있음)
+8000: HaloSign_SignBakery · HaloSign_SignFlower · HaloSign_SignPotion · HaloReasonHQ_PotionCrate · NEW_CandleCrate · NEW_SteppingStone · HaloReasonHQ_BenchB · NEW_NoticeBoard
+12000: HaloFlagpole_1 · HaloReasonHQ_GuardPost · HaloChunk_ChimneyLantern · HaloChunk_DomeBrick · HaloChunk_Greenhouse · HaloReasonHQ_Woodpile · NEW_BreadBasket · NEW_CafeTable
+= 16개 880점(Blender 손보기 2 큐, 화분·꽃 ④ 뒤). '복잡'(부품 2D 먼저, 이미지 생성 2 ⑤): JuiceStand·WeatherVane·Easel·BellFrame·Clothesline·RackShieldSword·Halo_Statue(머리·몸·소품)·FlowerCart·FruitStall·BreadDisplay·PotionDisplay·RoseArch·RoseTrellis·SunflowerBed·VegGarden·난간 E/F/A/B/D.
+진행(12:40): 1번 묶음 중 흰 바위 3·통 1 생성(HD 13 = 715점, 잔액 19,475), 사람 15는 부품 방식(A23-177)으로 2D 다시 → 생성은 그 뒤.
+

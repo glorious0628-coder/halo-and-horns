@@ -10,10 +10,15 @@
 -- what grew (XP, gold, items, Honor / Mischief): attribute snapshots (DeathScreen.Tally, gains only) + my Fx "Loot".
 -- Public API: DeathScreen.Init(C), DeathScreen.Start(), DeathScreen.Lines(data, left, got?, faction?) -> { Title,
 -- Cause?, Lost?, GotTitle?, Got1..4?, Back? } (pure), DeathScreen.TotalXP / Tally / GotLines (pure), DeathScreen.Flush(),
--- DeathScreen.ResetRun(), DeathScreen.Show(data) -> bool, DeathScreen.Hide(), DeathScreen.IsOpen().
+-- DeathScreen.ResetRun(), DeathScreen.Show(data) -> bool, DeathScreen.Hide(), DeathScreen.IsOpen(),
+-- DeathScreen.Look(touch) -> sizes / MaxGot / Y, DeathScreen.BoxHeight(lines, look) (pure).
+-- 최종 검수 10/14 (API review): the lines (KO! + 4 'This run' lines ~350 du) spilled out of a fixed 220 box; the box
+-- is now the sum of its shown lines, and a phone (TouchEnabled: UIScale 0.75 at 361 px high) gets smaller lines, at
+-- most 2 'This run' lines (XP and gold come first) and sits lower, so KO! clears the Roblox top bar.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -36,8 +41,13 @@ local T = {
 	TitleSize = 72, CauseSize = 24, LostSize = 20, BackSize = 22, GotTitleSize = 20, GotSize = 18,
 	Bad = Color3.fromRGB(255, 120, 110),
 	Good = Color3.fromRGB(255, 228, 100), -- the 'This run' title (UIKit gold text)
+	Pad = 6, -- UIListLayout gap between lines
+	Y = 0.42, -- box centre (screen height)
+	-- phone: every size >= its UIKit style floor at UIScale 0.75 (Title 22, Body 19, Number 16 du), so the label height
+	-- (size + 8) holds the drawn text
+	Touch = { TitleSize = 56, CauseSize = 20, LostSize = 19, BackSize = 18, GotTitleSize = 22, GotSize = 19, MaxGot = 2, Y = 0.5 },
 }
-local S = { Gui = nil, Labels = nil, OpenedAt = 0, RespawnIn = 3, Data = nil, Token = 0 }
+local S = { Gui = nil, Labels = nil, OpenedAt = 0, RespawnIn = 3, Data = nil, Token = 0, Box = nil, Look = nil }
 -- A23-167 ③: what this run (since my character came) gave me - XP / gold / items / Honor or Mischief; Base = the last
 -- attribute snapshot, Pending = a snapshot is waiting (Level + XP, Carried + Bank change one by one: read them together)
 local G = { XP = 0, Gold = 0, Items = 0, Fame = 0, Base = nil, Pending = false, Wait = 0.3, MaxGot = 4 }
@@ -108,13 +118,37 @@ function DeathScreen.Lines(data, left, got, faction)
 	local gotLines = DeathScreen.GotLines(got, faction)
 	if #gotLines > 0 then
 		out.GotTitle = txt("GotTitle")
-		for i = 1, math.min(#gotLines, G.MaxGot) do out["Got" .. i] = gotLines[i] end
+		local maxGot = (S.Look and S.Look.MaxGot) or G.MaxGot
+		for i = 1, math.min(#gotLines, maxGot) do out["Got" .. i] = gotLines[i] end
 	end
 	if type(left) == "number" and left > 0 then
 		local f = txt("Respawn")
 		out.Back = f and string.format(f, math.max(1, math.ceil(left))) or nil
 	end
 	return out
+end
+
+-- (pure) the sizes for a phone (touch == true) or a PC: TitleSize..GotSize, MaxGot, Y
+function DeathScreen.Look(touch)
+	local src = touch == true and T.Touch or T
+	return { TitleSize = src.TitleSize, CauseSize = src.CauseSize, LostSize = src.LostSize, BackSize = src.BackSize,
+		GotTitleSize = src.GotTitleSize, GotSize = src.GotSize, MaxGot = src.MaxGot or G.MaxGot, Y = src.Y or T.Y }
+end
+
+-- (pure) the box height for `lines` (DeathScreen.Lines): each shown line is its size + 8, with T.Pad between lines
+function DeathScreen.BoxHeight(lines, look)
+	if type(lines) ~= "table" or type(look) ~= "table" then return 0 end
+	local h, n = 0, 0
+	local function add(key, size)
+		if type(lines[key]) == "string" then h += size + 8 n += 1 end
+	end
+	add("Title", look.TitleSize)
+	add("Cause", look.CauseSize)
+	add("Lost", look.LostSize)
+	add("GotTitle", look.GotTitleSize)
+	for i = 1, look.MaxGot do add("Got" .. i, look.GotSize) end
+	add("Back", look.BackSize)
+	return h + math.max(0, n - 1) * T.Pad
 end
 
 function DeathScreen.IsOpen()
@@ -126,7 +160,7 @@ function DeathScreen.Hide()
 	if S.Gui then
 		pcall(function() S.Gui:Destroy() end)
 	end
-	S.Gui, S.Labels, S.Data = nil, nil, nil
+	S.Gui, S.Labels, S.Data, S.Box, S.Look = nil, nil, nil, nil, nil
 end
 
 local function kit()
@@ -167,6 +201,7 @@ local function paint()
 		l.Text = text or ""
 		l.Visible = text ~= nil
 	end
+	if S.Box and S.Look then S.Box.Size = UDim2.new(0.8, 0, 0, DeathScreen.BoxHeight(lines, S.Look)) end
 end
 
 -- shows the KO screen for one Fx "KO" packet; false without a place to draw
@@ -175,6 +210,7 @@ function DeathScreen.Show(data)
 	local root = ui and ui.Gui
 	if typeof(root) ~= "Instance" then return false end
 	DeathScreen.Hide()
+	local look = DeathScreen.Look(UserInputService.TouchEnabled == true)
 	local frame = Instance.new("Frame")
 	frame.Name = "DeathScreen"
 	frame.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -187,24 +223,25 @@ function DeathScreen.Show(data)
 	box.Name = "Lines"
 	box.BackgroundTransparency = 1
 	box.AnchorPoint = Vector2.new(0.5, 0.5)
-	box.Position = UDim2.fromScale(0.5, 0.42)
-	box.Size = UDim2.new(0.8, 0, 0, 220)
+	box.Position = UDim2.fromScale(0.5, look.Y)
+	box.Size = UDim2.new(0.8, 0, 0, 0) -- paint() sets it to the shown lines
 	box.ZIndex = T.ZIndex
 	box.Parent = frame
 	local list = Instance.new("UIListLayout")
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	list.VerticalAlignment = Enum.VerticalAlignment.Center
-	list.Padding = UDim.new(0, 6)
+	list.Padding = UDim.new(0, T.Pad)
 	list.Parent = box
 	S.Labels = {
-		Title = label(ui, box, "Title", T.TitleSize, "Title", 1),
-		Cause = label(ui, box, "Cause", T.CauseSize, "Body", 2),
-		Lost = label(ui, box, "Lost", T.LostSize, "Body", 3, T.Bad),
-		GotTitle = label(ui, box, "GotTitle", T.GotTitleSize, "Title", 4, T.Good),
-		Back = label(ui, box, "Back", T.BackSize, "Number", 10),
+		Title = label(ui, box, "Title", look.TitleSize, "Title", 1),
+		Cause = label(ui, box, "Cause", look.CauseSize, "Body", 2),
+		Lost = label(ui, box, "Lost", look.LostSize, "Body", 3, T.Bad),
+		GotTitle = label(ui, box, "GotTitle", look.GotTitleSize, "Title", 4, T.Good),
+		Back = label(ui, box, "Back", look.BackSize, "Number", 10),
 	}
-	for i = 1, G.MaxGot do S.Labels["Got" .. i] = label(ui, box, "Got" .. i, T.GotSize, "Body", 4 + i) end
+	for i = 1, look.MaxGot do S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i) end
+	S.Box, S.Look = box, look
 	DeathScreen.Flush() -- A23-167 ③: the last change before the KO counts
 	S.Faction = G.Base and G.Base.Faction or nil
 	S.Data = data

@@ -369,6 +369,22 @@ check("a held card that ended is dropped", T.S.Held == nil and UI.Current().Id =
 CLOCK += 11
 HEART:Fire()
 check("the timed card ran out: nothing comes back", UI.Current() == nil and CURRENT == nil)
+-- 최종 검수 10/14 MINOR 1: a card from the other server while a timed card runs waits; the timed card stays
+fx("FinisherCard", { Id = 8, Kind = "SlimeKing", Seconds = 10, Stat = "Honor",
+	Help = { Item = "Jelly", N = 2, Score = 1 }, Tickle = { Gold = 4, Score = -1 } })
+fx("Card", { Id = 13, Kind = "FlowerPatch", Stat = "None", Good = { Label = "A", XP = 6, Score = 0, Hint = "Neutral" },
+	Evil = { Label = "B", Item = "Petal", N = 2, Score = 0, Hint = "Neutral" } })
+check("a card over a running timed card waits: the timed card stays", CURRENT == "ChoiceCard" and UI.Current()
+	and UI.Current().Id == 8 and button("Good") and button("Good").Text == king.Text.Help and T.S.Held and T.S.Held.Id == 13)
+fx("Card", { Id = 14, Kind = "FlowerPatch", Seconds = 120, Stat = "None", Good = { Label = "C", XP = 6, Score = 0, Hint = "Neutral" },
+	Evil = { Label = "D", Item = "Petal", N = 2, Score = 0, Hint = "Neutral" } })
+check("a newer card from the same server replaces the held one", UI.Current().Id == 8 and T.S.Held and T.S.Held.Id == 14)
+fx("FinisherEnd", { Id = 8, Pick = "Help" })
+T.TryShow()
+check("the timed card over: the waiting card shows", CURRENT == "ChoiceCard" and UI.Current() and UI.Current().Id == 14
+	and T.S.Held == nil and button("Good") and button("Good").Text == "C")
+fx("CardEnd", { Id = 14, Side = "None" })
+check("... and its end closes it", UI.Current() == nil and CURRENT == nil)
 
 -- 6) bad payloads
 fx("Card", { Id = "x" })
