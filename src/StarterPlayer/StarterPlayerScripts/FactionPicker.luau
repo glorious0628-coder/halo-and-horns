@@ -150,17 +150,7 @@ local NEUTRAL_FALLBACK = {
 local NEUTRAL_LORE = "Those who shape the shards instead of grabbing them."
 local NEUTRAL_NOTE = "" -- A23-179 stale text: the note is Config.Factions.Neutral.Note only (no copy in code)
 
-local T = {
-	Title = "Choose your side!",
-	Choose = "Join this side!",
-	Wait = "One moment...",
-	WeakerF = "Smaller side bonus: +%d gold and a bigger body",
-	Footer = "You can switch sides later at the Altar of Fate.",
-	FooterShort = "Switch sides later at the Altar of Fate.", -- phones with the A23-57 cards
-	SoonName = "Artisan Guild", -- A23-114 locked card
-	Soon = "Coming soon",
-	SoonSub = "Crafting update",
-}
+local T = Config.ClientText.FactionPicker -- the words: Config.ClientText.FactionPicker (moved 10/14)
 
 local DEFAULT_THEME = {
 	Bg = Color3.fromRGB(25, 25, 35),

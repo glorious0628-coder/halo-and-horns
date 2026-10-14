@@ -91,17 +91,7 @@ local COL = {
 }
 
 -- player-facing words (A23-48: English only, short for kids)
-local TXT = {
-	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
-	Level = "Lv %d",
-	NewSkill = "New skill! %s", -- A23-71 the learn moment
-	LearnKey = "Press %s",
-	LearnTouch = "Tap the new button",
-	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
-	-- A23-81 (user 2026-10-08): once, after the first skill is learned (keyboards): keys can be changed in Settings
-	KeysTip = "Tip: You can change your keys in Settings!",
-	KeysTipGo = "Open Settings",
-}
+local TXT = Config.ClientText.SkillBar -- the words: Config.ClientText.SkillBar (moved 10/14)
 
 -- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
 -- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;

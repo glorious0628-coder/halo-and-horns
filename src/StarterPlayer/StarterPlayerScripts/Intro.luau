@@ -22,16 +22,7 @@ local C, UIKit = nil, nil
 
 -- A23-48 (user 2026-10-06): the game shows English only. The opening's own lines live here (Config.Story keeps the
 -- old Korean premise for the story texts); short, easy English
-local TXT = {
-	Lines = {
-		"They say the Crown of Balance broke.",
-		"Some who touched the shards grew halos. Others grew horns.",
-		"Whoever gathers more shards will remake the world.",
-	},
-	Ask = "Which side will you join?",
-	Skip = "Skip",
-	SkipKey = " (Enter)", -- only where keys are shown (Intro.SkipText, review B5: Keybinds.ShowsKeys)
-}
+local TXT = Config.ClientText.Intro -- the words: Config.ClientText.Intro (moved 10/14)
 -- map anchors (A23-9): crown in the Crossroads sky, shard over the fountain, the two faction towns
 local SPOT = {
 	Crown = Vector3.new(15, 344, -18),

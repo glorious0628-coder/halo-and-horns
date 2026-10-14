@@ -40,8 +40,8 @@ STATIC = [
         "\t\tif cf.Token == token and cf.Auto then HUD.SetChipsFolded(true) end -- a photo preview (Auto off) stays\n",
         "\tL.FoldLater(L.ChipFold.TapSeconds)\n", "L.ChipFold.OnTap = L.ChipFoldTap",
         '\tL.WatchChipFold(L.ChipFoldSig(wantKey, attr("ZoneTown", false) == true, attr("ZonePvP", false) == true, luck))\n']),
+    ("Lucky chip words (Config.ClientText.EventHUD, 10/14)", "CONFIG", ['\tLuckShort = "Lucky +%s%%",\n']),
     ("Lucky chip: the bonus only, hidden without one; a press explains", "EVENT", [
-        '\tLuckShort = "Lucky +%s%%",\n',
         "\t\treturn Config.RareChance(events) - ((Config.Luck and Config.Luck.BaseRare) or 0)\n",
         "\tif not ok or type(bonus) ~= \"number\" or bonus <= 1e-9 then return nil end -- no bonus today: no chip\n"]),
     ("Lucky chip press (the row open): one toast", "HUD", [

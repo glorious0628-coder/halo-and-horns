@@ -64,7 +64,13 @@ local env = setmetatable({
 	Instance = { new = function(class) return { ClassName = class } end },
 	os = { clock = function() return CLOCK.T end },
 	task = { spawn = function(fn, ...) fn(...) end },
-	require = function(m) if m.__module == "Net" then return Net end return Util end,
+	require = function(m)
+		if m.__module == "Net" then return Net end
+		if m.__module == "Config" then -- 10/14: the words sit in Config.ClientText.Invite
+			return { ClientText = { Invite = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" } } }
+		end
+		return Util
+	end,
 }, { __index = getfenv() })
 local fn = assert(loadstring(INVITE_SOURCE, "=Invite"))
 setfenv(fn, env)

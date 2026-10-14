@@ -22,6 +22,8 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+from l10n_client_hardcoded import findings as hardcoded  # noqa: E402
 SRC = ROOT / "src"
 OUT = ROOT / "docs/art/verification_2026-10-14/offline_auto_translate_2026-10-14.json"
 SPS = "StarterPlayer/StarterPlayerScripts/"
@@ -56,6 +58,9 @@ REQUIRED = [
     ("UIKit.NoTranslate exists", SPS + "UIKit.luau", "function UIKit.NoTranslate(inst)"),
 ]
 MUTATIONS = [
+    ("a screen's words back in its module", SPS + "SkillBar.luau", "local TXT = Config.ClientText.SkillBar",
+     'local TXT = { Later = "Skills come at Lv %d", LearnTouch = "Tap the new button" } --'),
+    ("an inline sentence back in Panels", SPS + "Panels.luau", "NICK.Message = T.NickRule", 'NICK.Message = "Please enter 2-20 letters."'),
     ("the old watcher comes back", SPS + "ClientMain.client.luau", "local ORDER = {",
      'do\n\tlocal function off(inst)\n\t\tif inst:IsA("GuiBase2d") then inst.AutoLocalize = false end\n\tend\n'
      '\tgame:GetService("Players").LocalPlayer:WaitForChild("PlayerGui").DescendantAdded:Connect(off)\nend\nlocal ORDER = {'),
@@ -92,6 +97,12 @@ def sources() -> dict[str, str]:
 
 def check(src: dict[str, str]) -> list[tuple[str, bool, str]]:
     rows = []
+    # 최종 검수 10/14: every player word of a client screen sits in a central table (Config.ClientText.<Module> ...), where
+    # the localization export finds it - none left in the modules (tools/l10n_client_hardcoded.py; HUD / BagUI move after
+    # their pending branches)
+    left = hardcoded({"src/" + k: v for k, v in src.items() if k.startswith("StarterPlayer/")})
+    rows.append(("no player words hard-coded in client modules (central tables only)", not left,
+                 " | ".join(f"{p.rsplit('/', 1)[-1]}:{ln} {v}" for p, ln, v in left[:4])))
     cm = strip(src.get(SPS + "ClientMain.client.luau", ""))
     rows.append(("ClientMain has no AutoLocalize switch-off", "AutoLocalize" not in cm, ""))
     watch = []

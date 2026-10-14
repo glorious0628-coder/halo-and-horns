@@ -38,45 +38,7 @@ local TAG = "MarketWindow"
 local LocalPlayer = Players.LocalPlayer
 
 -- player text (A23-130: short; A23-111: keys "MarketWindow.TXT.<field>"); the server's notices are Config.Market.Text
-local TXT = {
-	Title = "Market",
-	Menu = "Market",
-	Tabs = { Buy = "Buy", Sell = "Sell", Mine = "Mine" },
-	Kinds = { Material = "Materials", Scroll = "Scrolls", Tonic = "Tonics", Weapon = "Weapons" }, -- the bag's words
-	Search = "Search",
-	Price = "Price",
-	Buy = "Buy",
-	List = "List",
-	Cancel = "Cancel",
-	Checking = "Checking…",
-	Owned = "Owned",
-	Wait = "Wait %s",
-	Refused = "Not now.", -- a key the client has no text for
-	Resting = "The market is resting.",
-	Pick = "Pick one.",
-	Empty = "Nothing here.",
-	NoneToSell = "Nothing to sell.",
-	Count = "×%d",
-	Plus = "+%d",
-	Page = "%d / %d",
-	Of = "%d / %d",
-	Prev = "◀",
-	Next = "▶",
-	Less = "−",
-	More = "+",
-	All = "All",
-	OnSale = "On sale",
-	Offer = "×%d  %s",
-	Range = "%s – %s",
-	YouGet = "You get %s",
-	Sold = "Sold",
-	Paid = "Paid",
-	Paying = "Paying…",
-	Back = "Back in your bag",
-	Today = "Today: %d listed · %d bought",
-	-- artisan contract ⑤ (10/14): an hour or more reads "1h 05m" (it read "1:05" like 65 s did)
-	Hours = "%dh %02dm",
-}
+local TXT = Config.ClientText.MarketWindow -- the words: Config.ClientText.MarketWindow (moved 10/14)
 L10n.Register("MarketWindow.TXT", TXT)
 
 -- layout (du = MainGui units) and fixed rules

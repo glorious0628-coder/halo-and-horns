@@ -23,7 +23,8 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 S = ROOT / "src/StarterPlayer/StarterPlayerScripts"
-FILES = {"UIKIT": S / "UIKit.luau", "PANELS": S / "Panels.luau", "PAUSE": S / "PauseCard.luau"}
+FILES = {"UIKIT": S / "UIKit.luau", "PANELS": S / "Panels.luau", "PAUSE": S / "PauseCard.luau",
+         "CONFIG": S.parents[1] / "ReplicatedStorage/Shared/Config.luau"}  # 10/14: the screens' words sit in Config.ClientText
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
@@ -119,8 +120,8 @@ def static_checks(src: dict) -> list[tuple[str, bool]]:
          'if ch:IsA("UIPadding") or ch:IsA("UISizeConstraint")' in bl),
         ("BalanceLines counts lines with the engine (an off-screen copy), not TextService",
          "local probe = label:Clone()" in bl and "GetTextBoundsAsync" not in bl),
-        ("the Vacation popup line is shorter", "VacationAwayF = \"You were away %d days. That's okay!\"" in p),
-        ("the Vacation window header is shorter", "VacationHeaderF = \"Vacation Bonus! You were away %d days. That's okay!\"" in p),
+        ("the Vacation popup line is shorter", "VacationAwayF = \"You were away %d days. That's okay!\"" in src["CONFIG"]),
+        ("the Vacation window header is shorter", "VacationHeaderF = \"Vacation Bonus! You were away %d days. That's okay!\"" in src["CONFIG"]),
     ]
 
 
@@ -143,7 +144,7 @@ MUTATIONS = [
     ("UIKIT", "the probe keeps its padding", "\t\t\tif ch:IsA(\"UIPadding\") or ch:IsA(\"UISizeConstraint\")",
      "\t\t\tif ch:IsA(\"UISizeConstraint\")"),
     ("PANELS", "addText does not balance", "\t\tUIKit.BalanceLines(l)\n", "\t\tlocal _ = l\n"),
-    ("PANELS", "the old long Vacation line", "VacationAwayF = \"You were away %d days. That's okay!\"",
+    ("CONFIG", "the old long Vacation line", "VacationAwayF = \"You were away %d days. That's okay!\"",
      "VacationAwayF = \"You were away for %d days, and that's okay.\""),
 ]
 

@@ -10395,4 +10395,550 @@ function Config.ApplyTestServer()
 	return true
 end
 
+
+-- 최종 검수 10/14 (AGENTS: every player text in a central table): the client screens' own words, moved here as they were
+-- from the modules (Config.ClientText.<Module>; the module reads this table). Keys = Config paths for the localization
+-- table (tools/l10n_export.py / l10n_format_keys.py walk them).
+Config.ClientText = {}
+Config.ClientText.CharacterUI = {
+	Title = "Hero",
+	Tabs = { Gear = "Gear", Stats = "Stats" },
+	Power = "Power",
+	LevelClass = "Lv %d · %s",
+	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
+	Weapons = "Weapons", Back = "Back", NoWeapons = "No weapons yet.",
+	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
+	Attack = "Attack %s",
+	PowerNow = "Power %s",
+	PowerChange = "Power %s → %s",
+	-- 최종 검수 10/13 (ref_rpg_ui #1): what the power is made of, under the number; a press lists the sources
+	Why = { Level = "Level %d", Weapon = "%s +%d", Fist = "Bare hands", Points = "Points +%d", Ring = "Ring +%d%%",
+		Armor = "Armor +%d%%" },
+	PetLv = "Lv %d",
+	TitleHead = "Title", TitleAuto = "Auto",
+	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Now", Rebirth = "Rebirth", Rank = "Rank" },
+	Stat = {
+		Level = "Level", MaxHP = "Max HP", MP = "MP", Speed = "Walk speed", Hit = "Base hit", Crit = "Crit",
+		Class = "Class", Side = "Side",
+		Size = "Size", Bully = "Bully", Wanted = "Wanted", Revenge = "Revenge", Blessing = "Blessing",
+		Rebirths = "Rebirths", RebirthBonus = "Rebirth bonus", Fall = "Fall marks", Redeem = "Redeem marks",
+		Honor = "Honor", Infamy = "Mischief", Rank = "Rank", Next = "Next rank",
+	},
+	CritValue = "%d%% · ×%s",
+	-- 최종 검수 10/13 (ref_rpg_ui #5, A23-130): the Stats tab's traits and effects as short number chips, no sentences
+	Chip = { XP = "XP +%d%%", Gold = "Gold +%d%%", HP = "HP +%d%%", ATK = "ATK +%d%%", Regen = "Healing", Steal = "HP steal %d%%",
+		Heal = "Heals allies", Size = "Size ×%.2f", Bully = "Bully -%d%%", NoAuto = "No Auto Battle", Wanted = "%s +%d%%",
+		Revenge = "Revenge +%d%% %s", Blessing = "Gold & XP +%d%%" },
+	Change = "Change",
+	RebirthBonusValue = "+%d%% gold & XP",
+	MarksValue = "%d / %d",
+	NextValue = "%s · %d to go",
+	TopRank = "Top rank",
+	ToGo = "%d to go", -- the next rank bar's number (ref_rpg_ui #9)
+	Clock = "%d:%02d",
+}
+Config.ClientText.CraftView = {
+	Grades = { Perfect = "Perfect", Great = "Great", Good = "Good", Miss = "Miss" },
+	Skip = "Skip",
+	Result = "+%d %s",
+	ResultPlain = "+%d",
+	ResultPet = "%s +%d%% speed", -- a tamer's summon (CraftResult.Pet: the new pet and its walk speed roll, 개발 3 dev3-tamer)
+}
+Config.ClientText.CraftWindow = {
+	Title = "Crafting",
+	Menu = "Crafting",
+	Make = { Smith = "Forge", Alch = "Brew", Tame = "Make" }, -- the start button per role
+	Level = "%s Lv %d",
+	XP = "%s / %s",
+	Max = "Max",
+	NeedLv = "Lv %d",
+	Attack = "Attack %s",
+	UseFrom = "Use from Lv %d",
+	Count = "×%d",
+	Have = "%s / %s",
+	GainXP = "+%d craft XP",
+	Made = "Made %d",
+	Checking = "Checking…",
+	None = "Nothing to make yet.",
+	-- the tamer (⑤, 개발 3 dev3-tamer: summons + research; only while Config.Features.Research is on)
+	Tabs = { Make = "Make", Research = "Research" },
+	PetSpeed = "Speed +%d–%d%%", -- a summon's random walk speed range (the hammer adds up to +2)
+	ResearchNeed = "%s research %s / %s",
+	Stage = "Stage %d",
+	-- artisan contract ③: a made weapon waits in the bag as a spare -> [Use it] makes it mine (UnpackSpare) and wears it
+	Power = "Power %s → %s",
+	Spare = "In your bag ×%d",
+	SpareOwned = "You already have this weapon.",
+	Use = "Use it",
+}
+Config.ClientText.MarketWindow = {
+	Title = "Market",
+	Menu = "Market",
+	Tabs = { Buy = "Buy", Sell = "Sell", Mine = "Mine" },
+	Kinds = { Material = "Materials", Scroll = "Scrolls", Tonic = "Tonics", Weapon = "Weapons" }, -- the bag's words
+	Search = "Search",
+	Price = "Price",
+	Buy = "Buy",
+	List = "List",
+	Cancel = "Cancel",
+	Checking = "Checking…",
+	Owned = "Owned",
+	Wait = "Wait %s",
+	Refused = "Not now.", -- a key the client has no text for
+	Resting = "The market is resting.",
+	Pick = "Pick one.",
+	Empty = "Nothing here.",
+	NoneToSell = "Nothing to sell.",
+	Count = "×%d",
+	Plus = "+%d",
+	Page = "%d / %d",
+	Of = "%d / %d",
+	Prev = "◀",
+	Next = "▶",
+	Less = "−",
+	More = "+",
+	All = "All",
+	OnSale = "On sale",
+	Offer = "×%d  %s",
+	Range = "%s – %s",
+	YouGet = "You get %s",
+	Sold = "Sold",
+	Paid = "Paid",
+	Paying = "Paying…",
+	Back = "Back in your bag",
+	Today = "Today: %d listed · %d bought",
+	-- artisan contract ⑤ (10/14): an hour or more reads "1h 05m" (it read "1:05" like 65 s did)
+	Hours = "%dh %02dm",
+}
+Config.ClientText.GearSlots = {
+	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
+	PetLv = "Lv %d",
+}
+
+Config.ClientText.EventHUD = {
+	GooseNext = "Golden Goose %s", -- the phone's next-event line is 150 px
+	GooseNextShort = "Goose %s", -- A23-145: a chip too narrow for the whole line (SQ.chipLine), then the time alone
+	GooseTitle = "Golden Goose Tug! %s",
+	EggScore = "%d", -- A23-131 황금 알 (Eggs mode): a side's points on the bar
+	EggCoop = "%d / %d", -- ... co-op: our points / the goal
+	Rescue = "Rescue %d",
+	Poach = "Poach %d",
+	MyCount = "My hits %d",
+	HintHalo = "Hit the goose to rescue it!",
+	HintHorns = "Hit the goose to poach it!",
+	HintNeutral = "The Artisan Guild sits out the tug", -- addendum A6
+	KaijuChip = "Kaiju %s %s",
+	SirenLeft = "%ds",
+	Sack = "Grudge Sack %s · %ds", -- A23-130: the "(shrinks only in PvP zones)" explanation is gone
+	KaijuSelf = "You're the Kaiju! Last %s", -- A23-130: shorter (was "... to become a legend")
+	Revenge = "Revenge: %s · %s",
+	Luck = "Today's Luck · Rare %s%%", -- A23-18 (events taken part in today, KST day)
+	-- 검수 10/09 (UI clutter review: 'Rare 5%' meant nothing to kids): the chip says the bonus over the base rare chance
+	-- and shows only when there is one (EventHUD.LuckShort)
+	LuckShort = "Lucky +%s%%",
+	Cheer = "Cheer Stars %s (%d/%d)",
+	CheerLabel = "Cheer Stars",
+	CheerCount = "%d/%d",
+	ArrowSack = "Grudge Sack %s",
+	ArrowKaiju = "Kaiju",
+	ArrowRevenge = "Revenge",
+	UnknownName = "???",
+}
+Config.ClientText.FirstSteps = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
+Config.ClientText.Intro = {
+	Lines = {
+		"They say the Crown of Balance broke.",
+		"Some who touched the shards grew halos. Others grew horns.",
+		"Whoever gathers more shards will remake the world.",
+	},
+	Ask = "Which side will you join?",
+	Skip = "Skip",
+	SkipKey = " (Enter)", -- only where keys are shown (Intro.SkipText, review B5: Keybinds.ShowsKeys)
+}
+Config.ClientText.PlayerListUI = {
+	Title = "Players %d",
+	NameHeader = "Name",
+	Missing = "-",
+	Close = "Close",
+	Invite = "Invite a friend",
+	Friend = "Add friend",
+	Block = "Block",
+}
+Config.ClientText.QuestTarget = {
+	Blacksmith = "Forge",
+	Pond = "Slime Pond",
+	Fountain = "Fountain",
+	Goose = "Golden Goose Nest",
+	PumpkinSign = "To the Pumpkin Patch",
+	PotionShop = "Potion shop", -- A23-110 KO1 "Buy a potion"
+}
+Config.ClientText.SkillBar = {
+	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- until Config.Skills.Defs names the kit's skills
+	Level = "Lv %d",
+	NewSkill = "New skill! %s", -- A23-71 the learn moment
+	LearnKey = "Press %s",
+	LearnTouch = "Tap the new button",
+	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
+	-- A23-81 (user 2026-10-08): once, after the first skill is learned (keyboards): keys can be changed in Settings
+	KeysTip = "Tip: You can change your keys in Settings!",
+	KeysTipGo = "Open Settings",
+}
+Config.ClientText.WorldMap = {
+	Title = "World Map",
+	Here = "You are in: %s",
+	Unknown = "Unknown",
+	ZoneSub = "Lv %d+ · %s",
+	Safe = "Safe",
+	PvP = "PvP",
+	Extreme = "PvP Extreme",
+	LegendSafe = "● Safe",
+	LegendPvP = "● PvP",
+	LegendExtreme = "● Extreme",
+	LegendMe = "▲ Me",
+	Locate = "Find Me",
+	ZoomIn = "+",
+	ZoomOut = "−",
+	CloseX = "X",
+	HintMouse = "Drag: move · Wheel: zoom · {Map} / Esc: close", -- {Map}: the current map key (WorldMap.HintText)
+	HintTouch = "Drag: move · Two fingers: zoom",
+	Crown = "Crown of Balance",
+	Altar = "Altar of Fate",
+	Market = "Market",
+	Nest = "Golden Goose Nest",
+	Cart = "Egg Cart", -- A23-131: where the Horn Legion brings golden eggs
+	Pads = "Travel Pads",
+	Guild = "Artisan Guild",
+	Forge = "Forge", -- the same spot while the artisan guild is out of the game (Config.Features.NeutralFaction)
+	Pass = "Mountain Pass",
+	Goose = "Golden Goose!",
+	Kaiju = "Kaiju %s",
+	Sack = "Grudge Sack %s",
+}
+Config.ClientText.KingDiary = {
+	Title = "King Diary",
+	TabDiary = "Diary",
+	TabJar = "Candy Jar",
+	Count = "Pages: %d/%d",
+	AllRead = "You read every page! Title: %s",
+	PageHead = "Page %d · %s",
+	Locked = "Beat a king together to open this page!",
+	Soon = "Opens on %s.",
+	Closed = "This page stayed closed.",
+	Candy = "Your candy: %d",
+	JarNote = "Trade candy for a title. Titles are just for fun!",
+	Cost = "%d candy",
+	Trade = "Trade",
+	Owned = "Owned",
+	CardTitle = "King Diary",
+	CardPage = "Page %d is open!",
+	CardRead = "Read",
+	DoneLine = "You read all %d pages!",
+	DoneTitle = "New title: %s",
+	DoneOK = "Yay!",
+}
+Config.ClientText.PetWindow = {
+	Title = "Pets",
+	Empty = "No pets yet.",
+	Level = "Lv %d",
+	Speed = "Walk speed +%d%%",
+	SpeedRest = "Follow: +%d%% speed", -- a resting pet: what following would give (검수 10/10)
+	XP = "%d/%d XP",
+	Max = "MAX",
+	Following = "Following you",
+	Follow = "Follow me",
+	PutAway = "Put away",
+	Born = "Born with +%d%% speed", -- a summoned pet's roll
+	Feed = "Feed (%d)", -- one Pet Treat (the count I have)
+}
+Config.ClientText.QuestBook = {
+	Title = "Quests",
+	InProgress = "In progress",
+	Available = "Available",
+	Done = "Done",
+	EmptyInProgress = "Nothing to do here right now.",
+	EmptyAvailable = "Nothing new right now.",
+	EmptyDone = "Nothing finished yet.",
+	Claim = "Claim",
+	Reroll = "New",
+	FirstMission = "First mission",
+	DailyToday = "Daily quests today: %d/%d",
+	Goose = "The Golden Goose is here!",
+	PumpkinKing = "The Pumpkin King is here!",
+	GhostKing = "The Ghost King is here!",
+	Kaiju = "A kaiju is loose!",
+	War = "Crown War: next crown in %s",
+	Wanted = "Wanted stars: %d",
+	Diary = "King Diary · %d/%d pages",
+	Jar = "Candy Jar · trade candy for a title",
+	TabCount = "%s %d",
+}
+
+Config.ClientText.ClassPicker = {
+	Title = "Pick a class!", -- short: the bundle 2 ribbon's scroll is narrow (검수 2026-10-06: 'Choose…' was cut)
+	Choose = "Pick this class!",
+	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
+	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
+	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
+	Tag = { Warrior = "Smash up close!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
+	FooterShort = "Change class later: Menu > Change Class", -- short screens (검수 2026-10-06: the menu square is Change Class)
+	Wait = "One moment...",
+	Recommend = "Best for beginners",
+	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come
+	Outfit = "Outfit coming later",
+	StartWeaponF = "First weapon: %s (from the Blacksmith)", -- A23-34 (검수 2026-10-06)
+	Male = "Boy",
+	Female = "Girl",
+	-- same rule as ClassService.onChangeClass / Panels "직업 변경" (A23-14): a free change below
+	-- Config.ClassChange.FreeKeepLevelBelow keeps the level, from there free = back to Lv 1; a ticket keeps the level.
+	-- Fallback only: Config.Text.ClassChangeRuleF (formatted with that level) replaces it below.
+	Footer = "You can change class later in Menu > Settings (free: keep your level before Lv5, after that start at Lv1 / ticket: keep your level)",
+}
+Config.ClientText.FactionPicker = {
+	Title = "Choose your side!",
+	Choose = "Join this side!",
+	Wait = "One moment...",
+	WeakerF = "Smaller side bonus: +%d gold and a bigger body",
+	Footer = "You can switch sides later at the Altar of Fate.",
+	FooterShort = "Switch sides later at the Altar of Fate.", -- phones with the A23-57 cards
+	SoonName = "Artisan Guild", -- A23-114 locked card
+	Soon = "Coming soon",
+	SoonSub = "Crafting update",
+}
+
+Config.ClientText.Panels = {
+	Titles = {
+		Menu = "Menu", Travel = "Travel", Rebirth = "Rebirth", Altar = "Altar of Fate",
+		Class = "Change Class", Shop = "Change Ticket Shop", Vacation = "Vacation Bonus",
+		Nickname = "Nickname", WeaponShop = "Forge", Welcome = "Guide · Take Back the Supply Road", PotionShop = "Potion Shop",
+		Items = "Items",
+	},
+	Back = "← Menu",
+	Close = "X",
+	-- menu
+	MenuTravel = "Travel",
+	MenuRebirth = "Rebirth",
+	MenuRebirthReady = "Rebirth (ready!)",
+	MenuClass = "Change Class",
+	MenuShop = "Ticket Shop",
+	MenuVacation = "Vacation Bonus",
+	MenuNickname = "Nickname",
+	MenuWelcome = "Meet the Guide",
+	MenuItems = "Items",
+	MenuBag = "Bag", -- H-1
+	MenuMap = "Map",
+	WelcomePrevious = "Back",
+	WelcomeNext = "Next",
+	WelcomeFirst = "From the Start",
+	WelcomeAccept = "I'm In!",
+	WelcomeMore = "▶", -- 검수 10/09: the small next-page button (Skip ▶ uses the same glyph)
+	WelcomePending = "Checking...",
+	WelcomeRetry = "We couldn't confirm that. Please tap again.",
+	WelcomeUnavailable = "Pick a class first, then talk to the Guide again.",
+	MenuAltarHint = "Change sides at the Altar of Fate in the Crossroads!",
+	-- travel
+	TravelGo = "Go",
+	TravelNoGo = "Locked",
+	TravelBusy = "Traveling",
+	TravelNeedLevelF = "Needs Lv %d",
+	TravelInfoF = "Lv %d+ · %s",
+	TravelHere = " · You are here",
+	TravelRecommendF = "  <font color=\"#FFD23C\">★ %s</font>",
+	Recommended = "Recommended",
+	Safe = "Safe",
+	PvP = "PvP",
+	-- rebirth
+	RebirthInfoF = "Rebirths: %d · Needs Lv %d (now Lv %d)",
+	RebirthCountsF = "This server: Knights %d : Legion %d",
+	RebirthBonusF = "+%d%%",
+	RebirthBonusUnderdogF = "+%d%%! (smaller side)",
+	RebirthCurrent = "(your side)",
+	-- A23-14 (user 2026-10-05): rebirth resets the level (and XP) only; gold, weapons, enhancement and items stay
+	RebirthResets = "Resets: only your level (XP too)",
+	RebirthKeeps = "Keeps: gold, weapons, enhancements, items, class, Honor/Mischief, rebirth bonus, marks, tickets",
+	RebirthConfirmTitle = "Rebirth",
+	RebirthConfirmBodyF = "Be reborn as %s?\nOnly your level starts over. Gold, weapons and items stay.\nKept: class, Honor/Mischief, rebirth bonus, marks, tickets",
+	RebirthConfirmOk = "Rebirth!",
+	-- altar
+	AltarCurrentF = "Your side: %s → Which side will you join?",
+	AltarRules = "You need: 0 Wanted stars · no Grudge Sack · not a Kaiju · not in a fight",
+	AltarCooldownRuleF = "You can change sides once every %d min",
+	AltarCooldownF = "Ready in %s",
+	AltarFar = "You can only change sides near the Altar of Fate.",
+	AltarConfirmTitle = "Change Side",
+	AltarConfirmFreeF = "Switch to %s?\nFree: %s",
+	AltarConfirmTicketF = "Use 1 Change Ticket to switch to %s?\nYour Honor and Mischief both stay.",
+	Honor = "Honor",
+	Infamy = "Mischief", -- A23-166
+	LossScoreF = "%s %s resets",
+	BetrayalSuffix = " (price of betrayal)",
+	-- shared change options (A7-4)
+	Selected = "Selected",
+	FreeButton = "Change for Free",
+	TicketButtonF = "Use a Ticket (you have %d)",
+	TicketKeepAll = "Keep everything",
+	TicketBuyHint = "You have 0 · after buying, tap again to change",
+	LossNone = "You lose nothing",
+	ConfirmChange = "Change",
+	-- class
+	ClassPickFirst = "Pick a class first.",
+	ClassHint = "Tap the class card you want.",
+	ClassCurrent = "Current",
+	ClassHeaderF = "Change to %s",
+	ClassLossLevelF = "Lv %d → Lv 1",
+	ClassLossXPF = "%d XP resets",
+	ClassKeeps = "Gold, weapons, items and rebirth bonus stay",
+	ClassFreeKeepF = "Your level stays before Lv%d", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
+	ClassConfirmTitle = "Change Class",
+	ClassConfirmFreeF = "Change to %s?\nFree: %s",
+	ClassConfirmTicketF = "Use 1 Change Ticket to change to %s?\nYour level stays.",
+	-- shop
+	ShopRowF = "%s — you have %d",
+	ShopNote = "Change Tickets are not stats. They keep your progress when you switch. You can always switch for free too!",
+	ProductPending = "Coming soon",
+	ProductBuyF = "Buy with Robux (%s R$)",
+	WeaponLocation = "Crossroads → Artisan Guild anvil · interact up close",
+	WeaponFar = "Come close to the Forge anvil to buy.", -- UI round 2 #3: the list still shows from afar (look only)
+	WeaponShowWay = "Show me the way",
+	WeaponWayLabel = "Forge",
+	WeaponLoading = "Check again once your character is ready.",
+	WeaponNote = "Pick a basic weapon to buy. Weapons you own can be equipped again for free.",
+	-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WSHOP.Sells) - monsters drop them
+	WeaponNoteDrop = "Monsters drop weapons. Equip yours here for free, or sell them.",
+	WeaponFarDrop = "Come close to the Forge anvil to equip or sell.",
+	WeaponFromF = "Get it: %s", -- (Config.WeaponSource)
+	WeaponLevelF = "Needs Lv %d · Now Lv %d",
+	WeaponCurrentF = "Current weapon: %s",
+	WeaponPriceF = "Price %s gold · Needs Lv %d · Now Lv %d",
+	WeaponEffectF = "Slime in %d basic hits → %d hits",
+	WeaponEffectNowF = "Slime in %d basic hits",
+	WeaponGoldF = "You have %s gold (Vault %s + Pouch %s)",
+	WeaponShortF = "You need %s more gold.",
+	WeaponBuyF = "Buy · %s gold",
+	WeaponSellF = "Sell · %s gold",
+	WeaponEquip = "Equip (free)",
+	WeaponEquipped = "Equipped",
+	WeaponOwned = "Owned",
+	WeaponUnowned = "Not owned",
+	WeaponStarter = "First weapon · free to re-equip · can't be sold", -- A23-34 (A23-48 English)
+	WeaponStarterNoSell = "The first weapon can't be sold",
+	WeaponFromSmith = "From the Blacksmith", -- A23-34: tier 1 is a gift (M1_1), never bought
+	WeaponNoSell = "You can only sell weapons you own",
+	WeaponSaleNoteF = "Sells for %s gold (1/10 of the price)",
+	WeaponSaleEquipped = "Sell the weapon in your hand and you switch to your best other weapon (or bare hands).",
+	WeaponSellTitle = "Sell Weapon",
+	WeaponSellConfirmF = "Sell %s for %s gold?\nIt leaves your weapon list.",
+	WeaponSellConfirm = "Sell",
+	WeaponUnavailable = "The Forge doesn't sell this weapon.",
+	WeaponInvalid = "We can't read the weapon info. Please open it again in a moment.",
+	WeaponChanged = "Your weapons changed. Please check the list again.",
+	WeaponSent = "Checking the trade...",
+	WeaponSlow = "No answer for the trade yet. Check the alerts and tap again.",
+	WeaponPending = "Checking...",
+	WeaponByeBrowse = "Nothing you like? Take your time!",
+	WeaponByeBuy = "Good choice. Try it out and come back!",
+	WeaponByeSell = "Got your weapon. Come back when you need something!",
+	WeaponByeEquip = "That one fits your hand. Stay safe out there!",
+	WeaponByePending = "Check how the trade went. Come back soon!",
+	-- vacation
+	VacationHeaderF = "Vacation Bonus! You were away %d days. That's okay!", -- 검수 10/10: shorter (Config.Plural: 1 day)
+	VacationRewardF = "+%s gold · +%s XP",
+	VacationNoteF = "Even on breaks you get %d%% of a day's rewards. Playing gives 100%%!",
+	VacationClaim = "Claim",
+	VacationNone = "No vacation bonus to claim.",
+	VacationAwayF = "You were away %d days. That's okay!", -- the reward popup's first line (창 꾸미기 ③; 검수 10/10: shorter)
+	VacationLater = "Later",
+	-- fallbacks for Config.Text keys added in review R1
+	WaitRespawn = "You can do this after you respawn.", -- CR-L30
+	BlockedBully = "You can join the Artisan Guild after all your Bully stacks are gone.", -- CR-L9
+	-- 10/14 moved from the code: the nickname card and the settings menu
+	CurrentNameF = "Current name: %s",
+	NickSave = "Save",
+	MenuIntro = "Replay Opening",
+	NickRule = "Please enter 2-20 letters.",
+	NickSaving = "Saving...",
+}
+Config.ClientText.PanelsPotion = {
+	Gold = "You have %s gold",
+	Stock = "You have %d / %d",
+	Name = { HP = "HP Potion ({PotionHP})", MP = "MP Potion ({PotionMP})" }, -- BB1: key part only on keyboards
+	Effect = { HP = "Heals %d%% of max HP", MP = "Restores %d%% of max MP" },
+	Buy = "%d · %s gold",
+	Pending = "Checking the purchase…",
+	Full = "Full",
+	Short = "Not enough gold",
+}
+Config.ClientText.PanelsPickLines = {
+	Warrior = "Get close and smash everyone around you",
+	Mage = "Stand back and blast a wide area",
+	Archer = "Shoot them one by one from far away",
+}
+
+
+Config.ClientText.FirstStepsPvP = {
+	-- the one PvP card (FirstSteps PVP, 10/14 moved from the code)
+	PvPTitle = "PvP zone",
+	PvPText = "Other players can fight you here!\nKnocked out? You can lose pocket gold. Towns keep it safe.",
+}
+Config.ClientText.DeathScreen = {
+	Title = "KO!",
+}
+Config.ClientText.SupporterBoard = {
+	Title = "Thank you, supporters!",
+	Empty = "Thank you for playing!",
+}
+Config.ClientText.UIKit = {
+	NewTag = "NEW!",
+	Claim = "Claim!", -- the reward card's button when the caller names none
+	Cancel = "Cancel", -- the confirm box's second button
+}
+Config.ClientText.ComeBack = { MyWay = "Your way: %s" }
+Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag (your weapon is safe even on a fail)" }
+Config.ClientText.Invite = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" }
+Config.ClientText.PauseCard = {
+	PauseTitle = "Saved!",
+	PauseNext = "Next time: %s",
+	PausePlain = "Everything is saved.",
+	PauseTomorrow = "Tomorrow: %s",
+	Keep = "Keep playing",
+	OK = "OK",
+	BackTitle = "Welcome back!",
+	BackNext = "Next: %s",
+	BackPlain = "Good to see you again!",
+	Go = "Go",
+	Open = "Open", -- the tomorrow card's [Open] (today's gift: the attendance window)
+	TipTitle = "Tip",
+}
+Config.ClientText.QuickSlots = { Empty = "", Set = "%d", BagTitle = "Quick slots", BagHint = "Put an item in slot 1, 2 or 3." }
+Config.ClientText.SkillBook = {
+	Title = "Skills",
+	Default = { Q = "Skill", Z = "Skill 2", X = "Skill 3" }, -- a slot whose kit has no name yet (SkillBar's words)
+	Attack = "Attack",
+	Punch = "Punch",
+	PunchDesc = "No weapon yet. A quick punch at the closest monster.",
+	Every = "%s s per hit",
+	Reach = "Reach %d",
+	HitsAll = "Hits all in front",
+	Hits = "Hits %d",
+	Splash = "Blast %d",
+	MageMP = "%d MP per hit",
+	Hit = "Hit x%s",
+	Wait = "%.1f s",
+	Passive = "Passive",
+	FallMarks = "Fall marks x%d: gold +%d%%",
+	RedeemMarks = "Redeem marks x%d: XP +%d%%",
+	ChangeKeys = "Change keys",
+	-- used only when Config.Skills.Text misses a word
+	Ready = "Ready", NeedMP = "Need MP", UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt",
+}
+Config.ClientText.PassesLines = {
+	PassXP2 = "Thank you! 2x XP is on.",
+	PassGold2 = "Thank you! 2x Gold is on.",
+	PassVIP = "Thank you! You are a VIP now: crown and chat tag.",
+	-- a bought look (LooksOwned grew)
+	Look = "New look unlocked! Pick it in the Shop.",
+}
+
+Config.ClientText.VitalsUI = {
+	PotionShop = "Potion shop", -- the way to the merchant when a [Buy] press has no potions
+}
 return Config

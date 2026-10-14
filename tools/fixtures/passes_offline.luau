@@ -34,8 +34,18 @@ local env = setmetatable({
 	game = { GetService = function(_, n)
 		if n == "Players" then return { LocalPlayer = ME } end
 		if n == "MarketplaceService" then return MPS end
+		if n == "ReplicatedStorage" then -- 10/14: the words sit in Config.ClientText.PassesLines
+			return { WaitForChild = function() return { WaitForChild = function() return "CONFIG" end } end }
+		end
 		return {}
 	end },
+	require = function(m)
+		if m == "CONFIG" then
+			return { ClientText = { PassesLines = { PassXP2 = "Thank you! 2x XP is on.", PassGold2 = "Thank you! 2x Gold is on.",
+				PassVIP = "Thank you! You are a VIP now: crown and chat tag.", Look = "New look unlocked! Pick it in the Shop." } } }
+		end
+		return nil
+	end,
 	os = { clock = function() return CLOCK.T end },
 }, { __index = getfenv() })
 local fn = assert(loadstring(PASSES_SOURCE, "=Passes"))

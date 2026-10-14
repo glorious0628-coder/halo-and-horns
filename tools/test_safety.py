@@ -41,7 +41,7 @@ def checks(src: dict) -> list[tuple[str, bool]]:
         ("Tab list: Add friend / Block call Roblox's own prompts for the picked player",
          'for i, a in { { TXT.Friend, "PromptSendFriendRequest", "Good" }, { TXT.Block, "PromptBlockPlayer", "Bad" } } do' in l
          and "local ok, err = pcall(StarterGui.SetCore, StarterGui, kind, target)" in l
-         and 'Friend = "Add friend",' in l and 'Block = "Block",' in l),
+         and 'Friend = "Add friend",' in c and 'Block = "Block",' in c and "local TXT = Config.ClientText.PlayerListUI" in l),
         ("never my own row", 'if typeof(target) ~= "Instance" or target == LocalPlayer or not target.Parent then return end' in l
          and "\tif row.Pick then row.Pick.Visible = not mine end\n" in l
          and "if rec.Player == nil or rec.Player == LocalPlayer then return end" in l),

@@ -123,7 +123,7 @@ MUTATIONS = [
     # 게임성 검수 10/12 (API review fixes)
     ("UI", "the other side's blessing shown as mine", "if (blessing == \"Halo\" or blessing == \"Horns\") and blessing == faction then",
      "if (blessing == \"Halo\" or blessing == \"Horns\") then"),
-    ("UI", "the blessing without its XP", "Blessing = \"Gold & XP +%d%%\" },", "Blessing = \"Gold +%d%%\" },"),
+    ("CONFIG", "the blessing without its XP", "Blessing = \"Gold & XP +%d%%\" },", "Blessing = \"Gold +%d%%\" },"),
     # 최종 검수 10/13 (ref_rpg_ui #5)
     ("UI", "#5: the Horns' gold bonus left out", "\t\tif num(fdef.GoldBonus, 0) > 0 then chip(\"Gold\", tx(TXT.Chip, \"Gold\", pct(fdef.GoldBonus))) end\n", ""),
     ("UI", "#5: the perk sentences back", "\tif #effects > 0 then\n\t\thead(\"Effects\")",
@@ -160,7 +160,7 @@ MUTATIONS = [
      "local ok, body = true, hp.Mount(slotsView, UDim2.fromOffset(L.FrameW, L.BodyH))"),
     ("MAIN", "#3: HeroPreview not loaded", '"CharacterUI", "HeroPreview", "GatherView",', '"CharacterUI", "GatherView",'),
     ("UI", "#5: cards drawn as text rows", "\t\tif r.Kind == \"Card\" then\n", "\t\tif false then\n"),
-    ("UI", "the hit row claims the final damage", "Hit = \"Base hit\",", "Hit = \"Hit damage\","),
+    ("CONFIG", "the hit row claims the final damage", "Hit = \"Base hit\",", "Hit = \"Hit damage\","),
     ("UI", "no nickname row", "Name = \"Nickname\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),",
      "Name = \"Nick_\", Size = UDim2.new(1, 0, 0, L.Size.Name + 4),"),
     ("UI", "[Change] opens another window", "pcall(pk.Open, \"Nickname\")", "pcall(pk.Open, \"Settings\")"),

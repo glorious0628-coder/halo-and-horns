@@ -58,20 +58,7 @@ local T = {
 	Gui = "PauseCard",
 	Z = 95, -- under UIKit.Confirm (100)
 	-- game text: English only (A23-48), short and easy
-	Text = {
-		PauseTitle = "Saved!",
-		PauseNext = "Next time: %s",
-		PausePlain = "Everything is saved.",
-		PauseTomorrow = "Tomorrow: %s",
-		Keep = "Keep playing",
-		OK = "OK",
-		BackTitle = "Welcome back!",
-		BackNext = "Next: %s",
-		BackPlain = "Good to see you again!",
-		Go = "Go",
-		Open = "Open", -- the tomorrow card's [Open] (today's gift: the attendance window)
-		TipTitle = "Tip",
-	},
+	Text = Config.ClientText.PauseCard, -- the words: Config.ClientText.PauseCard (moved 10/14)
 }
 
 -- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a

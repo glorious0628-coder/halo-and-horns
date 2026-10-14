@@ -38,33 +38,7 @@ local TAG = "CraftWindow"
 local LocalPlayer = Players.LocalPlayer
 
 -- player text (A23-130: short; A23-111: keys "CraftWindow.TXT.<field>"); the refusals are Config.Craft.Text
-local TXT = {
-	Title = "Crafting",
-	Menu = "Crafting",
-	Make = { Smith = "Forge", Alch = "Brew", Tame = "Make" }, -- the start button per role
-	Level = "%s Lv %d",
-	XP = "%s / %s",
-	Max = "Max",
-	NeedLv = "Lv %d",
-	Attack = "Attack %s",
-	UseFrom = "Use from Lv %d",
-	Count = "×%d",
-	Have = "%s / %s",
-	GainXP = "+%d craft XP",
-	Made = "Made %d",
-	Checking = "Checking…",
-	None = "Nothing to make yet.",
-	-- the tamer (⑤, 개발 3 dev3-tamer: summons + research; only while Config.Features.Research is on)
-	Tabs = { Make = "Make", Research = "Research" },
-	PetSpeed = "Speed +%d–%d%%", -- a summon's random walk speed range (the hammer adds up to +2)
-	ResearchNeed = "%s research %s / %s",
-	Stage = "Stage %d",
-	-- artisan contract ③: a made weapon waits in the bag as a spare -> [Use it] makes it mine (UnpackSpare) and wears it
-	Power = "Power %s → %s",
-	Spare = "In your bag ×%d",
-	SpareOwned = "You already have this weapon.",
-	Use = "Use it",
-}
+local TXT = Config.ClientText.CraftWindow -- the words: Config.ClientText.CraftWindow (moved 10/14)
 L10n.Register("CraftWindow.TXT", TXT)
 
 -- layout (du = MainGui units) and fixed rules

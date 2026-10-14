@@ -38,7 +38,7 @@ local T = {
 	-- 2-C #9 the win card (Config.WinCard): approved PanelCard + BtnSecondary, bottom middle above the skill bar
 	Card = { W = 320, H = 118, Bottom = 190, Z = 40, BtnW = 240, BtnH = 46, LineH = 34, RoundGrace = 3 },
 	-- game text: English only (A23-48), short and easy
-	Text = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" },
+	Text = Config.ClientText.Invite, -- the words: Config.ClientText.Invite (moved 10/14)
 }
 local S = { FailAt = -math.huge, Seen = {}, Shown = {} } -- Seen[userId] = that friend's line was shown this session;
 -- Shown[source] = that source's button was counted this session

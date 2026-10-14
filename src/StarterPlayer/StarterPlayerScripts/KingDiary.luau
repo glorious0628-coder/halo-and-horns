@@ -37,28 +37,7 @@ local T = {
 	KST = 9 * 3600,
 	Months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" },
 	-- game text: English only (A23-48)
-	Text = {
-		Title = "King Diary",
-		TabDiary = "Diary",
-		TabJar = "Candy Jar",
-		Count = "Pages: %d/%d",
-		AllRead = "You read every page! Title: %s",
-		PageHead = "Page %d · %s",
-		Locked = "Beat a king together to open this page!",
-		Soon = "Opens on %s.",
-		Closed = "This page stayed closed.",
-		Candy = "Your candy: %d",
-		JarNote = "Trade candy for a title. Titles are just for fun!",
-		Cost = "%d candy",
-		Trade = "Trade",
-		Owned = "Owned",
-		CardTitle = "King Diary",
-		CardPage = "Page %d is open!",
-		CardRead = "Read",
-		DoneLine = "You read all %d pages!",
-		DoneTitle = "New title: %s",
-		DoneOK = "Yay!",
-	},
+	Text = Config.ClientText.KingDiary, -- the words: Config.ClientText.KingDiary (moved 10/14)
 }
 local S = { Ready = false, Tab = "Diary", Page = nil, Candy = 0, TradeAt = -math.huge }
 local VIEW = { Kit = nil, Tabs = nil, Body = nil }

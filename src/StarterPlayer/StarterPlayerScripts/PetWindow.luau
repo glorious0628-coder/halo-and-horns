@@ -40,20 +40,7 @@ local T = {
 	Icon = 72, ButtonW = 132, ButtonH = 40, BarH = 20, BarText = 15, -- 검수 10/10: the XP numbers >= 15 px
 	DefaultIcon = "IconPetBabySlime",
 	-- game text: English only (A23-48)
-	Text = {
-		Title = "Pets",
-		Empty = "No pets yet.",
-		Level = "Lv %d",
-		Speed = "Walk speed +%d%%",
-		SpeedRest = "Follow: +%d%% speed", -- a resting pet: what following would give (검수 10/10)
-		XP = "%d/%d XP",
-		Max = "MAX",
-		Following = "Following you",
-		Follow = "Follow me",
-		PutAway = "Put away",
-		Born = "Born with +%d%% speed", -- a summoned pet's roll
-		Feed = "Feed (%d)", -- one Pet Treat (the count I have)
-	},
+	Text = Config.ClientText.PetWindow, -- the words: Config.ClientText.PetWindow (moved 10/14)
 }
 local S = { Ready = false, List = nil, Sig = "", Shape = "", PressAt = -math.huge, FeedAt = -math.huge }
 -- Bars[uid] = { Set = setFraction, Text = its TextLabel } and Feeds[uid] = { Button, Max } of the open window

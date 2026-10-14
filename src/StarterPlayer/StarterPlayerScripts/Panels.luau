@@ -74,159 +74,10 @@ local NEUTRAL_FALLBACK = {
 local NEUTRAL_LORE = "Those who chose to shape the shards, not take them."
 local NEUTRAL_NOTE = "No fight buffs · No PvP · Crafting focus (coming soon)"
 local NEUTRAL_CLASS_NAMES = { Warrior = "Blacksmith", Mage = "Alchemist", Archer = "Hunter" }
-local PICK_LINES = {
-	Warrior = "Get close and smash everyone around you",
-	Mage = "Stand back and blast a wide area",
-	Archer = "Shoot them one by one from far away",
-}
+local PICK_LINES = Config.ClientText.PanelsPickLines -- the words: Config.ClientText.PanelsPickLines (moved 10/14)
 
 -- player-facing strings used only by these panels (Korean). Keys ending in F go through string.format.
-local T = {
-	Titles = {
-		Menu = "Menu", Travel = "Travel", Rebirth = "Rebirth", Altar = "Altar of Fate",
-		Class = "Change Class", Shop = "Change Ticket Shop", Vacation = "Vacation Bonus",
-		Nickname = "Nickname", WeaponShop = "Forge", Welcome = "Guide · Take Back the Supply Road", PotionShop = "Potion Shop",
-		Items = "Items",
-	},
-	Back = "← Menu",
-	Close = "X",
-	-- menu
-	MenuTravel = "Travel",
-	MenuRebirth = "Rebirth",
-	MenuRebirthReady = "Rebirth (ready!)",
-	MenuClass = "Change Class",
-	MenuShop = "Ticket Shop",
-	MenuVacation = "Vacation Bonus",
-	MenuNickname = "Nickname",
-	MenuWelcome = "Meet the Guide",
-	MenuItems = "Items",
-	MenuBag = "Bag", -- H-1
-	MenuMap = "Map",
-	WelcomePrevious = "Back",
-	WelcomeNext = "Next",
-	WelcomeFirst = "From the Start",
-	WelcomeAccept = "I'm In!",
-	WelcomeMore = "▶", -- 검수 10/09: the small next-page button (Skip ▶ uses the same glyph)
-	WelcomePending = "Checking...",
-	WelcomeRetry = "We couldn't confirm that. Please tap again.",
-	WelcomeUnavailable = "Pick a class first, then talk to the Guide again.",
-	MenuAltarHint = "Change sides at the Altar of Fate in the Crossroads!",
-	-- travel
-	TravelGo = "Go",
-	TravelNoGo = "Locked",
-	TravelBusy = "Traveling",
-	TravelNeedLevelF = "Needs Lv %d",
-	TravelInfoF = "Lv %d+ · %s",
-	TravelHere = " · You are here",
-	TravelRecommendF = "  <font color=\"#FFD23C\">★ %s</font>",
-	Recommended = "Recommended",
-	Safe = "Safe",
-	PvP = "PvP",
-	-- rebirth
-	RebirthInfoF = "Rebirths: %d · Needs Lv %d (now Lv %d)",
-	RebirthCountsF = "This server: Knights %d : Legion %d",
-	RebirthBonusF = "+%d%%",
-	RebirthBonusUnderdogF = "+%d%%! (smaller side)",
-	RebirthCurrent = "(your side)",
-	-- A23-14 (user 2026-10-05): rebirth resets the level (and XP) only; gold, weapons, enhancement and items stay
-	RebirthResets = "Resets: only your level (XP too)",
-	RebirthKeeps = "Keeps: gold, weapons, enhancements, items, class, Honor/Mischief, rebirth bonus, marks, tickets",
-	RebirthConfirmTitle = "Rebirth",
-	RebirthConfirmBodyF = "Be reborn as %s?\nOnly your level starts over. Gold, weapons and items stay.\nKept: class, Honor/Mischief, rebirth bonus, marks, tickets",
-	RebirthConfirmOk = "Rebirth!",
-	-- altar
-	AltarCurrentF = "Your side: %s → Which side will you join?",
-	AltarRules = "You need: 0 Wanted stars · no Grudge Sack · not a Kaiju · not in a fight",
-	AltarCooldownRuleF = "You can change sides once every %d min",
-	AltarCooldownF = "Ready in %s",
-	AltarFar = "You can only change sides near the Altar of Fate.",
-	AltarConfirmTitle = "Change Side",
-	AltarConfirmFreeF = "Switch to %s?\nFree: %s",
-	AltarConfirmTicketF = "Use 1 Change Ticket to switch to %s?\nYour Honor and Mischief both stay.",
-	Honor = "Honor",
-	Infamy = "Mischief", -- A23-166
-	LossScoreF = "%s %s resets",
-	BetrayalSuffix = " (price of betrayal)",
-	-- shared change options (A7-4)
-	Selected = "Selected",
-	FreeButton = "Change for Free",
-	TicketButtonF = "Use a Ticket (you have %d)",
-	TicketKeepAll = "Keep everything",
-	TicketBuyHint = "You have 0 · after buying, tap again to change",
-	LossNone = "You lose nothing",
-	ConfirmChange = "Change",
-	-- class
-	ClassPickFirst = "Pick a class first.",
-	ClassHint = "Tap the class card you want.",
-	ClassCurrent = "Current",
-	ClassHeaderF = "Change to %s",
-	ClassLossLevelF = "Lv %d → Lv 1",
-	ClassLossXPF = "%d XP resets",
-	ClassKeeps = "Gold, weapons, items and rebirth bonus stay",
-	ClassFreeKeepF = "Your level stays before Lv%d", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
-	ClassConfirmTitle = "Change Class",
-	ClassConfirmFreeF = "Change to %s?\nFree: %s",
-	ClassConfirmTicketF = "Use 1 Change Ticket to change to %s?\nYour level stays.",
-	-- shop
-	ShopRowF = "%s — you have %d",
-	ShopNote = "Change Tickets are not stats. They keep your progress when you switch. You can always switch for free too!",
-	ProductPending = "Coming soon",
-	ProductBuyF = "Buy with Robux (%s R$)",
-	WeaponLocation = "Crossroads → Artisan Guild anvil · interact up close",
-	WeaponFar = "Come close to the Forge anvil to buy.", -- UI round 2 #3: the list still shows from afar (look only)
-	WeaponShowWay = "Show me the way",
-	WeaponWayLabel = "Forge",
-	WeaponLoading = "Check again once your character is ready.",
-	WeaponNote = "Pick a basic weapon to buy. Weapons you own can be equipped again for free.",
-	-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WSHOP.Sells) - monsters drop them
-	WeaponNoteDrop = "Monsters drop weapons. Equip yours here for free, or sell them.",
-	WeaponFarDrop = "Come close to the Forge anvil to equip or sell.",
-	WeaponFromF = "Get it: %s", -- (Config.WeaponSource)
-	WeaponLevelF = "Needs Lv %d · Now Lv %d",
-	WeaponCurrentF = "Current weapon: %s",
-	WeaponPriceF = "Price %s gold · Needs Lv %d · Now Lv %d",
-	WeaponEffectF = "Slime in %d basic hits → %d hits",
-	WeaponEffectNowF = "Slime in %d basic hits",
-	WeaponGoldF = "You have %s gold (Vault %s + Pouch %s)",
-	WeaponShortF = "You need %s more gold.",
-	WeaponBuyF = "Buy · %s gold",
-	WeaponSellF = "Sell · %s gold",
-	WeaponEquip = "Equip (free)",
-	WeaponEquipped = "Equipped",
-	WeaponOwned = "Owned",
-	WeaponUnowned = "Not owned",
-	WeaponStarter = "First weapon · free to re-equip · can't be sold", -- A23-34 (A23-48 English)
-	WeaponStarterNoSell = "The first weapon can't be sold",
-	WeaponFromSmith = "From the Blacksmith", -- A23-34: tier 1 is a gift (M1_1), never bought
-	WeaponNoSell = "You can only sell weapons you own",
-	WeaponSaleNoteF = "Sells for %s gold (1/10 of the price)",
-	WeaponSaleEquipped = "Sell the weapon in your hand and you switch to your best other weapon (or bare hands).",
-	WeaponSellTitle = "Sell Weapon",
-	WeaponSellConfirmF = "Sell %s for %s gold?\nIt leaves your weapon list.",
-	WeaponSellConfirm = "Sell",
-	WeaponUnavailable = "The Forge doesn't sell this weapon.",
-	WeaponInvalid = "We can't read the weapon info. Please open it again in a moment.",
-	WeaponChanged = "Your weapons changed. Please check the list again.",
-	WeaponSent = "Checking the trade...",
-	WeaponSlow = "No answer for the trade yet. Check the alerts and tap again.",
-	WeaponPending = "Checking...",
-	WeaponByeBrowse = "Nothing you like? Take your time!",
-	WeaponByeBuy = "Good choice. Try it out and come back!",
-	WeaponByeSell = "Got your weapon. Come back when you need something!",
-	WeaponByeEquip = "That one fits your hand. Stay safe out there!",
-	WeaponByePending = "Check how the trade went. Come back soon!",
-	-- vacation
-	VacationHeaderF = "Vacation Bonus! You were away %d days. That's okay!", -- 검수 10/10: shorter (Config.Plural: 1 day)
-	VacationRewardF = "+%s gold · +%s XP",
-	VacationNoteF = "Even on breaks you get %d%% of a day's rewards. Playing gives 100%%!",
-	VacationClaim = "Claim",
-	VacationNone = "No vacation bonus to claim.",
-	VacationAwayF = "You were away %d days. That's okay!", -- the reward popup's first line (창 꾸미기 ③; 검수 10/10: shorter)
-	VacationLater = "Later",
-	-- fallbacks for Config.Text keys added in review R1
-	WaitRespawn = "You can do this after you respawn.", -- CR-L30
-	BlockedBully = "You can join the Artisan Guild after all your Bully stacks are gone.", -- CR-L9
-}
+local T = Config.ClientText.Panels -- the words: Config.ClientText.Panels (moved 10/14)
 
 local DEFAULT_THEME = {
 	Bg = Color3.fromRGB(25, 25, 35),
@@ -1376,7 +1227,7 @@ end
 function NICK.Update()
 	local u = NICK.UI
 	if not u then return end
-	u.Current.Text = "Current name: " .. Util.PlayerDisplayName(player)
+	u.Current.Text = string.format(T.CurrentNameF, Util.PlayerDisplayName(player))
 	local busy = NICK.Pending or player:GetAttribute("NicknameStatus") == "Busy"
 	u.Save:SetAttribute("Disabled", busy)
 	u.Save.Active = not busy
@@ -1412,7 +1263,7 @@ function NICK.Submit()
 	local draft = NICK.Draft or ""
 	local ok, length = pcall(utf8.len, draft)
 	if not ok or not length or length < 2 or length > 20 then
-		NICK.Message = "Please enter 2-20 letters."
+		NICK.Message = T.NickRule
 		NICK.Update()
 		return
 	end
@@ -1426,7 +1277,7 @@ function NICK.Submit()
 	NICK.Request += 1
 	local request = NICK.Request
 	NICK.Pending = true
-	NICK.Message = "Saving..."
+	NICK.Message = T.NickSaving
 	NICK.Update()
 	local sent = pcall(function() Net.Get("SetNickname"):FireServer(draft) end)
 	if not sent then
@@ -1469,7 +1320,7 @@ function NICK.Build()
 		ScrollBarImageColor3 = (Config.UIArt.Colors or {}).Ink or PALETTE.DarkText })
 	u.Body = UIKit.Create("Frame", { Name = "Body", Parent = u.Scroll, BackgroundTransparency = 1 })
 	u.Current = UIKit.InkText({ Name = "CurrentName", Parent = u.Body,
-		Text = "Current name: " .. Util.PlayerDisplayName(player), Outline = false })
+		Text = string.format(T.CurrentNameF, Util.PlayerDisplayName(player)), Outline = false })
 	u.InputArt = UIKit.ArtFrame("InputField", { Name = "InputFrame", Parent = u.Body })
 	u.Input = UIKit.Create("TextBox", { Name = "NicknameInput", Parent = u.InputArt, AutoLocalize = false, -- A23-179 typed
 		BackgroundTransparency = 1, BorderSizePixel = 0, ClearTextOnFocus = false, MultiLine = false,
@@ -1480,7 +1331,7 @@ function NICK.Build()
 	u.Note = UIKit.InkText({ Name = "NicknameStatus", Parent = u.Body,
 		Text = NICK.Message ~= "" and NICK.Message or NICK.Rule, Outline = false })
 	u.Save, u.SaveLabel = UIKit.ArtButton("CardHalo", { Name = "SaveNickname", Parent = u.Body,
-		Text = "Save", TextStyle = "ink", AnchorPoint = Vector2.new(0.5, 0), ScaleType = Enum.ScaleType.Fit }, NICK.Submit,
+		Text = T.NickSave, TextStyle = "ink", AnchorPoint = Vector2.new(0.5, 0), ScaleType = Enum.ScaleType.Fit }, NICK.Submit,
 		{ Color = (Config.UIArt.Colors or {}).Gold or theme.Gold, CornerRadius = UDim.new(0.5, 0) })
 	if u.Save:IsA("ImageButton") then
 		-- The existing text-free CardHalo bitmap's complete gold button, with its original aspect ratio.
@@ -1593,7 +1444,7 @@ BUILDERS.Menu = function(parent)
 		{ Text = T.MenuShop, Id = "Shop" },
 		{ Text = T.MenuMap, Id = "Map" },
 		{ Text = T.MenuNickname, Id = "Nickname" },
-		{ Text = "Replay Opening", Id = "Intro" },
+		{ Text = T.MenuIntro, Id = "Intro" },
 		-- P5: hide / show my name in server-wide chat announcements (server-saved, HideAnnounceName attribute)
 		{ Text = attr("HideAnnounceName", false) == true and Config.Announce.Text.MenuHide or Config.Announce.Text.MenuShow,
 			Id = "AnnounceName" },
@@ -3327,16 +3178,7 @@ end
 
 -- A23-6 / beta 3: potion shop at the temporary default NPC (Crossroads). Blacksmith-style screen: price, my gold,
 -- stock, 1 / 5 bottles, the server's answer (stock / gold attributes) and why a purchase failed (server toasts).
-local POTION = {
-	Gold = "You have %s gold",
-	Stock = "You have %d / %d",
-	Name = { HP = "HP Potion ({PotionHP})", MP = "MP Potion ({PotionMP})" }, -- BB1: key part only on keyboards
-	Effect = { HP = "Heals %d%% of max HP", MP = "Restores %d%% of max MP" },
-	Buy = "%d · %s gold",
-	Pending = "Checking the purchase…",
-	Full = "Full",
-	Short = "Not enough gold",
-}
+local POTION = Config.ClientText.PanelsPotion -- the words: Config.ClientText.PanelsPotion (moved 10/14)
 
 BUILDERS.PotionShop = function(parent)
 	local tune = Config.Vitals or {}

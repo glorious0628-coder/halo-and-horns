@@ -45,7 +45,8 @@ MUTATIONS = [
      "return num(entry.Progress, 0) >= num(entry.Target, 1)"),
     ("English gold goal not seen",
      ' or string.find(string.lower(text), "gold", 1, true) ~= nil', ""),
-    ("blacksmith label back in Korean", 'Blacksmith = "Forge",', 'Blacksmith = "대장간",'),
+    ("blacksmith label back in Korean", "local TXT = Config.ClientText.QuestTarget --",
+     'local TXT = setmetatable({ Blacksmith = "대장간" }, { __index = Config.ClientText.QuestTarget }) --'),
     # A23-127 (plan 10/13 §1-A #2, 게임성 개발 1)
     ("the iron goal sends to the anvil while the Forge sells nothing",
      "\tif type(Config.WeaponShop) == \"table\" and Config.WeaponShop.Buy == false then return false end\n", ""),

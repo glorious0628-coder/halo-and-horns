@@ -89,6 +89,9 @@ local env = setmetatable({
 	task = { spawn = function(fn, ...) fn(...) end },
 	require = function(m)
 		if m.__module == "Net" then return { GameState = function() return GS end } end
+		if m.__module == "Config" then -- 10/14: the words sit in Config.ClientText.SupporterBoard
+			return { ClientText = { SupporterBoard = { Title = "Thank you, supporters!", Empty = "Thank you for playing!" } } }
+		end
 		return { Warn = function() end }
 	end,
 }, { __index = getfenv() })

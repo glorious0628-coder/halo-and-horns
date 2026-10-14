@@ -42,28 +42,7 @@ local T = {
 	BtnW = 84,
 	BtnH = 34,
 	-- game text: English only (A23-48)
-	Text = {
-		Title = "Quests",
-		InProgress = "In progress",
-		Available = "Available",
-		Done = "Done",
-		EmptyInProgress = "Nothing to do here right now.",
-		EmptyAvailable = "Nothing new right now.",
-		EmptyDone = "Nothing finished yet.",
-		Claim = "Claim",
-		Reroll = "New",
-		FirstMission = "First mission",
-		DailyToday = "Daily quests today: %d/%d",
-		Goose = "The Golden Goose is here!",
-		PumpkinKing = "The Pumpkin King is here!",
-		GhostKing = "The Ghost King is here!",
-		Kaiju = "A kaiju is loose!",
-		War = "Crown War: next crown in %s",
-		Wanted = "Wanted stars: %d",
-		Diary = "King Diary · %d/%d pages",
-		Jar = "Candy Jar · trade candy for a title",
-		TabCount = "%s %d",
-	},
+	Text = Config.ClientText.QuestBook, -- the words: Config.ClientText.QuestBook (moved 10/14)
 }
 T.NoAvailable = { Main = true } -- tabs without an Available section (the main chain is never waiting to be picked up)
 -- the Studio preview's sample rows (QuestBook.PreviewContext): one or more per tab, a claimable and a rerollable daily

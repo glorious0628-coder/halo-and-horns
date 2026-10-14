@@ -75,7 +75,8 @@ def main():
          and "local capW = math.max(40, maxW - 2 * math.floor(th * FRAME.Disc))" in panels),
         ("검수 10/09: a small ▶ (64 du) for the next page, no 'Later' (the window's X closes)",
          "readMore = makeButton(actions, T.WelcomeMore, PALETTE.Button, UDim2.new(0, 64, 0, 60)" in welcome
-         and "readMore.LayoutOrder = 2" in welcome and 'WelcomeMore = "▶",' in panels
+         and "readMore.LayoutOrder = 2" in welcome and ('WelcomeMore = "▶",' in panels
+         or 'WelcomeMore = "▶",' in (PANELS.parents[2] / "ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig"))
          and "WelcomeLater" not in panels and "later" not in welcome),
         ("#2 short screens keep a 64 px face", "local face = short and 64 or 170" in welcome
          and "Size = UDim2.fromOffset(face, face)" in welcome and "portraitRow.Visible = not short" not in welcome),

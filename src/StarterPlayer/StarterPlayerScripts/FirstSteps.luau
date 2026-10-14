@@ -23,7 +23,7 @@ local LocalPlayer = Players.LocalPlayer
 local C = nil
 
 -- Forge: A23-74 weapon first, the walk to Otto's anvil (Fx "Travel" { To = "Crossroads", Spot = "Forge" })
-local TXT = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
+local TXT = Config.ClientText.FirstSteps -- the words: Config.ClientText.FirstSteps (moved 10/14)
 
 -- 최종 검수 10/14 (A23-179: Roblox's automatic translation matches whole drawn sentences, so a line with a number or a
 -- name stayed English): a sentence with %-slots by its table key (UIKit.Tx -> UIKit.Tr: the localization table by key;
@@ -274,8 +274,8 @@ end
 -- waits for a calm screen; 검수 10/11 A23-130: the three cards became one - the danger line + one short line); once it
 -- is closed the Settings flag PvPCards (saved with my account) keeps it from coming again. Shown only from the place: no
 -- button sends me anywhere
-local PVP = { Title = "PvP zone", Why = "PvPIntro", Step = 0,
-	Text = "Other players can fight you here!\nKnocked out? You can lose pocket gold. Towns keep it safe." }
+local PVP = { Title = Config.ClientText.FirstStepsPvP.PvPTitle, Why = "PvPIntro", Step = 0,
+	Text = Config.ClientText.FirstStepsPvP.PvPText } -- the words: Config.ClientText.FirstStepsPvP
 
 -- the card would open for me now (not the Guild, my Settings loaded, PvPCards not set yet)
 function PVP.Wanted()
