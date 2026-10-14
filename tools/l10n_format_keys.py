@@ -197,7 +197,8 @@ def module_rows() -> tuple[list[tuple[str, str]], dict[str, str]]:
     return rows, renames
 
 
-def rows() -> list[dict]:
+def picked_rows() -> list[tuple[str, str]]:
+    """(key, English) of every player-facing string, format token or not, keyed as UIKit.Tx / UIKit.Tr look them up"""
     source = E.CONFIG.read_text(encoding="utf-8-sig")
     walked = E.run_walker(E.top_level_roots(source))
     mod_rows, renames = module_rows()
@@ -211,9 +212,12 @@ def rows() -> list[dict]:
     picked = [(k, v) for k, v in renamed if re.search(r"[A-Za-z]", v) and (E.looks_like_words(k, v) or sentence(v))]
     picked += [(k, v) for k, v in mod_rows if re.search(r"[A-Za-z]", v) and (E.looks_like_words(k, v) or sentence(v))]
     by_key = dict(picked)
-    picked = [(k, v) for k, v in picked if not (k.endswith("En") and by_key.get(k[:-2]) == v)]
+    return [(k, v) for k, v in picked if not (k.endswith("En") and by_key.get(k[:-2]) == v)]
+
+
+def rows() -> list[dict]:
     out, seen = [], set()
-    for key, en in picked:
+    for key, en in picked_rows():
         if key in seen:
             continue
         seen.add(key)
