@@ -44,8 +44,9 @@ end
 
 function HuntFameService.OnKilled(player, info)
 	if H.Enabled ~= true or type(info) ~= "table" then return end
-	-- a free rider under the field boss's damage share (info.Minor) counts nothing either
-	if info.Personal == true or info.Practice == true or info.Minor == true then return end
+	-- a free rider under the field boss's damage share (info.Minor) counts nothing either. A23-181: a kill shared by
+	-- several players counts for the first hitter only (info.First; nil = one player's kill, e.g. an older caller)
+	if info.Personal == true or info.Practice == true or info.Minor == true or info.First == false then return end
 	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
 	local stat = STAT[player:GetAttribute("Faction")]
 	if not stat then return end

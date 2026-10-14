@@ -254,6 +254,76 @@ runGroup("free riders", function()
 	check(not paidQ, "a free rider is not in PaidUserIds (no badge, no titles, no war bonus)")
 end)
 
+------------------------------------------------------------------ A23-181: one first hitter a kill (2026-10-14)
+runGroup("first hitter", function()
+	local w = finWorld()
+	local p = w:Hero(181, { Faction = "Halo" })
+	local q = w:Hero(182, { Faction = "Horns" })
+	local boss = w:King({ Kind = "CaptainClatter", HP = 1e7 })
+	local big = boss.MaxHP * 0.1
+	w:Hit(boss, q, big) -- q hits first (Clatter pays from 3 hits)
+	w:Hit(boss, p, big)
+	w:Hit(boss, q, big)
+	w:Hit(boss, p, big)
+	w:Hit(boss, q, big)
+	boss.HP = 1
+	w:Swing(p) -- p finishes it
+	check(boss.Alive == false, "(p finished it)")
+	local byP = {}
+	for _, k in w.Kills do byP[k.P] = k.Info end
+	check(byP[q] and byP[q].First == true and byP[p] and byP[p].First == false,
+		"two paid hitters: only the FIRST hitter (not the finisher) is First", show({ byP[q] and byP[q].First, byP[p] and byP[p].First }))
+	check(byP[p].XP == byP[q].XP and byP[p].WarPoints == byP[q].WarPoints, "XP and the war points stay the same for both", "")
+	-- the first hitter fell out of the window: the earliest of those still paid
+	local w2 = finWorld()
+	local a = w2:Hero(183, { Faction = "Halo" })
+	local b = w2:Hero(184, { Faction = "Halo" })
+	local c = w2:Hero(185, { Faction = "Horns" })
+	local boss2 = w2:King({ Kind = "CaptainClatter", HP = 1e7 })
+	local big2 = boss2.MaxHP * 0.1
+	w2:Hit(boss2, a, big2)
+	w2:Hit(boss2, a, big2)
+	w2:Hit(boss2, a, big2)
+	w2:Advance(600) -- a's hits are far out of the contributor window
+	w2:Hit(boss2, c, big2)
+	w2:Hit(boss2, b, big2)
+	w2:Hit(boss2, c, big2)
+	w2:Hit(boss2, b, big2)
+	w2:Hit(boss2, c, big2)
+	boss2.HP = 1
+	w2:Swing(b)
+	local by2 = {}
+	for _, k in w2.Kills do by2[k.P] = k.Info end
+	check(by2[a] == nil and by2[c] and by2[c].First == true and by2[b] and by2[b].First == false,
+		"a first hitter out of the window: the earliest one still paid is First", show({ by2[c] and by2[c].First, by2[b] and by2[b].First }))
+	-- the order of the FIRST hits counts, not the last ones: p first, q keeps hitting after p's last plain hit
+	local w4 = finWorld()
+	local p4 = w4:Hero(187, { Faction = "Halo" })
+	local q4 = w4:Hero(188, { Faction = "Horns" })
+	local b4 = w4:King({ Kind = "CaptainClatter", HP = 1e7 })
+	local h4 = b4.MaxHP * 0.1
+	w4:Hit(b4, p4, h4)
+	w4:Hit(b4, q4, h4)
+	w4:Hit(b4, p4, h4)
+	w4:Hit(b4, q4, h4)
+	w4:Hit(b4, q4, h4)
+	b4.HP = 1
+	w4:Swing(p4)
+	local by4 = {}
+	for _, k in w4.Kills do by4[k.P] = k.Info end
+	check(by4[p4] and by4[p4].First == true and by4[q4] and by4[q4].First == false, "the earliest FIRST hit wins (later hits change nothing)",
+		show({ by4[p4] and by4[p4].First, by4[q4] and by4[q4].First }))
+	-- one hitter alone: First
+	local w3 = finWorld()
+	local s = w3:Hero(186, { Faction = "Halo" })
+	local m = w3:King({ Kind = "CaptainClatter", HP = 1e7 })
+	w3:Hit(m, s, m.MaxHP * 0.2)
+	w3:Hit(m, s, m.MaxHP * 0.2)
+	m.HP = 1
+	w3:Swing(s)
+	check(w3.Kills[1] and w3.Kills[1].Info.First == true, "a kill of one player: First", "")
+end)
+
 ------------------------------------------------------------------ who gets a card (kills through the real presses)
 runGroup("shipped: no card", function()
 	-- 1-A #10: the shipped Config sends no card (nobody can see one yet); the kill is paid as before
