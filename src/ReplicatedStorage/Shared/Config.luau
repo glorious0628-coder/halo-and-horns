@@ -6484,16 +6484,32 @@ Config.ClassGrips = {
 -- Rest = the turn in the fist while standing / walking (WeaponPose.RestStep fades the default toolnone out, so the arm
 -- hangs): the blade at the side, its tip up and back (130 degrees about the fist's X = 40 degrees back from upright);
 -- an attack clip brings back the plain grip (Turn) and toolnone
+-- A23-187 (user 10/14: our own hold, not Roblox's toolnone arm-forward): the Hold field says how a weapon is carried standing /
+-- walking (WeaponPose: toolnone faded out, the weld turned to Rest, Config.HoldPoses added on top of the walk / idle
+-- animation; an attack clip brings back toolnone and the plain grip): Side = a sword / short tool down at the hip, the
+-- tip back and down 45 degrees (Rest 225 about the fist's X: 0 = forward, 90 = up, 180 = back, 270 = down); Staff = held
+-- upright in one hand, the foot near the ground (Rest 90 = upright), tilted a little while walking; Bow = hanging from
+-- the LEFT hand, the limbs upright along the body (WeaponPose welds it to LeftGripAttachment while resting)
 Config.WeaponGrips = {
-	Sword = { Point = 0.5, Rest = { 130, 0, 0 } },
-	DarkSword = { Point = 0.5, Rest = { 130, 0, 0 } },
-	Bow = { Point = 0.5 },
-	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 } },
-	Staff = { Point = 0.45 },
-	CrookStaff = { Point = 0.45 },
-	FlaskStaff = { Point = 0.45 },
-	Hammer = { Point = 0.3 },
-	Baton = { Point = 0.3 },
+	Sword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
+	DarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
+	Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },
+	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, 0, 0 }, Hold = "Bow" },
+	Staff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	CrookStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
+	Hammer = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+	Baton = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+}
+
+-- A23-187: the joints' turns (degrees, X / Y / Z of each Motor6D's own frame) added on top of the walk / idle animation
+-- while a weapon rests (WeaponPose.PoseStep, every frame, every character, this client only). Side: the arm a little out
+-- from the hip so the blade clears the leg; Staff: the forearm a little forward, WalkTilt more at the wrist while
+-- walking; Bow: the left arm a little out. Tuned on Studio photos (UiSandbox / SwordTest)
+Config.HoldPoses = {
+	Side = { RightShoulder = { 0, 0, 8 }, RightElbow = { -10, 0, 0 } },
+	Staff = { RightShoulder = { -6, 0, 6 }, RightElbow = { -25, 0, 0 }, WalkTilt = { RightWrist = { -10, 0, 0 } } },
+	Bow = { LeftShoulder = { 0, 0, -8 }, LeftElbow = { -8, 0, 0 } },
 }
 
 -- (pure) the grip row of a weapon kind (a kind without a row: the sword's)
