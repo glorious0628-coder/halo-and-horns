@@ -1,4 +1,21 @@
-# 게임성 개발 2 — 상태 (2026-10-14 밤, 장인 길드 최소판 계약 보고)
+# 게임성 개발 2 — 상태 (2026-10-14 늦은 밤, 가방 칸·장인 ①·큐 ①~④·무기 상점)
+
+## 지금 (10/14 늦은 밤) — 모두 push, 최종 검수 병합 대기
+| 가지 | tip | 무엇 | 시험 |
+|---|---|---|---|
+| dev2-artisan-sell | 828f3bed | 장인 ①: 채집 재료 판매 SellItem(상점 근처, 골드 "Sale") + 길드 일일 Gather/Craft(Neutral, 스위치 따라) | loot 666/142, a23_14 329, gamepass 232/116. main 합친 트리 = 원래 실패만 |
+| dev2-bag-slots | 0418d411 | 가방 칸 12→16→20(BagSlots 저장·속성, Lunch1·M2_7 +4, 접속·장 건너뛰기 따라잡기), 새 종류만 칸 검사, 제작·거래소도 빈 칸 확인. 개발 1 표 d417e164 + main 합침 | loot 654/144, market 179/87, craft 189/118, town_quests 1043/248 |
+| dev2-bag-reward | 4425b0fb | bag-slots 위: 퀘스트·이야기 보상은 가득 차도 들어감(GrantItem source "Reward") | loot 658, town_quests 1044, 새 변이 3 |
+| dev2-sub-retry | 6dd30322 | 큐 ①: 구독 확인 3번 재시도 + 마지막 답 PassSeen["Sub:<key>"] | gamepass 255/130 |
+| dev2-fund-ladder | 535cc107 | 큐 ②: 마을 기금 200 → 500 → 1,000(FundGiven으로 셈) | village_fund 127/52 |
+| dev2-no-ticket | 1a497ec9 | 큐 ③: Robux 바꾸기 티켓 판매 삭제(ProcessReceipt 등), 게임 안 티켓은 그대로 | gamepass 248/126, notify_sound 70/61 |
+| dev2-weapon-shop | (시험 중) | A23-186: Buy = true, 밈 무기 T10 Frying Pan·T11 Rubber Chicken(Meme, AnyClass, 15, 300골드), 세이브 v6, WeaponAtLeast(철 무기 판정), 맞힘 Fx Meme 키 + 팬 밀침 +1.5, 거래소·팩 제외 | 전체 sweep·변이 도는 중 |
+- 큐 ④ 확인: N0·N0b는 main에 없음(장인 ②에서 Neutral 전용 Requires TutorialDone으로). 중립 Lv1~5 줄은 1장 메인 + S0·Lunch1·Pet1·S4로 비지 않음.
+- 최종 검수에게 물은 것: 출석·게시판·필드 보스·피니셔·분실물·ChoiceCard 보상도 "Reward"(칸 무시)로 할지.
+- 다음(최종 검수 큐 순서): 무기 상점 보고 → 장인 ②(목표 Gather·Craft·SellMat + N0/N0b/N4, W2 레시피 채집 재료만) → ③ 거래소 끄기 키·죽이기 시험 → ④ 작업대 3개 → ⑤ 연금 소모품 → ⑥ Gear 켜기 → ⑦ 끄기 키 묶음.
+- worktree: ../wt_artisan, ../wt_bag(dev2-bag-reward), ../wt_subretry, ../wt_fundl, ../wt_ticket, ../wt_wshop, ../wt_tmpm(합친 트리 시험용, 지워도 됨).
+- 스크래치 도구: sweep.py(전체 시험), only_mut.py(`<wt> <test.py> "이름|이름"` 변이 몇 개만).
+
 
 ## 지금 (10/14 저녁)
 | 가지 | tip | 무엇 | 어디까지 |
