@@ -1,6 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/14 밤 20 — dev1-artisan-unpack 47e7bc66 (장인 ③, push, 최신)
+## 10/14 밤 21 — 거래소 수수료 + 가방 칸 (push, 최신)
+- **fix/market-no-refund 66464a64** (A23-183): 창에 환불·되돌리기 없음 확인. MarketWindow.FeeRate = Config.Market.Fee(개발 2), 없거나 이상하면 L.Fee 0.07. 안 팔린 판매 글 [Cancel]은 남김(최종 검수에 확인 부탁). test_market_window 167·66/66.
+- **fix/bag-slots-ui 965cdf95**: Config.BagSlots { Default 8, Step 4, Max 16, Text.Gained "+%d bag slots" }. BagUI.Slots(속성 BagSlots) / SlotPlan(순수): 빈 칸 → Max까지 잠긴 칸(GlyphLock), 물건은 안 숨김; BagUI.OnSlots(Start 속성 신호) → 늘어난 칸 S.Flash → 다음 그림에서 금테 깜빡(shine). LayoutSig = 열 수만. test_bag_ui 208·96/96. dev1-artisan-sell과 BagUI.Start 충돌 → 합친 판 fix/bag-slots-with-sell c09a3ef3(212·99/99).
+- 걱정 전달: 서버가 탭당 8칸을 진짜 막으면 재료 탭이 금방 참.
+- 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests 없음).
+
+## 10/14 밤 20 — dev1-artisan-unpack 47e7bc66 (장인 ③, push)
 - CraftWindow.SparePlan(순수: 레시피 단계의 여분 "T:P" → 가장 높은 +N·개수·이미 가짐) + Detail: "Power A → B"(Config.CombatPowerOf, PowerDiff 색, 레벨로 못 쓰면 없음), "In your bag ×N", 가짐 = 줄만, 아니면 [Use it] → UnpackSpare → 비트 오면 EquipWeapon(레벨 되면), 3초 = 버튼 다시. Net.Names에 UnpackSpare 없으면 꺼짐(먼저 병합 가능). test_craft_window 158·59/59.
 - 개발 2에 관찰 전달(최종 검수 경유): dev2-market UnpackSpare가 거래소 스위치 꺼지면 안 됨 → 제작만 켜면 못 씀.
 - 기다림: ⑤ 목표 Gather/Craft/SellMat 화면(dev2-artisan-quests 없음).
