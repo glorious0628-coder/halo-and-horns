@@ -82,6 +82,7 @@ local function cWorld(o)
 		end
 		function L.SpareRoom(p, tier, plus) return not w.SpareFull end
 	end
+	w.Reg.SwitchService = { Changed = w.Util.Signal.new(), On = function() return true end } -- ⑤: the switchboard double
 	w:InitStart({ "CraftService" })
 	w.C = w.Reg.CraftService
 	w.Crafted = {}
@@ -554,6 +555,19 @@ runGroup("results", function()
 	check(w.C.TryStart(c2, "T2") == "ok" and (dc2.Items.CopperOre or 0) == 0, "the last 2 copper go into it: that slot frees, Herb fits", show(dc2.Items))
 	local e2, de2 = smith(w, 6, { BagSlots = 14 })
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
+end)
+
+------------------------------------------------------------------ ⑤ (최종 검수 10/14): Crafting back on reads the players again
+runGroup("switch back on", function()
+	local w = cWorld()
+	w.Config.LiveOff = { Crafting = true }
+	local p, d = smith(w, 51, { Craft = { Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { CopperOre = 2 } } } })
+	check(type(d.Craft.Pend) == "table" and next(w.Spares) == nil, "joined while Crafting was off: the waiting craft waits", show(d.Craft))
+	w.Config.LiveOff = nil
+	w.Reg.SwitchService.Changed:Fire("Gear", true)
+	check(type(d.Craft.Pend) == "table", "another switch: nothing", "")
+	w.Reg.SwitchService.Changed:Fire("Crafting", true)
+	check(d.Craft.Pend == nil and next(w.Spares) ~= nil, "Crafting back on: the waiting craft is paid (W2 +1)", show(d.Craft))
 end)
 
 ------------------------------------------------------------------ craft XP

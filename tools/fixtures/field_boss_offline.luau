@@ -212,6 +212,19 @@ runGroup("schedule", function()
 	check(#w.Spawns == 1, "only one at a time")
 end)
 
+-- ⑤ (최종 검수 10/14): the live switch FieldBoss off = no new boss (the slot waits, due)
+runGroup("live switch", function()
+	local w = bossWorld({ Shrine = vec(0, 0, 0) })
+	local on = false
+	w.Registry.SwitchService = { On = function(k) if k == "FieldBoss" then return on end return true end }
+	w:Hunter(1, "SlimeMeadow")
+	w:Tick(200)
+	check(#w.Spawns == 0 and w:GS("SlimeKingNextAt") < w.Time, "FieldBoss off: no King at its slot (due, waiting)", show(#w.Spawns))
+	on = true
+	w:Tick(0.5)
+	check(#w.Spawns == 1, "back on: it comes", show(#w.Spawns))
+end)
+
 runGroup("waits for a hunter", function()
 	local w = bossWorld({ Shrine = vec(0, 0, 0) })
 	w:Hunter(1, "GoblinWoods")

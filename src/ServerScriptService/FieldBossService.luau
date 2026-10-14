@@ -372,6 +372,12 @@ local function tickOne(key, now)
 		return
 	end
 	if c.Enabled == false or b.NextAt <= 0 or now < b.NextAt then return end
+	-- ⑤: the live switch FieldBoss off = no new boss (the slot waits, due; one already here stays)
+	local sw = S and S.SwitchService
+	if type(sw) == "table" and type(sw.On) == "function" then
+		local okS, onS = pcall(sw.On, "FieldBoss")
+		if okS and onS == false then return end
+	end
 	if not hunterHere(key) then return end -- due: waits for a hunter in its zone (NextAt stays in the past)
 	if appear(key, now) then
 		b.NextAt = now + math.max(60, num(c.Interval, 480))

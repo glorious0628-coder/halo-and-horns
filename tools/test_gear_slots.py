@@ -55,6 +55,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("⑤: Gear back on reads nobody", "GEAR_SOURCE", "\t\t\tif k ~= \"Gear\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
     # --- the table (Config)
     ("config: on by default", C, "Config.Features.Gear = false\nConfig.Gear = {", "Config.Features.Gear = true\nConfig.Gear = {"),
     ("config: Armor T1 +7%", C, "Base = { 0.06, 0.12, 0.18 }, Step = 0.02,", "Base = { 0.07, 0.12, 0.18 }, Step = 0.02,"),

@@ -38,6 +38,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("⑤: Crafting back on reads nobody", "CRAFT_SOURCE", "\t\t\tif k ~= \"Crafting\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
     # bag slots (2026-10-14)
     ("bag: a new-kind result ignores the slots", R, "\tif have < 1 and def and Config.BagSlots.Counts[def.Kind] then\n", "\tif false then\n"),
     ("bag: a used-up material frees nothing", R, "held >= 1 and held <= n then freed += 1 end", "held >= 1 and held < n then freed += 1 end"),

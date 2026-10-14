@@ -76,6 +76,8 @@ local function gWorld(o)
 	w.PS.RefreshCharacter = function(p, full) table.insert(w.Refreshes, { P = p, Full = full }) end
 	w:Service("PetService", PET_SOURCE)
 	w:Service("GearService", GEAR_SOURCE)
+	-- ⑤: the live switchboard double (Changed(key, value); the gear re-reads the players when Gear comes back on)
+	w.Reg.SwitchService = { Changed = w.Util.Signal.new(), On = function() return true end }
 	w:InitStart({ "PetService", "GearService" })
 	w.G, w.P = w.Reg.GearService, w.Reg.PetService
 	return w
@@ -342,6 +344,20 @@ runGroup("rules", function()
 end)
 
 ------------------------------------------------------------------ the join: attributes + GearInfo
+-- ⑤ (최종 검수 10/14): a join while the live switch Gear was off is read again when it comes back on
+runGroup("switch back on", function()
+	local w = gWorld()
+	w.Config.LiveOff = { Gear = true }
+	local p = gearer(w, 31, bag({}, { Armor = "3:1", Ring = "2:2" }))
+	check(p:GetAttribute("GearHp") == nil and w.Config.FeatureOn("Gear") == false, "joined while Gear was off: no gear attributes", "")
+	w.Config.LiveOff = nil
+	w.Reg.SwitchService.Changed:Fire("Crafting", true)
+	check(p:GetAttribute("GearHp") == nil, "another switch: nothing", "")
+	w.Reg.SwitchService.Changed:Fire("Gear", true)
+	check(near(p:GetAttribute("GearHp"), 1.20) and near(p:GetAttribute("GearAtk"), 1.10) and #fired(w, "GearInfo", p) == 1,
+		"Gear back on: the player is read again (GearHp / GearAtk, one GearInfo)", show({ p:GetAttribute("GearHp"), p:GetAttribute("GearAtk") }))
+end)
+
 runGroup("join", function()
 	local w = gWorld()
 	local p, d = gearer(w, 1, bag({ ["Armor:2:0"] = 3 }, { Armor = "3:1", Ring = "2:2" }))

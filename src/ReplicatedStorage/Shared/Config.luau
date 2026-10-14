@@ -19,7 +19,10 @@ Config.Game = {
 -- the same as without stats (Config.StatMults is 1, 1); the saved picks stay and count again once it is on.
 Config.Features = { NeutralFaction = false, Market = false, StatPoints = false }
 
+-- a build switch (Config.Features[name]) that no live switch has turned off on this server (Config.LiveOff, written by
+-- SwitchService for the Switches.Defs with a Feature; nil on the client: the screen reads the GameState Switch<key> attributes)
 function Config.FeatureOn(name)
+	if type(Config.LiveOff) == "table" and Config.LiveOff[name] == true then return false end
 	return type(Config.Features) == "table" and Config.Features[name] == true
 end
 
@@ -5416,7 +5419,16 @@ Config.Switches = {
 		VillageFund = { Type = "Bool", Default = true },
 		-- 장인 ③ (최종 검수 10/14): the market's kill switch on top of Config.Features.Market: off = no browsing, listing,
 		-- buying or packing (what was already traded still settles: deliveries, payouts, refunds, the join check)
-		Market = { Type = "Bool", Default = true },
+		Market = { Type = "Bool", Default = true, Feature = "Market" },
+		-- 최종 검수 10/14 ⑤: kill switches of the features that exist (Feature = the Config.Features key it turns off while
+		-- false; turning it back on re-reads the players on the server: GearService, GatherService, CraftService)
+		Artisan = { Type = "Bool", Default = true, Feature = "NeutralFaction" }, -- the guild: no new Neutral pick / quests
+		Crafting = { Type = "Bool", Default = true, Feature = "Crafting" },
+		Gathering = { Type = "Bool", Default = true, Feature = "Gathering" },
+		Tonics = { Type = "Bool", Default = true, Feature = "Tonics" },
+		Research = { Type = "Bool", Default = true, Feature = "Research" },
+		Gear = { Type = "Bool", Default = true, Feature = "Gear" },
+		FieldBoss = { Type = "Bool", Default = true }, -- FieldBossService: off = no new field boss (one already here stays)
 	},
 }
 
