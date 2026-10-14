@@ -6656,6 +6656,82 @@ Config.HoldPoses = {
 }
 
 -- (pure) the grip row of a weapon kind (a kind without a row: the sword's)
+-- dev1-weapon-mesh (최종 검수 10/14): the Tripo weapons (art/models/tripo/weapons/weapons_fit_manifest.json; every GLB 1
+-- unit = 1 stud, origin = the grip point, +Y = the tip, front = -Z). [Config.ClassGripKey][tier] = { MeshId, TextureId,
+-- Length (the GLB's studs along +Y), Pivot (the grip point's share of it up from the bottom) }; Meme = { [Config.Weapons
+-- Meme key] = ... }. 메인 반영 1 uploads them and gives the ids (build/weapon_mesh_ids.json); MeshId "" = not uploaded:
+-- CharacterVisuals keeps the code shape (WMESH, the fallback). The mesh is sized to the code shape's length (its
+-- proportions follow tierLen) and its grip point sits on the Handle's grip point (Config.WeaponGrips Point)
+Config.WeaponMeshes = {
+	Warrior_Halo = { -- Paladin
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.17 }, -- Weapon_Halo_Paladin_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.147 }, -- Weapon_Halo_Paladin_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.19 }, -- Weapon_Halo_Paladin_T3
+	},
+	Warrior_Horns = { -- Berserker
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.155 }, -- Weapon_Horns_Berserker_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.192 }, -- Weapon_Horns_Berserker_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.172 }, -- Weapon_Horns_Berserker_T3
+		[7] = { MeshId = "", TextureId = "", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7
+	},
+	Warrior_Neutral = { -- Blacksmith
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T3
+	},
+	Mage_Halo = { -- LightMage
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T3
+	},
+	Mage_Horns = { -- DarkMage
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T3
+	},
+	Mage_Neutral = { -- Alchemist
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T3
+	},
+	Archer_Halo = { -- Ranger
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T3
+	},
+	Archer_Horns = { -- ShadowHunter
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T3
+	},
+	Archer_Neutral = { -- PetTamer
+		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T1
+		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T2
+		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T3
+	},
+	Meme = { -- the Forge's joke weapons (Config.Weapons Meme rows, any class)
+		Pan = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.28 }, -- Weapon_Meme_FryingPan
+		Chicken = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.15 }, -- Weapon_Meme_RubberChicken
+	},
+}
+
+-- the uploaded mesh of this class x side (gkey = Config.ClassGripKey) at `tier` - or of a joke weapon (meme = its Config.Weapons
+-- Meme key) - or nil (not uploaded / not in the table: the code shape)
+function Config.WeaponMeshFor(gkey, tier, meme)
+	local M = Config.WeaponMeshes
+	if type(M) ~= "table" then return nil end
+	local e
+	if type(meme) == "string" then
+		e = type(M.Meme) == "table" and M.Meme[meme] or nil
+	else
+		local row = type(gkey) == "string" and M[gkey] or nil
+		e = type(row) == "table" and row[tonumber(tier) or -1] or nil
+	end
+	if type(e) ~= "table" or type(e.MeshId) ~= "string" or e.MeshId == "" then return nil end
+	if not (tonumber(e.Length) and e.Length > 0 and tonumber(e.Pivot)) then return nil end
+	return e
+end
+
 function Config.WeaponGripOf(kind)
 	local rows = Config.WeaponGrips
 	local row = type(kind) == "string" and rows[kind] or nil
