@@ -167,10 +167,11 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("① a press on the bar opens the war window (Panels, registered in HUD.Start)",
          "\topen.Activated:Connect(function() pcall(L.OpenWarInfo) end)\n" in h and "C.Panels.Open(L.WarInfoId)" in h
          and "pcall(L.RegisterWarInfo)" in h),
-        ("② the status row: under the war meter's drawn bottom + Gap, 36 / 44 px tall, words >= 18 / 19 px, wraps, no '+N', no press (A23-192)",
+        ("② the status row: under the war meter's drawn bottom + Gap, 36 / 44 px tall, words >= 18 / 19 px, wraps, no '+N', no press, one wide row between the minimap and the menu (A23-192)",
          "local warBottom = (ui.war.Visible and L.WarGeo) and (wm.Y + L.WarGeo.Bottom + CT.Gap / s) or ch.Y" in h
          and "local textDu = math.ceil((IS_TOUCH and CT.TextPxTouch or CT.TextPx) / s)" in h and "Wraps = true," in h
-         and "L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24 }" in h
+         and "L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24, Side = 12 }" in h
+         and "local rowW = math.max(ch.W, 2 * math.min(cx - leftEdge, rightEdge - cx))" in h
          and "pcall(L.ChipPress, key)" not in h and "ui.chipMore" not in h
          and "L.ChipDanger = { Bully = true, Outlaw = true, Wanted = true }" in h),
         ("③ one event chip (V2.PickEvent, the kaiju too), 40 / 44 px, words >= 18 / 19 px, the notify rows under it",

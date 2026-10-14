@@ -4099,7 +4099,13 @@ function HUD.QuestGoal(text, serverGoal)
 	local main = string.match(text, "^(.-)%s+·%s") or text
 	main = string.gsub(main, "%s+$", "")
 	if main == "" then return nil end
-	if not string.find(main, "[%.!%?]$") then main ..= "." end
+	-- 최종 검수 10/14 (Korean client: 'Go to Otto's Forge in the Crossroads.' stayed English): the table's Source is the
+	-- sentence without the full stop - translate it first (UIKit.TrWord, by its English text), then add the stop
+	if type(UIKit) == "table" and type(UIKit.TrWord) == "function" then
+		local ok, out = pcall(UIKit.TrWord, main)
+		if ok and type(out) == "string" and out ~= "" then main = out end
+	end
+	if not string.find(main, "[%.!%?。]$") then main ..= "." end
 	return main
 end
 
@@ -6102,7 +6108,7 @@ L.Tracker = { On = true, Gap = 2, TitleH = 30, ProgH = 22, TitleK = IS_TOUCH and
 L.LineCache = { Lines = {}, N = 0 } -- L.TextLines: "text|size|width|font" -> lines (false = measuring)
 -- 1안 ② / ④ (real px): the status row Row tall (phone RowTouch = the 44 px touch target), Gap under the war meter, the
 -- words at least TextPx (phone 19), an icon chip's art Icon px
-L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24 }
+L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24, Side = 12 }
 -- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
 L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
 L.GuideHide = 15
@@ -6192,8 +6198,15 @@ applyLayout = function()
 	L.ChipRowH = rowH
 	local warBottom = (ui.war.Visible and L.WarGeo) and (wm.Y + L.WarGeo.Bottom + CT.Gap / s) or ch.Y
 	local chipsY = math.max(ch.Y, warBottom)
-	ui.chips.Position = UDim2.fromOffset(ch.X + ch.W / 2, chipsY)
-	ui.chips.Size = UDim2.fromOffset(ch.W, rowH)
+	-- A23-192 (user 10/14 photo: the chips stood in a column over the middle of the screen): one wide row under the war
+	-- meter, centred on it, as wide as the room between the minimap and the menu button allows (never narrower than the
+	-- layout's column); it wraps only when even that is full
+	local cx = ch.X + ch.W / 2
+	local leftEdge = (R.minimap and (R.minimap.X + R.minimap.W) or 0) + L.ChipTop.Side
+	local rightEdge = (R.menu and R.menu.X or W) - L.ChipTop.Side
+	local rowW = math.max(ch.W, 2 * math.min(cx - leftEdge, rightEdge - cx))
+	ui.chips.Position = UDim2.fromOffset(cx, chipsY)
+	ui.chips.Size = UDim2.fromOffset(rowW, rowH)
 	ui.chipList.Padding = UDim.new(0, 6 / s)
 	local textDu = math.ceil((IS_TOUCH and CT.TextPxTouch or CT.TextPx) / s)
 	for _, chip in ui.chip do
