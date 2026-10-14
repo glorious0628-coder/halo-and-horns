@@ -1609,6 +1609,11 @@ BUILDERS.Menu = function(parent)
 	end
 	table.sort(extra, function(a, b) return a.Id < b.Id end)
 	for i, e in extra do table.insert(entries, 2 + i, e) end
+	if not Panels.TravelOn() then -- A23-182: the Travel window is Fast Travel (subscribers only)
+		for i = #entries, 1, -1 do
+			if entries[i].Id == "Travel" then table.remove(entries, i) end
+		end
+	end
 	if not FRAME.TicketsOnSale() then -- 검수 2026-10-07: no "Coming soon" shop for kids until a ticket is on sale
 		for i = #entries, 1, -1 do
 			if entries[i].Id == "Shop" then table.remove(entries, i) end
@@ -3515,6 +3520,12 @@ local function queueRebuild(keep)
 end
 ITEMS.Rebuild = queueRebuild
 
+-- A23-182 (user 10/14, 정정: a monthly subscription): the Travel window is Fast Travel - only for a subscriber (the
+-- server's attribute SubFastTravel); everyone else walks or uses the glowing pads (A23-88). Every way in asks this
+function Panels.TravelOn()
+	return player:GetAttribute("SubFastTravel") == true
+end
+
 -- BB5: callers that open a window which may not exist yet (e.g. "Character" before BB8) check first
 function Panels.Has(id)
 	return type(id) == "string" and BUILDERS[id] ~= nil
@@ -3598,6 +3609,7 @@ function Panels.Open(id, arg)
 		return
 	end
 	if id == "Vacation" and FRAME.VacationPopup() then return end
+	if id == "Travel" and not Panels.TravelOn() then return end -- A23-182: Fast Travel subscribers only
 	if id == "Welcome" then
 		local step = player:GetAttribute("TutorialStep")
 		if type(step) == "number" and step ~= 0 then WELCOME.PendingOpen = false; return end
