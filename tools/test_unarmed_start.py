@@ -249,9 +249,9 @@ def static() -> tuple[int, list[str]]:
     story = read(SSS / "StoryQuestService.luau")
     check("function StoryQuestService.Refresh(player)" in story, "StoryQuestService.Refresh is public (the anvil runs it)")
     quest = read(SSS / "QuestService.luau")
-    # A23-74: the first weapon comes at the Forge step, so every claim clears the earlier visit (M1_1 needs a new one)
-    check('\tS.PlayerService.SetStat(player, "BlacksmithVisited", false)\n\tsetStep(player, TUT_DONE)' in quest,
-          "the first-mission claim always clears an earlier anvil visit (behavior: test_weapon_first)")
+    # A23-188: the first mission IS the Forge visit; nothing clears the visit any more (no second Forge trip)
+    check('"BlacksmithVisited", false' not in quest and "function finishFirst(player)" in quest,
+          "the first mission never clears the anvil visit (A23-188; behavior: test_weapon_first)")
     # A23-130 (user 2026-10-11): the claim line is the reward only for every save (no armed / auto variants)
     check("TUT_MESSAGES.ClaimedArmed" not in quest and "TUT_MESSAGES.AutoClaimed" not in quest
           and "hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith" in quest,

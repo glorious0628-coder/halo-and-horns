@@ -56,7 +56,7 @@ MUTATIONS = [
     ("veterans count", TM, "\tif rec.N ~= true then return end\n\tlocal d = X.Delta", "\tlocal d = X.Delta"),
     # --- milestones
     ("Lv5 at Lv4", TM, "return num(attr(p, d, \"Level\"), 1) >= 5 end", "return num(attr(p, d, \"Level\"), 1) >= 4 end"),
-    ("the gift is the dropped weapon", TM, "return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end", "return num(attr(p, d, \"WeaponOwnedMask\")) >= 1 end"),
+    ("A23-188: the T1 gift is not the first weapon", TM, "return num(attr(p, d, \"WeaponOwnedMask\")) >= 1 end", "return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end"),
     ("any step is the claim", TM, "return num(attr(p, d, \"TutorialStep\")) == 99 end", "return num(attr(p, d, \"TutorialStep\")) >= 1 end"),
     ("a milestone counts every time", TM, "if reached and rec.M[m] == nil and reached(player, data) then", "if reached and reached(player, data) then"),
     ("minutes are seconds", TM, "math.floor(math.max(0, sec) / 60)", "math.floor(math.max(0, sec))"),
