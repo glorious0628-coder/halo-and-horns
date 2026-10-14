@@ -85,11 +85,14 @@ MUTATIONS = [
     ("EV", "the chip placed at its row", "local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)",
      "local evY = V2.eventY(rects, V2.chipsShown()) or ev.Y"),
     ("HUD", "the war meter not measured", "for _, g in { ui.warPlate, ui.warBar, ui.warBadgeHalo, ui.warBadgeHorns } do", "for _, g in {} do"),
-    ("HUD", "A23-130: a line under the war bar again", "\tui.warTime = artLabel(false, {\n\t\tName = \"Time\",",
-     "\tui.warInfo = UIKit.StyledLabel({ Name = \"Info\", Text = \"\", Parent = w })\n\tui.warTime = artLabel(false, {\n\t\tName = \"Time\","),
-    ("HUD", "A23-130: the time with words", "if ui.warTime and ui.warTime.Text ~= clock then ui.warTime.Text = clock end",
-     "if ui.warTime then ui.warTime.Text = \"Crown in \" .. clock end"),
-    ("HUD", "A23-130: the time under the bar", "\t\tZIndex = 5,\n\t\tParent = inner,\n\t})", "\t\tZIndex = 5,\n\t\tParent = w,\n\t})"),
+    # A23-184 (user 10/14 "저 9:25 뭐냐고!"): no words and no numbers in / under the bar but the two badge scores
+    ("HUD", "A23-184: a text in the bar again (the time)", "\tui.warBar = bar\n",
+     "\tui.warBar = bar\n\tui.warTime = artLabel(false, { Name = \"Time\", Number = true, Parent = inner })\n"),
+    ("HUD", "A23-184: a line under the bar again", "\tui.warBar = bar\n",
+     "\tui.warBar = bar\n\tui.warInfo = UIKit.StyledLabel({ Name = \"Info\", Text = \"\", Parent = w })\n"),
+    ("HUD", "A23-184: the press button shows a word", "\t\tName = \"Open\",\n\t\tText = \"\",", "\t\tName = \"Open\",\n\t\tText = \"Crown War\","),
+    ("HUD", "A23-184: a press on the bar opens nothing (the time unreachable)",
+     "\topen.Activated:Connect(function() pcall(L.OpenWarInfo) end)\n", ""),
     ("HUD", "A23-130: the frame measured (empty space under the bar)", "\tif ui.war and ui.war.Visible then -- the meter's drawn pieces only",
      "\tif ui.war and ui.war.Visible then table.insert(list, ui.war) -- the meter's drawn pieces only"),
     ("HUD", "the chips row not measured", "\tif HUD.ChipsShown() then table.insert(list, ui.chips) end\n", ""),
@@ -129,9 +132,10 @@ def war_block(h: str) -> str:
     return h[a:b] if a >= 0 and b > a else ""
 
 
-def war_time(h: str) -> str:
-    a = h.find("\tui.warTime = artLabel(false, {")
-    return h[a:h.find("\t})", a)] if a >= 0 else ""
+def war_texts(h: str) -> int:
+    """text objects the war bar builds: only the two badge scores (each drawn by one of two artLabel calls)"""
+    w = war_block(h)
+    return w.count("artLabel(") + w.count("StyledLabel(") + w.count("\"TextLabel\"") + w.count("Instance.new(\"TextLabel\")")
 
 
 def statics(src: dict) -> list[tuple[str, bool]]:
@@ -141,10 +145,12 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          "function HUD.TopBottom()" in h and "for _, g in { ui.warPlate, ui.warBar, ui.warBadgeHalo, ui.warBadgeHorns } do" in h
          and "\tif ui.war and ui.war.Visible then table.insert(list, ui.war)" not in h
          and "if HUD.ChipsShown() then table.insert(list, ui.chips) end" in h),
-        ("A23-130 (user 10/14 again): no text label under the war bar - only the time number inside it, never translated",
-         "ui.warInfo" not in h and "ui.warLine" not in h and "WarTime =" not in h and "MyWar =" not in h
-         and "Name = \"Info\"" not in war_block(h) and "Parent = inner," in war_time(h) and "Number = true, AutoLocalize = false," in war_time(h)
-         and "if ui.warTime and ui.warTime.Text ~= clock then ui.warTime.Text = clock end" in h),
+        ("A23-184 (user 10/14 '저 9:25 뭐냐고!'): no words and no numbers in or under the war bar but the two badge scores; "
+         "a press on the bar opens the quest window's Event tab (the time)",
+         "ui.warTime" not in h and "ui.warInfo" not in h and "ui.warLine" not in h and "WarClock" not in h
+         and war_texts(h) == 2 and "\t\tName = \"Open\",\n\t\tText = \"\"," in war_block(h)
+         and "\topen.Activated:Connect(function() pcall(L.OpenWarInfo) end)\n" in war_block(h)
+         and "C.QuestBook.ShowTab(L.WarInfoTab)" in h and "L.WarInfoTab = \"Event\"" in h),
         ("EventHUD places the event chip with V2.EventTop under HUD.TopBottom",
          "local evY = V2.EventTop(V2.eventY(rects, V2.chipsShown()) or ev.Y, V2.hudBottom(), V2.TopGap)" in e
          and "V2.EventBottom = evY + evH" in e and "function EventHUD.TopBottom()" in e),

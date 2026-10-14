@@ -32,7 +32,7 @@ MARK = "TESTMETRICS_JSON "
 STEPS = ["IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "FirstWeapon", "MeadowArrive", "FirstHit",
          "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10"]  # Config.Analytics.Steps
 TEN = 10  # Config.TestMetrics.TenMinutes
-LINES = [("Lv5", 5, "Lv5 5분 이하"), ("Lv10", 15, "Lv10 15분 이하"), ("Weapon", 4, "첫 드롭 무기 4분 이하")]  # gameplay_plan 1-B
+LINES = [("Lv5", 5, "Lv5 5분 이하"), ("Lv10", 15, "Lv10 15분 이하"), ("Weapon", 4, "첫 무기(대장간 T1) 4분 이하")]  # gameplay_plan 1-B
 LINES.append(("DropWeapon", 8, "첫 드롭 무기(첫 Prince T2) 8분 이하"))  # GPT review ④ (10/14): its own milestone
 
 
@@ -125,7 +125,7 @@ def board(meta: dict) -> list[str]:
     ])
     lines.append(f"## 10분 완주 (새 계정, 플레이 {TEN}분 안)")
     rows = []
-    for m, label in (("Lv5", "Lv5"), ("Weapon", "첫 드롭 무기"), ("Claim", "첫 미션 Claim")):
+    for m, label in (("Lv5", "Lv5"), ("Weapon", "첫 무기(대장간 T1)"), ("Claim", "첫 미션 Claim")):
         h = minutes(doc, m)
         rows.append([label, within(h, TEN), pct(within(h, TEN), new), sum(h.values()), median(h)])
     hd = minutes(doc, "DropWeapon")  # GPT review ④: the first Slime Prince's tier 2, apart from the Forge's first weapon
@@ -143,6 +143,15 @@ def board(meta: dict) -> list[str]:
         lines.append("## 진영·기기 (새 계정)")
         lines += table(["무엇", "명"], [[f"진영 {k}", int(v)] for k, v in sorted(side.items())]
                        + [[f"기기 {k}", int(v)] for k, v in sorted(dev.items())])
+    xp = doc.get("XP") or {}
+    if xp:  # Codex B6: how much of the way to Lv5 / Lv10 came from hunting vs quests / dailies (new accounts)
+        lines.append("## 경험치 출처 (새 계정, 그 레벨까지)")
+        rows = []
+        for m in ("Lv5", "Lv10"):
+            r = xp.get(m) or {}
+            hunt, other, n = float(r.get("Hunt") or 0), float(r.get("Other") or 0), int(r.get("N") or 0)
+            rows.append([m, n, f"{hunt / n:.0f}" if n else "-", f"{other / n:.0f}" if n else "-", pct(hunt, hunt + other)])
+        lines += table(["레벨", "명", "사냥 XP(평균)", "퀘스트·일일 XP(평균)", "사냥 비율"], rows)
     passes = doc.get("Pass") or {}
     lines.append("## 패스 (산 뒤 다시 접속했을 때 혜택이 남았나)")
     if passes:

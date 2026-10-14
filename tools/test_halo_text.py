@@ -49,8 +49,8 @@ MUTATIONS = [
      "\t\t\t\t\"Finders keepers! HA! You're with us now. I'm Magpie.\",\n\t\t\t\t\"Welcome, rookie!\",\n\t\t\t},"),
     ("Guild welcome has a third page", C, "\t\t\t\t\"Fix first. Talk later. I'm Kit. Welcome to the Guild!\",\n\t\t\t},",
      "\t\t\t\t\"Fix first. Talk later. I'm Kit. Welcome to the Guild!\",\n\t\t\t\t\"Thanks for joining.\",\n\t\t\t},"),
-    ("the mission card is gone from page 1 (Halo)", C, "\t\t\tLines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)\n\t\t\t\t\"First, get a weapon from Otto the Blacksmith!\\nThen beat 5 slimes to free the supply road.\", -- A23-74: weapon first\n",
-     "\t\t\tLines = {\n\t\t\t\t\"Hi!\", -- A23-74: weapon first\n"),
+    ("the mission card is gone from page 1 (Halo)", C, "\t\t\tLines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)\n\t\t\t\t\"First, go to Otto's Forge and get your weapon!\", -- A23-188: the first mission = the Forge visit\n",
+     "\t\t\tLines = {\n\t\t\t\t\"Hi!\", -- A23-188: the first mission = the Forge visit\n"),
 ]
 
 

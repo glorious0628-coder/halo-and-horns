@@ -3928,6 +3928,42 @@ Feel.MonsterAttr.AlertAt = Feel.onMonsterAlert
 -- other players' Swing numbers are shown only for crits (protects the MaxDamagePopups pool).
 -- feel (A14-4, my hits): { Stop = hit-stop of my attack motion (Warrior: the hits show on its contact frame; Mage /
 -- Archer clips are already recovering when the projectile lands), Kick = camera kick (manual swings; crits always) }
+-- A23-186: a joke weapon's hit (Fx "Swing" Meme = a Config.WeaponMemes key): its sound once, its particle on each hit;
+-- an empty SoundId / ParticleId = nothing (the assets are not made yet)
+function Feel.memeHits(key, hits)
+	local def = type(key) == "string" and type(Config.WeaponMemes) == "table" and Config.WeaponMemes[key] or nil
+	if type(def) ~= "table" or type(hits) ~= "table" then return 0 end
+	local n = 0
+	for _, h in hits do
+		local p = type(h) == "table" and asVec(h.P) or nil
+		if p then
+			n += 1
+			if n == 1 and type(def.SoundId) == "string" and def.SoundId ~= "" then
+				local s = Instance.new("Sound")
+				s.Name = "Fx_Meme" .. key
+				s.SoundId = def.SoundId
+				s.Volume = 0.6 * math.clamp(tonumber(MOTION.Pref("Sfx", 1)) or 1, 0, 1)
+				s.Parent = SoundService
+				SoundService:PlayLocalSound(s)
+				Debris:AddItem(s, 3)
+			end
+			if type(def.ParticleId) == "string" and def.ParticleId ~= "" then
+				local a = Instance.new("Attachment")
+				a.WorldPosition = p
+				a.Parent = workspace.Terrain
+				local e = Instance.new("ParticleEmitter")
+				e.Texture = def.ParticleId
+				e.Rate, e.Lifetime, e.Speed = 0, NumberRange.new(0.5, 0.9), NumberRange.new(4, 8)
+				e.SpreadAngle = Vector2.new(180, 180)
+				e.Parent = a
+				e:Emit(8)
+				Debris:AddItem(a, 1.5)
+			end
+		end
+	end
+	return n
+end
+
 local function showHits(hits, own, fromRelease, feel)
 	if type(hits) ~= "table" then return end
 	local scaleMult = own and 1 or 0.85
@@ -4035,6 +4071,7 @@ handlers.Swing = function(data)
 	local color = factionColor(data.Faction)
 	local targets = validTargets(data.Targets)
 	local hits = data.Hits
+	if data.Meme ~= nil then pcall(Feel.memeHits, data.Meme, hits) end -- A23-186: Bonk / Squeak + Feathers
 	-- my manual hits: hit-stop / camera kick; auto-combat hits stay quiet (A23-1: no shake, no hit-stop)
 	local style = asStr(data.Style, "")
 	local punch = style == "Punch" or style == "PetHeadbutt" -- A23-34 / A23-39 (the pet itself comes with PET-3)
