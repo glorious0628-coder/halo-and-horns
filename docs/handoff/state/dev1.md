@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/14 밤 18 — fix/translate-overflow a61c7fda (push, 최신)
+- HUD L.GoalGuard(TextFits false → L.GuardStep 1씩, 바닥 max(GoalMin, 스타일 바닥)), FactionPicker 혜택 줄 setTextRange(MIN_TEXT, size), DeathScreen 줄·상자 AutomaticSize Y. FitText·ClassPicker·버튼(TextScaled)은 이미 그린 글 기준. 남은 위험: 키트 버튼 12px 바닥보다 긴 단어. 새 test_translate_overflow 18·7/7.
+- Fast Travel 합친 판(+dev2-pass-ids-2 1eb7399e) 통과; test_shop_ui 'ID 없는 패스' 검사 실패는 개발 2 가지만으로도 같음 → 개발 2에 부탁.
+- 대기 병합: sword-hold fe4665f9, fast-travel-pass-ui ca659495, dev1-artisan-sell 651e54e1, translate-overflow a61c7fda.
+
 ## 10/14 밤 17 — 검 쥐기 끝: fix/sword-hold fe4665f9 (병합 가능, 최신)
 - 엔진 사진 2판(시험 Studio SwordTest = build/GoodEvil.rbxlx 복사본, 스크래치 스크립트 play_sword_hold.py; 메인 안 건드림): docs/art/verification_2026-10-14/sword_hold/(1판: Tool.Grip 바꿔도 서버 RightGrip 용접 안 바뀜 → 날 앞으로 수평), sword_hold2/(2판: 용접 C1 직접 → 날 @몸통 (0,0.72,0.69) 위·뒤 44°, 팔 내림, 손잡이 가운데).
 - 고침 3커밋: ad40b932(Point 0.5, Rest {130,0,0}, RestStep toolnone 0.001) → fb3942ba(RightGrip 용접 C1 로컬로 돌림) → fe4665f9(공격 갈 땐 toolnone 바로, 검사 0.05초). test_tool_grip·weapon_motion 269 통과.
