@@ -234,6 +234,9 @@ end
 local function templateFitsNow(t, faction, data)
 	if not templateFitsFaction(t, faction) then return false end
 	if t.Id == "Choice" and not choiceOn() then return false end
+	-- artisan min ④: the guild's dailies only while their feature is on
+	if t.Id == "Gather" and not Config.FeatureOn("Gathering") then return false end
+	if t.Id == "Craft" and not Config.FeatureOn("Crafting") then return false end
 	return t.Id ~= "Release" or (data ~= nil and Config.SkillLearned(data.SkillSlots, data.Level, data.Rebirths))
 end
 
@@ -1453,6 +1456,18 @@ function M.Init(registry)
 		deeds.Booked:Connect(function(player)
 			if typeof(player) == "Instance" and player:IsA("Player") then addProgress(player, "Choice", 1) end
 		end)
+	end
+	-- artisan min ④: a pick at a gathering node / a finished craft fills the guild's dailies. Soft: a world without those
+	-- services never has those dailies
+	for _, hook in { { "GatherService", "Gathered", "Gather" }, { "CraftService", "Crafted", "Craft" } } do
+		local svc = S[hook[1]]
+		local sig = type(svc) == "table" and svc[hook[2]] or nil
+		if type(sig) == "table" and type(sig.Connect) == "function" then
+			local questId = hook[3]
+			sig:Connect(function(player)
+				if typeof(player) == "Instance" and player:IsA("Player") then addProgress(player, questId, 1) end
+			end)
+		end
 	end
 	connectSignal("PvPService", "PlayerKO", onPlayerKO)
 	connectSignal("KaijuService", "KaijuEnded", onKaijuEnded)
