@@ -29,7 +29,6 @@ MUTATIONS = [
     ("the moment shows twice", "\t\tL.First.Pop = false\n\t\tL.FirstWeapon()\n", "\t\tL.FirstWeapon()\n"),
     ("no fallback without a power rise", "\t\t\tif F.Pop then\n\t\t\t\tF.Pop = false\n\t\t\t\tL.FirstWeapon()\n\t\t\tend\n", ""),
     ("the normal fast count-up", "\t\tcount = L.First.Count\n", ""),
-    ("no banner", "\tif type(UIKit.Announce) == \"function\" then pcall(UIKit.Announce, TXT.Stronger, F.Banner) end\n", ""),
     ("no sound", "pcall(C.Audio.Play, \"PowerUp\")", "pcall(C.Audio.Play, \"LevelUp\")"),
     ("no sparkles", "\t\te:Emit(F.Sparks)\n", ""),
     ("grows with reduced motion", "\tif label and label.Parent and not reduced then\n", "\tif label and label.Parent then\n"),

@@ -11134,13 +11134,6 @@ Config.ClientText.SkillBook = {
 	-- used only when Config.Skills.Text misses a word
 	Ready = "Ready", NeedMP = "Need MP", UnlocksAt = "Unlocks at Lv%d", WhereToHunt = "Where to hunt",
 }
-Config.ClientText.PassesLines = {
-	PassXP2 = "Thank you! 2x XP is on.",
-	PassGold2 = "Thank you! 2x Gold is on.",
-	PassVIP = "Thank you! You are a VIP now: crown and chat tag.",
-	-- a bought look (LooksOwned grew)
-	Look = "New look unlocked! Pick it in the Shop.",
-}
 
 Config.ClientText.VitalsUI = {
 	PotionShop = "Potion shop", -- the way to the merchant when a [Buy] press has no potions
