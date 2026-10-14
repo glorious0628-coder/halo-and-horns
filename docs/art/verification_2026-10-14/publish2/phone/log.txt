@@ -1,0 +1,83 @@
+== first10 phone: samsung_galaxy_s22_ultra 749x361
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 TutorialStep=0
+saved phone_f10_01_intro
+phone_f10_01_intro: cut 0, small 0, off 0, overlap 0, tiny 0
+fired IntroSeen
+saved phone_f10_02_faction
+phone_f10_02_faction: cut 0, small 0, off 0, overlap 0, tiny 0
+fired ChooseFaction
+saved phone_f10_03_class
+phone_f10_03_class: cut 0, small 5, off 0, overlap 0, tiny 15
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 TutorialStep=0
+saved phone_f10_04_welcome
+phone_f10_04_welcome: cut 1, small 3, off 2, overlap 7, tiny 11
+fired AcceptTutorial
+saved phone_f10_05_first_mission
+phone_f10_05_first_mission: cut 2, small 2, off 2, overlap 0, tiny 12
+TutorialStep 99
+saved phone_f10_06_hud
+phone_f10_06_hud: cut 5, small 2, off 6, overlap 0, tiny 15
+open WeaponShop
+saved phone_f10_07_forge
+phone_f10_07_forge: cut 4, small 2, off 16, overlap 5, tiny 27
+closed
+open PotionShop
+saved phone_f10_08_potions
+phone_f10_08_potions: cut 4, small 2, off 5, overlap 10, tiny 19
+closed
+open Attendance
+saved phone_f10_09_gifts
+phone_f10_09_gifts: cut 3, small 3, off 5, overlap 2, tiny 26
+closed
+open Bag
+saved phone_f10_10_bag
+phone_f10_10_bag: cut 3, small 8, off 5, overlap 3, tiny 15
+closed
+lv5: Level=ok
+saved phone_f10_11_lv5
+phone_f10_11_lv5: cut 3, small 2, off 5, overlap 1, tiny 10
+play stopped
+== first10 844: iphone_13 844x390
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 TutorialStep=0
+saved 844_f10_01_intro
+844_f10_01_intro: cut 0, small 0, off 0, overlap 0, tiny 0
+fired IntroSeen
+saved 844_f10_02_faction
+844_f10_02_faction: cut 0, small 0, off 0, overlap 0, tiny 0
+fired ChooseFaction
+saved 844_f10_03_class
+844_f10_03_class: cut 0, small 3, off 0, overlap 0, tiny 15
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 TutorialStep=0
+saved 844_f10_04_welcome
+844_f10_04_welcome: cut 1, small 3, off 2, overlap 2, tiny 13
+fired AcceptTutorial
+saved 844_f10_05_first_mission
+844_f10_05_first_mission: cut 2, small 2, off 2, overlap 0, tiny 15
+TutorialStep 99
+saved 844_f10_06_hud
+844_f10_06_hud: cut 4, small 2, off 6, overlap 0, tiny 18
+open WeaponShop
+saved 844_f10_07_forge
+844_f10_07_forge: cut 3, small 2, off 13, overlap 4, tiny 30
+closed
+open PotionShop
+saved 844_f10_08_potions
+844_f10_08_potions: cut 2, small 2, off 5, overlap 8, tiny 21
+closed
+open Attendance
+saved 844_f10_09_gifts
+844_f10_09_gifts: cut 2, small 3, off 5, overlap 4, tiny 29
+closed
+open Bag
+saved 844_f10_10_bag
+844_f10_10_bag: cut 2, small 8, off 5, overlap 1, tiny 18
+closed
+lv5: Level=ok
+saved 844_f10_11_lv5
+844_f10_11_lv5: cut 2, small 2, off 5, overlap 1, tiny 13
+play stopped
+device: default

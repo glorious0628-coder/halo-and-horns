@@ -1,0 +1,209 @@
+phone_f10_01_intro: cut 0, small 0, off 0, overlap 0, tiny 0
+phone_f10_02_faction: cut 0, small 0, off 0, overlap 0, tiny 0
+phone_f10_03_class: cut 0, small 5, off 0, overlap 0, tiny 15
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ClassName = 'Paladin' 12 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.DescClip.Desc = 'Smash up close!' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ChooseLabel = 'Pick!' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.GenericChip.Text = 'Warrior' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.RecommendBadge.Text = 'Best for beginners' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ClassName = 'Light Mage' 12 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.DescClip.Desc = 'Blast from afar!' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ChooseLabel = 'Pick!' 11 px
+phone_f10_04_welcome: cut 1, small 3, off 2, overlap 7, tiny 11
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = 'Tap here: first quest from Hallie.' 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+phone_f10_05_first_mission: cut 2, small 2, off 2, overlap 0, tiny 12
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    cut: MainGui.MiniMap.North.N = 'N' [28, 60, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+    tiny: MainGui.HUD.Buttons.TileMenu.Label = 'Menu' 12 px
+phone_f10_06_hud: cut 5, small 2, off 6, overlap 0, tiny 15
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:21' [217, -19, 149, 12]
+    cut: MainGui.HUD.WarMeter.NewTag.Text = 'NEW!' [363, -51, 35, 13]
+    cut: MainGui.EventStrip.GooseChip.Text = 'Goose 4:15' [240, 20, 117, 14]
+    cut: MainGui.MiniMap.North.N = 'N' [28, 60, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:21' 16 px
+    tiny: MainGui.HUD.WarMeter.NewTag.Text = 'NEW!' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+phone_f10_07_forge: cut 4, small 2, off 16, overlap 5, tiny 27
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:17' [217, -19, 149, 12]
+    cut: MainGui.EventStrip.GooseChip.Text = 'Goose 4:11' [240, 20, 117, 14]
+    cut: MainGui.EventStrip.GooseChip.NewTag.Text = 'NEW!' [372, 24, 35, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:17' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+phone_f10_08_potions: cut 4, small 2, off 5, overlap 10, tiny 19
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:13' [217, -19, 149, 12]
+    cut: MainGui.EventStrip.GooseChip.Text = 'Goose 4:07' [240, 20, 117, 14]
+    cut: MainGui.EventStrip.GooseChip.NewTag.Text = 'NEW!' [372, 24, 35, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:13' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+phone_f10_09_gifts: cut 3, small 3, off 5, overlap 2, tiny 26
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:09' [217, -19, 149, 12]
+    cut: MainGui.EventStrip.GooseChip.Text = 'Goose 4:03' [240, 20, 117, 14]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:09' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+phone_f10_10_bag: cut 3, small 8, off 5, overlap 3, tiny 15
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [245, 174, 76, 12]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:04' [217, -19, 149, 12]
+    cut: MainGui.EventStrip.GooseChip.Text = 'Goose 3:58' [240, 20, 117, 14]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:04' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+phone_f10_11_lv5: cut 3, small 2, off 5, overlap 1, tiny 10
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · Power 46' [245, 174, 85, 12]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 8:59' [217, -19, 149, 12]
+    cut: MainGui.EventStrip.GooseChip.Text = 'Goose 3:53' [240, 20, 117, 14]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '5' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '218/218' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · Power 46' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 8:59' 16 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+844_f10_01_intro: cut 0, small 0, off 0, overlap 0, tiny 0
+844_f10_02_faction: cut 0, small 0, off 0, overlap 0, tiny 0
+844_f10_03_class: cut 0, small 3, off 0, overlap 0, tiny 15
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ClassName = 'Paladin' 14 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.DescClip.Desc = 'Smash up close!' 13 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ChooseLabel = 'Pick!' 12 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.GenericChip.Text = 'Warrior' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.RecommendBadge.Text = 'Best for beginners' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ClassName = 'Light Mage' 14 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.DescClip.Desc = 'Blast from afar!' 13 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ChooseLabel = 'Pick!' 12 px
+844_f10_04_welcome: cut 1, small 3, off 2, overlap 2, tiny 13
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = 'Tap here: first quest from Hallie.' 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+844_f10_05_first_mission: cut 2, small 2, off 2, overlap 0, tiny 15
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    cut: MainGui.MiniMap.North.N = 'N' [40, 71, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+    tiny: MainGui.HUD.Buttons.TileMap.Label = 'Map' 12 px
+844_f10_06_hud: cut 4, small 2, off 6, overlap 0, tiny 18
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:16' [280, -19, 180, 12]
+    cut: MainGui.HUD.WarMeter.NewTag.Text = 'NEW!' [456, -51, 35, 13]
+    cut: MainGui.MiniMap.North.N = 'N' [40, 71, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:16' 16 px
+    tiny: MainGui.HUD.WarMeter.NewTag.Text = 'NEW!' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+844_f10_07_forge: cut 3, small 2, off 13, overlap 4, tiny 30
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:12' [280, -19, 180, 12]
+    cut: MainGui.EventStrip.GooseChip.NewTag.Text = 'NEW!' [450, 28, 35, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:12' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+844_f10_08_potions: cut 2, small 2, off 5, overlap 8, tiny 21
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:07' [280, -19, 180, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:07' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+844_f10_09_gifts: cut 2, small 3, off 5, overlap 4, tiny 29
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:02' [280, -19, 180, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 9:02' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+844_f10_10_bag: cut 2, small 8, off 5, overlap 1, tiny 18
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' [274, 218, 76, 13]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 8:57' [280, -19, 180, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · Power 0' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 8:57' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
+844_f10_11_lv5: cut 2, small 2, off 5, overlap 1, tiny 13
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · Power 46' [274, 218, 85, 13]
+    cut: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 8:52' [280, -19, 180, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '5' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '218/218' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · Power 46' 16 px
+    tiny: MainGui.HUD.WarMeter.Info.Text = '<font color="#ff9628">Crown War</font> · 8:52' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = "Go to Otto's Forge in the Crossroads." 15 px
+    tiny: MainGui.HUD.Buttons.Attack.Label = 'Attack' 15 px
+    tiny: MainGui.HUD.Buttons.TileBag.Label = 'Bag' 12 px
