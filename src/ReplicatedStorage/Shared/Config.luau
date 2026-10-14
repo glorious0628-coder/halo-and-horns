@@ -7639,7 +7639,8 @@ Config.Death = {
 		-- line each, only what grew; Honor for the Knights, Mischief for the Legion (A23-166)
 		GotTitle = "This run", GotTitleEn = "This run", GotXP = "+%s XP", GotXPEn = "+%s XP",
 		GotGold = "+%s gold", GotGoldEn = "+%s gold",
-		GotItems = "+%d items", GotItemsEn = "+%d items", -- Config.Plural: "+1 item" GotHonor = "+%s Honor", GotHonorEn = "+%s Honor",
+		GotItems = "+%d items", GotItemsEn = "+%d items", -- Config.Plural: "+1 item"
+		GotHonor = "+%s Honor", GotHonorEn = "+%s Honor",
 		GotMischief = "+%s Mischief", GotMischiefEn = "+%s Mischief",
 	},
 	-- one tip per situation (%s = the potion key name, or 'the potion button' on touch)
