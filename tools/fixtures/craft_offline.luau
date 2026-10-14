@@ -556,6 +556,35 @@ runGroup("results", function()
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
 end)
 
+------------------------------------------------------------------ GPT review ① (10/14): a full bag and a recipe that uses its materials up
+runGroup("full bag weapon", function()
+	local w = cWorld({ RealSpare = true })
+	local recipe = w.Config.Craft.Recipes.W2
+	local function bagOf(extra)
+		local items, n = table.clone(recipe.Mats), 0
+		for _ in items do n += 1 end
+		for k, v in extra or {} do items[k] = v end
+		local ids = {}
+		for id, def in w.Config.Loot.Items do
+			if w.Config.BagSlots.Counts[def.Kind] and items[id] == nil then table.insert(ids, id) end
+		end
+		table.sort(ids)
+		for _, id in ids do
+			if n >= 12 then break end
+			items[id] = 1
+			n += 1
+		end
+		return items
+	end
+	local p, d = smith(w, 61, { Items = bagOf(), BagSlots = 12 })
+	check(w.Config.BagUsed(d) == 12 and not w.Config.BagHasRoom(d), "(12 kinds in 12 slots, W2's materials exactly)", w.Config.BagUsed(d))
+	check(w.C.TryStart(p, "W2") == "ok", "W2 uses its 3 kinds up: their slots hold the spare it makes (12 -> 10)", "")
+	local more = {}
+	for id, n in recipe.Mats do more[id] = n + 5 end
+	local q, e = smith(w, 62, { Items = bagOf(more), BagSlots = 12 })
+	check(w.C.TryStart(q, "W2") == "full", "the same bag with more of each material: no slot frees, full", "")
+end)
+
 ------------------------------------------------------------------ craft XP
 runGroup("xp", function()
 	local w = cWorld()

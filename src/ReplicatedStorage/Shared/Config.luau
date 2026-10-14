@@ -10147,7 +10147,7 @@ Config.TestMetrics = {
 	TenMinutes = 10,
 	MaxMinute = 60, -- a later milestone is counted at minute 60
 	KeptDelay = 20,
-	Milestones = { "Lv5", "Lv10", "Weapon", "Claim" },
+	Milestones = { "Lv5", "Lv10", "Weapon", "Claim", "DropWeapon" }, -- GPT review ④: DropWeapon = the first Slime Prince's T2
 }
 
 -- A23-156 (user 10/13): the private test server (10/17-20) plays with three settings on: the Z skill (Lv15; Z on players stays

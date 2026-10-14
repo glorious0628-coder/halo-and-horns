@@ -31,6 +31,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("GPT ④: no DropWeapon", "METRICS_SOURCE", "\tDropWeapon = function(p, d) return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end,\n", ""),
     # --- config
     ("the board is off", C, "Config.TestMetrics = {\n\tEnabled = true,", "Config.TestMetrics = {\n\tEnabled = false,"),
     ("fresh means 10 minutes", C, "\tFreshSeconds = 120,\n", "\tFreshSeconds = 600,\n"),

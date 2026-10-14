@@ -148,6 +148,8 @@ local REACHED = {
 	Lv10 = function(p, d) return num(attr(p, d, "Level"), 1) >= 10 end,
 	Weapon = function(p, d) return num(attr(p, d, "WeaponOwnedMask")) >= 2 end, -- a bit above tier 1 = a dropped weapon
 	Claim = function(p, d) return num(attr(p, d, "TutorialStep")) == 99 end, -- Config.Tutorial.Steps.Done = claimed
+	-- GPT review ④ (10/14): the first dropped weapon (a bit above tier 1: the first Slime Prince's tier 2, or later)
+	DropWeapon = function(p, d) return num(attr(p, d, "WeaponOwnedMask")) >= 2 end,
 }
 
 -- a new account's first screen, milestones and the 10-minute run, each counted once

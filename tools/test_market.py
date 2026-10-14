@@ -34,6 +34,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("GPT ②: an owned tier never bought again", "MARKET_SOURCE", "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand info.Plus <= ", "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand -1 <= "),
+    ("GPT ②: a better +N stays a spare", "LOOT_SOURCE", "\t\tif plus <= cur then return \"Owned\" end\n", "\t\tdo return \"Owned\" end\n"),
     # bag slots (2026-10-14)
     ("bag: a market buy ignores the slots", X, "\t\tif have < 1 and def and counts[def.Kind] and not Config.BagHasRoom(data) then return false end\n", ""),
     # A23-186: the joke weapons are never traded

@@ -564,7 +564,8 @@ runGroup("buy refusals", function()
 	local wid
 	for k, r in sd.Market.Out do if r.K == "W:4:2" then wid = k end end
 	bd.WeaponOwnedMask = 15
-	check(try(buyer, b, wid, 4800 + 200) == "You have this weapon already.", "owning T4: no", "")
+	bd.WeaponEnhance[4] = 2 -- GPT review ②: refused only when the one owned is +2 or more
+	check(try(buyer, b, wid, 4800 + 200) == "You have this weapon already.", "owning T4 at +2: no", "")
 	-- an ended listing
 	b:Advance(72 * 3600)
 	a:Advance(72 * 3600)
@@ -911,6 +912,33 @@ runGroup("weapons", function()
 end)
 
 ------------------------------------------------------------------ the switch and Mine rows
+-- GPT review ② (10/14): a better +N of a tier owned
+runGroup("better plus", function()
+	local mem, stores = {}, {}
+	local a = marketWorld({ Mem = mem, Stores = stores })
+	local b = marketWorld({ Mem = mem, Stores = stores })
+	local p, d = hero(a, 95, { WeaponOwnedMask = 15, WeaponTier = 2, WeaponEnhance = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Spares = { ["2:2"] = 1, ["3:0"] = 1 } })
+	a:Remote("UnpackSpare", p, "2:2")
+	check(d.WeaponEnhance[2] == 2 and d.Spares["2:2"] == nil and d.Spares["2:0"] == 1 and bit32.btest(d.WeaponOwnedMask, 2),
+		"a T2 +2 spare over the T2 +0 owned: swapped in (+2 owned, the +0 a spare)", show({ d.WeaponEnhance[2], d.Spares }))
+	a:Remote("UnpackSpare", p, "2:0")
+	check(d.WeaponEnhance[2] == 2 and d.Spares["2:0"] == 1, "a lower +N stays a spare", show(d.Spares))
+	-- the market: a tier owned at a lower +N may be bought at a higher one
+	local s, sd = hero(b, 96, { WeaponOwnedMask = 31, Spares = { ["4:2"] = 1 } })
+	b.Gap = 6.1
+	b:Remote("MarketList", s, "W", "4:2", 1, 5000)
+	local wid = nil
+	for k, r in sd.Market.Out do if r.K == "W:4:2" then wid = k end end
+	local buyer, bd = hero(a, 97, { WeaponOwnedMask = 15, WeaponEnhance = { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, BankGold = 10000, Spares = {} })
+	a:Remote("MarketBuy", buyer, wid, 5000)
+	check(bd.BankGold == 5000 and (bd.Spares["4:2"] or 0) == 1, "owning T4 +0: buying T4 +2 is allowed (it comes as a spare)", show({ bd.BankGold, bd.Spares }))
+	local c2, cd = hero(a, 98, { WeaponOwnedMask = 15, WeaponEnhance = { 0, 0, 0, 4, 0, 0, 0, 0, 0 }, BankGold = 10000 })
+	local n0 = #a.Notices
+	a:Remote("MarketBuy", c2, wid, 5000)
+	check(cd.BankGold == 10000, "owning T4 +4: buying T4 +2 is refused (Owned)", show(cd.BankGold))
+	local _ = n0
+end)
+
 runGroup("switch off", function()
 	local mem, stores = {}, {}
 	local a = marketWorld({ Mem = mem, Stores = stores })

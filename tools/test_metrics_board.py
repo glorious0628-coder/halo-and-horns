@@ -33,6 +33,7 @@ STEPS = ["IntroDone", "Faction", "Class", "FirstMissionAccept", "ForgeArrive", "
          "FirstKill", "FirstMissionDone", "FirstSkillHit", "AutoUnlocked", "Level10"]  # Config.Analytics.Steps
 TEN = 10  # Config.TestMetrics.TenMinutes
 LINES = [("Lv5", 5, "Lv5 5분 이하"), ("Lv10", 15, "Lv10 15분 이하"), ("Weapon", 4, "첫 드롭 무기 4분 이하")]  # gameplay_plan 1-B
+LINES.append(("DropWeapon", 8, "첫 드롭 무기(첫 Prince T2) 8분 이하"))  # GPT review ④ (10/14): its own milestone
 
 
 def reader_luau(round_name: str | None, studio_copy: bool) -> str:
@@ -127,6 +128,8 @@ def board(meta: dict) -> list[str]:
     for m, label in (("Lv5", "Lv5"), ("Weapon", "첫 드롭 무기"), ("Claim", "첫 미션 Claim")):
         h = minutes(doc, m)
         rows.append([label, within(h, TEN), pct(within(h, TEN), new), sum(h.values()), median(h)])
+    hd = minutes(doc, "DropWeapon")  # GPT review ④: the first Slime Prince's tier 2, apart from the Forge's first weapon
+    rows.append(["첫 드롭 무기(Prince T2)", within(hd, TEN), pct(within(hd, TEN), new), sum(hd.values()), median(hd)])
     rows.append(["셋 다 (10분 완주)", int(doc.get("Ten") or 0), pct(doc.get("Ten") or 0, new), "", ""])
     lines += table(["무엇", f"{TEN}분 안", "비율", "언젠가 닿음", "중간값"], rows)
     lines.append("## 합격선 (게임성 계획 1-B)")

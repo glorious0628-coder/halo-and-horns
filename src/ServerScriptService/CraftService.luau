@@ -160,8 +160,15 @@ end
 -- room for the result at any +N (0..2), checked before anything is taken
 local function room(player, data, r)
 	if r.Kind == "Weapon" then
+		-- GPT review ① (10/14): a material this recipe uses up frees its slot for the spare it makes
+		local freed = 0
+		for item, n in r.Mats do
+			local mdef = Config.Loot.Items[item]
+			local held = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+			if mdef and Config.BagSlots.Counts[mdef.Kind] and held >= 1 and held <= n then freed += 1 end
+		end
 		for plus = 0, 2 do
-			local ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus)
+			local ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)
 			if not ok or yes ~= true then return false end
 		end
 		return true

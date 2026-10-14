@@ -38,6 +38,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("GPT ①: SpareRoom ignores the freed slots", "LOOT_SOURCE", "Config.BagUsed(data) - math.max(0, math.floor(num(freed))) >= Config.BagSlotsOf(data) then return false end",
+     "Config.BagUsed(data) >= Config.BagSlotsOf(data) then return false end"),
+    ("GPT ①: a weapon recipe frees no slot", "CRAFT_SOURCE", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, 0)"),
     # bag slots (2026-10-14)
     ("bag: a new-kind result ignores the slots", R, "\tif have < 1 and def and Config.BagSlots.Counts[def.Kind] then\n", "\tif false then\n"),
     ("bag: a used-up material frees nothing", R, "held >= 1 and held <= n then freed += 1 end", "held >= 1 and held < n then freed += 1 end"),
