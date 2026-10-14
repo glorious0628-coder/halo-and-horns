@@ -238,8 +238,9 @@ def statics(src: dict) -> list[tuple[str, bool]]:
          "\tui.powerHit.Size = UDim2.new()" in h),
         # final review 10/14 (phone first-10 photos: '156/156' thin and ~9 px; HudLayout TOUCH_BAR = taller bars, tested
         # in test_hud_layout): phone bar numbers bold, up to 13 px
-        ("phone HP / MP numbers bold up to 13 px",
-         "C.HUD.FitText(text, touch and 13 or 11, touch == true, nil, true)" in src["VITALS"]),
+        ("HP / MP numbers bold (phones up to 13 px; PCs too since 10/14, with a full dark rim)",
+         "C.HUD.FitText(text, touch and 13 or 12, true, nil, true)" in src["VITALS"]
+         and "rim.Thickness, rim.Transparency = COUNT_PX.BarOutline, 0" in src["VITALS"]),
     ]
 
 
@@ -256,7 +257,7 @@ STATIC_MUTATIONS = [
     ("UIKIT", "a shrunk button keeps its strips", "\t\tif size.X < 2 or size.Y < 2 or (size.X >= UIKit.Tap.Px",
      "\t\tif (size.X >= UIKit.Tap.Px"),
     ("HUD", "the power tap area starts full screen", "\tui.powerHit.Size = UDim2.new()", "\tlocal _ = UDim2.new()"),
-    ("VITALS", "phone bar numbers thin again", "touch and 13 or 11, touch == true,", "touch and 13 or 11, nil,"),
+    ("VITALS", "bar numbers thin again", "touch and 13 or 12, true,", "touch and 13 or 12, nil,"),
 ]
 
 
