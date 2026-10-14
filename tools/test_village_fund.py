@@ -108,9 +108,11 @@ def static() -> tuple[int, list[str]]:
     net = read(SHARED / "Net.luau")
     names_block = re.search(r"Net\.Names = \{(.*?)\n\}", net, re.S)
     listed = names.findall(strip_comments(names_block.group(1))) if names_block else []
-    # the two remote names live in 게임성 개발 1's dev1-village-fund (merged together): never listed twice here
-    check(listed.count("FundGive") <= 1 and listed.count("FundOpen") <= 1, "Net: FundGive / FundOpen listed at most once")
-    check("FundHalo" not in net, "the GameState fund attributes need no Net default (the service sets them at Start)")
+    check(listed.count("FundGive") == 1 and listed.count("FundOpen") == 1, "Net: FundGive and FundOpen listed once")
+    gs = re.search(r"Net\.GameStateDefaults = \{(.*?)\n\}", net, re.S)
+    gsd = gs.group(1) if gs else ""
+    check(all(f"{k} = 0" in gsd for k in ("FundWeek", "FundHalo", "FundHorns", "FundLevelHalo", "FundLevelHorns")),
+          "GameState defaults FundWeek / FundHalo / FundHorns / FundLevelHalo / FundLevelHorns = 0")
     code = strip_comments(read(SSS / "VillageFundService.luau"))
     check("Config.StoreName" in code and code.count("GetDataStore") == 1, "one store, through Config.StoreName")
     check(code.count("UpdateAsync") == 1 and "SetAsync" not in code and "RemoveAsync" not in code and "IncrementAsync" not in code,
