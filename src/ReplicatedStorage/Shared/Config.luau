@@ -8568,6 +8568,19 @@ Config.ChoiceCard.Screen = {
 	-- the score names on the card (the cards send the stat key; A23-166: Infamy shows as "Mischief", the key stays)
 	Stat = { Honor = "Honor", Infamy = "Mischief" },
 }
+-- A23-178 B (게임성 개발 1, 2026-10-14; contract docs/design/village_fund_server_2026-10-14.md §8): the village fund card's
+-- own extra words (VillageFundUI). Title, Today, the [Give] words, Poor / Full / Closed, the prompt and the notices - and
+-- every number - live in Config.VillageFund.Text (게임성 개발 2); this table is the rest of the card. Lead: %d = points.
+Config.VillageFundScreen = {
+	Lead = { Halo = "Share gold with Halo Citadel. Honor +%d each time.", Horns = "Show off your gold in Horns Den. Mischief +%d each time." },
+	Far = "Walk up to the fountain.", -- [Give] is grey past the fountain's reach (the server takes gifts only inside it)
+	Gold = "Your gold: %s",
+	Close = "Close",
+	Week = "Town this week: %s gold",
+	Marks = "%s %s · %s %s", -- (lanterns word, goal, fireworks word, goal)
+	Lanterns = "Lanterns",
+	Fireworks = "Fireworks",
+}
 -- A23-86 D (content_beyond_10min D): the monster kill record from the first beta day (KillLog.luau). Additive save field
 -- (Version stays 3): KillLog = { Total, M (by hand), A (auto combat), Golden, ByKind = { [monster kind] = n },
 -- ByTier = { ["tier"] = { M, A } } }. The sticker book screen comes 11/04; nothing is paid for it here.
