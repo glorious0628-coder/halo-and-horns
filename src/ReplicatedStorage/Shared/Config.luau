@@ -4347,6 +4347,13 @@ Config.Quests = {
 		-- LostFound / KillCards switch in Config), else the slot is another kind.
 		{ Id = "Choice", ShortName = "Kind or sneaky", Weight = 14, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
 			Text = "Make a kind or sneaky choice" },
+		-- artisan min ④ (docs/design/artisan_min_server_2026-10-14.md): the guild's own dailies (Neutral only; Gather while
+		-- Config.Features.Gathering is on, Craft while Crafting is on). Gather = one pick at a node (GatherService.Gathered),
+		-- Craft = one finished craft (CraftService.Crafted)
+		{ Id = "Gather", ShortName = "Gathering", Weight = 20, Units = { 6, 8 }, DailyUnits = { 8 }, RewardPerUnit = 3, Faction = "Neutral",
+			NonHunt = true, Text = "Gather %d times" },
+		{ Id = "Craft", ShortName = "Crafting", Weight = 20, Units = { 1, 2 }, DailyUnits = { 2 }, RewardPerUnit = 15, Faction = "Neutral",
+			NonHunt = true, Text = "Craft %d things" },
 	},
 	-- A23-113 #8: from Lv10 at least one of the three dailies is not hunting (a template with NonHunt: Goose, Hunt / Plunder, Choice):
 	-- when the other two slots are both hunting, the last one is drawn from the non-hunting kinds that fit this player now (none
@@ -4383,6 +4390,8 @@ Config.Quests = {
 			{ Id = "Kill", Weight = 1, Monster = "Slime", Targets = { 12, 15 } }, -- sometimes / on reroll: 슬라임 12~15마리
 			{ Id = "Release", Weight = 3, Targets = { 3, 4, 5 } }, -- 몬스터에게 스킬 3~5번 맞히기
 			{ Id = "Gold", Weight = 3, Targets = { 40, 50, 60 } }, -- 사냥으로 골드 40~60 벌기
+			{ Id = "Gather", Weight = 3, Targets = { 6, 8 } }, -- artisan min ④: the guild (Neutral, Gathering on)
+			{ Id = "Craft", Weight = 2, Targets = { 1, 2 } }, -- artisan min ④: the guild (Neutral, Crafting on)
 		},
 	},
 	-- E12 (quest_volume §3-4, A23-56): the Goblin Woods band Lv10-24 works like Newbie (rows reuse a template Id, exact
@@ -4405,6 +4414,8 @@ Config.Quests = {
 			{ Id = "Hunt", Weight = 0.4, Targets = { 1 } }, -- PvP, Halo (A23-113: rarely drawn: never pushed on a child)
 			{ Id = "Plunder", Weight = 0.4, Targets = { 1 } }, -- PvP, Horns
 			{ Id = "Choice", Weight = 3, Targets = { 1 } }, -- A23-113: one kind or sneaky choice (only while a choice source is on)
+			{ Id = "Gather", Weight = 3, Targets = { 8, 10 } }, -- artisan min ④: the guild (Neutral, Gathering on)
+			{ Id = "Craft", Weight = 2, Targets = { 2 } }, -- artisan min ④: the guild (Neutral, Crafting on)
 		},
 	},
 }
@@ -5881,6 +5892,9 @@ Config.Loot = {
 		SellDone = "Sold %d materials! Gold +%s",
 		SellNothing = "No materials to sell.",
 		SellFar = "Sell materials near the Forge anvil.",
+		-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): one gathered / crafted material at a time (SellItem)
+		SellItemDone = "Sold %d %s! Gold +%s", -- (n, item name, gold)
+		SellItemNone = "You don't have that many.",
 	},
 }
 -- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
@@ -9802,6 +9816,7 @@ end
 Config.Data.Defaults.Codex = {} -- save v5 (the version step: DataService.migrate)
 Config.RateLimits.CodexOpen = 1 -- c->s "CodexOpen" (no arguments): the answer is the "Codex" snapshot
 Config.RateLimits.FundGive = 1 -- A23-178 c->s "FundGive" (no arguments): one village fund gift (VillageFundService)
+Config.RateLimits.SellItem = 0.3 -- artisan min ② c->s "SellItem" (itemId, n): one gathered material kind at the anvil
 Config.PassBoost.GoldSources.Codex = true -- earned gold (the 2x Gold pass doubles it)
 Config.TitleDefs.SlimeScholar = { Name = "Slime Scholar", NameEn = "Slime Scholar", Color = Color3.fromRGB(140, 220, 140) }
 Config.TitleDefs.GoblinScholar = { Name = "Goblin Scholar", NameEn = "Goblin Scholar", Color = Color3.fromRGB(170, 200, 90) }

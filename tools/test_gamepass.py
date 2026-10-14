@@ -78,6 +78,7 @@ EXPECTED = [
     ("KaijuService.luau", "AddBankGold", "Kaiju", True),
     ("LootService.luau", "AddCarriedGold", "Loot", True),
     ("LootService.luau", "AddCarriedGold", "Sale", False),
+    ("LootService.luau", "AddCarriedGold", "Sale", False),  # artisan min ①: SellItem (a gathered material at the shop, never 2x)
     ("Main.server.luau", "AddCarriedGold", "Other", False),
     ("ProgressionService.luau", "AddCarriedGold", "Monster", True),
     ("ProgressionService.luau", "AddXP", None, True),

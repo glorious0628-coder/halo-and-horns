@@ -35,6 +35,7 @@ local STATE = {
 
 LootService.ItemsGranted = Util.Signal.new() -- (player, { { Id = itemId, N = n } ... })
 LootService.Enhanced = Util.Signal.new() -- (player, tier, before, after, success, itemId) (itemId: BB10 장인 명성)
+LootService.MaterialSold = Util.Signal.new() -- (player, itemId, n) artisan min ②: SellItem sold a gathered / crafted material
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -726,6 +727,31 @@ local function onSellMaterials(player, ...)
 	notify(player, Config.Plural(string.format(TXT.SellDone, count, tostring(gold))), "good")
 end
 
+-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): n of ONE gathered / crafted material (an item with a Source,
+-- which the sell-all keeps for crafting) at the Forge anvil. Args (itemId: string, n: whole 1..what I have); anything else
+-- = nothing. Removed before paying (a repeated request cannot pay twice); Sell x n carried gold ("Sale"); MaterialSold.
+local function onSellItem(player, ...)
+	if select("#", ...) ~= 2 or not ready(player, "SellItem") then return end
+	local id, n = ...
+	if type(id) ~= "string" or #id > 32 or type(n) ~= "number" or n ~= n or n ~= math.floor(n) or n < 1 or n > LOOT.ItemCap then return end
+	local def = LOOT.Items[id]
+	if type(def) ~= "table" or def.Kind ~= "Material" or def.Source == nil or num(def.Sell) <= 0 then return end
+	if S.ShopService.CanBuyWeapon(player) ~= true then notify(player, TXT.SellFar, "bad"); return end -- the anvil (12 studs)
+	local data = getData(player)
+	if not data then return end
+	ensureTables(data)
+	local have = math.floor(num(data.Items[id]))
+	if have < n then notify(player, TXT.SellItemNone, "bad"); return end
+	data.Items[id] = have - n > 0 and have - n or nil
+	local gold = n * math.floor(num(def.Sell))
+	publish(player, data)
+	S.ProgressionService.AddCarriedGold(player, gold, "Sale")
+	S.PlayerService.SetStat(player, "BlacksmithVisited", true)
+	S.PlayerService.MarkActive(player)
+	notify(player, string.format(TXT.SellItemDone, n, tostring(def.Name or id), tostring(gold)), "good")
+	LootService.MaterialSold:Fire(player, id, n)
+end
+
 ------------------------------------------------------------------ A23-28 weapon level rule
 -- the level went down (rebirth / Lv5+ free class change) or the save holds an equipped weapon above the level: equip
 -- the best owned weapon usable now (ownership and +N untouched) and say so in one line
@@ -791,6 +817,10 @@ function LootService.Start()
 	Net.Get("SellMaterials").OnServerEvent:Connect(function(player, ...)
 		local ok, err = pcall(onSellMaterials, player, ...)
 		if not ok then Util.Warn(TAG, "SellMaterials: " .. tostring(err)) end
+	end)
+	Net.Get("SellItem").OnServerEvent:Connect(function(player, ...)
+		local ok, err = pcall(onSellItem, player, ...)
+		if not ok then Util.Warn(TAG, "SellItem: " .. tostring(err)) end
 	end)
 	S.MonsterService.MonsterKilled:Connect(function(player, info)
 		local ok, err = pcall(LootService.RollKill, player, info)

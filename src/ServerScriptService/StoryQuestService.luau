@@ -588,7 +588,8 @@ local function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
 	if def.Factions and not def.Factions[faction(player)] then return false end
-	-- A23-57: the artisan guild's own quests wait for its switch (a save that is Neutral already keeps what it has)
+	-- A23-57: the artisan guild's own quests are not OFFERED while its switch is off; a quest a Neutral save already took or
+	-- finished stays (this check gates new offers only: the caller skips Done / taken ids first)
 	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end

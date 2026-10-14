@@ -871,7 +871,7 @@ runGroup("config", function()
 		check(type(C.RateLimits[key]) == "number" and C.RateLimits[key] > 0, "RateLimits." .. key .. " is a positive number", C.RateLimits[key])
 	end
 	local netNames = execute("Net", NET_SOURCE, { game = { GetService = function() return {} end } }).Names
-	for _, name in { "UseItem", "EquipWeapon", "SellMaterials", "Inventory" } do
+	for _, name in { "UseItem", "EquipWeapon", "SellMaterials", "SellItem", "Inventory" } do
 		local n = 0
 		for _, x in netNames do if x == name then n += 1 end end
 		check(n == 1, "Net registers remote " .. name .. " exactly once", n)
@@ -2921,6 +2921,78 @@ runGroup("sell", function()
 	u:Sell()
 	check(u.Data.Items.Bogus == 7 and u.Data.Items.Jelly == nil and u.Data.CarriedGold == before + 2 * L.Items.Jelly.Sell,
 		"unknown ids are not sold and stay saved", show(u.Data.Items))
+end)
+
+------------------------------------------------------------------ 7b. SellItem (artisan min ②, 2026-10-14)
+runGroup("sell one gathered kind", function()
+	local f = fixture()
+	local L = f.L
+	f:Give("Herb", 6)
+	f:Give("CopperOre", 3)
+	f:Give("Jelly", 4)
+	local sold = {}
+	f.Loot.MaterialSold:Connect(function(p, id, n) table.insert(sold, id .. ":" .. n) end)
+	local function same(label, ...)
+		local before = f:State()
+		local paid = #f.GoldLog
+		local args = table.pack(...)
+		f.Now += 1
+		f:FireRaw("SellItem", table.unpack(args, 1, args.n))
+		check(deepEqual(before, f:State()) and #f.GoldLog == paid and #sold == 0, label, show(f.Data.Items))
+	end
+	same("no arguments: nothing")
+	same("only an id: nothing", "Herb")
+	same("an extra argument: nothing", "Herb", 1, "x")
+	same("n = 0: nothing", "Herb", 0)
+	same("n = 1.5: nothing", "Herb", 1.5)
+	same("n = -2: nothing", "Herb", -2)
+	same("n = NaN: nothing", "Herb", 0 / 0)
+	same("a number id: nothing", 5, 1)
+	same("a monster material (no Source; the sell-all's): nothing", "Jelly", 1)
+	same("a scroll: nothing", "Enh70", 1)
+	same("an unknown id: nothing", "Nope", 1)
+	f.NearAnvil = false
+	f.Notices = {}
+	same("away from the anvil: nothing", "Herb", 2)
+	check(f:Noticed(L.Text.SellFar) == 1, "away from the anvil: SellFar", "")
+	f.NearAnvil = true
+	f.Notices = {}
+	same("more than I have: nothing", "Herb", 7)
+	check(f:Noticed(L.Text.SellItemNone) == 1, "more than I have: SellItemNone", "")
+	f.Ready = false
+	same("not ready: nothing", "Herb", 1)
+	f.Ready = true
+	-- a sale
+	local carried = f.Data.CarriedGold
+	f.Notices = {}
+	f.Now += 1
+	f:FireRaw("SellItem", "Herb", 4)
+	local want = 4 * L.Items.Herb.Sell
+	local last = f.GoldLog[#f.GoldLog]
+	check(f:Count("Herb") == 2 and f:Count("CopperOre") == 3 and f:Count("Jelly") == 4 and last and last.Amount == want
+		and last.Source == "Sale" and f.Data.CarriedGold == carried + want, "4 herbs: Sell x 4 carried gold ('Sale'), the rest untouched",
+		show({ f.Data.Items, last }))
+	check(f:Noticed(string.format(L.Text.SellItemDone, 4, L.Items.Herb.Name, tostring(want))) == 1, "the SellItemDone line", "")
+	check(table.concat(sold, ",") == "Herb:4" and f.Data.BlacksmithVisited == true, "MaterialSold(Herb, 4), BlacksmithVisited", table.concat(sold, ","))
+	local pay = f:LastPayload()
+	check(pay and pay.Items.Herb == 2, "Inventory republished", show(pay and pay.Items))
+	-- the whole stack: the key leaves the bag
+	f.Now += 1
+	f:FireRaw("SellItem", "CopperOre", 3)
+	check(f.Data.Items.CopperOre == nil and #sold == 2, "selling all of a kind removes the key", show(f.Data.Items))
+	-- rate limit: two in the same window = one sale
+	local n0 = #f.GoldLog
+	f.Now += 5
+	f:FireRaw("SellItem", "Herb", 1)
+	f:FireRaw("SellItem", "Herb", 1)
+	check(#f.GoldLog == n0 + 1 and f:Count("Herb") == 1, "SellItem rate limited (one sale)", #f.GoldLog - n0)
+	check(type(f.Config.RateLimits.SellItem) == "number" and f.Config.RateLimits.SellItem > 0, "RateLimits.SellItem is positive", "")
+	-- every gathered item can be sold this way
+	for id, def in L.Items do
+		if def.Source == "Gather" then
+			check(def.Kind == "Material" and type(def.Sell) == "number" and def.Sell > 0, id .. ": a gathered material with a Sell price", show(def))
+		end
+	end
 end)
 
 ------------------------------------------------------------------ 8. rebirth (A23-14: only Level and XP reset)
