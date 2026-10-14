@@ -988,7 +988,7 @@ function L.BuildQuick(root)
 	UIKit.Create("ImageLabel", { Name = "Icon", BackgroundTransparency = 1, Image = "", AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.66, 0.66), ZIndex = 3, Parent = btn })
 	local count = UIKit.LightText({ Name = "Count", Parent = btn, Text = "", AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromScale(0.5, 0.38), TextScaled = true, Number = true,
+		Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromScale(0.5, 0.38), TextScaled = true, Number = true, AutoLocalize = false,
 		MaxTextSize = 16, ZIndex = 5 })
 	L.FitText(count, 14, true, 11, true)
 	local key = UIKit.LightText({ Name = "Key", Parent = btn, Text = "3", TextSize = 11, ZIndex = 6,
@@ -1050,7 +1050,7 @@ function L.RefreshBadge()
 		Size = UDim2.fromScale(1, 1),
 		TextScaled = true,
 		MaxTextSize = 26,
-		Number = true,
+		Number = true, AutoLocalize = false,
 		Color = ink and ac("Ink", COL.Dark) or ac("Light", COL.White),
 		Text = tostring(math.floor(num("Level", 1))),
 		ZIndex = 6,
@@ -1221,7 +1221,7 @@ local function buildWar(root)
 				Size = UDim2.fromScale(inner.Width / def.Size.X, inner.Height / def.Size.Y),
 				TextScaled = true,
 				MaxTextSize = 22,
-				Number = true,
+				Number = true, AutoLocalize = false,
 				ZIndex = 4,
 				Parent = badge,
 			})
@@ -1235,7 +1235,7 @@ local function buildWar(root)
 				Position = UDim2.new(s[2], s[2] == 0 and 16 or -16, 0, 0),
 				Size = UDim2.new(0.5, -20, 1, 0),
 				TextSize = 15,
-				Number = true,
+				Number = true, AutoLocalize = false,
 				TextXAlignment = s[2] == 0 and Enum.TextXAlignment.Left or Enum.TextXAlignment.Right,
 				ZIndex = 2,
 				Parent = bar,
@@ -3169,7 +3169,7 @@ local function buildButtons(root)
 		Size = UDim2.fromScale(0.6, 0.3),
 		TextScaled = true,
 		MaxTextSize = 26,
-		Number = true,
+		Number = true, AutoLocalize = false,
 		Color = Theme.Gold,
 		Visible = false,
 		ZIndex = 4,

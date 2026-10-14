@@ -172,7 +172,7 @@ function VitalsUI.BuildPotions(parent, touch)
 			Size = square and UDim2.fromScale(0.66, 0.66) or UDim2.fromScale(0.56, 0.56), ZIndex = 3 })
 		local count = UIKit.LightText({ Name = "Count", Parent = button, Text = "0",
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.82, 0.77), Size = UDim2.fromOffset(22, 18),
-			TextScaled = true, Number = true, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
+			TextScaled = true, Number = true, AutoLocalize = false, MaxTextSize = touch and 18 or 16, ZIndex = 5 })
 		local status = UIKit.LightText({ Name = "Status", Parent = button, Text = "",
 			AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromOffset(60, 18),
 			TextScaled = true, Title = true, MaxTextSize = touch and 16 or 14, ZIndex = 6, Visible = false })

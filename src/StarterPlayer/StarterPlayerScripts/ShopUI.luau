@@ -486,23 +486,40 @@ end
 -- it from the name as it renders here: Height of the line's TextBounds (Denk One: about 0.8 of the letters), the art's
 -- own width : height, Gap px before the first letter. The padding takes the crown's room, so crown + name stay one
 -- centred group, and a long name that TextScaled shrinks takes the crown down with it.
-local CROWN = { Height = 0.62, Gap = 3, Sweep = 1, Watched = setmetatable({}, { __mode = "k" }) }
+local CROWN = { Height = 0.62, TitleK = 0.8, Gap = 3, Sweep = 1, Watched = setmetatable({}, { __mode = "k" }) }
 
+-- A23-179 (review 10/14): the line's "[title]" is its own child label "Title" (translated; the name is not), placed
+-- left of the crown (or of the name), its size from the name's rendered height; the pad takes both rooms
 function CROWN.Fit(label)
-	local crown, pad = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad")
-	if not (crown and pad and crown:IsA("ImageLabel") and pad:IsA("UIPadding")) then return end
+	local crown, pad, title = label:FindFirstChild("VipCrown"), label:FindFirstChild("VipPad"), label:FindFirstChild("Title")
+	if not (pad and pad:IsA("UIPadding")) then return end
+	if crown and not crown:IsA("ImageLabel") then crown = nil end
+	if title and not (title:IsA("TextLabel") and title.Text ~= "") then title = nil end
+	if not (crown or title) then return end
 	local tb = label.TextBounds
 	if tb.X < 1 or tb.Y < 1 then return end
-	local ch = math.max(6, math.floor(tb.Y * CROWN.Height + 0.5))
-	local cw = math.floor(ch * (tonumber(crown:GetAttribute("Aspect")) or 1.46) + 0.5)
-	local room = cw + CROWN.Gap
+	local room, left = 0, math.floor(tb.X / 2 + CROWN.Gap + 0.5) -- left = px from the name's middle to the next piece
+	if crown then
+		local ch = math.max(6, math.floor(tb.Y * CROWN.Height + 0.5))
+		local cw = math.floor(ch * (tonumber(crown:GetAttribute("Aspect")) or 1.46) + 0.5)
+		local size = UDim2.fromOffset(cw, ch)
+		-- the padded box's middle is the name's middle: half the name to the left, then the gap
+		local pos = UDim2.new(0.5, -left, 0.5, -1)
+		if crown.Size ~= size then crown.Size = size end
+		if crown.Position ~= pos then crown.Position = pos end
+		if not crown.Visible then crown.Visible = true end
+		room += cw + CROWN.Gap
+		left += cw + CROWN.Gap
+	end
+	if title then
+		local ts = math.max(8, math.floor(tb.Y * CROWN.TitleK + 0.5))
+		if title.TextSize ~= ts then title.TextSize = ts end
+		local pos = UDim2.new(0.5, -left, 0.5, 0)
+		if title.Position ~= pos then title.Position = pos end
+		if not title.Visible then title.Visible = true end
+		room += math.ceil(title.TextBounds.X) + CROWN.Gap
+	end
 	if pad.PaddingLeft.Offset ~= room then pad.PaddingLeft = UDim.new(0, room) end -- may re-scale the name: refit
-	local size = UDim2.fromOffset(cw, ch)
-	-- the padded box's middle is the name's middle: half the name to the left, then the gap
-	local pos = UDim2.new(0.5, -math.floor(tb.X / 2 + CROWN.Gap + 0.5), 0.5, -1)
-	if crown.Size ~= size then crown.Size = size end
-	if crown.Position ~= pos then crown.Position = pos end
-	if not crown.Visible then crown.Visible = true end
 end
 
 function CROWN.Watch(label)
@@ -515,7 +532,7 @@ function CROWN.Watch(label)
 	label:GetPropertyChangedSignal("TextBounds"):Connect(fit)
 	label:GetPropertyChangedSignal("AbsoluteSize"):Connect(fit)
 	label.ChildAdded:Connect(function(child)
-		if child.Name == "VipCrown" or child.Name == "VipPad" then task.defer(fit) end
+		if child.Name == "VipCrown" or child.Name == "VipPad" or child.Name == "Title" then task.defer(fit) end
 	end)
 	fit()
 end
@@ -532,7 +549,7 @@ function CROWN.Start()
 		while true do
 			task.wait(CROWN.Sweep)
 			for label in CROWN.Watched do
-				if label.Parent and label:FindFirstChild("VipCrown") then pcall(CROWN.Fit, label) end
+				if label.Parent and (label:FindFirstChild("VipCrown") or label:FindFirstChild("Title")) then pcall(CROWN.Fit, label) end
 			end
 		end
 	end)
