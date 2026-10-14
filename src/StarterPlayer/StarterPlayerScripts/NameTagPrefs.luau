@@ -19,7 +19,11 @@ local LocalPlayer = Players.LocalPlayer
 local NameTagPrefs = {}
 local C = nil
 local TAG = "NameTagPrefs"
-local L = { Name = "Nametag", Far = 120, Near = 40 }
+local L = { Name = "Nametag", Far = 120, Near = 40,
+	-- 2-C #9 (A23-77 milestone 28 "이름표 테두리", Config.Attendance.Milestones Border): the approved ribbon of that border
+	-- (Config.UIArt "Ribbon" .. Border) right of the name, its height a share of the name's drawn height; Sweep s between
+	-- passes over every tag (a new tag, AttendDays, the name re-scaled)
+	Border = { Art = "Ribbon", Height = 0.9, Gap = 3, Sweep = 1, Child = "AttendBorder" } }
 -- 최종 검수 10/14 FIX 1: Tags is a STRONG table (with weak keys a tag already on screen could drop out, and the server
 -- fixes a tag in place without making a new one, so a later Settings change missed it); gone tags are dropped in ApplyAll
 local S = { Tags = {}, Started = false }
@@ -81,6 +85,63 @@ function NameTagPrefs.ApplyAll()
 	return n
 end
 
+-- (pure) the attendance border a player has: the highest Config.Attendance.Milestones row with a Border whose Days <=
+-- days collected (AttendDays) -> its Border id, or nil
+function NameTagPrefs.BorderOf(days)
+	days = math.floor(tonumber(days) or 0)
+	local att = type(Config.Attendance) == "table" and Config.Attendance or {}
+	local best, bestDays = nil, -1
+	for _, m in type(att.Milestones) == "table" and att.Milestones or {} do
+		local d = type(m) == "table" and tonumber(m.Days) or nil
+		if d and type(m.Border) == "string" and d <= days and d > bestDays then best, bestDays = m.Border, d end
+	end
+	return best
+end
+
+-- one tag's ribbon: added / moved / removed by its owner's AttendDays (any player's tag, mine is hidden from me anyway)
+function NameTagPrefs.FitBorder(bb, player)
+	if typeof(bb) ~= "Instance" or not bb:IsA("BillboardGui") then return false end
+	local line = bb:FindFirstChild("Line1")
+	if not (line and line:IsA("TextLabel")) then return false end
+	local B = L.Border
+	local border = typeof(player) == "Instance" and NameTagPrefs.BorderOf(player:GetAttribute("AttendDays")) or nil
+	local img = line:FindFirstChild(B.Child)
+	local kit = C and C.UIKit
+	local id = border and type(kit) == "table" and type(kit.ArtId) == "function" and kit.ArtId(B.Art .. border) or nil
+	if not id then
+		if img then img:Destroy() end
+		return false
+	end
+	if not (img and img:IsA("ImageLabel")) then
+		if img then img:Destroy() end
+		img = Instance.new("ImageLabel")
+		img.Name = B.Child
+		img.BackgroundTransparency = 1
+		img.ScaleType = Enum.ScaleType.Fit
+		img.AnchorPoint = Vector2.new(0, 0.5)
+		img.Parent = line
+	end
+	if img.Image ~= id then img.Image = id end
+	local tb = line.TextBounds
+	local h = math.max(8, math.floor((tb.Y > 0 and tb.Y or 20) * B.Height + 0.5))
+	local size = UDim2.fromOffset(h, h)
+	local pos = UDim2.new(0.5, math.floor(tb.X / 2 + B.Gap + 0.5), 0.5, 0)
+	if img.Size ~= size then img.Size = size end
+	if img.Position ~= pos then img.Position = pos end
+	return true
+end
+
+-- every player's tag once (the sweep)
+function NameTagPrefs.FitBorders()
+	local n = 0
+	for _, p in Players:GetPlayers() do
+		local head = p.Character and p.Character:FindFirstChild("Head")
+		local bb = head and head:FindFirstChild(L.Name)
+		if bb and NameTagPrefs.FitBorder(bb, p) then n += 1 end
+	end
+	return n
+end
+
 function NameTagPrefs.Init(registry)
 	C = registry
 end
@@ -96,6 +157,15 @@ function NameTagPrefs.Start()
 	end
 	for _, d in workspace:GetDescendants() do consider(d) end
 	workspace.DescendantAdded:Connect(consider)
+	pcall(function() -- 2-C #9: the 28-day ribbons (a slow sweep: writes only on a change)
+		task.spawn(function()
+			while true do
+				local ok, err = pcall(NameTagPrefs.FitBorders)
+				if not ok then Util.Warn(TAG, "borders: " .. tostring(err)) end
+				task.wait(L.Border.Sweep)
+			end
+		end)
+	end)
 	local st = C and C.Settings
 	if type(st) == "table" and type(st.Changed) == "table" and type(st.Changed.Connect) == "function" then
 		st.Changed:Connect(function()
@@ -105,6 +175,6 @@ function NameTagPrefs.Start()
 	end
 end
 
-NameTagPrefs._T = { S = S } -- tools/test_settings_apply.py
+NameTagPrefs._T = { S = S, L = L } -- tools/test_settings_apply.py, tools/test_small_ui.py
 
 return NameTagPrefs

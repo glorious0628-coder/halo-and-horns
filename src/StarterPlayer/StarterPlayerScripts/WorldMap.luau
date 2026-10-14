@@ -540,6 +540,10 @@ local function prepareData()
 					Town = z.Town == true,
 					Faction = z.Faction,
 					FloorColor = typeof(z.FloorColor) == "Color3" and z.FloorColor or COL.Land,
+					-- 2-C #9: its PvP area (the Crown Pit), drawn in the extreme colour
+					Pit = (type(z.PvPArea) == "table" and typeof(z.PvPArea.Center) == "Vector3" and typeof(z.PvPArea.Size) == "Vector3")
+						and { Center = (legacy and V3.ZoneCenters[id]) and (z.PvPArea.Center - z.Center + center) or z.PvPArea.Center,
+							Size = z.PvPArea.Size } or nil,
 				})
 			end
 		end
@@ -794,6 +798,19 @@ local function drawWorld()
 			BackgroundTransparency = 0.3,
 			ZIndex = 3,
 		}, { corner(0.08, 0), stroke(col, 2.5, 0.05) })
+	end
+
+	-- 2-C #9 (A23-90): a PvP area inside a safe zone (the Crown Pit) in the extreme colour, on the picture too
+	for _, z in zonesData do
+		local a = z.Pit
+		if a then
+			rect(a.Center.X - a.Size.X / 2, a.Center.X + a.Size.X / 2, a.Center.Z - a.Size.Z / 2, a.Center.Z + a.Size.Z / 2, {
+				Name = "Pit_" .. z.Id,
+				BackgroundColor3 = COL.Extreme,
+				BackgroundTransparency = 0.7,
+				ZIndex = 4,
+			}, { corner(0.08, 0), stroke(COL.Extreme, 2.5, 0.05) })
+		end
 	end
 
 	-- roads, mountain pass, bridges (the pass label stays on the picture)

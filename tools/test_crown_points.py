@@ -132,7 +132,7 @@ def static() -> tuple[int, list[str]]:
     ret = strip_comments(read(SSS / "ReturnService.luau"))
     check("Config.War.ChestMinPoints" in ret, "ReturnService's war card still reads ChestMinPoints (whole personal points)")
     hud = read(ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau")
-    check('num("WarPoints", 0)' in hud, "the HUD's 'My pts' reads the WarPoints attribute (whole points now)")
+    check('TXT.MyWar' not in hud and 'MyWar =' not in hud, "A23-130: no 'My pts' under the war bar (my points are in the war window)")
     check('return string.format("%g", math.floor(v * 100 + 0.5) / 100)' in hud, "the HUD shows the war scores with two decimals")
     cfg = read(SHARED / "Config.luau")
     check('"Knights earn Honor and the Horn Legion earns Mischief, from fair fights, story choices and hunting' in cfg,
