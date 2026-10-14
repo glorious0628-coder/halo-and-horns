@@ -289,3 +289,11 @@
 - **(끝) 사용자 지시로 이미지 생성 2·개발 1·개발 2 턴을 강제 정지**(정리 메시지가 큐에 있어 짧은 정리 턴이 돌 수 있음). 개발 1(HUD 목표 칩 3층)·개발 2(무기 운 보정)의 미완 코드는 각자 worktree 디스크에만 있을 수 있음 → 새 최종 검수는 `git worktree list`로 ../wt_* 를 찾아 `git status`로 미커밋 변경을 확인하고, 새 개발 세션이 그 worktree에서 이어가게 할 것. 이미지 생성 2는 ④⑤ 부품 2D 일부 미push 가능(art/out/s2/noshadow/parts/ 디스크 확인).
 
 - (정정) 개발 1은 정지 전에 push함: **fix/goal-chips-3 d31252ac WIP**(①칩 2·3층 ②패배 This run ③진영 3줄 + test_goal_chips·play_goal_chips_photos; 남은 고장 1 = Config 7642줄 GotHonor가 주석 안에 들어감 → 자기 줄로 빼기), state/dev1.md 5f1aa07. 개발 2·이미지 생성 2는 미커밋 가능성 그대로.
+
+## 10/14 09:50 — 새 최종 검수(이 계정) 시작
+- 읽음·확인: worktree 미커밋 소스 없음(wt_wluck·wt_dates·wt_dev1merge = 시험 결과 파일만). 이미지 생성 2 부품 2D ≈180장 + npc/ 디스크만(미push) → 이미지 생성 2 첫 일로 push 지시.
+- SPEC 기록: **A23-177**(사람도 머리·몸·소품 부품 → Tripo HD → 합침; A23-176 '사람만 스마트 메시'를 바꿈 — 앞 최종 검수가 안 적었음), **A23-178**(골드 쓸 곳 = 마을 기금만, 주문서·물약은 연금술사 제작 / Bright 부품 시범 OK → 14명 / 자리 비운 동안 Chrome·WorldKit 화면 = 🟠 알림만 하고 진행).
+- 사용자 10/14 09:45: **"블렌더 작업은 코덱스한테 시켜봐"** → Blender 손보기 2가 Blender 쪽(assemble_parts·axis_fit_bar·크기·피벗)을 Codex 앱 CLI(`codex exec`)에 시킴. 첫 시험 = 난간 부품 합치기 재현(0원) → 결과 보고 대기.
+- 세션 6개(사용자 Ctrl+N, 제목·모델·노력·시작 글 = 내가 넣음, 10/14 09:48): 게임성 개발 1·2(Opus 5.5 high), 이미지 생성 2·Blender 손보기 2·디자인 검수(Opus 5.5 high), 이미지 생성 3(Sonnet 5.5 high). 메인 반영 1은 10/16. 주간 사용량 09:30: 전체 19%, Fable 30%.
+- 기다림: 개발 1 goal-chips 보고(→ 병합), 개발 2 변이 시험·날짜 값·마을 기금 계약, Codex Blender 시험 결과, 디자인 검수 부품 2D 표. 내일 10/15 사용자 패스 9개 ID.
+
