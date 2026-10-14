@@ -4,7 +4,7 @@ Runs, in the official Luau CLI, the CURRENT HUD L.PickTiles / L.RefreshLocks / L
 L.RevealReady / L.RevealState / L.TilePop cut out of HUD.luau with the CURRENT Config.luau (Config.HudReveal.TileShows /
 TileWord): every tile is on the row from the start (user "처음부터 다 보이고, 그 자물쇠 해놓자"); Bag and Map are open; the
 hero is locked ("Lv 2") until the first level up, the skills ("Lv <Unlock.Q>") until the first skill (SkillSlots >= 1
-or the level), the pet ("Get pet") until a pet (following, or any in the pet list), the ranking ("Story 1") until
+or, A23-193, a skill waiting at the teacher: SkillLearnReady >= 1), the pet ("Get pet") until a pet (following, or any in the pet list), the ranking ("Story 1") until
 story:M1_4 is in the quest book's Done (or a later chapter's main row); a tile once open stays open this session; the
 lock goes with a pop when it opens in play, never at the join (first 3 s after DataLoaded), never with reduced motion; a
 locked tile's press wiggles it (Rotation tweens back to 0; nothing with reduced motion). Static: L.TileTap returns early
@@ -135,7 +135,9 @@ check(#pops == 1, "a second check does not pop it again", table.concat(pops, ","
 ATTR.Level = q - 1
 check(string.find(pick(), "Skills") ~= nil, "skills still locked one level before the first skill", locked())
 ATTR.Level = q
-check(string.find(pick(), "Skills") == nil, "the first skill level opens the skills tile", locked())
+check(string.find(pick(), "Skills") ~= nil, "A23-193: the level alone does not open the skills tile", locked())
+ATTR.SkillLearnReady = 1
+check(string.find(pick(), "Skills") == nil, "A23-193: a skill waiting at the teacher opens the skills tile", locked())
 ATTR.Level = 1
 check(pick() == "Pet,Ranking", "a tile once open stays open (a rebirth to Lv1)", locked())
 PETLIST = { List = {}, Equipped = "" }
@@ -178,7 +180,7 @@ questState.All, questState.Book = nil, nil
 ATTR = {}
 pops = {}
 pick()
-ATTR = { DataLoaded = true, Level = 12, EquippedPet = "pup" }
+ATTR = { DataLoaded = true, Level = 12, SkillSlots = 1, EquippedPet = "pup" }
 check(pick() == "Ranking", "a returning player's tiles open with the data", locked())
 CLOCK += 1
 questState.Book = { Done = { "story:M1_4" } }
@@ -240,8 +242,8 @@ MUTATIONS = [
 ]
 CONFIG_MUTATIONS = [
     ("the hero open from the start", 'if rule == "LevelUp" then return (tonumber(s.Level) or 1) >= 2 end', 'if rule == "LevelUp" then return true end'),
-    ("the skills one level early", "return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q",
-     "return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q - 1"),
+    ("A23-193: the level opens the skills tile again", "return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.LearnReady) or 0) >= 1",
+     "return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q"),
     ("the ranking open from the start", 'if rule == "Chapter" then return s.ChapterDone == true end', 'if rule == "Chapter" then return true end'),
     ("no level in the skills word", "return string.format(w, q)", "return w"),
 ]
@@ -254,7 +256,7 @@ STATIC = [
      "function L.FoldTap(def)\n\tif L.TileLocked(def.Id) then -- A23-113 ③: a locked square only wiggles (the fold stays open)\n\t\tL.TileWiggle(def.Id)\n\t\treturn\n\tend"),
     ("the row in the order the tiles open (Bag, Map, Hero, Skills, Pet, Ranking)",
      '{ Id = "Bag", Icon = "IconBag", Window = "Bag", Alt = "Items", Key = "Bag", Keep = 1 },\n\t\t{ Id = "Map", Icon = "GlyphMap", Map = true, Key = "Map", Keep = 1 },\n\t\t{ Id = "Character",'),
-    ("Level / SkillSlots / EquippedPet re-check at once", 'for _, name in { "Level", "SkillSlots", "EquippedPet" } do\n\t\tLocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)'),
+    ("Level / SkillSlots / EquippedPet re-check at once", 'for _, name in { "Level", "SkillSlots", "SkillLearnReady", "EquippedPet" } do\n\t\tLocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)'),
     ("the 1 s refresh still checks (PickTiles -> RefreshLocks)", "\tif L.PickTiles() then requestLayout() end\nend"),
 ]
 

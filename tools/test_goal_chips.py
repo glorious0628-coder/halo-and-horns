@@ -332,7 +332,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     return [
         ("SetTracker refreshes the tiers", "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n" in h),
         ("level / rebirths / skills / side refresh the tiers",
-         'UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction", "SkillTaskSlot", "SkillTaskN" }, function() L.RefreshGoalTiers() end)' in h),
+         'UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady", "SkillTeacher" }, function() L.RefreshGoalTiers() end)' in h),
         ("the tiers draw only while on and the tracker shows", "if L.GoalTiersOn() and t.Frame.Visible then" in h),
         ("the tracker's room on small PC windows counts the tiers",
          "+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) * (1 + L.TierLines) + T.Gap * 2) or 0)" in h

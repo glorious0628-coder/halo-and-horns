@@ -2024,8 +2024,10 @@ end
 
 -- A23-167 ① (pure; tools/test_goal_chips.py): the goal chips' tier 2 'Next' = the nearest Config.GoalChips.Steps level
 -- above `level` and above the level the tracker's own next-goal row `e` names (QuestService GoalKind), tier 3 'Big goal'
--- = my side's crown line; nil = no line
-function L.GoalTiers(level, rebirths, skillSlots, faction, e, task)
+-- = my side's crown line; nil = no line. A23-193: learn = { Ready = SkillLearnReady, Teacher = the teacher's name } -> a
+-- skill waiting at the teacher is the next goal ("Learn a skill: meet <teacher>", Config.Skills.Learn.Text.Goal) unless
+-- the tracker's own row already says it (GoalKind "SkillLearn"); its slot's "Skill at Lv" step is gone (the level is there)
+function L.GoalTiers(level, rebirths, skillSlots, faction, e, task, learn)
 	local G = Config.GoalChips
 	if type(G) ~= "table" or G.Enabled ~= true then return nil, nil end
 	local W = type(G.Text) == "table" and G.Text or {}
@@ -2038,13 +2040,24 @@ function L.GoalTiers(level, rebirths, skillSlots, faction, e, task)
 		local ok, out = pcall(string.format, f, ...)
 		return ok and out or nil
 	end
+	local ready = type(learn) == "table" and tonumber(learn.Ready) or 0
+	local kindNow = type(e) == "table" and e.NextGoal == true and e.GoalKind or nil
+	local sideWord0 = (faction == "Halo" or faction == "Horns") and type(W[faction]) == "string" and fmt(faction) or nil
+	if ready > skillSlots and type(learn.Teacher) == "string" and learn.Teacher ~= "" and kindNow ~= "SkillLearn" then
+		local LT = type(skills.Learn) == "table" and skills.Learn.Text or nil
+		local goal = nil
+		if type(LT) == "table" and type(LT.Goal) == "string" then
+			goal = type(L.Tx) == "function" and L.Tx(LT, "Goal", learn.Teacher) or string.format(LT.Goal, learn.Teacher)
+		end
+		if goal then return fmt("Next", goal), type(sideWord0) == "string" and fmt("Big", sideWord0) or nil end
+	end
 	local steps = {}
 	for _, s in type(G.Steps) == "table" and G.Steps or {} do
 		local at, text = nil, nil
 		if s.Kind == "Skill" then
 			local i = table.find(order, s.Slot)
 			local need = tonumber((skills.Unlock or {})[s.Slot])
-			if i and need and rebirths < 1 and i > skillSlots and (s.Slot == "Q" or skills[s.Slot .. "Enabled"] == true) then
+			if i and need and rebirths < 1 and i > skillSlots and i > ready and (s.Slot == "Q" or skills[s.Slot .. "Enabled"] == true) then
 				at, text = need, fmt(i == 1 and "FirstSkill" or "Skill", need)
 				-- 99N D (최종 검수 10/15): the level is there, the class task runs: the task line is the next goal
 				if type(task) == "table" and task.Slot == s.Slot and level >= need and type(task.Text) == "string" and task.Text ~= "" then
@@ -2123,8 +2136,11 @@ function L.RefreshGoalTiers(e)
 		local sb = C and C.SkillBar
 		local task = (slot == "Z" or slot == "X") and type(sb) == "table" and type(sb.TaskFor) == "function"
 			and { Slot = slot, Text = sb.TaskFor(slot) } or nil
+		local teacher = type(Config.SkillTeacherName) == "function" and attr("SkillTeacher", "") ~= ""
+			and Config.SkillTeacherName(getFaction()) or ""
 		nextText, bigText = L.GoalTiers(math.floor(num("Level", 1)), math.floor(num("Rebirths", 0)),
-			math.floor(num("SkillSlots", 0)), getFaction(), e, task)
+			math.floor(num("SkillSlots", 0)), getFaction(), e, task,
+			{ Ready = math.floor(num("SkillLearnReady", 0)), Teacher = teacher })
 	end
 	local words = { [2] = nextText, [3] = bigText }
 	for i = 2, 3 do
@@ -6027,7 +6043,8 @@ function L.RevealState()
 		local ch = type(e) == "table" and type(e.Id) == "string" and tonumber(string.match(e.Id, "^story:M(%d+)_")) or nil
 		if ch and ch >= 2 then done = true end
 	end
-	return { Level = num("Level", 1), SkillSlots = num("SkillSlots", 0), HasPet = hasPet, ChapterDone = done }
+	return { Level = num("Level", 1), SkillSlots = num("SkillSlots", 0), LearnReady = num("SkillLearnReady", 0), HasPet = hasPet,
+		ChapterDone = done }
 end
 
 -- a tile coming in: a short pop (none with reduced motion)
@@ -6553,7 +6570,7 @@ function HUD.Start()
 	UIKit.OnAttr({ "TravelingUntil" }, refreshTravel)
 	UIKit.OnAttr({ "TutorialStep", "ZoneId", "BlacksmithVisited", "TutorialKills" }, refreshGuides)
 	UIKit.OnAttr({ "Level" }, onLevelChanged)
-	UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction", "SkillTaskSlot", "SkillTaskN" }, function() L.RefreshGoalTiers() end) -- A23-167 ①
+	UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady", "SkillTeacher" }, function() L.RefreshGoalTiers() end) -- A23-167 ①
 	-- A23-68 #4: the first [Claim] unfolds the quest lines and the war meter's info line (NEW! tags)
 	UIKit.OnAttr({ "TutorialStep" }, function()
 		L.ApplyFold(true)
@@ -6561,7 +6578,7 @@ function HUD.Start()
 	end)
 	L.ApplyFold(false)
 	-- A23-113 ③: a level up, a new skill or a pet unlocks its menu tile at once (the 1 s refresh also catches it)
-	for _, name in { "Level", "SkillSlots", "EquippedPet" } do
+	for _, name in { "Level", "SkillSlots", "SkillLearnReady", "EquippedPet" } do
 		LocalPlayer:GetAttributeChangedSignal(name):Connect(L.RefreshLocks)
 	end
 	-- Studio-only check hooks (A23-191: the hint preview went with the hints)

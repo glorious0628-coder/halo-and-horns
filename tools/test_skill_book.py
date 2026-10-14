@@ -47,7 +47,7 @@ MUTATIONS = [
      "\treturn nil\nend"),
     ("BOOK", "the artisan X line missing", "\t\tif faction == \"Neutral\" then return word(\"XArtisan\") end\n", ""),
     ("BOOK", "the saved slots ignored", "\tif num(ctx.SkillSlots, 0) >= idx then return true end\n", ""),
-    ("BOOK", "a rebirth does not open the slots", "\t\tif ok and num(n, 0) >= idx then return true end\n", ""),
+    ("BOOK", "a rebirth does not open the slots", "then return num(ctx.Rebirths, 0) >= 1 end\n", "then return false end\n"),
     ("BOOK", "the cooldown never shows", "\tif left > 0.05 then return string.format(T.Text.Wait, left), \"wait\" end\n", ""),
     ("BOOK", "MP never short", "\tif num(ctx.Mana, 0) < row.MP then return word(\"NeedMP\"), \"mp\" end\n", ""),
     ("BOOK", "own numbers again (not Config.SkillNumbers)",

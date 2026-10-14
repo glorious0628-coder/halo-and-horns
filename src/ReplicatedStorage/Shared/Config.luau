@@ -2037,7 +2037,7 @@ end
 -- a press only wiggles it, no window, no notice). The bag and the map are always open; the hero opens at the first level
 -- up, the skills at the first skill (Config.Skills.Unlock.Q), the pet once I have a pet, the ranking once the first
 -- chapter's main quests are done (FirstChapterLast). The lock pops away when it opens (no pop with reduced motion). The
--- quick slots always show (not a tile). Pure: s = { Level, SkillSlots, HasPet, ChapterDone }
+-- quick slots always show (not a tile). Pure: s = { Level, SkillSlots, LearnReady (A23-193), HasPet, ChapterDone }
 Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet", Ranking = "Chapter" }
 Config.HudReveal.FirstChapterLast = "M1_4"
 -- the locked tile's word (short, under the icon; %d = the level)
@@ -2058,6 +2058,11 @@ function Config.HudReveal.TileShows(id, s)
 	if rule == "LevelUp" then return (tonumber(s.Level) or 1) >= 2 end
 	if rule == "Skill" then
 		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
+		-- A23-193: with the teacher on, a skill learned (or waiting at the teacher), never the level alone
+		local learn = Config.Skills.Learn
+		if type(learn) == "table" and learn.Enabled == true then
+			return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.LearnReady) or 0) >= 1
+		end
 		return (tonumber(s.SkillSlots) or 0) >= 1 or (tonumber(s.Level) or 1) >= q
 	end
 	if rule == "Pet" then return s.HasPet == true end
@@ -10771,6 +10776,7 @@ Config.ClientText.SkillBar = {
 	LearnKey = "Press %s",
 	LearnTouch = "Tap the new button",
 	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
+	Teach = "Learn it from %s first", -- A23-193: a locked key waiting at the teacher (%s = the teacher's name)
 	-- A23-81 (user 2026-10-08): once, after the first skill is learned (keyboards): keys can be changed in Settings
 	KeysTip = "Tip: You can change your keys in Settings!",
 	KeysTipGo = "Open Settings",

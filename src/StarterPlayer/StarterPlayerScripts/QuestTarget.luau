@@ -27,6 +27,7 @@
 --                                                        (Claim = the row is done and waits for [Claim]: QuestMarker gold)
 --   QuestTarget.Anchor(key, position)                 -> BasePart (workspace.HUDGuideAnchor_<key>)
 -- pos defaults to my character's position, myZone to the ZoneId attribute, faction to the Faction attribute.
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -594,6 +595,21 @@ function QuestTarget.IronGold(entry, level)
 		and (string.find(text, "골드", 1, true) ~= nil or string.find(string.lower(text), "gold", 1, true) ~= nil)
 end
 
+-- A23-193: my side's skill teacher (SkillTeacher = its NpcId; the StoryNpc-tagged body) -> the body, its zone; nil = none
+function QuestTarget.Teacher()
+	local id = attr("SkillTeacher", "")
+	if type(id) ~= "string" or id == "" then return nil, nil end
+	local tag = type(STORY.NpcTag) == "string" and STORY.NpcTag or "StoryNpc"
+	for _, m in CollectionService:GetTagged(tag) do
+		if m:IsA("Model") and m:GetAttribute("NpcId") == id then
+			local part = resolvePart(m)
+			local z = part and type(Config.ZoneAt) == "function" and Config.ZoneAt(part.Position) or nil
+			return m, type(z) == "table" and z.Id or nil
+		end
+	end
+	return nil, nil
+end
+
 -- the row is done and waits for [Claim] (HUD refreshQuests canClaim)
 local function claimable(entry)
 	return entry.CanClaim == true and num(entry.Progress, 0) >= num(entry.Target, 1)
@@ -617,6 +633,15 @@ local function placeFor(entry, myZone, faction, pos)
 		return pack(QuestTarget.Travel(K.GuideZone, myZone, pos), "tutorial", zoneName(K.GuideZone), K.GuideZone, true)
 	end
 	if step ~= K.DoneStep then return nil end
+	-- A23-193: "Learn a skill: meet <teacher>" (GoalKind SkillLearn) -> the teacher (a trip to its town from elsewhere)
+	if entry.NextGoal == true and entry.GoalKind == "SkillLearn" then
+		local body, zone = QuestTarget.Teacher()
+		zone = zone or (type(Config.HomeZoneId) == "function" and Config.HomeZoneId(faction)) or K.Town
+		local name = type(Config.SkillTeacherName) == "function" and Config.SkillTeacherName(faction) or ""
+		if body and myZone == zone then return pack(body, "teacher", name, zone, false) end
+		if myZone == zone then return nil end
+		return pack(QuestTarget.Travel(zone, myZone, pos), "zone:" .. tostring(zone), zoneName(zone), zone, true)
+	end
 	-- step 99: the blacksmith visit and the iron-weapon gold goal go to the anvil (L.PinnedTap -> doUpgrade)
 	local level = math.floor(num(attr("Level", 1), 1))
 	if entry.NextGoal ~= true or QuestTarget.IronGold(entry, level) then

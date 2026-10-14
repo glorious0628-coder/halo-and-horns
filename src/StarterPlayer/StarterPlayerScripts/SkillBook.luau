@@ -103,6 +103,9 @@ end
 local function learned(slot, ctx)
 	local idx = T.SlotIndex[slot] or 99
 	if num(ctx.SkillSlots, 0) >= idx then return true end
+	-- A23-193: with the teacher on, only the saved slots (or a rebirth) - never the level alone
+	local learn = type(Config.Skills) == "table" and Config.Skills.Learn or nil
+	if type(learn) == "table" and learn.Enabled == true then return num(ctx.Rebirths, 0) >= 1 end
 	if type(Config.SkillSlotsFor) == "function" then
 		local ok, n = pcall(Config.SkillSlotsFor, num(ctx.Level, 1), num(ctx.Rebirths, 0))
 		if ok and num(n, 0) >= idx then return true end
