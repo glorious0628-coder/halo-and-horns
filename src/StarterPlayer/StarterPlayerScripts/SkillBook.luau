@@ -98,7 +98,8 @@ local function unlockLevel(slot)
 	return math.floor(num(type(u) == "table" and u[slot] or nil, T.Unlock[slot] or 1))
 end
 
--- learned: the saved SkillSlots or what the level / rebirths open (Config.SkillSlotsFor, the server's rule)
+-- learned: the saved SkillSlots or what the level / rebirths open (Config.SkillSlotsFor, the server's rule). 99N D
+-- (최종 검수 10/15): never the level alone - Z / X also need their class task (the server raises SkillSlots then)
 local function learned(slot, ctx)
 	local idx = T.SlotIndex[slot] or 99
 	if num(ctx.SkillSlots, 0) >= idx then return true end
@@ -106,7 +107,7 @@ local function learned(slot, ctx)
 		local ok, n = pcall(Config.SkillSlotsFor, num(ctx.Level, 1), num(ctx.Rebirths, 0))
 		if ok and num(n, 0) >= idx then return true end
 	end
-	return num(ctx.Level, 1) >= unlockLevel(slot)
+	return false
 end
 
 local function kitOf(class, faction)
@@ -212,7 +213,12 @@ end
 function SkillBook.State(row, ctx)
 	if type(row) ~= "table" or row.Slot == "Attack" then return nil, nil end
 	ctx = type(ctx) == "table" and ctx or {}
-	if row.Locked then return string.format(word("UnlocksAt"), row.Unlock), "lock" end
+	if row.Locked then
+		-- 99N D: the level is there, the class task is not done yet: its line ("Lv15 skill: ... (3/40)")
+		local task = type(ctx.Tasks) == "table" and ctx.Tasks[row.Slot] or nil
+		if type(task) == "string" and task ~= "" and num(ctx.Level, 1) >= row.Unlock then return task, "lock" end
+		return string.format(word("UnlocksAt"), row.Unlock), "lock"
+	end
 	local ready = type(ctx.Ready) == "table" and num(ctx.Ready[row.Slot], 0) or 0
 	local left = ready - num(ctx.Now, 0)
 	if left > 0.05 then return string.format(T.Text.Wait, left), "wait" end
@@ -255,7 +261,17 @@ end
 local function context()
 	local now = 0
 	pcall(function() now = Util.Now() end)
+	-- 99N D: the class task lines of Z / X (SkillBar.TaskFor: my kit, the running count)
+	local tasks = {}
+	local sb = C and C.SkillBar
+	if type(sb) == "table" and type(sb.TaskFor) == "function" then
+		for _, slot in { "Z", "X" } do
+			local ok, line = pcall(sb.TaskFor, slot)
+			if ok and type(line) == "string" then tasks[slot] = line end
+		end
+	end
 	return {
+		Tasks = tasks,
 		Class = attr("Class", "Warrior"), Faction = attr("Faction", "None"), Level = attr("Level", 1),
 		SkillSlots = attr("SkillSlots", 0), Rebirths = attr("Rebirths", 0), Mana = attr("Mana", 0), Now = now,
 		Ready = { Q = attr(T.Ready.Q, 0), Z = attr(T.Ready.Z, 0), X = attr(T.Ready.X, 0) },
@@ -487,6 +503,7 @@ function SkillBook.Init(registry)
 		Title = T.Text.Title,
 		-- what changes the rows (the live state - Mana, SkillReadyAt* - repaints in the update instead)
 		Rebuild = { Class = true, Faction = true, Level = true, SkillSlots = true, Rebirths = true, WeaponTier = true,
+			SkillTaskSlot = true, SkillTaskN = true,
 			FallMarks = true, RedeemMarks = true },
 		KeepScroll = true, -- 검수 10/11: a level up / new weapon while scrolled down keeps the place
 		Build = build,
