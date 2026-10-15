@@ -64,7 +64,8 @@ end)
 
 runGroup("Hallie's catchphrase stays", function()
 	local halo = TC.Welcome.Halo
-	check(halo.Name == "Hallie" and halo.Lines[2] == "Hallie here! Now you know my name. Welcome to the Knights!", "Hallie opens page 2 of her welcome", show(halo.Lines))
+	-- 사용자 10/15 (fix/welcome-order): page 1 = the guide's own hello, page 2 = the mission
+	check(halo.Name == "Hallie" and halo.Lines[1] == "Hallie here! Now you know my name. Welcome to the Knights!", "Hallie opens page 1 of her welcome", show(halo.Lines))
 	local m14 = SQ.Defs.M1_4.Steps[2].Lines.Halo
 	check(m14[1] == "Hallie here! Now you know my name.", "the M1_4 report keeps the catchphrase as its first line", m14[1])
 	local payoff = hasWord(strings(SQ.Defs.M3_5), "mine")
@@ -74,15 +75,15 @@ end)
 runGroup("two-page welcome", function()
 	for _, side in { "Halo", "Horns", "Neutral" } do
 		local w = TC.Welcome[side]
-		check(#w.Lines == 2, side .. ": two pages (the mission card, the catchphrase)", tostring(#w.Lines))
-		check(w.Lines[1] == "First, go to Otto's Forge and get your weapon!", side .. ": page 1 = the mission card (A23-188: the Forge visit)",
-			w.Lines[1])
-		check(#w.Lines[2] > 0 and #w.Lines[2] <= 80 and not string.find(w.Lines[2], "\n", 1, true), side .. ": page 2 = one short catchphrase line", w.Lines[2])
+		check(#w.Lines == 2, side .. ": two pages (the catchphrase, the mission card)", tostring(#w.Lines))
+		check(w.Lines[2] == "First, go to Otto's Forge and get your weapon!", side .. ": page 2 = the mission card (A23-188: the Forge visit)",
+			w.Lines[2])
+		check(#w.Lines[1] > 0 and #w.Lines[1] <= 80 and not string.find(w.Lines[1], "\n", 1, true), side .. ": page 1 = one short catchphrase line", w.Lines[1])
 		for _, line in w.Lines do check(#line <= 100, side .. ": a page is at most 100 letters", tostring(#line)) end
 		check(not hasWord(w.Lines, "oath") and not hasWord(w.Lines, "oaths"), side .. ": no 'oath' in the welcome", "")
 	end
-	check(TC.Welcome.Horns.Lines[2] == "Finders keepers! HA! You're with us now. I'm Magpie." and TC.Welcome.Neutral.Lines[2] == "Fix first. Talk later. I'm Kit. Welcome to the Guild!",
-		"Magpie's and Kit's catchphrases are unchanged", show({ TC.Welcome.Horns.Lines[2], TC.Welcome.Neutral.Lines[2] }))
+	check(TC.Welcome.Horns.Lines[1] == "Finders keepers! HA! You're with us now. I'm Magpie." and TC.Welcome.Neutral.Lines[1] == "Fix first. Talk later. I'm Kit. Welcome to the Guild!",
+		"Magpie's and Kit's catchphrases are unchanged (page 1)", show({ TC.Welcome.Horns.Lines[1], TC.Welcome.Neutral.Lines[1] }))
 end)
 
 finish()
