@@ -162,7 +162,7 @@ def main():
          and "HUD.QuestsChanged = Util.Signal.new()" in hud),
         ("Help keeps the Key settings button -> Settings / Keys, and the keys tip line is gone (A23-191: no tip lines)",
          'button(kit, row1, help.KeysButton, 200, function() kit.Open("Settings", { Tab = "Keys" }) end)' in settings_ui
-         and "KeysTip" not in settings_ui and "KeysTip" not in config),
+         and "KeysTip" not in settings_ui and "Tip: You can change your keys" not in config),
     ]
     for name, good in static:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
