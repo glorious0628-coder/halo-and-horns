@@ -213,7 +213,10 @@ function CraftWindow.Entries(ctx)
 	local info = type(ctx.Info) == "table" and ctx.Info or {}
 	local made = type(info.Made) == "table" and info.Made or {}
 	for id, r in Config.Craft.Recipes do
-		if type(id) == "string" and type(r) == "table" and r.Role == role and onList(info, id) then
+		-- A23-194 (개발 2 10/15): a pet whose species has no model yet (Config.PetReady false) is not listed (the server's
+		-- CraftInfo.On leaves it out too)
+		local hidden = r.Kind == "Pet" and type(Config.PetReady) == "function" and Config.PetReady(r.Species) ~= true
+		if type(id) == "string" and type(r) == "table" and r.Role == role and onList(info, id) and not hidden then
 			local e = entryOf(id, r, ctx, lv, made)
 			if e then table.insert(out, e) end
 		end

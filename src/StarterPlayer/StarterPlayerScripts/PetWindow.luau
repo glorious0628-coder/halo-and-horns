@@ -72,6 +72,16 @@ local function rollOf(v)
 	return n > 0 and math.floor(n) or nil
 end
 
+-- A23-194 (pure): a pet's own bonus line { Type, Pct } (Pct = % with one decimal), nil for Speed (its own lines) / None
+function PetWindow.BonusOf(sp, lv)
+	local def = speciesDef(sp)
+	local kind = type(def) == "table" and type(def.Bonus) == "table" and def.Bonus.Type or nil
+	if type(kind) ~= "string" or kind == "Speed" or kind == "None" or type(Config.PetBonus) ~= "function" then return nil end
+	local v = tonumber(Config.PetBonus(sp, lv, kind)) or 0
+	if v <= 0 then return nil end
+	return { Type = kind, Pct = math.floor(v * 1000 + 0.5) / 10 }
+end
+
 function PetWindow.Rows(payload, ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	local maxLv = math.max(1, math.floor(num(type(Config.Pets) == "table" and Config.Pets.MaxLv, 10)))
@@ -85,7 +95,8 @@ function PetWindow.Rows(payload, ctx)
 			local roll = rollOf(ctx.PetRoll)
 			table.insert(rows, { Uid = nil, Species = sp, Name = speciesName(sp), Lv = lv, Max = lv >= maxLv, Fill = 0,
 				XP = nil, Need = nil, Equipped = true, Speed = math.floor(Config.PetSpeedBonus(sp, lv, roll) * 100 + 0.5),
-				Roll = roll, CanFollow = false, CanPutAway = false, Icon = (speciesDef(sp) or {}).Icon or T.DefaultIcon })
+				Roll = roll, CanFollow = false, CanPutAway = false, Icon = (speciesDef(sp) or {}).Icon or T.DefaultIcon,
+				Bonus = PetWindow.BonusOf(sp, lv) })
 		end
 		return rows
 	end
@@ -106,7 +117,7 @@ function PetWindow.Rows(payload, ctx)
 				Lv = lv, XP = xp, Need = need, Max = isMax, Fill = isMax and 1 or math.clamp(xp / math.max(1, need), 0, 1),
 				Equipped = on, Speed = math.floor(Config.PetSpeedBonus(sp, lv, roll) * 100 + 0.5), Roll = roll,
 				CanFollow = not on and speciesDef(sp) ~= nil, CanPutAway = on and canPut,
-				Icon = (speciesDef(sp) or {}).Icon or T.DefaultIcon,
+				Icon = (speciesDef(sp) or {}).Icon or T.DefaultIcon, Bonus = PetWindow.BonusOf(sp, lv),
 				-- [Feed (n)]: off at the top level or with no treat
 				Feed = feed and { Count = math.max(0, math.floor(num(feed.Count, 0))), Enabled = not isMax and num(feed.Count, 0) >= 1 } or nil,
 			})
@@ -248,7 +259,13 @@ local function petRow(kit, parent, row)
 	name.TextTruncate = Enum.TextTruncate.AtEnd
 	local line = string.format(T.Text.Level, row.Lv)
 	if row.Speed > 0 then line ..= " · " .. string.format(row.Equipped and T.Text.Speed or T.Text.SpeedRest, row.Speed) end
-	label(kit, mid, line, 16, kit.Theme.SubText, nil, "Body")
+	local words = type(T.Text.Bonus) == "table" and row.Bonus and T.Text.Bonus[row.Bonus.Type] or nil
+	if type(words) == "string" then line ..= " · " .. string.format(words, string.format("%g", row.Bonus.Pct)) end
+	local lineLabel = label(kit, mid, line, 16, kit.Theme.SubText, nil, "Body")
+	-- A23-194: the following pet's bonus does nothing in a PvP zone (PetService uses 0 there): its line dims
+	if row.Equipped and row.Bonus and LocalPlayer and LocalPlayer:GetAttribute("ZonePvP") == true then
+		lineLabel.TextTransparency = 0.55
+	end
 	if row.Roll then label(kit, mid, string.format(T.Text.Born, row.Roll), 16, kit.Theme.SubText, nil, "Body") end
 	if row.XP ~= nil or row.Max then
 		local ui = C and C.UIKit
@@ -415,7 +432,7 @@ function PetWindow.Init(registry)
 	end
 	S.Ready = panels.Register(T.Window, {
 		Title = T.Text.Title,
-		Rebuild = { EquippedPet = true, PetLv = true, PetRoll = true, Class = true, Faction = true },
+		Rebuild = { EquippedPet = true, PetLv = true, PetRoll = true, Class = true, Faction = true, ZonePvP = true },
 		Build = build,
 		Cleanup = cleanup,
 	}) == true

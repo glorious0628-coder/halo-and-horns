@@ -11008,6 +11008,10 @@ Config.ClientText.PetWindow = {
 	PutAway = "Put away",
 	Born = "Born with +%d%% speed", -- a summoned pet's roll
 	Feed = "Feed (%d)", -- one Pet Treat (the count I have)
+	-- A23-194 (개발 2 10/15): a pet's own bonus (Config.Pets.Species[sp].Bonus, Config.PetBonus at its level); a % with up
+	-- to one decimal. Speed keeps its lines above; None (an emote pet) shows nothing
+	Bonus = { Potion = "Potions heal +%s%%", KillGold = "Gold from hunts +%s%%", KillXP = "XP from hunts +%s%%",
+		MatLuck = "Material drops +%s%%" },
 }
 Config.ClientText.QuestBook = {
 	Title = "Quests",
