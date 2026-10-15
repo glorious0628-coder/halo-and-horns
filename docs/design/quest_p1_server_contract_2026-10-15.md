@@ -73,3 +73,24 @@
 ⑦ M1_4 등불 선택 → Flags·StoryScene(빛 손인사·등불 / 뿔 종이 왕관·Rose 웃음 / 장인 바퀴·약·아기 슬라임)
 ⑧ 짧은 추격·호위(청크 3, ② ~ ⑦ 뒤)
 ⑨ 이관·계측(첫 수락·Lv5·배움·지선 수락·실패/복구 시각 → TelemetryService)
+
+## 결과 (10/15 저녁, 가지 dev2-quest-p1) — ①②③④⑤⑥⑦⑨ 서버 끝, ⑧ 다음
+| 번호 | 서버가 한 것 | 이관 |
+|---|---|---|
+| ① | Main Offer, 진영별 Offer.Npc, 몸 없는 NPC는 Offer 없음(본편은 몸 없으면 예전처럼 저절로 시작), Offer 패널 Reward, AcceptScene, 새 단계 Practice/Emote/Match/Timing/Learn, Story.Flags + 속성 StoryFlags + Fx StoryScene, LearnOpen | — |
+| ② | 안내자 몸 Hallie/Magpie/Kit(+Rex), 첫 임무 = 안내자 말 걸기로 열림(줄 탭·자동 창 없음, 몸 없으면 예전), TutorialStep Teacher=4(빛·뿔: 스승 만나기 → Forge), H/R/N_Basics(스승 시범 → 연습대 한 번 → 반납) | DataService가 4 유지 |
+| ③ | M1_1 = Otto 부탁(진영별 말), Lunch1 = Tiny 부탁 + 실제 Pickup(M1_1 뒤에도 늦은 수락), H_Band(Bright 보여주기/숨기기, Band 깃발), R_Band(포즈 자리에서 cheer/wave, Crown=Paper/Bow) | Schema 2 Lunch1 한 칸 앞으로 |
+| ④ | N0/N0A/N0T = Otto 부탁(Lv3) → 채집 → 주문표 맞추기(Knot/Gem/Patch) → 제작 | Schema 5 제작 단계 한 칸 뒤로 |
+| ⑤ | M1_3 = 스승 Lv5 시험(BasicKill Slime4 → 빛 LostBag→Folk1 / 뿔 SnackParcel→Tiny / 장인 자기 직업 제작→Tiny → 스승에게서 Learn), Q는 그 Learn 단계부터만 배움(Config.Skills.Learn.Gate), 다음 목표 줄 SkillTest | Schema 3 M1_3 처음부터 |
+| ⑥ | Emote 단계(R_Band에서 사용) | — |
+| ⑦ | M1_4 = 등불(Bright/Rose/Tiny 부탁 → 등불 자리 → 공용/내 빛 선택 Lamp 깃발 → 반응 → [Claim]), 시험 도움 장면 Help=Bag/Prank/Smith·Alch·Tame | Schema 4 M1_4 등불부터(Claim 기다리던 건 그대로) |
+| ⑨ | Telemetry QuestAccept(분)·QuestDecline·QuestMiniMiss·MinutesToFirstSkill | — |
+
+### 화면 몫 (개발 1)
+1. 몸: TownNpcs에 Hallie(빛 스폰 옆)·Magpie(뿔 스폰 옆)·Kit(모루 옆 Side 7)·Rex(뿔 마을) 기본 몸 + Talk. Folk1이 이제 StoryNpc(라벨 Neighbor, TownFolk 태그도 유지).
+2. 첫 임무 줄: TutorialStep 0 = "Talk to Hallie" + `GuideNpc`(안내자 NpcId) — 줄 탭은 길 안내만(서버가 RequestTutorial 무시). TutorialStep 4 = "Meet Sir Gleam at the town gate" + `GuideNpc`(스승). Welcome 창은 안내자에게 말 걸면 OpenPanel "Welcome".
+3. 연습대: Landmarks PracticeH / PracticeR, PracticeN = 모루 기준 Behind -8, Side -7(TownNpcs.Spot과 같은 식; StoryLandmark 모델을 두면 그 자리). 속성 `PracticeTool` = 퀘스트 id인 동안 손에 '빌린 연습 도구'(T1 모양, 가방에 없음). Accept 때 Fx StoryScene {Key="Demo", Value=스승 NpcId} = 스승 기본 공격 한 번.
+4. 물건 자리: LostBag(초원 입구), SnackParcel(Rose 옆), Lunchbox, LampH/LampR/LampN, PoseSpot — Pickup 단계일 때 물건+줍기 프롬프트, 등불 모양, 포즈 자리 표시.
+5. Emote 단계: 그 자리에서 cheer/wave 버튼(PC/폰) → 감정표현 실행 + StoryAction(Id,"Emote","cheer"|"wave").
+6. 장면(StoryScene / StoryFlags 복원): Crown=Paper(종이 왕관 + Rose 웃음)·Bow, Band=Show/Hide(Bright 손목 숨김/까치발), Lamp=Common(주민 손인사·등불 켜짐, 빛 편은 빛이 후광에 닿음)/Mine(내 빛·그림자 장난), Help=Bag(주민 큰 손인사)/Prank(리본 튀고 Tiny 웃음)/Smith(바퀴 굴러감)/Alch(Tiny 약 마시고 뜀)/Tame(아기 슬라임 간식 먹고 다가옴).
+7. 다음 목표 GoalKind "SkillTest"("Next goal · Take Sir Gleam's test"): Lv5인데 시험 전. SkillLearnReady는 시험 Learn 단계 전엔 0.
