@@ -5,7 +5,10 @@
 - **dev1-story-screen f7761733** (wt_grip, dev2-story-fields + main fcee99b6): Before(Config.QuestBefore)·Find 말풍선(BarkBubble 4초, St, On=Self)·Scene 몸짓(SceneKeys 10개)·끝 줄 Config.QuestNext + 다음 부탁 NPC 통통. test_story_fields_screen 34·12/12. 폰 사진 = 실제 묶음 데이터 들어온 뒤.
 - **dev1-forge-lines b52a7bcd** (wt_dev1c): 대장간 창 설명 줄 3개 삭제(WSHOP.Far 신호).
 - 3④ Travel·Ranking 'did not open' = 도구 문제(구독 전용 / Panels 창 아님). 3⑤ 쉬운 영어 후보(afar, Regen, Lifesteal, Acc, halved, Crownforged, Citadel, Mythic) 최종 검수 답 대기.
-- **다음**: 3① 폰 진영·직업 카드(FactionPicker 폰 배치, 실기 확인 필요) → 3③ 인트로 흰 네모(Studio) → 4번.
+- **dev1-easy-words 80dcdcbc** (wt_kosweep): afar→far away, halved→cut in half, Pet Acc→Pet Gear.
+- **dev1-phone-cards 1d952866** (wt_dev1b): 폰에서 진영 카드 아래 3줄 숨김 + 혜택 좁으면 문구 한 줄 → 잘림 13→0(실측). 사진 main 7ef952f phone_cards/. 3③ 흰 네모 = 오프닝 하얀 조각(임시판, 손 안 댐).
+- 시험 Studio: build/PhoneTest_1015.rbxlx 복사본 + scratchpad phone_cards.py(start/probe/shot/stop, STUDIO_ID). 화면 사용은 최종 검수 '전달함, 시작' 뒤.
+- **다음**: 4번(닫힌 문 판자·투명 벽 울타리 → #1 → #7 → #11 → #8).
 - 습관: Bash 헤레독 안 `\\t`·`\b`가 바뀜 → 패치 스크립트는 Write로 파일 만들어 실행. 일부 시험 파일은 CRLF.
 
 ## ▶ 클리어 뒤 할 일 (최종 검수 local_cb4b05f8… 10/15 밤, 이 순서)
