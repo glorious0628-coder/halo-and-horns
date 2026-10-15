@@ -45,7 +45,6 @@ local PASS_CORRIDOR = 20 -- road corridor |z| < 20 through the mountain pass (A1
 local MAX_SACKS = 10
 local ICON_PPS = 0.55 -- logical px per stud from which Crossroads landmark icons are shown
 local LABEL_PPS = 1.1 -- ... and their labels
-local HINT_MIN_WIDTH = 760 -- logical px; the hint line hides on narrow screens
 local EXTREME_MIN_LEVEL = 25 -- PvP zones from this level use the "extreme" danger colour (same rule as MapBuilder)
 
 local ACTION_TOGGLE = "WorldMapToggle"
@@ -175,7 +174,7 @@ local passX = nil
 local fontFace = Enum.Font.GothamBold
 local ownGui = nil
 local root, viewport, canvas = nil, nil, nil
-local hereLabel, hintLabel, legendMe = nil, nil, nil
+local hereLabel, legendMe = nil, nil
 local ctl = {} -- CR-L41: Close / Locate / ZoomOut / ZoomIn buttons + Controls row and its List layout (resized in layoutRoot)
 local me, meGlyph, mePulse = nil, nil, nil
 local pulseTween = nil
@@ -1112,7 +1111,6 @@ local function updateDetail(ppsL, vpWidthL, fitL)
 			zl.Frame.Size = UDim2.fromOffset(math.floor(w), 38)
 		end
 	end
-	if hintLabel then setVisible(hintLabel, vpWidthL >= HINT_MIN_WIDTH) end
 end
 
 local function applyView()
@@ -1526,19 +1524,6 @@ local function build()
 		Parent = titlePill,
 	}, 15)
 
-	-- control hint (top-center)
-	hintLabel = label({
-		Name = "Hint",
-		Text = WorldMap.HintText(),
-		TextColor3 = COL.SubText,
-		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, 16),
-		Size = UDim2.fromOffset(380, 20),
-		TextStrokeTransparency = 0.3,
-		ZIndex = 5,
-		Parent = viewport,
-	}, 15)
-
 	-- close (top-right; sized for touch in layoutRoot, CR-L41)
 	ctl.Close = button({
 		Name = "Close",
@@ -1904,9 +1889,6 @@ function WorldMap.BindKey()
 		WorldMap.BoundKey = okBind and code or nil
 		if not okBind then Util.Warn(TAG, "map key bind failed: " .. tostring(errBind)) end
 	end
-	if hintLabel and WorldMap.ShowsKeys() then
-		hintLabel.Text = WorldMap.HintText()
-	end
 end
 
 -- review B5: the one key-hint rule (Keybinds.ShowsKeys); before Keybinds is up, a keyboard is the test
@@ -1914,15 +1896,6 @@ function WorldMap.ShowsKeys()
 	local kb = C and C.Keybinds
 	if type(kb) == "table" and type(kb.ShowsKeys) == "function" then return kb.ShowsKeys() == true end
 	return UserInputService.KeyboardEnabled == true
-end
-
--- "{Map} / Esc: 닫기" with the current map key; without a map key only "Esc: 닫기"
-function WorldMap.HintText()
-	local kb = C and C.Keybinds
-	if type(kb) ~= "table" or type(kb.Fill) ~= "function" or kb.KeyName("Map") == "" then
-		return (string.gsub(TXT.HintMouse, "{Map} / ", ""))
-	end
-	return kb.Fill(TXT.HintMouse)
 end
 
 function WorldMap.Open()
@@ -1940,9 +1913,6 @@ function WorldMap.Open()
 	resetPointers()
 	pcall(refreshLandmarks)
 	pcall(layoutRoot)
-	if hintLabel then
-		hintLabel.Text = WorldMap.ShowsKeys() and WorldMap.HintText() or TXT.HintTouch
-	end
 	root.Visible = true
 	pcall(refreshView)
 	-- re-centre on the player when an earlier pan left them off-screen

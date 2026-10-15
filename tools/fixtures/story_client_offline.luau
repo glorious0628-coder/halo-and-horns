@@ -301,11 +301,11 @@ do
 		type(halo) == "string" and string.find(halo, "Honor +3", 1, true) ~= nil and string.find(halo, "Honor -5", 1, true) ~= nil, halo)
 	check(g, "Horns: Mischief -Good on the left, Mischief +Evil on the right (A23-58; A23-166 name)",
 		type(horns) == "string" and string.find(horns, "Mischief -3", 1, true) ~= nil and string.find(horns, "Mischief +5", 1, true) ~= nil, horns)
-	check(g, "the artisan guild: the no-points line", STORY.Hint(obj, "Neutral") == TXT.ChoiceHintNeutral)
+	check(g, "the artisan guild: no hint line (A23-191)", STORY.Hint(obj, "Neutral") == nil)
 	local okNil, hNil = pcall(STORY.Hint, obj, nil)
 	local okOdd, hOdd = pcall(STORY.Hint, obj, "Guild")
-	check(g, "no faction yet / an unknown faction id: the no-points line, never an error",
-		okNil and okOdd and hNil == TXT.ChoiceHintNeutral and hOdd == TXT.ChoiceHintNeutral, show({ okNil, hNil, okOdd, hOdd }))
+	check(g, "no faction yet / an unknown faction id: no hint line, never an error (A23-191)",
+		okNil and okOdd and hNil == nil and hOdd == nil, show({ okNil, hNil, okOdd, hOdd }))
 	local zero = { Type = "Choice", Good = { Points = 0 }, Evil = { Points = 0 } }
 	check(g, "two 0-point picks (E5): the lean line, no +0 / -0",
 		STORY.Hint(zero, "Halo") == HINT_LEAN and STORY.Hint(zero, "Horns") == HINT_LEAN and string.find(HINT_LEAN, "%d", 1, true) == nil,
@@ -339,7 +339,7 @@ do
 			end
 			for _, o in objs do
 				if o.Type == "Choice" then
-					for _, f in { "Halo", "Horns", "Neutral" } do
+					for _, f in { "Halo", "Horns" } do -- the Guild draws no hint (A23-191)
 						local h = STORY.Hint(o, f)
 						check(g, "real choice cards: a finished hint line for every faction",
 							type(h) == "string" and h ~= "" and string.find(h, "%", 1, true) == nil, id .. " step " .. si .. " " .. f .. " " .. tostring(h))

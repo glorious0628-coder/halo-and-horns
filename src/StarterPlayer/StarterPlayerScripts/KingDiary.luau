@@ -231,7 +231,6 @@ local function drawJar(kit, body)
 	local ctx = context()
 	local h = label(kit, body, string.format(T.Text.Candy, math.floor(tonumber(ctx.Candy) or 0)), 20, kit.Theme.Gold)
 	h.Font = Enum.Font.GothamBold
-	label(kit, body, T.Text.JarNote, 16, kit.Theme.SubText)
 	for _, row in KingDiary.JarRows(ctx) do
 		local f = block(kit, body, "Jar" .. tostring(row.Id))
 		vlist(f, 8, true)

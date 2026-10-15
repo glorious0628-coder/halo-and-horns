@@ -9,7 +9,7 @@ redraws itself, its own narrow / wide width <= 780 du, an L10n text table); the 
 numbers, Name, Grade, Type) are the Settings.BagSort options and BagWide is a saved Bool; columns 4 / 8 (>= 3 when the
 window is squeezed); the potion button (cooldown, full, the KO1 sip, none left, busy); the scroll steps (enhance:
 +Max can't be picked; transfer: source +1 or more, receiver below +Max, tap the source again to drop it; a step drops
-back when its weapon / scroll is gone); the detail column (Equipped / Equip / From Lv N / In a fight / Checking…, the
+back when its weapon / scroll is gone); the detail column (Equipped / Equip / Needs Lv N / In a fight / Checking…, the
 power change, a potion's Drink + quick slots, a scroll's Use, a material's price + seen monsters that drop it, the
 confirm with before → after + chance + the fail result before anything is sent); the Inventory payload filter and the
 'new' base; the window itself (four tabs, the worn row with empty armor / ring / pet gear places, grade slots, +N /

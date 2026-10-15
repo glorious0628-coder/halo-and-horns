@@ -41,6 +41,7 @@ local TAG = "ChoiceCardUI"
 local L = {
 	Window = "ChoiceCard", Width = 640,
 	ButtonH = 64, ColGap = 16, BarH = 12, BarW = 420,
+	DimAlpha = 0.5, -- A23-191: a no-points-today option's button (ChoiceCardUI.Dim)
 	Wait = 3, -- s both buttons stay locked after a pick without an answer (then they unlock again)
 	Poll = 1, -- s between the calm-screen checks of a waiting saved card
 	FightCalm = 4, -- s after my last attack / hurt that still count as a fight (Panels B15)
@@ -105,8 +106,8 @@ function ChoiceCardUI.RewardLine(r)
 	return table.concat(parts, " · ")
 end
 
--- what an option does to my score: "Honor +1" / "Honor -1", else its hint line (Neutral / Full / Zero), else ""
-function ChoiceCardUI.ScoreLine(stat, score, hint)
+-- what an option does to my score: "Honor +1" / "Honor -1", else "" (A23-191: no hint lines; Full dims the button)
+function ChoiceCardUI.ScoreLine(stat, score)
 	local t = type(fin().Text) == "table" and fin().Text or {}
 	score = int(score)
 	if (stat == "Honor" or stat == "Infamy") and score ~= 0 then
@@ -114,10 +115,18 @@ function ChoiceCardUI.ScoreLine(stat, score, hint)
 		local name = type(names[stat]) == "string" and names[stat] or stat -- A23-166: the shown name, not the key
 		return score > 0 and fmt(t.Score, name, score) or fmt(t.ScoreDown, name, -score)
 	end
-	if hint == "Neutral" then return t.HintNeutral or "" end
-	if hint == "Full" then return t.HintFull or "" end
-	if hint == "Zero" then return t.HintZero or "" end
 	return ""
+end
+
+-- A23-191: an option that gives no points today (Hint "Full") says it by a dimmed button, not words; it still works
+function ChoiceCardUI.Dim(btn)
+	if typeof(btn) ~= "Instance" then return end
+	local a = L.DimAlpha
+	for _, d in { btn, table.unpack(btn:GetDescendants()) } do
+		if d:IsA("ImageLabel") or d:IsA("ImageButton") then d.ImageTransparency = math.max(tonumber(d.ImageTransparency) or 0, a) end
+		if d:IsA("TextLabel") or d:IsA("TextButton") then d.TextTransparency = math.max(tonumber(d.TextTransparency) or 0, a) end
+	end
+	btn:SetAttribute("Dimmed", true)
 end
 
 local function option(o, label, side, key)
@@ -198,11 +207,12 @@ local function column(k, row, card, side)
 	local o = card[side]
 	local btn = k.ChoiceButton(col, side, o.Label, UDim2.new(1, 0, 0, L.ButtonH), function() pick(side) end)
 	btn.Name = side .. "Button"
+	if o.Hint == "Full" then ChoiceCardUI.Dim(btn) end
 	local gives = ChoiceCardUI.RewardLine(o.Reward)
 	if gives ~= "" then
 		k.Text(col, gives, { Name = "Gives", Size = 18, Align = Enum.TextXAlignment.Center, Color = k.Theme.Gold })
 	end
-	local score = ChoiceCardUI.ScoreLine(card.Stat, o.Score, o.Hint)
+	local score = ChoiceCardUI.ScoreLine(card.Stat, o.Score)
 	if score ~= "" then
 		k.Text(col, score, { Name = "Score", Size = 16, Align = Enum.TextXAlignment.Center, Color = k.Theme.SubText })
 	end

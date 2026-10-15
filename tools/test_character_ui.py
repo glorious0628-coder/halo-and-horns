@@ -4,7 +4,7 @@ A23-48 English only / A23-78 E key / A23-99 / A23-111 text tables / A23-130 / A2
 Runs, in the official Luau CLI, the CURRENT Config.luau and CharacterUI.luau in tools/fixtures/character_ui_offline.luau
 (Players / Instance tree / Panels / UIKit doubles, a fake GearSlots and PetWindow). Checks: the window registers as "Character"
 (fixed body, redraws itself, an L10n text table); the pure model - Weapons() lists the owned tiers + the worn one, worn first
-then by Damage; EquipState words and enabled flags (Equipped / From Lv N / Checking… / In a fight / Equip); Titles() = Auto +
+then by Damage; EquipState words and enabled flags (Equipped / Needs Lv N / Checking… / In a fight / Equip); Titles() = Auto +
 the owned titles in Config.TitleOrder, exactly one current, an unowned selection falls back to Auto; PetState() nil without
 pets; NextRank() names / points, nil at the top; StatRows(); Equip(tier) fires EquipWeapon once (a second press inside the
 rate gap and a second request while one waits send nothing); SetTitle(id) fires SetTitle ("" = Auto). The GEAR CELL RULE:

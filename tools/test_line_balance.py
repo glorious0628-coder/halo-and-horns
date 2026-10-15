@@ -120,8 +120,8 @@ def static_checks(src: dict) -> list[tuple[str, bool]]:
          'if ch:IsA("UIPadding") or ch:IsA("UISizeConstraint")' in bl),
         ("BalanceLines counts lines with the engine (an off-screen copy), not TextService",
          "local probe = label:Clone()" in bl and "GetTextBoundsAsync" not in bl),
-        ("the Vacation popup line is shorter", "VacationAwayF = \"You were away %d days. That's okay!\"" in src["CONFIG"]),
-        ("the Vacation window header is shorter", "VacationHeaderF = \"Vacation Bonus! You were away %d days. That's okay!\"" in src["CONFIG"]),
+        ("the Vacation popup line is shorter", "VacationAwayF = \"You were away %d days.\"" in src["CONFIG"]),
+        ("the Vacation window header is shorter", "VacationHeaderF = \"Vacation Bonus! You were away %d days.\"" in src["CONFIG"]),
     ]
 
 
@@ -144,7 +144,7 @@ MUTATIONS = [
     ("UIKIT", "the probe keeps its padding", "\t\t\tif ch:IsA(\"UIPadding\") or ch:IsA(\"UISizeConstraint\")",
      "\t\t\tif ch:IsA(\"UISizeConstraint\")"),
     ("PANELS", "addText does not balance", "\t\tUIKit.BalanceLines(l)\n", "\t\tlocal _ = l\n"),
-    ("CONFIG", "the old long Vacation line", "VacationAwayF = \"You were away %d days. That's okay!\"",
+    ("CONFIG", "the old long Vacation line", "VacationAwayF = \"You were away %d days.\"",
      "VacationAwayF = \"You were away for %d days, and that's okay.\""),
 ]
 

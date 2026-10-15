@@ -127,7 +127,7 @@ MUTATIONS = [
     ("the 'points full' line back", F,
      "if down then notify(player, f == \"Halo\" and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n\t\tend\n",
      "if down then notify(player, f == \"Halo\" and STORY.RankDownHalo or STORY.RankDownHorns, \"info\") end\n"
-     "\t\telseif mine and change <= 0 and points() > 0 then\n\t\t\tnotify(player, TXT.HintFull, \"info\")\n\t\tend\n"),
+     "\t\telseif mine and change <= 0 and points() > 0 then\n\t\t\tnotify(player, \"No more points today.\", \"info\")\n\t\tend\n"),
     ("no off-side line", F, "\t\tif stat ~= \"None\" and not mine then\n", "\t\tif false then\n"),
     ("the card shows points past the cap", D, "return stat, math.min(n, Deeds.Left(player)), true", "return stat, n, true"),
     ("the card shows a drop below 0", D, "return stat, -math.min(ownStat(player, stat), n), false", "return stat, -n, false"),

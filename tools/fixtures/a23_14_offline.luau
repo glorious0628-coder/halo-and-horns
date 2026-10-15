@@ -1628,8 +1628,7 @@ runGroup("class-change", function()
 		case[2](f)
 		check(f.Data.Class == "Warrior" and f.Data.Level == 3 and #f.Changed == 0 and #f.Refresh == 0, "refused: " .. case[1])
 	end
-	check(string.find(C.Text.ClassChangeRuleF, "%d", 1, true) ~= nil and string.format(C.Text.ClassChangeRuleF, 5) ~= C.Text.ClassChangeRuleF,
-		"ClassPicker footer text takes the Lv5 number from Config")
+	check(C.Text.ClassChangeRuleF == nil, "A23-191: no ClassPicker footer rule text")
 end)
 
 ------------------------------------------------------------------ artisan min ④: the guild's dailies (2026-10-14)

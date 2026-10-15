@@ -1751,9 +1751,7 @@ local HINT_DEVICES = {
 	{ Name = "tablet with a mouse, no keyboard", Keyboard = false, Touch = true, Mouse = true },
 	{ Name = "gamepad / console: no keyboard, no touch", Keyboard = false, Touch = false, Mouse = false },
 }
--- WorldMap TXT double (the real strings live in WorldMap.luau; only the {Map} token matters here)
-local WM_TXT = { HintMouse = "드래그: 이동 · 휠: 확대/축소 · {Map} / Esc: 닫기", HintTouch = "드래그: 이동 · 두 손가락: 확대/축소" }
-local SNIPPET_NAMES = { "HudQuestText", "WorldMapFns", "WorldMapBindHint", "WorldMapOpenHint", "IntroTxt", "IntroSkipText" }
+local SNIPPET_NAMES = { "HudQuestText", "WorldMapFns", "IntroTxt", "IntroSkipText" } -- A23-191: no map hint line
 
 -- runs one cut chunk in env (globals behind it); returns its value or nil + why
 local function snippet(name, env)
@@ -1804,26 +1802,10 @@ runGroup("key-hints-one-rule", function()
 		check(q2 == (keys and "자동 전투 켜기" or "자동 전투 켜기 (" .. autoBtn .. ")"),
 			"HUD L.QuestText: an unbound key drops the '(…)' group only where keys are shown", d.Name .. " " .. tostring(q2 or hudErr))
 		K.Reset()
-		-- WorldMap hint
-		local hintKeys = "드래그: 이동 · 휠: 확대/축소 · M / Esc: 닫기"
-		local wm, wmErr = snippet("WorldMapFns", { C = w.C, UserInputService = w.UIS, TXT = WM_TXT })
-		-- HintText is only shown where keys are shown (its {Map} would read as the button name elsewhere)
-		check(wm ~= nil and wm.ShowsKeys() == keys and (not keys or wm.HintText() == hintKeys),
-			"WorldMap.ShowsKeys() = Keybinds.ShowsKeys(); HintText names the map key", d.Name .. " " .. tostring(wmErr))
-		local env = { WorldMap = wm, TXT = WM_TXT, UserInputService = w.UIS, C = w.C }
-		local openHint, openErr = snippet("WorldMapOpenHint", env)
-		local label = { Text = "" }
-		if openHint and wm then pcall(openHint, label) end
-		check(label.Text == (keys and hintKeys or WM_TXT.HintTouch),
-			"WorldMap.Open: the key hint where keys are shown, the touch hint without a keyboard",
-			d.Name .. " " .. tostring(openErr or label.Text))
-		local bindHint, bindErr = snippet("WorldMapBindHint", env)
-		label = { Text = "BEFORE" }
-		if bindHint and wm then pcall(bindHint, label) end
-		check(label.Text == (keys and hintKeys or "BEFORE"),
-			"WorldMap.BindKey: the new map key goes into the hint only where keys are shown",
-			d.Name .. " " .. tostring(bindErr or label.Text))
-		local early = snippet("WorldMapFns", { C = {}, UserInputService = w.UIS, TXT = WM_TXT })
+		-- WorldMap (A23-191: no hint line; ShowsKeys stays the one rule)
+		local wm, wmErr = snippet("WorldMapFns", { C = w.C, UserInputService = w.UIS })
+		check(wm ~= nil and wm.ShowsKeys() == keys, "WorldMap.ShowsKeys() = Keybinds.ShowsKeys()", d.Name .. " " .. tostring(wmErr))
+		local early = snippet("WorldMapFns", { C = {}, UserInputService = w.UIS })
 		check(early ~= nil and early.ShowsKeys() == d.Keyboard, "WorldMap.ShowsKeys before Keybinds is up = KeyboardEnabled", d.Name)
 		-- Intro skip button
 		local txt, txtErr = snippet("IntroTxt", { STORY = {}, UserInputService = w.UIS })

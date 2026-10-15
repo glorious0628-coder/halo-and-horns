@@ -3,7 +3,7 @@
 -- Look = GPT mockup art/out/UI_Class_A.png (addendum A14-3): faction shield + "직업을 골라요!" ribbon + 남|여 pill, three
 -- text-free class card images (Config.UIArt.Parts.ClassCard<Faction>, regions in Config.UIArt.CardLayout) holding the
 -- chibi character Char<Faction><Class><M|F>, the name ribbon, description, 체력 / 공격 / 속도 bars
--- (Config.Classes[id].DisplayStats) and the baked "이 직업으로!" button, then a parchment note.
+-- (Config.Classes[id].DisplayStats) and the baked "이 직업으로!" button.
 -- A missing card id or layout draws the old code-styled cards instead (IMG-R4), so the picker never breaks.
 -- Cards follow SPEC_ADDENDUM A7-4: faction name + generic class chip + description (the PickLine action line when the
 -- description does not fit); Warrior shows "처음이면 추천".
@@ -65,9 +65,6 @@ local LAY = {
 	BobTime = 1.4, -- seconds per half bob
 	BlurSize = 10, -- camera blur behind the picker (mockup background is blurred)
 	TitleText = { 0.17, 0.08, 0.66, 0.6 }, -- text box inside UIP_TitleRibbon (fractions of the ribbon)
-	-- the "Outfit coming later" note: a navy pill at the top of the picture window (Y = its top, fraction of the window
-	-- height), as wide as its words (at most MaxW of the window; two lines when one does not fit)
-	Outfit = { Y = 0.035, MaxW = 0.86, PadX = 6, Color = Color3.fromRGB(27, 33, 64), Alpha = 0.22 },
 }
 
 -- per-faction look of the class card art: text style ("ink" = brown on parchment, "light" = white with a dark outline)
@@ -114,14 +111,6 @@ local PICK_LINES = {
 local CLASS_ICONS = { Warrior = "🗡️", Mage = "🔮", Archer = "🏹" }
 
 local T = Config.ClientText.ClassPicker -- the words: Config.ClientText.ClassPicker (moved 10/14)
-do
-	local below = type(Config.ClassChange) == "table" and tonumber(Config.ClassChange.FreeKeepLevelBelow) or nil
-	local rule = type(Config.Text) == "table" and Config.Text.ClassChangeRuleF or nil
-	if below and type(rule) == "string" then
-		local ok, s = pcall(string.format, rule, math.floor(below))
-		if ok then T.Footer = s end
-	end
-end
 
 local DEFAULT_THEME = {
 	Text = Color3.new(1, 1, 1),
@@ -143,7 +132,6 @@ local theme = table.clone(DEFAULT_THEME)
 local fallbackGui = nil
 local root, cardsRow = nil, nil
 local head = {} -- header widgets: Shield, ShieldDisc, Ribbon, Title, Pill, Sel, M, F
-local note = {} -- bottom note: Frame, Icon, Text
 local cards = {} -- art cards: [classId] = { Card, Scale, Bg, Clip, Holder, Char, Emoji, Crop, Name, Desc, Rows, Shade, Label, Hit, ... }
 local oldCards = {} -- code-styled cards (IMG-R4), built on demand: [classId] = { Card, Stroke, Icon, Name, ..., Button }
 local classIds = {}
@@ -646,7 +634,7 @@ local function setGender(g)
 	refreshPortraits()
 end
 
------------------------------------------------------------------- build: header / note
+------------------------------------------------------------------ build: header
 -- one half of the pill; the box grows outward (left for 남, right for 여) on layout and a UIPadding "HitPad" keeps the
 -- text centred on its visible half, so the touch target can be bigger than the pill (CR-L41)
 local function genderButton(pill, g, text)
@@ -758,18 +746,6 @@ local function buildHeader()
 	head.Pill, head.Sel = pill, sel
 	head.M = genderButton(pill, "M", T.Male)
 	head.F = genderButton(pill, "F", T.Female)
-end
-
-local function buildNote()
-	local navy = artId(PANEL.Footer) ~= nil
-	local f = sliceFrame(root, "Note", navy and PANEL.Footer or "PanelMain", 2)
-	local icon = newImage(f, "Icon", 1)
-	icon.Image = artId("IconNews") or ""
-	local text = artLabel(f, "Text", 1)
-	text.TextScaled = false
-	text.Text = T.Footer
-	styleText(text, navy and "light" or "ink")
-	note.Frame, note.Icon, note.Text = f, icon, text
 end
 
 ------------------------------------------------------------------ build: art cards
@@ -957,25 +933,10 @@ local function buildArtCard(id)
 			Color3.fromRGB(255, 214, 92))
 	end
 
-	-- 그림체 #42: "Outfit coming later" on the picture (LAY.Outfit)
-	local outfit = Instance.new("Frame")
-	outfit.Name = "OutfitNote"
-	outfit.BackgroundColor3 = LAY.Outfit.Color
-	outfit.BackgroundTransparency = LAY.Outfit.Alpha
-	outfit.BorderSizePixel = 0
-	outfit.ZIndex = 4
-	local oc = Instance.new("UICorner")
-	oc.CornerRadius = UDim.new(0.5, 0)
-	oc.Parent = outfit
-	outfit.Parent = card
-	local outfitText = artLabel(outfit, "Text", 5)
-	outfitText.Text = T.Outfit
-	styleText(outfitText, "light")
-
 	local c = {
 		Card = card, Scale = scale, Bg = bg, Clip = clip, Holder = holder, Char = char, Emoji = emoji, Crop = crop,
 		Name = name, Desc = desc, Rows = rows, Shade = shade, Label = label, Hit = hit,
-		Chip = chip, ChipText = chipText, Badge = badge, BadgeText = badgeText, Outfit = outfit, OutfitText = outfitText,
+		Chip = chip, ChipText = chipText, Badge = badge, BadgeText = badgeText,
 		DescFull = (def and type(def.Desc) == "string" and def.Desc ~= "") and def.Desc or pickLine(id),
 		DescShort = pickLine(id),
 		Hover = false, Down = false, PopUntil = 0, Id = id,
@@ -1217,26 +1178,6 @@ local function layoutHeader(w, top, headH, minT, s)
 	end
 end
 
--- parchment note at the bottom; returns its top Y
-local function layoutNote(w, h, minT)
-	local size = math.clamp(math.floor(h * 0.026), minT, math.max(minT, 20))
-	local iconW = math.floor(size * 1.7)
-	local padX = math.floor(size * 0.8)
-	local maxTextW = w - 2 * LAY.Gutter - iconW - padX * 2 - 6
-	local th, tw = textBounds(note.Text.Text ~= "" and note.Text.Text or T.Footer, size, note.Text.Font, maxTextW)
-	local textW = math.min(maxTextW, tw + size) -- one glyph of slack so the measured line never re-wraps
-	local noteH = math.ceil(th + size * 0.9)
-	local noteW = padX * 2 + iconW + 6 + textW
-	local y = h - 10 - noteH
-	place(note.Frame, (w - noteW) / 2, y, noteW, noteH)
-	place(note.Icon, padX, (noteH - iconW) / 2, iconW, iconW)
-	note.Icon.Visible = note.Icon.Image ~= ""
-	local tx = note.Icon.Visible and (padX + iconW + 6) or padX
-	place(note.Text, tx, 0, textW, noteH)
-	setTextRange(note.Text, minT, size)
-	return y
-end
-
 -- one art card: everything sits in the measured CardLayout regions of the card image
 local function layoutArtCard(c, L, img, W, H, minT, s)
 	local px, py, pw, ph = region(L.Portrait, W, H)
@@ -1342,17 +1283,6 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 		place(c.Chip, px + pw * 0.03, ny - chipH * 0.85, gw, chipH)
 	end
 	setTextRange(c.ChipText, minT, chipT)
-	-- the outfit note: one line at the text floor when it fits the window, else two (phones: the side column instead)
-	c.Outfit.Visible = LAY.OutfitOnCards ~= false
-	local O = LAY.Outfit
-	local maxW = pw * O.MaxW
-	local th, tw = textBounds(T.Outfit, minT, c.OutfitText.Font, maxW - 2 * O.PadX)
-	local lines = (tw > maxW - 2 * O.PadX or th > minT * 1.6) and 2 or 1
-	local ow = math.min(maxW, tw + 2 * O.PadX + minT)
-	local oh = math.ceil(minT * (lines == 1 and 1.5 or 2.6))
-	place(c.Outfit, px + (pw - ow) / 2, py + ph * O.Y, ow, oh)
-	place(c.OutfitText, O.PadX, 1, ow - 2 * O.PadX, oh - 2)
-	setTextRange(c.OutfitText, minT, minT)
 	if c.Badge then
 		local bw2 = math.min(chipW(c.BadgeText), W * 0.9)
 		place(c.Badge, (W - bw2) / 2, H * 0.012, bw2, chipH)
@@ -1404,41 +1334,6 @@ local function layoutArtCards(w, cardsTop, cardsBottom, minT, s)
 	return scroll and availW or canvasW
 end
 
--- phones (side layouts): the note in a side column without its capsule. The capsule art is one wide line; on two or
--- three lines in a narrow column it stretched and clipped (UiSandbox 749x361 / 844x390, 2026-10-07). Here: the icon over
--- the words, light text with a dark outline on the dimmed screen. side = false puts the capsule look back.
-local function noteSideLook(side)
-	if note.Side == side then return end
-	note.Side = side
-	local frame = note.Frame
-	if frame:IsA("ImageLabel") then
-		if note.FrameImageT == nil then note.FrameImageT = frame.ImageTransparency end
-		frame.ImageTransparency = side and 1 or note.FrameImageT
-	else
-		if note.FrameBgT == nil then note.FrameBgT = frame.BackgroundTransparency end
-		frame.BackgroundTransparency = side and 1 or note.FrameBgT
-		local st = frame:FindFirstChild("Stroke")
-		if st and st:IsA("UIStroke") then st.Enabled = not side end
-	end
-	if side then
-		styleText(note.Text, "light", 1.5)
-	else
-		styleText(note.Text, artId(PANEL.Footer) ~= nil and "light" or "ink")
-	end
-end
-
--- the narrowest width (at least half of maxW) that keeps the words on as few lines as maxW does: no lone last word
--- ("...at the Altar of / Fate." on a 749 phone, 2026-10-07)
-local function balancedWidth(text, size, font, maxW)
-	local lines = textBounds(text, size, font, maxW)
-	local lo, hi = maxW * 0.5, maxW
-	for _ = 1, 7 do
-		local mid = (lo + hi) / 2
-		if textBounds(text, size, font, mid) > lines + 0.5 then lo = mid else hi = mid end
-	end
-	return hi
-end
-
 -- phones (wide but short) with the A23-57 frames: the shield and the Boy | Girl pill stacked in the left column (no
 -- title ribbon: the cards and their "Pick!" buttons say it), the note in the right one, the cards as tall as the screen
 -- (UiSandbox 749x361, 2026-10-06: under a header row the names and the description no longer fit)
@@ -1468,23 +1363,6 @@ local function layoutSide(w, h, top, minT, s)
 	for _, b in { head.M, head.F } do
 		setTextRange(b, minT, textSize)
 	end
-	-- the note in the right column: the scroll icon over the words, wrapped to the column, clear of the jump button
-	noteSideLook(true)
-	local size = minT
-	note.Icon.Visible = note.Icon.Image ~= ""
-	local iconW = note.Icon.Visible and math.floor(size * 2.2) or 0
-	local gapY = iconW > 0 and math.floor(size * 0.3) or 0
-	local fitW = balancedWidth(note.Text.Text, size, note.Text.Font, colW)
-	local th, tw = textBounds(note.Text.Text, size, note.Text.Font, fitW)
-	local textW = math.min(colW, tw + size)
-	th = math.ceil(th * 1.15) + 2 -- the wrap slack (UIKit NOTIFY.WrapSlack): rendered lines run a little wider
-	local noteW = math.max(textW, iconW)
-	local noteH = iconW + gapY + th
-	place(note.Frame, w - side / 2 - noteW / 2, top + (bottom - top) * 0.42 - noteH / 2, noteW, noteH)
-	place(note.Icon, (noteW - iconW) / 2, 0, iconW, iconW)
-	place(note.Text, (noteW - textW) / 2, iconW + gapY, textW, th)
-	note.Text.TextWrapped = true
-	setTextRange(note.Text, minT, size)
 end
 
 -- code-styled cards (IMG-R4): same sizes as before the art pass
@@ -1530,20 +1408,13 @@ local function layout()
 		local aspect = rs and rs.X / rs.Y or 2.7
 		headH = math.max(headH, math.ceil((#T.Title * 0.58 + 1) * minT / band / aspect / 0.92))
 	end
-	note.Text.Text = compact and T.FooterShort or T.Footer
-	LAY.OutfitOnCards = true
 	if compact and mode == "art" and shownKey and string.sub(shownKey, 1, 9) == "ClassPick" then
-		-- 그림체 #42 on phones: the picture windows are too narrow for the outfit note (UiSandbox 749x361: 3 lines, cut),
-		-- so the side column says it once under the class-change line
-		LAY.OutfitOnCards = false
-		note.Text.Text = T.FooterShort .. "\n" .. T.Outfit
 		layoutSide(w, h, top, minT, s)
 		return
 	end
 	head.Ribbon.Visible = true
-	noteSideLook(false)
 	layoutHeader(w, top, headH, minT, s)
-	local noteTop = layoutNote(w, h, minT)
+	local noteTop = h - 10 -- A23-191: no note under the cards
 	local cardsTop = top + headH + 6
 	local cardsBottom = noteTop - 6
 	if mode == "art" then
@@ -1582,7 +1453,6 @@ local function build()
 	cardsRow.Parent = root
 
 	buildHeader()
-	buildNote()
 	table.clear(classIds)
 	for _, id in Config.ClassOrder do
 		if Config.Classes[id] then table.insert(classIds, id) end
