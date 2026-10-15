@@ -10059,6 +10059,10 @@ end
 
 Config.RateLimits.CraftStart = 3
 Config.RateLimits.CraftFinish = 0.5
+-- 게시 준비 운영 ③ (10/15): every remote has a key here. A hammer press (rings 1.2 s apart: a lag burst still fits) and the
+-- opening's one-time 'seen' (QuestService)
+Config.RateLimits.CraftStrike = 0.15
+Config.RateLimits.IntroSeen = 1
 
 -- XP from craft level `lv` to the next (Config.Craft.XPBase x lv ^ XPExp, floored; 0 at MaxLv: no next level)
 function Config.CraftXPToNext(lv)

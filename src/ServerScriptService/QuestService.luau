@@ -626,7 +626,7 @@ end
 -- A23-9: the client reports the first-time opening ended; only the server writes the saved flag
 local function onIntroSeen(player, ...)
 	if select("#", ...) ~= 0 or not S.PlayerService.IsReady(player) then return end
-	if not Util.RateLimit(player, "IntroSeen", 1) then return end
+	if not Util.RateLimit(player, "IntroSeen", num(Config.RateLimits.IntroSeen, 1)) then return end
 	local data = getData(player)
 	if not data or data.IntroSeen == true then return end
 	S.PlayerService.SetStat(player, "IntroSeen", true)
