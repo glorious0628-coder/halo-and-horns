@@ -3320,6 +3320,8 @@ Config.StoryQuests = {
 		Next = "Next",
 		Ok = "Got it",
 		Later = "Later",
+		-- A23-199: an NPC's request (the Offer window) and a thing to pick up (a Pickup step's prompt)
+		OfferAccept = "Sure!", OfferDecline = "Not now", Pickup = "Pick up",
 		Title = "%s · %s",
 		ChoiceGold = "+%s gold", -- E6: a pick's own reward line ("+Enhance Scroll 70%" / "+HP Potion ×3 · +60 gold")
 		LeanGood = "Your shard leaned to the light.", -- E5: a 0-point pick (no score)
