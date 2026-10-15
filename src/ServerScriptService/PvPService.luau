@@ -334,19 +334,10 @@ local function rookieAttr(p)
 	return faction(p) ~= "Neutral" and PvPService.IsRookie(p)
 end
 
-local function announceIfMostWanted(p, before, after)
-	if before < Config.PvP.AnnounceStars and after >= Config.PvP.AnnounceStars then
-		Net.NotifyAll(fmt("MostWanted", publicName(p, true), Util.FormatNumber(computeBounty(p))))
-	end
-end
-
 local function addStar(killer)
-	local before = stars[killer] or 0
-	local after = math.min(Config.PvP.MaxStars, before + 1)
-	stars[killer] = after
+	stars[killer] = math.min(Config.PvP.MaxStars, (stars[killer] or 0) + 1)
 	lastStarChange[killer] = os.clock()
-	refreshStarAttrs(killer)
-	announceIfMostWanted(killer, before, after)
+	refreshStarAttrs(killer) -- A23-191 (최종 검수 10/15): no server-wide 'Most Wanted' banner (WantedStars / Bounty say it)
 end
 
 -- the shield and its outline always go together
@@ -497,12 +488,9 @@ function PvPService.DebugSetStars(player, n)
 	if not isPlaying(player) then
 		return
 	end
-	local before = stars[player] or 0
-	local after = math.clamp(math.floor(tonumber(n) or 0), 0, Config.PvP.MaxStars)
-	stars[player] = after
+	stars[player] = math.clamp(math.floor(tonumber(n) or 0), 0, Config.PvP.MaxStars)
 	lastStarChange[player] = os.clock()
 	refreshStarAttrs(player)
-	announceIfMostWanted(player, before, after)
 end
 
 -- Rebirths == 0 and (Level < RookieLevel or PlaytimeSeconds < RookiePlaytime)

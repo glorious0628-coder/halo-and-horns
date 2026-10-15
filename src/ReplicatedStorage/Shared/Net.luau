@@ -192,12 +192,30 @@ end
 -- kind: "info" | "good" | "bad" | "reward" | "announce"
 -- sound (sound_spec 2026-10-07 §4-1, optional): the Config.Audio key the client plays for this line ("None" = no sound);
 -- without it the client keeps its kind mapping ("bad" -> Deny, "reward" -> QuestDone)
+-- A23-191 (user 10/14 "다 삭제하라고", 최종 검수 10/15): only a failure line (Kind "bad": why the server refused what the
+-- player just did) is sent with its text. Every other kind sends its sound alone (Text "", no Key) or nothing at all
+-- when it has no sound, so a notice / reward / banner toast can never come back from the server.
+-- Returns the text to send ("" = sound only) or nil = send nothing.
+function Net.NotifyText(text, kind, sound)
+	if kind == "bad" then return text end
+	if sound == "None" then return nil end
+	if type(sound) == "string" and sound ~= "" then return "" end
+	if kind == "reward" then return "" end -- the client's kind sound (QuestDone)
+	return nil
+end
+
 function Net.Notify(player, text, kind, duration, sound)
-	Net.Get("Notify"):FireClient(player, { Text = text, Kind = kind or "info", Duration = duration, Sound = sound })
+	kind = kind or "info"
+	local t = Net.NotifyText(text, kind, sound)
+	if t == nil then return end
+	Net.Get("Notify"):FireClient(player, { Text = t, Kind = kind, Duration = duration, Sound = sound })
 end
 
 function Net.NotifyAll(text, kind, duration, sound)
-	Net.Get("Notify"):FireAllClients({ Text = text, Kind = kind or "announce", Duration = duration, Sound = sound })
+	kind = kind or "announce"
+	local t = Net.NotifyText(text, kind, sound)
+	if t == nil then return end
+	Net.Get("Notify"):FireAllClients({ Text = t, Kind = kind, Duration = duration, Sound = sound })
 end
 
 -- Korean mode (contract docs/design/l10n_contract_2026-10-11.md §5-3): a keyed line { Key, Args, Named } that every client
@@ -212,12 +230,17 @@ local function keyPayload(key, args, named, kind, duration, sound)
 		Text = L10n.Msg({ Key = key, Args = args, Named = named }, "en") }
 end
 
+-- A23-191: the same gate (a keyed line that is not "bad" = its sound alone, without the Key)
 function Net.NotifyKey(player, key, args, kind, duration, sound, named)
-	Net.Get("Notify"):FireClient(player, keyPayload(key, args, named, kind or "info", duration, sound))
+	kind = kind or "info"
+	if kind ~= "bad" then return Net.Notify(player, "", kind, duration, sound) end
+	Net.Get("Notify"):FireClient(player, keyPayload(key, args, named, kind, duration, sound))
 end
 
 function Net.NotifyAllKey(key, args, kind, duration, sound, named)
-	Net.Get("Notify"):FireAllClients(keyPayload(key, args, named, kind or "announce", duration, sound))
+	kind = kind or "announce"
+	if kind ~= "bad" then return Net.NotifyAll("", kind, duration, sound) end
+	Net.Get("Notify"):FireAllClients(keyPayload(key, args, named, kind, duration, sound))
 end
 
 -- player == nil -> FireAllClients

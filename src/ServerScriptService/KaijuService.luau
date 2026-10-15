@@ -416,7 +416,7 @@ local function activate(p)
 	call("PlayerService", "RefreshCharacter", p, true) -- full heal at the transformation
 	sampleMaxHealth(p)
 	raiseZoom(p)
-	Net.NotifyAll(string.format(Config.Story.KaijuStart, kaijuName))
+	-- A23-191 (최종 검수 10/15): no server-wide start banner (GameState KaijuPhase / KaijuName and the siren say it)
 	KaijuService.KaijuStarted:Fire(p)
 end
 
