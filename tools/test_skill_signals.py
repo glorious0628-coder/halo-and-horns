@@ -129,7 +129,7 @@ MUTATIONS = [
     ("ranged Q heals around the blast", CO, "\tif c.ReleaseCenter == \"Target\" then healAt, healR = pos, skill.HaloHealRadius or 12 end\n", ""),
     ("ranged Q heals around me with the blast radius", CO, "healAt, healR = pos, skill.HaloHealRadius or 12", "healAt, healR = pos, radius"),
     ("self cap 30% in Config", C, "\tHaloSelfHealCapPct = 0.03, HaloHealRadius = 12,", "\tHaloSelfHealCapPct = 0.30, HaloHealRadius = 12,"),
-    ("old Star Fall line", C, "A big star falls on the closest monster. Heals you and friends.", "A big star falls on the closest monster. Friends near it get healed."),
+    ("old Star Fall line", C, "A big star falls on the closest monster. Heals you and your friends.", "A big star falls on the closest monster. Friends near it get healed."),
 ]
 
 

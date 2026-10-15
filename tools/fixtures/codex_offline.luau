@@ -255,7 +255,7 @@ runGroup("silver and gold holo", function()
 	kill(w, p, "Goblin", { ZoneId = "GoblinWoods" })
 	local u = fired(w, "CodexUp", p, f0)[1]
 	check(d.Codex.Goblin.Stage == 2 and u and u.Event == "Silver" and u.Stage == 2, "the 100th kill: Silver", show(u))
-	check(u and u.Gold == 320 and u.XP == 560 and u.Text == "Goblin card is now Silver! +320 gold · +560 XP",
+	check(u and u.Gold == 320 and u.XP == 560 and u.Text == "Your Goblin card is now Silver! +320 gold · +560 XP",
 		"Silver pays 20 Goblin kills' worth", show(u))
 	d.Codex.Goblin.Kills = 998
 	kill(w, p, "Goblin")
@@ -263,7 +263,7 @@ runGroup("silver and gold holo", function()
 	kill(w, p, "Goblin")
 	u = fired(w, "CodexUp", p, f1)[1]
 	check(d.Codex.Goblin.Stage == 3 and d.Codex.Goblin.Kills == 1000 and u and u.Event == "Holo"
-		and u.Gold == 1600 and u.XP == 2800 and u.Text == "Goblin card is now Gold Holo! +1,600 gold · +2,800 XP",
+		and u.Gold == 1600 and u.XP == 2800 and u.Text == "Your Goblin card is now Gold Holo! +1,600 gold · +2,800 XP",
 		"the 1000th: Gold Holo, 100 kills' worth", show(u))
 	local f2 = #w.Fired
 	kill(w, p, "Goblin")

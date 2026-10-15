@@ -175,7 +175,7 @@ listeners.PetList({ Equipped = "", List = payload.List })
 open()
 check(btn("Follow me") ~= nil and btn("Put away") == nil and not has(texts(), "Following you"),
 	"a resting pet has [Follow me]", #buttons)
-check(has(texts(), "Lv 3 · Follow: +" .. speed3 .. "% speed"), "... and says what following would give (검수 10/10)",
+check(has(texts(), "Lv 3 · While following: +" .. speed3 .. "% speed"), "... and says what following would give (검수 10/10)",
 	table.concat(texts(), ","))
 table.clear(sent)
 NOW += 1

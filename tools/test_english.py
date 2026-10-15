@@ -31,7 +31,7 @@ MUTATIONS = [
      'LoadFailed = "데이터를 불러오지 못했어요.",'),
     ("the Korean honorific comes back", C, 'Honorific = "", HonorificEn = ""', 'Honorific = "님", HonorificEn = ""'),
     ("a Korean weapon name", C, 'Warrior = { "Twig", "Wooden Sword"', 'Warrior = { "나뭇가지", "Wooden Sword"'),
-    ("a Korean line built by string.format", C, '\tLines = {\n\t\tstring.format("KO a player weaker than %d%% of your power"',
+    ("a Korean line built by string.format", C, '\tLines = {\n\t\tstring.format("KO a player with less than %d%% of your Power"',
      '\tLines = {\n\t\tstring.format("내 전투력의 %d%%보다 약한 상대"'),
     ("a Korean weekly title (built at load)", C,
      'Name = string.format("This week\'s %s #%d", R.Text.TitleNames[board], rank),',

@@ -646,9 +646,9 @@ runGroup("A23-126 heal fairness", function()
 	check(B.HaloSelfHealCapPct == 0.03 and B.HaloHealCapPct == 0.30 and B.HaloHealRadius == 12
 		and C0.Factions.Horns.LifestealCapPct == B.HaloSelfHealCapPct, "self 3% (= Horns life steal), friends 30%, ranged Q around me 12",
 		show({ B.HaloSelfHealCapPct, B.HaloHealCapPct, B.HaloHealRadius }))
-	check(C0.Skills.Defs.Mage.Q.Halo.DescEn == "A big star falls on the closest monster. Heals you and friends."
-		and C0.Skills.Defs.Archer.Q.Halo.DescEn == "Gold arrows rain on the closest group. Heals you and friends.",
-		"Star Fall / Feather Rain lines: '...Heals you and friends.'")
+	check(C0.Skills.Defs.Mage.Q.Halo.DescEn == "A big star falls on the closest monster. Heals you and your friends."
+		and C0.Skills.Defs.Archer.Q.Halo.DescEn == "Gold arrows rain on the closest group. Heals you and your friends.",
+		"Star Fall / Feather Rain lines: '...Heals you and your friends.'")
 	local function world()
 		local w = sigWorld({})
 		w.Got = {}

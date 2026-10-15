@@ -45,7 +45,7 @@ MUTATIONS = [
     ("a base name left on a class skill", 'Z = { Shape = "Line", Range = 40, Len = 40,',
      'Z = { NameEn = "Pierce Shot", Shape = "Line", Range = 40, Len = 40,', "no base NameEn"),
     ("a Horns line that does not steal", 'Pull monsters in and steal HP."', 'Pull monsters in."', "fits the side"),
-    ("a Halo line that does not heal", 'Throw a glowing rope and pull monsters in. Heals you and friends.',
+    ("a Halo line that does not heal", 'Throw a glowing rope and pull monsters in. Heals you and your friends.',
      'Throw a glowing rope and pull monsters in.', "fits the side"),
     ("no Halo words without a side", "elseif out.NameEn == nil then", "elseif false then", "no side yet (None / nil)"),
     ("a skill name over 13 letters", 'NameEn = "Bat Zigzag"', 'NameEn = "Bat Zigzag Flapper"', "18 names <= 13 letters"),

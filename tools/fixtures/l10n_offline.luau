@@ -73,7 +73,7 @@ local KO = {
 	["Config.Settings.Text.Music"] = { Ko = "음악", En = "Music!" }, -- stale (English changed)
 	["Config.Text.NoSuchLine"] = { Ko = "없는 줄", En = "No such line" }, -- key does not resolve
 	["Config.Announce.Text.RareWeapon"] = { Ko = "{1:이} {2:을} 물리치고 {3} 무기 [{4}]를 얻었어요!",
-		En = "%s beat a %s and got a %s weapon: [%s]!" }, -- {n} reorder + josa (good)
+		En = "%s defeated %s! %s weapon: [%s]!" }, -- {n} reorder + josa (good)
 	["Config.Announce.Text.FirstMax"] = { Ko = "%d님이 [%s]를 처음으로 +10까지 강화했어요!",
 		En = "%s is the first to enhance [%s] to +10!" }, -- %d for %s (placeholder types differ)
 	["Config.Announce.Text.Subject"] = { Ko = "%d", En = "%s" }, -- fails with a string: English fallback

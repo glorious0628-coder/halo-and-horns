@@ -373,7 +373,7 @@ local function newsLine(player, since)
 	if sum.Halo + sum.Horns > 0 then
 		local mine = player:GetAttribute("Faction") == "Horns" and "Horns" or "Halo"
 		local other = mine == "Horns" and "Halo" or "Horns"
-		return string.format(TXT.NewsWar or "While you were away, crown wars won: %s %d, %s %d",
+		return string.format(TXT.NewsWar or "Crown war wins while you were away: %s %d, %s %d",
 			sides[mine] or mine, sum[mine], sides[other] or other, sum[other])
 	end
 	if sum.Goose > 0 then return string.format(TXT.NewsGoose or "Goose rounds while you were away: %d", sum.Goose) end

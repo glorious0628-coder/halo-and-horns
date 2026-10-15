@@ -415,8 +415,8 @@ check(action(v, "Equip").Text == "Equip" and action(v, "Equip").Enabled, "anothe
 check(lineWith(v, "Power +10") ~= nil and v.Lines[2].Color == "Good", "Equip shows the power change first (최종 검수 10/13: 'Power +10' in green)", v.Lines[2] and v.Lines[2].Text)
 v = detail(byKey["W:7"] or byKey["W:4"])
 local lockTier = byKey["W:7"] and 7 or 4
-check(action(v, "Equip").Text == string.format("From Lv %d", Config.Weapons[lockTier].MinLevel) and not action(v, "Equip").Enabled,
-	"below its MinLevel: From Lv N, off (A23-28)", action(v, "Equip").Text)
+check(action(v, "Equip").Text == string.format("Needs Lv %d", Config.Weapons[lockTier].MinLevel) and not action(v, "Equip").Enabled,
+	"below its MinLevel: Needs Lv N, off (A23-28)", action(v, "Equip").Text)
 check(lineWith(v, "Power") == nil, "a weapon I can't equip yet shows no power change (UiSandbox 10/12)")
 check(T.TXT.Worn.PetGear == "Pet" and #T.TXT.Worn.Weapon <= 6, "the worn row's words are one short word each (UiSandbox 10/12)")
 v = detail(byKey["W:1"], { Combat = true })
@@ -468,7 +468,7 @@ check(lineWith(v, "Pick a weapon.") and action(v, "Cancel") and not action(v, "E
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 } })
 check(lineWith(v, "\n+3 → +4 · 70% chance") and action(v, "Enhance").Enabled, "enhance confirm: before → after + the chance before sending",
 	v.Lines[1] and v.Lines[1].Text)
-check(lineWith(v, "A fail may drop it 1 step.") ~= nil and lineWith(v, "never break") == nil,
+check(lineWith(v, "If it fails, it may drop by 1.") ~= nil and lineWith(v, "never break") == nil,
 	"a +1 or more weapon: a fail may drop it one step (no 'never break' line, user 10/14)")
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 1 } })
 check(lineWith(v, TXT.FailKeep) ~= nil, "a +0 weapon: nothing changes on a fail")
