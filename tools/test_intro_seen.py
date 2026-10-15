@@ -44,7 +44,7 @@ def static_checks() -> tuple[int, list[str]]:
             failures.append(message)
 
     writers = []
-    write = re.compile(r'(SetStat\([^)]*"IntroSeen"|SetAttribute\(\s*"IntroSeen"|\.IntroSeen\s*=[^=]|\["IntroSeen"\]\s*=[^=])')
+    write = re.compile(r'(SetStat\([^)]*"IntroSeen"|SetAttribute\(\s*"IntroSeen"|(?<!RateLimits)\.IntroSeen\s*=[^=]|\["IntroSeen"\]\s*=[^=])')
     for path in sorted((ROOT / "src").rglob("*.luau")):
         text = path.read_text(encoding="utf-8-sig")
         for match in write.finditer(text):
