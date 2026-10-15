@@ -3,6 +3,12 @@
 ## 10/15 — 스윕 새 실패·퀘스트 창 번역·폰 첫 10분 (최종 검수 지시 1~3)
 - **fix/sweep-1015 47682e87** (wt_kosweep, origin/main 위, 보고함): 79abb70e test_town_npcs = 오토 스승(A23-193) 반영(182/182) · 47682e87 QuestBook.RowWords = 목록 줄을 UIKit.TrWord로 번역(통째 → ' · ' 조각), quest_window 97·46/46.
 - 스윕 판정: costume_physics·skin_binding 은퇴, halloween·place_english·skeleton_ground 성긴 worktree 파일 없음, metrics_board 인자 필요 = 거짓. ranking 488/488(돌연변이 없이). **a23_14 7개 실패 = 개발 2 몫**(f3b67a9c 거위 알림 삭제 뒤 기대값) → 개발 2에 알림. audio는 다시 도는 중.
+- fix/sweep-1015 = main 병합됨(0661429f).
+- **dev1-codex-art 836c8cdf** (A23-195 b, 보고함): Config.Codex.Art { Frames, Poses[종]{Base,Cool,Silly}, CoolSide, Blend } + CodexUI ArtId/Poses/FrameOf/PoseWeights, CARD.Pose(기울기로 섞기). 빈 값 = 지금 모습. codex_ui 145·53/53.
+- **a) 꽃 슬라임 카드**: 게임 안도 슬라임 모습(빌린 Tripo 모델 TextureID → Color 안 보임; MonsterService는 색 안 입힘). 최종 검수에 선택지 ①종별 텍스처(A23-96 걸림) ②반투명 색 껍질 ③b 그림으로 해결(추천) 물음 — 답 대기.
+- c) 펫 12종 화면 = 개발 2 서버 뒤(이름 합의: Config.PetReady/PetBonus, 속성 PetBonusType·PetBonus, Species.Rarity·Bonus·Emote).
+- **무기 잡기 grip-3 (최종 검수 우선, build/codex/grip2_codex.md)**: worktree ../wt_grip(성긴, 가지 dev1-grip3). Config: Sword/DarkSword → SwordReady Rest{30}, Hammer → HammerCarry Rest{90}, Baton → BatonReady Rest{20}, 새 Meme 줄(옛 Side) + WeaponPose MemeKind "Meme". HoldPoses 3개 Codex 시작값. 재기: scratch grip3.py(HoldTest_1014, 한 Play에 9조합, DebugCommand Faction/Class; Rest 역산 'solve'). 화면 사용 요청함(전달함 대기). test_tool_grip 옛 값 검사(칼 뒤·아래) → 새 목표로 고칠 것.
+- 폰 새 사진(10/15, verification_2026-10-15/phone_first10): 대장간 'No materials to sell' 영어(번역 안 됨) → 무기 다음 고침. 겹침 수치는 창 뒤 HUD까지 센 것(실제 아님).
 - 폰: tools/play_phone_round_photos.py에 out=<dir> 추가(main 8a7a41d). 10/14 12:05 폰 사진은 옛판(출석 Claim·거위 칩 시간은 이미 고쳐짐). 메인 반영 1에게 `first10 out=docs/art/verification_2026-10-15/phone_first10` 새 사진 부탁(최종 검수 경유) → 오면 그걸로 고칠 목록.
 
 ## 10/15 밤 늦게 — 첫 사냥 힌트·T2 체감·Hero 스탯 화면 (push, 최신; 세션 clear 전)
