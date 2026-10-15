@@ -170,7 +170,7 @@ check("Faction: the Halo story", texts(Book.Sections("Faction", ctx()).InProgres
 GATTR.GooseActive, GATTR.PumpkinKingActive, GATTR.KaijuPhase, GATTR.WarRoundEndsAt = true, true, "Siren", NOW + 125
 s = Book.Sections("Event", ctx())
 check("Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05)",
-	texts(s.InProgress) == "Chase the goose | The Golden Goose is here! | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05",
+	texts(s.InProgress) == "Chase the goose | The Golden Goose is here! | The Pumpkin King is here! | A Kaiju is loose! | Crown War: next crown in 2:05",
 	texts(s.InProgress))
 GATTR = {}
 check("Event: no live event -> only the goose story", texts(Book.Sections("Event", ctx()).InProgress) == "Chase the goose")
@@ -207,7 +207,7 @@ ATTR.TutorialStep = 1
 s = Book.Sections("Main", ctx({ Entries = { row("tutorial", "Tutorial", "Defeat 5 slimes", 2, 5, { Pinned = true }) } }))
 check("Main done: nothing while the first mission runs", #s.Done == 0, texts(s.Done))
 ATTR.TutorialStep = 99
-check("Daily done: today's count", texts(Book.Sections("Daily", ctx()).Done) == "Daily quests today: 1/3")
+check("Daily done: today's count", texts(Book.Sections("Daily", ctx()).Done) == "Daily quests: 1/3")
 s = Book.Sections("Side", ctx({ DoneSession = { { Id = "story:S4", Text = "x", Kind = "Sub" }, { Id = "Kill", Text = "Slimes 5/5", Kind = "Daily" } } }))
 check("Side done: a story finished this session, by its title (not the daily)", texts(s.Done) == Config.StoryQuests.Defs.S4.Title,
 	texts(s.Done))
@@ -233,7 +233,7 @@ check("book: the Main tab has no Available (the chain has no level gate)", #s.Av
 check("book: Main done = the book's mains, then the first mission (no guessed chain)", texts(s.Done) == D.M1_4.Title .. " | First mission",
 	texts(s.Done))
 s = Book.Sections("Daily", ctx({ Book = BOOK, DoneSession = SESSION }))
-check("book: Daily done = today's count + the dailies finished this session", texts(s.Done) == "Daily quests today: 1/3 | Slimes 5/5", texts(s.Done))
+check("book: Daily done = today's count + the dailies finished this session", texts(s.Done) == "Daily quests: 1/3 | Slimes 5/5", texts(s.Done))
 
 -- 6) the window
 local REGISTERED, OPENED, CLOSED, CURRENT = {}, {}, 0, nil
@@ -294,7 +294,7 @@ local rows = bodyRows()
 check("Daily tab: two quest rows + today's count", #rows == 3 and rows[1].Name == "Quest", #rows)
 local newBtn, claimBtn = nil, nil
 for _, d in descendants(body) do
-	if d.Name == "Button" and d.Text == "New" then newBtn = d end
+	if d.Name == "Button" and d.Text == Config.ClientText.QuestBook.Reroll then newBtn = d end
 	if d.Name == "Button" and d.Text == "Claim" then claimBtn = d end
 end
 check("Daily rows carry [New] and [Claim]", newBtn ~= nil and claimBtn ~= nil)
