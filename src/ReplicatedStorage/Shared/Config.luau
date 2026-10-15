@@ -3492,7 +3492,7 @@ Config.StoryQuests = {
 			Start = "The sky crown glows for the side with more shards.\nEvery 100 monsters you beat = 1 point for your side!",
 			-- A23-135: a WarPoints step counts the kill units (monsters for the crown, golden = 5), not the whole points (final
 			-- review 10/13: 1 whole point = 100 kills blocked the main line for short sessions); 15 as before
-			Steps = { { Text = "Monsters for the crown %d/%d", Obj = { Type = "WarPoints", Count = 15 },
+			Steps = { { Text = "Defeat monsters for your side's crown %d/%d", Obj = { Type = "WarPoints", Count = 15 },
 				Neutral = { Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
 			Reward = { Gold = 1 },
 		},
