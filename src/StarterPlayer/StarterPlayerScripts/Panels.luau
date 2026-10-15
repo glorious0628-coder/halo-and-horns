@@ -3219,6 +3219,8 @@ end
 function STORY.OfferView(def, npc, f)
 	local offer = type(def) == "table" and type(def.Offer) == "table" and def.Offer or {}
 	local who = (type(npc) == "string" and npc ~= "") and npc or offer.Npc
+	-- quest P1 contract ①-1: Offer.Npc may be a table by side ({ Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" })
+	if type(who) == "table" then who = who[f] or who.Neutral end
 	local names = type(Config.StoryQuests.Speakers) == "table" and Config.StoryQuests.Speakers or {}
 	local src = type(offer.Lines) == "table" and offer.Lines or {}
 	local lines = (type(src[f]) == "table" and src[f]) or (type(src.All) == "table" and src.All) or {}
@@ -3244,6 +3246,23 @@ function STORY.RewardPreview(reward, level)
 		table.insert(out, { Icon = reward.Item, N = math.max(1, math.floor(n(reward.N))) })
 	end
 	if n(reward.BagSlots) > 0 then table.insert(out, { Icon = "IconBag", N = math.floor(n(reward.BagSlots)) }) end
+	return out
+end
+
+-- quest P1 contract ①-1: the server's own preview in the Offer payload (Reward = { Gold, XP, Items = { { Id, N } },
+-- BagSlots }, only what it really gives) -> the same { { Icon, N } } list; nil = no payload preview (then Config's)
+function STORY.PayloadReward(r)
+	if type(r) ~= "table" then return nil end
+	local out = {}
+	local function n(v) return math.floor(tonumber(v) or 0) end
+	if n(r.Gold) > 0 then table.insert(out, { Icon = "IconCoin", N = n(r.Gold) }) end
+	if n(r.XP) > 0 then table.insert(out, { Icon = "IconExp", N = n(r.XP) }) end
+	for _, it in type(r.Items) == "table" and r.Items or {} do
+		if type(it) == "table" and type(it.Id) == "string" and it.Id ~= "" then
+			table.insert(out, { Icon = it.Id, N = math.max(1, n(it.N)) })
+		end
+	end
+	if n(r.BagSlots) > 0 then table.insert(out, { Icon = "IconBag", N = n(r.BagSlots) }) end
 	return out
 end
 
@@ -3440,7 +3459,8 @@ BUILDERS.Offer = function(parent)
 	local typing = {}
 	TYPE.Tap(typing, line)
 	local pageLabel = addText(talk, "", { Name = "OfferPage", Size = 15, Color = theme.SubText, Align = align })
-	STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1))) -- §15 P1 ①: what helping pays
+	-- §15 P1 ①: what helping pays - the server's own numbers when it sends them, else Config's at my level
+	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)))
 	local actions = addRow(parent, 64, 10)
 	local last = function() return page >= #v.Lines end
 	local update
