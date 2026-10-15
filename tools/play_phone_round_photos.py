@@ -11,7 +11,9 @@ For every shot <dev>_<name>.json lists, over what is on screen (every ancestor s
   small = a button whose pressable area (with its UIKit.TapPad strips) is under 44 px on a side (a finger);
   off  = a button / text partly off the screen;
   overlap = two buttons that cover each other (not one inside the other);
-  tiny = a one-line text drawn under 17 real px (phone floor 19 px; finder only - judge by the photo).
+  tiny = a one-line text drawn under 17 real px (phone floor 19 px; finder only - judge by the photo);
+  english = (10/15) a drawn text (LocalizedText) with English words of 3+ letters (Lv / HP / MP / XP / PvP / VIP /
+  KO / Robux / MAX / 'Halo & Horns' allowed) - all of them gathered in english_words.json (run it in Korean).
 Usage: HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py [phone] [844]   (default both)
 Out: docs/art/verification_2026-10-13/phone_round/<dev>_<name>.png / .json, summary.txt, log.txt
 
@@ -153,7 +155,20 @@ local function box(o)
 	return { math.floor(p.X), math.floor(p.Y + y0), math.floor(s.X), math.floor(s.Y) }
 end
 local TINY = 17
-local out = { view = { vw, vh }, cut = {}, small = {}, off = {}, overlap = {}, tiny = {} }
+local out = { view = { vw, vh }, cut = {}, small = {}, off = {}, overlap = {}, tiny = {}, english = {} }
+-- 최종 검수 10/15 (Korean client: 'Paladin / Light Mage / Ranger' stayed English): the English words on screen, by what
+-- is DRAWN (LocalizedText = after Roblox's translation; rich-text tags out). A word = 3+ letters; the game's own short
+-- words / names are allowed (ENG_OK)
+local ENG_OK = { Lv = true, HP = true, MP = true, XP = true, PvP = true, VIP = true, KO = true, Robux = true, MAX = true }
+local function englishWords(t)
+	t = string.gsub(t, "<[^>]->", "")
+	t = string.gsub(t, "Halo & Horns", "")
+	local words = {}
+	for w in string.gmatch(t, "%a+") do
+		if #w >= 3 and not ENG_OK[w] and not string.find(w, "[^%w]") then table.insert(words, w) end
+	end
+	return words
+end
 local buttons = {}
 for _, d in pg:GetDescendants() do
 	if d:IsA("GuiObject") and shown(d) and (d.BackgroundTransparency < 1 or d:IsA("TextLabel") or d:IsA("TextButton")
@@ -162,6 +177,16 @@ for _, d in pg:GetDescendants() do
 		if b[3] > 2 and b[4] > 2 then
 			if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Text ~= "" and d.TextTransparency < 0.95 and d.TextFits == false then
 				table.insert(out.cut, { d:GetFullName():gsub("^.-PlayerGui%.", ""), d.Text, b })
+			end
+			if (d:IsA("TextLabel") or d:IsA("TextButton") or d:IsA("TextBox")) and d.TextTransparency < 0.95 then
+				local okL, drawn = pcall(function() return d.LocalizedText end)
+				local t = (okL and type(drawn) == "string" and drawn ~= "") and drawn or d.Text
+				if t ~= "" then
+					local words = englishWords(t)
+					if #words > 0 then
+						table.insert(out.english, { d:GetFullName():gsub("^.-PlayerGui%.", ""), t, words, d.AutoLocalize })
+					end
+				end
 			end
 			-- tiny = words drawn under TINY real px (the phone floor is 19; a line box ~ the text size). TextBounds is
 			-- already screen px (10/14 photos: multiplying by the UIScales again listed "Bag" as 9 px - it reads ~12)
@@ -220,6 +245,7 @@ def wait_state(c, cond, timeout, every=1.0):
 
 
 SUMMARY = []
+ENGLISH = {}  # 10/15: word -> where it showed (english_words.json)
 
 
 def audit(c, name):
@@ -231,7 +257,11 @@ def audit(c, name):
         return
     with open(os.path.join(OUT, name + ".json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)
-    line = f"{name}: cut {len(data['cut'])}, small {len(data['small'])}, off {len(data['off'])}, overlap {len(data['overlap'])}, tiny {len(data.get('tiny', []))}"
+    line = (f"{name}: cut {len(data['cut'])}, small {len(data['small'])}, off {len(data['off'])}, overlap {len(data['overlap'])}, "
+            f"tiny {len(data.get('tiny', []))}, english {len(data.get('english', []))}")
+    for item in data.get("english", []):
+        for w in item[2]:
+            ENGLISH.setdefault(w, []).append({"shot": name, "path": item[0], "text": item[1], "autoLocalize": item[3]})
     note(line)
     SUMMARY.append(line)
     for item in data["cut"][:8]:
@@ -355,6 +385,11 @@ def main():
             f.write("\n".join(LOG) + "\n")
         with open(os.path.join(OUT, "summary.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(SUMMARY) + "\n")
+        # 10/15: every English word drawn on the screens, most places first (the run should be in Korean)
+        words = sorted(ENGLISH.items(), key=lambda kv: (-len(kv[1]), kv[0]))
+        with open(os.path.join(OUT, "english_words.json"), "w", encoding="utf-8") as f:
+            json.dump({"words": len(words), "list": [{"word": w, "count": len(v), "where": v[:12]} for w, v in words]},
+                      f, ensure_ascii=False, indent=1)
 
 
 if __name__ == "__main__":
