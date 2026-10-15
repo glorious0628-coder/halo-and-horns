@@ -3458,8 +3458,9 @@ function L.WarCrownFrac(frac)
 	if half >= 0.5 then return 0.5 end
 	return math.clamp(frac, half, 1 - half)
 end
--- (pure) the war window's two lines (Config.WarInfo.Text): the round's time left (or NoRound) and "Halo 12 : 9 Horns"
-function HUD.WarInfoLines(endsAt, now, halo, horns)
+-- (pure) the war window's lines (Config.WarInfo.Text): the round's time left (or NoRound), "Halo 12 : 9 Horns" and
+-- (최종 검수 10/15 #11, mine = my personal points this round, attribute WarPoints) "My points: 3" - only real whole points
+function HUD.WarInfoLines(endsAt, now, halo, horns, mine)
 	local W = type(Config.WarInfo) == "table" and Config.WarInfo.Text or {}
 	local function side(f)
 		local def = type(Config.Factions) == "table" and Config.Factions[f] or nil
@@ -3468,8 +3469,30 @@ function HUD.WarInfoLines(endsAt, now, halo, horns)
 	endsAt, now = tonumber(endsAt) or 0, tonumber(now) or 0
 	local time = endsAt > now and L.Tx(W, "Time", Util.FormatTime(endsAt - now)) or W.NoRound or ""
 	return time, L.Tx(W, "Score", side("Halo"), fmtScore(math.max(0, tonumber(halo) or 0)),
-		fmtScore(math.max(0, tonumber(horns) or 0)), side("Horns"))
+		fmtScore(math.max(0, tonumber(horns) or 0)), side("Horns")),
+		L.Tx(W, "Mine", math.floor(math.max(0, tonumber(mine) or 0)))
 end
+
+-- 최종 검수 10/15 #11 (my small hunting share was not readable): Fx CrownPoint { N, Total } = whole personal points the
+-- server really added (never a "+1" per monster) -> my side's badge on the war bar pops once (no number, no banner;
+-- none with ReducedMotion)
+function L.CrownPop(data)
+	if type(data) ~= "table" or (tonumber(data.N) or 0) < 1 then return false end
+	local f = getFaction()
+	local badge = (f == "Halo" and ui.warBadgeHalo) or (f == "Horns" and ui.warBadgeHorns) or nil
+	if not (badge and badge.Parent and ui.war and ui.war.Visible) or UIKit.ReducedMotion() then return false end
+	local s = badge:FindFirstChild("CrownPop") or Instance.new("UIScale")
+	s.Name = "CrownPop"
+	s.Parent = badge
+	local P = L.CrownPopCfg
+	local up = TweenService:Create(s, TweenInfo.new(P.Up, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = P.Scale })
+	up.Completed:Connect(function()
+		TweenService:Create(s, TweenInfo.new(P.Down, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	end)
+	up:Play()
+	return true
+end
+L.CrownPopCfg = { Scale = 1.22, Up = 0.16, Down = 0.35 }
 
 -- 상단 HUD 1안 ① (최종 검수 10/14: "막대 누르면 전쟁 창(시간·점수)"): the small war window - Panels' own parts and texts,
 -- the words in Config.WarInfo; it redraws every second while open
@@ -3483,9 +3506,11 @@ function L.RegisterWarInfo()
 		Build = function(parent, k)
 			local time = k.Text(parent, "", { Name = "Time", Size = 22, Align = Enum.TextXAlignment.Center, Color = k.Theme.Gold })
 			local score = k.Text(parent, "", { Name = "Score", Size = 20, Align = Enum.TextXAlignment.Center })
+			local mine = k.Text(parent, "", { Name = "Mine", Size = 18, Align = Enum.TextXAlignment.Center })
 			local function draw()
-				time.Text, score.Text = HUD.WarInfoLines(UIKit.GameAttr("WarRoundEndsAt", 0), Util.Now(),
-					UIKit.GameAttr("WarHaloScore", 0), UIKit.GameAttr("WarHornsScore", 0))
+				time.Text, score.Text, mine.Text = HUD.WarInfoLines(UIKit.GameAttr("WarRoundEndsAt", 0), Util.Now(),
+					UIKit.GameAttr("WarHaloScore", 0), UIKit.GameAttr("WarHornsScore", 0), num("WarPoints", 0))
+				mine.Visible = getFaction() == "Halo" or getFaction() == "Horns" -- the Guild never earns war points
 			end
 			draw()
 			task.spawn(function()
@@ -6112,6 +6137,11 @@ function HUD.Start()
 		return
 	end
 	pcall(L.RegisterWarInfo) -- 상단 HUD 1안 ①: the war bar's window (Panels is ready: every Init ran)
+	pcall(function() -- 최종 검수 10/15 #11: a real whole crown point of mine pops my side's badge
+		Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
+			if kind == "CrownPoint" then pcall(L.CrownPop, data) end
+		end)
+	end)
 
 	-- visibility itself is owned by the 0.2 s loop: the pickers start after HUD, so checking IsOpen() here could
 	-- flash the HUD for a frame before the faction picker opens
