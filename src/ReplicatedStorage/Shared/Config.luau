@@ -3447,17 +3447,34 @@ Config.StoryQuests = {
 		-- the Accept. Each side asks in its own words; the steps stay
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Type = "Combat", Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
-			Offer = { Npc = "Otto", Lines = {
-				Halo = { "Otto: Please free the shiny band from that slime." },
-				Horns = { "Otto: Please grab the shiny band from that slime." },
-				Neutral = { "Otto: Please bring back the shiny band from that slime." } } },
+			-- A23-208 / A23-210 story fields (r2 §2 H01 / R01 / N01, r4 §6): the steps say the player's own words on the spot
+			Offer = { Npc = "Otto", Before = {
+					Halo = "Shard dust made him bounce! He swallowed the band!",
+					Horns = "Shard dust, wild hops... and he swallowed his new 'hat'!",
+					Neutral = "Too much shard dust! He bounced and swallowed the band." },
+				Lines = {
+				Halo = { "Otto: Will you beat him and get the band back?" },
+				Horns = { "Otto: Will you beat him and grab the band?" },
+				Neutral = { "Otto: Will you beat him and bring the band out?" } } },
 			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
 			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
 			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
 			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "SlimeMeadow",
-					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
+					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 },
+					On = "Self", Find = "That's not a snack!", Scene = "Sparkle",
+					Horns = { Find = "A hat goes on your head!", Scene = "Laugh" },
+					Neutral = { Find = "Shiny things aren't all food!" } },
 				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
-					Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
+					Obj = { Type = "Event", Name = "ScrollUsed", Past = true },
+					On = "Self", Find = "Two knots... two colors?", Scene = "Nod",
+					Lines = { Halo = { "Got the band! That knot is still holding." },
+						Horns = { "Got it! Wait. The band is on my head." },
+						Neutral = { "That knot looks bent. But it held on tight." } },
+					Horns = { Find = "Two knots? Fancy hat!", Scene = "Laugh" },
+					Neutral = { Find = "Two knots. Someone tried hard." } } },
+			Next = { Halo = { Id = "H_Band", Line = "Bright has a ribbon like this." },
+				Horns = { Id = "R_Band", Line = "Rose has to see this pose." },
+				Neutral = { Id = "M1_3", Line = "Otto has a test for me at level 5." } },
 			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!\nDust spills out! …And a braided band? Gold and purple.",
 			-- 최종 검수 10/15 (user: a second Slime Prince right after the scroll felt like a repeat): M1_2 "one more Prince" is
 			-- gone; its line (Bright's bracelet clue) closes M1_1 above, then M1_3 (the first skill). A save on M1_2 goes on to
@@ -3470,29 +3487,50 @@ Config.StoryQuests = {
 		-- teaches the first skill there (Config.Skills.Learn.Gate: Q waits for this quest's Learn step). Old saves: Story.Schema 3
 		M1_3 = {
 			Kind = "Main", Chapter = 1, Type = "Test", Title = "The Teacher's Test", ShortName = "Lv5 test",
-			Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" }, Lines = {
-				Halo = { "Sir Gleam: Beat four slimes, then return our neighbor's bag." },
-				Horns = { "Rose: Beat four slimes, then take Tiny this snack prank." },
-				Neutral = { "Otto: Beat four slimes, then make something for Tiny." } } },
+			Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" }, Before = {
+					Halo = "Four slimes are bouncing our neighbor's bag across the road!",
+					Horns = "Those slimes are bouncing Tiny's snack box. Ribbon and all!",
+					Neutral = "Those slimes are bouncing tool baskets down the road!" },
+				Lines = {
+				Halo = { "Sir Gleam: For my test, beat four slimes with basic attacks.", "Sir Gleam: Return the bag, then come back to me." },
+				Horns = { "Rose: For my test, beat four slimes with basic attacks.", "Rose: Take Tiny this snack box, then come back to me." },
+				Neutral = { "Otto: For my test, beat four slimes with basic attacks.", "Otto: Make Tiny's order, help her, then come back to me." } } },
 			Requires = { Level = 5 },
 			Steps = {
 				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "SlimeMeadow",
-					Obj = { Type = "BasicKill", Kind = "Slime", Count = 4 } },
+					Obj = { Type = "BasicKill", Kind = "Slime", Count = 4 },
+					On = "Self", Find = "Hey! That's someone's bag!",
+					Horns = { Find = "You can't eat a ribbon!" }, Neutral = { Find = "That's a tool basket, not lunch!" } },
 				{ Text = "Pick up the lost bag", ShortName = "Lost bag", Guide = "LostBag", Obj = { Type = "Pickup", Spot = "LostBag", Radius = 8 },
+					On = "Self", Find = "There's the bag. Time to take it home.",
 					Horns = { Text = "Get the snack parcel by Rose", ShortName = "Snack parcel", Guide = "SnackParcel",
-						Obj = { Type = "Pickup", Spot = "SnackParcel", Radius = 8 } },
+						Obj = { Type = "Pickup", Spot = "SnackParcel", Radius = 8 }, Find = "That's a very big ribbon." },
 					Neutral = { Text = "Make something for Tiny %d/%d", ShortName = "Make it", Guide = "Blacksmith",
-						Obj = { Type = "Craft", Role = "Own", Count = 1 } } },
+						Obj = { Type = "Craft", Role = "Own", Count = 1 }, Find = "Tiny is waiting for this." } },
+				-- (no Scene here: the SetFlag Help scene is the reaction, once: the neighbour's wave / Tiny's laugh / the made thing used)
 				{ Text = "Give the bag back to its owner", ShortName = "Return bag", Npc = "Folk1", Obj = { Type = "Deliver" },
 					SetFlag = { Key = "Help", Value = "Bag" }, -- P1 ⑦: the neighbour's big wave (bible rule 3)
-					Horns = { Text = "Give Tiny the snack parcel", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Prank" } },
+					Find = "My bag! You found it!",
+					Lines = { Halo = { "Neighbor: Wait! I need a free hand to wave!" },
+						Horns = { "Tiny: Ha! The snack is mine. The ribbon picked you!" },
+						Neutral = { "Tiny: You made this for me?" } },
+					Horns = { Text = "Give Tiny the snack parcel", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Prank" },
+						Find = "Ooh! Is that from Rose?" },
 					-- the artisan's made thing is used (Value Class = by craft: Smith the wheel rolls, Alch Tiny drinks and hops, Tame the
 					-- baby slime eats the treat and comes close; bible rule 5)
-					Neutral = { Text = "Give Tiny what you made", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Class" } } },
+					Neutral = { Text = "Give Tiny what you made", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Class" },
+						Find = "Is that my order?" } },
 				{ Text = "Learn your first skill from Sir Gleam", ShortName = "Learn a skill", Npc = "Gleam", Obj = { Type = "Learn", Slot = "Q" },
-					Horns = { Text = "Learn your first skill from Rose", Npc = "Smokey" },
-					Neutral = { Text = "Learn your first skill from Otto", Npc = "Otto" } },
+					Find = "I saw that big wave!", Scene = "Wave",
+					Lines = { Halo = { "Sir Gleam: They'll wave when they see you now. So will I." },
+						Horns = { "Rose: That ribbon suits you. Mine can be just as silly." },
+						Neutral = { "Otto: You made it. Tiny used it. That's good work." } },
+					Horns = { Text = "Learn your first skill from Rose", Npc = "Smokey", Find = "Ah! My ribbon found its captain.", Scene = "Cheer" },
+					Neutral = { Text = "Learn your first skill from Otto", Npc = "Otto", Find = "Back already? Let me see you.", Scene = "Clap" } },
 			},
+			Next = { Halo = { Id = "M1_4", Line = "Sir Gleam: Bright wants to try that dust in a lamp." },
+				Horns = { Id = "M1_4", Line = "Rose: Let's find a light for that big pose." },
+				Neutral = { Id = "M1_4", Line = "Otto: Tiny has a lamp ready for your dust." } },
 			Reward = { Gold = 1 },
 		},
 		-- quest bible v3 H04 / R04 / N04 (P1 ⑦): the first chapter's ending. The side's townsperson ASKS (Bright / Rose / Tiny), the
@@ -3501,10 +3539,16 @@ Config.StoryQuests = {
 		-- Old saves on the old steps start at the lamp (Story.Schema 4)
 		M1_4 = {
 			Kind = "Main", Chapter = 1, Type = "Choice", Title = "A Light for the Lamp", ShortName = "The lamp", Claim = true,
-			Offer = { Npc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" }, Lines = {
-				Halo = { "Bright: Please try your dust in this lamp." },
-				Horns = { "Rose: Please show us what that dust can do." },
-				Neutral = { "Tiny: Please choose a home for our repaired lamp." } } },
+			-- A23-208: chapter 1 ends here (Last). The next lines are H1 / R1 / N3's own (they wait for M2_3; M2_1 starts by itself)
+			Last = true,
+			Offer = { Npc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" }, Before = {
+					Halo = "Our neighbor keeps waving, even when it's dark.",
+					Horns = "No one can see my best pose in the dark.",
+					Neutral = "I want to see your work, even after dark." },
+				Lines = {
+				Halo = { "Bright: Will you put the dust in our lamp or on your mark?" },
+				Horns = { "Rose: Will you light our lamp, or make your horns shine?" },
+				Neutral = { "Tiny: Will you fix our lamp or light your work lamp?" } } },
 			Steps = {
 				{ Text = "Go to the town lamp", ShortName = "To the lamp", Guide = "LampH", Obj = { Type = "Near", Spot = "LampH", Radius = 12 },
 					Horns = { Guide = "LampR", Obj = { Type = "Near", Spot = "LampR", Radius = 12 } },
@@ -3524,21 +3568,23 @@ Config.StoryQuests = {
 						Neutral = { A = "Fix the town lamp", B = "Light my work lamp" },
 						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } } } },
 				{ Text = "Back to Bright", ShortName = "Back to Bright", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Find = "There you are! Over here!", Scene = "Wave",
 					Lines = { All = { "Bright: Look at that!" } },
 					LinesBy = { From = "M1_4",
 						-- 최종 검수 10/15: the guide's one question closes chapter 1 (the one goal: crown shards -> halo / horns), in this card
-						Good = { Halo = { "Bright: Look! Everyone is waving at you!", "Hallie: More shards are out there. What will you do with the next one?" },
-							Horns = { "Rose: The whole town is glowing! Not bad, boss.", "Magpie: More shards are out there. What will you do with the next one?" },
-							Neutral = { "Tiny: Everyone's gathering round the lamp!", "Kit: More shards are out there. What will you do with the next one?" } },
-						Evil = { Halo = { "Bright: So shiny! …I'm covering my eyes, hee hee.", "Hallie: More shards are out there. What will you do with the next one?" },
-							Horns = { "Rose: Your shadow looks so silly! HA!", "Magpie: More shards are out there. What will you do with the next one?" },
-							Neutral = { "Tiny: Your tools are sparkling!", "Kit: More shards are out there. What will you do with the next one?" } },
-						A = { All = { "Tiny: Everyone's gathering round the lamp!", "Kit: More shards are out there. What will you do with the next one?" } },
-						B = { All = { "Tiny: Your tools are sparkling!", "Kit: More shards are out there. What will you do with the next one?" } },
+						-- (A23-208 r2 H04 / R04 / N04: the townsperson's line first)
+						Good = { Halo = { "Bright: We saved a wave for you. Look, there's mine!", "Hallie: More shards are out there. What will you do with the next one?" },
+							Horns = { "Rose: Now everyone can pose. You start!", "Magpie: More shards are out there. What will you do with the next one?" },
+							Neutral = { "Tiny: Now everyone can see what you made!", "Kit: More shards are out there. What will you do with the next one?" } },
+						Evil = { Halo = { "Bright: We saved a wave for you. I can see yours now!", "Hallie: More shards are out there. What will you do with the next one?" },
+							Horns = { "Rose: You go first. I'll copy you.", "Magpie: More shards are out there. What will you do with the next one?" },
+							Neutral = { "Tiny: Your own light! Can I watch you work?", "Kit: More shards are out there. What will you do with the next one?" } },
+						A = { All = { "Tiny: Now everyone can see what you made!", "Kit: More shards are out there. What will you do with the next one?" } },
+						B = { All = { "Tiny: Your own light! Can I watch you work?", "Kit: More shards are out there. What will you do with the next one?" } },
 						Default = { Halo = { "Bright: Look at that!", "Hallie: More shards are out there. What will you do with the next one?" }, Horns = { "Rose: Look at that!", "Magpie: More shards are out there. What will you do with the next one?" },
 							Neutral = { "Tiny: Look at that!", "Kit: More shards are out there. What will you do with the next one?" } } },
-					Horns = { Text = "Back to Rose", ShortName = "Back to Rose", Npc = "Smokey" },
-					Neutral = { Text = "Back to Tiny", ShortName = "Back to Tiny", Npc = "Tiny" } },
+					Horns = { Text = "Back to Rose", ShortName = "Back to Rose", Npc = "Smokey", Find = "I saved a spot beside me.", Scene = "Cheer" },
+					Neutral = { Text = "Back to Tiny", ShortName = "Back to Tiny", Npc = "Tiny", Find = "Where shall we put the light?", Scene = "Clap" } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
@@ -3658,8 +3704,9 @@ Config.StoryQuests = {
 			Start = "The Goblin Brute has the sack. Beat it with friends. Everyone counts!",
 			Steps = { { Text = "Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Count = 1 } } },
 			Finish = "Brute: Not stealing! I'm a… surprise collector.",
+			-- A23-209: the drawing is two friends (chapter 2's knot), never the crown's night
 			Clue = "In the sack: a crayon drawing. Two kids holding something round.\nThe sun? A cookie?\n"
-				.. "Brute: Found it by the fountain. The night of the big CRACK!",
+				.. "Brute: Found it by the fountain. Two friends drew it together!",
 			Reward = { Gold = 1 },
 		},
 		M3_4 = {
@@ -3730,13 +3777,14 @@ Config.StoryQuests = {
 			Reward = { Gold = 1 },
 		},
 		M3_8 = {
-			Kind = "Main", Chapter = 3, Title = "Call of the Tombs", ShortName = "The tombs", Claim = true,
+			-- A23-209: skeletons are cartoon townsfolk (no tombs, no ghosts): the ruins, and the captain's odd drill
+			Kind = "Main", Chapter = 3, Title = "Call of the Ruins", ShortName = "The ruins", Claim = true,
 			Steps = {
 				{ Text = "Lv25 · Skeleton Ruins (now Lv%d)", Obj = { Type = "Level", Level = 25 } },
 				{ Text = "Go to the Skeleton Ruins", Guide = "SkeletonRuins", Obj = { Type = "Enter", Zone = "SkeletonRuins" } },
-				{ Text = "Listen to the tombs", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					All = { "A big shard sleeps in the old kingdom's tombs.",
-						"From the tombs, a sleepy voice: 'Is it still Tuesday?'",
+				{ Text = "Listen at the ruins", Panel = true, Obj = { Type = "Talk" }, Lines = {
+					All = { "A big shard shines somewhere in the Skeleton Ruins.",
+						"From the ruins: clack, clack! 'Left foot! No... MY left!'",
 						"The goblins took dust for light. Then they forgot why.\nWhat do YOU want the shard for?" },
 				} },
 			},
@@ -3783,43 +3831,55 @@ Config.StoryQuests = {
 		N0 = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
 			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
-			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
+			Offer = { Npc = "Otto", Before = "Tiny keeps pushing a cart with one stuck wheel.", Lines = { All = {
+				"Otto: Will you gather three herbs and two copper ores?", "Otto: We'll keep them in Tiny's order box." } } },
 			Start = "Kit: Pick herbs, mine copper, then make something!",
 			Steps = {
 				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
 					{ Key = "a", Type = "Gather", Item = "Herb", Count = 3 },
 					{ Key = "b", Type = "Gather", Item = "CopperOre", Count = 2 },
-				} } },
+				} }, On = "Self", Find = "These are for Tiny's wheel." },
 				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
-					Obj = { Type = "Match", Target = "Knot", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
-				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
+					Obj = { Type = "Match", Target = "Knot", Wrong = { "Seal", "Tag" } }, -- P1 ④ (bible N03: the order box)
+					On = "Self", Find = "A little box for a little wheel." },
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 },
+					On = "Self", Find = "Let's make it roll.", Lines = { All = { "Made it! This wheel is for Tiny." } }, Scene = "Nod" },
 			},
+			Next = { Id = "M1_3", Line = "Otto's test comes next. Tiny needs this wheel." },
 			Reward = { GoldN = 150, EquipCrafted = true },
 		},
 		N0A = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
 			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
-			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
+			Offer = { Npc = "Otto", Before = "Tiny wants to play, but needs her little potion first.", Lines = { All = {
+				"Otto: Will you gather three herbs for Tiny's potion?", "Otto: We'll keep them in her order box." } } },
 			Start = "Kit: Pick herbs, then brew something!",
 			Steps = {
-				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
+				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 }, On = "Self", Find = "Three herbs for Tiny." },
 				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
-					Obj = { Type = "Match", Target = "Gem", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
-				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
+					Obj = { Type = "Match", Target = "Gem", Wrong = { "Seal", "Tag" } }, -- P1 ④ (bible N03: the order box)
+					On = "Self", Find = "Her box is ready." },
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 },
+					On = "Self", Find = "One little bottle. Here goes!", Lines = { All = { "Made it! This bottle is for Tiny." } }, Scene = "Nod" },
 			},
+			Next = { Id = "M1_3", Line = "Otto's test comes next. Tiny needs this potion." },
 			Reward = { GoldN = 150 },
 		},
 		N0T = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
 			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
-			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
+			Offer = { Npc = "Otto", Before = "Tiny's little slime keeps sniffing an empty bowl.", Lines = { All = {
+				"Otto: Will you gather three herbs for its treat?", "Otto: We'll keep them in Tiny's order box." } } },
 			Start = "Kit: Pick herbs, then make pet treats!",
 			Steps = {
-				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
+				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 }, On = "Self", Find = "I hope it likes these." },
 				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
-					Obj = { Type = "Match", Target = "Patch", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
-				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
+					Obj = { Type = "Match", Target = "Patch", Wrong = { "Seal", "Tag" } }, -- P1 ④ (bible N03: the order box)
+					On = "Self", Find = "This box smells like herbs." },
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 },
+					On = "Self", Find = "One treat, coming up!", Lines = { All = { "Made it! I hope the little slime likes it." } }, Scene = "Nod" },
 			},
+			Next = { Id = "M1_3", Line = "Otto's test comes next. Tiny is waiting." },
 			Reward = { GoldN = 150 },
 		},
 		N0b = {
@@ -4686,33 +4746,38 @@ Config.QuestShapes = {
 Config.StoryQuests.Defs.H_Basics = {
 	Kind = "Sub", Title = "Sir Gleam's Lesson", ShortName = "First lesson", Speaker = "Gleam", Factions = { Halo = true },
 	Requires = { TeacherMet = true },
-	Offer = { Npc = "Gleam", AcceptScene = "Demo", Lines = { All = { "Sir Gleam: Watch my swing, then try one hit." } } },
+	Offer = { Npc = "Gleam", AcceptScene = "Demo", Before = "There's room for two beside my shield.",
+		Lines = { All = { "Sir Gleam: Watch one swing, then try one hit beside me?" } } },
 	Steps = {
 		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeH",
-			Obj = { Type = "Practice", Spot = "PracticeH", Radius = 10, Count = 1 } },
+			Obj = { Type = "Practice", Spot = "PracticeH", Radius = 10, Count = 1 }, Find = "Your turn. I'm right here." },
 		{ Text = "Give the practice tool back to Sir Gleam", ShortName = "Return tool", Npc = "Gleam", Guide = "PracticeH",
-			Obj = { Type = "Deliver" } },
+			Obj = { Type = "Deliver" }, Lines = { All = { "Sir Gleam: Good hit! You fit right beside me." } }, Scene = "Bow" },
 	},
 }
 Config.StoryQuests.Defs.R_Basics = {
 	Kind = "Sub", Title = "Rose's Lesson", ShortName = "First lesson", Speaker = "Smokey", Factions = { Horns = true },
 	Requires = { TeacherMet = true },
-	Offer = { Npc = "Smokey", AcceptScene = "Demo", Lines = { All = { "Rose: Watch my hit, then try one of your own." } } },
+	Offer = { Npc = "Smokey", AcceptScene = "Demo", Before = "My best pose needs another captain.",
+		Lines = { All = { "Rose: Watch my hit, then try one beside me?" } } },
 	Steps = {
 		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeR",
-			Obj = { Type = "Practice", Spot = "PracticeR", Radius = 10, Count = 1 } },
+			Obj = { Type = "Practice", Spot = "PracticeR", Radius = 10, Count = 1 }, Find = "Your turn, captain!" },
 		{ Text = "Give the practice tool back to Rose", ShortName = "Return tool", Npc = "Smokey", Guide = "PracticeR",
-			Obj = { Type = "Deliver" } },
+			Obj = { Type = "Deliver" }, Find = "That hat likes your pose.", Lines = { All = { "Rose: Ha! The hat wants to be captain too." } },
+			Scene = "Laugh" },
 	},
 }
 Config.StoryQuests.Defs.N_Basics = {
 	Kind = "Sub", Title = "Otto's Lesson", ShortName = "First lesson", Speaker = "Smith", Factions = { Neutral = true },
 	Requires = { TeacherMet = true },
-	Offer = { Npc = "Otto", AcceptScene = "Demo", Lines = { All = { "Otto: Watch my hit, then try it with your tool." } } },
+	Offer = { Npc = "Otto", AcceptScene = "Demo", Before = "This old dummy has met every new maker here.",
+		Lines = { All = { "Otto: Watch my hit, then try one with your tool?" } } },
 	Steps = {
 		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeN",
-			Obj = { Type = "Practice", Spot = "PracticeN", Radius = 10, Count = 1 } },
-		{ Text = "Show Otto your hit", ShortName = "Back to Otto", Npc = "Otto", Guide = "Blacksmith", Obj = { Type = "Deliver" } },
+			Obj = { Type = "Practice", Spot = "PracticeN", Radius = 10, Count = 1 }, Find = "Your turn. I'll hold the stand." },
+		{ Text = "Show Otto your hit", ShortName = "Back to Otto", Npc = "Otto", Guide = "Blacksmith", Obj = { Type = "Deliver" },
+			Lines = { All = { "Otto: Ha! It nodded. I think it likes your work." } }, Scene = "Nod" },
 	},
 }
 for _, id in { "H_Basics", "R_Basics", "N_Basics" } do table.insert(Config.StoryQuests.Subs, id) end
@@ -4744,10 +4809,13 @@ Config.Skills.Learn.Gate = { Q = "M1_3" }
 Config.StoryQuests.Defs.H_Band = {
 	Kind = "Sub", Title = "Two-Color Band", ShortName = "The band", Speaker = "Bright", Factions = { Halo = true },
 	Requires = { Done = { "M1_1" }, Level = 3 },
-	Offer = { Npc = "Bright", Lines = { All = { "Bright: Please hold that band beside my ribbon." } } },
+	Offer = { Npc = "Bright", Before = "Oh! I know that funny little knot.",
+		Lines = { All = { "Bright: Will you hold the band beside my ribbon?" } } },
+	Next = { Id = "M1_3", Line = "Bright: Sir Gleam has a test for you at level 5." },
 	Steps = {
 		{ Text = "Show Bright the band", ShortName = "Show the band", Npc = "Bright", Panel = true,
-			Lines = { All = { "Bright: Gold and purple… just like my ribbon!" } },
+			Find = "That bent bit... that's the one!",
+			Lines = { All = { "Bright: Gold and purple… just like my ribbon!", "Bright: It's crooked. Please leave it like that." } },
 			Obj = { Type = "Choice", Good = { Label = "Show it", Points = 0, Pick = "Show" },
 				Evil = { Label = "Hide it for now", Points = 0, Pick = "Hide" },
 				Neutral = { A = "Show it", B = "Hide it for now" },
@@ -4757,9 +4825,12 @@ Config.StoryQuests.Defs.H_Band = {
 Config.StoryQuests.Defs.R_Band = {
 	Kind = "Sub", Title = "Victory Pose", ShortName = "Victory pose", Speaker = "Smokey", Factions = { Horns = true },
 	Requires = { Done = { "M1_1" }, Level = 3 },
-	Offer = { Npc = "Smokey", Lines = { All = { "Rose: Please show me your biggest victory pose." } } },
+	Offer = { Npc = "Smokey", Before = "That band is stuck on your head!",
+		Lines = { All = { "Rose: Will you show me your biggest victory pose?" } } },
+	Next = { Id = "M1_3", Line = "Rose: Come see me at level 5. I have a test for you." },
 	Steps = {
 		{ Text = "Strike a pose on the spot (cheer or wave)", ShortName = "Strike a pose", Guide = "PoseSpot",
+			Find = "Go on. Make it huge!", Lines = { All = { "Rose: Wait, I can see two little knots!", "Rose: Keep it. Now we match!" } },
 			Obj = { Type = "Emote", Spot = "PoseSpot", Radius = 10, Allowed = { cheer = "Evil", wave = "Good" },
 				Flag = { Key = "Crown", Good = "Bow", Evil = "Paper" } } },
 	},
@@ -8046,9 +8117,9 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 / story_depth §0-1 (final ending 1a2475e): the story everyone tells — someone greedy broke the Crown, each
-	-- side blames the other. It is a rumor (two kids broke it together, shown only in the last chapter), so every
-	-- line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
+	-- A23-55 / story_depth §0-1: the story everyone tells — someone greedy broke the Crown, each side blames the other. It
+	-- is only a rumor: A23-209 (user 10/15) Captain Clatter broke it by mistake (a clamp held it too still: CRACK), told in
+	-- act 2, never in chapters 1-5; so every line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
 	Premise = {
 		"They say someone broke the Crown of Balance.",
 		"Some who picked up its shards grew a halo. Others grew horns.",
@@ -11152,10 +11223,10 @@ Config.ClientText.EventHUD = {
 }
 Config.ClientText.FirstSteps = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
 Config.ClientText.Intro = {
-	Lines = {
-		"They say the Crown of Balance broke.",
-		"Some who touched the shards grew halos. Others grew horns.",
-		"Whoever gathers more shards will remake the world.",
+	Lines = { -- A23-209 (user 10/15)
+		"The Crown of Balance broke.",
+		"Some grew halos. Others grew horns.",
+		"Gather shards. Make their power your own.",
 	},
 	Ask = "Which side will you join?",
 	Skip = "Skip",

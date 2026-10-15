@@ -3130,14 +3130,33 @@ runGroup("p1 lamp and scenes", function()
 	w:Npc("Bright", BRIGHT)
 	w:Npc("Smokey", ROSE)
 	w:Npc("Tiny", TINY)
-	local function scenes(p, from)
+	local function scenes(p, from) -- the result scenes (A23-208 Find bubbles / step Scenes: their own group)
 		local out = {}
 		for i = (from or 0) + 1, #w.Fx do
 			local f = w.Fx[i]
-			if f.Kind == "StoryScene" and f.Player == p then table.insert(out, f.Data.Key .. "=" .. tostring(f.Data.Value)) end
+			if f.Kind == "StoryScene" and f.Player == p and f.Data.Key ~= "Find" and f.Data.Key ~= "Scene" then
+				table.insert(out, f.Data.Key .. "=" .. tostring(f.Data.Value))
+			end
 		end
 		return table.concat(out, ",")
 	end
+	-- A23-208 / A23-210 (chapter 1 story, r2 §2 + r4 §6): the words only; steps, goals and rewards as before
+	local C = w.Config
+	local D = SQ.Defs
+	check(#D.M1_1.Steps == 2 and #D.M1_3.Steps == 4 and #D.M1_4.Steps == 3 and D.M1_1.Reward.Gold == 1 and D.M1_3.Reward.Gold == 1,
+		"chapter 1 story: the step counts and rewards are unchanged", show({ #D.M1_1.Steps, #D.M1_3.Steps, #D.M1_4.Steps }))
+	check(C.QuestNext(D.M1_1, "Halo").Id == "H_Band" and C.QuestNext(D.M1_1, "Horns").Id == "R_Band"
+		and C.QuestNext(D.M1_1, "Neutral").Id == "M1_3" and C.QuestNext(D.M1_3, "Horns").Id == "M1_4" and D.M1_4.Last == true
+		and C.QuestNext(D.M1_4, "Halo") == nil, "chapter 1 story: each side's next hook; M1_4 ends the chapter (Last)", "")
+	check(string.find(C.QuestBefore(D.M1_1, "Horns", {}), "Shard dust", 1, true) ~= nil
+		and string.find(C.QuestBefore(D.M1_3, "Neutral", {}), "tool baskets", 1, true) ~= nil
+		and C.QuestBefore(D.H_Basics, "Halo", {}) == "There's room for two beside my shield.",
+		"chapter 1 story: the sides' situation lines (A23-210 shard-dust trouble)", "")
+	check(D.M1_1.Steps[1].On == "Self" and D.M1_1.Steps[2].On == "Self" and D.M1_3.Steps[1].On == "Self"
+		and D.M1_3.Steps[3].Scene == nil and D.M1_3.Steps[4].Horns.Scene == "Cheer" and D.N0.Steps[3].Scene == "Nod",
+		"chapter 1 story: the player's own words (On = Self); the Help flag scene stays the only reaction at the delivery", "")
+	check(C.ClientText.Intro.Lines[2] == "Some grew halos. Others grew horns."
+		and C.ClientText.Intro.Lines[3] == "Gather shards. Make their power your own.", "A23-209: the opening's lines 2 and 3", "")
 	local M = SQ.Defs.M1_4
 	check(M.Claim == true and M.Offer.Npc.Halo == "Bright" and M.Offer.Npc.Horns == "Smokey" and M.Offer.Npc.Neutral == "Tiny"
 		and M.Steps[1].Obj.Spot == "LampH" and M.Steps[1].Horns.Obj.Spot == "LampR" and M.Steps[1].Neutral.Obj.Spot == "LampN"
