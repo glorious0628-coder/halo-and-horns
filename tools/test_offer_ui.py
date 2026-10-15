@@ -57,6 +57,13 @@ check("an item by its own icon, its count", r[3].Icon == "Petal" and r[3].N == 3
 check("bag slots by the bag icon", r[4].Icon == "IconBag" and r[4].N == 4)
 check("no reward: no row", #STORY.RewardPreview(nil, 3) == 0 and #STORY.RewardPreview({}, 3) == 0)
 check("an item without N counts 1", STORY.RewardPreview({ Item = "Petal" }, 1)[1].N == 1)
+-- quest P1 contract: the server's preview in the payload wins
+local pr = STORY.PayloadReward({ Gold = 40, Items = { { Id = "Petal", N = 2 } }, BagSlots = 4 })
+check("the payload's preview: gold, items, bag slots", pr[1].Icon == "IconCoin" and pr[1].N == 40 and pr[2].Icon == "Petal"
+	and pr[2].N == 2 and pr[3].Icon == "IconBag", pr[1] and pr[1].N)
+check("no payload preview: nil (Config's then)", STORY.PayloadReward(nil) == nil)
+local vt = STORY.OfferView({ Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" } } }, nil, "Horns")
+check("an Offer.Npc by side: mine", vt.Npc == "Smokey", vt.Npc)
 print(fails == 0 and "OFFER_PURE_OK" or "OFFER_PURE_FAILED")
 """
 
@@ -82,7 +89,7 @@ def statics(s: dict) -> list[tuple[str, bool]]:
         ("its title is 'Name · Title' and its icon the story one", 'if currentId == "Offer" then titleLabel.Text = STORY.OfferTitle() end' in pan
          and 'Offer = "IconNews"' in pan),
         ("the Offer window shows what helping pays (icons, numbers)",
-         'STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1)))' in offer),
+         'STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)))' in offer),
         ("the words are in Config", 'OfferAccept = "Sure!", OfferDecline = "Not now", Pickup = "Pick up",' in cfg),
         ("a Pickup step: my side's override first, the Landmarks spot",
          'obj.Type == "Pickup"' in pick and "type(over) == \"table\" and type(over.Obj) == \"table\" and over.Obj" in pick
@@ -106,7 +113,9 @@ MUTATIONS = [
     ("PANELS", "the buttons from the first page", "\t\tfor _, b in { yes, no } do\n\t\t\tb.Visible = last()", "\t\tfor _, b in { yes, no } do\n\t\t\tb.Visible = true"),
     ("PANELS", "All before my side", "(type(src[f]) == \"table\" and src[f]) or (type(src.All) == \"table\" and src.All) or {}",
      "(type(src.All) == \"table\" and src.All) or {}"),
-    ("PANELS", "no reward row", '	STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1)))', '	local _ = 0'),
+    ("PANELS", "no reward row", '	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)))', '	local _ = 0'),
+    ("PANELS", "the payload preview ignored", 'STORY.PayloadReward(arg.Reward) or STORY.RewardPreview', 'STORY.RewardPreview'),
+    ("PANELS", "a side table as a name", '\tif type(who) == "table" then who = who[f] or who.Neutral end\n', ''),
     ("PANELS", "exact gold forgotten", "\tif n(reward.GoldN) > 0 then g += math.floor(n(reward.GoldN)) end\n", ""),
     ("PANELS", "gold at level 1 always", "g = select(1, Config.HuntValue(level, reward.Gold))", "g = select(1, Config.HuntValue(1, reward.Gold))"),
     ("PANELS", "the payload's Npc ignored", "local who = (type(npc) == \"string\" and npc ~= \"\") and npc or offer.Npc", "local who = offer.Npc"),
@@ -114,7 +123,7 @@ MUTATIONS = [
 
 
 def run(src: dict) -> tuple[bool, list, str]:
-    funcs = block(src["NPC"], "StoryNpcs.Offers") + block(src["PANELS"], "STORY.OfferView") + block(src["PANELS"], "STORY.RewardPreview")
+    funcs = block(src["NPC"], "StoryNpcs.Offers") + block(src["PANELS"], "STORY.OfferView") + block(src["PANELS"], "STORY.RewardPreview") + block(src["PANELS"], "STORY.PayloadReward")
     with tempfile.TemporaryDirectory() as d:
         f = Path(d) / "offer.luau"
         f.write_text(PURE.replace("__FUNCS__", funcs), encoding="utf-8")
