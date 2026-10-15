@@ -125,6 +125,10 @@ runGroup("hunting points", function()
 	w:Kill(p)
 	check(p:GetAttribute("WarPoints") == 1 and #w.Added == 1 and w.Added[1].N == 1 and w.Added[1].Src == "Hunt"
 		and w.War.GetKillUnits(p) == 0, "the 100th: 1 whole point, one PersonalAdded(1, Hunt)", show(plain(w.Added)))
+	local cp = {}
+	for _, e in w.Fx do if e.Kind == "CrownPoint" then table.insert(cp, e) end end
+	check(#cp == 1 and cp[1].Player == p and cp[1].Data.N == 1 and cp[1].Data.Total == 1 and cp[1].Data.Source == "Hunt",
+		"feedback_audit #8: one Fx CrownPoint { N 1, Total 1, Hunt } at the whole point only (none for the 99 before)", show(#cp))
 	w:Tick(1)
 	check(gs(w, "WarHaloScore") == 1, "the pool got 1 point (100 x 1/100)", gs(w, "WarHaloScore"))
 	w:Kills(p, 19, { Golden = true })
@@ -206,6 +210,17 @@ runGroup("pvp", function()
 	KO:Fire(n, v, { Rewarded = true, VictimStars = 0 })
 	check(n:GetAttribute("WarPoints") == 2, "4 Neutral KOs used up no slot: the first Halo KO scores", n:GetAttribute("WarPoints"))
 	check(w.War.AddPoints(n, 1, nil, "Other") == true and w.War.AddPoints(v, -1) == false, "AddPoints answers whether it added", "")
+	local function crownFor(p)
+		local out = {}
+		for _, e in w.Fx do if e.Kind == "CrownPoint" and e.Player == p then table.insert(out, e.Data) end end
+		return out
+	end
+	local c0 = #crownFor(n)
+	w.War.AddPoints(n, 0.5, nil, "PvP")
+	check(#crownFor(n) == c0, "feedback_audit #8: half a point (a star's 0.5) sends no CrownPoint", #crownFor(n) - c0)
+	w.War.AddPoints(n, 2.5, nil, "PvP")
+	local last = crownFor(n)[#crownFor(n)]
+	check(#crownFor(n) == c0 + 1 and last.N == 2 and last.Source == "PvP", "2.5 points: CrownPoint N 2 (whole points only)", show(last))
 end)
 
 ------------------------------------------------------------------ the round: chests, one side, events

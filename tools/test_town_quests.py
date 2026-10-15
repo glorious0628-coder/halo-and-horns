@@ -49,6 +49,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # feedback_audit #7 (최종 검수 10/15): the Choice Fx after the points, with the score / rank before and after
+    ("Choice: no after score", ST, "\t\t\tlocal after = math.max(0, math.floor(num(data[stat])))\n", "\t\t\tlocal after = before\n"),
+    ("Choice: no rank", ST, "RankFrom = rankOf(before), RankTo = rankOf(after) })", "})"),
     # bag slots (2026-10-14)
     ("bag: Reward.BagSlots ignored", ST, "if type(def.Reward) == \"table\" and num(def.Reward.BagSlots) > 0 and S.LootService",
      "if false and S.LootService"),
@@ -72,8 +75,14 @@ MUTATIONS = [
     ("artisan: a weaker spare replaces the weapon", L, "and (num(def.Damage) > bestDamage or (best == tier and plus > bestPlus)) then", "then"),
     ("artisan: the spare stays packed", L, "\tif not best or LootService.UnpackSpare(player, best, bestPlus) ~= true then return nil end\n", "\tif not best then return nil end\n"),
     ("artisan: no Gathered hook", ST, "\t\t{ \"GatherService\", \"Gathered\", function", "\t\t{ \"GatherService\", \"GatheredX\", function"),
-    ("artisan: N0 for every side", C, "Speaker = \"Guild\", Factions = { Neutral = true },\n\t\t\tRequires = { TutorialDone = true, Feature = { \"Gathering\", \"Crafting\" } },",
-     "Speaker = \"Guild\",\n\t\t\tRequires = { TutorialDone = true, Feature = { \"Gathering\", \"Crafting\" } },"),
+    ("artisan: N0 for every side", C, "Speaker = \"Guild\", Factions = { Neutral = true },\n\t\t\tRequires = { TutorialDone = true, Feature = { \"Gathering\", \"Crafting\" }, Classes = { Warrior = true } },",
+     "Speaker = \"Guild\",\n\t\t\tRequires = { TutorialDone = true, Feature = { \"Gathering\", \"Crafting\" }, Classes = { Warrior = true } },"),
+    # 최종 검수 10/15: one first harvest per artisan class (Requires.Classes) and N0b after any of them (Requires.DoneAny)
+    ("artisan: Classes ignored", ST, "\tif type(req.Classes) == \"table\" and not (data.ClassChosen == true and req.Classes[data.Class] == true) then return false end\n", ""),
+    ("artisan: DoneAny ignored", ST, "\t\tif not any then return false end\n", ""),
+    ("artisan: DoneAny needs all", ST, "\t\t\tif st.Done[id] then any = true end\n", "\t\t\tif not st.Done[id] then any = false break end\n\t\t\tany = true\n"),
+    ("artisan: the tamer's harvest is copper", C, "\t\t\tStart = \"Kit: Pick herbs, then make pet treats!\",\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Pick herbs %d/%d\", Obj = { Type = \"Gather\", Item = \"Herb\", Count = 3 } },",
+     "\t\t\tStart = \"Kit: Pick herbs, then make pet treats!\",\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Pick herbs %d/%d\", Obj = { Type = \"Gather\", Item = \"CopperOre\", Count = 3 } },"),
     # SKL-3 the practice subs SK1 / SK2
     ("SKL-3: SkillHit ignores the Slot", ST,
      "\t\tif obj.Slot and ev.Info.Slot ~= obj.Slot then return 0 end -- SKL-3: only that skill's casts (SK1 Z, SK2 X)\n", ""),

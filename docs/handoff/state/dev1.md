@@ -1,5 +1,19 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 — 스윕 새 실패·퀘스트 창 번역·폰 첫 10분 (최종 검수 지시 1~3)
+- **fix/sweep-1015 47682e87** (wt_kosweep, origin/main 위, 보고함): 79abb70e test_town_npcs = 오토 스승(A23-193) 반영(182/182) · 47682e87 QuestBook.RowWords = 목록 줄을 UIKit.TrWord로 번역(통째 → ' · ' 조각), quest_window 97·46/46.
+- 스윕 판정: costume_physics·skin_binding 은퇴, halloween·place_english·skeleton_ground 성긴 worktree 파일 없음, metrics_board 인자 필요 = 거짓. ranking 488/488(돌연변이 없이). **a23_14 7개 실패 = 개발 2 몫**(f3b67a9c 거위 알림 삭제 뒤 기대값) → 개발 2에 알림. audio는 다시 도는 중.
+- fix/sweep-1015 = main 병합됨(0661429f).
+- **dev1-codex-art 836c8cdf** (A23-195 b, 보고함): Config.Codex.Art { Frames, Poses[종]{Base,Cool,Silly}, CoolSide, Blend } + CodexUI ArtId/Poses/FrameOf/PoseWeights, CARD.Pose(기울기로 섞기). 빈 값 = 지금 모습. codex_ui 145·53/53.
+- **a) 꽃 슬라임 카드**: 게임 안도 슬라임 모습(빌린 Tripo 모델 TextureID → Color 안 보임; MonsterService는 색 안 입힘). 최종 검수에 선택지 ①종별 텍스처(A23-96 걸림) ②반투명 색 껍질 ③b 그림으로 해결(추천) 물음 — 답 대기.
+- c) 펫 12종 화면 = 개발 2 서버 뒤(이름 합의: Config.PetReady/PetBonus, 속성 PetBonusType·PetBonus, Species.Rarity·Bonus·Emote).
+- **dev1-grip3 179641c4 (보고함)**: 무기 잡기 3 + 메시 30개 id, HoldTest 실측 통과, 사진 docs/art/verification_2026-10-15/grip3/. 남은 것: 공격 진입·복귀, 작은 체형, T2·T3·T7 사진(메인 sync 뒤).
+- **dev1-refuse affab34b (보고함)**: ②-1 실패 = 버튼 흔들림·빨간 테두리·Deny(UIKit.Refuse), MP 부족 = MP 막대, 도감 순간 설명 줄 삭제. 새 test_refuse.
+- 다음 큐(최종 검수 10/15): ②-2 레벨업(발밑 원→별→레벨 숫자 확대+전투력) → ②-3 스승 배우기(스승 손→무기 빛→자물쇠 풀림→버튼 반짝) → ②-4 물약(손 동작·방울·회복분 밝게) → ②-5~8 → 펫 12종 화면(dev2-pets12 병합 뒤, 제작 창 PetReady 아닌 S2~S5 줄 숨김) → 대장간 'No materials to sell' 번역.
+- (옛) **무기 잡기 grip-3 (최종 검수 우선, build/codex/grip2_codex.md)**: worktree ../wt_grip(성긴, 가지 dev1-grip3). Config: Sword/DarkSword → SwordReady Rest{30}, Hammer → HammerCarry Rest{90}, Baton → BatonReady Rest{20}, 새 Meme 줄(옛 Side) + WeaponPose MemeKind "Meme". HoldPoses 3개 Codex 시작값. 재기: scratch grip3.py(HoldTest_1014, 한 Play에 9조합, DebugCommand Faction/Class; Rest 역산 'solve'). 화면 사용 요청함(전달함 대기). test_tool_grip 옛 값 검사(칼 뒤·아래) → 새 목표로 고칠 것.
+- 폰 새 사진(10/15, verification_2026-10-15/phone_first10): 대장간 'No materials to sell' 영어(번역 안 됨) → 무기 다음 고침. 겹침 수치는 창 뒤 HUD까지 센 것(실제 아님).
+- 폰: tools/play_phone_round_photos.py에 out=<dir> 추가(main 8a7a41d). 10/14 12:05 폰 사진은 옛판(출석 Claim·거위 칩 시간은 이미 고쳐짐). 메인 반영 1에게 `first10 out=docs/art/verification_2026-10-15/phone_first10` 새 사진 부탁(최종 검수 경유) → 오면 그걸로 고칠 목록.
+
 ## 10/15 밤 늦게 — 첫 사냥 힌트·T2 체감·Hero 스탯 화면 (push, 최신; 세션 clear 전)
 - **dev1-first-hunt-hint 4681edff** (7번째 묶음): Config.Nudges.AttackHint = true + AttackHunt { M1_1 1단계, M1_2; Range 10; Idle 5 }, FirstSteps HINT.Hunting(퀘스트 줄 Story.St), 공격하면 그 세션엔 끝(HINT.Hit). test_first_steps 60·34/34.
 - **dev1-t2-feel 14e46874**: HUD.WeaponUpLine 'Power A → B · Slime: N hits → M hits'(Config.Power.Text.WeaponUp, SwingHitsToKill), L.TierChanged → L.Pow.TierFrom → 다음 정산 토스트. test_weapon_up_line 7·4/4. (L.Pow 표는 한 줄 유지: test_first_weapon이 그 줄을 자름.)

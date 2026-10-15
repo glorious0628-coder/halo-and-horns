@@ -117,7 +117,8 @@ local function onUpgradeWeapon(player, selectedTier)
 	-- A23-130: re-equipping an owned weapon says nothing (the row shows Equipped); the Equip sound stays
 	Net.Notify(player, alreadyOwned and "" or string.format(Config.Text.WeaponBought, weaponName), alreadyOwned and "info" or "reward",
 		nil, "Equip")
-	if tier ~= selectedTier then Net.Fx(player, "Upgrade", { Tier = selectedTier }) end
+	-- feedback_audit #6: Source = "Buy" (a new weapon paid now) | "Equip" (an owned one taken back)
+	if tier ~= selectedTier then Net.Fx(player, "Upgrade", { Tier = selectedTier, Source = alreadyOwned and "Equip" or "Buy" }) end
 end
 
 local function onSellWeapon(player, selectedTier)

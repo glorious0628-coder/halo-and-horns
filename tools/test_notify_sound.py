@@ -168,7 +168,8 @@ def check_all(sources: dict[str, str], net: str) -> tuple[int, list[str]]:
         check(st is not None and f"\"{sound}\")" in st.replace("\n", "").replace("\t", ""),
               f"{name}: '{piece[:50]}' carries Sound \"{sound}\"")
     story = sources["StoryQuestService.luau"]
-    check("pcall(Net.Fx, player, \"Choice\", { Option = option })" in story
+    # feedback_audit #7 (10/15): the payload starts as { Option = option } (+ the score / rank before and after for a side pick)
+    check("local payload = { Option = option }" in story and "pcall(Net.Fx, player, \"Choice\", payload)" in story
           and story.count("choiceFx(player, ") >= 2, "a story pick sends Fx Choice { Option } (Halo / Horns and Neutral)")
     for name, piece, what, _ in SPECIAL:
         check(sources[name].count(piece) == 1, f"{name}: {what}")

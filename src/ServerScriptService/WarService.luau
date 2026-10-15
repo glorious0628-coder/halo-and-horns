@@ -446,6 +446,14 @@ local function tick()
 	end
 end
 
+-- feedback_audit #8 (최종 검수 10/15): Fx CrownPoint { N, Total, Source } to the player, only for whole personal points
+-- really added (never a "+1" per monster: the kill units carry on silently)
+local function crownFx(player, n, source)
+	local whole = math.floor(tonumber(n) or 0)
+	if whole < 1 then return end
+	pcall(Net.Fx, player, "CrownPoint", { N = whole, Total = math.floor(personal[player] or 0), Source = source })
+end
+
 ------------------------------------------------------------------ public API
 -- personal + faction pool (rewarded PvP KOs, a field boss's War). poolN (optional, CR-M18) = this player's share of the
 -- pool: one kill by k same-faction contributors adds n / k each, so the pool gets n once while every contributor still
@@ -459,6 +467,7 @@ function WarService.AddPoints(player, n, poolN, source)
 	points[f] += isValidAmount(poolN) and math.min(poolN, n) or n
 	setPersonal(player, (personal[player] or 0) + n)
 	WarService.PersonalAdded:Fire(player, n, type(source) == "string" and source or "Other")
+	crownFx(player, n, type(source) == "string" and source or "Other")
 	return true
 end
 
@@ -482,6 +491,7 @@ function WarService.AddKill(player, u, poolU)
 	if whole > 0 then
 		setPersonal(player, (personal[player] or 0) + whole)
 		WarService.PersonalAdded:Fire(player, whole, "Hunt")
+		crownFx(player, whole, "Hunt")
 	end
 end
 

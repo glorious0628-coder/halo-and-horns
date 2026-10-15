@@ -134,11 +134,11 @@ runGroup("the five names", function()
 	local m14 = SQ.Defs.M1_4.Steps[2].Lines
 	for f, v in want do
 		check(W[f].Name == v[1] and W[f].Title == v[2], f .. " guide: " .. v[1] .. " (" .. v[2] .. ")", show({ W[f].Name, W[f].Title }))
-		-- 3rd idea round #2 (검수 2026-10-07): page 1 = the mission card, the catchphrase opens page 2
-		check(W[f].Lines[2] == v[3] and #W[f].Lines == 2, f .. ": the catchphrase is the welcome's page 2, and the last (two pages only)", show(W[f].Lines))
+		-- user 10/15: the guide says hello first (the catchphrase = page 1), then the mission
+		check(W[f].Lines[1] == v[3] and #W[f].Lines == 2, f .. ": the catchphrase is the welcome's page 1 (two pages only)", show(W[f].Lines))
 		-- A23-188 (user 2026-10-14): the first mission = the Forge visit (no "5 slimes")
-		check(W[f].Lines[1] == "First, go to Otto's Forge and get your weapon!",
-			f .. ": page 1 = the mission card (the Forge visit)", show(W[f].Lines[1]))
+		check(W[f].Lines[2] == "First, go to Otto's Forge and get your weapon!",
+			f .. ": page 2 = the mission card (the Forge visit)", show(W[f].Lines[2]))
 		check(m14[f][1] == v[4], f .. ": the catchphrase opens the M1_4 report", show(m14[f][1]))
 		for _, line in W[f].Lines do
 			check(not string.find(line, "Noted", 1, true) and not string.find(line, "Captain", 1, true),

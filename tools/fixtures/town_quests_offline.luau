@@ -257,6 +257,11 @@ runGroup("h1-good", function()
 	local choice = nil
 	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then choice = w.Fx[i].Data end end
 	check(choice and choice.Option == "Good", "the pick sends Fx Choice { Option = 'Good' } (Purify sound)", show(choice))
+	local _, rk0 = w.Config.GetTitle("Halo", honor, 0)
+	local _, rk1 = w.Config.GetTitle("Halo", honor + 1, 0)
+	check(choice and choice.Stat == "Honor" and choice.Before == honor and choice.After == honor + 1 and choice.RankFrom == rk0
+		and choice.RankTo == rk1, "feedback_audit #7: Fx Choice carries Honor before / after and the rank before / after (sent after the points)",
+		show(choice))
 	check(d.Story.Pick.H1 == "Good" and (d.Honor or 0) == honor + 1, "A: Pick 'Good', honor +1", show({ d.Story.Pick.H1, d.Honor }))
 	check((d.Items.Enh70 or 0) == enh + 1 and (d.HPPotionCount or 0) == hp, "A: one 70% scroll (no potions)",
 		show({ d.Items.Enh70, d.HPPotionCount }))
@@ -596,15 +601,23 @@ runGroup("artisan quests", function()
 	check(D.N0 and D.N0.Factions.Neutral and D.N0.Requires.TutorialDone and table.find(D.N0.Requires.Feature, "Gathering")
 		and table.find(D.N0.Requires.Feature, "Crafting") and D.N0.Reward.GoldN == 150 and D.N0.Reward.EquipCrafted == true,
 		"Config N0: Neutral, from the first mission, Gathering + Crafting, 150 gold + the crafted weapon in hand", show(D.N0 and D.N0.Requires))
-	check(D.N0b and D.N0b.Requires.Done[1] == "N0" and D.N0b.Steps[1].Obj.Type == "SellMat" and D.N4 and D.N4.Requires.Done[1] == "N2",
-		"Config N0b (after N0: sell 5) and N4 (after N2)", "")
+	check(D.N0b and D.N0b.Requires.Done == nil and table.concat(D.N0b.Requires.DoneAny, ",") == "N0,N0A,N0T"
+		and D.N0b.Steps[1].Obj.Type == "SellMat" and D.N4 and D.N4.Requires.Done[1] == "N2",
+		"Config N0b (after any class's N0: sell 5) and N4 (after N2)", "")
+	-- 최종 검수 10/15: one first harvest per artisan class; the alchemist's / tamer's first craft is 3 herbs only
+	check(D.N0.Requires.Classes.Warrior == true and D.N0.Requires.Classes.Mage == nil and D.N0A and D.N0A.Requires.Classes.Mage == true
+		and D.N0T and D.N0T.Requires.Classes.Archer == true and D.N0A.Reward.GoldN == 150 and D.N0T.Reward.GoldN == 150
+		and D.N0A.Reward.EquipCrafted == nil and D.N0A.Title == D.N0.Title and D.N0T.Title == D.N0.Title
+		and D.N0A.Steps[1].Obj.Item == "Herb" and D.N0A.Steps[1].Obj.Count == 3 and D.N0T.Steps[1].Obj.Count == 3
+		and C.Craft.Recipes.AP1.Mats.Herb == 3 and C.Craft.Recipes.T1.Mats.Herb == 3 and C.Craft.Recipes.AP1.Mats.Jelly == nil
+		and C.Craft.Recipes.T1.Mats.Jelly == nil, "Config N0 / N0A / N0T by class (same title, 150 gold); AP1 / T1 = 3 herbs", "")
 	check(C.Craft.Recipes.W1 == nil and C.Craft.Recipes.W2.Mats.Herb == 3 and C.Craft.Recipes.W2.Mats.CopperOre == 2
 		and C.Craft.Recipes.W2.Mats.Jelly == nil, "no W1 recipe; W2 = N0's harvest only (3 herbs + 2 copper)", show(C.Craft.Recipes.W2))
-	local function join(id, faction, extra)
+	local function join(id, faction, extra, class)
 		local data = { TutorialStep = 99, WeaponTier = 1, WeaponOwnedMask = 1,
 			Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } }
 		for k, v in extra or {} do data[k] = v end
-		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 3, Data = data })
+		local p, d = w:Join(id, { Faction = faction, Class = class or "Warrior", Level = 3, Data = data })
 		w.Story.Refresh(p)
 		w:Flush()
 		return p, d
@@ -654,6 +667,31 @@ runGroup("artisan quests", function()
 	w.Loot.MaterialSold:Fire(p, "CopperOre", 4)
 	w:Flush()
 	check(d.Story.Done.N0b == true and (d.BankGold or 0) == bank2 + 30, "5 sold: N0b done, +30 gold", show((d.BankGold or 0) - bank2))
+	check(w:Track(d, "N0A") == nil and w:Track(d, "N0T") == nil and d.Story.Done.N0A == nil, "the blacksmith never gets N0A / N0T", "")
+	-- the alchemist (Mage) and the pet tamer (Archer): 3 herbs, then any craft of theirs; 150 gold, N0b after
+	for i, row in { { "Mage", "N0A", "AP1" }, { "Archer", "N0T", "T1" } } do
+		local cls, qid, rid = row[1], row[2], row[3]
+		local a, da = join(1810 + i, "Neutral", nil, cls)
+		check(w:Track(da, qid) ~= nil and w:Track(da, "N0") == nil, cls .. ": " .. qid .. " (not the blacksmith's N0)", show(da.Story.Subs))
+		G:Fire(a, "CopperOre", 2, "CopperRock")
+		G:Fire(a, "Herb", 2, "HerbBush")
+		w:Flush()
+		check(w:Track(da, qid) and w:Track(da, qid).St == 1 and w:Track(da, qid).P == 2, cls .. ": copper counts for nothing, 2 herbs of 3",
+			show(w:Track(da, qid)))
+		G:Fire(a, "Herb", 1, "HerbBush")
+		w:Flush()
+		check(w:Track(da, qid) and w:Track(da, qid).St == 2, cls .. ": 3 herbs -> the craft step", show(w:Track(da, qid)))
+		local bk = da.BankGold or 0
+		R.CraftService.Crafted:Fire(a, rid, 0)
+		w:Flush()
+		check(da.Story.Done[qid] == true and (da.BankGold or 0) == bk + 150 and da.WeaponTier == 1,
+			cls .. ": " .. rid .. " made -> " .. qid .. " done, +150 gold, the weapon held unchanged", show({ (da.BankGold or 0) - bk, da.WeaponTier }))
+		w.Story.Refresh(a)
+		w:Flush()
+		check(w:Track(da, "N0b") ~= nil, cls .. ": N0b offered after " .. qid, show(da.Story.Subs))
+	end
+	local h2, dh2 = join(1815, "Halo", nil, "Archer")
+	check(w:Track(dh2, "N0T") == nil, "a Halo archer: no N0T", "")
 	-- a weaker spare never replaces the weapon held
 	local q, e = join(1805, "Neutral", { WeaponTier = 3, WeaponOwnedMask = 5, Level = 5 })
 	G:Fire(q, "Herb", 3, "HerbBush")

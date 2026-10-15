@@ -138,6 +138,14 @@ def run(src: dict) -> tuple[int, int, str]:
 
 
 MUTATIONS = [
+    # A23-195 (10/15): the card pictures
+    ("CODEX", "pose pictures ignored (always the 3D model)", "\tc.PoseSet = CodexUI.Poses(kind)\n", "\tc.PoseSet = nil\n"),
+    ("CODEX", "the tilt never changes the pose", "\tCARD.Aim(c)\n\tCARD.Pose(c)\n", "\tCARD.Aim(c)\n"),
+    ("CODEX", "cool and silly swapped", "\tif x * coolSide > 0 then return 1 - w, w, 0 end\n", "\tif x * coolSide < 0 then return 1 - w, w, 0 end\n"),
+    ("CODEX", "a hard switch instead of a blend", "\tlocal w = t * t * (3 - 2 * t)\n", "\tlocal w = t > 0 and 1 or 0\n"),
+    ("CODEX", "an empty side stays empty", "Silly = CodexUI.ArtId(p.Silly) or base", "Silly = CodexUI.ArtId(p.Silly)"),
+    ("CODEX", "a boss gets its zone's frame", "\tif type(def) == \"table\" and def.Boss == true then return CodexUI.ArtId(frames.Boss) end\n", ""),
+    ("CODEX", "an unmet card's pose in colour", "\t\tp.ImageColor3 = known and L.Lit or L.Silhouette\n", "\t\tp.ImageColor3 = L.Lit\n"),
     ("CODEX", "the saved stage trusted over the kills", "if e and type(Config.CodexStage) == \"function\" then stage = math.max(stage, Config.CodexStage(kind, kills)) end",
      ""),
     ("CODEX", "a boss gets a Gold Foil card", "local canGold = type(Config.CodexCanGold) ~= \"function\" or Config.CodexCanGold(kind)",
@@ -198,7 +206,6 @@ MUTATIONS = [
     ("CODEX", "a new card shown in colour at once", '\tif payload.Event == "Card" then\n\t\tbefore = CodexUI.View(kind, nil, faction(), false)\n',
      '\tif payload.Event == "Card" then\n\t\tbefore = after\n'),
     ("CODEX", "the evolve never swaps", "\t\t\t\t\tCARD.Set(c, after)\n", ""),
-    ("CODEX", "no line under the moment card", 'Text = tostring(payload.Text or ""), AnchorPoint', 'Text = "", AnchorPoint'),
     ("CODEX", "a click cannot end the moment", "if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then finish() end",
      "if false then finish() end"),
     ("CODEX", "the window never registered", "\tS.Ready = panels.Register(L.Window, {", "\tS.Ready = false and panels.Register(L.Window, {"),

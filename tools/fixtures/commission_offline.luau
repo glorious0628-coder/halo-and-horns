@@ -96,7 +96,8 @@ runGroup("an order, start to end", function()
 	check(#w.Spent == 1 and w.Spent[1].Reason == "Commission" and w.Spent[1].N == 3000, "one spend, reason 'Commission'", #w.Spent)
 	local fx = lastFx(w, "Commission", p)
 	check(fx and fx.Tier == 4 and fx.Name == "Goblin Thief's Golden Sword", "Fx Commission { Tier 4, the class name }", show(fx))
-	check(lastFx(w, "Upgrade", p) and lastFx(w, "Upgrade", p).Tier == 4, "and the existing Upgrade fx (power A -> B)", show(lastFx(w, "Upgrade", p)))
+	check(lastFx(w, "Upgrade", p) and lastFx(w, "Upgrade", p).Tier == 4 and lastFx(w, "Upgrade", p).Source == "Commission",
+		"and the existing Upgrade fx (power A -> B), Source Commission (feedback_audit #6)", show(lastFx(w, "Upgrade", p)))
 	check(string.find(notices(w, p), "Goblin Thief's Golden Sword equipped!", 1, true) ~= nil, "the line", notices(w, p))
 	check(#made == 1 and made[1] == 4, "Made signal", show(made))
 	-- the card comes a moment later

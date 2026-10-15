@@ -175,6 +175,13 @@ runGroup("help", function()
 	check(g and g.Delay == 0 and g.CFrame ~= nil and g.CFrame.Args[1].X == 0 and g.CFrame.Args[1].Y == 3,
 		"GetUp: now, at the body (3 up)", show(g))
 	check(pr.Destroyed == true and p:GetAttribute("ReviveUntil") == 0 and #w.Helped == 1, "the prompt is gone; Revived fired", "")
+	local done, rv = nil, nil
+	for _, e in w.Fx do
+		if e.Player == h and e.Kind == "ReviveDone" then done = e end
+		if e.Player == p and e.Kind == "Revived" then rv = e end
+	end
+	check(done and done.Data.Target == p.UserId and rv and rv.Data.By == h.UserId,
+		"both get the moment: Fx Revived { By } to the KO'd one, ReviveDone { Target } to the helper (feedback_audit #8)", "")
 	local n = w:NoticesFor(h)
 	check(n[#n] == "You helped P1 up! +1 Honor" and w:NoticesFor(p)[1] == "P2 helped you up!", "the two lines", show({ n[#n], w:NoticesFor(p)[1] }))
 	local _, hum = w:Spawn(p, vec(0, 3, 0))

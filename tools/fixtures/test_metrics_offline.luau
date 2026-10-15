@@ -258,6 +258,33 @@ runGroup("devices", function()
 		"a new account's first Perf device only (a veteran, a second sample, an unknown device, a bad arg: nothing)", show(t.Device))
 end)
 
+------------------------------------------------------------------ perf (최종 검수 10/15, A23-162)
+runGroup("perf", function()
+	local w = metricsWorld()
+	local p = rookie(w, 1)
+	local v = veteran(w, 2)
+	local CM = w.Reg.TelemetryService.ClientMetric
+	CM:Fire(p, "Perf", { D = "Phone", F = 40, W = 30, M = 900, Q = 3 })
+	CM:Fire(p, "Perf", { D = "Phone", F = 18, W = 9, M = 1100, Q = 3 })
+	CM:Fire(v, "Perf", { D = "Phone", F = 25, W = 22, M = 1000, Q = 2 })
+	CM:Fire(v, "Perf", { D = "Desktop", F = 50, W = 50, M = 2000, Q = 8 })
+	CM:Fire(v, "Perf", { D = "Desktop", F = 44, W = 19, M = 2100, Q = 8 })
+	CM:Fire(v, "Perf", { D = "Desktop" }) -- no numbers: not a sample
+	CM:Fire(v, "Perf", { D = "Toaster", F = 30, W = 30, M = 10, Q = 1 })
+	CM:Fire(v, "UiOpen", { D = "Phone", F = 30, W = 30, M = 10, Q = 1 })
+	local t = pend(w).Perf or {}
+	local ph, de = t.Phone or {}, t.Desktop or {}
+	check(ph.N == 3 and ph.F == 83 and ph.W == 61 and ph.M == 3000, "Phone: every sample of every account summed (N 3, F 83, W 61, M 3000)",
+		show(ph))
+	check(ph.Low == 1 and ph.Under20 == 1 and ph.Under30 == 1 and ph.Under45 == 1 and ph.Smooth == nil,
+		"Phone: Low = lowest second under 20; one sample in each fps band", show(ph))
+	check(de.N == 2 and de.F == 94 and de.Low == 1 and de.Under45 == 1 and de.Smooth == 1, "Desktop: 2 samples, 44 = under 45, 50 = smooth",
+		show(de))
+	check(t.Toaster == nil and t.Tablet == nil, "an unknown device or another metric adds no perf row", show(t))
+	check(pend(w).Device and pend(w).Device.Phone == 1 and pend(w).Device.Desktop == nil, "the first-device count is unchanged (new account once)",
+		show(pend(w).Device))
+end)
+
 ------------------------------------------------------------------ rounds
 runGroup("rounds", function()
 	local w = metricsWorld()

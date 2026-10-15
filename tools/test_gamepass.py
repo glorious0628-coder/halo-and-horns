@@ -82,6 +82,9 @@ EXPECTED = [
     ("Main.server.luau", "AddCarriedGold", "Other", False),
     ("ProgressionService.luau", "AddCarriedGold", "Monster", True),
     ("ProgressionService.luau", "AddXP", None, True),
+    # A23-194 (10/15): the following pet's kill extra (source "Pet": no PassBoost gold source), added into the kill's Reward Fx
+    ("ProgressionService.luau", "AddCarriedGold", "Pet", False),
+    ("ProgressionService.luau", "AddXP", None, False),
     ("PvPService.luau", "AddBankGold", "Bounty", True),
     ("PvPService.luau", "AddBankGold", "Bounty", True),
     ("PvPService.luau", "AddBankGold", "Bounty", True),
@@ -220,6 +223,11 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    # feedback_audit #2 (최종 검수 10/15): the LevelUp Fx says what changed
+    ("LevelUp without the power", P, "\t\t\tPowerFrom = powerFrom,\n\t\t\tPowerTo = powerTo,\n", ""),
+    ("LevelUp power at the new level twice", P, "local okA, a = pcall(Config.CombatPowerOf, player, nil, nil, startLevel)",
+     "local okA, a = pcall(Config.CombatPowerOf, player, nil, nil, level)"),
+    ("LevelUp without From", P, "\t\t\tFrom = startLevel,\n", ""),
     # 최종 검수 10/14 ①: the subscription retry + saved answer
     ("sub: never tried again", "MONETIZATION_SOURCE", "\t\tif try < Config.PassBoost.CheckTries and player.Parent ~= nil then\n\t\t\ttask.wait(pause)",
      "\t\tif false then\n\t\t\ttask.wait(pause)"),
@@ -292,8 +300,8 @@ MUTATIONS = [
     ("cap dropped", P, "\tif cap ~= nil then amount = math.min(amount, math.max(0, math.floor(num(cap)))) end\n", ""),
     ("doubled twice (in GetXPMult)", P, "\t\t+ num(data.RedeemMarks) * Config.Rebirth.RedeemXPPer\n",
      "\t\t+ num(data.RedeemMarks) * Config.Rebirth.RedeemXPPer + (M.PassMult(player, \"XP2\") - 1)\n"),
-    ("AddXP returns nothing", P, "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\tM.XPEarned:Fire(player, amount)\n\treturn amount\nend\n",
-     "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\tM.XPEarned:Fire(player, amount)\nend\n"),
+    ("AddXP returns nothing", P, "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\tM.XPEarned:Fire(player, amount, source)\n\treturn amount\nend\n",
+     "\t\tM.LeveledUp:Fire(player, level)\n\tend\n\tM.XPEarned:Fire(player, amount, source)\nend\n"),
     ("kill line shows the old amount", P, "\tgold = M.AddCarriedGold(player, gold, \"Monster\")", "\tM.AddCarriedGold(player, gold, \"Monster\")"),
     ("GoldEarned before the pass", P,
      "\tamount = boostGold(player, amount, source)\n\tS.PlayerService.AddStat(player, \"BankGold\", amount)\n"

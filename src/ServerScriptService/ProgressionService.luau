@@ -223,6 +223,14 @@ function M.AddXP(player, amount, cap, source)
 		xp = math.min(xp, full)
 	end
 
+	-- feedback_audit #2 (최종 검수 10/15): the power before / after this level-up, for the LevelUp Fx (the CombatPower
+	-- attribute follows a frame later, JusticeService)
+	local powerFrom, powerTo = nil, nil
+	if level > startLevel then
+		local okA, a = pcall(Config.CombatPowerOf, player, nil, nil, startLevel)
+		local okB, b = pcall(Config.CombatPowerOf, player, nil, nil, level)
+		if okA and okB and type(a) == "number" and type(b) == "number" then powerFrom, powerTo = math.floor(a), math.floor(b) end
+	end
 	if level ~= data.Level then
 		S.PlayerService.SetStat(player, "Level", level)
 	end
@@ -232,10 +240,14 @@ function M.AddXP(player, amount, cap, source)
 		-- CR-M16: no full heal mid-fight (e.g. claiming a finished daily during PvP) or as an active kaiju
 		local fullHeal = not S.CombatService.IsInCombat(player) and getKaijuState(player) ~= "Active"
 		S.PlayerService.RefreshCharacter(player, fullHeal)
-		-- CR-L23: the LevelUp Fx already shows the level-up announcement on the owner's screen (no extra toast)
+		-- CR-L23: the LevelUp Fx already shows the level-up announcement on the owner's screen (no extra toast). Sent after the
+		-- new level and the refreshed character (MaxHealth); From / PowerFrom / PowerTo = what changed (feedback_audit #2)
 		Net.Fx(nil, "LevelUp", {
 			UserId = player.UserId,
 			Level = level,
+			From = startLevel,
+			PowerFrom = powerFrom,
+			PowerTo = powerTo,
 			Pos = rootPosition(player) or Vector3.zero,
 		})
 		M.LeveledUp:Fire(player, level)
@@ -503,11 +515,7 @@ function M.TryRebirth(player, factionId)
 	Net.Fx(nil, "Rebirth", { UserId = player.UserId, Rebirths = newRebirths, Pos = pos, Mark = mark })
 	-- sound_gaps C1: the Rebirth sound (Fx "Rebirth") comes after the beta; never QuestDone
 	Net.Notify(player, string.format(Config.Text.RebirthDone, math.floor(bonus * 100 + 0.5)), "reward", nil, "None")
-	if mark == "Fall" then
-		Net.Notify(player, string.format(Config.Story.Fall), "announce")
-	elseif mark == "Redeem" then
-		Net.Notify(player, string.format(Config.Story.Redeem), "announce")
-	end
+	-- A23-191 (최종 검수 10/15): no Fall / Redeem banner (the Rebirth Fx carries the Mark)
 	-- A23-130: no server-wide "was reborn" banner (RebirthAnnounce); the Rebirth Fx shows it to everyone near
 	M.Rebirthed:Fire(player, newRebirths, { From = old, To = factionId, Bonus = bonus, Mark = mark })
 	return true, nil
@@ -532,6 +540,15 @@ local function onMonsterKilled(player, info)
 	end
 	gold = M.AddCarriedGold(player, gold, "Monster") -- A23-75: what was added (2x Gold / 2x XP), shown below
 	xp = M.AddXP(player, xp, cap, "Monster")
+	-- A23-194: the following pet's tiny kill bonus, from the kill's own base (never x the passes / tonics: source "Pet" is no
+	-- PassBoost gold source), the fraction carried to the next kill; 0 in a PvP zone (PetService.BonusExtra)
+	local pet = S.PetService
+	if type(pet) == "table" and type(pet.BonusExtra) == "function" then
+		local okG, eg = pcall(pet.BonusExtra, player, "KillGold", num(info.Gold))
+		if okG and num(eg) >= 1 then gold += num(M.AddCarriedGold(player, math.floor(eg), "Pet")) end
+		local okX, ex = pcall(pet.BonusExtra, player, "KillXP", num(info.XP))
+		if okX and num(ex) >= 1 then xp += num(M.AddXP(player, math.floor(ex), cap, "Pet")) end
+	end
 	S.PlayerService.AddStat(player, "TotalKills", 1)
 	local pos = info.Position
 	if typeof(pos) ~= "Vector3" then

@@ -86,6 +86,7 @@ local function usePotion(player, kind)
 	end
 	local humanoid = Util.GetHumanoid(player)
 	if not humanoid or humanoid.Health <= 0 then return end
+	local drink = nil -- feedback_audit #4: what this drink really restored (Fx Drink below)
 	if kind == "HP" then
 		if humanoid.Health >= humanoid.MaxHealth then
 			if practiceSip(player, kind) then return end
@@ -93,8 +94,14 @@ local function usePotion(player, kind)
 			return
 		end
 		local before = humanoid.Health
-		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery)
+		-- A23-194: a Potion pet (Flower Slime) heals a little more (PetService.Bonus: 0 in a PvP zone)
+		local pet = S and S.PetService
+		local okP, more = false, 0
+		if type(pet) == "table" and type(pet.Bonus) == "function" then okP, more = pcall(pet.Bonus, player, "Potion") end
+		local mult = 1 + ((okP and type(more) == "number" and more == more and more > 0) and math.min(more, 0.1) or 0)
+		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery * mult)
 		if humanoid.Health <= before then return end -- a failed/no-op heal consumes neither stock nor the deadline
+		drink = { Kind = "HP", From = math.floor(before), To = math.floor(humanoid.Health), Max = math.floor(humanoid.MaxHealth) }
 	else
 		if st.Mana >= TUNE.MaxMana then
 			if practiceSip(player, kind) then return end
@@ -104,12 +111,16 @@ local function usePotion(player, kind)
 		local before = st.Mana
 		st.Mana = math.min(TUNE.MaxMana, before + TUNE.MaxMana * TUNE.MPRecovery)
 		if st.Mana <= before then return end
+		drink = { Kind = "MP", From = math.floor(before), To = math.floor(st.Mana), Max = math.floor(TUNE.MaxMana) }
 	end
 	-- No yields between actual restoration, saved stock decrement and the independent session deadline.
 	S.PlayerService.SetStat(player, stockKey, count - 1)
 	st[key] = now + TUNE.PotionCooldown
 	publish(player, st)
 	S.PlayerService.MarkActive(player) -- A23-130: no "Used a potion" line (the bar, the slot count and the Potion sound say it)
+	-- feedback_audit #4 (최종 검수 10/15): a real drink only (a revive's potion cost goes through ReviveService, never here):
+	-- Fx Drink { Kind = "HP" | "MP", From, To, Max } so the bar can light just the part that came back
+	if drink then pcall(Net.Fx, player, "Drink", drink) end
 	-- A23-110: the King's Hop quest waits for the first drink (only a real use gets here)
 	local story = S.StoryQuestService
 	if type(story) == "table" and type(story.Event) == "function" then

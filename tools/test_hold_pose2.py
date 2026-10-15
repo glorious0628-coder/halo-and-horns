@@ -197,7 +197,7 @@ do
         m.RightShoulder.Transform = CFrame.Angles(math.rad(20), 0, 0) -- the animation writes the shoulder only
         WeaponPose.PoseStep(DT)
     end
-    local pose = Config.HoldPoses.Side
+    local pose = Config.HoldPoses[WeaponPose.HoldOf("Sword")]
     local want = WeaponPose.Compose(CFrame.new(), WeaponPose.PoseFor("Sword", 1, "Walk").RightElbow,
         WeaponPose.DampOf(pose, "RightElbow", "Walk"), 1)
     ok(m.RightElbow.Transform:FuzzyEq(want, 1e-6), "60 frames: the unwritten elbow holds ONE turn (no build-up)", xOf(m.RightElbow.Transform))
@@ -218,8 +218,11 @@ do
         ac.Transform = CFrame.Angles(math.rad(40), 0, 0)
         WeaponPose.PoseStep(DT)
     end
-    ok(xOf(ac.Transform) < 4 and math.abs(xOf(m.RightShoulder.Transform)) < 1e-9,
-        "an upgraded avatar: the AnimationConstraint gets the damped pose, the off Motor6D is left alone", xOf(ac.Transform))
+    -- grip-3: the sword's hold (SwordReady) adds its own shoulder turn on top of the damped 40 degrees
+    local sp = Config.HoldPoses[WeaponPose.HoldOf("Sword")]
+    local wantX = 40 * (1 - sp.Damp.Stand) + sp.Stand.RightShoulder[1]
+    ok(math.abs(xOf(ac.Transform) - wantX) < 1.5 and math.abs(xOf(m.RightShoulder.Transform)) < 1e-9,
+        "an upgraded avatar: the AnimationConstraint gets the damped pose, the off Motor6D is left alone", xOf(ac.Transform) .. " vs " .. wantX)
 end
 
 -- 3. Config

@@ -598,7 +598,7 @@ check(m ~= nil and #T.S.Queue == 0 and T.S.Busy == true, "a quiet screen: the ca
 check(m and m.Position.Args[2] == 0.5 and m.AnchorPoint.Y == 0.5, "the moment is centred on the screen (below the event line)")
 local mc = m and m:FindFirstChild("CodexCard")
 local line = m and m:FindFirstChild("Line")
-check(line ~= nil and line.Text == "New card: Goblin! +48 gold · +84 XP", "the server's line under the card", line and line.Text)
+check(line == nil, "최종 검수 10/15 (feedback_audit #1): no line under the moment card", line and line.Text)
 check(#plays == 2 and plays[2] == "QuestDone", "a card moment rings QuestDone", #plays)
 local front = mc and mc:FindFirstChild("Face"):FindFirstChild("Front")
 local view = front and front:FindFirstChild("Monster3D")
@@ -648,6 +648,64 @@ check(st2 ~= nil and st2.Text == "Gold Foil", "reduced motion: the Gold Foil car
 runDelays()
 runDefers()
 reduced = false
+
+-- A23-195 (user 10/15): the card pictures - a zone frame + 3 pose pictures blended by the tilt; empty = the 3D model
+do
+	local ART = Config.Codex.Art
+	check(type(ART) == "table" and type(ART.Poses) == "table" and type(ART.Frames) == "table", "Config.Codex.Art has Poses and Frames")
+	local every = true
+	for _, page in Config.Codex.Pages do
+		for _, k in page.Kinds do
+			local p = ART.Poses[k]
+			if type(p) ~= "table" or p.Base == nil or p.Cool == nil or p.Silly == nil then every = false end
+		end
+		if ART.Frames[page.Id] == nil then every = false end
+	end
+	check(every and ART.Frames.Boss ~= nil, "every codex kind has Base / Cool / Silly slots, every page and the bosses a frame slot")
+	check(CodexUI.ArtId("") == nil and CodexUI.ArtId(12) == "rbxassetid://12" and CodexUI.ArtId("34") == "rbxassetid://34"
+		and CodexUI.ArtId("rbxassetid://5") == "rbxassetid://5", "art ids: '' = none, a number = rbxassetid://N")
+	check(CodexUI.Poses("Slime") == nil and CodexUI.FrameOf("Slime") == nil, "empty slots: no poses, no frame (today's look)")
+	local b0, c0, s0 = CodexUI.PoseWeights(0)
+	local b1, c1, s1 = CodexUI.PoseWeights(1)
+	local b2, c2, s2 = CodexUI.PoseWeights(-1)
+	local bh, ch, sh = CodexUI.PoseWeights(0.475)
+	check(b0 == 1 and c0 == 0 and s0 == 0, "flat: the base pose only")
+	check(b1 == 0 and c1 == 1 and s1 == 0 and b2 == 0 and c2 == 0 and s2 == 1, "tilted right = Cool, left = Silly (CoolSide 1)")
+	check(math.abs(bh - 0.5) < 1e-6 and math.abs(ch - 0.5) < 1e-6 and sh == 0, "half way = half and half (smooth)", bh .. "," .. ch)
+	local bs = CodexUI.PoseWeights(0.15)
+	check(bs == 1, "a small tilt keeps the base pose", bs)
+	ART.Poses.Slime = { Base = "rbxassetid://101", Cool = "102", Silly = "" }
+	ART.Frames.SlimeMeadow, ART.Frames.Boss = "rbxassetid://201", "rbxassetid://209"
+	local ps = CodexUI.Poses("Slime")
+	check(ps ~= nil and ps.Base == "rbxassetid://101" and ps.Cool == "rbxassetid://102" and ps.Silly == "rbxassetid://101",
+		"a pose set: an empty side shows the base")
+	check(CodexUI.FrameOf("FlowerSlime") == "rbxassetid://201" and CodexUI.FrameOf("SlimeKing") == "rbxassetid://209"
+		and CodexUI.FrameOf("Goblin") == nil, "frames: the page's zone, the gold one for a boss, none when empty")
+	local parent = newObj("Frame")
+	local card = T.CARD.New(parent, base.UDim2.fromOffset(230, 310), 1)
+	T.CARD.Set(card, CodexUI.View("Slime", { Kills = 5, Stage = 1, First = 0 }, "Halo", false))
+	check(card.Model == nil and card.Icon.Visible == false and card.Q.Visible == false, "with poses: no 3D model, no icon, no '?'")
+	check(card.Poses.Base.Visible and card.Poses.Base.Image == "rbxassetid://101" and card.Poses.Base.ImageTransparency == 0
+		and card.Poses.Cool.Visible == false, "flat card: the base pose shown", tostring(card.Poses.Base.ImageTransparency))
+	check(card.ZoneFrame.Visible and card.ZoneFrame.Image == "rbxassetid://201", "the meadow frame under the card")
+	card.Want = Vector2.new(1, 0)
+	for _ = 1, 120 do T.CARD.Step(card, 0.05) end
+	check(card.Poses.Cool.Visible and card.Poses.Cool.ImageTransparency < 0.01 and card.Poses.Base.Visible == false,
+		"tilted right: eases into the cool pose", tostring(card.Poses.Cool.ImageTransparency))
+	card.Want = Vector2.new(-1, 0)
+	for _ = 1, 120 do T.CARD.Step(card, 0.05) end
+	check(card.Poses.Silly.Visible and card.Poses.Silly.Image == "rbxassetid://101", "tilted left: the silly side (base picture here)")
+	T.CARD.Set(card, CodexUI.View("BigSlime", nil, "Halo", false))
+	check(card.Poses.Base.Visible == false and card.ZoneFrame.Visible, "a kind without poses: back to its model / picture, the frame stays")
+	T.CARD.Set(card, CodexUI.View("Slime", nil, "Halo", false))
+	card.Want, card.Tilt = Vector2.new(0, 0), Vector2.new(0, 0)
+	T.CARD.Step(card, 0.05)
+	check(card.Poses.Base.ImageColor3.X == 0, "a card not met: the pose is a black silhouette")
+	ART.Poses.Slime = { Base = "", Cool = "", Silly = "" }
+	ART.Frames.SlimeMeadow, ART.Frames.Boss = "", ""
+	T.CARD.Destroy(card)
+end
+
 check(#warns == 0, "no warnings", table.concat(warns, " | "))
 
 print(string.format("CODEX_UI_SUMMARY checks=%d failed=%d", checks, failed))

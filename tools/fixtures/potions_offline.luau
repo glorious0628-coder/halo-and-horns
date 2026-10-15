@@ -86,7 +86,7 @@ local function fixture(saved, missingMerchant)
 	local rootPart = node("BasePart", world, vector(3,0,0))
 	local hum = { Health=50, MaxHealth=100 }
 	local f = { Config=config, Player=player, Attrs=attrs, Now=100, Root=rootPart, Humanoid=hum,
-		World=world, Merchant=merchant, MerchantPart=merchantPart, Prompt=prompt, Ready=true, Blocks={}, Tasks={}, Notices={},Opened={}, Tagged={} }
+		World=world, Merchant=merchant, MerchantPart=merchantPart, Prompt=prompt, Ready=true, Blocks={}, Tasks={}, Notices={},Opened={}, Tagged={}, FxLog={} }
 	function world:GetServerTimeNow() return f.Now end
 	local rows = {}
 	if saved then rows["P_"..serial] = copy(saved) end
@@ -102,7 +102,7 @@ local function fixture(saved, missingMerchant)
 		if not remote[name] then remote[name] = { OnServerEvent=signal(),FireClient=function(_,p,id) table.insert(f.Opened,{Player=p,Id=id}) end } end
 		return remote[name]
 	end, Notify = function(_, message, kind) table.insert(f.Notices, { message, kind }) end,
-	Fx = function() end }
+	Fx = function(p, kind, data) if f.FxLog then table.insert(f.FxLog, { P = p, Kind = kind, Data = data }) end end }
 	local util = { DeepCopy=copy, Warn=function(tag, message)
 		if tag ~= "DataService" then error(message) end
 	end,
@@ -533,7 +533,14 @@ do
 	check(f.Attrs.HPPotionReadyAt==110,"HP cooldown wrong")
 	f:Use("MP");check(f.Attrs.Mana==60 and f.Data.MPPotionCount==2,"MP recovery/stock wrong")
 	check(f.Attrs.MPPotionReadyAt==110,"independent MP cooldown wrong")
+	-- feedback_audit #4 (최종 검수 10/15): a real drink sends Fx Drink { Kind, From, To, Max } (the bar lights what came back)
+	local dr={}
+	for _,e in f.FxLog do if e.Kind=="Drink" then table.insert(dr,e) end end
+	check(#dr==2 and dr[1].P==f.Player and dr[1].Data.Kind=="HP" and dr[1].Data.From==50 and dr[1].Data.To==80 and dr[1].Data.Max==100
+		and dr[2].Data.Kind=="MP" and dr[2].Data.From==20 and dr[2].Data.To==60,"Fx Drink HP 50->80 / MP 20->60 wrong")
+	local nfx=#f.FxLog
 	local before=f:Snapshot();f:Use("HP");f:Use("MP");f:Unchanged(before)
+	check(#f.FxLog==nfx,"a refused drink sent an Fx")
 	f.Registry.PlayerService.CharacterSpawned:Fire(f.Player,nil,nil,true);f:Unchanged(before)
 	f.Registry.PlayerService.CharacterSpawned:Fire(f.Player,nil,nil,false)
 	check(f.Attrs.Mana==100 and f.Data.HPPotionCount==2 and f.Data.MPPotionCount==2,"respawn refilled stock")

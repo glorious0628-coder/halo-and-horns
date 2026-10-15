@@ -104,10 +104,12 @@ def static(src: dict) -> list[tuple[str, bool]]:
          'me:GetAttributeChangedSignal("Lang"):Connect(langCheck)' in ui and "UIKit.LangChanged:Fire(lang)" in ui),
         ("the Notify listener uses L10n.Msg when payload.Key",
          re.search(r"if payload\.Key ~= nil then\n\t+-- [^\n]*\n\t+local ok, s = pcall\(UIKit\.L10n\.Msg, payload, UIKit\.Lang\(\)\)",
-                   listener) is not None and listener.find("payload.Key") < listener.find("UIKit.Toast(text")),
-        ("Net.Notify / NotifyAll unchanged",
-         "Net.Get(\"Notify\"):FireClient(player, { Text = text, Kind = kind or \"info\", Duration = duration, Sound = sound })" in net
-         and "Net.Get(\"Notify\"):FireAllClients({ Text = text, Kind = kind or \"announce\", Duration = duration, Sound = sound })" in net),
+                   listener) is not None and listener.find("payload.Key") < listener.find("UIKit.Refuse(nil")),
+        # A23-191 (최종 검수 10/15): Notify / NotifyAll go through the gate (Net.NotifyText: only "bad" keeps its text)
+        ("Net.Notify / NotifyAll through the A23-191 gate",
+         "Net.Get(\"Notify\"):FireClient(player, { Text = t, Kind = kind, Duration = duration, Sound = sound })" in net
+         and "Net.Get(\"Notify\"):FireAllClients({ Text = t, Kind = kind, Duration = duration, Sound = sound })" in net
+         and net.count("local t = Net.NotifyText(text, kind, sound)") == 2),
         ("Net requires L10n lazily", "\nlocal L10n" not in net and 'require(script.Parent:WaitForChild("L10n"))' in net),
         ("L10n requires only Config (TextKo lazily)", set(re.findall(r'WaitForChild\("(\w+)"', src["L10N"])) == {"Config", "TextKo"}),
         ("TextKo.luau is the empty table", src["TEXTKO"].rstrip().endswith("return {}") and "tools/l10n_apply.py" in src["TEXTKO"]),

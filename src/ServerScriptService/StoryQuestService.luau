@@ -636,6 +636,8 @@ local function requirementsMet(player, data, def)
 	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
+	-- 최종 검수 10/15: Classes = only these classes (the artisan's first harvest per class: N0 / N0A / N0T)
+	if type(req.Classes) == "table" and not (data.ClassChosen == true and req.Classes[data.Class] == true) then return false end
 	-- C-5 (게임성 개발 2): Feature = the quest waits for its Config.Features switch (the market quests)
 	if type(req.Feature) == "string" and not Config.FeatureOn(req.Feature) then return false end
 	for _, f in type(req.Feature) == "table" and req.Feature or {} do -- 장인 ②: every switch of a list
@@ -668,6 +670,14 @@ local function requirementsMet(player, data, def)
 	end
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
+	end
+	-- 최종 검수 10/15: DoneAny = at least one of these is done (N0b after any class's N0)
+	if type(req.DoneAny) == "table" then
+		local any = false
+		for _, id in req.DoneAny do
+			if st.Done[id] then any = true end
+		end
+		if not any then return false end
 	end
 	-- E1: Requires.Pick = { Id, Is }: Is "Good" / "Evil" = that side of the saved pick (Purify / A count as Good), else the
 	-- exact pick
@@ -1159,8 +1169,12 @@ StoryQuestService.Afterglow = afterglow
 
 -- sound_spec 2026-10-07 §4-1: the moment of a story pick (the client plays Purify / Devour on it, never on a score
 -- change): Fx "Choice" { Option = "Good" | "Evil" } to the picker (a Neutral A = Good, B = Evil)
-local function choiceFx(player, option)
-	local ok, err = pcall(Net.Fx, player, "Choice", { Option = option })
+-- feedback_audit #7 (최종 검수 10/15): extra = { Stat, Before, After, RankFrom, RankTo } for a Halo / Horns pick (my side's
+-- score and Config.GetTitle rank before and after the points; a rank change = the halo / horns grows or shrinks)
+local function choiceFx(player, option, extra)
+	local payload = { Option = option }
+	for k, v in type(extra) == "table" and extra or {} do payload[k] = v end
+	local ok, err = pcall(Net.Fx, player, "Choice", payload)
 	if not ok then Util.Warn(TAG, "choice fx: " .. tostring(err)) end
 	afterglow(player, option, "Story") -- A23-64 ②: every story pick, a 0-point one too (A23-70 Lunch1)
 end
@@ -1255,10 +1269,17 @@ local function onStoryAction(player, id, action, option, ...)
 			if option ~= "Good" and option ~= "Evil" then return end
 			local pick = obj[option]
 			st.Pick[id] = pick.Pick or option -- saved before the points
-			choiceFx(player, option)
+			local stat = f == "Halo" and "Honor" or "Infamy"
+			local before = math.max(0, math.floor(num(data[stat])))
 			local pts = math.floor(num(pick.Points))
 			-- A23-130: a 0-point pick says nothing (the Choice Fx and the afterglow answer); no Reply line any more
 			if pts > 0 then pickScore(player, f, option, pts) end
+			local after = math.max(0, math.floor(num(data[stat])))
+			local function rankOf(score)
+				local _, r = Config.GetTitle(f, f == "Halo" and score or 0, f == "Horns" and score or 0)
+				return r
+			end
+			choiceFx(player, option, { Stat = stat, Before = before, After = after, RankFrom = rankOf(before), RankTo = rankOf(after) })
 			changedMind(player, st, obj, st.Pick[id])
 			payChoice(player, obj, option)
 		else

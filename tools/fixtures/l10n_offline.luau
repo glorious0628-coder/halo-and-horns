@@ -290,23 +290,31 @@ local Ls = newL10n(KO)
 local Net = loadModule(NET_SOURCE, "Net", { L10n = Ls, Config = Config })
 local who = { Name = "P1" }
 table.clear(fired)
-Net.NotifyKey(who, "Config.Announce.Text.Subject", { { Hidden = "Halo" } }, nil, 3, "Coin", { Unit = "x" })
+-- A23-191 (최종 검수 10/15): only a "bad" line carries its text / Key; every other kind = its sound alone or nothing
+Net.NotifyKey(who, "Config.Announce.Text.Subject", { { Hidden = "Halo" } }, "bad", 3, "Coin", { Unit = "x" })
 local f1 = fired[1]
-check(f1 ~= nil and f1.To == who and f1.Payload.Key == "Config.Announce.Text.Subject" and f1.Payload.Kind == "info"
+check(f1 ~= nil and f1.To == who and f1.Payload.Key == "Config.Announce.Text.Subject" and f1.Payload.Kind == "bad"
 	and f1.Payload.Duration == 3 and f1.Payload.Sound == "Coin" and f1.Payload.Named.Unit == "x" and f1.Payload.Args[1].Hidden == "Halo",
-	"NotifyKey sends Key, Args, Named, Kind (info), Duration, Sound")
+	"NotifyKey (bad) sends Key, Args, Named, Kind, Duration, Sound")
 check(f1 and f1.Payload.Text == "A member of the Knights of Light", "NotifyKey Text = the English L10n.Msg", f1 and f1.Payload.Text)
-Net.NotifyAllKey("Config.Factions.Halo.Perks.1", {})
+Net.NotifyAllKey("Config.Factions.Halo.Perks.1", {}, "bad")
 local f2 = fired[2]
-check(f2 and f2.To == "all" and f2.Payload.Kind == "announce" and f2.Payload.Text == perk, "NotifyAllKey(key, {}): announce, literal % kept",
+check(f2 and f2.To == "all" and f2.Payload.Kind == "bad" and f2.Payload.Text == perk, "NotifyAllKey(key, {}, bad): literal % kept",
 	f2 and f2.Payload.Text)
 W.Studio = true
-local okBad = pcall(Net.NotifyKey, who, "Config.Text.NoSuchLine", nil)
+local okBad = pcall(Net.NotifyKey, who, "Config.Text.NoSuchLine", nil, "bad")
 check(not okBad and #fired == 2, "Studio: an unknown key errors (nothing sent)", #fired)
 W.Studio = false
-Net.NotifyKey(who, "Config.Text.NoSuchLine", nil)
+Net.NotifyKey(who, "Config.Text.NoSuchLine", nil, "bad")
 check(fired[3] and fired[3].Payload.Text == "Config.Text.NoSuchLine", "live server: an unknown key still sends (key text)")
+Net.NotifyKey(who, "Config.Announce.Text.Subject", { { Hidden = "Halo" } }, nil, nil, "Coin")
+check(fired[4] and fired[4].Payload.Key == nil and fired[4].Payload.Text == "" and fired[4].Payload.Sound == "Coin"
+	and fired[4].Payload.Kind == "info", "A23-191: a keyed info line with a sound = the sound alone (no Key, no text)")
+Net.NotifyAllKey("Config.Factions.Halo.Perks.1", {})
+check(#fired == 4, "A23-191: a keyed announce without a sound sends nothing", #fired)
+Net.Notify(who, "Hello", "bad")
+check(fired[5] and fired[5].Payload.Text == "Hello" and fired[5].Payload.Key == nil, "Net.Notify bad: Text only")
 Net.Notify(who, "Hello", "good")
-check(fired[4] and fired[4].Payload.Text == "Hello" and fired[4].Payload.Key == nil, "Net.Notify unchanged (Text only)")
+check(#fired == 5, "A23-191: Net.Notify good without a sound sends nothing", #fired)
 
 print(string.format("L10N_SUMMARY checks=%d failed=%d", checks, failed))

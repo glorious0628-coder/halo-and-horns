@@ -3129,7 +3129,7 @@ Config.Tutorial = {
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
-		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
+		Clatter = "Capt. Clatter", Crystal = "Crystal weapon", Craft = "Craft" }, -- A23-86 F ladder rows (Craft: 최종 검수 10/15)
 	-- A23-86 F (content_beyond_10min): the next-goal ladder once the early goals (iron weapon, first skills, the woods) are
 	-- done and no story row is pinned. Hooks, in order: a feature row asks its service for its line (S[Service].NextGoal(
 	-- player, data) -> text or nil) and only while Config.Features[Feature] is on (the features are not built yet, so the
@@ -3137,6 +3137,8 @@ Config.Tutorial = {
 	-- no purchase or 2x button near it (A23-79).
 	Ladder = {
 		Hooks = {
+			-- 최종 검수 10/15: an artisan who can make a new thing of their role now (CraftService.NextGoal), first
+			{ Kind = "Craft", Service = "CraftService", Feature = "Crafting" },
 			{ Kind = "Commission", Service = "CommissionService", Feature = "Commission" },
 			{ Kind = "Clatter", Service = "ClatterService", Feature = "Clatter" },
 			{ Kind = "Crystal", Service = "CrystalService", Feature = "Crystal" },
@@ -3163,23 +3165,23 @@ Config.Tutorial = {
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
-			Lines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+			Lines = { -- 사용자 10/15: page 1 = the guide's own hello (catchphrase), page 2 = the mission (the Forge); two pages only (A23-99)
 				"Hallie here! Now you know my name. Welcome to the Knights!",
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 	},
@@ -3283,7 +3285,7 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
+	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0A", "N0T", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
 		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
 		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
@@ -3701,10 +3703,12 @@ Config.StoryQuests = {
 		-- 장인 ② (artisan_min_server_2026-10-14 ①, 게임성 개발 2): the guild's first ten minutes - pick, make, sell. Neutral only,
 		-- offered while the guild (NeutralFaction) and the quest's Feature switches are on. Gather / Craft / SellMat count
 		-- GatherService.Gathered, CraftService.Crafted and LootService.MaterialSold. N0 ends with 150 gold and the crafted
-		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only
+		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only.
+		-- 최종 검수 10/15: one N0 per artisan class (Requires.Classes): N0 the blacksmith (Warrior), N0A the alchemist (Mage:
+		-- 3 herbs -> AP1), N0T the pet tamer (Archer: 3 herbs -> T1); same title and 150 gold
 		N0 = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" } },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
 			Start = "Kit: Pick herbs, mine copper, then make something!",
 			Steps = {
 				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
@@ -3715,9 +3719,29 @@ Config.StoryQuests = {
 			},
 			Reward = { GoldN = 150, EquipCrafted = true },
 		},
+		N0A = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
+			Start = "Kit: Pick herbs, then brew something!",
+			Steps = {
+				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150 },
+		},
+		N0T = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
+			Start = "Kit: Pick herbs, then make pet treats!",
+			Steps = {
+				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150 },
+		},
 		N0b = {
 			Kind = "Sub", Title = "Sell to the Smith", ShortName = "Sell harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { Done = { "N0" }, Feature = "Gathering" },
+			Requires = { DoneAny = { "N0", "N0A", "N0T" }, Feature = "Gathering" }, -- 최종 검수 10/15: any class's first harvest
 			Start = "Kit: Extra herbs? Otto pays gold for them!",
 			Steps = { { Text = "Sell harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
 			Reward = { GoldN = 30 },
@@ -6823,15 +6847,21 @@ Config.ClassGrips = {
 -- upright in one hand, the foot near the ground (Rest 90 = upright), tilted a little while walking; Bow = hanging from
 -- the LEFT hand, the limbs upright along the body (WeaponPose welds it to LeftGripAttachment while resting)
 Config.WeaponGrips = {
-	Sword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
-	DarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
-	Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },
-	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, 0, 0 }, Hold = "Bow" },
-	Staff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
-	CrookStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
-	FlaskStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
-	Hammer = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
-	Baton = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+	-- grip-3 (user 10/15 "직업별 무기 잡는 것 좀 제대로 해줘", Codex build/codex/grip2_codex.md): every class holds its
+	-- weapon at rest (never on the back); the swords up and forward outside the body (SwordReady), the hammer over the
+	-- shoulder (HammerCarry), the baton up-forward like a conductor's (BatonReady). Side stays for the joke weapons (Meme)
+	Sword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },
+	DarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },
+	Meme = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" }, -- the joke weapons (WeaponPose MemeKind), the old sword hold
+	-- grip-3 (HoldTest photos 10/15: the bow hung flat across the side, its string to the body): turned a quarter about
+	-- its own length so the string is behind and the curved limbs in front (Codex grip2)
+	Bow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },
+	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, -90, 0 }, Hold = "Bow" },
+	Staff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" }, -- grip-3 HoldTest: 90 leaned the staff 9 degrees back
+	CrookStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
+	Hammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },
+	Baton = { Point = 0.3, Rest = { 20, 0, 0 }, Hold = "BatonReady" },
 }
 
 -- A23-187: the joints' turns (degrees, X / Y / Z of each Motor6D's own frame) added on top of the walk / idle animation
@@ -6854,17 +6884,38 @@ Config.HoldPoses = {
 		-- RightWrist (HoldTest 10/15, measured: the staff leaned 28 degrees forward and in, its orb before the chest):
 		-- turns it back upright, a little back and out
 		Stand = { RightShoulder = { -8, 0, 8 }, RightElbow = { -20, 0, 0 }, RightWrist = { 37, 0, -11 } },
-		Walk = { RightShoulder = { -8, 0, 10 }, RightElbow = { -16, 0, 0 }, RightWrist = { 34, 0, -12 } },
+		Walk = { RightShoulder = { -8, 0, 10 }, RightElbow = { -16, 0, 0 }, RightWrist = { 17, 0, -12 } }, -- grip-3: 5~10 forward
 		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.98 } },
 	Bow = { Arm = "Left",
 		-- LeftWrist (HoldTest 10/15, measured: the bow leaned 19 degrees in across the body): upright by the left leg
-		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 13, 0, 13 } },
-		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { 12, 0, 14 } },
+		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 8, 0, 13 } },
+		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { -2, 0, 14 } },
 		Run = { LeftShoulder = { 0, 0, -4 }, LeftElbow = { 8, 0, 0 } },
 		Air = { LeftElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95, Free = 0.15 } },
+	-- grip-3 (Codex build/codex/grip2_codex.md start values, then tuned on HoldTest photos): the right hand at the waist
+	-- front, the blade up and forward outside the body; the hammer's head over the right shoulder, the shaft behind; the
+	-- baton up-forward 45 degrees
+	SwordReady = { Arm = "Right",
+		Stand = { RightShoulder = { 10, 0, 14 }, RightElbow = { 30, 0, 0 }, RightWrist = { -10, 0, -14 } },
+		Walk = { RightShoulder = { 12, 0, 18 }, RightElbow = { 35, 0, 0 }, RightWrist = { -27, 0, -10 } },
+		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
+		Air = { RightElbow = { 10, 0, 0 } },
+		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
+	HammerCarry = { Arm = "Right",
+		Stand = { RightShoulder = { 35, 0, 20 }, RightElbow = { 90, 0, 0 }, RightWrist = { -55, 0, -20 } },
+		Walk = { RightShoulder = { 38, 0, 23 }, RightElbow = { 90, 0, 0 }, RightWrist = { -58, 0, -23 } },
+		Run = { RightShoulder = { 0, 0, 2 } },
+		Air = { RightElbow = { 4, 0, 0 } },
+		Damp = { Stand = 0.95, Walk = 0.97, Run = 0.98, Air = 0.98, Lower = 0.98 } },
+	BatonReady = { Arm = "Right",
+		Stand = { RightShoulder = { 10, 0, 12 }, RightElbow = { 25, 0, 0 }, RightWrist = { -10, 0, -12 } },
+		Walk = { RightShoulder = { 15, 0, 16 }, RightElbow = { 30, 0, 0 }, RightWrist = { -30, 0, -10 } },
+		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
+		Air = { RightElbow = { 10, 0, 0 } },
+		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
 }
 -- the move and the attack hand-over (s): Blend = stand <-> walk; In = the rest pose gives way when an attack starts (In
 -- Bow for the bow), Out = it comes back after; WalkAt / RunAt = the ground speed's share of WalkSpeed that counts as walking
@@ -6880,54 +6931,54 @@ Config.HoldMotion = { Blend = 0.16, In = 0.08, InBow = 0.06, Out = 0.18, WalkAt 
 -- proportions follow tierLen) and its grip point sits on the Handle's grip point (Config.WeaponGrips Point)
 Config.WeaponMeshes = {
 	Warrior_Halo = { -- Paladin
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.17 }, -- Weapon_Halo_Paladin_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.147 }, -- Weapon_Halo_Paladin_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.19 }, -- Weapon_Halo_Paladin_T3
+		[1] = { MeshId = "rbxassetid://86159591984113", TextureId = "rbxassetid://113421110964518", Length = 3.0, Pivot = 0.17 }, -- Weapon_Halo_Paladin_T1
+		[2] = { MeshId = "rbxassetid://122531277828089", TextureId = "rbxassetid://118386471395153", Length = 3.5, Pivot = 0.147 }, -- Weapon_Halo_Paladin_T2
+		[3] = { MeshId = "rbxassetid://71099522598243", TextureId = "rbxassetid://111129276667663", Length = 4.0, Pivot = 0.19 }, -- Weapon_Halo_Paladin_T3
 	},
 	Warrior_Horns = { -- Berserker
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.155 }, -- Weapon_Horns_Berserker_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.192 }, -- Weapon_Horns_Berserker_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.172 }, -- Weapon_Horns_Berserker_T3
-		[7] = { MeshId = "", TextureId = "", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7
+		[1] = { MeshId = "rbxassetid://91355529571301", TextureId = "rbxassetid://103477446310121", Length = 3.0, Pivot = 0.155 }, -- Weapon_Horns_Berserker_T1
+		[2] = { MeshId = "rbxassetid://81878150782694", TextureId = "rbxassetid://111883393106083", Length = 3.5, Pivot = 0.192 }, -- Weapon_Horns_Berserker_T2
+		[3] = { MeshId = "rbxassetid://92330575484416", TextureId = "rbxassetid://80780968722032", Length = 4.0, Pivot = 0.172 }, -- Weapon_Horns_Berserker_T3
+		[7] = { MeshId = "rbxassetid://72072766738977", TextureId = "rbxassetid://123814346168925", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7
 	},
 	Warrior_Neutral = { -- Blacksmith
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T3
+		[1] = { MeshId = "rbxassetid://80094041531378", TextureId = "rbxassetid://129135909943173", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T1
+		[2] = { MeshId = "rbxassetid://79219710009283", TextureId = "rbxassetid://91040471408066", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T2
+		[3] = { MeshId = "rbxassetid://111562106569514", TextureId = "rbxassetid://86647169802032", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T3
 	},
 	Mage_Halo = { -- LightMage
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T3
+		[1] = { MeshId = "rbxassetid://104823656302314", TextureId = "rbxassetid://82317471191894", Length = 3.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T1
+		[2] = { MeshId = "rbxassetid://125318336810545", TextureId = "rbxassetid://78056760671695", Length = 3.5, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T2
+		[3] = { MeshId = "rbxassetid://122724668870101", TextureId = "rbxassetid://81568978659498", Length = 4.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T3
 	},
 	Mage_Horns = { -- DarkMage
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T3
+		[1] = { MeshId = "rbxassetid://115879197737660", TextureId = "rbxassetid://103102209489305", Length = 3.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T1
+		[2] = { MeshId = "rbxassetid://80350617880268", TextureId = "rbxassetid://117768258967879", Length = 3.5, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T2
+		[3] = { MeshId = "rbxassetid://76449571410419", TextureId = "rbxassetid://130050929803024", Length = 4.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T3
 	},
 	Mage_Neutral = { -- Alchemist
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T3
+		[1] = { MeshId = "rbxassetid://96461121498188", TextureId = "rbxassetid://95231869700034", Length = 3.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T1
+		[2] = { MeshId = "rbxassetid://126249546823121", TextureId = "rbxassetid://113168377752694", Length = 3.5, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T2
+		[3] = { MeshId = "rbxassetid://140472036389182", TextureId = "rbxassetid://96028141317503", Length = 4.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T3
 	},
 	Archer_Halo = { -- Ranger
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T3
+		[1] = { MeshId = "rbxassetid://103065174891351", TextureId = "rbxassetid://118757245665370", Length = 3.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T1
+		[2] = { MeshId = "rbxassetid://76725028902468", TextureId = "rbxassetid://102498357666812", Length = 3.5, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T2
+		[3] = { MeshId = "rbxassetid://70655123902661", TextureId = "rbxassetid://126857700298677", Length = 4.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T3
 	},
 	Archer_Horns = { -- ShadowHunter
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T3
+		[1] = { MeshId = "rbxassetid://138849355994171", TextureId = "rbxassetid://106926969314938", Length = 3.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T1
+		[2] = { MeshId = "rbxassetid://109706823612172", TextureId = "rbxassetid://121216732471163", Length = 3.5, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T2
+		[3] = { MeshId = "rbxassetid://106873689195215", TextureId = "rbxassetid://72243612242409", Length = 4.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T3
 	},
 	Archer_Neutral = { -- PetTamer
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T3
+		[1] = { MeshId = "rbxassetid://75913120190946", TextureId = "rbxassetid://128696216276676", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T1
+		[2] = { MeshId = "rbxassetid://109594504869748", TextureId = "rbxassetid://78809577707291", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T2
+		[3] = { MeshId = "rbxassetid://93042628329794", TextureId = "rbxassetid://104958566251935", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T3
 	},
 	Meme = { -- the Forge's joke weapons (Config.Weapons Meme rows, any class)
-		Pan = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.28 }, -- Weapon_Meme_FryingPan
-		Chicken = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.15 }, -- Weapon_Meme_RubberChicken
+		Pan = { MeshId = "rbxassetid://79648371582502", TextureId = "rbxassetid://101642561735654", Length = 3.5, Pivot = 0.28 }, -- Weapon_Meme_FryingPan
+		Chicken = { MeshId = "rbxassetid://117962570056498", TextureId = "rbxassetid://100520320597927", Length = 3.5, Pivot = 0.15 }, -- Weapon_Meme_RubberChicken
 	},
 }
 
@@ -8488,11 +8539,64 @@ Config.Pets = {
 	RollGrow = 0.03,
 	ListEvery = 1,
 	NoticeAfter = 0.5,
+	-- A23-194 (최종 검수 10/15, build/codex/pets_roster.md): 12 beta species. Name / Icon: the pet window (PetWindow.luau)
+	-- when the pet has no story name ("" icon = the window's default). Rarity "Common" | "Fine" | "Rare" | "Event" (looks
+	-- only: never the bonus size). Family = the tamer's research family (S2-S5 need its points). Acquire = "Story" |
+	-- "Craft" | "Quest" | "Event" (Config.PetGrants rows / Config.Craft S1-S5). Bonus = { Type, Min, Max }: the following
+	-- pet's one tiny bonus from Lv1 (Min) to MaxLv (Max), Type "Speed" (the old Speed line: walk speed) | "Potion" (HP
+	-- potion heal) | "KillGold" / "KillXP" (a monster kill's gold / XP) | "MatLuck" (plain material drop chance) | "None"
+	-- (Emote = its look-only act, game dev 1). Off in PvP zones and the Crown Pit (PetService.Bonus). Ready = false: no
+	-- model yet -> never granted, crafted or shown (ShowUnready = true shows them for a Studio check only).
+	ShowUnready = false,
 	Species = {
-		-- Name / Icon: the pet window (PetWindow.luau) when the pet has no story name
-		BabySlime = { Speed = { 0.07, 0.10 }, Name = "Baby Slime", Icon = "IconPetBabySlime" },
+		BabySlime = { Speed = { 0.07, 0.10 }, Name = "Baby Slime", Icon = "IconPetBabySlime", Rarity = "Common", Family = "Slime",
+			Acquire = "Story", Bonus = { Type = "Speed" }, Ready = true },
+		FlowerSlime = { Name = "Flower Slime", Icon = "", Rarity = "Fine", Family = "Slime", Acquire = "Craft",
+			Bonus = { Type = "Potion", Min = 0.01, Max = 0.03 }, Ready = false },
+		CrownSlime = { Name = "Crown Slime", Icon = "", Rarity = "Rare", Family = "Slime", Acquire = "Event",
+			Bonus = { Type = "None" }, Emote = "CrownBow", Ready = false },
+		SproutGoblin = { Name = "Sprout Goblin", Icon = "", Rarity = "Fine", Family = "Goblin", Acquire = "Craft",
+			Bonus = { Type = "KillGold", Min = 0.01, Max = 0.02 }, Ready = false },
+		AcornGoblin = { Name = "Acorn Goblin", Icon = "", Rarity = "Rare", Family = "Goblin", Acquire = "Craft",
+			Bonus = { Type = "MatLuck", Min = 0.005, Max = 0.01 }, Ready = false },
+		BonePup = { Name = "Bone Pup", Icon = "", Rarity = "Fine", Family = "Skeleton", Acquire = "Craft",
+			Bonus = { Type = "KillXP", Min = 0.01, Max = 0.02 }, Ready = false },
+		MiniClatter = { Name = "Mini Clatter", Icon = "", Rarity = "Rare", Family = "Skeleton", Acquire = "Event",
+			Bonus = { Type = "None" }, Emote = "Salute", Ready = false },
+		HaloChick = { Speed = { 0.07, 0.10 }, Name = "Halo Chick", Icon = "", Rarity = "Fine", Family = "Bird", Acquire = "Quest",
+			Bonus = { Type = "Speed" }, Ready = false },
+		HornsBat = { Speed = { 0.07, 0.10 }, Name = "Horns Bat", Icon = "", Rarity = "Fine", Family = "Bat", Acquire = "Quest",
+			Bonus = { Type = "Speed" }, Ready = false },
+		GearMouse = { Name = "Gear Mouse", Icon = "", Rarity = "Fine", Family = "Mouse", Acquire = "Quest",
+			Bonus = { Type = "KillXP", Min = 0.01, Max = 0.02 }, Ready = false },
+		GoldenGosling = { Name = "Golden Gosling", Icon = "", Rarity = "Event", Family = "Goose", Acquire = "Event",
+			Bonus = { Type = "KillGold", Min = 0.01, Max = 0.02 }, Ready = false },
+		PocketKaiju = { Name = "Pocket Kaiju", Icon = "", Rarity = "Event", Family = "Kaiju", Acquire = "Event",
+			Bonus = { Type = "None" }, Emote = "Roar", Ready = false },
 	},
 }
+
+-- A23-194: a species that may be granted / crafted / shown now (known and Ready, or Pets.ShowUnready)
+function Config.PetReady(species)
+	local def = type(species) == "string" and Config.Pets.Species[species] or nil
+	if type(def) ~= "table" then return false end
+	return def.Ready ~= false or Config.Pets.ShowUnready == true
+end
+
+-- A23-194: the bonus of a pet of `species` at level lv when its Bonus.Type is `kind` (a fraction; 0 otherwise). "Speed"
+-- = Config.PetSpeedBonus (roll = a summoned pet's Roll.Spd); the rest go Min -> Max over Lv1..MaxLv
+function Config.PetBonus(species, lv, kind, roll)
+	local P = Config.Pets
+	local def = type(species) == "string" and P.Species[species] or nil
+	local b = type(def) == "table" and type(def.Bonus) == "table" and def.Bonus or nil
+	if not b or b.Type ~= kind or kind == "None" then return 0 end
+	if kind == "Speed" then return Config.PetSpeedBonus(species, lv, roll) end
+	local lo, hi = tonumber(b.Min), tonumber(b.Max)
+	if not lo or not hi then return 0 end
+	if type(lv) ~= "number" or lv ~= lv then lv = 1 end
+	lv = math.clamp(math.floor(lv), 1, P.MaxLv)
+	return lo + (hi - lo) * (lv - 1) / math.max(1, P.MaxLv - 1)
+end
 
 -- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv. roll = a summoned pet's
 -- Roll.Spd (whole %, cut to Config.SaveV4.PetRollSpd): Lv1 = roll %, MaxLv = roll % + Pets.RollGrow; nil / 0 = the
@@ -9325,6 +9429,25 @@ Config.PetGrant = {
 	Text = { Got = "New pet: Baby Slime!" },
 }
 
+-- A23-194 (최종 검수 10/15, pets_roster.md): the sure pet gifts (PetService). Each row once per account (data.PetGrants.Got
+-- [Id]; an owned pet of the species counts as got), only for a Ready species (Config.PetReady), from Level, Factions =
+-- only these sides (nil = any). Count = an event tally in data.PetGrants.N[Count] reaching Need: "Goose" = a paid goose
+-- round (GooseService.GooseRewarded), "Kaiju" = a kaiju event that ended Defeated / Survived with me in it (the kaiju or
+-- a participant), "KingSlime" / "Clatter" = a field boss kill that paid me (FieldBossService.Defeated, Config.PetGrantBoss).
+-- Quests = every one of these story quests done. The tallies count from now on (old rounds are not known); a join catches
+-- up a row whose condition is already met.
+Config.PetGrants = {
+	{ Id = "GoldenGosling", Species = "GoldenGosling", Count = "Goose", Need = 3, Level = 5 },
+	{ Id = "CrownSlime", Species = "CrownSlime", Count = "KingSlime", Need = 5, Level = 8 },
+	{ Id = "HaloChick", Species = "HaloChick", Quests = { "H2", "H3", "H6" }, Level = 10, Factions = { Halo = true } },
+	{ Id = "HornsBat", Species = "HornsBat", Quests = { "R3", "R5", "R7" }, Level = 10, Factions = { Horns = true } },
+	{ Id = "GearMouse", Species = "GearMouse", Quests = { "N0b", "N2", "N4" }, Level = 10, Factions = { Neutral = true } },
+	{ Id = "PocketKaiju", Species = "PocketKaiju", Count = "Kaiju", Need = 3, Level = 15 },
+	{ Id = "MiniClatter", Species = "MiniClatter", Count = "Clatter", Need = 3, Level = 30 },
+}
+Config.PetGrantBoss = { SlimeKing = "KingSlime", Clatter = "Clatter" } -- FieldBossService key -> PetGrants Count
+Config.Data.Defaults.PetGrants = { N = {}, Got = {} } -- A23-194: additive (Version unchanged)
+
 ----------------------------------------------------------------- A23-110 the first KO King (게임성 개발 2)
 -- The personal King Slime of game dev 3's quest Config.FirstKO (KO1; FirstKOService reads StoryQuestService.CurrentStep):
 --   step Config.FirstKO.Step "Defeat the King Slime" = the FIRST King: a quiet personal King (only its owner sees and hits
@@ -9563,7 +9686,8 @@ Config.Craft = {
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
 		-- 장인 ⑤ (A23-178, 최종 검수 10/14): the alchemist's first-minutes goods from the meadow's harvest and slimes. Kind
 		-- "Potion" = Potion "HP" / "MP" (the potion stock, Config.PotionStockKey; N + the hammer's +N, never past the cap)
-		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 2, Jelly = 3 }, XP = 8 },
+		-- 최종 검수 10/15: AP1 / T1 = herbs only (the alchemist's / tamer's N0 harvest, no hunting before the first craft)
+		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 8 },
 		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
 		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 5, CopperOre = 3 }, XP = 20 },
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
@@ -9571,7 +9695,13 @@ Config.Craft = {
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
 		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
 		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
-		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Herb = 2 }, XP = 10 },
+		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 10 },
+		-- A23-194 (pets_roster.md): the tamer's other summons. No Spd: these species grow on their own Bonus line (no roll);
+		-- each waits for its species' model (Config.PetReady)
+		S2 = { Role = "Tame", Kind = "Pet", Species = "FlowerSlime", Family = "Slime", Research = 150, Lv = 3, Gold = 150, Mats = { Jelly = 30, Petal = 15, Herb = 5 }, XP = 60 },
+		S3 = { Role = "Tame", Kind = "Pet", Species = "SproutGoblin", Family = "Goblin", Research = 150, Lv = 6, Gold = 300, Mats = { GoblinTooth = 25, OakLog = 8, Herb = 5 }, XP = 100 },
+		S4 = { Role = "Tame", Kind = "Pet", Species = "AcornGoblin", Family = "Goblin", Research = 400, Lv = 10, Gold = 800, Mats = { GoblinTooth = 35, BruteHorn = 8, OakLog = 12 }, XP = 180 },
+		S5 = { Role = "Tame", Kind = "Pet", Species = "BonePup", Family = "Skeleton", Research = 150, Lv = 12, Gold = 1200, Mats = { Bone = 30, KnightCrest = 5 }, XP = 250 },
 		-- ⑥ gear (docs/design/gear_slots_2026-10-12.md §4; 게임성 검수 OK 10/12; Config.Gear has the numbers). Kind Gear pays
 		-- into data.Gear.Own["<Slot>:T:P"] (T = Tier, P = the hammer's +N). Smith: armor + ring (Lv 8 / 16 / 24: iron, silver,
 		-- moon crystal + the monster materials of the same zones); the tamer: pet armor + pet accessory (Lv 5 / 12 / 20:
@@ -9602,6 +9732,7 @@ Config.Craft = {
 		NeedResearch = "Research this monster more first.", -- a summon before its research stage
 		Prompt = "Craft", -- the workbench prompt (ActionKey)
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
+		Goal = "Make something new at the %s", -- 최종 검수 10/15: the next-goal craft row (CraftService.NextGoal; the station)
 	},
 }
 -- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly
@@ -10234,6 +10365,30 @@ Config.Codex = {
 	-- 최종 검수 10/13: the 3D card models the codex window draws (게임성 개발 1): ReplicatedStorage[ModelFolder][kind], copied at
 	-- the server's start from ServerStorage.CustomModels by MonsterService's rule (the kind's own model, else its ModelFrom)
 	ModelFolder = "CodexModels",
+	-- A23-195 (user 10/15): the card picture in layers - a card frame per zone (Frames: the meadow / woods / ruins pages,
+	-- Boss = the field bosses' gold one; the name plate and the top-left circle where the card draws them now) under the
+	-- monster's 3 see-through pose pictures (Poses[kind]: Base = the middle, Cool = tilted to the CoolSide, Silly = the
+	-- other side; the tilt blends them softly between Blend.From and Blend.To of |tilt|), the holo sheen / sparkles on top
+	-- (code). An id is "rbxassetid://N" (or N). Empty = today's look: no Base = the 3D model; no Cool / Silly = Base;
+	-- no frame = the PanelCard plate. Pictures: 최종 검수 (design order)
+	Art = {
+		Frames = { SlimeMeadow = "", GoblinWoods = "", SkeletonRuins = "", Boss = "" },
+		Poses = {
+			Slime = { Base = "", Cool = "", Silly = "" },
+			FlowerSlime = { Base = "", Cool = "", Silly = "" },
+			BigSlime = { Base = "", Cool = "", Silly = "" },
+			SlimeKing = { Base = "", Cool = "", Silly = "" },
+			Goblin = { Base = "", Cool = "", Silly = "" },
+			SlingshotGoblin = { Base = "", Cool = "", Silly = "" },
+			GoblinBrute = { Base = "", Cool = "", Silly = "" },
+			Skeleton = { Base = "", Cool = "", Silly = "" },
+			SkeletonArcher = { Base = "", Cool = "", Silly = "" },
+			SkeletonKnight = { Base = "", Cool = "", Silly = "" },
+			CaptainClatter = { Base = "", Cool = "", Silly = "" },
+		},
+		CoolSide = 1, -- tilt X > 0 (the mouse on the card's right) = Cool, < 0 = Silly
+		Blend = { From = 0.2, To = 0.75 },
+	},
 	Text = {
 		Name = "Monster Codex",
 		Card = "New card: %s!", -- (the monster's Short name)

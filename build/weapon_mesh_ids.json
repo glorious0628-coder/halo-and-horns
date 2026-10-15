@@ -1,0 +1,812 @@
+{
+ "Weapon_Halo_LightMage_T1": {
+  "ModelId": "107055575162610",
+  "MeshId": "rbxassetid://104823656302314",
+  "TextureId": "rbxassetid://82317471191894",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://82317471191894",
+   "NormalMap": "rbxassetid://89158665048932",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   49.7562,
+   300.0,
+   24.0873
+  ],
+  "MeshSize": [
+   49.7562,
+   300.0,
+   24.0873
+  ],
+  "manifest_size_studs": [
+   0.498,
+   0.241,
+   3.0
+  ],
+  "code_len": 3.367
+ },
+ "Weapon_Halo_LightMage_T2": {
+  "ModelId": "138323062116264",
+  "MeshId": "rbxassetid://125318336810545",
+  "TextureId": "rbxassetid://78056760671695",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://78056760671695",
+   "NormalMap": "rbxassetid://110178405257975",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   72.5723,
+   350.0,
+   31.7504
+  ],
+  "MeshSize": [
+   72.5723,
+   350.0,
+   31.7504
+  ],
+  "manifest_size_studs": [
+   0.726,
+   0.318,
+   3.5
+  ],
+  "code_len": 3.441
+ },
+ "Weapon_Halo_LightMage_T3": {
+  "ModelId": "109260853543767",
+  "MeshId": "rbxassetid://122724668870101",
+  "TextureId": "rbxassetid://81568978659498",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://81568978659498",
+   "NormalMap": "rbxassetid://133853412939174",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   107.1671,
+   400.0,
+   55.0076
+  ],
+  "MeshSize": [
+   107.1671,
+   400.0,
+   55.0076
+  ],
+  "manifest_size_studs": [
+   1.072,
+   0.55,
+   4.0
+  ],
+  "code_len": 3.515
+ },
+ "Weapon_Halo_Paladin_T1": {
+  "ModelId": "79071400233940",
+  "MeshId": "rbxassetid://86159591984113",
+  "TextureId": "rbxassetid://113421110964518",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://113421110964518",
+   "NormalMap": "rbxassetid://96490613445834",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   76.8004,
+   300.0,
+   26.4334
+  ],
+  "MeshSize": [
+   76.8004,
+   300.0,
+   26.4334
+  ],
+  "manifest_size_studs": [
+   0.768,
+   0.264,
+   3.0
+  ],
+  "code_len": 3.85
+ },
+ "Weapon_Halo_Paladin_T2": {
+  "ModelId": "123340265103528",
+  "MeshId": "rbxassetid://122531277828089",
+  "TextureId": "rbxassetid://118386471395153",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://118386471395153",
+   "NormalMap": "rbxassetid://136091756741585",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   112.238,
+   350.0,
+   25.4574
+  ],
+  "MeshSize": [
+   112.238,
+   350.0,
+   25.4574
+  ],
+  "manifest_size_studs": [
+   1.122,
+   0.255,
+   3.5
+  ],
+  "code_len": 3.95
+ },
+ "Weapon_Halo_Paladin_T3": {
+  "ModelId": "134052494380579",
+  "MeshId": "rbxassetid://71099522598243",
+  "TextureId": "rbxassetid://111129276667663",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://111129276667663",
+   "NormalMap": "rbxassetid://110926586592840",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   135.9641,
+   400.0,
+   30.7462
+  ],
+  "MeshSize": [
+   135.9641,
+   400.0,
+   30.7462
+  ],
+  "manifest_size_studs": [
+   1.36,
+   0.307,
+   4.0
+  ],
+  "code_len": 4.05
+ },
+ "Weapon_Halo_Ranger_T1": {
+  "ModelId": "140640185352620",
+  "MeshId": "rbxassetid://103065174891351",
+  "TextureId": "rbxassetid://118757245665370",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://118757245665370",
+   "NormalMap": "rbxassetid://134455613571940",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   58.8493,
+   300.0,
+   26.9303
+  ],
+  "MeshSize": [
+   58.8493,
+   300.0,
+   26.9303
+  ],
+  "manifest_size_studs": [
+   0.588,
+   0.269,
+   3.0
+  ],
+  "code_len": 3.1
+ },
+ "Weapon_Halo_Ranger_T2": {
+  "ModelId": "114746099783576",
+  "MeshId": "rbxassetid://76725028902468",
+  "TextureId": "rbxassetid://102498357666812",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://102498357666812",
+   "NormalMap": "rbxassetid://114451581291263",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   60.2582,
+   350.0,
+   19.8961
+  ],
+  "MeshSize": [
+   60.2582,
+   350.0,
+   19.8961
+  ],
+  "manifest_size_studs": [
+   0.603,
+   0.199,
+   3.5
+  ],
+  "code_len": 3.357
+ },
+ "Weapon_Halo_Ranger_T3": {
+  "ModelId": "76726184005103",
+  "MeshId": "rbxassetid://70655123902661",
+  "TextureId": "rbxassetid://126857700298677",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://126857700298677",
+   "NormalMap": "rbxassetid://101669731628687",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   81.2613,
+   400.0,
+   28.7708
+  ],
+  "MeshSize": [
+   81.2613,
+   400.0,
+   28.7708
+  ],
+  "manifest_size_studs": [
+   0.813,
+   0.288,
+   4.0
+  ],
+  "code_len": 3.614
+ },
+ "Weapon_Horns_Berserker_T1": {
+  "ModelId": "76633643179868",
+  "MeshId": "rbxassetid://91355529571301",
+  "TextureId": "rbxassetid://103477446310121",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://103477446310121",
+   "NormalMap": "rbxassetid://93384203891439",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   80.9627,
+   300.0,
+   23.5714
+  ],
+  "MeshSize": [
+   80.9627,
+   300.0,
+   23.5714
+  ],
+  "manifest_size_studs": [
+   0.81,
+   0.236,
+   3.0
+  ],
+  "code_len": 3.85
+ },
+ "Weapon_Horns_Berserker_T2": {
+  "ModelId": "130622782712138",
+  "MeshId": "rbxassetid://81878150782694",
+  "TextureId": "rbxassetid://111883393106083",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://111883393106083",
+   "NormalMap": "rbxassetid://122818580785250",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   114.2804,
+   350.0,
+   28.7907
+  ],
+  "MeshSize": [
+   114.2804,
+   350.0,
+   28.7907
+  ],
+  "manifest_size_studs": [
+   1.143,
+   0.288,
+   3.5
+  ],
+  "code_len": 3.95
+ },
+ "Weapon_Horns_Berserker_T3": {
+  "ModelId": "92179631733199",
+  "MeshId": "rbxassetid://92330575484416",
+  "TextureId": "rbxassetid://80780968722032",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://80780968722032",
+   "NormalMap": "rbxassetid://137841585687916",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   143.2415,
+   400.0,
+   33.8284
+  ],
+  "MeshSize": [
+   143.2415,
+   400.0,
+   33.8284
+  ],
+  "manifest_size_studs": [
+   1.432,
+   0.338,
+   4.0
+  ],
+  "code_len": 4.05
+ },
+ "Weapon_Horns_Berserker_T7": {
+  "ModelId": "89448962094261",
+  "MeshId": "rbxassetid://72072766738977",
+  "TextureId": "rbxassetid://123814346168925",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://123814346168925",
+   "NormalMap": "rbxassetid://85701704443057",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   197.6528,
+   650.0001,
+   55.4558
+  ],
+  "MeshSize": [
+   197.6528,
+   650.0001,
+   55.4558
+  ],
+  "manifest_size_studs": [
+   1.977,
+   0.555,
+   6.5
+  ],
+  "code_len": 4.55
+ },
+ "Weapon_Horns_DarkMage_T1": {
+  "ModelId": "84654326948145",
+  "MeshId": "rbxassetid://115879197737660",
+  "TextureId": "rbxassetid://103102209489305",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://103102209489305",
+   "NormalMap": "rbxassetid://97046502990835",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   57.8448,
+   300.0,
+   23.8691
+  ],
+  "MeshSize": [
+   57.8448,
+   300.0,
+   23.8691
+  ],
+  "manifest_size_studs": [
+   0.578,
+   0.239,
+   3.0
+  ],
+  "code_len": 3.367
+ },
+ "Weapon_Horns_DarkMage_T2": {
+  "ModelId": "75083835801284",
+  "MeshId": "rbxassetid://80350617880268",
+  "TextureId": "rbxassetid://117768258967879",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://117768258967879",
+   "NormalMap": "rbxassetid://119221058540820",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   73.1551,
+   350.0,
+   31.2864
+  ],
+  "MeshSize": [
+   73.1551,
+   350.0,
+   31.2864
+  ],
+  "manifest_size_studs": [
+   0.732,
+   0.313,
+   3.5
+  ],
+  "code_len": 3.441
+ },
+ "Weapon_Horns_DarkMage_T3": {
+  "ModelId": "71605784482148",
+  "MeshId": "rbxassetid://76449571410419",
+  "TextureId": "rbxassetid://130050929803024",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://130050929803024",
+   "NormalMap": "rbxassetid://92274469013181",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   94.0696,
+   400.0,
+   37.5502
+  ],
+  "MeshSize": [
+   94.0696,
+   400.0,
+   37.5502
+  ],
+  "manifest_size_studs": [
+   0.941,
+   0.376,
+   4.0
+  ],
+  "code_len": 3.515
+ },
+ "Weapon_Horns_ShadowHunter_T1": {
+  "ModelId": "137105414827978",
+  "MeshId": "rbxassetid://138849355994171",
+  "TextureId": "rbxassetid://106926969314938",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://106926969314938",
+   "NormalMap": "rbxassetid://94328460648042",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   65.9936,
+   300.0,
+   20.3257
+  ],
+  "MeshSize": [
+   65.9936,
+   300.0,
+   20.3257
+  ],
+  "manifest_size_studs": [
+   0.66,
+   0.203,
+   3.0
+  ],
+  "code_len": 2.325
+ },
+ "Weapon_Horns_ShadowHunter_T2": {
+  "ModelId": "86985395604372",
+  "MeshId": "rbxassetid://109706823612172",
+  "TextureId": "rbxassetid://121216732471163",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://121216732471163",
+   "NormalMap": "rbxassetid://99742436811933",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   76.4587,
+   350.0,
+   25.9396
+  ],
+  "MeshSize": [
+   76.4587,
+   350.0,
+   25.9396
+  ],
+  "manifest_size_studs": [
+   0.765,
+   0.259,
+   3.5
+  ],
+  "code_len": 2.518
+ },
+ "Weapon_Horns_ShadowHunter_T3": {
+  "ModelId": "126008392923086",
+  "MeshId": "rbxassetid://106873689195215",
+  "TextureId": "rbxassetid://72243612242409",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://72243612242409",
+   "NormalMap": "rbxassetid://112068832265229",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   87.9754,
+   400.0,
+   28.858
+  ],
+  "MeshSize": [
+   87.9754,
+   400.0,
+   28.858
+  ],
+  "manifest_size_studs": [
+   0.88,
+   0.289,
+   4.0
+  ],
+  "code_len": 2.711
+ },
+ "Weapon_Meme_FryingPan": {
+  "ModelId": "101776824867833",
+  "MeshId": "rbxassetid://79648371582502",
+  "TextureId": "rbxassetid://101642561735654",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://101642561735654",
+   "NormalMap": "rbxassetid://100949269897052",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   161.0545,
+   350.0,
+   31.1266
+  ],
+  "MeshSize": [
+   161.0545,
+   350.0,
+   31.1266
+  ],
+  "manifest_size_studs": [
+   1.611,
+   0.311,
+   3.5
+  ],
+  "code_len": null
+ },
+ "Weapon_Meme_RubberChicken": {
+  "ModelId": "125275524422791",
+  "MeshId": "rbxassetid://117962570056498",
+  "TextureId": "rbxassetid://100520320597927",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://100520320597927",
+   "NormalMap": "rbxassetid://120946213321780",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   84.3346,
+   350.0,
+   81.8421
+  ],
+  "MeshSize": [
+   84.3346,
+   350.0,
+   81.8421
+  ],
+  "manifest_size_studs": [
+   0.843,
+   0.818,
+   3.5
+  ],
+  "code_len": null
+ },
+ "Weapon_Neutral_Alchemist_T1": {
+  "ModelId": "80957394898070",
+  "MeshId": "rbxassetid://96461121498188",
+  "TextureId": "rbxassetid://95231869700034",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://95231869700034",
+   "NormalMap": "rbxassetid://72144477051192",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   69.3572,
+   300.0,
+   30.9117
+  ],
+  "MeshSize": [
+   69.3572,
+   300.0,
+   30.9117
+  ],
+  "manifest_size_studs": [
+   0.694,
+   0.309,
+   3.0
+  ],
+  "code_len": 3.367
+ },
+ "Weapon_Neutral_Alchemist_T2": {
+  "ModelId": "103125482634722",
+  "MeshId": "rbxassetid://126249546823121",
+  "TextureId": "rbxassetid://113168377752694",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://113168377752694",
+   "NormalMap": "rbxassetid://82470026002150",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   59.2835,
+   350.0,
+   47.9522
+  ],
+  "MeshSize": [
+   59.2835,
+   350.0,
+   47.9522
+  ],
+  "manifest_size_studs": [
+   0.593,
+   0.48,
+   3.5
+  ],
+  "code_len": 3.441
+ },
+ "Weapon_Neutral_Alchemist_T3": {
+  "ModelId": "136658696901729",
+  "MeshId": "rbxassetid://140472036389182",
+  "TextureId": "rbxassetid://96028141317503",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://96028141317503",
+   "NormalMap": "rbxassetid://123028681409334",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   74.0624,
+   400.0,
+   59.9919
+  ],
+  "MeshSize": [
+   74.0624,
+   400.0,
+   59.9919
+  ],
+  "manifest_size_studs": [
+   0.741,
+   0.6,
+   4.0
+  ],
+  "code_len": 3.515
+ },
+ "Weapon_Neutral_Blacksmith_T1": {
+  "ModelId": "101305784799081",
+  "MeshId": "rbxassetid://80094041531378",
+  "TextureId": "rbxassetid://129135909943173",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://129135909943173",
+   "NormalMap": "rbxassetid://102544926786589",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   136.2784,
+   300.0,
+   49.9977
+  ],
+  "MeshSize": [
+   136.2784,
+   300.0,
+   49.9977
+  ],
+  "manifest_size_studs": [
+   1.363,
+   0.5,
+   3.0
+  ],
+  "code_len": 2.2
+ },
+ "Weapon_Neutral_Blacksmith_T2": {
+  "ModelId": "137618583968944",
+  "MeshId": "rbxassetid://79219710009283",
+  "TextureId": "rbxassetid://91040471408066",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://91040471408066",
+   "NormalMap": "rbxassetid://121404475990220",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   147.1506,
+   350.0,
+   82.5298
+  ],
+  "MeshSize": [
+   147.1506,
+   350.0,
+   82.5298
+  ],
+  "manifest_size_studs": [
+   1.472,
+   0.825,
+   3.5
+  ],
+  "code_len": 2.2
+ },
+ "Weapon_Neutral_Blacksmith_T3": {
+  "ModelId": "117631211546248",
+  "MeshId": "rbxassetid://111562106569514",
+  "TextureId": "rbxassetid://86647169802032",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://86647169802032",
+   "NormalMap": "rbxassetid://126806217806613",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   213.0618,
+   400.0,
+   75.7607
+  ],
+  "MeshSize": [
+   213.0618,
+   400.0,
+   75.7607
+  ],
+  "manifest_size_studs": [
+   2.131,
+   0.758,
+   4.0
+  ],
+  "code_len": 2.2
+ },
+ "Weapon_Neutral_PetTamer_T1": {
+  "ModelId": "107539984939700",
+  "MeshId": "rbxassetid://75913120190946",
+  "TextureId": "rbxassetid://128696216276676",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://128696216276676",
+   "NormalMap": "rbxassetid://135840010317525",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   54.0446,
+   300.0,
+   49.9222
+  ],
+  "MeshSize": [
+   54.0446,
+   300.0,
+   49.9222
+  ],
+  "manifest_size_studs": [
+   0.54,
+   0.499,
+   3.0
+  ],
+  "code_len": 2.19
+ },
+ "Weapon_Neutral_PetTamer_T2": {
+  "ModelId": "92444434382332",
+  "MeshId": "rbxassetid://109594504869748",
+  "TextureId": "rbxassetid://78809577707291",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://78809577707291",
+   "NormalMap": "rbxassetid://79335567544617",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   64.7076,
+   350.0,
+   53.3794
+  ],
+  "MeshSize": [
+   64.7076,
+   350.0,
+   53.3794
+  ],
+  "manifest_size_studs": [
+   0.647,
+   0.534,
+   3.5
+  ],
+  "code_len": 2.23
+ },
+ "Weapon_Neutral_PetTamer_T3": {
+  "ModelId": "79789349123166",
+  "MeshId": "rbxassetid://93042628329794",
+  "TextureId": "rbxassetid://104958566251935",
+  "SurfaceAppearance": {
+   "ColorMap": "rbxassetid://104958566251935",
+   "NormalMap": "rbxassetid://91012057728539",
+   "MetalnessMap": "",
+   "RoughnessMap": ""
+  },
+  "Size": [
+   74.7118,
+   400.0,
+   69.1039
+  ],
+  "MeshSize": [
+   74.7118,
+   400.0,
+   69.1039
+  ],
+  "manifest_size_studs": [
+   0.747,
+   0.691,
+   4.0
+  ],
+  "code_len": 2.27
+ }
+}

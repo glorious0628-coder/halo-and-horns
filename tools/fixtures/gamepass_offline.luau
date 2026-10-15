@@ -378,6 +378,15 @@ runGroup("boost", function()
 	check(Prog.AddXP(p, 0) == 0 and Prog.AddXP(p, -5) == 0, "nothing / negative: 0")
 	check(Prog.AddXP(p, 100, 50) == 50 and Prog.AddXP(q, 100, 50) == 50 and Prog.AddXP(p, 20, 50) == 40,
 		"a cap (A23-27) holds after the doubling")
+	-- feedback_audit #2 (최종 검수 10/15): the LevelUp Fx says what changed (From, PowerFrom -> PowerTo)
+	local lf0 = #w.Fx
+	local fromLv = w.Data[q].Level
+	Prog.AddXP(q, 5000)
+	local lvFx = nil
+	for i = lf0 + 1, #w.Fx do if w.Fx[i].Kind == "LevelUp" then lvFx = w.Fx[i].Data end end
+	check(lvFx and lvFx.From == fromLv and lvFx.Level == w.Data[q].Level and lvFx.Level > fromLv
+		and type(lvFx.PowerFrom) == "number" and type(lvFx.PowerTo) == "number" and lvFx.PowerTo > lvFx.PowerFrom,
+		"LevelUp Fx { Level, From, PowerFrom < PowerTo }", show(lvFx))
 	-- gold: every source
 	local srcs = { "Monster", "Quest", "Event", "Bounty", "War", "Loot", "Kaiju", "SignOn", "Attendance", "Codex", "Sale", "Refund",
 		"Plunder", "KaijuBank", "KaijuTransfer", "KaijuBonus", "Penalty", "Other" }
