@@ -1,4 +1,28 @@
-# 게임성 개발 2 — 상태 (2026-10-15, 스킬 배우기 고침 병합됨 → 오늘 끝, 클리어)
+# 게임성 개발 2 — 상태 (2026-10-15 오전~낮, 큐 비움 → 대기)
+
+## 지금 (10/15) — 오늘 가지 (모두 push, SHA는 최종 검수에 보고)
+| 가지 | tip | 무엇 | 상태 |
+|---|---|---|---|
+| dev2-notify-gate | c9004c54 | A23-191 서버 알림 관문 Net.NotifyText: 'bad'만 글자, 나머지 소리만/없음. 괴수 시작·Most Wanted·Fall/Redeem 배너 줄 삭제. test_notify_gate 새 시험 | main 병합 |
+| dev2-metrics-perf | 17068f08 | 숫자판 '기기 성능' 표(Perf 샘플 기기별 FPS·가장 낮은 초·메모리·끊김) | main 병합 |
+| dev2-tame-craft | a8db119e | N0 3갈래(Requires.Classes, N0b DoneAny), AP1·T1 약초3, CraftService.NextGoal(사다리 첫 훅 Craft), PA/PC 실제 제작 시험 | main 병합 |
+| dev2-pets12 | bc43cc88 | A23-194 펫 12종(Species Rarity·Family·Acquire·Bonus·Ready), PetBonus/PetReady, PetService.Bonus/BonusExtra(PvP 0), 속성 PetBonusType·PetBonus, PetGrants(+data.PetGrants), Craft S2~S5. 아기 슬라임 속도는 PvP에서도 그대로(최종 검수 결정) | main 병합 |
+| dev2-feedback-signals | 3cd9aa5c | 반응 신호: LevelUp From·PowerFrom·PowerTo, 배우기 = SkillLearned 하나, Fx Drink, Upgrade Source, Choice 점수·랭크 전후, ReviveDone, CrownPoint(정수만) | 보고 |
+| dev2-l10n-all | 76459ab3 | l10n_export: 모든 Config 문자열(제외 목록 방식) + 클라 .Text 직접 글 → 새로 잡힌 180개(build/l10n/missing_new_1015.csv) | main 병합 |
+| dev2-goose-tests | e4316bfb | a23_14 거위 시험 GooseResult* 기준 + 줄다리기도 결과 남김 | main 병합 |
+| dev2-forge-dupe | 0de782a5 | (이름과 달리) A23-197 도시락 이야기 퀘스트(Tiny → 연못 슬라임 2 → Lunchbox 줍기 → 선택 → Tiny) | main 병합 |
+| dev2-drop-m12 | e6550f08 | M1_2 없앰(팔찌 줄 → M1_1 Finish, KO1 = M1_1 뒤) | main에 같은 내용 들어감(ff1e8954) |
+| dev2-welcome-tests | 2258cd1b | 환영 1쪽=인사·2쪽=대장간 순서에 halo_text·weapon_first 시험 맞춤 | 보고 |
+| dev2-quest-offer | 9c92783f | A23-199 공통 장치: Def.Offer [수락]/[거절](StoryOffers 속성, OpenPanel "Offer"), Pickup/Deliver 단계, 갈 곳 검사(KNOWN 33) — 계약 docs/design/quest_offer_server_2026-10-15.md | 보고 |
+
+## 기다리는 것
+- ① '대장장이가 무기 2개' 버그: 코드상 T1 지급은 전부 소유 비트로 한 번만. 몬스터 표에 T1 드롭 없음 → 가방 Twig 줄 = 가진 T1(설명 '대장장이 선물') + 다른 무기일 가능성 큼. 사용자 답(상황) 오면 다시. worktree ../wt_dupe(이제 도시락 가지).
+- 퀘스트 전체 다시 짜기(Codex, 진영별 주선) 확정 뒤 한 묶음: 스승의 시험(A23-198, 사냥 슬라임 4 + 주민 돕기), M1_4, 도시락 조정, 갈 곳 없는 33단계 채우기. 공통 장치(Offer/Pickup/Deliver)는 준비됨.
+- 시험 기준선(10/15 main): 원래 실패 = costume_physics·halloween·metrics_board(인자)·place_english·rank_marks·skeleton_ground·skin_binding_studio·walk_forge_client + weapon_shop_meme(클라 WeaponPose 정적, 개발 1). a23_14 변이 놓침 2 + 패턴 안 맞음 5는 main 원래 것.
+- 도구(스크래치, 세션마다 다시): sweep.py `<wt> <out.json> --jobs N`, only_mut.py `<wt> <tools/test_x.py> "이름|접두*"`. Bash 도구는 heredoc 안 
+을 줄바꿈으로 바꿈 → 이스케이프 든 파이썬은 Write로 파일 만든 뒤 실행.
+- worktree(오늘): ../wt_gtest ../wt_ngate ../wt_mperf ../wt_tame ../wt_pets ../wt_fb ../wt_l10n ../wt_dupe ../wt_m12 ../wt_offer ../wt_welc — 병합 끝난 것은 지워도 됨.
+
 
 ## 내일 큐 (최종 검수 10/15)
 1. **test_a23_14 거위 토스트 시험 고치기** (아래 '다음 할 일'): 실패 7 = goose-coop / goose-modes가 A23-191로 지운 옛 토스트 문구를 찾음 → GameState GooseResult* 기준으로. 새 worktree는 origin/main(856a8540 이상)에서.
