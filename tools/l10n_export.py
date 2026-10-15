@@ -11,8 +11,9 @@ key   = the path of the string in Config (Config.StoryQuests.Defs.KO1.Steps.2.Te
         the key game dev 1's UIKit.Tx / TextKo.luau and the server's L10n.Text use (docs/design/l10n_server_2026-10-10.md).
 args  = the format tokens in the order they appear (%s %d %.1f {1} {Auto} ...): a Korean line must keep exactly these.
 max   = a rough width in characters the Korean line may take (the English length x 1.3, at least 8): the reviewer's budget.
-A string is player-facing when it looks like words: its leaf key is one of TEXT_KEYS, or it has a space, or it ends with
-.!?:…; ids (SlimeMeadow, rbxassetid://..., colour names, file names) and keys of ART_KEYS are skipped. --all lists every
+A string is player-facing unless it is an id (최종 검수 10/15: every Config string, whatever its field name): art / sound /
+font / file / url values, the values of ART_KEYS / ID_KEYS, the elements of ID_PARENTS lists, the ID_ROOTS tables and
+ID_SEGMENTS paths (outside a word table), one CamelCase / snake_case / numbered token, one lower-case token. --all lists every
 string with a letter (for the reviewer to cross-check the filter), --roots limits the walk to some top-level Config tables.
 
 Usage: py tools/l10n_export.py [--all] [--roots Text,StoryQuests,...] [--out docs/l10n/strings_server_en.json] [--stats]
@@ -46,6 +47,7 @@ ART_KEYS = {
     "Id", "Icon", "Art", "Image", "Sound", "Anim", "Animation", "Model", "Material", "Font", "Color", "Colour", "Mesh", "Texture",
     "Tag", "Attr", "Remote", "Zone", "Kind", "Class", "Faction", "Slot", "Key", "Source", "Spot", "Guide", "Npc", "Panel", "Type",
     "Event", "Pick", "Potion", "Item", "Style", "Shape", "Folder", "Path", "File", "Prefix", "Suffix", "Format", "Pattern", "Name_", "Action", "Mode",
+    "Tone",
 }
 FORMAT = re.compile(r"%[-+ #0]*\d*(?:\.\d+)?[sdfgxXcq]|%%|\{[A-Za-z0-9_]+\}")
 
@@ -128,31 +130,72 @@ def run_walker(roots: list[str]) -> list[tuple[str, str]]:
     return rows
 
 
+# 최종 검수 10/15 (user "번역 안 된 것들 싹 다 찾아서 해줘야 돼!": class card names, rank titles, weapon names were never in
+# the table): every Config string is a player word UNLESS it is one of the ids below - the field name no longer has to be a
+# "text" key. Excluded: art / sound / font / colour / file / url values, the values of id keys (ART_KEYS + ID_KEYS), the
+# elements of id lists (ID_PARENTS: Order, Roles, ...), one CamelCase / snake_case / numbered token (SlimeMeadow,
+# Npc_Bright, Enh70) and one lower-case token ("announce", "ko").
+ID_KEYS = {
+    "Folk", "Story", "Card", "Store", "Speaker", "Season", "Group", "Feature", "Family", "Species", "Acquire", "Rarity", "Grade",
+    "Pad", "Hold", "Near", "Window", "QuestAs", "IconBand", "Service", "Flag", "Owner", "Pattern", "ReleaseCenter", "Emblem", "Dest",
+    "ModelFrom", "AnimFrom", "Ctor", "Tone", "Role", "Monster", "Weapon", "Stat", "R1R2", "R3", "R4", "R5", "Look", "Emote", "Craft",
+    "FloorMaterial", "Spot", "__kind", "Teacher", "Lang", "Kit", "Skin", "Sticker", "Bubble", "TeamColor",
+}
+WORD_TABLES = {"Text", "TextEn", "ClientText", "Lines", "Tips", "Screen", "Toasts", "Labels", "Words"}
+# whole Config tables of ids / tuning (Config.<root>) and path segments under which every value is an id
+ID_ROOTS = {"Analytics", "Fonts", "Data", "SaveV4", "Audio", "Env", "HoldPoses", "PetGrants", "PetGrantBoss", "WeaponMemes",
+            "ZoneMainMonster", "PassBoost", "Player", "UIArt", "Visuals", "Map", "Remotes"}
+ID_SEGMENTS = {"Requires", "ById", "ByKind", "Family", "GoalZones", "GuideZones", "Picks", "Actions", "SeasonHistory",
+               "StudioNames", "Meme", "CollisionGroup", "Default", "Count", "Defaults"}
+ID_PARENTS = {
+    "Order", "Allowed", "Subs", "Done", "Mirrored", "TitleOrder", "Reserved", "MonsterTypeOrder", "UiIds", "Main", "Pass", "Kinds",
+    "Quests", "ZoneOrder", "Kits", "Feature", "Milestones", "KitWalk", "Priority", "InviteSources", "PassIds", "PerfDevices",
+    "Columns", "ClassOrder", "FactionOrder", "NotPass", "Roles", "AutoPattern", "Teachers", "MarkModels", "Portraits", "Free",
+    "BubbleArt", "BubbleFamily", "DeathByKind", "HitByClass", "Swing", "SwingFaction", "Watched", "Sides", "Ids", "Keys",
+    "Stat", "Defaults", "Requires", "Factions", "Classes", "Need", "Mats", "List_", "Remotes", "Names_",
+}
+
+
+def word_rule(key: str, value: str, leaf: str, parent: str) -> bool:
+    """the field-name rule (until 10/15): a text key, words with a space, or a sentence"""
+    if leaf in TEXT_KEYS or parent in TEXT_KEYS:
+        return True
+    # Config.ClientText = the client screens' own words: a lone word there is a button / tab ("Go", "OK", "Gear")
+    if key.startswith("Config.ClientText."):
+        return True
+    if " " in value.strip() and not re.fullmatch(r"[A-Z][A-Za-z]+( [A-Z][A-Za-z]+)+", value) or re.search(r"[.!?:…]$", value):
+        return True
+    return bool(re.fullmatch(r"[A-Z][a-z]+( [A-Za-z']+)*", value)) and leaf in ("Name", "Short", "Title", "Label")
+
+
 def looks_like_words(key: str, value: str) -> bool:
-    leaf = key.rsplit(".", 1)[-1]
-    parent = key.rsplit(".", 2)[-2] if key.count(".") >= 2 else ""
+    parts = key.split(".")
+    leaf = parts[-1]
+    parent = parts[-2] if len(parts) >= 2 else ""
     # an "...En" leaf is the English twin of a word key (Skills Halo NameEn "Halo Slam", DescEn): judged as its base key
     # (개발 1 10/14: 'Halo Slam' was never exported -> Roblox's machine translation drew '빛 Slam')
     if len(leaf) > 2 and leaf.endswith("En") and leaf[:-2] in TEXT_KEYS:
         leaf = leaf[:-2]
     if not re.search(r"[A-Za-z]{2}", FORMAT.sub("", value)):
         return False
-    if value.startswith(("rbxasset", "http", "Enum.", "KeyCode.", "Key.")) or re.fullmatch(r"[\w./:\-]+\.(png|jpg|wav|mp3|ogg|luau|json)", value):
+    if value.startswith(("rbxasset", "http", "Enum.", "KeyCode.", "Key.", "Font.", "#")) or re.fullmatch(r"[\w./:\-]+\.(png|jpg|wav|mp3|ogg|luau|json)", value):
         return False
     if leaf in ART_KEYS:
         return False
     # one CamelCase / snake_case / numbered token = an id (FirstKO, SlimeMeadow, Npc_Bright, Enh70), not words
     if re.fullmatch(r"[A-Za-z0-9_]+", value) and re.search(r"[a-z][A-Z]|[A-Za-z][0-9]|_", value):
         return False
-    if leaf in TEXT_KEYS or parent in TEXT_KEYS:
+    if word_rule(key, value, leaf, parent):
         return True
-    # Config.ClientText = the client screens' own words: a lone word there is a button / tab ("Go", "OK", "Gear")
-    # (개발 1 10/14: the Korean client kept 'Go' / 'OK' in English - they were never in the table)
-    if key.startswith("Config.ClientText."):
-        return True
-    if " " in value.strip() and not re.fullmatch(r"[A-Z][A-Za-z]+( [A-Z][A-Za-z]+)+", value) or re.search(r"[.!?:…]$", value):
-        return True
-    return bool(re.fullmatch(r"[A-Z][a-z]+( [A-Za-z']+)*", value)) and leaf in ("Name", "Short", "Title", "Label")
+    # 최종 검수 10/15: every other string too (one plain word: a class card name "Paladin", a rank "Squire", a weapon "Twig",
+    # a month "Jan") unless it is an id: one lower-case token, or under an id key / list / table (outside a word table)
+    if re.fullmatch(r"[a-z]+", value):
+        return False
+    in_words = any(seg in WORD_TABLES for seg in parts[1:-1])
+    if not in_words and (leaf in ID_KEYS or parent in ID_PARENTS or (len(parts) > 1 and parts[1] in ID_ROOTS)
+                         or any(seg in ID_SEGMENTS for seg in parts[2:])):
+        return False
+    return True
 
 
 def row_for(key: str, value: str) -> dict:

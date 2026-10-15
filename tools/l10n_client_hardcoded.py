@@ -23,12 +23,15 @@ TEXT_KEYS = ("Text|Title|Label|Caption|Placeholder|PlaceholderText|ActionText|Ob
 KV = re.compile(r'\b(?:' + TEXT_KEYS + r')\s*=\s*"((?:[^"\\]|\\.)*)"')
 TBL = re.compile(r'^(?:local\s+)?(TXT\w*|TEXT\w*|T|WORDS|LABELS|STR|COPY|LINES)\s*=\s*\{', re.M)
 LIT = re.compile(r'"((?:[^"\\]|\\.)*)"')
+# 최종 검수 10/15 ("번역 안 된 것들 싹 다"): a literal written straight into a label's Text ("MAX", "Gear") is drawn as is
+SET = re.compile(r'\.(?:Text|PlaceholderText)\s*=\s*"((?:[^"\\]|\\.)*)"')
 # known and accepted: module -> literals ("*" = the whole module: its word table moves after a pending branch merges)
 ALLOW: dict[str, set[str]] = {
     "UIKit": {"Halo & Horns 0123"},  # the font preload's probe text (never shown)
     "FactionPicker": {"Artisan"},  # NEUTRAL_FALLBACK: only when Config.Factions.Neutral is missing
     "Panels": {"Artisan"},  # the same fallback
-    "Fx": {"Ouch!"},  # the code-drawn sticker while its art id is empty; inside MOTION (the attack-clip tables tests hash)
+    "Fx": {"Ouch!"},
+    "HUD": {"MAX"},  # the XP bar at the top level (10/15: reads the same in Korean games; 개발 1 may move it to a table)  # the code-drawn sticker while its art id is empty; inside MOTION (the attack-clip tables tests hash)
 }
 # the values of these keys are ids (actions, sounds, class / flag names), not words
 ID_LISTS = {"Action", "Reuse", "Flag", "Aliases"}
@@ -123,6 +126,10 @@ def findings(texts: dict[str, str] | None = None) -> list[tuple[str, int, str]]:
         for m in KV.finditer(s):
             v = m.group(1)
             if words(v, "Text") and v not in allow:
+                seen.add((s.count("\n", 0, m.start()) + 1, v))
+        for m in SET.finditer(s):
+            v = m.group(1)
+            if (words(v, "Text") or re.fullmatch(r"[A-Z]{2,}[!?]?", v)) and v not in allow:
                 seen.add((s.count("\n", 0, m.start()) + 1, v))
         for m in TBL.finditer(s):
             end = table_end(s, m.end() - 1)

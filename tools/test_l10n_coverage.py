@@ -109,6 +109,24 @@ def main() -> int:
               sus[:2])
         check(list(sus[0].keys()) == ["Key", "Source", "Ko", "Reason", "Translator"] and list(miss[0].keys()) == ["Key", "Source"],
               "csv columns")
+    # ---------------------------------------------------------------- 최종 검수 10/15: every Config string unless an id
+    import l10n_export as E
+    W = E.looks_like_words
+    words = [("Config.Classes.Warrior.Names.Halo", "Paladin"), ("Config.Classes.Archer.Names.Horns", "Shadow Hunter"),
+             ("Config.Titles.Halo.1", "Squire"), ("Config.Titles.None", "Adventurer"), ("Config.WeaponNames.Warrior.1", "Twig"),
+             ("Config.Codex.Screen.Text.Months.1", "Jan"), ("Config.Settings.Defs.Cam.Options.1", "Follow"),
+             ("Config.Ranking.Text.TitleNames.Honor", "Honor"), ("Config.Barks.Lines.Slime.Idle.2", "Jiggle~"),
+             ("Config.Keybinds.Actions.1.Label", "Attack"), ("Config.Text.PotionBought", "Bought %s potion x%d!")]
+    ids = [("Config.Craft.Roles.Warrior", "Smith"), ("Config.Analytics.Steps.2", "Faction"), ("Config.Map.Lands.2.Name", "LandMeadow"),
+           ("Config.TownNpcs.List.1.Name", "Npc_Bright"), ("Config.UIArt.Fonts.Body", "Font.GothamBold"),
+           ("Config.Settings.Defs.Lang.Options.2", "ko"), ("Config.Factions.Halo.TeamColor", "New Yeller"),
+           ("Config.QuestTabs.ById.story:H1", "Faction"), ("Config.UIArt.Parts.Toast.Tone", "Navy"),
+           ("Config.Visuals.MarkModels.Halo.1", "Acc_HaloR1"), ("Config.Pets.Species.BabySlime.Icon", "IconPetBabySlime"),
+           ("Config.Pets.Species.FlowerSlime.Rarity", "Fine"), ("Config.Data.Defaults.Settings.Cam", "Follow")]
+    bad_w = [k for k, v in words if not W(k, v)]
+    bad_i = [k for k, v in ids if W(k, v)]
+    check(not bad_w, "class card names, rank titles, weapon names, months, options, idle barks are player words", bad_w)
+    check(not bad_i, "ids stay out (roles, analytics, map parts, npc names, fonts, locales, colours, art, defaults)", bad_i)
     # ---------------------------------------------------------------- static
     src = (ROOT / "tools/l10n_coverage.py").read_text(encoding="utf-8")
     check('"PATCH"' not in src and '"DELETE"' not in src and '"POST", f"{U.BASE}/autolocalization' in src,
