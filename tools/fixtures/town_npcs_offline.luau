@@ -79,7 +79,7 @@ end
 
 -- gameplay plan 2026-10-13 1-A #9: Tiny (the Crossroads) and Rose (Horns Den) have temporary bodies too; the groups below count
 -- the Halo town's people, so a world leaves them out unless o.Others (their own group checks them)
-local OTHERS = { Tiny = true, Rose = true }
+local OTHERS = { Tiny = true, Rose = true, Hallie = true, Magpie = true, Kit = true, Rex = true } -- (quest P1 ②: the guides + Rex)
 
 -- one world per scenario
 local function townWorld(o)
@@ -224,7 +224,8 @@ runGroup("config", function()
 		end
 	end
 	-- A23-193: Otto teaches the artisans their skills, so he is a Story NPC too (Story "Otto")
-	check(kinds.Story == 3 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam + Otto, 4 townsfolk, 1 potion seller, Otto at the anvil", show(kinds))
+	-- quest P1 ⑤: Folk1 (the neighbour of the Lv5 test) is a story NPC too
+	check(kinds.Story == 4 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam + Otto + Folk1, 4 townsfolk, 1 potion seller, Otto at the anvil", show(kinds))
 	-- the shop people stand in front of their shop (A23-112 halo_layout_plan: each shop has its own yaw; tools/test_town_npcs.py
 	-- checks the 2..8 studs in front of the face against the plan), on the shop street terrace (Y 9; Folk4 stands on the fountain plaza, Y 20)
 	local spot = {}
@@ -284,7 +285,7 @@ runGroup("Tiny and Rose (temporary bodies)", function()
 	check(named.Tiny and named.Smokey, "both are named by quest steps", show(named))
 	local t = townWorld({ Others = true })
 	local n = t.Ensure()
-	check(n == 10 and #t.Created == 9, "with Tiny and Rose: 10 entries queued, 9 bodies (the seller off)", show({ n, #t.Created }))
+	check(n == 14 and #t.Created == 13, "with Tiny, Rose, the 3 guides and Rex: 14 entries queued, 13 bodies (the seller off)", show({ n, #t.Created }))
 	for _, case in { { "Npc_Tiny", "Tiny", "Tiny", 24, 12 }, { "Npc_Rose", "Smokey", "Rose", -18, 424 } } do
 		local m = t.Npc(case[1])
 		local prompt = m and t.PromptOf(m, "TalkPrompt")
@@ -294,6 +295,22 @@ runGroup("Tiny and Rose (temporary bodies)", function()
 		local pv = m and m:GetPivot()
 		check(pv ~= nil and near(pv.Position.X, case[4]) and near(pv.Position.Z, case[5]), case[1] .. " stands at its spot",
 			show(pv and pv.Position))
+	end
+end)
+
+------------------------------------------------------------------ quest P1 ②: the faction guides and Rex (temporary bodies)
+runGroup("guides and Rex (temporary bodies)", function()
+	local spot = {}
+	for _, e in C0.TownNpcs.List do spot[e.Id] = e end
+	local function inside(z, at)
+		return at ~= nil and math.abs(at.X - z.Center.X) <= z.Size.X / 2 and math.abs(at.Z - z.Center.Z) <= z.Size.Z / 2
+	end
+	check(spot.Hallie and spot.Hallie.Story == "Hallie" and inside(C0.Zones.HaloTown, spot.Hallie.At), "Hallie: a body in Halo Citadel, story id Hallie", show(spot.Hallie and spot.Hallie.At))
+	check(spot.Magpie and spot.Magpie.Story == "Magpie" and inside(C0.Zones.HornsTown, spot.Magpie.At), "Magpie: a body in Horns Den", show(spot.Magpie and spot.Magpie.At))
+	check(spot.Rex and spot.Rex.Story == "Rex" and inside(C0.Zones.HornsTown, spot.Rex.At), "Rex: a body in Horns Den", show(spot.Rex and spot.Rex.At))
+	check(spot.Kit and spot.Kit.Story == "Kit" and spot.Kit.Anvil == true and spot.Kit.Side == 7, "Kit: beside the Crossroads anvil (Side 7)", show(spot.Kit))
+	for _, id in { "Hallie", "Magpie", "Kit" } do
+		check(C0.Tutorial.Guides[id == "Hallie" and "Halo" or id == "Magpie" and "Horns" or "Neutral"] == id, id .. " is that side's guide", "")
 	end
 end)
 
@@ -343,8 +360,14 @@ runGroup("build", function()
 	-- the townsfolk: tagged, no prompt, on the plaza
 	for i = 1, 4 do
 		local f = t.Npc("Npc_Folk" .. i)
-		check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk" .. i and not t.Tagged(f, "StoryNpc") and t.PromptOf(f, "TalkPrompt") == nil,
-			"Folk" .. i .. ": a townsperson, tagged TownFolk, no prompt", show(t.Tags[f]))
+		if i == 1 then -- quest P1 ⑤: the neighbour is talked to (the Lv5 test's bag) and keeps its TownFolk bubbles
+			check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk1" and t.Tagged(f, "StoryNpc")
+				and f:GetAttribute("NpcId") == "Folk1" and t.PromptOf(f, "TalkPrompt") ~= nil,
+				"Folk1: a townsperson (TownFolk) and a story NPC with a Talk prompt", show(t.Tags[f]))
+		else
+			check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk" .. i and not t.Tagged(f, "StoryNpc") and t.PromptOf(f, "TalkPrompt") == nil,
+				"Folk" .. i .. ": a townsperson, tagged TownFolk, no prompt", show(t.Tags[f]))
+		end
 		local terrace = i == 4 and 20 or 9 -- Folk1-3 on the shop street, Folk4 on the fountain plaza
 		check(near(f:GetPivot().Position.Y, terrace + 2.6), "Folk" .. i .. ": feet on the terrace (Y " .. terrace .. " + 2.6)", show(f:GetPivot().Position))
 	end

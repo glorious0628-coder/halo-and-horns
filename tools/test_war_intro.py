@@ -70,7 +70,7 @@ print(("WAR_INTRO_SUMMARY checks=%d failed=%d"):format(checks, failed))
 
 
 def steps_lua(config: str) -> str:
-    m = re.search(r"\tSteps = (\{ Kill = \d+, Guide = \d+, Quest = \d+, Forge = \d+, Done = \d+ \}),", config)
+    m = re.search(r"\tSteps = (\{ Kill = \d+, Guide = \d+, Quest = \d+, Forge = \d+, Done = \d+(?:, Teacher = \d+)? \}),", config)
     if not m:
         raise ValueError("Config.Tutorial.Steps not found")
     return m[1]
