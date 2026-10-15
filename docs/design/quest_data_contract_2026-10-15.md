@@ -29,6 +29,7 @@ return {
 |---|---|---|
 | `Kind` | ✔ | `"Main"`(본편 줄) / `"Sub"`(선택·지선·반복) |
 | `Type` | ✔ | 주로 하는 행동(바이블 §3): Combat, Skill, Gather, Craft, Sell, Investigate, Recover, Deliver, Repair, Install, Escort, Rescue, Defend, Claim(선점), Boast(허풍), Prank(장난), Command(지휘), Lure(유인), Tame(조련), Choice, Display(전시), Test(시험), Visit. **한 진영 본편 줄에서 연속 두 Main의 Type이 같으면 실패** |
+| `Difficulty` | ✔ | `"Easy"` / `"Normal"` / `"Hard"` / `"Challenge"` (A23-207: 어려울수록 좋은 보상, 아래 3-1) |
 | `Title`, `ShortName` | ✔ | ShortName 14자 이하(폰 줄) |
 | `Speaker` | | Config.StoryQuests.Speakers 키 |
 | `Factions` | | `{ Halo = true }` 등. Main에 있으면 그 진영 본편 줄에만 |
@@ -39,6 +40,16 @@ return {
 | `Reward` | | `Gold`/`XP`(사냥 환산 단위), `GoldN`(정액), `XPBar`(레벨 비율), `Item`+`N`, `Potion`+`N`, `BagSlots`, `Title`/`TitleBy`. **스탯 판매 키 = 실패**(A23-75). 금액이 정해지지 않았으면 비움(바이블 §3) |
 | `Claim` | | true = 끝나면 [받기] |
 | `Repeat` | | `"Daily"` = 매일 부탁(아래 6) |
+
+### 3-1. 난이도와 보상 (A23-207, 검사 = `tools/test_quest_data.py`)
+| 난이도 | 아이템(최고 등급) | Gold/XP(사냥 단위) | GoldN | XPBar | 칭호·펫 | 최소 |
+|---|---|---|---|---|---|---|
+| Easy | 보통(물약·기본 재료·펫 간식) | ≤1 | ≤60 | ≤0.25 | ✗ | — |
+| Normal | 보통 | ≤2 | ≤150 | ≤0.5 | ✗ | — |
+| Hard | 주문서·희귀 재료·토닉까지 | ≤4 | ≤400 | ≤1 | ✗ | 주문서/희귀 재료, 또는 Normal보다 많은 골드 |
+| Challenge | 희귀 아이템(문 크리스탈·왕관 보석·왕실 젤리…)까지 | 제한 없음 | 제한 없음 | 제한 없음 | ✔ | 희귀 아이템·칭호·펫 중 하나 |
+
+'쉬운데 보상 큼'(Easy가 주문서·칭호, 상한 넘는 골드)과 '어려운데 보상 작음'은 검사가 실패시킴. 등급표 = `ITEM_TIER`(시험 파일). 화면: 부탁 창 보상 아이콘 테두리 색·별 수(개발 1).
 
 ## 4. 단계(Step) 필드
 - `Text`(%d/%d 진행 숫자 가능), `ShortName`, **`Guide`(장소 키) 또는 `Npc`(NpcId) 필수**(그 자리 카드 `Panel` + Npc 없음만 예외).
@@ -74,16 +85,16 @@ return {
 
 ## 6. 매일 부탁(반복) — A23-205 / A23-206
 - `Repeat = "Daily"`, 종류 12개까지(`Common_Daily` 등). 하루(KST)에 **5개까지만** 받기(`Config.StoryQuests.RepeatDailyMax = 5`), 고르는 건 플레이어, 하나만 해도 보상, 연속 보상·강요 없음. 5개 받으면 다른 부탁 NPC의 '!'가 흐려짐(글 없음). (엔진 = 다음 단계)
-- **종류마다 보상이 다름**(검사: 같은 보상 종류 둘 = 실패), 도감 진척·스탯 없음. 초안(최종 검수 확정 전):
+- **종류마다 보상이 다름**(검사: 같은 보상 종류 둘 = 실패), 도감 진척·스탯 없음, **난이도 섞어서**. 초안(최종 검수 확정 전):
 
-| # | 보상 | # | 보상 |
-|---|---|---|---|
-| 1 | HP Potion ×3 | 7 | Copper Ore ×3 |
-| 2 | MP Potion ×3 | 8 | Oak Log ×3 |
-| 3 | Enhance Scroll 70% ×1 | 9 | Glowcap ×2 |
-| 4 | Transfer Scroll 30% ×1 | 10 | Guard Tonic ×1 |
-| 5 | Pet Treat ×2 | 11 | Lucky Tonic ×1 |
-| 6 | Meadow Herb ×5 | 12 | 꾸미기 조각(새 아이템 생기면; 그 전엔 Flower Petal ×5) |
+| # | 난이도 | 보상 | # | 난이도 | 보상 |
+|---|---|---|---|---|---|
+| 1 | Easy | HP Potion ×3 | 7 | Normal | Copper Ore ×3 |
+| 2 | Easy | MP Potion ×3 | 8 | Normal | Oak Log ×3 |
+| 3 | Hard | Enhance Scroll 70% ×1 | 9 | Hard | Glowcap ×2 |
+| 4 | Hard | Transfer Scroll 30% ×1 | 10 | Hard | Guard Tonic ×1 |
+| 5 | Easy | Pet Treat ×2 | 11 | Hard | Lucky Tonic ×1 |
+| 6 | Normal | Meadow Herb ×5 | 12 | Challenge | 꾸미기 조각(새 아이템; 그 전엔 Moon Crystal ×1) |
 
 - **보상 아이템 = 캐릭터 귀속**(퀘스트·매일 부탁·스승 시험·연결 끝): 거래소·선물·판매 불가, 쓸 때 귀속분 먼저 소모, 사냥·제작으로 얻은 같은 아이템은 지금 규칙. 저장 = 아이템별 귀속 개수 따로(저장 v7, 엔진 = 다음 단계).
 

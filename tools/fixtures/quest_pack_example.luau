@@ -6,7 +6,7 @@ return {
 	Defs = {
 		-- a new main quest of the Halo chain (Factions = only Halo walks it; the other sides skip it)
 		HX_Guard = {
-			Kind = "Main", Chapter = 2, Type = "Escort", Factions = { Halo = true },
+			Kind = "Main", Chapter = 2, Type = "Escort", Difficulty = "Normal", Factions = { Halo = true },
 			Title = "Guard the Parcel Cart", ShortName = "Guard cart", Speaker = "Bright",
 			Offer = { Npc = "Bright", Lines = { All = { "Bright: Please guard this parcel cart across the bridge." } } },
 			Requires = { Level = 5 },
@@ -20,7 +20,7 @@ return {
 		},
 		-- an optional town request (a sub: offered, never pushed)
 		HX_Ribbon = {
-			Kind = "Sub", Type = "Deliver", Factions = { Halo = true },
+			Kind = "Sub", Type = "Deliver", Difficulty = "Easy", Factions = { Halo = true },
 			Title = "Bright's Ribbon", ShortName = "The ribbon", Speaker = "Bright",
 			Offer = { Npc = "Bright", Lines = { All = { "Bright: Please show Otto my crumpled ribbon." } } },
 			Requires = { Done = { "H_Band" }, Level = 4 },
@@ -32,7 +32,7 @@ return {
 		-- a daily repeat request (A23-205: at most Config.StoryQuests.RepeatDailyMax a day, chosen by the player; A23-206: every
 		-- repeat pays a different kind, bound to the character)
 		HX_DailyLamp = {
-			Kind = "Sub", Type = "Repair", Repeat = "Daily", Factions = { Halo = true },
+			Kind = "Sub", Type = "Repair", Repeat = "Daily", Difficulty = "Hard", Factions = { Halo = true },
 			Title = "Lamp Check", ShortName = "Lamp check", Speaker = "Bright",
 			Offer = { Npc = "Bright", Lines = { All = { "Bright: Please check the town lamp for me." } } },
 			Requires = { Done = { "M1_4" } },

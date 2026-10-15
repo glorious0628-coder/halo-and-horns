@@ -41,7 +41,23 @@ COUNT_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "WarPoin
 # bible §3 '유형은 주로 하는 행동': the main action of a quest (Type)
 QUEST_TYPES = {"Combat", "Skill", "Gather", "Craft", "Sell", "Investigate", "Recover", "Deliver", "Repair", "Install", "Escort",
                "Rescue", "Defend", "Claim", "Boast", "Prank", "Command", "Lure", "Tame", "Choice", "Display", "Test", "Visit"}
-REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "BagSlots", "Title", "TitleBy", "EquipCrafted"}
+REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet"}
+# A23-207 (user 10/15) the harder, the better the reward: what each difficulty may pay at most (items by tier; Gold / XP in hunt
+# units, GoldN exact gold, XPBar a share of the level's bar), and what Hard / Challenge must pay at least
+DIFFICULTIES = ("Easy", "Normal", "Hard", "Challenge")
+ITEM_TIER = {  # 0 = common (anyone), 1 = Hard and up, 2 = Challenge only
+    "HP": 0, "MP": 0, "Herb": 0, "CopperOre": 0, "OakLog": 0, "Jelly": 0, "Petal": 0, "SeaShell": 0, "Bone": 0, "Candy": 0,
+    "SlimeCore": 0, "PetTreat": 0, "GoblinTooth": 0, "BruteHorn": 0,
+    "Enh10": 1, "Enh30": 1, "Enh70": 1, "Move10": 1, "Move30": 1, "Move70": 1, "Glowcap": 1, "IronOre": 1, "SilverOre": 1,
+    "KnightCrest": 1, "CrystalShard": 1, "MightTonic": 1, "GuardTonic": 1, "LuckyTonic": 1, "WisdomTonic": 1, "CaptainBadge": 1,
+    "MoonCrystal": 2, "ClatterGem": 2, "KingJelly": 2, "CrownDust": 2, "GoldenEgg": 2, "GooseFeather": 2,
+}
+CAPS = {  # difficulty -> (highest item tier, Gold/XP units, GoldN, XPBar, may give a title / pet)
+    "Easy": (0, 1, 60, 0.25, False),
+    "Normal": (0, 2, 150, 0.5, False),
+    "Hard": (1, 4, 400, 1.0, False),
+    "Challenge": (2, 99, 99999, 9.0, True),
+}
 STAT_WORDS = re.compile(r"(?i)\b(attack|atk|defen[cs]e|def|maxhp|power|stat|crit|speed)\b")
 REPEAT_MAX_KINDS = 12
 GUIDE_EXTRA = {"Bag", "OwnTown", "Blacksmith", "Crossroads", "HaloBridge", "HornsBridge", "Fountain"}
@@ -185,6 +201,25 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
             if any(STAT_WORDS.search(str(k)) for k in reward):
                 add("reward-stat", i, "a reward sells a stat (A23-75)")
         if is_pack:
+            diff = d.get("Difficulty")
+            if diff not in DIFFICULTIES:
+                add("difficulty", i, f"Difficulty {diff} is not Easy / Normal / Hard / Challenge (A23-207)")
+            elif isinstance(reward, dict):
+                tier_max, units, gold_n, bar, special = CAPS[diff]
+                item = reward.get("Item") or reward.get("Potion")
+                tier = ITEM_TIER.get(item, 1) if item else -1
+                if tier > tier_max:
+                    add("difficulty-reward", i, f"{diff} pays {item} (a tier-{tier} item: too good for it)")
+                if max(reward.get("Gold") or 0, reward.get("XP") or 0) > units or (reward.get("GoldN") or 0) > gold_n \
+                        or (reward.get("XPBar") or 0) > bar:
+                    add("difficulty-reward", i, f"{diff} pays more gold / XP than its cap")
+                if (reward.get("Title") or reward.get("TitleBy") or reward.get("Pet")) and not special:
+                    add("difficulty-reward", i, f"{diff} gives a title / pet (Challenge only)")
+                if diff == "Hard" and tier < 1 and max(reward.get("Gold") or 0, reward.get("XP") or 0) < 2 \
+                        and (reward.get("GoldN") or 0) < 150:
+                    add("difficulty-reward-low", i, "Hard pays a scroll / rare material or more gold than Normal")
+                if diff == "Challenge" and tier < 2 and not (reward.get("Title") or reward.get("TitleBy") or reward.get("Pet")):
+                    add("difficulty-reward-low", i, "Challenge pays a rare item, a title or a pet")
             if d.get("Type") not in QUEST_TYPES:
                 add("quest-type", i, f"Type {d.get('Type')} is not on the list (bible §3)")
             if not d.get("Title") or not d.get("ShortName"):
@@ -244,6 +279,10 @@ SELF_TESTS = [
     ("a stat for sale", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Attack = 5 }", "reward-stat"),
     ("a sub not in Subs", "Subs = { \"HX_Ribbon\", \"HX_DailyLamp\" }", "Subs = { \"HX_DailyLamp\" }", "sub-unlisted"),
     ("a repeat that is not daily", "Repeat = \"Daily\"", "Repeat = \"Weekly\"", "repeat-kind"),
+    ("no difficulty", "Kind = \"Sub\", Type = \"Deliver\", Difficulty = \"Easy\",", "Kind = \"Sub\", Type = \"Deliver\",", "difficulty"),
+    ("an easy quest that pays a scroll", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Item = \"Enh70\", N = 1 }", "difficulty-reward"),
+    ("an easy quest with a title", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Title = \"Helper\" }", "difficulty-reward"),
+    ("a hard quest that pays like an easy one", "Reward = { Item = \"Enh70\", N = 1 }", "Reward = { GoldN = 40 }", "difficulty-reward-low"),
     ("two mains of one type in a row", "Kind = \"Main\", Chapter = 2, Type = \"Escort\"", "Kind = \"Main\", Chapter = 2, Type = \"Choice\"", "chain-type"),
 ]
 
