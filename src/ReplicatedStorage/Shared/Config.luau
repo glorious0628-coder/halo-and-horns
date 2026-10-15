@@ -4645,6 +4645,9 @@ Config.StoryQuests.TimingPass = 3 -- good taps of TimingTries to pass
 Config.StoryQuests.RepeatDailyMax = 5
 Config.StoryQuests.TimingTries = 5
 Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
+-- P1 ⑧ (bible §13-3): the paths of the short chases and escorts (Obj Type "Chase" / "Escort", Path = a key here): waypoints in
+-- order (at least two), flat X / Z (the client puts the mover on the ground). Quest packs add theirs (pack.Paths)
+Config.StoryQuests.Paths = {}
 Config.QuestShapes = {
 	Knot = { Shape = "Ring", Color = Color3.fromRGB(240, 196, 70) },
 	Seal = { Shape = "Disc", Color = Color3.fromRGB(150, 90, 200) },
@@ -11704,7 +11707,7 @@ function Config.AddQuests(pack, name)
 			if lines then def.Offer.Lines[side] = lines end
 		end
 	end
-	for _, field in { "Landmarks", "Speakers", "Portraits" } do
+	for _, field in { "Landmarks", "Speakers", "Portraits", "Paths" } do
 		for key, value in type(pack[field]) == "table" and pack[field] or {} do
 			if SQ[field][key] ~= nil then questError(name, field .. "." .. tostring(key) .. " exists already") end
 			SQ[field][key] = value

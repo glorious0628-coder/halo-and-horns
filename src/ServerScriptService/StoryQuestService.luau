@@ -877,6 +877,150 @@ local function requirementsMet(player, data, def)
 	return data.ClassChosen == true
 end
 
+------------------------------------------------------------------ P1 ⑧ short chase / short escort (bible §13-3)
+-- A personal mover along Config.StoryQuests.Paths[obj.Path]. The server keeps how far along the path it is and tells the owner's
+-- client (attributes StoryMover = quest id | "", StoryMoverKind = "Escort" | "Chase", StoryMoverPos = Vector3, StoryMoverState =
+-- "Move" | "Wait" | "Event" | "Lost" | "Done"); the client draws it there (nobody else's world changes).
+--   Escort { Path, Speed = 8, Near = 20, Event = { At = 0..1, Kind, Count, Radius = 40 } }: moves only while the player is within
+--   Near; at Event.At it stops until Count monsters (Kind, any when nil) are beaten within Radius of it (the event, once); every
+--   waypoint passed is saved (track P), so a rejoin or a quit goes on from the last one. Done at the path's end.
+--   Chase { Path, Speed = 10, Head = 15, Catch = 8, Lose = 60, LoseSeconds = 6 }: starts Head studs ahead and runs at Speed (waits at the end); the player within
+--   Catch = caught (done); more than Lose behind for LoseSeconds = lost: it goes back to the last waypoint and waits for the
+--   player (no failure, try again at once)
+local MOVER = { Live = {} } -- Live[Player] = { [questId .. ":" .. step] = { Key, Dist, At, Kills, LostSince, State, Pos } }
+
+function MOVER.Path(obj)
+	local p = type(SQ.Paths) == "table" and SQ.Paths[obj.Path] or nil
+	if type(p) ~= "table" or #p < 2 then return nil end
+	local cum = { 0 }
+	for i = 2, #p do cum[i] = cum[i - 1] + Util.FlatDistance(p[i - 1], p[i]) end
+	return p, cum
+end
+
+-- the point at `dist` along the path, and the last waypoint index at or before it
+function MOVER.At(p, cum, dist)
+	for i = 2, #p do
+		if dist <= cum[i] then
+			local seg = cum[i] - cum[i - 1]
+			local a = seg > 0 and (dist - cum[i - 1]) / seg or 1
+			local x = p[i - 1].X + (p[i].X - p[i - 1].X) * a
+			local z = p[i - 1].Z + (p[i].Z - p[i - 1].Z) * a
+			return Vector3.new(x, 0, z), (dist >= cum[i] and i or i - 1)
+		end
+	end
+	return Vector3.new(p[#p].X, 0, p[#p].Z), #p
+end
+
+function MOVER.Publish(player, id, kind, pos, state)
+	if player:GetAttribute("StoryMover") ~= id then player:SetAttribute("StoryMover", id) end
+	if player:GetAttribute("StoryMoverKind") ~= kind then player:SetAttribute("StoryMoverKind", kind) end
+	if pos and player:GetAttribute("StoryMoverPos") ~= pos then player:SetAttribute("StoryMoverPos", pos) end
+	if player:GetAttribute("StoryMoverState") ~= state then player:SetAttribute("StoryMoverState", state) end
+end
+
+-- one tick of the open Chase / Escort step; true = the step is done. `saved` is set when the track changed (a checkpoint)
+function MOVER.Step(player, id, tr, obj)
+	local p, cum = MOVER.Path(obj)
+	if not p then return false end
+	local key = id .. ":" .. tostring(tr.St)
+	local mine = MOVER.Live[player]
+	if not mine then
+		mine = {}
+		MOVER.Live[player] = mine
+	end
+	local m = mine[key]
+	local now = os.clock()
+	if not m then
+		-- (an escort goes on from its saved waypoint; a runner starts Head studs ahead, default 15: never caught where it starts)
+		local start = obj.Type == "Escort" and cum[math.clamp(math.floor(num(tr.P)), 1, #p)] or math.min(cum[#p], num(obj.Head, 15))
+		m = { Key = key, Dist = start, At = now, Kills = 0, State = "Move" }
+		mine[key] = m
+	end
+	local dt = math.clamp(now - m.At, 0, 2)
+	m.At = now
+	local root = Util.GetRoot(player)
+	local pos = MOVER.At(p, cum, m.Dist)
+	local away = root and Util.FlatDistance(root.Position, pos) or math.huge
+	local total = cum[#p]
+	local saved = false
+	if obj.Type == "Escort" then
+		local ev = type(obj.Event) == "table" and obj.Event or nil
+		local evDist = ev and total * math.clamp(num(ev.At, 0.5), 0, 1) or nil
+		if ev and num(tr.T.e) < 1 and m.Dist >= evDist then
+			m.State = "Event"
+			if m.Kills >= math.max(1, math.floor(num(ev.Count, 1))) then
+				tr.T.e = 1 -- the event, once (saved)
+				saved = true
+				m.State = "Move"
+			end
+		elseif away <= num(obj.Near, 20) then
+			local nextDist = m.Dist + num(obj.Speed, 8) * dt
+			if ev and num(tr.T.e) < 1 then nextDist = math.min(nextDist, evDist) end
+			m.Dist = math.min(total, nextDist)
+			m.State = "Move"
+			local _, idx = MOVER.At(p, cum, m.Dist)
+			if idx > math.floor(num(tr.P)) then
+				tr.P = idx -- the last waypoint passed: a rejoin goes on from here
+				saved = true
+			end
+		else
+			m.State = "Wait"
+		end
+	else -- Chase
+		if away <= num(obj.Catch, 8) then
+			m.State = "Done"
+		elseif m.State == "Lost" then
+			if away <= num(obj.Lose, 60) / 2 then m.State, m.LostSince = "Move", nil end
+		else
+			m.Dist = math.min(total, m.Dist + num(obj.Speed, 10) * dt)
+			m.State = "Move"
+			if away > num(obj.Lose, 60) then
+				m.LostSince = m.LostSince or now
+				if now - m.LostSince >= num(obj.LoseSeconds, 6) then
+					local _, idx = MOVER.At(p, cum, m.Dist)
+					m.Dist, m.State, m.LostSince = cum[math.max(1, idx)], "Lost", nil -- back to the last waypoint, waits
+				end
+			else
+				m.LostSince = nil
+			end
+		end
+	end
+	pos = MOVER.At(p, cum, m.Dist)
+	m.Pos = pos
+	local done = (obj.Type == "Escort" and m.Dist >= total) or m.State == "Done"
+	-- the attributes show one mover: the first open one this tick (MOVER.Shown, reset each refresh)
+	if not MOVER.Shown[player] then
+		MOVER.Shown[player] = true
+		MOVER.Publish(player, id, obj.Type, pos, done and "Done" or m.State)
+	end
+	if done then mine[key] = nil end
+	return done, saved
+end
+
+MOVER.Shown = {} -- [Player] = true once a mover was published this refresh
+
+-- an Escort event's kills (near the waiting mover)
+function MOVER.Kill(player, info)
+	for _, m in MOVER.Live[player] or {} do
+		local ok, err = pcall(MOVER.KillOne, player, info, m)
+		if not ok then Util.Warn(TAG, "mover kill: " .. tostring(err)) end
+	end
+end
+
+function MOVER.KillOne(player, info, m)
+	if m.State ~= "Event" or typeof(m.Pos) ~= "Vector3" or typeof(info.Position) ~= "Vector3" then return end
+	local data = getData(player)
+	if not data then return end
+	local id, st = string.match(m.Key, "^(.-):(%d+)$")
+	local tr = id and ((story(data).Main.Id == id) and story(data).Main or story(data).Subs[id])
+	local step = tr and stepOf(player, DEFS[id], tonumber(st))
+	local ev = step and step.Obj and step.Obj.Event
+	if type(ev) ~= "table" or info.Personal == true then return end
+	if ev.Kind and Config.QuestKind(info.Kind) ~= ev.Kind then return end
+	if Util.FlatDistance(info.Position, m.Pos) > num(ev.Radius, 40) then return end
+	m.Kills += 1
+end
+
 -- P1 ①-2 Learn: the saved slots reach this skill's place in Config.Skills.Order
 local function learned(data, slot)
 	local order = (Config.Skills and Config.Skills.Order) or { "Q", "Z", "X" }
@@ -991,6 +1135,7 @@ local function refresh(player)
 	local dimAttr = table.concat(dimList, ",")
 	if player:GetAttribute("StoryOffersDim") ~= dimAttr then player:SetAttribute("StoryOffersDim", dimAttr) end
 	-- state-driven steps
+	MOVER.Shown[player] = nil -- P1 ⑧ (the first open mover of this refresh is the one shown)
 	for _, t in tracks(data) do
 		local def, tr = DEFS[t.Id], t.Track
 		local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
@@ -1004,6 +1149,10 @@ local function refresh(player)
 			elseif obj.Type == "Level" then
 				done = levelReached(data, obj)
 				if not done then changed = true end -- the row shows "(지금 LvN)"
+			elseif (obj.Type == "Escort" or obj.Type == "Chase") then
+				local saved
+				done, saved = MOVER.Step(player, t.Id, tr, obj) -- P1 ⑧
+				if saved then changed = true end
 			elseif obj.Type == "Skip" then
 				done = true -- quest packs: a side's version of a shared quest that has one step less passes it at once
 			elseif obj.Type == "Learn" then
@@ -1056,6 +1205,17 @@ local function refresh(player)
 		end
 	end
 	if player:GetAttribute("PracticeTool") ~= practice then player:SetAttribute("PracticeTool", practice) end
+	-- P1 ⑧: no Chase / Escort step open = no mover (the attribute goes back to "")
+	local moving = false
+	MOVER.Shown[player] = nil
+	for _, t in tracks(data) do
+		local step = (not t.Track.Claim) and stepOf(player, DEFS[t.Id], t.Track.St) or nil
+		if step and type(step.Obj) == "table" and (step.Obj.Type == "Escort" or step.Obj.Type == "Chase") then moving = true end
+	end
+	if not moving then
+		MOVER.Live[player] = nil
+		if player:GetAttribute("StoryMover") ~= "" and player:GetAttribute("StoryMover") ~= nil then player:SetAttribute("StoryMover", "") end
+	end
 	-- user 2026-10-05: no window or waiting choice card ever pauses auto combat ("아이템 열어도 그대로 자동 전투"),
 	-- and monsters keep attacking as usual; the old ChoicePending flag is cleared for saves/servers that set it
 	if player:GetAttribute("ChoicePending") == true then player:SetAttribute("ChoicePending", false) end
@@ -1779,6 +1939,8 @@ end
 local function onMonsterKilled(player, info)
 	if type(info) ~= "table" or not (typeof(player) == "Instance" and player:IsA("Player")) then return end
 	feed(player, { Kind = "Kill", Info = info })
+	local ok, err = pcall(MOVER.Kill, player, info) -- P1 ⑧ an escort event's kills
+	if not ok then Util.Warn(TAG, "mover kill: " .. tostring(err)) end
 end
 
 local function onReleased(player, info)
@@ -1994,6 +2156,9 @@ function StoryQuestService.Start()
 			end
 			for p in panels do
 				if p.Parent == nil then panels[p] = nil end -- P1 ④ open panels of players who left
+			end
+			for p in MOVER.Live do
+				if p.Parent == nil then MOVER.Live[p] = nil end -- P1 ⑧ movers of players who left
 			end
 		end
 	end)

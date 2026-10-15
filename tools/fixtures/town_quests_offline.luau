@@ -3253,6 +3253,99 @@ runGroup("daily repeat requests", function()
 	end
 end)
 
+------------------------------------------------------------------ quest P1 ⑧ (bible §13-3): a short escort (moves only while I am near; one event; a saved
+-- checkpoint a rejoin goes on from) and a short chase (catch it; fall far behind = it waits at the last waypoint)
+runGroup("p1 chase and escort", function()
+	local w = townWorld({ Prompts = true })
+	local SQ = w.Config.StoryQuests
+	SQ.Paths.TPath = { vec(0, 0, 0), vec(40, 0, 0), vec(40, 0, 40) } -- 80 studs, waypoints at 0 / 40 / 80
+	SQ.Defs.TESC = { Kind = "Sub", Title = "Escort", ShortName = "Escort",
+		Steps = { { Text = "Walk with the cart", Guide = "SlimePond",
+			Obj = { Type = "Escort", Path = "TPath", Speed = 10, Near = 20, Event = { At = 0.75, Kind = "Slime", Count = 2, Radius = 30 } } } },
+		Reward = { GoldN = 5 } }
+	SQ.Defs.TCHS = { Kind = "Sub", Title = "Chase", ShortName = "Chase",
+		Steps = { { Text = "Catch the runner", Guide = "SlimePond", Obj = { Type = "Chase", Path = "TPath", Speed = 10, Catch = 8, Lose = 60, LoseSeconds = 4 } } } }
+	table.insert(SQ.Subs, "TESC")
+	table.insert(SQ.Subs, "TCHS")
+	local p, d = joinAfterM23(w, 9971, "Halo", { Pos = vec(2, 0, 0) })
+	w.Story.DebugSub(p, "TESC", 1)
+	local function tick(n) for _ = 1, n or 1 do w:Advance(1); w.Story.Refresh(p) end end
+	tick(1)
+	check(p:GetAttribute("StoryMover") == "TESC" and p:GetAttribute("StoryMoverKind") == "Escort", "the escort's mover is published", "")
+	tick(2)
+	local pos = p:GetAttribute("StoryMoverPos")
+	check(pos and pos.X > 15 and pos.X < 35, "near it: the cart moves (10 studs a second)", show(pos))
+	-- the player walks away: it waits
+	w:MoveTo(p, vec(-60, 0, 0))
+	local before = p:GetAttribute("StoryMoverPos")
+	tick(3)
+	check(p:GetAttribute("StoryMoverState") == "Wait" and p:GetAttribute("StoryMoverPos").X == before.X, "the player 60 studs away: it waits", show(p:GetAttribute("StoryMoverPos")))
+	-- back beside it: on to the first waypoint (saved)
+	for _ = 1, 6 do
+		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
+		tick(1)
+	end
+	check(math.floor(w:Track(d, "TESC").P or 0) >= 2, "past the 40-stud waypoint: the checkpoint is saved (P)", show(w:Track(d, "TESC")))
+	-- a rejoin (a new server: no live mover) goes on from the checkpoint
+	local saved = w:Track(d, "TESC").P
+	local r = w:Join(9973, { Faction = "Halo", Class = "Warrior", Level = 6, Pos = vec(40, 0, 2), Data = { TutorialStep = 99,
+		Story = { Main = { Id = "" }, Subs = { TESC = { St = 1, P = saved, T = {}, Claim = false } },
+			Done = { M1_1 = true, M1_3 = true, M1_4 = true, TCHS = true }, Pick = {}, First = { Migrated = true }, Schema = 5 } } })
+	w:Advance(1)
+	w.Story.Refresh(r)
+	local again = r:GetAttribute("StoryMoverPos")
+	check(again and again.X == 40 and again.Z <= 15, "a rejoined escort goes on from the saved waypoint (40, 0), not the start", show(again))
+	-- the event at 75%: it stops until 2 slimes near it are beaten
+	for _ = 1, 4 do
+		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
+		tick(1)
+	end
+	check(p:GetAttribute("StoryMoverState") == "Event" and p:GetAttribute("StoryMoverPos").Z <= 20.5, "at 75%: the event (it stops)", show({ p:GetAttribute("StoryMoverState"), p:GetAttribute("StoryMoverPos") }))
+	local at = p:GetAttribute("StoryMoverPos")
+	local function slime(where)
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = where, WarPoints = 0 })
+		w:Flush()
+	end
+	slime(at + vec(100, 0, 0))
+	slime(at + vec(0, 0, 100))
+	tick(2)
+	check(p:GetAttribute("StoryMoverState") == "Event", "slimes far away do not count", "")
+	slime(at + vec(5, 0, 0))
+	slime(at + vec(-5, 0, 0))
+	tick(1)
+	check(w:Track(d, "TESC").T.e == 1, "2 slimes near it: the event is over (saved once)", show(w:Track(d, "TESC")))
+	local bank = d.BankGold or 0
+	for _ = 1, 4 do
+		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
+		tick(1)
+	end
+	check(d.Story.Done.TESC == true and (d.BankGold or 0) == bank + 5 and p:GetAttribute("StoryMover") == "",
+		"the path's end: done, paid, the mover gone", show({ d.Story.Done.TESC, p:GetAttribute("StoryMover") }))
+	-- the chase: it runs ahead; far behind for 4 s = lost (back to the last waypoint, waiting); caught when I reach it
+	local q, dq = joinAfterM23(w, 9972, "Halo", { Pos = vec(0, 0, 0) })
+	dq.Story.Subs.TESC, dq.Story.Done.TESC = nil, true -- (this player has only the chase open)
+	w.Story.DebugSub(q, "TCHS", 1)
+	local function qtick(n) for _ = 1, n or 1 do w:Advance(1); w.Story.Refresh(q) end end
+	w:MoveTo(q, vec(-100, 0, 0))
+	qtick(7)
+	check(q:GetAttribute("StoryMoverState") == "Lost" or q:GetAttribute("StoryMoverState") == "Move", "far behind: it runs, then waits (Lost)", q:GetAttribute("StoryMoverState"))
+	qtick(4)
+	check(q:GetAttribute("StoryMoverState") == "Lost", "more than 60 behind for 4 s: Lost (it waits at a waypoint)", q:GetAttribute("StoryMoverState"))
+	local wait = q:GetAttribute("StoryMoverPos")
+	qtick(3)
+	local nowPos = q:GetAttribute("StoryMoverPos")
+	check(nowPos.X == wait.X and nowPos.Z == wait.Z, "while lost it does not run on", show({ wait, q:GetAttribute("StoryMoverPos"), q:GetAttribute("StoryMoverState") }))
+	w:MoveTo(q, wait + vec(4, 0, 0))
+	qtick(1)
+	check(dq.Story.Done.TCHS == true and q:GetAttribute("StoryMover") == "", "reaching it: caught (done)", show(dq.Story.Done.TCHS))
+	SQ.Paths.TPath = nil
+	for _, id in { "TESC", "TCHS" } do
+		SQ.Defs[id] = nil
+		table.remove(SQ.Subs, table.find(SQ.Subs, id))
+	end
+end)
+
 -- A23-199: every quest step shows where to go: a Guide, or an Npc (the client guides to that NPC), except a card that
 -- opens right where the player stands (Panel without Npc). KNOWN = today's steps without one (the quest redesign fixes them;
 -- the list may only shrink)

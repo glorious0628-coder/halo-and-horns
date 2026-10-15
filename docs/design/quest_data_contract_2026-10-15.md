@@ -18,6 +18,7 @@ return {
 	Main = { { After = "M1_4", Ids = { id, ... } } }, -- 새 Main을 본편 줄의 어느 뒤에 (After 없으면 끝)
 	Variants = { [공유 id] = { Offer = {...}, Steps = { [i] = 단계 } } }, -- 이 진영판 (아래 4)
 	Landmarks = { [키] = Vector3.new(x, 0, z) }, -- 새 장소(현장 물건·등불·연습대…)
+	Paths = { [키] = { Vector3.new(...), ... } }, -- 추격·호위 길(경유점 2개 이상)
 	Speakers = { [키] = "이름" },
 	Npcs = { TownNpcs.List 항목 },    -- 새 임시 몸 (Story = NpcId 필수)
 }
@@ -74,8 +75,10 @@ return {
 | Timing | — | 작업대 5번 중 3번 |
 | Learn | Slot | 스승에게 배움 |
 | Skip | — | 이 진영판에 필요 없는 단계(바로 통과) |
+| Escort | Path, Speed(8), Near(20), Event = { At(0~1), Kind, Count, Radius(40) } | 짧은 호위: 내가 Near 안에 있을 때만 움직임, Event 지점에서 근처 몬스터 Count 처치까지 멈춤(한 번), 지난 경유점 저장(재접속·중단 뒤 거기서) |
+| Chase | Path, Speed(10), Head(15), Catch(8), Lose(60), LoseSeconds(6) | 짧은 추격: Head만큼 앞에서 달아남, Catch 안 = 잡음, Lose보다 멀리 LoseSeconds = 놓침 → 마지막 경유점에서 기다림(실패 없음) |
 
-추격·호위(⑧)는 엔진 준비 후 이 표에 추가.
+경로 = 묶음의 `Paths = { [키] = { Vector3, ... } }`(경유점 2개 이상). 화면: 속성 `StoryMover`(퀘스트 id)·`StoryMoverKind`·`StoryMoverPos`·`StoryMoverState`(Move/Wait/Event/Lost/Done)로 수레·도망자를 그 자리에 그림(개발 1).
 
 ## 5. 공유 퀘스트의 진영판(Variants)
 - 바이블의 `M2_2[H]`처럼 세 진영이 같은 id(진행·보상 공유)를 다른 행동으로 할 때: 그 진영 묶음의 `Variants[id]`.

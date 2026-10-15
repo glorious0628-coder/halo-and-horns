@@ -567,6 +567,15 @@ MUTATIONS = [
     ("A23-205: accepts not counted", ST, "\tif isRepeat(def) then dailyOf(st).Taken[id] = true end -- A23-205: one of today's RepeatDailyMax\n", ""),
     ("A23-205: no new day", ST, "\tif type(d) ~= \"table\" or d.Day ~= day or type(d.Taken) ~= \"table\" or type(d.Done) ~= \"table\" then", "\tif type(d) ~= \"table\" or type(d.Taken) ~= \"table\" or type(d.Done) ~= \"table\" then"),
     ("A23-205: no dim '!'", ST, "if player:GetAttribute(\"StoryOffersDim\") ~= dimAttr then player:SetAttribute(\"StoryOffersDim\", dimAttr) end", ""),
+    # --- quest P1 ⑧ chase / escort
+    ("P1: the escort moves without me", ST, "\t\telseif away <= num(obj.Near, 20) then\n", "\t\telseif true then\n"),
+    ("P1: no escort checkpoint", ST, "\t\t\t\ttr.P = idx -- the last waypoint passed: a rejoin goes on from here\n", ""),
+    ("P1: the escort restarts from the start", ST, "local start = obj.Type == \"Escort\" and cum[math.clamp(math.floor(num(tr.P)), 1, #p)] or", "local start = obj.Type == \"Escort\" and 0 or"),
+    ("P1: no escort event", ST, "\t\tif ev and num(tr.T.e) < 1 and m.Dist >= evDist then\n", "\t\tif false then\n"),
+    ("P1: event kills from anywhere", ST, "\tif Util.FlatDistance(info.Position, m.Pos) > num(ev.Radius, 40) then return end\n", ""),
+    ("P1: a lost runner runs on", ST, "\t\t\t\t\tm.Dist, m.State, m.LostSince = cum[math.max(1, idx)], \"Lost\", nil -- back to the last waypoint, waits\n", ""),
+    ("P1: a runner never caught", ST, "\t\tif away <= num(obj.Catch, 8) then\n\t\t\tm.State = \"Done\"", "\t\tif false then\n\t\t\tm.State = \"Done\""),
+    ("P1: the mover never cleared", ST, "\t\tif player:GetAttribute(\"StoryMover\") ~= \"\" and player:GetAttribute(\"StoryMover\") ~= nil then player:SetAttribute(\"StoryMover\", \"\") end\n", ""),
     ("P1: the Lv5 test before Lv5", C, "\t\t\tRequires = { Level = 5 },\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks", "\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks"),
 ]
 

@@ -35,7 +35,7 @@ MARK = "QUESTDATA"
 
 STEP_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "Trials", "WarPoints", "EarnGold", "WarChest", "Goose",
               "Gather", "Craft", "SellMat", "Talk", "Choice", "State", "Event", "Level", "Enter", "Near", "Pickup", "Deliver",
-              "Practice", "Emote", "Match", "Timing", "Learn", "Skip"}
+              "Practice", "Emote", "Match", "Timing", "Learn", "Skip", "Escort", "Chase"}
 COUNT_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "WarPoints", "EarnGold", "WarChest", "Goose", "Gather",
                "Craft", "SellMat"}
 # bible §3 '유형은 주로 하는 행동': the main action of a quest (Type)
@@ -172,6 +172,8 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
                 t = obj.get("Type") if isinstance(obj, dict) else None
                 if t not in STEP_TYPES:
                     add("step-type", f"{i}.{si}", f"unknown Obj.Type {t}")
+                if t in ("Escort", "Chase") and len(arr(get(tree, "StoryQuests", "Paths", obj.get("Path")))) < 2:
+                    add("step-path", f"{i}.{si}", f"{t} needs Path = a StoryQuests.Paths key with 2+ waypoints")
                 if is_pack:
                     if t in COUNT_TYPES and not (isinstance(obj.get("Count"), int) and obj.get("Count") > 0) and t != "Trials":
                         add("step-count", f"{i}.{si}", f"{t} needs a whole Count > 0")
