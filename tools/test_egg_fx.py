@@ -461,7 +461,7 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          and "carry += slotsOf(rec.Kind)\n\t\tend\n\tend\nend" in egg, ""),
         ("EggFx: '+N' only for my own delivery", "if data.UserId ~= LocalPlayer.UserId then return end" in egg, ""),
         ("EventHUD: the Eggs bar comes from EggFx.Bar, the line under it hidden, no explanation text",
-         "eggFx.Bar(" in branch and "setVisible(ui.TugSub, false)" in branch and "SQ.DrawEggBar(b, " in branch
+         "eggFx.Bar(" in branch and "TugSub" not in hud and "SQ.DrawEggBar(b, " in branch
          and '"EggCoop"' in hud and "Hint" not in branch and "MyCount" not in branch, ""),
         ("EventHUD: the overtime clock gold with the approved crown", 'Art.image("Crown"' in hud and "b.Overtime and GOLD" in hud, ""),
         ("Audio: deliveries / tags (my side's sound, others within EggRange, stand-ins)",
@@ -527,8 +527,8 @@ MUTATIONS = [
     ("EGG", "my own pickup also pops as someone else's (the sound twice)",
      "if gone.Near and math.abs(S.MineAt - gone.At) <= num(lookCfg().MineWindow, 0.5) then return end -- mine", ""),
     ("EGG", "'+N' for everyone's delivery", "if data.UserId ~= LocalPlayer.UserId then return end", ""),
-    ("HUD", "the explanation line under the bar again", "\t\tif eggMode then\n\t\t\tsetVisible(ui.TugSub, false)",
-     "\t\tif eggMode then\n\t\t\tsetVisible(ui.TugSub, true)"),
+    ("HUD", "the explanation line under the bar again", "\t\tif eggMode then\n",
+     "\t\tif eggMode then\n\t\t\tsetVisible(ui.TugSub, true)\n"),
     ("AUDIO", "the 3-2-1 for the goose hitters in Eggs mode",
      'tickFor("Goose", gs:GetAttribute("GooseActive") == true and picked, num(eggEnd, 0), t)',
      'tickFor("Goose", gs:GetAttribute("GooseActive") == true and S.GooseHit, num(eggEnd, 0), t)'),

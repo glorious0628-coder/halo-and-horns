@@ -1884,18 +1884,6 @@ Config.Goose = {
 		HudTitle = { Halo = "Team Rescue! %s", Horns = "Team Poach! %s" }, -- (time left)
 		HudProgress = "%d / %d", -- (side total = GooseRescue for Halo / GoosePoach for Horns, GooseCoopTarget)
 		HudPeople = "%d players", -- (GooseCoopPeople)
-		HudSub = { -- (my GooseCount) players of the co-op side, gauge not full yet
-			Halo = "My points %d · Knights, fill the gauge!",
-			Horns = "My points %d · Horn Legion, fill the gauge!",
-		},
-		HudFull = { -- (my GooseCount, MinManualHits) players of the co-op side, gauge full
-			Halo = "My points %d · Rescued! Hit it %d times for a reward",
-			Horns = "My points %d · Poached! Hit it %d times for a reward",
-		},
-		HudOther = { -- the other tug faction during co-op (keyed by the CO-OP side)
-			Halo = "This goose is the Knights' Team Rescue",
-			Horns = "This goose is the Horn Legion's Team Poach",
-		},
 		-- Eggs mode: the only extra line (A23-99 fail fact): a side player who delivered 1+ egg but not enough for a reward
 		BringTwo = "Bring 2 eggs for a reward.",
 	},
@@ -3233,7 +3221,6 @@ Config.Tutorial = {
 		RebirthNoteHalo = "Stay a knight, or not?", -- a second line under the rebirth goal, by side
 		RebirthNoteHorns = "Stay a rascal, or not?",
 		GuideDone = "That's all from me! Now hunt and get stronger.",
-		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
 		-- P1 ②: the rows while the guide / the teacher has a body to walk to (%s = the name)
 		WelcomeBody = "Talk to %s",
 		Teacher = "Meet %s at the town gate",
@@ -6516,26 +6503,10 @@ Config.Data.Defaults.WeaponPity = {}
 -- false = never shown. Rewards, danger and failures are no nudges and stay. 검수 decides the rest from the list
 -- game dev 1 sent (2026-10-09)
 Config.Nudges = {
-	DailiesOpened = false, -- "Daily quests are open! ..." after the first [Claim] (HUD parseQuests)
-	-- A23-99 추가 (user 2026-10-10 photo: "이거 없애달라니까 ㅋㅋ 위에 메인 퀘스트 관련한 내용 있잖아 이미"): the head line
-	-- 'Quests (N) ▼' over the quest lines / tracker is gone (with its ▼); the quest window still opens with Q, the menu
-	-- and a press on a quest line (phones: the block); the lines stay as many as before
-	QuestHead = false,
-	-- 검수 10/09 decision (docs/design/nudge_list_2026-10-09.md): client
-	WarIntro = false, -- "Crown War: win points for your side!" when the war bar first shows (HUD.ApplyFold)
-	-- A23-130 (user 2026-10-11 photo, Golden Goose): only the top bar (gauge + "0 / 20") stays; the line under it
-	-- ("My points 0 · Knights, fill the gauge!" / the tug's "My points · hint") is gone (EventHUD updateGoose, TugSub)
-	GooseSub = false,
-	-- A23-130 sweep (docs/review/less_text_table_2026-10-11.md): the "Click to hit!" / "Tap to hit!" bubble over the attack
-	-- button after 5 s idle near a monster in the first mission (FirstSteps HINT.Step) - the button is on screen already
-	AttackHint = false,
-	-- the weapon merchant's 4 s farewell toast after a manual close ("Nothing you like? Take your time!", Panels WSHOP)
-	ShopFarewell = false,
-	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
-	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
-	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
-	GuideLabel = false, -- 검수 10/09: the floating name chip over the guide target / pad ("First weapon"; HUD showGuide)
-	GuideBeam = false, -- 검수 10/09 (user): the gold line on the ground to the target (HUD showGuide); A23-88 too
+	-- 게임성 개발 1 10/15 (최종 검수; user rule: a UI the user disliked goes as a kind, never a switch): the off client
+	-- nudges were deleted with their drawing code - DailiesOpened, QuestHead (the 'Quests (N) ▼' head line), WarIntro,
+	-- GooseSub (the line under the goose bar), AttackHint (HUD.Hint bubbles), ShopFarewell, ZoneStoryLine, SackLore,
+	-- HuntSlimes, GuideLabel / GuideBeam (the guide's name chip and ground line; the guide target stays for QuestMarker)
 	-- A23-88 (검수 10/09, no lines / words): after the first weapon (TutorialStep Guide) the meadow travel pad itself glows
 	-- softly while I am in the Crossroads, and [Menu] + its Travel square pulse until I open Travel once
 	PadGlow = true,
@@ -8132,14 +8103,6 @@ Config.Story = {
 	RebirthIntro = "Rebirth lets you pick your Crown Shard again. Which side will you be reborn on?",
 	Fall = "Fall: Gold +5%% · black cape",
 	Redeem = "Redeem: XP +5%% forever",
-	SackLore = "Stolen gold carries a grudge. If a knight catches the thief, it comes back at 120%%!",
-}
-
--- addendum A7-3: crown-shard one-liners (<= 30 chars, plain text, no format specifiers) shown only at the matching
--- unlock moment (reaching that zone's MinLevel) and only while Rebirths == 0. Keyed by zone id.
-Config.StoryLines = {
-	GoblinWoods = "A Crown Shard calls from beyond the woods. Watch out for thieves!",
-	SkeletonRuins = "A big shard sleeps in the old kingdom's tomb.",
 }
 
 -- addendum A7-3: client "next goal" helpers
@@ -11166,10 +11129,6 @@ Config.ClientText.EventHUD = {
 	EggCoop = "%d / %d", -- ... co-op: our points / the goal
 	Rescue = "Rescue %d",
 	Poach = "Poach %d",
-	MyCount = "My hits %d",
-	HintHalo = "Hit the goose to rescue it!",
-	HintHorns = "Hit the goose to poach it!",
-	HintNeutral = "The Artisan Guild sits out the tug", -- addendum A6
 	KaijuChip = "Kaiju %s %s",
 	SirenLeft = "%ds",
 	Sack = "Grudge Sack %s · %ds", -- A23-130: the "(shrinks only in PvP zones)" explanation is gone
@@ -11467,11 +11426,6 @@ Config.ClientText.Panels = {
 	WeaponSent = "Checking the trade...",
 	WeaponSlow = "Trade not confirmed yet. Check your alerts and try again.",
 	WeaponPending = "Checking...",
-	WeaponByeBrowse = "Nothing you like? Take your time!",
-	WeaponByeBuy = "Good choice. Try it out and come back!",
-	WeaponByeSell = "Got your weapon. Come back when you need something!",
-	WeaponByeEquip = "That one fits your hand. Stay safe out there!",
-	WeaponByePending = "Check how the trade went. Come back soon!",
 	-- vacation
 	VacationHeaderF = "Vacation Bonus! You were away %d days.", -- 검수 10/10: shorter (Config.Plural: 1 day)
 	VacationRewardF = "+%s gold · +%s XP",
@@ -11582,7 +11536,6 @@ Config.ClientText.HUD = {
 	Wanted = "Wanted %s", -- danger chip (Horns): the wanted stars
 	WantedBounty = " · %s",
 	LuckTap = "Rare drops come a bit more often today!", -- 검수 10/09: a press on the Lucky chip
-	WarIntro = "Crown War: win points for your side!", -- 검수 10/09: the one line when the war bar first shows
 	Blessing = "%s Crown Blessing +%d%%",
 	Safe = "Safe Zone",
 	PvP = "PvP Zone",
@@ -11648,9 +11601,6 @@ Config.ClientText.HUD = {
 	QuestLineNums = "%s/%s",
 	QuestPinLine = "%s (%s/%s)", -- §15 P1 ③: a pinned quest's small line under the main one (name, progress)
 	QuestLineSummary = "Daily Quests %d/%d",
-	QuestOpenList = "▼",
-	QuestCloseList = "▲",
-	QuestHead = "Quests (%d)", -- 검수 10/08: the head line over the quest lines (the ▼ lives here)
 	QuestDone = "Done!", -- a finished line: its name + Done! (+ the Claim pill where a press claims it)
 	MoreChips = "+%d",
 	TravelLeft = "%s %.1fs",
@@ -11659,18 +11609,12 @@ Config.ClientText.HUD = {
 	-- texts used once in the code below
 	GuideHere = "This way!",
 	Traveling = "Traveling...",
-	DailiesOpened = "Daily quests are open!",
 	SmithGuide = "Forge",
 	ForgeGuide = "First weapon", -- A23-74 weapon first (TutorialStep Forge)
 	NoMana = "Not enough MP.",
 	GoSmith = "Go to the Crossroads and find the anvil at the Forge.",
 	Pond = "Pond",
 	Fountain = "Fountain",
-	HuntSlimes = "Hunt slimes and big slimes for XP.",
-	-- A23-68 #2 (user 2026-10-07 "그 자리 힌트"): the hint bubbles over the combat buttons (HUD.Hint)
-	HintTap = "Tap to hit!",
-	HintClick = "Click to hit!",
-	HintSkill = "Try your skill!",
 }
 Config.ClientText.BagUI = {
 	Title = "Bag",

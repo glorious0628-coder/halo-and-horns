@@ -169,11 +169,9 @@ print(("QUEST_LINES_SUMMARY checks=%d failed=%d"):format(checks, failed))
 """
 
 MUTATIONS = [
-    # A23-99 추가 (2026-10-10): the head line 'Quests (N) ▼' is gone
-    ("the head line shows again", "ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0",
-     "ui.questHead.Frame.Visible = #entries > 0"),
-    ("the lines keep a gap for the gone head line", "local hh = (ui.questHead and L.QuestHeadOn()) and math.floor(lh * 0.75) or 0",
-     "local hh = ui.questHead and math.floor(lh * 0.75) or 0"),
+    # A23-99 추가 (2026-10-10): the head line 'Quests (N) ▼' is gone (its code too, 게임성 개발 1 10/15)
+    ("the lines keep a gap for the gone head line", "\tblock.Position = UDim2.fromOffset(q.X, q.Y)\n",
+     "\tblock.Position = UDim2.fromOffset(q.X, q.Y + math.floor(lh * 0.75))\n"),
     ("lines never capped", "\treturn math.clamp(math.floor(tonumber(type(qt) == \"table\" and qt.HudLines) or 2), 1, 5)\n",
      "\treturn math.floor(tonumber(type(qt) == \"table\" and qt.HudLines) or 2)\n"),
     ("the 'now do' row not first", "\tadd(first)\n\tfor k = 1, 5 do add(prefer[k]) end\n", "\tfor k = 1, 5 do add(prefer[k]) end\n\tadd(first)\n"),
@@ -273,17 +271,12 @@ def static_checks(src):
         ("a finished line keeps its name + Done! (SetQuestLine uses L.LineFinish / L.LineIconKeys)",
          "local claimable, pill = L.LineFinish(e, li)" in setline and "l.Nums.Text = claimable and TXT.QuestDone or (nums or \"\")" in setline
          and "for _, key in L.LineIconKeys(e) do" in setline and 'QuestDone = "Done!",' in CFG_TXT),
-        ("the ▼ sits on the head line 'Quests (N)' over the lines, not beside line 1",
-         'QuestHead = "Quests (%d)",' in CFG_TXT and "Parent = headRow," in build and "Parent = ui.qline[1].Row," not in src
-         and 'ui.questHead.Text.Text = L.Tx(TXT, "QuestHead", #all)' in refresh  # 10/14: by key (UIKit.Tr)
-         and "block.Position = UDim2.fromOffset(q.X, q.Y + hh)" in layout),
-        # A23-99 추가 (user 2026-10-10 photo "이거 없애달라니까"): the head line is off - no frame, no height, no gap
-        ("A23-99: the head line 'Quests (N) ▼' is gone (Config.Nudges.QuestHead = false) and leaves no gap",
-         "\tQuestHead = false,\n" in (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig")
-         and "ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0" in refresh
-         and "local hh = (ui.questHead and L.QuestHeadOn()) and math.floor(lh * 0.75) or 0" in layout
-         and "local hh = ui.questHead.Frame.Visible and ui.questHead.Frame.Size.Y.Offset or 0" in src
-         and "\treturn (Config.Nudges or {}).QuestHead == true\n" in src),
+        # A23-99 추가 (user 2026-10-10 photo "이거 없애달라니까"): the head line is gone - its row, ▼, plate and switch
+        # deleted (게임성 개발 1 10/15, test_nudges_gone); the lines start at the rect's top, no ▼ beside line 1
+        ("A23-99: no head line 'Quests (N) ▼' (no row, no ▼, no switch) and no gap",
+         re.search(r"\bQuestHead\s*=", (ROOT / "src/ReplicatedStorage/Shared/Config.luau").read_text(encoding="utf-8-sig")) is None
+         and "headRow" not in build and "Parent = ui.qline[1].Row," not in src and "ui.questFold" not in src
+         and "\tblock.Position = UDim2.fromOffset(q.X, q.Y)\n" in layout and "QuestHeadOn" not in src),
         ("the words get their own width (no flex shrink that squeezed a finished line's name to nothing)",
          "UIFlexItem" not in build and "l.Text.Size = UDim2.new(0, math.max(1, math.min(math.ceil(w) + 2, math.floor(avail))), 1, 0)" in fit),
         ("the quest list may come as { Quests, Book } (a table or JSON): rows + the window's book",
@@ -293,8 +286,8 @@ def static_checks(src):
          and "\t\tdata = payload.Quests" in src),
         ("검수 10/10 API review ①: the phone's claim line counts only the rows the block shows (entries)",
          "		claimable, hot = ready, ready > 0" in src),
-        ("검수 10/10 API review ③: the tracker keeps room for the head line only while it shows",
-         "+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8" in src),
+        ("검수 10/10 API review ③: the tracker keeps no room for the gone head line",
+         "T.Gap * 4\n\t\t\t+ 8\n" in src and "QuestHeadOn" not in src),
         ("A23-104: the payload's DailyLocked is kept for the quest window (HUD.DailyLocked)",
          "questState.DailyLocked = payload.DailyLocked == true" in src and "function HUD.DailyLocked()" in src),
     ]

@@ -4,7 +4,7 @@ Runs the CURRENT HUD.WarHidden (cut out of src/StarterPlayer/StarterPlayerScript
 Config.Tutorial.Steps in the official Luau CLI (build/luau_cli_0_741): hidden only while the first mission is at its
 first fight or on the way to the Forge (TutorialStep Kill / Forge); no step (not loaded), Guide, Quest, Done = shown.
 Static: L.ApplyFold shows / hides ui.war with that rule, and when it comes in during play shows one toast
-(TXT.WarIntro, English) and a NEW! tag. Mutations: in-memory copies with one rule broken each; each must be caught.
+(A23-191: no intro toast; its words and switch are gone, test_nudges_gone). Mutations: in-memory copies with one rule broken each; each must be caught.
 
 Usage: py tools/test_war_intro.py
 Report: docs/art/verification_2026-10-09/offline_war_intro_2026-10-09.json
@@ -31,8 +31,6 @@ STATIC = [
      ['\tlocal hideWar = HUD.WarHidden(attr("TutorialStep", nil), TUT.Steps)\n',
       "\tif ui.war and ui.war.Visible == hideWar then\n\t\tui.war.Visible = not hideWar\n"]),
     ("coming in during play: no toast (A23-191, user 10/14)", ['\t\t-- A23-191 (user 10/14): no "Crown War" intro toast when it comes in\n']),
-    ("the line is short English", ['\tWarIntro = "Crown War: win points for your side!",'], "CONFIG"),
-    ("검수 10/09 (user: too kind): the toast is switched off in Config.Nudges", ["\tWarIntro = false, --"], "CONFIG"),
 ]
 MUTATIONS = [
     ("hidden on the way to the Forge only", "\treturn step == tonumber(steps.Kill) or step == tonumber(steps.Forge)\n",

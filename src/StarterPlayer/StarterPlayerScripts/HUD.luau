@@ -190,7 +190,7 @@ local questExpanded = false -- collapsed list shows the header + one row
 -- Pulse = the gentle gold pulse on that row (touch: on the header line)
 local questState = { ClaimAt = -math.huge, ClaimLock = 1.5, RowLock = 0.8, OverlayOpen = false, Data = nil,
 	Started = false, StoryKey = "", CallEntry = nil, Pulse = { Target = nil, Stroke = nil, Tween = nil } }
-local guide = nil -- { Tag, Part, Att0, Att1, Beam, Billboard, Tween }
+local guide = nil -- { Tag, Part, From }
 local guideAnchors = {}
 
 local tickCount = 0
@@ -1793,53 +1793,6 @@ function L.BuildQuestLines(root)
 	-- path stays behind L.QuestPlate.On
 	local onPlate = L.QuestPlate.On == true and UIKit.ArtId("ListRow") ~= nil
 	ui.questOnPlate = onPlate
-	-- 검수 10/08 (user "퀘스트 창도 이상해": the ▼ beside line 1 did not say what it opens): a head line "Quests (3) ▼" over
-	-- the lines; a press opens the quest window (Q) / the list. The lines sit right under it (LayoutQuestLines)
-	local headRow = UIKit.Create("TextButton", {
-		Name = "QuestHead",
-		Text = "",
-		AutoButtonColor = false,
-		BackgroundTransparency = 1,
-		Size = UDim2.fromOffset(300, 20),
-		Visible = false,
-		ZIndex = 3,
-		Parent = root,
-	}, {
-		UIKit.Create("UIListLayout", {
-			FillDirection = Enum.FillDirection.Horizontal,
-			VerticalAlignment = Enum.VerticalAlignment.Center,
-			SortOrder = Enum.SortOrder.LayoutOrder,
-			Padding = UDim.new(0, 4),
-		}),
-	})
-	headRow.Activated:Connect(function()
-		if toggleQuests then toggleQuests() end
-	end)
-	local headText = UIKit.StyledLabel({
-		Name = "Text",
-		LayoutOrder = 1,
-		Size = UDim2.new(0, 0, 1, 0),
-		AutomaticSize = Enum.AutomaticSize.X,
-		TextXAlignment = Enum.TextXAlignment.Left,
-		ZIndex = 4,
-		Parent = headRow,
-	}, style, onPlate)
-	-- 검수 10/09 (5c1756fb 머리 줄 판): the head line sits on its own small plate too
-	local headPlate = onPlate and UIKit.ArtFrame("ListRow", { Name = "HeadPlate", ZIndex = 2, Visible = false, Parent = root }) or nil
-	-- no plate: the head line gets the same soft band as the lines (same left end, same width rule; LayoutQuestLines)
-	local headBand = nil
-	if not onPlate then
-		headBand = L.SoftBand(root, "Right")
-		headBand.Name = "HeadBand"
-		headBand.Visible = false
-	end
-	if onPlate then UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, L.QuestPlate.PadL), Parent = headRow }) end
-	ui.questHead = { Frame = headRow, Text = headText, Plate = headPlate, Band = headBand }
-	-- the head plate lives beside the head line (not inside it): follow its showing / hiding at once (검수 10/09)
-	headRow:GetPropertyChangedSignal("Visible"):Connect(function()
-		task.defer(L.LayoutQuestPlates)
-		task.defer(L.PlaceTrackerHead) -- HUD.QuestBlock follows the head line too (이미지 개발 10/09)
-	end)
 	local n = L.QuestLines() -- A23-81: up to Config.QuestTabs.HudLines lines
 	for i = 1, n do
 		-- one row = [icon][text][3/5 | 받기][▼ on line 1, PC]: a horizontal list; the text keeps its own width (shrinks and
@@ -1939,23 +1892,6 @@ function L.BuildQuestLines(root)
 		ui.qline[i] = { Row = row, Icon = icon, Text = text, Nums = nums, Claim = claim, ClaimText = claimText, Entry = nil,
 			Band = band, Plate = plate }
 	end
-	-- the ▼ / ▲ on the head line (every device): the quest window, or the old fold-out list without it
-	local fold = UIKit.Create("TextButton", {
-		Name = "Fold",
-		LayoutOrder = 2,
-		Size = UDim2.new(0, 0, 1, 0),
-		AutomaticSize = Enum.AutomaticSize.X,
-		BackgroundTransparency = 1,
-		AutoButtonColor = false,
-		Text = TXT.QuestOpenList,
-		ZIndex = 5,
-		Parent = headRow,
-	}, { UIKit.Create("UIPadding", { PaddingLeft = UDim.new(0, 6), PaddingRight = UDim.new(0, 6) }) })
-	if type(UIKit.StyleText) == "function" then UIKit.StyleText(fold, "Number", onPlate) end
-	fold.Activated:Connect(function()
-		if toggleQuests then toggleQuests() end
-	end)
-	ui.questFold = fold
 	if L.Tracker.On then L.BuildTracker(root) end
 end
 
@@ -2150,13 +2086,13 @@ function L.LayoutTracker(q)
 	local titleSize = math.max(14, math.floor(lh * T.TitleK))
 	local bodySize = math.max(12, math.floor(lh * T.BodyK))
 	if IS_TOUCH then bodySize = math.max(12, math.ceil(11 / currentScale())) end
-	-- small PC windows: the tracker (taller than the rect: up to two goal lines + the head line) moves up so it ends
+	-- small PC windows: the tracker (taller than the rect: up to two goal lines) moves up so it ends
 	-- above the bottom group (portrait / power line), never above the minimap's bottom
 	local y = q.Y
 	local R = L.Rects
 	if not IS_TOUCH and R and R.power_line and R.minimap then
 		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
-			+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8 -- 검수 10/10: no head line, no room for it
+			+ 8
 			+ #HUD.Pins() * (math.ceil(bodySize * 1.2) + T.Gap) -- §15 P1 ③: a line per pin
 		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
 		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
@@ -2269,32 +2205,22 @@ function L.TextLines(text, font, size, width)
 	return nil
 end
 
--- A23-99 추가 (user 2026-10-10): the head line 'Quests (N) ▼' shows only with Config.Nudges.QuestHead (off)
-function L.QuestHeadOn()
-	return (Config.Nudges or {}).QuestHead == true
-end
-
--- the head line 'Quests (n) ▼' (and its band) right under the tracker; L.QuestBottom = where the list / overlay start
--- (no head line: right under the tracker)
+-- L.QuestBottom = where the list / overlay start: right under the tracker (A23-99: no head line over the lines)
 function L.PlaceTrackerHead()
 	local t, q = ui.tracker, L.Tracker.Rect
-	if not (t and q and ui.questHead) then return end
+	if not (t and q) then return end
 	local s = currentScale()
 	local th = t.Frame.Visible and (t.Frame.AbsoluteSize.Y / s) or 0
-	local hh = ui.questHead.Frame.Visible and ui.questHead.Frame.Size.Y.Offset or 0
 	local y = q.Y + (th > 0 and th + L.Tracker.Gap * 2 or 0)
-	ui.questHead.Frame.Position = UDim2.fromOffset(q.X, y)
-	if ui.questHead.Band then ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, y - 1) end
-	L.QuestBottom = y + hh
+	L.QuestBottom = y
 	if ui.quests then ui.quests.Position = UDim2.fromOffset(q.X, L.QuestBottom + 4) end
 	if ui.questOverlay and ui.questOverlay.Position.Y.Offset ~= L.QuestBottom + 4 then
 		ui.questOverlay.Position = UDim2.fromOffset(ui.questOverlay.Position.X.Offset, L.QuestBottom + 4)
 	end
-	-- 이미지 개발 10/09 (main PC photo: the edge diamond sat on 'Quests (1) ▼'): Rects.quest is only the sheet's two lines,
-	-- the tracker + head line run lower - publish the drawn block (a NEW table when it changes, nil while nothing shows)
-	-- so QuestMarker keeps its indicator off it
+	-- 이미지 개발 10/09: Rects.quest is only the sheet's two lines, the tracker runs lower - publish the drawn block (a NEW
+	-- table when it changes, nil while nothing shows) so QuestMarker keeps its indicator off it
 	local top = th > 0 and q.Y or y
-	local bottom = ui.questHead.Frame.Visible and L.QuestBottom or (th > 0 and q.Y + th or top)
+	local bottom = th > 0 and q.Y + th or top
 	local old = HUD.QuestBlock
 	if bottom - top < 1 then
 		HUD.QuestBlock = nil
@@ -2309,19 +2235,7 @@ function L.LayoutQuestLines(q)
 	local block = ui.questLines
 	if not block then return end
 	local lh = q.H / 2 -- the layout's quest rect holds two lines; a third one hangs under it (A23-81)
-	-- 검수 10/08: the head line "Quests (3) ▼" on top - none since A23-99 추가 (the lines start at the rect's top)
-	local hh = (ui.questHead and L.QuestHeadOn()) and math.floor(lh * 0.75) or 0
-	if ui.questHead then
-		ui.questHead.Frame.Position = UDim2.fromOffset(q.X, q.Y)
-		ui.questHead.Frame.Size = UDim2.fromOffset(q.W, hh)
-		ui.questHead.Text.TextSize = math.max(12, math.floor(lh * 0.5))
-		-- the lines' band rule (BuildQuestLines: 8 du left of the text, 64 du past the block's right end)
-		if ui.questHead.Band then
-			ui.questHead.Band.Position = UDim2.fromOffset(q.X - 8, q.Y - 1)
-			ui.questHead.Band.Size = UDim2.fromOffset(q.W + 64, hh + 2)
-		end
-	end
-	block.Position = UDim2.fromOffset(q.X, q.Y + hh)
+	block.Position = UDim2.fromOffset(q.X, q.Y)
 	block.Size = UDim2.fromOffset(q.W, lh * L.QuestLines())
 	local iconS = math.floor(lh * 0.9)
 	local textSize = math.max(12, math.floor(lh * 0.6))
@@ -2338,7 +2252,6 @@ function L.LayoutQuestLines(q)
 		l.Claim.Size = UDim2.fromOffset(math.floor(lh * 2.3), math.floor(lh * 0.86))
 		l.ClaimText.TextSize = math.max(12, math.floor(lh * 0.5))
 	end
-	if ui.questFold then ui.questFold.TextSize = math.max(12, math.floor(lh * 0.55)) end
 	for _, l in ui.qline do task.defer(L.FitQuestLine, l) end
 	task.defer(L.LayoutQuestPlates)
 	if ui.tracker then L.LayoutTracker(q) end
@@ -2364,20 +2277,6 @@ function L.LayoutQuestPlates()
 			end
 			if plate.Visible ~= shown then plate.Visible = shown end
 		end
-	end
-	-- the head line "Quests (3) ▼" on its own plate (same pads, sits where the head frame is); or its band
-	local head = ui.questHead
-	if head and head.Band and head.Band.Visible ~= head.Frame.Visible then head.Band.Visible = head.Frame.Visible end
-	if head and head.Plate then
-		local list = head.Frame:FindFirstChildOfClass("UIListLayout")
-		local w = list and list.AbsoluteContentSize.X / s or 0
-		local shown = head.Frame.Visible and w > 1
-		if shown then
-			local h = head.Frame.AbsoluteSize.Y / s
-			head.Plate.Position = head.Frame.Position + UDim2.fromOffset(0, P.Gap / 2)
-			head.Plate.Size = UDim2.fromOffset(math.ceil(w + P.PadL + P.PadR), math.max(1, h - P.Gap))
-		end
-		if head.Plate.Visible ~= shown then head.Plate.Visible = shown end
 	end
 end
 
@@ -3740,18 +3639,6 @@ function L.ApplyFold(changed)
 	L.WasFolded = fold
 end
 
--- #2 hints in place (the logic is game dev 1's: HUD.Hint / HUD.ClearHint, once each): a white speech bubble (the
--- approved BarkBubble, mirrored so its tail points down at the button) over the attack or the Q button, a pulsing gold
--- ring on that button (the L.SetGlow look) and, on the attack button, a short wobble every Every s (none with
--- ReducedMotion). A press of that button or its key clears the hint, else it goes after Seconds. Bubble text: the
--- "Button" style on light (navy, >= 16 px). Art 512 x 190: tail tip at (35, 188) -> mirrored (0.932, 0.99); text box
--- = Config TextRect mirrored. Spare = du kept free on each side of the rendered line, FitMax = the most the rendered
--- check may widen the bubble (L.FitHint)
-L.HintCfg = { Seconds = 10, Every = 1.6, Size = 20, MinPx = 16, TipX = 0.932, TipY = 0.99, Aspect = 512 / 190,
-	TextX = 0.079, TextY = 0.181, TextW = 0.844, TextH = 0.448, MinW = 120, Wobble = { -9, 8, -6, 4, -2, 0 },
-	WobbleStep = 0.06, Breathe = 1.05, Spare = 5, FitMax = 2.5, LineK = 1.4 }
-L.Hints = {} -- [id] = { Id, Text, Button, Rect, Bubble, Label, Pop, Glow, GlowTween, Token, TextW0, Size0, Fit }
-
 -- A23-71: true while SkillBar keeps the slot's button off screen (before its unlock level); the layout then leaves it
 -- out of its room checks (the potions keep their place on the thumb ring). A change of that button's Visible lays the
 -- HUD out again (connected once)
@@ -3765,240 +3652,6 @@ function L.SkillHidden(slot)
 		L.SkillWatch[slot] = b:GetPropertyChangedSignal("Visible"):Connect(requestLayout)
 	end
 	return not b.Visible
-end
-
--- the button a hint hangs on and its HudLayout rect: "Attack" -> 공격, "Q" / "Z" / "X" -> SkillBar's button (Q: else
--- HUD's own Q disc; game dev 1 calls them when a skill is learned, A23-71)
-function L.HintTarget(id)
-	if id == "Attack" then return ui.attack, "attack" end
-	if id == "Q" or id == "Z" or id == "X" then
-		local bar = C and C.SkillBar
-		if type(bar) == "table" and type(bar.Button) == "function" then
-			local ok, b = pcall(bar.Button, id)
-			if ok and typeof(b) == "Instance" and b.Visible then return b, string.lower(id) end
-		end
-		if id == "Q" then return ui.release, "q" end -- before SkillBar: HUD's own Q disc
-	end
-	return nil, nil
-end
-
--- size and place the bubble over its button's rect (MainGui units; the tail tip on the button's top middle). The text
--- width is measured once (h.TextW0 at h.Size0) and scaled, so a relayout never waits for a measurement; h.FitK = the
--- bubble width per text size unit that the rendered line asked for (L.FitHint), kept for relayouts
-function L.PlaceHint(h)
-	local r = L.Rects and L.Rects[h.Rect]
-	local bubble = h.Bubble
-	if not (r and bubble and bubble.Parent and h.TextW0) then return end
-	local cfg = L.HintCfg
-	local pf = type(UIKit.PxFloor) == "function" and UIKit.PxFloor() or 1 -- small PC windows: a smaller copy
-	local size = math.max(cfg.Size, math.ceil(cfg.MinPx * pf / currentScale()))
-	local tw = h.TextW0 * size / h.Size0
-	local w = math.max(cfg.MinW, tw / cfg.TextW + 16, (h.FitK or 0) * size)
-	local hh = w / cfg.Aspect
-	-- the text box holds one rendered line: Denk One draws a 20du line 1.25-1.33x as tall (UiSandbox 2026-10-07, TextBounds
-	-- 20 px at 16 px on PC, 22 px at 16.5 px on phones), so LineK leaves room above that
-	local need = size * cfg.LineK / cfg.TextH
-	if hh < need then hh, w = need, need * cfg.Aspect end
-	bubble.Size = UDim2.fromOffset(math.ceil(w), math.ceil(hh))
-	h.Label.TextSize = size
-	local x = r.X + r.W / 2
-	-- never past the left edge (the bubble grows to the left of its tail)
-	x = math.max(x, cfg.TipX * w + 4)
-	bubble.Position = UDim2.fromOffset(math.floor(x + 0.5), math.floor(r.Y + r.H * 0.06 + 0.5))
-end
-
--- the rendered line against its text box (검수 2026-10-07: "Tap the new buttor" - the font-service width ran short of
--- what Denk One draws on phones): TextBounds and the box are both real px, so the line keeps Spare du free on each side
--- whatever the UIScale or the pop scale; a short box widens the bubble (h.FitK, at most FitMax times its width).
--- Returns true when the bubble changed
-function L.FitHint(h)
-	local label, bubble = h.Label, h.Bubble
-	if not (label and label.Parent and bubble and bubble.Parent and h.TextW0) then return false end
-	local cfg = L.HintCfg
-	local box, tb = label.AbsoluteSize.X, label.TextBounds.X
-	local wDu = bubble.Size.X.Offset
-	if box <= 1 or tb <= 0 or wDu <= 1 or label.TextSize <= 0 then return false end
-	local px = box / (cfg.TextW * wDu) -- real px per du inside the bubble
-	local need = tb / px + 2 * cfg.Spare -- du the line needs
-	if need <= cfg.TextW * wDu + 0.5 then return false end
-	local w = math.min(need / cfg.TextW, wDu * cfg.FitMax)
-	if w <= wDu + 0.5 then return false end
-	h.FitK = math.max(h.FitK or 0, w / label.TextSize)
-	L.PlaceHint(h)
-	return true
-end
-
--- the pulsing gold ring around a round button (the same look as L.SetGlow's rim)
-function L.HintGlow(btn)
-	local f = UIKit.Create("Frame", {
-		Name = "HintGlow",
-		AnchorPoint = Vector2.new(0.5, 0.5),
-		Position = UDim2.fromScale(0.5, 0.5),
-		Size = UDim2.new(1, 8, 1, 8),
-		BackgroundTransparency = 1,
-		ZIndex = 9,
-		Active = false,
-		Parent = btn,
-	}, {
-		corner(UDim.new(0.5, 0)),
-		UIKit.Create("UIStroke", {
-			Name = "Stroke",
-			Color = ac("Gold", Theme.Gold),
-			Thickness = 3,
-			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-		}),
-	})
-	local tw = TweenService:Create(f.Stroke, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-		{ Thickness = 7 })
-	tw:Play()
-	return f, tw
-end
-
--- the bubble: mirrored BarkBubble art (IMG-R4 fallback: a white rounded box with a navy rim) + the navy line
-function L.HintBubble(h)
-	local cfg = L.HintCfg
-	local def = UIKit.ArtPart("BarkBubble")
-	local aw, ah = 512, 190
-	if def and typeof(def.Size) == "Vector2" then aw, ah = def.Size.X, def.Size.Y end
-	local bubble = UIKit.ArtImage("BarkBubble", {
-		Name = "Hint" .. h.Id,
-		AnchorPoint = Vector2.new(cfg.TipX, cfg.TipY),
-		Size = UDim2.fromOffset(cfg.MinW, cfg.MinW / cfg.Aspect),
-		ScaleType = Enum.ScaleType.Stretch,
-		ImageRectOffset = Vector2.new(aw, 0),
-		ImageRectSize = Vector2.new(-aw, ah), -- mirrored: the tail sits at the bottom right
-		ZIndex = 30,
-		Active = false,
-		Parent = ui.buttons,
-	})
-	if not bubble then
-		bubble = UIKit.Create("Frame", {
-			Name = "Hint" .. h.Id,
-			AnchorPoint = Vector2.new(cfg.TipX, 1),
-			Size = UDim2.fromOffset(cfg.MinW, cfg.MinW / cfg.Aspect),
-			BackgroundColor3 = COL.White,
-			ZIndex = 30,
-			Active = false,
-			Parent = ui.buttons,
-		}, {
-			corner(UDim.new(0.3, 0)),
-			UIKit.Create("UIStroke", { Color = ac("Navy", COL.Dark), Thickness = 2,
-				ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
-		})
-	end
-	h.Bubble = bubble
-	h.Pop = UIKit.Create("UIScale", { Name = "Pop", Scale = 1, Parent = bubble })
-	h.Label = UIKit.StyledLabel({
-		Name = "Text",
-		Text = h.Text,
-		Position = UDim2.fromScale(cfg.TextX, cfg.TextY),
-		Size = UDim2.fromScale(cfg.TextW, cfg.TextH),
-		TextSize = cfg.Size,
-		ZIndex = 31,
-		Parent = bubble,
-	}, "Button", true)
-end
-
--- the attack button's wobble: a few quick turns every Every s while the hint stays (ReducedMotion: none)
-function L.HintWobble(h, token)
-	local cfg = L.HintCfg
-	task.spawn(function()
-		task.wait(0.35)
-		while L.Hints[h.Id] == h and h.Token == token do
-			local btn = h.Button
-			if not (btn and btn.Parent) then break end
-			if not UIKit.ReducedMotion() then
-				for _, deg in cfg.Wobble do
-					if L.Hints[h.Id] ~= h then break end
-					TweenService:Create(btn, TweenInfo.new(cfg.WobbleStep, Enum.EasingStyle.Sine), { Rotation = deg }):Play()
-					task.wait(cfg.WobbleStep)
-				end
-				btn.Rotation = 0
-			end
-			task.wait(cfg.Every)
-		end
-		if h.Button and h.Button.Parent then h.Button.Rotation = 0 end
-	end)
-end
-
--- shows a hint over "Attack" or "Q" (text nil = "Tap to hit!" / "Click to hit!" / "Try your skill!"); opts.Seconds,
--- opts.Wobble = false. A second call for the same id starts it over. Returns true when it shows
-function HUD.Hint(id, text, opts)
-	if type(id) ~= "string" or not ui.buttons then return false end
-	local btn, rect = L.HintTarget(id)
-	if not (btn and rect) then return false end
-	opts = type(opts) == "table" and opts or {}
-	HUD.ClearHint(nil) -- one hint at a time (검수 2026-10-07: "Try your skill!" over "Tap to hit!" on phones)
-	if type(text) ~= "string" or text == "" then
-		text = id == "Attack" and (IS_TOUCH and TXT.HintTap or TXT.HintClick) or TXT.HintSkill
-	end
-	local h = { Id = id, Text = text, Button = btn, Rect = rect, Token = 1 }
-	local token = h.Token
-	L.Hints[id] = h
-	L.HintBubble(h)
-	h.Glow, h.GlowTween = L.HintGlow(btn)
-	h.Bubble.Visible = false
-	task.spawn(function()
-		-- measured once, off the caller's thread (GetTextBoundsAsync can wait)
-		local size = L.HintCfg.Size
-		local ok, _, w = pcall(UIKit.MeasureText, text, size, h.Label.FontFace, 100000)
-		if L.Hints[id] ~= h or h.Token ~= token then return end
-		h.TextW0, h.Size0 = (ok and type(w) == "number" and w > 0) and w or #text * size * 0.6, size
-		L.PlaceHint(h)
-		-- the rendered line decides before the bubble shows (L.FitHint), and again whenever it renders anew (a face that
-		-- loads late, a relayout's text size)
-		for _ = 1, 3 do
-			task.wait()
-			if L.Hints[id] ~= h or h.Token ~= token then return end
-			if not L.FitHint(h) then break end
-		end
-		h.Label:GetPropertyChangedSignal("TextBounds"):Connect(function()
-			task.defer(function()
-				if L.Hints[id] == h and h.Token == token then L.FitHint(h) end
-			end)
-		end)
-		h.Bubble.Visible = true
-		if not UIKit.ReducedMotion() then
-			h.Pop.Scale = 0.5
-			TweenService:Create(h.Pop, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
-			task.delay(0.3, function()
-				if L.Hints[id] == h and h.Pop.Parent then
-					TweenService:Create(h.Pop, TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
-						{ Scale = L.HintCfg.Breathe }):Play()
-				end
-			end)
-		end
-	end)
-	if id == "Attack" and opts.Wobble ~= false then L.HintWobble(h, token) end
-	local seconds = tonumber(opts.Seconds) or L.HintCfg.Seconds
-	task.delay(seconds, function()
-		if L.Hints[id] == h and h.Token == token then HUD.ClearHint(id) end
-	end)
-	return true
-end
-
--- id = "Attack" / "Q", nil = every hint
-function HUD.ClearHint(id)
-	for key, h in L.Hints do
-		if id == nil or key == id then
-			L.Hints[key] = nil
-			h.Token += 1
-			if h.GlowTween then h.GlowTween:Cancel() end
-			if h.Glow then h.Glow:Destroy() end
-			if h.Button and h.Button.Parent then h.Button.Rotation = 0 end
-			local bubble = h.Bubble
-			if bubble and bubble.Parent then
-				local info = TweenInfo.new(0.15)
-				if bubble:IsA("ImageLabel") then TweenService:Create(bubble, info, { ImageTransparency = 1 }):Play() end
-				if h.Label then TweenService:Create(h.Label, info, { TextTransparency = 1 }):Play() end
-				task.delay(0.16, function() bubble:Destroy() end)
-			end
-		end
-	end
-end
-
-function HUD.HintShown(id)
-	return L.Hints[id] ~= nil
 end
 
 -- 환생 ready / 휴가 days are 설정 rows now (A23-40 정정): [메뉴] and its 설정 square glow; the scroll hint (B14) glows 가방
@@ -4150,8 +3803,6 @@ local function parseQuests()
 		if not (fold or e.Folded or L.NotNow(e, UIKit.GameAttr, now)) then table.insert(shown, e) end
 	end
 	local folded = #shown < #normal
-	if questState.Folded == true and not folded and #normal > 0 and (Config.Nudges or {}).DailiesOpened ~= false then
-	end
 	questState.Folded = folded
 	for _, e in shown do
 		table.insert(pinned, e)
@@ -4685,14 +4336,6 @@ refreshQuests = function()
 			if li == 1 and not label then label = head end
 			L.SetQuestLine(l, e, label, nums)
 		end
-		if ui.questFold then ui.questFold.Text = (questExpanded and not L.HasQuestBook()) and TXT.QuestCloseList or TXT.QuestOpenList end
-		if ui.questHead then
-			-- the head line: how many quests there are (before the first mission is accepted, only that one line shows)
-			ui.questHead.Frame.Visible = L.QuestHeadOn() and #entries > 0
-				and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0)
-			ui.questHead.Text.Text = L.Tx(TXT, "QuestHead", #all) -- every quest, the window's More rows too
-			task.delay(0, L.LayoutQuestPlates) -- the head plate follows the head line
-		end
 		questState.ShownEntry = entries[shown]
 	end
 
@@ -4863,33 +4506,8 @@ local function findTravelTarget(zoneId)
 	return localAnchor(zoneId, z.Spawn + Vector3.new(0, 3, 0))
 end
 
-local function destroyGuide(g)
-	if g.Tween then g.Tween:Cancel() end
-	if g.Near then g.Near:Disconnect() end
-	for _, inst in { g.Beam, g.Att0, g.Att1, g.Billboard } do
-		if inst then inst:Destroy() end
-	end
-end
-
 function HUD.ClearGuide()
-	local g = guide
 	guide = nil
-	if g then destroyGuide(g) end
-end
-
-local function attachGuideToCharacter()
-	local g = guide
-	if not g or not g.Beam then return end
-	local char = LocalPlayer.Character
-	local root = char and char:FindFirstChild("HumanoidRootPart")
-	if not root or not root:IsA("BasePart") then return end
-	if g.Att0 and g.Att0.Parent == root then return end
-	if g.Att0 then g.Att0:Destroy() end
-	local a0 = Instance.new("Attachment")
-	a0.Name = "HUDGuideFrom"
-	a0.Parent = root
-	g.Att0 = a0
-	g.Beam.Attachment0 = a0
 end
 
 local function showGuide(target, text, tag, seconds)
@@ -4898,84 +4516,7 @@ local function showGuide(target, text, tag, seconds)
 	HUD.ClearGuide()
 
 	local g = { Tag = tag, Part = part }
-	local a1 = Instance.new("Attachment")
-	a1.Name = "HUDGuideTo"
-	a1.Position = Vector3.new(0, part.Size.Y / 2 + 1, 0)
-	a1.Parent = part
-	g.Att1 = a1
-
-	-- 검수 10/09 (user: "목적지까지 이거 없으면 좋겠어"): no gold line on the ground any more (Config.Nudges.GuideBeam);
-	-- the way = the quest line + QuestMarker's diamond + distance + the minimap
-	if (Config.Nudges or {}).GuideBeam ~= false then
-		local beam = Instance.new("Beam") -- no texture asset: the default renders a solid band
-		beam.Name = "HUDGuideBeam"
-		beam.Attachment1 = a1
-		beam.Color = ColorSequence.new(Theme.Gold)
-		-- 2026-10-06 photos (검수): the 1.2-stud glowing band crossed the whole meadow and fought the quest marker; a thin,
-		-- softer line still shows the way
-		beam.Transparency = NumberSequence.new(0.35)
-		beam.Width0 = 0.35
-		beam.Width1 = 0.35
-		beam.FaceCamera = true
-		beam.LightEmission = 0.45
-		beam.LightInfluence = 0
-		beam.Parent = part
-		g.Beam = beam
-	end
-
-	-- 검수 10/09 (user: "이런 거 없어도 된다니까"): the floating name chip ("First weapon", "Squishy Meadow") is off
-	-- (Config.Nudges.GuideLabel); QuestMarker's diamond + distance still show the way
-	if (Config.Nudges or {}).GuideLabel ~= false then
-		-- 검수 2026-10-08 (user: "이거 별로야"): a small white Chip (navy rim) with a down arrow and one short navy line,
-		-- about half the old 220 x 64 gold words; it hides within L.GuideHide studs (the pad glow and the gold line stay)
-		local G = L.GuideLabel
-		local words = tostring(text or TUT_GUIDE_TEXT)
-		local _, textW = UIKit.MeasureText(words, G.TextPx, Enum.Font.GothamBold, 10000)
-		local w = math.ceil((tonumber(textW) or #words * G.TextPx * 0.6) + G.H + G.PadX * 2)
-		local bb = Instance.new("BillboardGui")
-		bb.Name = "HUDGuideLabel"
-		bb.Adornee = part
-		bb.AlwaysOnTop = true
-		bb.LightInfluence = 0
-		bb.MaxDistance = 100000
-		bb.Size = UDim2.fromOffset(w, G.H)
-		bb.StudsOffset = Vector3.new(0, part.Size.Y / 2 + G.Lift, 0)
-		local plate = UIKit.ArtFrame("Chip", { Name = "Plate", Size = UDim2.fromScale(1, 1), Parent = bb },
-			{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.5, 0), StrokeColor = ac("Navy", Theme.Bg), StrokeThickness = 2 })
-		local arrow = UIKit.ArtImage("IconQuestMarkerArrow", {
-			Name = "Arrow", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, G.PadX - 2, 0.5, 0),
-			Size = UDim2.fromOffset(G.H - 8, G.H - 8), Rotation = 180, ImageColor3 = ac("StarGold", Theme.Gold), ZIndex = 2,
-			Parent = plate,
-		})
-		local left = arrow and (G.PadX - 2 + G.H - 8 + 3) or G.PadX
-		UIKit.Create("TextLabel", {
-			Name = "Text",
-			Position = UDim2.fromOffset(left, 0),
-			Size = UDim2.new(1, -left - G.PadX, 1, 0),
-			BackgroundTransparency = 1,
-			Font = Enum.Font.GothamBold,
-			TextSize = G.TextPx,
-			TextColor3 = ac("Ink", COL.Dark),
-			Text = words,
-			ZIndex = 2,
-			Parent = plate,
-		})
-		bb.Parent = part
-		g.Billboard = bb
-		g.Near = game:GetService("RunService").Heartbeat:Connect(function()
-			local char = LocalPlayer.Character
-			local root = char and char:FindFirstChild("HumanoidRootPart")
-			local far = not (root and root:IsA("BasePart")) or (root.Position - part.Position).Magnitude > L.GuideHide
-			if bb.Enabled ~= far then bb.Enabled = far end
-		end)
-		g.Tween = TweenService:Create(bb, TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true), {
-			StudsOffset = bb.StudsOffset + Vector3.new(0, 1.5, 0),
-		})
-		g.Tween:Play()
-	end
-
 	guide = g
-	attachGuideToCharacter()
 	if seconds and seconds > 0 then
 		task.delay(seconds, function()
 			if guide == g then HUD.ClearGuide() end
@@ -5166,7 +4707,6 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
-	if L.Hints.Attack then HUD.ClearHint("Attack") end -- A23-68 #2: the hint goes with the first swing
 	L.SwingFaced()
 end
 
@@ -5180,7 +4720,6 @@ local function stopHold(source)
 end
 
 local function doRelease()
-	if L.Hints.Q then HUD.ClearHint("Q") end -- A23-68 #2
 	if throttled("release", 0.2) then return end
 	if num("SkillReadyAt", 0) > Util.Now() then return end
 	if num("Mana", 0) < Config.BasicSkill.ManaCost then
@@ -6137,9 +5676,6 @@ L.LineCache = { Lines = {}, N = 0 } -- L.TextLines: "text|size|width|font" -> li
 -- 1안 ② / ④ (real px): the status row Row tall (phone RowTouch = the 44 px touch target), Gap under the war meter, the
 -- words at least TextPx (phone 19), an icon chip's art Icon px
 L.ChipTop = { Row = 36, RowTouch = 44, Gap = 8, TextPx = 18, TextPxTouch = 19, Icon = 24, IconTouch = 24, Side = 12 }
--- the guide label (showGuide): px tall, its words' px, side room, studs above the target; hidden within GuideHide studs
-L.GuideLabel = { H = 28, TextPx = 15, PadX = 10, Lift = 4.5 }
-L.GuideHide = 15
 -- tile names inside the rim (tileButton): the inset du in all (the rim is ~4 px a side; phones keep their 11 px floor,
 -- so their names may touch the rim's inner edge: 'Settings' is 41 px at 11 px in a 45 px square)
 L.TileNameInset, L.TileNamePx = IS_TOUCH and 4 or 6, 8
@@ -6252,7 +5788,6 @@ applyLayout = function()
 	L.Place(ui.attack, R.attack)
 	L.Place(ui.release, R.q)
 	L.Place(ui.auto, R.auto)
-	for _, hint in L.Hints do L.PlaceHint(hint) end
 	C.VitalsUI.PlacePotions(R.potions)
 	if ui.quick3 and R.quick and R.quick.Cells then
 		local c = R.quick.Cells[3]
@@ -6332,12 +5867,8 @@ local function refreshVisibility()
 	return visible
 end
 
-local function onCharacterAdded(character)
+local function onCharacterAdded(_character)
 	clearHolds()
-	task.spawn(function()
-		local root = character:WaitForChild("HumanoidRootPart", 10)
-		if root and guide then attachGuideToCharacter() end
-	end)
 end
 
 local function tick()

@@ -1,5 +1,5 @@
 """A23-88 client part (게임성 개발 3's contract docs/design/walk_to_forge_server_2026-10-09.md; 검수 10/09: no ground
-line, no words - Config.Nudges GuideBeam / GuideLabel are off).
+line, no words - the guide's Beam / name chip are deleted, test_nudges_gone).
 
 Runs, in the official Luau CLI, the CURRENT HUD.PadGlowOn / HUD.TravelPulse (cut out of HUD.luau): after the first
 weapon (TutorialStep Guide = 1) the meadow travel pad glows while I am in the Crossroads, and [Menu] + its Travel square
@@ -62,8 +62,7 @@ STATIC = [
       '\t\tif npc and root and Util.FlatDistance(root.Position, npc.Position) > (tonumber(Config.StoryQuests.NpcRange) or 16) then\n']),
     ("the maps mark BasePart pads only", "MM",
      ['\t\tlocal part = p:IsA("BasePart") and p or nil -- 검수 10/10: BaseParts only (ZoneService connects only those)\n']),
-    ("Config: no ground line / name chip, pad glow and Travel pulse on", "CONFIG",
-     ["\tGuideBeam = false, --", "\tGuideLabel = false, --", "\tPadGlow = true,\n", "\tTravelPulse = true,\n"]),
+    ("Config: pad glow and Travel pulse on", "CONFIG", ["\tPadGlow = true,\n", "\tTravelPulse = true,\n"]),
 ]
 MUTATIONS = [
     ("HUD", "the pad glows in every zone",
@@ -82,7 +81,7 @@ MUTATIONS = [
     ("HUD", "the switch ignored", "\treturn on ~= false and seen ~= true and step == TUT_GUIDE_STEP\n",
      "\treturn seen ~= true and step == TUT_GUIDE_STEP\n"),
     ("HUD", "a press on Travel does not end it", '\t\t\tif copy.Id == "Travel" then L.TravelSeen = true end -- A23-88: the Travel pulse is done\n', ""),
-    ("CONFIG", "the ground line is back", "\tGuideBeam = false, --", "\tGuideBeam = true, --"),
+    ("CONFIG", "the pad glow switched off", "\tPadGlow = true,\n", "\tPadGlow = false,\n"),
 ]
 
 FIXTURE = r'''

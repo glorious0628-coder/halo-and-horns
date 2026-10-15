@@ -2121,17 +2121,6 @@ function WSHOP.Reconcile(session)
 	end
 end
 
-function WSHOP.Farewell()
-	local session = WSHOP.Session
-	if not session or session.Class ~= currentClass() or session.Faction ~= myFaction() or WSHOP.Access() then return nil end
-	WSHOP.Reconcile(session)
-	if session.Pending then return T.WeaponByePending end
-	if session.LastAction == "Buy" then return T.WeaponByeBuy end
-	if session.LastAction == "Sell" then return T.WeaponByeSell end
-	if session.LastAction == "Equip" then return T.WeaponByeEquip end
-	return T.WeaponByeBrowse
-end
-
 -- A23-12 item list (menu → 아이템): owned weapons (+N, equip), scrolls (use → pick weapon(s) → confirm with the
 -- success rate and the failure result before anything is sent), materials (sold at the blacksmith anvil).
 -- Display only: the server re-checks everything. B11: items and per-tier +N arrive only on the owner's "Inventory"
@@ -3864,9 +3853,6 @@ function Panels.Open(id, arg)
 end
 
 function Panels.Close(manual)
-	-- A23-130: the merchant's farewell toast is off while Config.Nudges.ShopFarewell = false
-	local farewell = manual == true and currentId == "WeaponShop" and (Config.Nudges or {}).ShopFarewell ~= false
-		and WSHOP.Farewell() or nil
 	-- A picker's automatic close must not discard an earlier server welcome waiting on replicated attributes.
 	if currentId == "Welcome" or manual == true or not pickerOpen() then WELCOME.PendingOpen = false end
 	currentId = nil
@@ -3877,7 +3863,7 @@ function Panels.Close(manual)
 	selectedClass = nil
 	selectedTarget = nil
 	if root then root.Visible = false end
-	FRAME.TellNotify(false) -- the toasts go back to their column (before the farewell line)
+	FRAME.TellNotify(false) -- the toasts go back to their column
 	NICK.Destroy()
 	REG.CleanupBuilt()
 	REG.Arg = nil
