@@ -519,7 +519,7 @@ MUTATIONS = [
     ("P1: any emote", ST, "\tif side ~= \"Good\" and side ~= \"Evil\" then return end\n\tlocal spot = landmark(obj.Spot)", "\tside = side or \"Good\"\n\tlocal spot = landmark(obj.Spot)"),
     ("P1: the emote's flag never written", ST, "\tflagBySide(player, data, id, obj.Flag, side)\n\tStoryQuestService.Picked", "\tStoryQuestService.Picked"),
     ("P1: StoryFlags never set", ST, "if player:GetAttribute(\"StoryFlags\") ~= value then player:SetAttribute(\"StoryFlags\", value) end", ""),
-    ("P1: no scene Fx", ST, "local ok, err = pcall(Net.Fx, player, \"StoryScene\", { Id = id, Key = key, Value = value })", "local ok, err = true, nil"),
+    ("P1: no scene Fx", ST, "local ok, err = pcall(Net.Fx, player, \"StoryScene\", { Id = id, Key = key, Value = value, St = st })", "local ok, err = true, nil"),
     ("P1: a bad flag kept", ST, "\t\t\tst.Flags[k] = nil\n", ""),
     ("P1: the match answer sent", ST, "{ Id = id, Target = obj.Target, Options = options }", "{ Id = id, Target = obj.Target, Options = options, Answer = table.find(options, obj.Target) }"),
     ("P1: any match pick passes", ST, "\t\tif pick == p.Answer then", "\t\tif true then"),

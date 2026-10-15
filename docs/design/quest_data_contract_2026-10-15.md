@@ -61,10 +61,13 @@ return {
 | 마지막 단계 `Lines` / `LinesBy` | 마지막 단계 | 끝 대사 (선택별 다르게 가능) | 줄마다 기존 길이 규칙 |
 | 단계 `Scene` | 마지막 단계 필수(다른 단계 선택) | 끝 장면·몸짓 — `Config.StoryQuests.SceneKeys` 중 하나(Wave, Hop, Laugh, Bow, Cheer, Nod, Sparkle, Spin, Hug, Clap) | — |
 | `Next = { Id, Line }` | 퀘스트 | 다음 고리 — 다음 퀘스트 id(그 퀘스트의 Requires.Done에 이 id가 있거나 본편 줄) + 끝 대화 마지막 예고 한 줄. 줄의 마지막 퀘스트는 `Last = true` | Line ≤ 60자 |
+| `Offer.BeforeBy = { Flag, [값] = 줄, Default }` (10/15) | 퀘스트 | 내 개인 결과(Story.Flags, 앞 단계 `SetFlag`가 남김)에 따라 고르는 사정 줄 — 그 값의 줄, 없으면 `Default`(처음 방문). 매일 부탁의 '지난번 기억'·'처음만' 줄. 있으면 Before 대신 | 줄마다 ≤ 70자, Flag ≤ 24자 |
+| 단계 `On = "Self"` (10/15) | 단계 | 그 단계의 Find 말풍선·Scene 몸짓을 **내 아바타**가 함 — NPC 없는 단계(가방 사용 등)의 혼잣말·몸짓. 원격 분신·추가 귀환 없음. Npc 없는 단계에 Scene이 있으면 `On = "Self"` 필수(검사) | — |
+| 진영판 `Variants[id].Next` / `Variants[id].Offer.Before` (10/15) | 묶음 | 공유 퀘스트의 진영별 다음 고리·사정 줄. 저장 = `Next = { Halo = {Id, Line}, … }`, `Offer.Before = { Halo = "…", … }` | 위와 같음 |
 
-서버: Find = 그 단계가 열릴 때(수락 포함) Fx `StoryScene { Id, Key = "Find", Value = "단계 번호" }`, Scene = 그 단계가 끝날 때 Fx `StoryScene { Id, Key = "Scene", Value = 장면 }`. 저장 없음(다시 봐도 보상 0). Before·Next 줄은 화면이 Config에서 읽음.
+서버: Find = 그 단계가 열릴 때(수락 포함) Fx `StoryScene { Id, Key = "Find", Value = "단계 번호", St }`, Scene = 그 단계가 끝날 때 Fx `StoryScene { Id, Key = "Scene", Value = 장면, St = 그 단계 번호 }`(10/15: St로 그 단계의 Npc / Guide / On을 찾음). 저장 없음(다시 봐도 보상 0). Before·Next 줄은 화면이 Config에서 읽음: **`Config.QuestBefore(def, 진영, 내 플래그 표)`**(BeforeBy → 진영 Before → 공유 Before), **`Config.QuestNext(def, 진영)`**(공유 또는 진영 고리, 없으면 nil). `Last`는 검사 표시일 뿐 엔진은 막지 않음(다음 본편 = SQ.Main 순서, 서브 = Requires) — 장 끝(M1_4)은 Last 대신 진영별 Next로 다음 장을 예고.
 
-화면(개발 1): **Before** = 부탁 창 맨 위 작은 기울임 한 줄(폰 18px 기준 2줄 안), 그 아래 부탁 대사. **Find** = 그 단계 `Npc` 머리 위(없으면 `Guide` 자리 물건 위) 말풍선 4초, 2줄 안, 배너·토스트 아님. **Scene** = 그 NPC(마지막 단계 Npc)가 몸짓 + 둥근 반짝임(빛살 무늬 X). **Next.Line** = 끝 대화 카드 마지막 줄(말한 사람 이름 붙은 그대로), 그리고 Next.Id 부탁 NPC의 '!'가 처음 나타날 때 한 번 통통.
+화면(개발 1): **Before** = 부탁 창 맨 위 작은 기울임 한 줄(폰 18px 기준 2줄 안, 글 = `Config.QuestBefore`), 그 아래 부탁 대사. **On = "Self"** = Find 말풍선은 내 머리 위, Scene은 내 아바타 몸짓(Wave/Cheer는 있음, Hop/Nod/Laugh/Bow/Clap/Spin/Hug/Sparkle은 짧은 동작 또는 둥근 반짝임). **Find** = 그 단계 `Npc` 머리 위(없으면 `Guide` 자리 물건 위) 말풍선 4초, 2줄 안, 배너·토스트 아님. **Scene** = 그 NPC(마지막 단계 Npc)가 몸짓 + 둥근 반짝임(빛살 무늬 X). **Next.Line** = 끝 대화 카드 마지막 줄(말한 사람 이름 붙은 그대로), 그리고 Next.Id 부탁 NPC의 '!'가 처음 나타날 때 한 번 통통.
 
 ## 4. 단계(Step) 필드
 - `Text`(%d/%d 진행 숫자 가능), `ShortName`, **`Guide`(장소 키) 또는 `Npc`(NpcId) 필수**(그 자리 카드 `Panel` + Npc 없음만 예외).

@@ -4651,6 +4651,33 @@ Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = tr
 	Spin = true, Hug = true, Clap = true }
 -- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
 Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
+
+-- A23-208 (최종 검수 10/15): the next hook of a quest def for faction f -> { Id, Line } or nil. Next is either shared
+-- ({ Id, Line }) or per side ({ Halo = {...}, Horns = {...}, Neutral = {...} }, made by a pack's Variants[id].Next). Pure
+function Config.QuestNext(def, f)
+	local n = type(def) == "table" and def.Next or nil
+	if type(n) ~= "table" then return nil end
+	if n.Id ~= nil then return n end
+	local mine = n[f]
+	return type(mine) == "table" and mine.Id ~= nil and mine or nil
+end
+
+-- A23-208 (최종 검수 10/15): the situation line over the ask for faction f and the player's personal results (flags = the
+-- Story.Flags table, or the attribute StoryFlags "Key=Value,..." split by the client): Offer.BeforeBy = { Flag = "Key",
+-- [value] = line, Default = the line while that flag is not set (a first visit) } first, then the side's / shared Before. Pure
+function Config.QuestBefore(def, f, flags)
+	local offer = type(def) == "table" and def.Offer or nil
+	if type(offer) ~= "table" then return nil end
+	local by = offer.BeforeBy
+	if type(by) == "table" and type(by.Flag) == "string" then
+		local v = type(flags) == "table" and flags[by.Flag] or nil
+		if v ~= nil and v ~= "Flag" and v ~= "Default" and type(by[v]) == "string" then return by[v] end
+		if type(by.Default) == "string" then return by.Default end
+	end
+	local b = offer.Before
+	if type(b) == "table" then b = b[f] end
+	return type(b) == "string" and b or nil
+end
 Config.StoryQuests.TimingTries = 5
 Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
 -- P1 ⑧ (bible §13-3): the paths of the short chases and escorts (Obj Type "Chase" / "Escort", Path = a key here): waypoints in
@@ -11705,6 +11732,22 @@ function Config.AddQuests(pack, name)
 			def.Offer.Lines = def.Offer.Lines or {}
 			local lines = type(var.Offer.Lines) == "table" and (var.Offer.Lines.All or var.Offer.Lines[side]) or nil
 			if lines then def.Offer.Lines[side] = lines end
+			-- A23-208 (최종 검수 10/15): this side's own situation line (Config.QuestBefore reads it)
+			if type(var.Offer.Before) == "string" then
+				if type(def.Offer.Before) ~= "table" then
+					local shared = def.Offer.Before
+					def.Offer.Before = { Halo = shared, Horns = shared, Neutral = shared }
+				end
+				def.Offer.Before[side] = var.Offer.Before
+			end
+		end
+		-- A23-208 (최종 검수 10/15): this side's own next hook { Id, Line } (Config.QuestNext reads it)
+		if type(var.Next) == "table" then
+			if type(def.Next) ~= "table" or def.Next.Id ~= nil then
+				local shared = def.Next
+				def.Next = { Halo = shared, Horns = shared, Neutral = shared }
+			end
+			def.Next[side] = var.Next
 		end
 	end
 	for _, field in { "Landmarks", "Speakers", "Portraits", "Paths" } do
