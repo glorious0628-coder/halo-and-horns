@@ -153,13 +153,6 @@ MUTATIONS = [
     ("B5: HUD L.QuestText back to the IS_TOUCH test", "HUD",
      "pcall(kb.Fill, text, type(kb.ShowsKeys) == \"function\" and kb.ShowsKeys() == true)",
      "pcall(kb.Fill, text, not (IS_TOUCH and not UserInputService.KeyboardEnabled))"),
-    ("B5: WorldMap.Open hint back to 'TouchEnabled and not MouseEnabled'", "WORLD_MAP",
-     "\t\thintLabel.Text = WorldMap.ShowsKeys() and WorldMap.HintText() or TXT.HintTouch",
-     "\t\tlocal touchOnly = UserInputService.TouchEnabled and not UserInputService.MouseEnabled\n"
-     "\t\thintLabel.Text = touchOnly and TXT.HintTouch or WorldMap.HintText()"),
-    ("B5: WorldMap.BindKey hint back to the MouseEnabled test", "WORLD_MAP",
-     "if hintLabel and WorldMap.ShowsKeys() then",
-     "if hintLabel and not (UserInputService.TouchEnabled and not UserInputService.MouseEnabled) then"),
     ("B5: WorldMap.ShowsKeys ignores Keybinds (= not TouchEnabled)", "WORLD_MAP",
      'if type(kb) == "table" and type(kb.ShowsKeys) == "function" then return kb.ShowsKeys() == true end\n'
      "\treturn UserInputService.KeyboardEnabled == true",
@@ -279,16 +272,11 @@ def hint_snippets(texts: dict[str, str]) -> dict[str, str]:
     hud, wmap, intro = texts["HUD"], texts["WORLD_MAP"], texts["INTRO"]
     quest = whole_function(hud, "function L.QuestText(")
     shows = whole_function(wmap, "function WorldMap.ShowsKeys(")
-    hint = whole_function(wmap, "function WorldMap.HintText(")
-    bind = hint_block(function_body(wmap, "function WorldMap.BindKey("))
-    opened = hint_block(function_body(wmap, "function WorldMap.Open("))
     txt = intro_txt(intro, texts.get("CONFIG_SOURCE", ""))
     skip = whole_function(intro, "function Intro.SkipText(")
     return {
         "HudQuestText": "local L = {}\n" + quest + "return L\n" if quest else "",
-        "WorldMapFns": "local WorldMap = {}\n" + shows + hint + "return WorldMap\n" if shows and hint else "",
-        "WorldMapBindHint": "return function(hintLabel)\n" + bind + "\nend\n" if bind else "",
-        "WorldMapOpenHint": "return function(hintLabel)\n" + opened + "\nend\n" if opened else "",
+        "WorldMapFns": "local WorldMap = {}\n" + shows + "return WorldMap\n" if shows else "",
         "IntroTxt": txt + "\nreturn TXT\n" if txt else "",
         "IntroSkipText": "local Intro = {}\n" + skip + "return Intro\n" if skip else "",
     }
@@ -378,8 +366,8 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
     check('ActionFor(input) == "GhostHold"' in ghost and "IsCapturing()" in ghost and "GetFocusedTextBox" in ghost,
           "GrudgeGhost holds with ActionFor('GhostHold') (T), not G")
     wmap = text_of("WORLD_MAP")
-    check('kb.Get("Map")' in wmap and "UnbindAction(ACTION_TOGGLE)" in wmap and "kb.Changed:Connect" in wmap
-          and "{Map} / Esc" in wmap, "WorldMap binds Get('Map'), rebinds on Changed, hint '{Map} / Esc: 닫기'")
+    check('kb.Get("Map")' in wmap and "UnbindAction(ACTION_TOGGLE)" in wmap and "kb.Changed:Connect" in wmap,
+          "WorldMap binds Get('Map') and rebinds on Changed (A23-191: no hint line)")
     panels = text_of("PANELS")
     check("function Panels.CurrentId()" in panels and "Panels.IsRegistered = Panels.Has" in panels,
           "Panels.CurrentId and Panels.IsRegistered exist")
@@ -408,15 +396,9 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
     check(qtext != "" and "kb.ShowsKeys()" in qtext
           and not re.search(r"\b(TouchEnabled|MouseEnabled|KeyboardEnabled|IS_TOUCH)\b", qtext),
           "B5 one rule: HUD L.QuestText decides keyOnly with kb.ShowsKeys() (no TouchEnabled / MouseEnabled / IS_TOUCH)")
-    bind_hint = hint_block(function_body(wmap, "function WorldMap.BindKey("))
-    open_hint = hint_block(function_body(wmap, "function WorldMap.Open("))
     wm_shows = function_body(wmap, "function WorldMap.ShowsKeys(")
-    check(bind_hint != "" and open_hint != "" and "WorldMap.ShowsKeys()" in bind_hint and "WorldMap.ShowsKeys()" in open_hint
-          and not DEVICE_FLAGS.search(bind_hint) and not DEVICE_FLAGS.search(open_hint)
-          and len(re.findall(r"hintLabel\.Text\s*=", wmap))
-          == len(re.findall(r"hintLabel\.Text\s*=", bind_hint + open_hint)),
-          "B5 one rule: WorldMap map hint (BindKey and Open, the only hintLabel.Text sites) goes through "
-          "WorldMap.ShowsKeys() (no TouchEnabled / MouseEnabled)")
+    check("hintLabel" not in wmap and "HintText" not in wmap,
+          "A23-191: the map draws no control hint line (no hintLabel / HintText)")
     check(wm_shows != "" and "kb.ShowsKeys()" in wm_shows and not DEVICE_FLAGS.search(wm_shows),
           "B5 one rule: WorldMap.ShowsKeys uses Keybinds.ShowsKeys (KeyboardEnabled before Keybinds is up; no TouchEnabled "
           "/ MouseEnabled)")

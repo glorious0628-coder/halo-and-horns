@@ -485,8 +485,8 @@ runGroup("card payload", function()
 	check(cf.Help.Score == 0 and cf.Help.Hint == "Full" and cf.Tickle.Hint == "Zero",
 		"Halo with today's budget used up: Help shows 0, hint Full", show(cf))
 	local T = FIN.Text
-	check(type(T.HintFull) == "string" and type(T.HintZero) == "string" and type(T.HintNeutral) == "string"
-		and string.format(T.ScoreDown, "Honor", 1) == "Honor -1", "hint texts and the minus line exist")
+	check(T.HintFull == nil and T.HintZero == nil and T.HintNeutral == nil
+		and string.format(T.ScoreDown, "Honor", 1) == "Honor -1", "no hint texts (A23-191), the minus line exists")
 end)
 
 ------------------------------------------------------------------ picks: gifts and points
@@ -578,7 +578,7 @@ runGroup("daily cap", function()
 	local lx = w:NoticesFor(h, nx)
 	check(w.Data[h].Honor == cap and w:Jelly(h) == j + 2 and w:Ends(h)[cap + 1].Score == 0, "past the cap: the Jelly, no point",
 		show({ w.Data[h].Honor, w:Jelly(h) - j }))
-	check(#lx == 1 and not has(lx[1], "Honor") and not has(lx[1], FIN.Text.HintFull),
+	check(#lx == 1 and not has(lx[1], "Honor") and not has(lx[1], "No more points today"),
 		"past the cap: no points, one gains line (A23-130: no 'No more points today' line)", show(lx))
 	-- an off-side drop is not limited by the cap (and uses none of it)
 	local _, c7 = w:Offer(h)

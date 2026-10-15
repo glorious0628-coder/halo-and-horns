@@ -484,7 +484,6 @@ local function build(parent, k)
 	VIEW.Button.Name = "ClaimButton"
 	VIEW.Button.AnchorPoint = Vector2.new(0.5, 0)
 	VIEW.Button.Position = UDim2.fromScale(0.5, 0)
-	k.Text(parent, tx("Note"), { Name = "Note", Size = 15, Align = Enum.TextXAlignment.Center, Color = k.Theme.SubText })
 	k.OnAttr(function(name)
 		if name == "AttendReady" or name == "AttendSlot" or name == "AttendDays" or name == "Level" or name == "Faction"
 			or name == "PassGold2" or name == "PassXP2" or name == "ClassChosen" then

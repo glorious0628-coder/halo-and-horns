@@ -41,7 +41,7 @@ MUTATIONS = [
      "return fmt(t.Score, name, score)"),
     ("the save key 'Infamy' shown (A23-166)", "local name = type(names[stat]) == \"string\" and names[stat] or stat",
      "local name = stat"),
-    ("the Full hint missing", "\tif hint == \"Full\" then return t.HintFull or \"\" end\n", ""),
+    ("the Full option not dimmed", "\tif o.Hint == \"Full\" then ChoiceCardUI.Dim(btn) end\n", ""),
     ("the finisher's sides swapped", 'Good = option(p.Help, words.Help, "Good", "Help"), Evil = option(p.Tickle, words.Tickle, "Evil", "Tickle")',
      'Good = option(p.Help, words.Help, "Good", "Tickle"), Evil = option(p.Tickle, words.Tickle, "Evil", "Help")'),
     ("a finisher with no timer", "Stat = p.Stat, Ends = (now or 0) + math.max(1, secs), Seconds = secs,", "Stat = p.Stat, Ends = nil, Seconds = secs,"),

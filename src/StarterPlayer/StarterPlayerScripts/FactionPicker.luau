@@ -89,7 +89,7 @@ local LAY = {
 	PitchFrac = 0.36, -- the A23-57 cards: the Pitch line's share of the perk panel (up to two lines)
 	PerkTiny = {
 		Halo = { "XP +30%", "HP +20% · Regen", "Heal allies", "Auto gold" },
-		Horns = { "Gold +25%", { "ATK +15% · Lifesteal", "ATK +15% Lifesteal", "ATK+15% Lifesteal" }, "Guard loot gold", "5★ = Kaiju" },
+		Horns = { "Gold +25%", { "ATK +15% · Lifesteal", "ATK +15% Lifesteal", "ATK+15% Lifesteal" }, "Keep looted gold", "5★ = Kaiju" },
 		-- A23-179 stale text: the crafting row's words come from Config.UIArt.FactionPerks.Neutral (Text / Short) only
 		Neutral = { "No fight buffs", "Safe (no PvP)", "No loot or Wanted" },
 	},
@@ -173,7 +173,6 @@ local fallbackGui = nil
 local root, premiseFrame, cardsRow = nil, nil, nil
 local premiseLabels = {}
 local heading = {} -- title: Frame (ribbon image or plain frame), Text, Art, Aspect
-local note = {} -- bottom altar note: Frame, Icon, Text
 -- [factionId] = { Id, Slot, Body, Scale, Glow, Color, Aspect, Art, Hover, Down, Button, Badge,
 --   art: Layout, NameLabel, Desc, Lore, Motto, Perks, Shade, Label, BadgeText / code: Emblem, Name, Scroll }
 local cards = {}
@@ -1445,73 +1444,6 @@ local function placeTitle(cx, y, maxW, height, minT)
 	return hh
 end
 
--- altar note centred at cx with its bottom at `bottom`, at most maxW wide; returns its height
-local function placeFooter(cx, bottom, maxW, size, scale, compact)
-	local iconW = note.Icon.Visible and math.floor(size * 1.7) or 0
-	local gapW = iconW > 0 and 6 or 0
-	local padX = math.floor(size * 0.8)
-	if artId(PANEL.Footer) then padX = math.floor(size * 2.2) end -- bundle 2 capsule: words between its sapphire caps
-	local maxTextW = math.max(40, maxW - iconW - gapW - padX * 2)
-	local words = note.Text.Text ~= "" and note.Text.Text or T.Footer
-	local th, tw = textBounds(words, size, note.Text.FontFace, maxTextW * scale)
-	-- Preserve the selected footer's width; only remove the unused height on short viewports.
-	if compact then th = renderedBounds(words, size, note.Text.FontFace, scale, maxTextW * scale) end
-	th, tw = th / scale, tw / scale
-	local textW = math.min(maxTextW, tw + size) -- one glyph of slack so the measured line never re-wraps
-	local noteH = math.ceil(math.max(th, iconW) + (compact and 4 / scale or size * 0.9))
-	local noteW = padX * 2 + iconW + gapW + textW
-	place(note.Frame, cx - noteW / 2, bottom - noteH, noteW, noteH)
-	place(note.Icon, padX, (noteH - iconW) / 2, iconW, iconW)
-	place(note.Text, padX + iconW + gapW, 0, textW, noteH)
-	setTextRange(note.Text, size, size)
-	return noteH
-end
-
--- phones (side layouts): the note in a side column without its capsule. The capsule art is one wide line; on two or
--- three lines in a narrow column it stretched and clipped (UiSandbox 749x361 / 844x390, 2026-10-07). Here: the icon over
--- the words, light text with a dark outline on the dimmed screen. side = false puts the capsule look back.
-local function noteSideLook(side)
-	if note.Side == side then return end
-	note.Side = side
-	local frame = note.Frame
-	if frame:IsA("ImageLabel") then
-		if note.FrameImageT == nil then note.FrameImageT = frame.ImageTransparency end
-		frame.ImageTransparency = side and 1 or note.FrameImageT
-	else
-		if note.FrameBgT == nil then note.FrameBgT = frame.BackgroundTransparency end
-		frame.BackgroundTransparency = side and 1 or note.FrameBgT
-		local st = frame:FindFirstChild("Stroke")
-		if st and st:IsA("UIStroke") then st.Enabled = not side end
-	end
-	if side then
-		styleText(note.Text, "light")
-		local st = note.Text:FindFirstChild("Outline")
-		if st and st:IsA("UIStroke") then st.Thickness, st.Transparency = 1.5, 0 end
-	else
-		local navy = artId(PANEL.Footer) ~= nil
-		styleText(note.Text, navy and "light" or "ink", navy and 1 or nil)
-	end
-end
-
--- the short-screen note: one line centred at cx, its bottom at `bottom`, icon left of the words, in the light side look
--- (no capsule: on a phone the capsule art stretched); returns its height
-local function placeLineNote(cx, bottom, maxW, minT)
-	noteSideLook(true)
-	local size = minT
-	local iconW = note.Icon.Visible and math.floor(size * 1.6) or 0
-	local gapW = iconW > 0 and math.floor(size * 0.4) or 0
-	local th, tw = textBounds(note.Text.Text, size, note.Text.FontFace, 100000)
-	local textW = math.min(maxW - iconW - gapW, tw + size)
-	local noteH = math.ceil(math.max(th * 1.15, iconW)) + 2
-	local noteW = iconW + gapW + textW
-	place(note.Frame, cx - noteW / 2, bottom - noteH, noteW, noteH)
-	place(note.Icon, 0, (noteH - iconW) / 2, iconW, iconW)
-	place(note.Text, iconW + gapW, 0, textW, noteH)
-	note.Text.TextWrapped = false
-	setTextRange(note.Text, size, size)
-	return noteH
-end
-
 -- Match the three original bitmap widths and their baked button centres without stretching any card.
 local function prepareCardBalance()
 	local aspect, baseline = math.huge, 0
@@ -1692,7 +1624,6 @@ local function layoutNow()
 		-- The ribbon goes up into the Roblox top bar row when its centre span clears the Roblox buttons there
 		-- (GuiService.TopbarInset); the cards take the rest of the height.
 		premiseFrame.Visible = false
-		note.Text.Text = T.FooterShort
 		local part = Art.Parts.FactionPickTitle
 		local band = (type(part) == "table" and type(part.TextRect) == "table") and part.TextRect[3] or 0.7
 		local _, wordsW = textBounds(T.Title, minT, heading.Text.FontFace, 100000)
@@ -1705,7 +1636,7 @@ local function layoutNow()
 		-- in the bar row its bottom sits on the old card top (top + 2), so the cards keep the height they had beside it
 		if (w - titleW) / 2 >= freeL + 6 and barH >= tH * 0.5 then titleY = math.max(2, top + 2 - tH) end
 		tH = placeTitle(w / 2, titleY, titleW, tH, minT)
-		local noteH = placeLineNote(w / 2, bottom, w - g * 2, minT)
+		local noteH = 0 -- A23-191: no altar note
 		-- the cards' empty glow room above and below them (LAY.Lift) may run under the ribbon's tail and the note
 		local slack = math.floor((bottom - top) * LAY.Lift)
 		local cardsTop = math.max(0, titleY + tH - slack)
@@ -1714,8 +1645,6 @@ local function layoutNow()
 		placeMascots(w)
 		return
 	end
-	noteSideLook(false)
-
 	-- Selected A composition: title / wide compact premise / centred cards / centred altar note.
 	local y = top
 	local usableH = math.max(80, bottom - top)
@@ -1735,8 +1664,7 @@ local function layoutNow()
 	local hidePremise = newArt and compact
 	premiseFrame.Visible = not hidePremise
 	if not hidePremise then y += placePremise(w / 2, y, premiseW, size, s, compact) + 8 end
-	note.Text.Text = hidePremise and T.FooterShort or T.Footer
-	local noteH = placeFooter(w / 2, bottom - (artId(PANEL.Footer) and 6 or 0), w - g * 2, size, s, compact)
+	local noteH = 0 -- A23-191: no altar note under the cards
 	local areaH = bottom - noteH - 6 - y
 	placeCards(g, y, w - g * 2, math.max(areaH, 1), needH, minT, s)
 	placeMascots(w)
@@ -1875,19 +1803,6 @@ local function build()
 			end)() })
 		end
 	end
-
-	-- altar note at the bottom (bundle 2 navy capsule: white text)
-	local navyFooter = artId(PANEL.Footer) ~= nil
-	local nf = sliceFrame(root, "Footer", navyFooter and PANEL.Footer or "PanelMain", 2)
-	local icon = newImage(nf, "Icon", 1)
-	icon.Image = artId("IconAltar") or ""
-	icon.Visible = icon.Image ~= ""
-	local text = artLabel(nf, "Text", 1)
-	text.TextScaled = false
-	text.TextXAlignment = Enum.TextXAlignment.Center
-	text.Text = T.Footer
-	styleText(text, navyFooter and "light" or "ink", navyFooter and 1 or nil)
-	note.Frame, note.Icon, note.Text = nf, icon, text
 
 	root.Parent = gui
 	built = true

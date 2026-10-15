@@ -3513,7 +3513,6 @@ function L.RegisterWarInfo()
 		Build = function(parent, k)
 			local time = k.Text(parent, "", { Name = "Time", Size = 22, Align = Enum.TextXAlignment.Center, Color = k.Theme.Gold })
 			local score = k.Text(parent, "", { Name = "Score", Size = 20, Align = Enum.TextXAlignment.Center })
-			k.Text(parent, W.Text.Note, { Name = "Note", Size = 15, Align = Enum.TextXAlignment.Center, Color = k.Theme.SubText })
 			local function draw()
 				time.Text, score.Text = HUD.WarInfoLines(UIKit.GameAttr("WarRoundEndsAt", 0), Util.Now(),
 					UIKit.GameAttr("WarHaloScore", 0), UIKit.GameAttr("WarHornsScore", 0))

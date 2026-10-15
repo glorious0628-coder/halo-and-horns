@@ -44,6 +44,16 @@ imt.methods = {
 		return nil
 	end,
 	GetChildren = function(self) return table.clone(self.Children) end,
+	GetDescendants = function(self)
+		local out = {}
+		for _, c in self.Children do
+			table.insert(out, c)
+			for _, d in c:GetDescendants() do table.insert(out, d) end
+		end
+		return out
+	end,
+	SetAttribute = function(self, k, v) rawset(self, "Attr_" .. k, v) end,
+	GetAttribute = function(self, k) return rawget(self, "Attr_" .. k) end,
 	IsA = function(self, cl) return self.ClassName == cl or (cl == "BasePart" and self.ClassName == "Part") end,
 	Destroy = function(self)
 		local p = rawget(self, "Parent")
@@ -212,6 +222,7 @@ local env = setmetatable({
 	NumberSequence = cfgEnv.NumberSequence,
 	Enum = enum,
 	Instance = { new = inst },
+	typeof = function(v) return (type(v) == "table" and getmetatable(v) == imt) and "Instance" or typeof(v) end, -- ChoiceCardUI.Dim
 	os = { clock = function() return CLOCK end, time = os.time, date = os.date },
 	task = { spawn = function() end, defer = function() end, wait = function() end,
 		delay = function(t, fn) table.insert(DELAYS, { At = CLOCK + t, Fn = fn }) end },
@@ -263,8 +274,8 @@ check("score: the other side -1, Infamy shown as Mischief (A23-166)", UI.ScoreLi
 	== string.format(F.Text.ScoreDown, "Mischief", 1) and scr.Stat.Infamy == "Mischief", UI.ScoreLine("Infamy", -1))
 check("score: Mischief +1 on the Horns side", UI.ScoreLine("Infamy", 1, nil) == string.format(F.Text.Score, "Mischief", 1)
 	and not string.find(UI.ScoreLine("Infamy", 1, nil), "Infamy", 1, true), UI.ScoreLine("Infamy", 1))
-check("score 0: the hint lines", UI.ScoreLine("Honor", 0, "Full") == F.Text.HintFull and UI.ScoreLine("Honor", 0, "Zero")
-	== F.Text.HintZero and UI.ScoreLine("None", 0, "Neutral") == F.Text.HintNeutral)
+check("score 0: no hint lines (A23-191)", UI.ScoreLine("Honor", 0, "Full") == "" and UI.ScoreLine("Honor", 0, "Zero")
+	== "" and UI.ScoreLine("None", 0, "Neutral") == "")
 check("score 0, no hint: nothing", UI.ScoreLine("Honor", 0, nil) == "")
 
 -- 2) the finisher card (timed): opens at once, the words from Config.Finisher.Cards
@@ -354,7 +365,7 @@ fx("Card", { Id = 12, Kind = "FlowerPatch", Stat = "None", Good = { Label = "A",
 fx("FinisherCard", { Id = 6, Kind = "SlimeKing", Seconds = 10, Stat = "None",
 	Help = { Item = "Jelly", N = 2, Score = 0, Hint = "Neutral" }, Tickle = { Gold = 4, Score = 0, Hint = "Neutral" } })
 check("the newer (timed) card shows", CURRENT == "ChoiceCard" and UI.Current() and UI.Current().Id == 6 and button("Good").Text == king.Text.Help)
-check("a neutral player reads the neutral hint", hasText(BODY, F.Text.HintNeutral))
+check("a neutral player reads no hint line (A23-191)", not hasText(BODY, "No good or evil points"))
 check("the saved card is held back, not lost", T.S.Held and T.S.Held.Id == 12)
 fx("FinisherEnd", { Id = 6, Pick = "None" })
 check("the timed card over: the saved card comes back", CURRENT == nil and UI.Current() and UI.Current().Id == 12
@@ -385,6 +396,14 @@ check("the timed card over: the waiting card shows", CURRENT == "ChoiceCard" and
 	and T.S.Held == nil and button("Good") and button("Good").Text == "C")
 fx("CardEnd", { Id = 14, Side = "None" })
 check("... and its end closes it", UI.Current() == nil and CURRENT == nil)
+
+-- 5b) A23-191: no points left today (Hint "Full") = that button dims, no words; the other stays bright
+fx("FinisherCard", { Id = 9, Kind = "SlimeKing", Seconds = 10, Stat = "Honor",
+	Help = { Item = "Jelly", N = 2, Score = 0, Hint = "Full" }, Tickle = { Gold = 4, Score = -1 } })
+check("a Full option's button dims, the other does not", button("Good") and button("Good"):GetAttribute("Dimmed") == true
+	and (tonumber(button("Good").TextTransparency) or 0) >= 0.5 and button("Evil") and button("Evil"):GetAttribute("Dimmed") == nil)
+check("... and no hint words under it", not hasText(BODY, "No more points today"))
+fx("FinisherEnd", { Id = 9, Pick = "None" })
 
 -- 6) bad payloads
 fx("Card", { Id = "x" })

@@ -1534,7 +1534,7 @@ BUILDERS.Menu = function(parent)
 				-- A23-9: replay only inside a town (safe and calm), never mid-fight
 				local intro = C and C.Intro
 				if attr("ZoneTown", false) ~= true or isDead() then
-					toast("You can replay the opening inside a town.", "bad")
+					if UIKit and type(UIKit.Refuse) == "function" then pcall(UIKit.Refuse, nil) end -- A23-191: the button refuses
 				elseif type(intro) == "table" and type(intro.Play) == "function" then
 					Panels.Close()
 					intro.Play(true)
@@ -1547,9 +1547,6 @@ BUILDERS.Menu = function(parent)
 		if id == "Rebirth" then rebirthBtn = b end
 		if id == "Items" or id == "Bag" then itemsBtn = b end
 	end
-
-	addText(parent, T.MenuAltarHint, { Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
-	addText(parent, Config.Story.MarkLore, { Color = theme.SubText, Size = 16, Align = Enum.TextXAlignment.Center })
 
 	return function()
 		-- B14: '아이템' glows gold while I hold a scroll and have not opened the item list this session
@@ -1903,7 +1900,6 @@ BUILDERS.Class = function(parent)
 		end
 	end
 
-	local hint = addText(parent, T.ClassHint, { Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 	local options = addColumn(parent, 1, 0, 8)
 	local header = addText(options, "", { Size = 19, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	local reasonLabel = addText(options, "", { Color = theme.Bad, Size = 17, Align = Enum.TextXAlignment.Center, Font = theme.Font })
@@ -1927,7 +1923,6 @@ BUILDERS.Class = function(parent)
 			c.Stroke.Thickness = isSel and 4 or 2
 		end
 		local sel = selectedClass
-		hint.Visible = sel == nil
 		options.Visible = sel ~= nil
 		if not sel then return end
 
@@ -2168,10 +2163,10 @@ ITEMS = {
 		UseCombat = "You can't use scrolls during a fight.", -- fallback for Config.Loot.Text.UseCombat
 		EquipPending = "Checking…",
 		EquipCombat = "In a fight",
-		EquipLevelF = "From Lv %d", -- A23-28: owned but below the weapon's MinLevel (the server refuses the equip)
+		EquipLevelF = "Needs Lv %d", -- A23-28: owned but below the weapon's MinLevel (the server refuses the equip)
 		EquipCombatLong = "You can't change weapons during a fight.", -- fallback for Config.Loot.Text.EquipCombat
 		FailDownF = "On a fail there's a %d%% chance it drops one step.", -- Config.Loot.FailDropChance
-		FailKeep = "Nothing changes on a fail.",
+		FailKeep = "If it fails, nothing changes.",
 		OverflowF = "Max is +%d, so it only goes up +%d", -- (MaxEnhance = 10 → "+10이라")
 		MoveOverflowF = "The extra +%d stays on the sending weapon (no enhancement is ever lost)",
 		MoveSafe = "No enhancement is ever lost",
@@ -2205,7 +2200,7 @@ ITEMS = {
 		-- B9: no particle after the number ("+%d이" was wrong for +2/+4/+5/+9)
 		ConfirmMove = "%s +%d → %s +%d\nChance %d%% · on success the receiving weapon becomes +%d · on a fail nothing changes",
 		Go = "Enhance", GoMove = "Move",
-		SellMat = "Sell materials · %d → %s gold", SellNone = "No materials to sell",
+		SellMat = "Sell materials · %d → %s gold", SellNone = "No materials to sell.", -- the same words as Config.Loot.Text.SellNothing (one translation)
 	},
 }
 
@@ -2782,7 +2777,6 @@ BUILDERS.WeaponShop = function(parent)
 	-- lines_pack 11: Otto's calm hello on top (no hurry / sale words next to the buy buttons)
 	local hello = Config.Text and Config.Text.ForgeGreeting
 	if type(hello) == "string" and hello ~= "" then addText(parent, hello, { Name = "ShopGreeting", Size = 18 }) end
-	addText(parent, T.WeaponLocation, { Name = "BlacksmithLocation", Color = theme.SubText })
 	local accessLabel = addText(parent, "", { Name = "BlacksmithAccess", Color = theme.Bad })
 	local wayRow = addRow(parent, 60, 10) -- UI round 2 #3: shown while far from the anvil
 	wayRow.Name = "ForgeWay"
@@ -2790,7 +2784,6 @@ BUILDERS.WeaponShop = function(parent)
 	wayButton.Name = "ForgeShowWay"
 	local details = addColumn(parent, 1, 0, 10)
 	details.Name = "WeaponCatalog"
-	addText(details, WSHOP.Sells() and T.WeaponNote or T.WeaponNoteDrop, { Name = "WeaponNote", Size = 16, Color = theme.SubText })
 	local current = addText(details, "", { Name = "CurrentWeapon", Size = 18 })
 	local gold = addText(details, "", { Name = "WeaponGold", Size = 18 })
 	local status = addText(details, "", { Name = "WeaponTransaction", Color = theme.SubText, Size = 16 })
@@ -3036,7 +3029,7 @@ end
 -- "-0" - and the hint ends with "(you have N)"
 function STORY.Hint(obj, f, have)
 	local TXT = Config.StoryQuests.Text
-	if f ~= "Halo" and f ~= "Horns" then return TXT.ChoiceHintNeutral end
+	if f ~= "Halo" and f ~= "Horns" then return nil end -- A23-191: no explanation line for the Guild
 	local good, evil = (obj.Good and obj.Good.Points) or 0, (obj.Evil and obj.Evil.Points) or 0
 	if good <= 0 and evil <= 0 then return STORY.Text.HintLean end
 	local own = TXT["ChoiceHint" .. f]
@@ -3144,8 +3137,10 @@ BUILDERS.Story = function(parent)
 	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
 	local hint = nil
 	if obj.Type == "Choice" then
-		hint = addText(parent, STORY.Hint(obj, f, STORY.Points(f)),
-			{ Name = "StoryChoiceHint", Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center })
+		local words = STORY.Hint(obj, f, STORY.Points(f))
+		if type(words) == "string" and words ~= "" then
+			hint = addText(parent, words, { Name = "StoryChoiceHint", Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center })
+		end
 	end
 	local buttons = {}
 	local update
@@ -3588,8 +3583,6 @@ BUILDERS.Vacation = function(parent)
 	vacationShown = true -- seen this session (manual open counts too)
 	addText(parent, Config.Plural(string.format(T.VacationHeaderF, days)), { Size = 24, Align = Enum.TextXAlignment.Center, Font = theme.Font })
 	local reward = addText(parent, "", { Size = 22, Color = theme.Gold, Align = Enum.TextXAlignment.Center, Font = theme.Font })
-	addText(parent, string.format(T.VacationNoteF, math.floor(Config.Daily.VacationRate * 100 + 0.5)),
-		{ Size = 15, Color = theme.SubText, Align = Enum.TextXAlignment.Center })
 	local row = addRow(parent, 64, 0)
 	makeButton(row, T.VacationClaim, PALETTE.Free, UDim2.fromOffset(240, 60), function()
 		fire("ClaimVacation")
@@ -3758,8 +3751,7 @@ function FRAME.VacationPopup()
 	vacationShown = true
 	local ok, popup = pcall(UIKit.RewardPopup, {
 		Title = REG.Title("Vacation"),
-		Lines = { Config.Plural(string.format(T.VacationAwayF, days)),
-			string.format(T.VacationNoteF, math.floor(Config.Daily.VacationRate * 100 + 0.5)) },
+		Lines = { Config.Plural(string.format(T.VacationAwayF, days)) },
 		Rewards = { { Icon = "IconCoin", Amount = num("VacationGold") }, { Icon = "IconExp", Amount = num("VacationXP") } },
 		Button = T.VacationClaim,
 		OnClaim = function() fire("ClaimVacation") end,

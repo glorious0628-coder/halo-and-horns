@@ -69,8 +69,8 @@ MUTATIONS = [
     ("no '(you have N)'", "panels", " .. string.format(STORY.Text.HintHave, have)", ""),
     ("the window passes no points", "panels", "STORY.Hint(obj, f, STORY.Points(f))", "STORY.Hint(obj, f)"),
     ("0-point picks show +0 / -0", "panels", "\tif good <= 0 and evil <= 0 then return STORY.Text.HintLean end\n", ""),
-    ("the guild sees score numbers", "panels", 'if f ~= "Halo" and f ~= "Horns" then return TXT.ChoiceHintNeutral end',
-     "if false then return TXT.ChoiceHintNeutral end"),
+    ("the guild sees score numbers", "panels", 'if f ~= "Halo" and f ~= "Horns" then return nil end',
+     "if false then return nil end"),
     ("a waiting page drops Var", "panels", "STORY.Pending = { Id = arg.Id, St = arg.St, Var = arg.Var }",
      "STORY.Pending = { Id = arg.Id, St = arg.St }"),
     ("the Story window ignores Var", "panels", "local lines = STORY.Lines(step, f, arg.Var)", "local lines = STORY.Lines(step, f, nil)"),
@@ -148,7 +148,7 @@ def cut_type(panels: str) -> str:
 
 def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
     panels, main = src["panels"], src["client_main"]
-    wshop = re.search(r"\nBUILDERS\.WeaponShop = function\(parent\)\n(.*?)addText\(parent, T\.WeaponLocation", panels, re.S)
+    wshop = re.search(r"\nBUILDERS\.WeaponShop = function\(parent\)\n(.*?)local accessLabel = addText\(parent, \"\", \{ Name = \"BlacksmithAccess\"", panels, re.S)
     potion = re.search(r'The potion shop is coming soon\.".*?return nil\n\tend\n(.*?)local gold = addText\(parent, "", '
                        r'\{ Name = "PotionGold"', panels, re.S)
     story = re.search(r"\nBUILDERS\.Story = function\(parent\)\n(.*?)\nend\n", panels, re.S)
@@ -156,7 +156,7 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
     order = re.search(r"local ORDER = \{([^}]*)\}", main)
     names = re.findall(r'"(\w+)"', order.group(1)) if order else []
     return [
-        ("the Forge window shows Config.Text.ForgeGreeting on top (before the location line)",
+        ("the Forge window shows Config.Text.ForgeGreeting on top (before the access line; A23-191: no location line)",
          wshop is not None and "local hello = Config.Text and Config.Text.ForgeGreeting" in wshop.group(1)
          and 'addText(parent, hello, { Name = "ShopGreeting"' in wshop.group(1)),
         ("the Potion window shows Config.Text.PotionGreeting on top (before the gold line)",

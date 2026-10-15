@@ -322,8 +322,8 @@ def static_checks() -> tuple[int, list[str]]:
             failures.append(message)
 
     picker = STATIC_ONLY["CLASS_PICKER"].read_text(encoding="utf-8-sig")
-    check("ClassChangeRuleF" in picker and "FreeKeepLevelBelow" in picker,
-          "ClassPicker footer uses Config.Text.ClassChangeRuleF with Config.ClassChange.FreeKeepLevelBelow")
+    check("ClassChangeRuleF" not in picker and "T.Footer" not in picker,
+          "A23-191: the ClassPicker draws no footer rule line")
     panels = STATIC_ONLY["PANELS"].read_text(encoding="utf-8-sig")
     check("ClassChangeKeepsLevel" in panels and "ClassFreeKeepLevelF" in panels,
           "Panels class-change preview uses Config.ClassChangeKeepsLevel / ClassFreeKeepLevelF (no 'Lv N -> Lv 1' below Lv5)")

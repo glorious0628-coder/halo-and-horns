@@ -337,7 +337,7 @@ Config.WeaponMemes = {
 -- A23-186 the screen side (game dev 1): the Forge row's one line under a joke weapon, and the code-drawn look while the
 -- art is not made (WeaponPose.MemeLook, this client only, over the server's class-shaped model; held like a sword)
 Config.WeaponMemeScreen = {
-	Line = "Just for fun: not stronger, just funny!",
+	Line = "Just for fun!",
 	Look = {
 		Pan = { Pan = { Size = { 0.25, 1.7, 1.7 }, Color = { 40, 40, 46 } }, Handle = { Size = { 0.25, 1.4, 0.25 }, Color = { 90, 60, 40 } } },
 		Chicken = { Body = { Size = { 0.8, 1.9, 0.8 }, Color = { 255, 214, 60 } }, Comb = { Size = { 0.2, 0.35, 0.45 }, Color = { 220, 40, 40 } },
@@ -1567,7 +1567,6 @@ Config.WarInfo = {
 		Time = "Next crown in %s",
 		NoRound = "A new round starts soon.",
 		Score = "%s %s : %s %s", -- (Halo's name, its points, Horns' points, Horns' name)
-		Note = "Hunt monsters and win fights to fill your side's bar.",
 	},
 }
 Config.War = {
@@ -3308,7 +3307,6 @@ Config.StoryQuests = {
 		ChoiceHint = "Left: angel side · Right: devil side",
 		ChoiceHintHalo = "Left: Honor +%d · Right: Honor -%d", -- (Good.Points, Evil.Points)
 		ChoiceHintHorns = "Left: Mischief -%d · Right: Mischief +%d", -- (Good.Points, Evil.Points)
-		ChoiceHintNeutral = "No good or evil points.",
 		OffSideHalo = "Honor -%d", -- A23-58 (points actually taken); A23-130: the loss only, no guide voice
 		OffSideHorns = "Mischief -%d",
 		-- 3rd idea round #5: the same pick at 0 points (nothing to take) + the lean line after it
@@ -4402,8 +4400,7 @@ Config.StoryQuests.Defs.D0 = {
 	Kind = "Sub", Title = "Daily Jobs", ShortName = "Daily jobs", Requires = { Done = { "M1_4" } },
 	Steps = {
 		{ Text = "Hear about the daily jobs", Panel = true, Obj = { Type = "Talk" },
-			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!",
-				"Look in your Quests window. New jobs come every morning." } } },
+			Lines = { All = { "Every day I have 3 small jobs for you. Do all 3 for a daily chest!" } } },
 	},
 	Reward = { Gold = 1, XP = 1 }, -- no Finish line: the usual quest-done line, then the Daily tab opens (A23-99: no "daily quests are open" toast)
 }
@@ -5300,9 +5297,6 @@ Config.Finisher = {
 		Score = "%s +%d", -- ("Honor" | "Infamy", points)
 		ScoreDown = "%s -%d", -- the other side's pick on the card ("Honor -1")
 		-- the card's Hint per option (FinisherCard Help / Tickle .Hint)
-		HintFull = "No more points today. Your shard still leans.",
-		HintZero = "Nothing to lose. Your shard still leans.",
-		HintNeutral = "Just the gift. No good or evil points.",
 	},
 }
 -- (the finisher's points go through the daily deeds ledger, Config.Deeds / Deeds.luau; ScoreBudget retired 2026-10-09)
@@ -5783,8 +5777,7 @@ Config.Help = {
 	Title = "Help", NewsTitle = "News",
 	GuideAgain = "Meet the Guide Again", BackToHelp = "< Help", TalkToGuide = "Talk to the Guide",
 	CameraLine = "Hold the right mouse button and drag to turn the camera.", -- A23-51: right drag only
-	-- A23-81 (user 2026-10-08): the keys tip again (the Lv5 card shows it once): a line under the keys + a button
-	KeysTip = "Tip: You can change your keys in Settings!", KeysButton = "Key settings",
+	KeysButton = "Key settings", -- A23-81: a button to the key settings (A23-191: no tip line)
 	TouchLines = {
 		"Tap the buttons on the screen to attack, use skills and drink potions.",
 		"Drag with one finger to turn the camera.",
@@ -7853,7 +7846,6 @@ Config.Story = {
 		Horns = "Their Crown Shards became horns. They take the shards and rule the world.",
 		Neutral = "Those who shape the shards instead of grabbing them.", -- addendum A6
 	},
-	MarkLore = "Halos and horns are the power of the Crown Shards. They grow as your rank goes up.",
 	ZoneLore = {
 		Crossroads = "Where the broken crown fell",
 		HaloTown = "The castle of those with halos",
@@ -8025,7 +8017,6 @@ Config.Text = {
 	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
 	ClassFreeKeepLevelF = "Under Lv%d: you keep your level", -- A23-14 client preview (FreeKeepLevelBelow)
-	ClassChangeRuleF = "You can change class later in Menu. Free below Lv%d.", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
 	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
 	ClassNeedSafe = "You can only change class in a safe zone.",
@@ -8182,9 +8173,6 @@ Config.Ranking = {
 		PvPTabNote = "Goes up when you KO weaker, away or new players. Top 3 (3+ points) become outlaws.",
 		PvPTabNoteEn = "Goes up when you KO weaker, away or new players. Top 3 (3+ points) become outlaws.",
 		RewardTabNote = "Top 3: XP and drops +10% next week", RewardTabNoteEn = "Top 3: XP and drops +10% next week",
-		Ineligible = "New players join the ranking after 3 days and 30 min of play",
-		IneligibleEn = "New players join the ranking after 3 days and 30 min of play",
-		Private = "Private servers do not earn ranking points", PrivateEn = "Private servers do not earn ranking points",
 		OutlawTag = "Outlaw", OutlawTagEn = "Outlaw",
 		OutlawChip = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
 		OutlawChipEn = "Outlaw: no Auto Battle · half XP and drops (until Monday)",
@@ -8688,7 +8676,6 @@ Config.Attendance = {
 		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
 		GoalTitle = "%s title",
 		GoalBorder = "Name frame", -- the 28-day ribbon by my name (NameTagPrefs.BorderOf)
-		Note = "Missed a day? No problem. Nothing resets.",
 		Box = "Weekly Box",
 	},
 }
@@ -10770,7 +10757,7 @@ Config.ClientText.CharacterUI = {
 	LevelClass = "Lv %d · %s",
 	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
 	Weapons = "Weapons", Back = "Back", NoWeapons = "No weapons yet.",
-	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
+	Equip = "Equip", Equipped = "Equipped", FromLv = "Needs Lv %d", InFight = "In a fight", Checking = "Checking…",
 	Attack = "Attack %s",
 	PowerNow = "Power %s",
 	PowerChange = "Power %s → %s",
@@ -10943,9 +10930,6 @@ Config.ClientText.SkillBar = {
 	LearnTouch = "Tap the new button",
 	Later = "Skills come at Lv %d", -- a skill key pressed before the first skill
 	Teach = "Learn it from %s first", -- A23-193: a locked key waiting at the teacher (%s = the teacher's name)
-	-- A23-81 (user 2026-10-08): once, after the first skill is learned (keyboards): keys can be changed in Settings
-	KeysTip = "Tip: You can change your keys in Settings!",
-	KeysTipGo = "Open Settings",
 }
 Config.ClientText.WorldMap = {
 	Title = "World Map",
@@ -10963,8 +10947,6 @@ Config.ClientText.WorldMap = {
 	ZoomIn = "+",
 	ZoomOut = "−",
 	CloseX = "X",
-	HintMouse = "Drag: move · Wheel: zoom · {Map} / Esc: close", -- {Map}: the current map key (WorldMap.HintText)
-	HintTouch = "Drag: move · Two fingers: zoom",
 	Crown = "Crown of Balance",
 	Altar = "Altar of Fate",
 	Market = "Market",
@@ -10989,7 +10971,6 @@ Config.ClientText.KingDiary = {
 	Soon = "Opens on %s.",
 	Closed = "This page stayed closed.",
 	Candy = "Your candy: %d",
-	JarNote = "Trade candy for a title. Titles are just for fun!",
 	Cost = "%d candy",
 	Trade = "Trade",
 	Owned = "Owned",
@@ -11048,26 +11029,21 @@ Config.ClientText.ClassPicker = {
 	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
 	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
 	Tag = { Warrior = "Smash up close!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
-	FooterShort = "Change class later: Menu > Change Class", -- short screens (검수 2026-10-06: the menu square is Change Class)
 	Wait = "One moment...",
 	Recommend = "Best for beginners",
 	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come
-	Outfit = "Outfit coming later",
 	StartWeaponF = "First weapon: %s (from the Blacksmith)", -- A23-34 (검수 2026-10-06)
 	Male = "Boy",
 	Female = "Girl",
 	-- same rule as ClassService.onChangeClass / Panels "직업 변경" (A23-14): a free change below
 	-- Config.ClassChange.FreeKeepLevelBelow keeps the level, from there free = back to Lv 1; a ticket keeps the level.
 	-- Fallback only: Config.Text.ClassChangeRuleF (formatted with that level) replaces it below.
-	Footer = "You can change class later in Menu > Settings (free: keep your level before Lv5, after that start at Lv1 / ticket: keep your level)",
 }
 Config.ClientText.FactionPicker = {
 	Title = "Choose your side!",
 	Choose = "Join this side!",
 	Wait = "One moment...",
 	WeakerF = "Smaller side bonus: +%d gold and a bigger body",
-	Footer = "You can switch sides later at the Altar of Fate.",
-	FooterShort = "Switch sides later at the Altar of Fate.", -- phones with the A23-57 cards
 	SoonName = "Artisan Guild", -- A23-114 locked card
 	Soon = "Coming soon",
 	SoonSub = "Crafting update",
@@ -11102,7 +11078,6 @@ Config.ClientText.Panels = {
 	WelcomePending = "Checking...",
 	WelcomeRetry = "We couldn't confirm that. Please tap again.",
 	WelcomeUnavailable = "Pick a class first, then talk to the Guide again.",
-	MenuAltarHint = "Change sides at the Altar of Fate in the Crossroads!",
 	-- travel
 	TravelGo = "Go",
 	TravelNoGo = "Locked",
@@ -11149,7 +11124,6 @@ Config.ClientText.Panels = {
 	ConfirmChange = "Change",
 	-- class
 	ClassPickFirst = "Pick a class first.",
-	ClassHint = "Tap the class card you want.",
 	ClassCurrent = "Current",
 	ClassHeaderF = "Change to %s",
 	ClassLossLevelF = "Lv %d → Lv 1",
@@ -11164,14 +11138,11 @@ Config.ClientText.Panels = {
 	ShopNote = "Change Tickets are not stats. They keep your progress when you switch. You can always switch for free too!",
 	ProductPending = "Coming soon",
 	ProductBuyF = "Buy with Robux (%s R$)",
-	WeaponLocation = "Crossroads → Artisan Guild anvil · interact up close",
 	WeaponFar = "Come close to the Forge anvil to buy.", -- UI round 2 #3: the list still shows from afar (look only)
 	WeaponShowWay = "Show me the way",
 	WeaponWayLabel = "Forge",
 	WeaponLoading = "Check again once your character is ready.",
-	WeaponNote = "Pick a basic weapon to buy. Weapons you own can be equipped again for free.",
 	-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WSHOP.Sells) - monsters drop them
-	WeaponNoteDrop = "Monsters drop weapons. Equip yours here for free, or sell them.",
 	WeaponFarDrop = "Come close to the Forge anvil to equip or sell.",
 	WeaponFromF = "From: %s", -- (Config.WeaponSource)
 	WeaponLevelF = "Needs Lv %d · Now Lv %d",
@@ -11208,12 +11179,11 @@ Config.ClientText.Panels = {
 	WeaponByeEquip = "That one fits your hand. Stay safe out there!",
 	WeaponByePending = "Check how the trade went. Come back soon!",
 	-- vacation
-	VacationHeaderF = "Vacation Bonus! You were away %d days. That's okay!", -- 검수 10/10: shorter (Config.Plural: 1 day)
+	VacationHeaderF = "Vacation Bonus! You were away %d days.", -- 검수 10/10: shorter (Config.Plural: 1 day)
 	VacationRewardF = "+%s gold · +%s XP",
-	VacationNoteF = "Even on breaks you get %d%% of a day's rewards. Playing gives 100%%!",
 	VacationClaim = "Claim",
 	VacationNone = "No vacation bonus to claim.",
-	VacationAwayF = "You were away %d days. That's okay!", -- the reward popup's first line (창 꾸미기 ③; 검수 10/10: shorter)
+	VacationAwayF = "You were away %d days.", -- the reward popup's first line (창 꾸미기 ③; 검수 10/10: shorter)
 	VacationLater = "Later",
 	-- fallbacks for Config.Text keys added in review R1
 	WaitRespawn = "You can do this after you respawn.", -- CR-L30

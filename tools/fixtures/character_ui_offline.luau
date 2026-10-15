@@ -373,7 +373,7 @@ local function es(row, c) local t, e = M.EquipState(row, c) return t, e end
 local t, e = es(byTier[2], {})
 check(t == "Equipped" and e == false, "EquipState: the worn weapon = Equipped, off", t)
 t, e = es(byTier[4], {})
-check(t == "From Lv 12" and e == false, "EquipState: below MinLevel = From Lv N, off", t)
+check(t == "Needs Lv 12" and e == false, "EquipState: below MinLevel = Needs Lv N, off", t)
 t, e = es(pb, {})
 check(t == "Equip" and e == true, "EquipState: another usable weapon = Equip, on", t)
 t, e = es(pb, { Combat = true })
@@ -583,9 +583,9 @@ for _, ch in find(body, "WeaponsView"):GetChildren() do
 	if string.match(ch.Name, "^Weapon_%d$") then table.insert(order, ch.Name) end
 end
 check(table.concat(order, ",") == "Weapon_2,Weapon_4,Weapon_1", "the list: worn first, then by Damage", table.concat(order, ","))
-check(find(body, "Equip_2").Text == "Equipped" and find(body, "Equip_2").Enabled == false and find(body, "Equip_4").Text == "From Lv 12"
+check(find(body, "Equip_2").Text == "Equipped" and find(body, "Equip_2").Enabled == false and find(body, "Equip_4").Text == "Needs Lv 12"
 	and find(body, "Equip_4").Enabled == false and find(body, "Equip_1").Text == "Equip" and find(body, "Equip_1").Enabled == true,
-	"the buttons: Equipped / From Lv 12 (off) / Equip (on)")
+	"the buttons: Equipped / Needs Lv 12 (off) / Equip (on)")
 check(find(body, "Power") ~= nil, "the usable rows show the power line")
 local w1 = find(body, "Weapon_1")
 local pl = w1 and find(w1, "Power")

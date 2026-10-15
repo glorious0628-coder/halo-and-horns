@@ -465,7 +465,6 @@ function H.ControlLines()
 		if #parts > 0 then table.insert(lines, table.concat(parts, " · ")) end
 	end
 	table.insert(lines, help.CameraLine)
-	if type(help.KeysTip) == "string" then table.insert(lines, help.KeysTip) end -- A23-81: the Lv5 tip again
 	return lines
 end
 
