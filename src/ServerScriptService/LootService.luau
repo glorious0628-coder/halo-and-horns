@@ -28,7 +28,6 @@ local rng = Random.new()
 local STATE = {
 	Pending = {}, -- [Player] = true while one deferred Inventory push is queued (a burst of changes sends once)
 	FullAt = {}, -- [Player] = { [itemId | "Potion:HP" | "Potion:MP"] = os.clock() of the last "가득 찼어요" notice }
-	Level = {}, -- [Player] = the level last seen (A23-28: one "you can use it now" notice per MinLevel crossing)
 	Watching = {}, -- [Player] = true once the PlayerReady attribute watchers (A23-32 '얻은 순') are connected
 	SavedIdMaxLen = 64, -- B10: unknown saved item ids are kept only when they are sane strings
 }
@@ -850,7 +849,6 @@ function LootService.FitWeaponToLevel(player, quiet)
 	local data = getData(player)
 	if not data then return end
 	local level = math.floor(num(data.Level, 1))
-	STATE.Level[player] = level
 	local tier = math.floor(num(data.WeaponTier, 1))
 	if not validTier(tier) or Config.WeaponUsable(tier, level) then return end
 	local best = Config.BestUsableWeapon(data.WeaponOwnedMask, level)
@@ -867,28 +865,6 @@ function LootService.FitWeaponToLevel(player, quiet)
 			weaponName(player, best)), "info")
 	end
 	publish(player, data)
-end
-
--- a level-up crossed the MinLevel of an owned weapon stronger than the equipped one: say it once (never auto-equip)
-local function onLeveledUp(player, level)
-	local data = getData(player)
-	if not data then return end
-	level = math.floor(num(level, num(data.Level, 1)))
-	local before = STATE.Level[player] or (level - 1)
-	STATE.Level[player] = level
-	if level <= before then return end
-	local equipped = Config.Weapons[math.floor(num(data.WeaponTier, 0))]
-	local bestDamage = equipped and num(equipped.Damage) or 0
-	local mask = math.floor(num(data.WeaponOwnedMask, 0))
-	local best = nil
-	for t, def in Config.Weapons do
-		local min = math.floor(num(def.MinLevel, 1))
-		if t ~= 1 and bit32.band(mask, bit32.lshift(1, t - 1)) ~= 0 and min > before and min <= level
-			and num(def.Damage) > bestDamage then
-			best, bestDamage = t, num(def.Damage)
-		end
-	end
-	if best and (Config.Nudges or {}).WeaponUsableNow ~= false then notify(player, string.format(Config.Text.WeaponUsableNow, weaponName(player, best)), "good") end
 end
 
 ------------------------------------------------------------------ lifecycle
@@ -975,7 +951,7 @@ function LootService.Start()
 			if not ok then Util.Warn(TAG, "Inventory resend: " .. tostring(err)) end
 		end)
 	end
-	-- A23-28: the level went down -> fit the equipped weapon; a level-up past an owned weapon's MinLevel -> one notice
+	-- A23-28: the level went down -> fit the equipped weapon (a level-up says nothing and never equips, 최종 검수 10/15)
 	local prog = S.ProgressionService
 	for _, sig in { prog and prog.LevelReset, prog and prog.Rebirthed } do
 		if type(sig) == "table" and type(sig.Connect) == "function" then
@@ -985,16 +961,9 @@ function LootService.Start()
 			end)
 		end
 	end
-	if prog and type(prog.LeveledUp) == "table" then
-		prog.LeveledUp:Connect(function(player, level)
-			local ok, err = pcall(onLeveledUp, player, level)
-			if not ok then Util.Warn(TAG, "LeveledUp: " .. tostring(err)) end
-		end)
-	end
 	S.PlayerService.PlayerLeaving:Connect(function(player)
 		STATE.Pending[player] = nil
 		STATE.FullAt[player] = nil
-		STATE.Level[player] = nil
 		STATE.Watching[player] = nil
 	end)
 	print("[LootService] started")

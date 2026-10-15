@@ -817,7 +817,6 @@ end
 -- A23-3: one fixed next-goal line after the blacksmith visit, from existing state only (no new reward).
 local IRON_TIER = 3
 local NEXT_ZONE = "GoblinWoods"
-local hadNextGoal = {} -- [Player] = true while the pinned row shows a next goal (GuideDone toast on its end)
 local function nextGoalText(data, player)
 	local level = getLevel(data)
 	-- A23-193: a ready skill waits at the side's teacher: first (one short walk)
@@ -991,7 +990,6 @@ local function publish(player)
 	dirty[player] = nil
 	if player.Parent == nil then
 		lastSent[player] = nil -- left: never fire to (or keep state for) a removed player
-		hadNextGoal[player] = nil
 		return
 	end
 	local data = getData(player)
@@ -1030,13 +1028,7 @@ local function publish(player)
 			for _, row in lostRows do table.insert(list, row) end
 		end
 	end
-	-- the guide chain just ran out (iron weapon owned and Lv10 reached): say so once, then the row disappears
-	local hasGoal = tutorial ~= nil and (tutorial.NextGoal == true or tutorial.Story ~= nil)
-	if hadNextGoal[player] and not hasGoal and getStep(player) == TUT_DONE and (Config.Nudges or {}).GuideDone ~= false
-		and type(TUT_MESSAGES.GuideDone) == "string" then
-		Net.Notify(player, TUT_MESSAGES.GuideDone, "good")
-	end
-	hadNextGoal[player] = hasGoal or nil
+	-- (the guide chain running out just removes the row: its 'That's all from me!' line is deleted, 최종 검수 10/15)
 	local locked = not dailiesOpen(data)
 	if not locked and type(data.Quests) == "table" then
 		-- CR-M6: dailies show what a claim pays now (stored reward capped to the current level; stored value kept)
@@ -1141,10 +1133,7 @@ local function completeQuest(player, data, index, q)
 		if not quiet then
 			Net.Notify(player, string.format(Config.Text.QuestDone, Util.FormatNumber(gotGold)), "reward", nil, "QuestDone")
 		end
-	elseif not quiet and (Config.Nudges or {}).DailyReady ~= false then
-		-- dailies stay in their slot until claimed
-		Net.Notify(player, string.format(Config.Text.DailyReady), "good")
-	end
+	end -- (a finished daily stays in its slot until claimed; its row says Done! / [Claim]: no line, 최종 검수 10/15)
 end
 
 -- Kill/Golden progress of one kill of monster `kind`, in units of the quest's monster (q.Unit, fixed at generation):
@@ -1399,7 +1388,6 @@ local function onPlayerLeaving(player)
 	rerollReadyAt[player] = nil
 	welcomeShown[player] = nil
 	TUT_READY_AT[player] = nil
-	hadNextGoal[player] = nil
 	FORGE.Late[player] = nil
 	FORGE.AcceptedAt[player], FORGE.Reached[player] = nil, nil
 end
