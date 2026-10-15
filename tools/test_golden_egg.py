@@ -134,7 +134,8 @@ MUTATIONS = [
     ("paid: no crowd rule", G, "local need = (peakP or 0) >= (tonumber(EGG.CrowdFrom) or 16)", "local need = false"),
     # 최종 검수 10/14 goose review
     ("②: the start line is back", G, "\t-- A23-191 (최종 검수 10/14): no start line at all", "\tpcall(Net.NotifyAll, \"Golden Goose!\", \"announce\", 2)"),
-    ("②: no result on GameState", G, "\tsetGame(\"GooseResult\", result)\n", ""),
+    ("②: no result on GameState", G, "\tsetGame(\"GooseResult\", result)\n\tsetGame(\"GooseResultHalo\", rescue)\n\tsetGame(\"GooseResultHorns\", poach)\n\tsetGame(\"GooseResultUntil\", resultUntil)\n",
+     "\tsetGame(\"GooseResultHalo\", rescue)\n\tsetGame(\"GooseResultHorns\", poach)\n\tsetGame(\"GooseResultUntil\", resultUntil)\n"),
     ("②: the Neutral +0 is back", EG, "\t\t\tst.NeutralEggs += 1 -- ② no EggDeliver Fx", "\t\t\tpcall(W.Fx, \"EggDeliver\", { UserId = p.UserId, Pos = egg.Pos, N = 1, Points = 0, Side = \"Neutral\" }); st.NeutralEggs += 1 -- "),
     ("③: the square mode never follows", G, "\t\tif squareOn() then\n\t\t\t-- ③: the mode follows", "\t\tif false then\n\t\t\t-- ③: the mode follows"),
     ("③: the verdict by the server count", G, "\tif squareOn() then\n\t\t-- ③: the same rule as the live bar", "\tif false then\n\t\t-- ③: the same rule as the live bar"),
