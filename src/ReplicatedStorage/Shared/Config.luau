@@ -3260,7 +3260,8 @@ Config.StoryQuests = {
 	-- the quest window's In progress lists them, a More row's [Claim] goes straight to ClaimQuest).
 	SendAllSubs = true,
 	-- map v2: the slime pond in the meadow's south-west (kit_meadow M_Pond, 50 wide)
-	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0) },
+	-- A23-197: Lunchbox = Tiny's dropped lunchbox at the pond's edge (Lunch1; game dev 1 draws it)
+	Landmarks = { SlimePond = Vector3.new(290, 0, 150), Fountain = Vector3.new(0, 0, 0), Lunchbox = Vector3.new(268, 0, 168) },
 	Speakers = { Shard = "Crown Shard", Fountain = "Fountain Shard", Smith = "Otto", Guild = "Kit", Potion = "Fizzby", -- ⑪
 		Bright = "Bright", Smokey = "Rose", Tiny = "Tiny", Kids = "Bright & Rose", -- A23-46 town NPCs, A23-55 kids
 		Pip = "Pip", Dibs = "Dibs", Grabbo = "Grabbo", -- story_depth §4 goblins (beta: names only, no models)
@@ -3373,18 +3374,37 @@ Config.StoryQuests = {
 		-- afterglow answer); every side may press both buttons. Then the Forge row. A23-130 (user 2026-10-11 "너무 설명해주는
 		-- 게 많은 거 같애"): no Reply line after a pick any more (the kid's "Thank you! …"), only the reward toast ("+HP
 		-- Potion" / "+25 gold"); a pick with a Reward sends no lean / "saved" line either (StoryQuestService)
+		-- A23-197 (user 10/15 "저렇게 다짜고짜 하면 어케 ㅋㅋ"): no pop-up card any more - a story. Tiny (the guild kid at the
+		-- Crossroads) sneaked a lunch out to see the slimes, they were scarier than expected, Tiny ran and dropped it. Talk to
+		-- Tiny -> shoo the slimes by the pond -> pick the lunchbox up (Landmarks.Lunchbox; game dev 1 draws a small shining box
+		-- there) -> the old pick (give it back / one bite, same rewards) -> back to Tiny for one line by the pick -> +4 bag slots
 		Lunch1 = {
-			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Pop = true,
+			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Speaker = "Tiny",
 			Requires = { TutorialDone = true, NotDone = { "M1_1" } },
+			Start = "Tiny is sniffling at the Crossroads.",
 			Steps = {
+				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Tiny: *sniff* I just wanted to see the slimes up close.", "Tiny: I packed a lunch. Mom doesn't know!",
+						"Tiny: They were SO grumpy. I ran and dropped my lunchbox.", "Tiny: Can you find it? Shh, don't tell Mom!" } } },
+				{ Text = "Shoo the slimes by the pond %d/%d", Guide = "SlimePond",
+					Obj = { Type = "Kill", Kind = "Slime", Near = "SlimePond", Radius = 45, Count = 2 } },
+				{ Text = "Pick up the lunchbox", Guide = "Lunchbox", Obj = { Type = "Near", Spot = "Lunchbox", Radius = 10 } },
 				{ Text = "Return the lunchbox, or take a bite?", Panel = true,
-					Lines = { All = { "A slime dropped a lunchbox. It belongs to a kid at the Crossroads." } },
+					Lines = { All = { "Tiny's lunchbox! Still warm. It smells SO good." } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Give it back", Points = 0, Pick = "GiveBack",
 							Reward = { Potion = "HP", N = 1 } },
 						Evil = { Label = "One bite!", Points = 0, Pick = "Bite",
 							Reward = { Gold = 25 } },
 						Neutral = { A = "Give it back", B = "One bite!" } } },
+				{ Text = "Bring the lunchbox to Tiny", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Tiny: My lunchbox!" } },
+					LinesBy = { From = "Lunch1",
+						GiveBack = { All = { "Tiny: My lunchbox! You're the best!", "Tiny: I'll tell Mom… someday." } },
+						Bite = { All = { "Tiny: Huh…? Half of it is gone!", "Tiny: …Was it tasty, at least?" } },
+						A = { All = { "Tiny: My lunchbox! You're the best!", "Tiny: I'll tell Mom… someday." } },
+						B = { All = { "Tiny: Huh…? Half of it is gone!", "Tiny: …Was it tasty, at least?" } },
+						Default = { All = { "Tiny: My lunchbox!" } } } },
 			},
 			Reward = { BagSlots = 4 }, -- bag slots 10/14: the first upgrade (12 -> 16), whichever pick
 		},

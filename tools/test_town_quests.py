@@ -49,6 +49,13 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-197 (10/15): Lost Lunchbox is a story (no pop-up card), the slimes by the pond and the box's spot count
+    ("lunchbox pops again", C, "Title = \"Lost Lunchbox!\", ShortName = \"Lost lunchbox\", Speaker = \"Tiny\",",
+     "Title = \"Lost Lunchbox!\", ShortName = \"Lost lunchbox\", Speaker = \"Tiny\", Pop = true,"),
+    ("lunchbox: any slime counts", C, "Obj = { Type = \"Kill\", Kind = \"Slime\", Near = \"SlimePond\", Radius = 45, Count = 2 } },",
+     "Obj = { Type = \"Kill\", Kind = \"Slime\", Count = 2 } },"),
+    ("lunchbox: picked up from afar", C, "Obj = { Type = \"Near\", Spot = \"Lunchbox\", Radius = 10 } },",
+     "Obj = { Type = \"Near\", Spot = \"Lunchbox\", Radius = 100 } },"),
     # feedback_audit #7 (최종 검수 10/15): the Choice Fx after the points, with the score / rank before and after
     ("Choice: no after score", ST, "\t\t\tlocal after = math.max(0, math.floor(num(data[stat])))\n", "\t\t\tlocal after = before\n"),
     ("Choice: no rank", ST, "RankFrom = rankOf(before), RankTo = rankOf(after) })", "})"),

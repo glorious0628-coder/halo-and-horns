@@ -375,8 +375,30 @@ runGroup("a23-70 lunchbox", function()
 		return false
 	end
 	local L = SQ0.Defs.Lunch1
-	check(L and L.Pop == true and L.Steps[1].Obj.Good.Points == 0 and L.Steps[1].Obj.Evil.Points == 0,
-		"Config: Lunch1 pops, 0 points both ways", show(L and { L.Pop, L.Requires }))
+	local CH = L and L.Steps[4] and L.Steps[4].Obj
+	-- A23-197 (user 10/15): a story, no pop-up card: Tiny -> the pond's slimes -> the lunchbox -> the pick -> back to Tiny
+	check(L and L.Pop == nil and L.Speaker == "Tiny" and #L.Steps == 5 and L.Steps[1].Npc == "Tiny" and L.Steps[1].Obj.Type == "Talk"
+		and L.Steps[2].Obj.Type == "Kill" and L.Steps[2].Obj.Near == "SlimePond" and L.Steps[3].Obj.Spot == "Lunchbox"
+		and CH and CH.Type == "Choice" and CH.Good.Points == 0 and CH.Evil.Points == 0 and L.Steps[5].Npc == "Tiny"
+		and L.Steps[5].LinesBy.From == "Lunch1" and L.Steps[5].LinesBy.GiveBack and L.Steps[5].LinesBy.Bite
+		and L.Steps[5].LinesBy.Default and SQ0.Landmarks.Lunchbox ~= nil,
+		"Config: Lunch1 = talk to Tiny, 2 slimes by the pond, the lunchbox, the pick (0 points), back to Tiny (lines by pick)",
+		show(L and L.Steps and #L.Steps))
+	local pond, box = SQ0.Landmarks.SlimePond, SQ0.Landmarks.Lunchbox
+	local function slimeAt(p, pos)
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = pos, WarPoints = 0 })
+		w:Flush()
+	end
+	-- up to the pick: Tiny's talk, 2 slimes by the pond, the lunchbox
+	local function toPick(p, d)
+		w:Act(p, "Lunch1", "Talk")
+		slimeAt(p, pond + vec(5, 0, 5))
+		slimeAt(p, pond + vec(-8, 0, 3))
+		w:MoveTo(p, box + vec(2, 0, 0))
+		w:Tick(p, 1)
+		return w:Track(d, "Lunch1")
+	end
 	local function fresh(id, faction, step, done)
 		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 2,
 			Data = { TutorialStep = step, Story = { Main = { Id = "" }, Subs = {}, Done = done or {}, Pick = {}, First = { Migrated = true } } } })
@@ -390,17 +412,28 @@ runGroup("a23-70 lunchbox", function()
 	check(w:Track(dv, "Lunch1") == nil, "a player past the Forge (M1_1 done) never gets it")
 	local opens = w:Opens(0)
 	local p, d = fresh(1703, "Halo", 99)
-	check(w:Track(d, "Lunch1") ~= nil and w:Opens(0) == opens + 1, "right after the first [Claim]: offered, the card opens once",
+	check(w:Track(d, "Lunch1") ~= nil and w:Track(d, "Lunch1").St == 1 and w:Opens(0) == opens,
+		"right after the first [Claim]: offered at Tiny's talk, no card pops by itself (A23-197)",
 		show({ w:Track(d, "Lunch1") ~= nil, w:Opens(0) - opens }))
-	w.Story.Refresh(p)
-	w:Flush()
-	check(w:Opens(0) == opens + 1, "a refresh never opens it again", w:Opens(0) - opens)
+	w:Act(p, "Lunch1", "Talk")
+	check(w:Track(d, "Lunch1").St == 2, "Tiny's story told: the pond step", show(w:Track(d, "Lunch1")))
+	slimeAt(p, vec(0, 0, 0))
+	check(w:Track(d, "Lunch1").St == 2 and (w:Track(d, "Lunch1").P or 0) == 0, "a slime far from the pond counts for nothing",
+		show(w:Track(d, "Lunch1")))
+	slimeAt(p, pond + vec(5, 0, 5))
+	slimeAt(p, pond + vec(-8, 0, 3))
+	check(w:Track(d, "Lunch1").St == 3, "2 slimes by the pond: the lunchbox step", show(w:Track(d, "Lunch1")))
+	w:MoveTo(p, box + vec(40, 0, 0))
+	w:Tick(p, 1)
+	check(w:Track(d, "Lunch1").St == 3, "40 studs away: not picked up yet", show(w:Track(d, "Lunch1")))
+	w:MoveTo(p, box + vec(2, 0, 0))
+	w:Tick(p, 1)
+	check(w:Track(d, "Lunch1").St == 4, "at the lunchbox: the pick", show(w:Track(d, "Lunch1")))
 	-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): no Reply line after a pick, the reward toast only
 	local LT = w.Config.Loot.Text
 	local potionLine = string.format(LT.Got, LT.Potion.HP)
 	local goldLine = string.format(T.ChoiceGold, "25")
-	check(L.Steps[1].Obj.Good.Reply == nil and L.Steps[1].Obj.Evil.Reply == nil, "Config: Lunch1 has no Reply line",
-		show({ L.Steps[1].Obj.Good.Reply, L.Steps[1].Obj.Evil.Reply }))
+	check(CH.Good.Reply == nil and CH.Evil.Reply == nil, "Config: Lunch1 has no Reply line", show({ CH.Good.Reply, CH.Evil.Reply }))
 	-- [Give it back]: +1 HP potion (its reward toast), the Choice sound, no Honor, no lean line, no thanks line
 	local n0, fx0, hp, honor = #w.Notices, #w.Fx, d.HPPotionCount or 0, d.Honor or 0
 	w:Act(p, "Lunch1", "Choose", "Good")
@@ -409,8 +442,11 @@ runGroup("a23-70 lunchbox", function()
 	local lines = w:NoticesFor(p, n0)
 	check(has(lines, potionLine), "Give it back: the reward toast '" .. potionLine .. "'", show(lines))
 	check(#lines == #first, "... and nothing comes after it (no thanks line 0.35 s later)", show({ first, lines }))
-	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 == true,
-		"Give it back: +1 HP potion, Honor unchanged, done", show({ d.HPPotionCount, d.Honor, d.Story.Done.Lunch1 }))
+	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 ~= true and w:Track(d, "Lunch1").St == 5,
+		"Give it back: +1 HP potion, Honor unchanged; back to Tiny next", show({ d.HPPotionCount, d.Honor, d.Story.Done.Lunch1 }))
+	w:Act(p, "Lunch1", "Talk")
+	lines = w:NoticesFor(p, n0)
+	check(d.Story.Done.Lunch1 == true and d.Story.Pick.Lunch1 == "GiveBack", "Tiny gets it back: done (its pick GiveBack)", show(d.Story.Done))
 	check(not has(lines, T.LeanGood) and not has(lines, T.Recorded), "no lean / saved line (the reward says it)", show(lines))
 	-- bag slots (10/14): Lunch1 done = +4 bag slots (12 -> 16) and its line, whichever pick
 	local bagLine = string.format(w.Config.BagSlots.Text.Gained, 4)
@@ -421,8 +457,10 @@ runGroup("a23-70 lunchbox", function()
 	check(fx and fx.Option == "Good", "Fx Choice { Option = 'Good' }", show(fx))
 	-- [One bite!] (a Halo player may bite too): +25 gold to the bank, no Honor / Infamy
 	local p2, d2 = fresh(1704, "Halo", 99)
+	check(toPick(p2, d2).St == 4, "the second child at the pick", show(w:Track(d2, "Lunch1")))
 	local bank, n2 = d2.BankGold or 0, #w.Notices
 	w:Act(p2, "Lunch1", "Choose", "Evil")
+	w:Act(p2, "Lunch1", "Talk")
 	w:Advance(0.4)
 	local bite = w:NoticesFor(p2, n2)
 	check(has(bite, goldLine) and not has(bite, T.LeanEvil), "One bite: the reward toast '" .. goldLine .. "', no lean line",
@@ -446,6 +484,7 @@ runGroup("a23-70 lunchbox", function()
 		"Config: Lunch1 and M2_7 (Lv10 story) give +4 bag slots each", show({ L.Reward, w.Config.StoryQuests.Defs.M2_7.Reward }))
 	-- a Horns player may give it back
 	local p3, d3 = fresh(1705, "Horns", 99)
+	toPick(p3, d3)
 	local hp3 = d3.HPPotionCount or 0
 	w:Act(p3, "Lunch1", "Choose", "Good")
 	w:Advance(0.4)
@@ -454,6 +493,7 @@ runGroup("a23-70 lunchbox", function()
 	-- the artisan guild (Neutral: A / B): the reward toast only, no "Your choice is saved." line (A23-130)
 	local p4, d4 = fresh(1706, "Neutral", 99)
 	if w:Track(d4, "Lunch1") ~= nil then
+		toPick(p4, d4)
 		local n4 = #w.Notices
 		w:Act(p4, "Lunch1", "Choose", "B")
 		w:Advance(0.4)
@@ -2215,11 +2255,23 @@ runGroup("a23-64 afterglow", function()
 		and A.From.Card == true and A.From.Finisher == true, "Config.Afterglow: on, 60 s, story + card + finisher picks", show(A))
 	local pvp = {}
 	w.Registry.ZoneService.IsPvPZone = function(p) return pvp[p] == true end
+	local LM = w.Config.StoryQuests.Landmarks
 	local function fresh(id, faction)
 		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 2,
 			Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 		w.Story.Refresh(p)
 		w:Flush()
+		-- A23-197: Lunch1 is a story now: Tiny's talk, 2 slimes by the pond, the lunchbox, then the pick
+		if w:Track(d, "Lunch1") ~= nil then
+			w:Act(p, "Lunch1", "Talk")
+			for _ = 1, 2 do
+				w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false,
+					Personal = false, Position = LM.SlimePond, WarPoints = 0 })
+			end
+			w:Flush()
+			w:MoveTo(p, LM.Lunchbox)
+			w:Tick(p, 1)
+		end
 		return p, d
 	end
 	-- a 0-point story pick (A23-70 Lunch1) in a safe place: one afterglow to every client
@@ -2269,6 +2321,7 @@ runGroup("a23-64 afterglow", function()
 	local s2, s2d = fresh(6406, "Halo")
 	fx0 = #w.Fx
 	w:Act(s2, "Lunch1", "Choose", "Good")
+	w:Act(s2, "Lunch1", "Talk")
 	check(#glowsOf(w, s2, fx0) == 0 and s2d.Story.Done.Lunch1 == true, "From.Story = false: the pick works, no glow",
 		#glowsOf(w, s2, fx0))
 	w.Config.Afterglow.From.Story = true
