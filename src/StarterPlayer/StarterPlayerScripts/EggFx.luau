@@ -1006,10 +1006,85 @@ function EggFx.Start()
 		end) end)
 		if not ok then warnThrottled("Fx hook: " .. tostring(err)) end
 	end)
-	RunService.RenderStepped:Connect(function()
+	RunService.RenderStepped:Connect(function(dt)
 		local ok, err = pcall(EggFx.Step)
 		if not ok then warnThrottled(tostring(err)) end
+		local okW, errW = pcall(EggFx.WaddleStep, dt)
+		if not okW then warnThrottled("waddle: " .. tostring(errW)) end
 	end)
+end
+
+----------------------------------------------------------------- the goose's waddle (0-won code, until its rig)
+-- user 10/15 ("거위가 스스스슥 미끄러지듯 가, 뒤뚱뒤뚱 안 걸어"; 최종 검수: a real walk = Tripo rigging at design time): the
+-- server's goose is welded to one anchored root, so on this client its looks are hidden (LocalTransparencyModifier) and a
+-- local copy follows the root with a waddle by its ground speed - side to side up to Roll degrees, a small bob on each
+-- step, steps faster when it goes faster; standing still = no waddle (eased back)
+EggFx.WADDLE = { Roll = 8, Bob = 0.25, StepPerStud = 0.9, FullSpeed = 6, Ease = 8, Copy = "GooseWaddle" }
+local WADDLE = { Model = nil, Copy = nil, Root = nil, Offsets = nil, Phase = 0, Amount = 0, Last = nil }
+
+-- (pure) the waddle at step phase p (radians) and amount k (0..1): roll (degrees), bob (studs)
+function EggFx.WaddleAt(p, k)
+	local W = EggFx.WADDLE
+	k = math.clamp(tonumber(k) or 0, 0, 1)
+	return math.sin(p) * W.Roll * k, math.abs(math.sin(p)) * W.Bob * k
+end
+
+local function waddleDrop()
+	if WADDLE.Copy then WADDLE.Copy:Destroy() end
+	if WADDLE.Model then
+		for _, d in WADDLE.Model:GetDescendants() do
+			if d:IsA("BasePart") then d.LocalTransparencyModifier = 0 end
+		end
+	end
+	WADDLE.Model, WADDLE.Copy, WADDLE.Root, WADDLE.Offsets, WADDLE.Last = nil, nil, nil, nil, nil
+end
+
+local function waddleBuild(model, root)
+	waddleDrop()
+	local copy = Instance.new("Model")
+	copy.Name = EggFx.WADDLE.Copy
+	local offsets = {}
+	for _, d in model:GetDescendants() do
+		if d:IsA("BasePart") and d ~= root and d.Transparency < 1 then
+			local c = d:Clone()
+			for _, ch in c:GetChildren() do
+				if ch:IsA("JointInstance") or ch:IsA("WeldConstraint") or ch:IsA("LuaSourceContainer") then ch:Destroy() end
+			end
+			c.Anchored, c.CanCollide, c.CanQuery, c.CanTouch = true, false, false, false
+			c.Parent = copy
+			offsets[c] = root.CFrame:ToObjectSpace(d.CFrame)
+			d.LocalTransparencyModifier = 1
+		end
+	end
+	copy.Parent = workspace:FindFirstChild("Effects") or workspace
+	WADDLE.Model, WADDLE.Copy, WADDLE.Root, WADDLE.Offsets = model, copy, root, offsets
+end
+
+function EggFx.WaddleStep(dt)
+	local fx = workspace:FindFirstChild("Effects")
+	local model = fx and fx:FindFirstChild("GoldenGoose")
+	local root = model and model:IsA("Model") and model.PrimaryPart or nil
+	if not root then
+		if WADDLE.Model then waddleDrop() end
+		return
+	end
+	if WADDLE.Model ~= model or not (WADDLE.Copy and WADDLE.Copy.Parent) then waddleBuild(model, root) end
+	local W = EggFx.WADDLE
+	local pos = root.Position
+	local speed = 0
+	if WADDLE.Last and dt > 0 then
+		local d = pos - WADDLE.Last
+		speed = Vector3.new(d.X, 0, d.Z).Magnitude / dt
+	end
+	WADDLE.Last = pos
+	local want = math.clamp(speed / W.FullSpeed, 0, 1)
+	WADDLE.Amount += (want - WADDLE.Amount) * math.clamp(dt * W.Ease, 0, 1)
+	WADDLE.Phase += speed * dt * W.StepPerStud * math.pi
+	local roll, bob = EggFx.WaddleAt(WADDLE.Phase, WADDLE.Amount)
+	local base = root.CFrame * CFrame.new(0, bob, 0) * CFrame.Angles(0, 0, math.rad(roll))
+	for part, off in WADDLE.Offsets do
+		if part.Parent then part.CFrame = base * off end
+	end
 end
 
 -- test aid: how many ground eggs are drawn, previews hidden
