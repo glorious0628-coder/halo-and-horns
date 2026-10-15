@@ -370,3 +370,12 @@
 - 오늘 보고된 다른 dev1·dev2 가지는 전부 main에 있음(확인). API 10/13 충전 뒤 ≈$39 → 남은 ≈$161. 주간 64%, 리셋 10/20 16:00.
 - 세 세션(개발 1·2, 메인 반영 1)에 "새 최종 검수가 인사하면 그쪽으로 보고, 옛 세션엔 보내지 마" 알림 보냄.
 - **10/15 18:00 옛 세션에 온 개발 1 보고 2개(새 최종 검수가 처리):** ① `dev1-a191` 3cb5ef23 = 설명 줄 삭제(A23-191) + 옛 영어(목록은 state/dev1.md), 시험 다수 통과, a23_14는 PC 과부하로 600초 시간 초과(main도 같음), 남은 스윕 중 → line_balance 고침 커밋 1개 더 붙일 예정. ② `dev1-quest-p1` 6628e52b = 묶음 2 화면(dev2-quest-p1 위; 안내자/스승 길, Lv5 시험 목표, 연습대·빌린 막대, 등불, 포즈 고리 + wave/cheer, 장면 반응, 부탁 창 난이도 테두리·★), test_quest_p1_screen + 관련 20개 통과, 사진은 메인 sync 뒤 → **dev2-quest-p1과 같이 병합**. walk_forge_client 정적 1개 = main에도 있음.
+
+## 10/15 18:40 (새 최종 검수 local_cb4b05f8, Opus 5.5 high) — 시작
+- 개발 1·2, 메인 반영 1에 새 id 알림. 회의실 artifact watch 켬.
+- 확인: dev2-en-apply d8a47d89·dev2-mut-fix 584e2629 = main에 있음.
+- M1_4 답(개발 2에 보냄): "More shards are out there…" 한 줄만 M1_4(등불) 끝 안내자 대사 마지막 줄로, 영웅 동상·용암 틈 설명은 버림(A23-191 정신).
+- 파티 다시: api/party2 (Opus high, 턴 120, $12 한도, 기준 origin/dev2-quest-p1 1caa86aa, 단계마다 커밋하라고 함). 프롬프트 build/api_agent/party2_src/prompt.md, 결과 build/api_agent/party2/.
+- 병합 시험 중: scratchpad chain01 = 1caa86aa(dev2-quest-p1) + 4f87cb83(dev1-quest-p1, 스쳐 줍기 포함) + 9a29e2cf(dev1-a191 + 줄 균형) → 퀘스트·스토리·글 시험 22개. 저장 판 번호는 안 바뀜(Story.Schema 2~5는 저장 안 이관만).
+- 다섯 언어: run_loc.sh 계속 도는 중 49/65(es 13·ja 13·zh-hans 13·fr 10, zh-hant 0).
+- 다음: 병합 통과 → push → 메인 반영 1 sync·영어 덤프 사진(🟠 알림 먼저) → 규격 main 들어가면 Codex 장별 퀘스트 데이터 → 다섯 언어 끝나면 샘플 확인·업로드.
