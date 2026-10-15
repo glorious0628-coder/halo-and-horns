@@ -429,6 +429,9 @@ local function eventAmount(player, obj, ev)
 			if obj.Zone and info.ZoneId ~= obj.Zone then return 0 end
 		end
 		if obj.Golden and info.Golden ~= true then return 0 end
+		-- docs §1-2 (공유하지 않는 행동): HOW-to-kill steps (a basic swing, auto combat, keeping HP) are the player's own; a
+		-- party's quest-only credit (info.QuestOnly: a kill this player did not hit) never fills them
+		if info.QuestOnly == true and (t == "BasicKill" or t == "AutoKill" or t == "SafeKill") then return 0 end
 		if obj.Near then
 			local spot = landmark(obj.Near)
 			if not spot or typeof(info.Position) ~= "Vector3" or Util.FlatDistance(info.Position, spot) > (obj.Radius or 40) then return 0 end
@@ -2066,6 +2069,11 @@ function StoryQuestService.Start()
 		questKill:Connect(function(player, info)
 			if type(info) == "table" and type(info.Credit) == "table" and typeof(player) == "Instance" and player:IsA("Player") then
 				feed(player, { Kind = "Kill", Info = info })
+				-- P1 ⑧: a party member's kill near my escort counts for its event too (a personal-credit kill only)
+				if info.Credit.Personal == true then
+					local ok, err = pcall(MOVER.Kill, player, info)
+					if not ok then Util.Warn(TAG, "mover kill: " .. tostring(err)) end
+				end
 			end
 		end)
 	end

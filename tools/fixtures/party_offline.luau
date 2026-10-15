@@ -357,14 +357,56 @@ runGroup("credit inside a party", function()
 	local cr4 = Q.Judge(r4, KILL, { a }, a)
 	check(cr4[c] == nil, "a member knocked out: nothing", show(cr4[c]))
 	c.Hum.Health = 100
-	-- the first hitter is outside the party: the party's own hits get no personal credit
+	-- docs §1-2 case 2: the first hitter is outside the party; the party that hit it still gets its personal credit
+	w.PS.MarkActive(c)
 	local r5 = mob({ Id = 5 })
 	Q.Hit(r5, d)
 	Q.Hit(r5, a)
 	Q.Hit(r5, b)
-	local cr5 = Q.Judge(r5, KILL, { d, a, b }, d)
-	check(cr5[d].Personal and not cr5[a].Personal and not cr5[b].Personal and cr5[a].Shared,
-		"another first hitter: the party members get shared credit only", show(cr5))
+	local cr5, ex5 = Q.Judge(r5, KILL, { d, a, b }, d)
+	check(cr5[d].Personal and cr5[a].Personal and cr5[b].Personal and cr5[a].Shared,
+		"another first hitter: the party that hit gets personal credit too (case 2)", show(cr5))
+	check(table.find(ex5, c) ~= nil and cr5[c].Personal == true and cr5[c].Shared == false,
+		"case 2: the hitting party's member near (active) gets it as an extra", show(cr5[c]))
+	-- a party that never hit it gets nothing from a stranger's kill
+	local e = hero(w, 5, "Horns", 25)
+	check(join(w, d, e), "d and e make a party", "")
+	w.PS.MarkActive(e)
+	local r6 = mob({ Id = 6 })
+	Q.Hit(r6, a)
+	local cr6 = Q.Judge(r6, KILL, { a }, a)
+	check(cr6[e] == nil and cr6[d] == nil, "a party that did not hit: nothing", show(cr6))
+end)
+
+runGroup("credit: membership at the hit (epoch)", function()
+	local w = partyWorld()
+	local Q = w.Credit
+	local a, b, c = hero(w, 1, "Halo", 0), hero(w, 2, "Horns", 10), hero(w, 3, "Halo", 20)
+	check(join(w, a, b), "a party of a, b", "")
+	local r = mob()
+	Q.Hit(r, a)
+	check(join(w, a, c), "c joins after the hit", "")
+	w.PS.MarkActive(b)
+	w.PS.MarkActive(c)
+	local cr = Q.Judge(r, KILL, { a }, a)
+	check(cr[b] and cr[b].Personal == true, "a member at the hit: personal credit", show(cr[b]))
+	check(cr[c] == nil, "a member invited after the hit: nothing", show(cr[c]))
+	-- leave and join again between the hit and the kill = a new membership
+	local r2 = mob({ Id = 2 })
+	Q.Hit(r2, a)
+	w:Advance(1)
+	act(w, c, "Leave")
+	w:Advance(1)
+	check(w.Party.PartyOf(c) == nil, "c left", "")
+	check(join(w, a, c), "c joins again", "")
+	w.PS.MarkActive(c)
+	local cr2 = Q.Judge(r2, KILL, { a }, a)
+	check(cr2[c] == nil and cr2[b] and cr2[b].Personal, "left + joined again after the hit: nothing (b still gets it)", show(cr2[c]))
+	-- a hit after the rejoin counts again
+	local r3 = mob({ Id = 3 })
+	Q.Hit(r3, a)
+	local cr3 = Q.Judge(r3, KILL, { a }, a)
+	check(cr3[c] and cr3[c].Personal == true, "the next spawn hit after the rejoin: personal credit", show(cr3[c]))
 end)
 
 runGroup("boss credit", function()
@@ -403,6 +445,14 @@ runGroup("quest steps", function()
 	check(amount(personal, { Personal = false, Shared = true }) == 0, "a personal step: no personal credit = 0", "")
 	check(amount(joint, { Personal = false, Shared = true }) == 1, "a joint step: shared credit = 1", "")
 	check(amount(joint, { Personal = true, Shared = false }) == 0, "a joint step: a member who never hit = 0", "")
+	-- docs §1-2: how-to-kill steps are the player's own; a quest-only (proxy) kill never fills them
+	local function proxy(obj, quest)
+		return w.Story.EventAmount(p, obj, { Kind = "Kill", Info = { Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 0,
+			Credit = { Personal = true, Shared = false }, QuestOnly = quest, SkillHit = false } })
+	end
+	local basic = { Type = "BasicKill", Kind = "Slime", Count = 5 }
+	check(proxy(basic, nil) == 1 and proxy(basic, true) == 0, "a basic-swing step: own kill 1, a party member's kill 0", "")
+	check(proxy(personal, true) == 1, "a plain kill step: a party member's kill counts", "")
 	local crown = { Type = "WarPoints", Count = 15 }
 	check(amount(crown, { Personal = false, Shared = true }) == 0 and amount(crown, { Personal = true, Shared = false }) == 1,
 		"a crown step is a personal step too", "")

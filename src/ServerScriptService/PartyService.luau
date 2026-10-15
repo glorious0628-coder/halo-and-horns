@@ -13,8 +13,9 @@
 --   * s->c "Party": { Kind = "State", Id, Leader, Members } to every member on each change ({ Id = 0 } = no party),
 --     { Kind = "InviteGone", Id } when a card closes (expired / declined / used / the inviter left).
 --   * Read API (QuestCreditService, the client state): PartyOf(player) -> the party table { Id, Leader, Members } or nil,
---     SameParty(a, b), Members(player) -> a copy of the member list. PartyService.Changed(party or nil, player) fires for
---     every player whose party changed.
+--     SameParty(a, b), Members(player) -> a copy of the member list, JoinSeq(player) -> the membership stamp (a new number on
+--     every join, nil outside a party: a member who left and came back is a new membership, docs §1-2 epoch).
+--     PartyService.Changed(party or nil, player) fires for every player whose party changed.
 -- Failure lines only (A23-191: Kind "bad", Config.Party.Text); no banner, no toast for joining or leaving.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -39,7 +40,20 @@ local T = {
 	Friend = {}, -- ["<low>:<high>"] = true / false (cached for the server's life)
 	NextParty = 0,
 	NextInvite = 0,
+	Join = {}, -- [Player] = membership stamp (docs §1-2 epoch: QuestCreditService never credits a membership newer than the hit)
+	NextJoin = 0,
 }
+
+-- the one place a membership starts or ends (party nil = out); a join takes a new stamp
+local function setOf(player, party)
+	T.Of[player] = party
+	if party then
+		T.NextJoin += 1
+		T.Join[player] = T.NextJoin
+	else
+		T.Join[player] = nil
+	end
+end
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -107,7 +121,7 @@ end
 local function disband(party)
 	T.Parties[party.Id] = nil
 	for _, m in party.Members do
-		T.Of[m] = nil
+		setOf(m, nil)
 		pushState(nil, m)
 		changed(nil, m)
 	end
@@ -124,7 +138,7 @@ local function removeMember(player)
 	if not party then return false end
 	local i = table.find(party.Members, player)
 	if i then table.remove(party.Members, i) end
-	T.Of[player] = nil
+	setOf(player, nil)
 	pushState(nil, player)
 	changed(nil, player)
 	if party.Leader == player then
@@ -229,14 +243,14 @@ local function accept(player, id)
 		T.NextParty += 1
 		party = { Id = T.NextParty, Leader = from, Members = { from } }
 		T.Parties[party.Id] = party
-		T.Of[from] = party
+		setOf(from, party)
 		-- the inviter's other open invites now bring people into this party
 		for _, other in T.Invites do
 			if other.From == from then other.PartyId = party.Id end
 		end
 	end
 	table.insert(party.Members, player)
-	T.Of[player] = party
+	setOf(player, party)
 	closeInvitesOf(player, true) -- my own cards and the ones I sent
 	if #party.Members >= num(P.MaxSize, 4) then
 		for oid, other in T.Invites do
@@ -343,6 +357,10 @@ end
 function PartyService.SameParty(a, b)
 	local pa = T.Of[a]
 	return pa ~= nil and a ~= b and pa == T.Of[b]
+end
+
+function PartyService.JoinSeq(player)
+	return T.Join[player]
 end
 
 function PartyService.Members(player)

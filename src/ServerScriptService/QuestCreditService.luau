@@ -4,12 +4,15 @@
 -- not pay. Quest code (StoryQuestService.EventAmount, QuestService, BoardService) reads info.Credit; a kill without it
 -- (personal / quiet / practice monsters, old callers) counts as before.
 --   * Hit(rec, player): every accepted hit (MonsterService.DamageMonster) -> rec._credit[player] = { Last, Counted,
---     CountedAt }; a hit counts toward Counted only Config.Party.BossHitGap s after the last counted one.
+--     CountedAt, Party, Snap }; a hit counts toward Counted only Config.Party.BossHitGap s after the last counted one.
+--     Party / Snap = the hitter's party at that hit and its members' membership stamps (PartyService.JoinSeq).
 --   * A REAL hitter at the kill: last hit within CreditWindow s, standing in the monster's zone within CreditRange studs of
 --     the kill; a boss (Def.Boss) also needs Counted >= BossMinHits.
 --   * Shared (joint quests, obj.Credit = "Shared"): every real hitter.
---   * Personal (every other quest): the kill's first hitter (MonsterService's info.First, A23-181) and the members of the
---     first hitter's party who are real hitters or stand near (zone + CreditRange, alive, own action within ActiveWindow).
+--   * Personal (every other quest): the kill's first hitter (MonsterService's info.First, A23-181) and, for EVERY party
+--     with a real hitter (docs §1-2 case 2: not only the first hitter's party), the members who are real hitters or stand
+--     near (zone + CreditRange, alive, own action within ActiveWindow) and were in that party with the same membership at
+--     its member's real hit and still at the kill (an invite after the hit, or leave + join again, credits nothing).
 --     Outside a party: the first hitter only. A boss: every real hitter (both flags).
 --   * PartyBoss (A23-204): a real hitter of a boss who is in a party -> WarService gives that player's own side the crown
 --     units (hunt honor and normal monsters stay first-hitter, A23-181).
@@ -36,6 +39,14 @@ local function partyOf(p)
 	if not ps or type(ps.PartyOf) ~= "function" then return nil end
 	local ok, party = pcall(ps.PartyOf, p)
 	return ok and type(party) == "table" and party or nil
+end
+
+-- the membership stamp of p (nil when PartyService has none: then the party table alone decides)
+local function joinOf(p)
+	local ps = S and S.PartyService
+	if not ps or type(ps.JoinSeq) ~= "function" then return nil end
+	local ok, j = pcall(ps.JoinSeq, p)
+	return ok and j or nil
 end
 
 local function zoneOf(p)
@@ -82,6 +93,15 @@ function QuestCreditService.Hit(rec, player)
 		e.Counted += 1
 		e.CountedAt = now
 	end
+	-- docs §1-2 epoch: who was in my party (and since when) at this hit
+	local party = partyOf(player)
+	if party and type(party.Members) == "table" then
+		local snap = {}
+		for _, m in party.Members do snap[m] = joinOf(m) or true end
+		e.Party, e.Snap = party, snap
+	else
+		e.Party, e.Snap = nil, nil
+	end
 end
 
 -- the kill's quest credit: (credit map [Player] = { Personal, Shared, PartyBoss }, extras = credited players not in `paid`)
@@ -101,7 +121,23 @@ function QuestCreditService.Judge(rec, pos, paid, firstP)
 		if boss and num(e.Counted) < minHits then return false end
 		return nearKill(rec, p, pos)
 	end
-	local party = firstP and partyOf(firstP) or nil
+	-- still in that party with the stamp it had at the hit
+	local function same(p, party, snap)
+		return partyOf(p) == party and snap[p] ~= nil and snap[p] == (joinOf(p) or true)
+	end
+	-- the parties with a real hitter: [party] = { [member] = true }, the members it had at that hit and still has
+	local hitParties = {}
+	if not boss then
+		for p, e in ledger do
+			if type(e) == "table" and e.Party ~= nil and type(e.Snap) == "table" and same(p, e.Party, e.Snap) and real(p) then
+				local set = hitParties[e.Party] or {}
+				hitParties[e.Party] = set
+				for m in e.Snap do
+					if same(m, e.Party, e.Snap) then set[m] = true end
+				end
+			end
+		end
+	end
 	local out, extras = {}, {}
 	local function judge(p)
 		local r = real(p)
@@ -111,19 +147,21 @@ function QuestCreditService.Judge(rec, pos, paid, firstP)
 			c.PartyBoss = r and partyOf(p) ~= nil
 		elseif p == firstP then
 			c.Personal = true -- A23-181: the first hitter's kill (as today)
-		elseif party ~= nil and partyOf(p) == party then
-			c.Personal = r or (nearKill(rec, p, pos) and activeAlive(p))
+		else
+			local mine = partyOf(p)
+			local set = mine and hitParties[mine] or nil
+			if set and set[p] then c.Personal = r or (nearKill(rec, p, pos) and activeAlive(p)) end
 		end
 		return c
 	end
 	for _, p in paid do
 		if typeof(p) == "Instance" and out[p] == nil then out[p] = judge(p) end
 	end
-	-- real hitters the kill does not pay (under its damage bar), and the first hitter's party members nearby
+	-- real hitters the kill does not pay (under its damage bar), and the members of every party that hit it
 	local others = {}
 	for p in ledger do table.insert(others, p) end
-	if party ~= nil and not boss then
-		for _, m in party.Members do table.insert(others, m) end
+	for _, set in hitParties do
+		for m in set do table.insert(others, m) end
 	end
 	for _, p in others do
 		if out[p] == nil and typeof(p) == "Instance" and p.Parent ~= nil then
