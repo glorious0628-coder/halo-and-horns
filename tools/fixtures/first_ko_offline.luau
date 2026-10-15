@@ -66,10 +66,10 @@ local function koWorld(o)
 	return w
 end
 
--- a ready player who finished M1_1 and M1_2 (the Slime Princes), with no potions, at `o.Level`
+-- a ready player who finished M1_1 (the Slime Prince), with no potions, at `o.Level`
 local function joinKO(w, userId, faction, o)
 	o = o or {}
-	local story = { Main = { Id = "" }, Subs = {}, Done = o.Done or { M1_1 = true, M1_2 = true }, Pick = {},
+	local story = { Main = { Id = "" }, Subs = {}, Done = o.Done or { M1_1 = true }, Pick = {},
 		First = o.First or { Migrated = true } }
 	local data = { Story = story }
 	for k, v in o.Data or {} do data[k] = v end
@@ -148,8 +148,8 @@ runGroup("config", function()
 	for _, id in subs do if id == "KO1" then count += 1 end end
 	check(count == 1, "KO1 is in StoryQuests.Subs exactly once", tostring(count))
 	local req = KO.Requires
-	check(type(req) == "table" and #req.Done == 1 and req.Done[1] == "M1_2" and req.MaxLevel == 8 and req.NoPotionYet == true,
-		"opens after M1_2, up to Lv8, only with no potion yet", show(req))
+	check(type(req) == "table" and #req.Done == 1 and req.Done[1] == "M1_1" and req.MaxLevel == 8 and req.NoPotionYet == true,
+		"opens after M1_1 (10/15: no M1_2), up to Lv8, only with no potion yet", show(req))
 	local s = KO.Steps
 	check(s[1].Text == "Defeat the King Slime" and s[1].Obj.Type == "Event" and s[1].Obj.Name == "FirstKO" and s[1].Obj.Past == nil
 		and s[1].Guide == "SlimeMeadow", "step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one)", show(s[1].Obj))
@@ -200,7 +200,7 @@ runGroup("offered", function()
 		local tr = w:Track(d, "KO1")
 		local row = rowOf(w, p, d, "KO1")
 		check(tr ~= nil and tr.St == 1 and #panels == before and noticeAbout(w, p, n0, { "king", "potion", "hop" }) == nil,
-			faction .. ": after M1_2 the quest is just a row: no popup, no toast", show({ tr, #panels - before, noticeAbout(w, p, n0, { "king", "potion", "hop" }) }))
+			faction .. ": after M1_1 the quest is just a row: no popup, no toast", show({ tr, #panels - before, noticeAbout(w, p, n0, { "king", "potion", "hop" }) }))
 		check(row ~= nil and row.Text == "Defeat the King Slime" and row.ShortName == "Defeat King" and row.Story.Guide == "SlimeMeadow"
 			and row.Story.Panel == nil and row.CanClaim == false and row.Kind == "Sub", faction .. ": row 1 reads 'Defeat the King Slime', guides to the meadow", show(row))
 		check(w.Story.CurrentStep(p, "KO1") == 1 and w.Story.Wants(p, "FirstKO") == true and w.Story.Wants(p, "PotionBought") == false,
@@ -215,12 +215,12 @@ runGroup("offered", function()
 	end
 	offered("Lv8 (the last level)", { Level = 8 }, true)
 	offered("Lv9", { Level = 9 }, false)
-	offered("before M1_2", { Done = { M1_1 = true } }, false)
+	offered("before M1_1", { Done = {} }, false)
 	offered("an HP potion in the bag", { Data = { HPPotionCount = 1 } }, false)
 	offered("an MP potion in the bag", { Data = { MPPotionCount = 2 } }, false)
 	offered("a potion bought once (and used)", { First = { Migrated = true, PotionBought = true } }, false)
 	offered("a potion drunk once", { First = { Migrated = true, PotionUsed = true } }, false)
-	offered("already done", { Done = { M1_1 = true, M1_2 = true, KO1 = true } }, false)
+	offered("already done", { Done = { M1_1 = true, KO1 = true } }, false)
 	-- the quest does not start twice and nothing restarts it
 	local p, d = joinKO(w, uid + 1, "Halo")
 	uid += 1
@@ -465,15 +465,15 @@ runGroup("personal", function()
 	check(amount(mine, true) == 1 and amount(mine, false) == 0, "a Personal step counts personal kills only", show({ amount(mine, true), amount(mine, false) }))
 	check(w.Story.EventAmount(p, { Type = "WarPoints", Personal = nil }, { Kind = "Kill", Info = { Kind = "Slime", Personal = true, WarPoints = 5 } }) == 0,
 		"war points never come from a personal monster", "")
-	-- the existing quests are not changed by it: M1_2 (Slime Princes) ignores a personal BigSlime
-	local q, qd = w:Join(1501, { Faction = "Halo", Level = 3, Data = { Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } } } })
+	-- the existing quests are not changed by it: M1_1 (its Slime Prince step) ignores a personal BigSlime
+	local q, qd = w:Join(1501, { Faction = "Halo", Level = 3, Data = { Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 	w.Story.Refresh(q)
 	local m = qd.Story.Main
-	check(m.Id == "M1_2" and m.St == 1, "M1_2 is the main quest", show(m))
+	check(m.Id == "M1_1" and m.St == 1, "M1_1 is the main quest", show(m))
 	w:Kill(q, "BigSlime", { Personal = true })
-	check(m.P == 0, "a personal Slime Prince does not count for M1_2", show(m))
+	check(m.St == 1 and m.P == 0, "a personal Slime Prince does not count for M1_1", show(m))
 	w:Kill(q, "BigSlime", { Personal = false })
-	check(qd.Story.Done.M1_2 == true, "a shared one does (A23-188: one Prince is the whole of M1_2)", show(qd.Story))
+	check(m.St == 2, "a shared one does (M1_1's Prince step done)", show(m))
 end)
 
 ------------------------------------------------------------------ 7. Studio test aids (Main's DebugCommand StorySub / StoryDone)
@@ -502,8 +502,8 @@ runGroup("debug aids", function()
 	for _, bad in { 0, -1, 6, 99 } do
 		check(string.find(w.Story.DebugSub(r, "KO1", bad), "steps 1-5", 1, true) ~= nil and w:Track(rd, "KO1").St == 2, "step " .. tostring(bad) .. " is refused (steps 1-5)", show(w:Track(rd, "KO1")))
 	end
-	check(string.find(w.Story.DebugSub(r, "Nope", 1), "no such sub quest", 1, true) ~= nil and string.find(w.Story.DebugSub(r, "M1_2", 1), "no such sub quest", 1, true) ~= nil
-		and w:Track(rd, "M1_2") == nil and rd.Story.Subs.M1_2 == nil, "an unknown id / a main quest is not a sub quest", "")
+	check(string.find(w.Story.DebugSub(r, "Nope", 1), "no such sub quest", 1, true) ~= nil and string.find(w.Story.DebugSub(r, "M1_3", 1), "no such sub quest", 1, true) ~= nil
+		and w:Track(rd, "M1_3") == nil and rd.Story.Subs.M1_3 == nil, "an unknown id / a main quest is not a sub quest", "")
 	check(w.Story.DebugSub(w:NewPlayer(1699, {}), "KO1", 1) == "no data", "no save: refused", "")
 	-- a finished quest can be started again
 	rd.Story.Done.KO1 = true
@@ -516,8 +516,8 @@ runGroup("debug aids", function()
 	check(w:Track(rd, "KO1") == nil and #done == 0 and #w.XP == 0 and #w.Granted == 0 and #w.GoldGiven == gold0, "... never restarted, no QuestDone, no reward", "")
 	-- a main quest done: the main slot is free
 	local m, md = joinKO(w, 1604, "Halo", { Level = 3, Done = { M1_1 = true } })
-	check(md.Story.Main.Id == "M1_2", "M1_2 is the active main quest", show(md.Story.Main))
-	check(w.Story.DebugDone(m, "M1_2") == "ok" and md.Story.Done.M1_2 == true and md.Story.Main.Id ~= "M1_2", "DebugDone on the active main quest: done, the slot is free", show(md.Story.Main))
+	check(md.Story.Main.Id == "M1_3", "M1_3 is the active main quest (10/15: M1_1 -> M1_3)", show(md.Story.Main))
+	check(w.Story.DebugDone(m, "M1_3") == "ok" and md.Story.Done.M1_3 == true and md.Story.Main.Id ~= "M1_3", "DebugDone on the active main quest: done, the slot is free", show(md.Story.Main))
 	check(string.find(w.Story.DebugDone(m, "Nope"), "no such quest", 1, true) ~= nil and w.Story.DebugDone(w:NewPlayer(1698, {}), "KO1") == "no data", "unknown quest / no save: refused", "")
 end)
 
@@ -529,7 +529,7 @@ runGroup("a brand-new Studio save keeps the slot step", function()
 	local function player(uid, saved)
 		local d = saved
 		d.Class, d.Faction, d.ClassChosen, d.Level, d.TutorialStep = "Warrior", "Halo", true, 4, 99
-		d.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true, M1_2 = true }, Pick = {}, First = { Migrated = true } }
+		d.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } }
 		local p = w:Join(uid, { Saved = d })
 		w.Story.Refresh(p)
 		w:Flush()
@@ -539,7 +539,7 @@ runGroup("a brand-new Studio save keeps the slot step", function()
 	local p, d = player(1701, rec)
 	check(d.QuickSlots == ",," and p:GetAttribute("QuickSlots") == ",,", "ready: still three empty slots (no HP / MP given)", show({ d.QuickSlots, p:GetAttribute("QuickSlots") }))
 	local tr = w:Track(d, "KO1")
-	check(tr ~= nil and tr.St == 1, "the new player (M1_2 done, Lv4, no potions) gets KO1", show(tr))
+	check(tr ~= nil and tr.St == 1, "the new player (M1_1 done, Lv4, no potions) gets KO1", show(tr))
 	w.Story.Event(p, "FirstKO")
 	check(tr.St == 2 and d.CarriedGold == 50, "the King's KO: 'Buy a potion' with its 50 gold", show({ tr.St, d.CarriedGold }))
 	w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 })

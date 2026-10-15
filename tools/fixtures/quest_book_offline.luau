@@ -51,9 +51,9 @@ end)
 runGroup("done", function()
 	local w = bookWorld()
 	local B = w.Reg.StoryQuestService.BookRows
-	local p, d = hero(w, 1, { Data = { Story = storyOf({ "M1_1", "M1_2", "S0", "Lunch1" }) } })
+	local p, d = hero(w, 1, { Data = { Story = storyOf({ "M1_1", "M1_3", "S0", "Lunch1" }) } })
 	local b = B(p, d)
-	check(ids(b.Done) == "story:M1_2,story:M1_1,story:Lunch1,story:S0",
+	check(ids(b.Done) == "story:M1_3,story:M1_1,story:Lunch1,story:S0",
 		"Done: finished mains newest first, then finished subs newest first, as 'story:<id>'", ids(b.Done))
 	local all = {}
 	for _, id in w.Config.StoryQuests.Main do table.insert(all, id) end
@@ -75,7 +75,7 @@ runGroup("available", function()
 	local B = w.Reg.StoryQuestService.BookRows
 	-- after chapter 1 at Lv3 (Halo): S6 / XR1 (Lv5) and H2 (Lv8, Halo) wait for a level; S3 (no level) is ready; N1 (the
 	-- artisan guild's) and R5 (Horns) are not this player's
-	local p, d = hero(w, 1, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_2", "M1_3", "M1_4", "S0" }) } })
+	local p, d = hero(w, 1, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_3", "M1_4", "S0" }) } })
 	local b = B(p, d)
 	local byId = {}
 	for _, e in b.Available do byId[e.Id] = e end
@@ -91,7 +91,7 @@ runGroup("available", function()
 	check(b.Available[1].Level == nil or b.Available[1].Level <= (b.Available[#b.Available].Level or 0),
 		"lowest level first", ids(b.Available))
 	-- started or done subs are not available
-	local q, dq = hero(w, 2, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_2", "M1_3", "M1_4", "S0", "S3" },
+	local q, dq = hero(w, 2, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_3", "M1_4", "S0", "S3" },
 		{ S6 = { St = 1, P = 0, T = {}, Claim = false } }) } })
 	local b2 = B(q, dq)
 	local seen = {}
@@ -106,11 +106,11 @@ runGroup("available", function()
 	check(dr.Level == 30 and d.Level == 3, "BookRows leaves the save's level alone", tostring(d.Level))
 	-- AvailableMax
 	local w2 = bookWorld({ EditConfig = function(c) c.QuestBook.AvailableMax = 2 end })
-	local s, ds = hero(w2, 4, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_2", "M1_3", "M1_4", "S0" }) } })
+	local s, ds = hero(w2, 4, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_3", "M1_4", "S0" }) } })
 	check(#w2.Reg.StoryQuestService.BookRows(s, ds).Available == 2, "at most AvailableMax", "")
 	-- a hidden sub (found only by doing it) is never listed, even when ready
 	local w3 = bookWorld({ EditConfig = function(c) c.StoryQuests.Defs.S3.Hidden = true end })
-	local h, dh = hero(w3, 5, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_2", "M1_3", "M1_4", "S0" }) } })
+	local h, dh = hero(w3, 5, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_3", "M1_4", "S0" }) } })
 	local seenH = {}
 	for _, e in w3.Reg.StoryQuestService.BookRows(h, dh).Available do seenH[e.Id] = true end
 	check(not seenH["story:S3"] and seenH["story:S6"], "a hidden ready sub stays hidden (the others still show)", "")
@@ -118,7 +118,7 @@ end)
 
 runGroup("a failing visibility check", function()
 	local w = bookWorld({ VisibleError = true })
-	local p, d = hero(w, 1, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_2", "M1_3", "M1_4", "S0" }) } })
+	local p, d = hero(w, 1, { Data = { Level = 3, Story = storyOf({ "M1_1", "M1_3", "M1_4", "S0" }) } })
 	local b = w.Reg.StoryQuestService.BookRows(p, d)
 	local seen = {}
 	for _, e in b.Available do seen[e.Id] = true end
@@ -135,7 +135,7 @@ runGroup("faction and hidden", function()
 		if defs[id].Hidden then table.insert(hidden, id) end
 		if defs[id].Factions then table.insert(factional, id) end
 	end
-	local all = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7", "M3_4", "S0" }
+	local all = { "M1_1", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7", "M3_4", "S0" }
 	for _, side in { "Halo", "Horns" } do
 		local p, d = hero(w, side == "Halo" and 1 or 2, { Data = { Faction = side, Level = 1, Story = storyOf(all) } })
 		for _, e in B(p, d).Available do
