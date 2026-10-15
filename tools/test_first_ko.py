@@ -214,9 +214,12 @@ def static() -> tuple[int, list[str]]:
     check(use.count("practiceSip(player, kind)") == 2, "the practice sip is tried at full HP and at full MP only")
     check(all(token in config for token in ('PotionPractice = "Cheers! The potion stays in your bag."', "Config.FirstKO = {")),
           "the practice-sip line and Config.FirstKO exist")
-    # nothing else reports a happening: a client has no way to send one (StoryAction is Open / Talk / Choose)
+    # nothing else reports a happening: a client has no way to send one (StoryAction is Open / Talk / Choose, and since
+    # A23-199 Accept / Decline an offer, Pickup / Deliver - steps the server checks itself, never a named happening)
     check(story.count("OnServerEvent:Connect(") == 1, "StoryQuestService has one remote handler (StoryAction)")
-    check(re.search(r'action == "(?!Open|Talk|Choose)\w+"', function_block(story, "local function onStoryAction(")) is None,
+    check(re.search(r'action == "(?!Open"|Talk"|Choose"|Accept"|Decline"|Pickup"|Deliver")\w+"',
+                    function_block(story, "local function onStoryAction(")) is None
+          and "StoryQuestService.Event(" not in function_block(story, "local function onStoryAction("),
           "StoryAction has no action that could report a happening")
     data_src = read(SSS / "DataService.luau")
     check(data_src.count("giveNewQuickSlots(d)") == 3 and "local function giveNewQuickSlots(" in data_src,
