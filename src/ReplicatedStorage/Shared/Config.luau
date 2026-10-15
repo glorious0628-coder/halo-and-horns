@@ -9360,6 +9360,34 @@ end
 Config.RateLimits.GoToFriend = 3
 Config.RateLimits.CandyTrade = 1
 
+-- A23-201 / A23-204 the party (PartyService + QuestCreditService; docs/design/party_guild_2026-10-15.md §1, party chunk).
+-- 2~4 players on this server; an invite goes to a Roblox friend or a player within InviteRange studs; one invite card
+-- waits InviteTTL s (single-use InviteId); the leader passes on when the leader leaves; 1 member left = disbanded.
+-- Quest credit of a kill: CreditWindow s since the player's last hit, within CreditRange studs of the kill; a boss needs
+-- BossMinHits hits at least BossHitGap s apart. ActiveWindow: a party member who never hit it gets personal quest credit
+-- only when near AND did something within this many s (no AFK riders). Text = failure lines only (A23-191: "bad").
+Config.Party = {
+	Enabled = true,
+	MinSize = 2,
+	MaxSize = 4,
+	InviteRange = 60,
+	InviteTTL = 30,
+	MaxOutgoing = 3,
+	CreditWindow = 15,
+	CreditRange = 80,
+	BossMinHits = 2,
+	BossHitGap = 3,
+	ActiveWindow = 30,
+	Text = {
+		Full = "The party is full.",
+		Busy = "They are in a party already.",
+		Far = "Get closer to invite them.",
+		Gone = "That invite is gone.",
+		Leader = "Only the leader can do that.",
+	},
+}
+Config.RateLimits.PartyAction = 0.4
+
 ----------------------------------------------------------------- A23-81 quest window book (게임성 개발 3, 2026-10-08)
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
@@ -11473,6 +11501,8 @@ Config.ClientText.UIKit = {
 Config.ClientText.ComeBack = { MyWay = "Your way: %s" }
 Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag" }
 Config.ClientText.Invite = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" }
+-- A23-201 the party frames + invite card (Party.luau, PlayerListUI's row button): words only, no paragraphs
+Config.ClientText.Party = { Invite = "Party", Join = "Join", NotNow = "Not now", Leave = "Leave", Kick = "Kick", Leader = "Leader" }
 Config.ClientText.PauseCard = {
 	PauseTitle = "Saved!",
 	PauseNext = "Next time: %s",

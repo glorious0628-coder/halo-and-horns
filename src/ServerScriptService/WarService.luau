@@ -544,6 +544,11 @@ function WarService.Init(registry)
 					WarService.AddKill(player, info.WarPoints, info.WarPoints)
 				elseif info.First == nil then
 					WarService.AddKill(player, info.WarPoints, info.WarShare) -- kill units; CR-M18: pool share per contributor
+				elseif info.PartyBoss == true then
+					-- A23-204: a boss killed by a party: every real hitter in a party gets the units for their OWN side
+					-- (their side's pool takes its share once more: WarShare = WarPoints / that side's paid hitters)
+					local sideShare = info.WarShare
+					WarService.AddKill(player, info.WarPoints, sideShare)
 				end
 			end
 		end)
