@@ -103,7 +103,7 @@ def main():
          "PVP" not in steps and "NotifyFilters" not in steps),
         ("UIKit's Notify hookup asks UIKit.NotifyFilters before a toast / banner",
          "for _, skip in UIKit.NotifyFilters do" in uikit and "if okSkip and yes == true then return end" in uikit
-         and uikit.find("for _, skip in UIKit.NotifyFilters do") < uikit.find('if payload.Kind == "bad" then UIKit.Toast')
+         and uikit.find("for _, skip in UIKit.NotifyFilters do") < uikit.find('if payload.Kind == "bad" then UIKit.Refuse')
          and "UIKit.NotifyFilters = {}" in uikit),
     ]
     for name, good in static:

@@ -1000,7 +1000,9 @@ function WMESH.Attach(parts, handle, entry, point)
 	if not (scale > 0 and scale < 100) then return nil end
 	local mesh = template:Clone()
 	mesh.Name = WMESH.Name
-	mesh.Size = template.Size * scale
+	-- grip-3 (메인 반영 1 10/15: the uploaded meshes come in at the FBX's 100x, their length along Y): the template's own
+	-- length is entry.Length studs, whatever size it loaded at
+	mesh.Size = template.Size * (entry.Length / math.max(1e-6, template.Size.Y)) * scale
 	mesh.CFrame = handle.CFrame * CFrame.new(0, dy, 0)
 	mesh.Anchored, mesh.CanCollide, mesh.CanQuery, mesh.CanTouch, mesh.Massless = false, false, false, false, true
 	mesh.CastShadow = false

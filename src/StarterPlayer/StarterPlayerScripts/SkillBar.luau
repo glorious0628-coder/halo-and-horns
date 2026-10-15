@@ -110,7 +110,7 @@ end
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 -- A23-191 (user 10/14): no banner, no "Press Q" line, no keys tip card - the button pops in and the sound plays
-local LEARN = { Pop = 0.35, TellGap = 3, TellAt = -math.huge, SoundDelay = 1.1, TeachLines = 2, TeachGap = 2.2 }
+local LEARN = { Pop = 0.35, TellGap = 0.35, TellAt = -math.huge, SoundDelay = 1.1, TeachLines = 2, TeachGap = 2.2 }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -682,16 +682,17 @@ function LEARN.Tell(level, slot)
 	LEARN.TellAt = os.clock()
 	local task = math.floor(num("Level", 1)) >= (tonumber(level) or 1) and SkillBar.TaskFor(slot) or ""
 	local line = task ~= "" and task or trx(TXT, "Later", level)
-	if type(UIKit.Toast) == "function" then pcall(UIKit.Toast, line, "bad", 2.5) end -- A23-191: why the key did nothing
+	-- 최종 검수 10/15 (feedback_audit #1): no words - the Deny sound (the slot is not on screen yet to shake)
+	if type(UIKit.Refuse) == "function" then pcall(UIKit.Refuse, SkillBar.Button(slot)) end
+	return line
 end
 
 -- A23-193: a key waiting at the teacher: one short line now and then (Kind "bad": why the key did nothing)
 function LEARN.TellTeach()
 	if os.clock() < LEARN.TellAt + LEARN.TellGap then return end
 	LEARN.TellAt = os.clock()
-	local name = type(Config.SkillTeacherName) == "function" and Config.SkillTeacherName(myFaction()) or ""
-	if name == "" or type(UIKit.Toast) ~= "function" then return end
-	pcall(UIKit.Toast, trx(TXT, "Teach", name), "bad", 2.5)
+	-- 최종 검수 10/15 (feedback_audit #1): no words - the locked slot shakes red (the teacher's "!" and the goal line say where)
+	if type(UIKit.Refuse) == "function" then pcall(UIKit.Refuse, SkillBar.Button(LEARN.TeachSlot)) end
 end
 
 -- A23-193: the teacher's NPC body (CollectionService StoryNpc with NpcId = id), or nil
@@ -798,6 +799,7 @@ function SkillBar.Use(slot)
 	local st = stateOf(slot)
 	b.State = st
 	if st.Teach then
+		LEARN.TeachSlot = slot
 		LEARN.TellTeach()
 		return false
 	end

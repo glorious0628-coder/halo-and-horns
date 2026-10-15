@@ -57,7 +57,18 @@ for _, m in MANIFEST_ROWS do
 end
 ok(#MANIFEST_ROWS == 30 and #missing == 0, "every manifest weapon (30) has its row with the manifest's Length / Pivot",
     #MANIFEST_ROWS .. " " .. table.concat(missing, ","))
--- 2. WeaponMeshFor
+-- 메인 반영 1 10/15 (build/weapon_mesh_ids.json): all 30 uploaded - every row has a mesh and its colour map
+local uploaded = 0
+for key, row in Config.WeaponMeshes do
+    for t, e in row do
+        if string.match(e.MeshId, "^rbxassetid://%d+$") and string.match(e.TextureId, "^rbxassetid://%d+$") then uploaded += 1 end
+    end
+end
+ok(uploaded == 30, "all 30 weapon meshes have their MeshId + TextureId (the uploads)", uploaded)
+-- 2. WeaponMeshFor (on cleared ids: an empty one keeps the code shape)
+for _, row in Config.WeaponMeshes do
+    for _, e in row do e.MeshId = "" end
+end
 local none = true
 for key, row in Config.WeaponMeshes do
     for t, _ in row do
@@ -102,7 +113,8 @@ ok(math.abs(sc - 3.85 / 3) < 1e-9, "the scale = code length / mesh length (propo
 local parts = { handle, blade, guard }
 ok(WMESH.Attach(parts, handle, { MeshId = "rbxassetid://404", Length = 3, Pivot = 0.2 }, 0.5) == nil and #parts == 3
     and blade.Transparency == 0, "no loaded template: nothing changes (the code shape)")
-local template = { Size = Vector3.new(0.6, 3, 0.2) }
+-- the uploads load at the FBX's 100x (메인 반영 1 10/15): the template's own size never changes the result
+local template = { Size = Vector3.new(60, 300, 20) }
 function template:Clone()
     return { Size = self.Size, Name = "x" }
 end
@@ -148,7 +160,10 @@ MUTATIONS = [
     ("CONFIG", "an empty MeshId counts", 'if type(e) ~= "table" or type(e.MeshId) ~= "string" or e.MeshId == "" then return nil end',
      'if type(e) ~= "table" or type(e.MeshId) ~= "string" then return nil end'),
     ("CONFIG", "the joke weapons not looked up", 'e = type(M.Meme) == "table" and M.Meme[meme] or nil', "e = nil"),
-    ("CONFIG", "the T7 Ruin Sword missing", "\t\t[7] = { MeshId = \"\", TextureId = \"\", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7\n", ""),
+    ("CONFIG", "the T7 Ruin Sword missing", "\t\t[7] = { MeshId = \"rbxassetid://72072766738977\", TextureId = \"rbxassetid://123814346168925\", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7\n", ""),
+    ("CONFIG", "a mesh id lost", 'MeshId = "rbxassetid://72072766738977"', 'MeshId = ""'),
+    ("CV", "the mesh at its loaded (100x) size", "mesh.Size = template.Size * (entry.Length / math.max(1e-6, template.Size.Y)) * scale",
+     "mesh.Size = template.Size * scale"),
     ("CV", "buildWeapon waits for a mesh", "\tlocal template = entry and WMESH.Cache[entry.MeshId]\n",
      "\tlocal template = entry and (WMESH.Cache[entry.MeshId] or WMESH.Load(entry))\n"),
     ("CV", "the joke weapons get no mesh", "and Config.WeaponMeshFor(gkey, tier, type(w) == \"table\" and w.Meme or nil) or nil",
