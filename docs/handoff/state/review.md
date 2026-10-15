@@ -379,3 +379,11 @@
 - 병합 시험 중: scratchpad chain01 = 1caa86aa(dev2-quest-p1) + 4f87cb83(dev1-quest-p1, 스쳐 줍기 포함) + 9a29e2cf(dev1-a191 + 줄 균형) → 퀘스트·스토리·글 시험 22개. 저장 판 번호는 안 바뀜(Story.Schema 2~5는 저장 안 이관만).
 - 다섯 언어: run_loc.sh 계속 도는 중 49/65(es 13·ja 13·zh-hans 13·fr 10, zh-hant 0).
 - 다음: 병합 통과 → push → 메인 반영 1 sync·영어 덤프 사진(🟠 알림 먼저) → 규격 main 들어가면 Codex 장별 퀘스트 데이터 → 다섯 언어 끝나면 샘플 확인·업로드.
+
+## 10/15 19:xx (최종 검수) — 퀘스트 P1 병합 + A23-208
+- 병합 main ed7d03e7: dev2-quest-p1 1caa86aa + dev1-quest-p1 4f87cb83 + dev1-a191 9a29e2cf + 시험 고침 9a53d628(review-qw-fix: quest_window가 지운 키 팁을 찾던 것). 시험 22개 + quest_data 17/17 통과. 저장 판 번호 그대로.
+- 개발 1에: Config `KeysTip = false` 스위치 + SkillBar LEARN.Tip 키 팁 카드 코드째 삭제 부탁.
+- 개발 2에: 원래 실패 26개 비교를 ed7d03e7 기준으로 마저, 데이터 규격에 '사정·발견·끝 대사·끝 장면·다음 고리' 칸 미리 검토.
+- **SPEC A23-208**(사용자): 퀘스트 이야기 촘촘하게·감정 있게, GPT와 상의. GPT 1회차 = build/codex/story_emotion_r1.md (프롬프트 _prompt.md). 다음: Claude 비평 → 2회차 → 바이블 반영 → 장별 데이터.
+- 메인 반영 1: sync ed7d03e7 + 영어 덤프 사진(en_first10·en_windows) 진행 중(🟠 알림 함).
+- 파티 api/party2 도는 중, 다섯 언어 49/65.
