@@ -3272,6 +3272,67 @@ runGroup("daily repeat requests", function()
 	end
 end)
 
+------------------------------------------------------------------ A23-205 the real daily pack (Shared/Quests/Daily.luau)
+runGroup("the daily pack", function()
+	local w = townWorld({ Prompts = true })
+	local C, SQ = w.Config, w.Config.StoryQuests
+	local pack = execute("Daily", DAILY_SOURCE, nativeEnv())
+	C.AddQuests(pack, "Daily")
+	local kinds, n = {}, 0
+	for _, id in pack.Subs do
+		local def = SQ.Defs[id]
+		local r = def.Reward
+		local kind = r.Item or r.Potion
+		check(def.Repeat == "Daily" and def.Last == true and kind ~= nil and kinds[kind] == nil, id .. ": a daily, its own reward kind", show(r))
+		kinds[kind] = true
+		n += 1
+	end
+	check(n == 12 and SQ.RepeatDailyMax == 5, "12 dailies, 5 a day", n)
+	local BRIGHT = vec(18, 0, -424)
+	w:Npc("Bright", BRIGHT)
+	w:Npc("Gleam", vec(-10, 0, -372))
+	local p, d = joinAfterM23(w, 9981, "Halo", { Pos = BRIGHT + vec(2, 0, 0), Level = 9 })
+	w.Story.Refresh(p)
+	check(string.find(p:GetAttribute("StoryOffers") or "", "Bright", 1, true) ~= nil, "Halo past M1_4: Bright asks (DH1 / DH3)",
+		p:GetAttribute("StoryOffers"))
+	check(C.QuestBefore(SQ.Defs.DH1, "Halo", d.Story.Flags) == SQ.Defs.DH1.Offer.BeforeBy.Default, "the first visit: the Default line", "")
+	w:Act(p, "DH1", "Accept")
+	check(w:Track(d, "DH1") ~= nil, "DH1 accepted", "")
+	for _ = 1, 3 do
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = vec(150, 0, 0), WarPoints = 0 })
+		w:Flush()
+	end
+	check(w:Track(d, "DH1").St == 2, "3 slimes: on to the glue", show(w:Track(d, "DH1")))
+	w:MoveTo(p, SQ.Landmarks.DH1Glue + vec(2, 0, 0))
+	w:Act(p, "DH1", "Pickup")
+	check(w:Track(d, "DH1").St == 3, "the glue picked up at its spot: on to Bright", show(w:Track(d, "DH1")))
+	w:MoveTo(p, BRIGHT + vec(2, 0, 0))
+	local bank = d.BankGold or 0
+	local had = (d.Items or {}).Enh70 or 0
+	w:Act(p, "DH1", "Choose", "Good")
+	check(d.Story.Daily.Done.DH1 == true and d.Story.Done.DH1 == nil and (d.BankGold or 0) == bank + 100
+		and ((d.Items or {}).Enh70 or 0) == had + 1 and ((d.ItemsBound or {}).Enh70 or 0) >= 1,
+		"DH1 done: +100 gold and one Enhance Scroll 70%, bound; done for today only", show({ d.BankGold, d.Items, d.ItemsBound }))
+	check(d.Story.Flags.DH1 == "Shared", "the choice is remembered (Story.Flags DH1 = Shared)", show(d.Story.Flags))
+	check(C.QuestBefore(SQ.Defs.DH1, "Halo", d.Story.Flags) == SQ.Defs.DH1.Offer.BeforeBy.Shared,
+		"the next visit's Before remembers it (BeforeBy)", "")
+	-- a Horns player never gets Halo's town requests; Pip (a body only at the woods' edge) asks from Lv10
+	w:Npc("Rex", vec(28, 0, 412))
+	local h, hd = joinAfterM23(w, 9982, "Horns", { Pos = vec(28, 0, 414), Level = 9 })
+	w.Story.Refresh(h)
+	check(string.find(h:GetAttribute("StoryOffers") or "", "Bright", 1, true) == nil
+		and string.find(h:GetAttribute("StoryOffers") or "", "Rex", 1, true) ~= nil, "Horns: Rex asks, Bright does not", h:GetAttribute("StoryOffers"))
+	w:Npc("Pip", vec(700, 0, 30))
+	w.Story.Refresh(h)
+	check(string.find(h:GetAttribute("StoryOffers") or "", "Pip", 1, true) == nil, "Lv9: Pip's barrel race waits for Lv10", h:GetAttribute("StoryOffers"))
+	local _ = hd
+	for _, id in pack.Subs do
+		SQ.Defs[id] = nil
+		table.remove(SQ.Subs, table.find(SQ.Subs, id))
+	end
+end)
+
 ------------------------------------------------------------------ quest P1 ⑧ (bible §13-3): a short escort (moves only while I am near; one event; a saved
 -- checkpoint a rejoin goes on from) and a short chase (catch it; fall far behind = it waits at the last waypoint)
 runGroup("p1 chase and escort", function()

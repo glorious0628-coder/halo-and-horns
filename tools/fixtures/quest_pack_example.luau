@@ -59,7 +59,7 @@ return {
 					Lines = { All = { "Bright: Bright as ever. Like me!" } }, Scene = "Laugh",
 					SetFlag = { Key = "LampH", Value = "Moth" } },
 			},
-			Reward = { Item = "Enh70", N = 1 },
+			Reward = { Item = "LuckyTonic", N = 1 }, -- (a kind no real daily pays: Daily.luau)
 		},
 	},
 	Main = { { After = "M1_4", Ids = { "HX_Guard" } } },

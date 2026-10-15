@@ -12,18 +12,20 @@ from __future__ import annotations
 
 import re
 
-from dev2_offline import ROOT, SSS, Suite, function_block, read, run
+from dev2_offline import ROOT, SHARED, SSS, Suite, function_block, read, run
 from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindings
 
 FILES = dict(UNARMED_FILES)
 FILES["FACTION_SOURCE"] = SSS / "FactionService.luau"
 FILES["PROGRESSION_SOURCE"] = SSS / "ProgressionService.luau"
+FILES["DAILY_SOURCE"] = SHARED / "Quests/Daily.luau"  # A23-205 the 12 daily requests (a quest data pack)
 C, ST, L, F, PR = "CONFIG_SOURCE", "STORY_SOURCE", "LOOT_SOURCE", "FACTION_SOURCE", "PROGRESSION_SOURCE"
 U = "UTIL_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = unarmed_bindings(sources)
+    out["DAILY_SOURCE"] = sources["DAILY_SOURCE"]
     faction = sources[F]
     out["FACTION_EXTRACT"] = (
         "local Config, Util, S, FactionService, nearAltar = ...\nlocal TAG = \"FactionService\"\n"

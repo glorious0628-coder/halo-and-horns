@@ -356,7 +356,7 @@ SELF_TESTS = [
     ("no difficulty", "Kind = \"Sub\", Type = \"Deliver\", Difficulty = \"Easy\",", "Kind = \"Sub\", Type = \"Deliver\",", "difficulty"),
     ("an easy quest that pays a scroll", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Item = \"Enh70\", N = 1 }", "difficulty-reward"),
     ("an easy quest with a title", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Title = \"Helper\" }", "difficulty-reward"),
-    ("a hard quest that pays like an easy one", "Reward = { Item = \"Enh70\", N = 1 }", "Reward = { GoldN = 40 }", "difficulty-reward-low"),
+    ("a hard quest that pays like an easy one", "Reward = { Item = \"LuckyTonic\", N = 1 }", "Reward = { GoldN = 40 }", "difficulty-reward-low"),
     ("no situation line", "Offer = { Npc = \"Bright\", Before = \"The cart wobbles. The bridge planks creak.\",", "Offer = { Npc = \"Bright\",", "story-before"),
     ("a long situation line", "Before = \"The cart wobbles. The bridge planks creak.\",", "Before = \"The cart wobbles. The bridge planks creak. Everyone in town is watching the cart now.\",", "story-length"),
     ("nothing found on the way", "Find = \"A tiny sock is stuck on the wheel!\",", "", "story-find"),
