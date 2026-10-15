@@ -32,6 +32,7 @@ local V = function(x, y, z) return setmetatable({ X = x, Y = y, Z = z }, { __typ
 local function typeof(v) local mt = type(v) == "table" and getmetatable(v) return mt and mt.__type or type(v) end
 local function C3(n) return setmetatable({ N = n }, { __type = "Color3" }) end
 local Util = { FlatDistance = function(a, b) return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2) end }
+local T = { Pickup = { Brush = 5 } }
 local Config = { StoryQuests = {
 	Landmarks = { PracticeH = V(0, 0, 0), PoseSpot = V(100, 0, 0), LampH = V(200, 0, 0), LampR = V(300, 0, 0), LostBag = V(5, 0, 5) },
 	DifficultyGrade = { Easy = "Common", Normal = "Fine", Hard = "Rare", Challenge = "Epic" },
@@ -78,6 +79,9 @@ check("at the pose spot: its Emote step", StoryNpcs.EmoteAt(sp, V(105, 0, 0)) ~=
 check("away from it: no buttons", StoryNpcs.EmoteAt(sp, V(120, 0, 0)) == nil)
 local names = StoryNpcs.EmoteNames(sp[1])
 check("the buttons: wave (Good) first, then cheer", names[1] == "wave" and names[2] == "cheer", table.concat(names, ","))
+sp = StoryNpcs.Spots({ row("P", 1) }, "Halo")
+check("brushing past a thing to pick up takes it", StoryNpcs.BrushPickup(sp, V(8, 0, 5)) ~= nil)
+check("farther than Brush: still a press", StoryNpcs.BrushPickup(sp, V(12, 0, 5)) == nil)
 local d = STORY.DifficultyLook("Hard")
 check("Hard = the Rare colour, 3 stars", d and d.Color.N == "blue" and d.Stars == 3)
 check("Easy = Common 1 star, Challenge = Epic 4", STORY.DifficultyLook("Easy").Stars == 1 and STORY.DifficultyLook("Challenge").Stars == 4)
@@ -118,6 +122,8 @@ def statics(s: dict) -> list[tuple[str, bool]]:
         ("a StoryScene plays; the saved looks come back from StoryFlags", 'elseif kind == "StoryScene" then' in npc
          and 'key == "Demo"' in scene and "StoryNpcs.ApplyFlags, flags" in world and 'me:GetAttribute("StoryFlags")' in world),
         ("the Refresh pass runs the world pieces", "pcall(StoryNpcs.RefreshWorld, entries, me)" in npc),
+        ("a brush past a pickup asks the server once per Again s", "local brush = StoryNpcs.BrushPickup(spots, root and root.Position)" in world
+         and 'remote:FireServer(brush.Id, "Pickup")' in world and "WS.Brushed[brush.Id] = os.clock()" in world),
         ("the Offer window draws the difficulty", "STORY.DifficultyLook(def.Difficulty)" in panels
          and 'rim.Name = "Difficulty"' in panels and 'string.rep("★", look.Stars)' in panels),
         ("the emote words live in Config", 'EmoteCheer = "Cheer!", EmoteWave = "Wave"' in cfg),
@@ -137,11 +143,14 @@ MUTATIONS = [
     ("HUD", "the tap asks for the tutorial again", "\tif e.GuideNpc and L.NpcWalk(e.GuideNpc, zone, panels) then return end\n", ""),
     ("NPC", "no wobble", "\t\t\ttask.delay(math.max(0, tonumber(data.ContactDelay) or 0.1), function() StoryNpcs.Wobble(m) end)\n", ""),
     ("NPC", "the emote never sent", 'if ok and remote then remote:FireServer(id, "Emote", name) end', ""),
+    ("NPC", "a brush only when standing on it", "<= math.min(T.Pickup.Brush, s.Radius) then return s end", "<= 0.5 then return s end"),
+    ("NPC", "the brush never sent", 'if ok and remote then remote:FireServer(brush.Id, "Pickup") end', ""),
 ]
 
 
 def run(src: dict) -> tuple[bool, list, str]:
-    funcs = "".join(block(src["NPC"], n) for n in ("StoryNpcs.Spots", "StoryNpcs.FlagsOf", "StoryNpcs.EmoteAt", "StoryNpcs.EmoteNames"))
+    funcs = "".join(block(src["NPC"], n) for n in ("StoryNpcs.Spots", "StoryNpcs.FlagsOf", "StoryNpcs.EmoteAt", "StoryNpcs.EmoteNames",
+                                                    "StoryNpcs.BrushPickup"))
     funcs += block(src["PANELS"], "STORY.DifficultyLook")
     with tempfile.TemporaryDirectory() as d:
         f = Path(d) / "p1s.luau"

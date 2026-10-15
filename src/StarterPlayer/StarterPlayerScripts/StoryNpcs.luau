@@ -176,7 +176,9 @@ end
 -- A23-199: the things to pick up of my open Pickup steps, only while that step is open: a small box on the ground at
 -- the spot, a soft light and round sparkles (no rays), a "Pick up" prompt -> StoryAction(Id, "Pickup"); a step that
 -- closed takes its box away. Client-only parts in workspace.StoryPickups (no collision, no query)
-T.Pickup = { Folder = "StoryPickups", Size = Vector3.new(1.4, 0.9, 1.1), Lift = 0.45, Range = 9, Hold = 0,
+-- Brush = studs: walking this close picks it up without a press (최종 검수 10/15, the textbook: "줍기는 스쳐도 성공"; the
+-- server still checks its own Radius), Again = s before the same thing is asked for again
+T.Pickup = { Folder = "StoryPickups", Size = Vector3.new(1.4, 0.9, 1.1), Lift = 0.45, Range = 9, Hold = 0, Brush = 5, Again = 1.5,
 	Color = Color3.fromRGB(196, 140, 84), Lid = Color3.fromRGB(235, 95, 85), Light = Color3.fromRGB(255, 225, 150) }
 
 local function groundAt(pos)
@@ -217,7 +219,7 @@ T.World = {
 	LampNpc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" },
 	LampSpot = { Halo = "LampH", Horns = "LampR", Neutral = "LampN" },
 }
-local WS = { Tools = {}, Dummies = {}, EmoteFor = nil, Busy = {} }
+local WS = { Tools = {}, Dummies = {}, EmoteFor = nil, Busy = {}, Brushed = {} }
 
 -- (pure) my rows' open steps that happen at a place -> { { Id, Type, Spot, Pos, Radius, Allowed } }: Pickup / Practice /
 -- Emote (Obj.Spot) and the lamp of a step that leads to a Lamp* spot (Obj.Spot or Guide); my side's override first
@@ -258,6 +260,15 @@ function StoryNpcs.FlagsOf(text)
 	if type(text) ~= "string" then return out end
 	for k, v in string.gmatch(text, "([%w_]+)=([%w_]+)") do out[k] = v end
 	return out
+end
+
+-- (pure) the Pickup step I brush past (within Brush of its spot, never farther than its Radius), else nil
+function StoryNpcs.BrushPickup(spots, pos)
+	if typeof(pos) ~= "Vector3" then return nil end
+	for _, s in type(spots) == "table" and spots or {} do
+		if s.Type == "Pickup" and Util.FlatDistance(pos, s.Pos) <= math.min(T.Pickup.Brush, s.Radius) then return s end
+	end
+	return nil
 end
 
 -- (pure) the Emote step whose spot I stand at, else nil
@@ -708,6 +719,13 @@ function StoryNpcs.RefreshWorld(entries, me)
 	pcall(StoryNpcs.ApplyFlags, flags)
 	local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart")
 	pcall(StoryNpcs.DrawEmote, StoryNpcs.EmoteAt(spots, root and root.Position))
+	-- walking over a thing to pick up takes it (once per Again s; the server checks the step and the distance)
+	local brush = StoryNpcs.BrushPickup(spots, root and root.Position)
+	if brush and os.clock() - (WS.Brushed[brush.Id] or -math.huge) >= T.Pickup.Again then
+		WS.Brushed[brush.Id] = os.clock()
+		local ok, remote = pcall(function() return game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):FindFirstChild("StoryAction") end)
+		if ok and remote then remote:FireServer(brush.Id, "Pickup") end
+	end
 end
 
 -- one pass: the "!" and the Talk prompt of each story NPC follow my rows
