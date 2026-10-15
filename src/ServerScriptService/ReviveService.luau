@@ -173,6 +173,8 @@ function ReviveService.Try(helper, target)
 	end
 	Net.Notify(target, string.format(R.Text.HelpedBy, helper.DisplayName), "reward")
 	Net.Fx(target, "Revived", { By = helper.UserId })
+	-- feedback_audit #8 (최종 검수 10/15): the helper's side of the same moment
+	pcall(Net.Fx, helper, "ReviveDone", { Target = target.UserId })
 	ReviveService.Revived:Fire(helper, target)
 	return true
 end

@@ -557,6 +557,8 @@ runGroup("gift", function()
 		show(list))
 	check(iWeapon ~= nil and iScroll ~= nil and iWeapon < iScroll, "(a) the weapon line comes before Otto's scroll line", show(list))
 	check(#w:FxOf("Upgrade", fx0) == 1 and w:FxOf("Upgrade", fx0)[1].Data.Tier == 1, "(a) the equip Fx (Upgrade, Tier 1)")
+	check(w:FxOf("Upgrade", fx0)[1].Data.Source == "Gift", "feedback_audit #6: Source Gift (the forge's free weapon, not a buy)",
+		tostring(w:FxOf("Upgrade", fx0)[1].Data.Source))
 	check(w.Justice.GetCombatPower(p) == 300, "(a) power attribute source: Lv2 T1 = 300", w.Justice.GetCombatPower(p))
 	local nUse = #w.Notices
 	useScroll(w, p, 1)

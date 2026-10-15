@@ -36,6 +36,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # feedback_audit #8 (최종 검수 10/15): Fx CrownPoint only for whole points really added
+    ("no CrownPoint", W, "\t\tcrownFx(player, whole, \"Hunt\")\n", ""),
+    ("CrownPoint for a fraction", W, "\tif whole < 1 then return end\n\tpcall(Net.Fx, player, \"CrownPoint\"", "\tpcall(Net.Fx, player, \"CrownPoint\""),
+    ("CrownPoint total before the add", W, "Total = math.floor(personal[player] or 0)", "Total = math.floor(personal[player] or 0) - whole"),
     # --- Config
     ("1 kill = 1 point again", C, "\tKillsPerPoint = 100, -- A23-135", "\tKillsPerPoint = 1, -- A23-135"),
     ("PvP KO 20 again", C, "\tPvPKOPoints = 2, -- A23-137: was 20", "\tPvPKOPoints = 20, -- A23-137: was 20"),

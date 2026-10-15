@@ -30,6 +30,8 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 C, CO, SK, DW, M = "CONFIG_SOURCE", "COMBAT_SOURCE", "SKILL_SOURCE", "WINDOW_SOURCE", "MONSTER_SOURCE"
 
 MUTATIONS = [
+    # feedback_audit #3 (최종 검수 10/15): a teacher's lesson is ONE Fx (SkillLearned)
+    ("lesson: SkillUnlocked too", SK, "\traise(player, have, want, false) -- feedback_audit #3", "\traise(player, have, want, true) -- feedback_audit #3"),
     # --- 99N D (계획 5): the class tasks that open Z / X
     ("task: Z opens at the level alone", C, "\t\tif tasks and slot ~= \"Q\" and not (type(done) == \"table\" and done[slot] == true) then break end\n", ""),
     ("task: X before Z", C, "\t\tif tasks and slot ~= \"Q\" and not (type(done) == \"table\" and done[slot] == true) then break end\n",

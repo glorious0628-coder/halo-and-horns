@@ -49,6 +49,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # feedback_audit #7 (최종 검수 10/15): the Choice Fx after the points, with the score / rank before and after
+    ("Choice: no after score", ST, "\t\t\tlocal after = math.max(0, math.floor(num(data[stat])))\n", "\t\t\tlocal after = before\n"),
+    ("Choice: no rank", ST, "RankFrom = rankOf(before), RankTo = rankOf(after) })", "})"),
     # bag slots (2026-10-14)
     ("bag: Reward.BagSlots ignored", ST, "if type(def.Reward) == \"table\" and num(def.Reward.BagSlots) > 0 and S.LootService",
      "if false and S.LootService"),
