@@ -33,7 +33,7 @@ MUTATIONS = [
     ("the moment repeats", "\tb.WasLocked = st.Locked\n", ""),
     ("no PowerUp fallback", "\t\tif not (ok and played) then pcall(audio.Play, \"PowerUp\") end\n", ""),
     ("no pop", "\t\tscale.Scale = 0.2\n", "\t\tscale.Scale = 1\n\t\tscale:Destroy()\n"),
-    ("pops with reduced motion", "\tif not reduced then\n\t\tlocal scale", "\tif true then\n\t\tlocal scale"),
+    ("pops with reduced motion", "\tif not reduced then\n\t\tscale = b.Holder", "\tif true then\n\t\tscale = b.Holder"),
     ("a locked key press says nothing", "\t\tif st.On and st.Locked then LEARN.Tell(st.Unlock, slot) end\n", ""),
     ("the toast is spammed", "\tif os.clock() - LEARN.TellAt < LEARN.TellGap then return end\n", ""),
     ("SkillSlots ignored (a rebirth at Lv1 looks locked)",
@@ -43,7 +43,7 @@ MUTATIONS = [
     ("SkillSlots changes not watched", '"SkillBarPreview", "SkillSlots", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady" }',
      '"SkillBarPreview", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady" }'),
     # sound_gaps A9 / A10 (2026-10-07)
-    ("the learn sound plays with the banner", "\ttask.delay(LEARN.SoundDelay, LEARN.Sound)\n", "\tLEARN.Sound()\n"),
+    ("the learn sound plays with the banner", "\t\ttask.delay(wait + LEARN.SoundDelay, LEARN.Sound)\n", "\t\tLEARN.Sound()\n"),
     ("no SkillReady at the cooldown end",
      'if type(audio) == "table" and type(audio.Play) == "function" then ok, played = pcall(audio.Play, "SkillReady") end', ""),
     ("the click plays on top of SkillReady", 'if not (ok and played) and type(fx) == "table"', 'if type(fx) == "table"'),

@@ -705,6 +705,37 @@ function L.PowerPopup(from, to, delta)
 	end)
 end
 
+-- 최종 검수 10/15 (feedback_audit #2, one moment; server Fx LevelUp From / PowerFrom / PowerTo): my level-up on the
+-- HUD at the same moment as Fx's ring and stars - the level badge pops (bigger, then back with a little overshoot) and
+-- the power number counts up with its "+N" (the settle after it stays quiet: no second "+N")
+L.LevelPop = { Up = 1.6, In = 0.15, Out = 0.35 }
+function HUD.LevelUpMoment(d)
+	if type(d) ~= "table" then return end
+	local holder = ui.badgeHolder
+	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
+	if holder and not reduced then
+		local sc = holder:FindFirstChild("LevelPop")
+		if not sc then
+			sc = Instance.new("UIScale")
+			sc.Name = "LevelPop"
+			sc.Parent = holder
+		end
+		sc.Scale = 1
+		local up = TweenService:Create(sc, TweenInfo.new(L.LevelPop.In, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{ Scale = L.LevelPop.Up })
+		up.Completed:Connect(function()
+			TweenService:Create(sc, TweenInfo.new(L.LevelPop.Out, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		end)
+		up:Play()
+	end
+	local from, to = tonumber(d.PowerFrom), tonumber(d.PowerTo)
+	if from and to and to > from then
+		L.Pow.Base, L.Pow.LevelAt = to, os.clock()
+		L.PowerPopup(L.Pow.Shown or from, to, to - from)
+	end
+	return true
+end
+
 -- 0.4 s after the first change: compare with the value shown before it
 function L.PowerSettle()
 	local P = L.Pow
