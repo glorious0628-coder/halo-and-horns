@@ -805,6 +805,9 @@ def main():
     if "local function tierLen(" in visuals:
         helper_names.insert(helper_names.index("buildSword"), "tierLen")
         harness += "\n" + next(line for line in visuals.splitlines() if line.startswith("local LEN = {"))
+    # grip-3 (10/15: the 30 weapon meshes have ids now): offline no mesh template ever loads - the code shapes move
+    if "local WMESH = {" in visuals:
+        harness += "\nlocal WMESH = { Cache = {}, Attach = function() return nil end }\n"
     harness += "\n" + "\n".join(local_function(visuals, n) for n in helper_names)
     output = ROOT / "build/weapon_motion_offline_test.luau"
     output.parent.mkdir(parents=True, exist_ok=True)
