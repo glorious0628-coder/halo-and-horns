@@ -3580,11 +3580,22 @@ function HUD.ChipsShown()
 end
 
 ----------------------------------------------------------------- refresh: war meter
-local function fmtScore(v)
-	if v >= 1000 then return fmtNum(v) end
-	-- A23-135: 100 kills = 1 point, so the per-capita scores are small: two decimals, as WarService decides the winner
-	return string.format("%g", math.floor(v * 100 + 0.5) / 100)
+-- A23-198 (user 10/15: '0.02' cut in the bar's circle, "이것도 글자 씹힌다"): whole numbers only (the bar shows the
+-- share), at most 4 characters so the circle never cuts them - 999, 1.2K, 12K, 1.2M (HUD.ScoreText, pure)
+function HUD.ScoreText(v)
+	v = math.max(0, math.floor(tonumber(v) or 0))
+	if v < 1000 then return tostring(v) end
+	local function short(n, unit)
+		if n < 10 then
+			local t = string.format("%.1f", math.floor(n * 10) / 10)
+			return (string.gsub(t, "%.0$", "")) .. unit
+		end
+		return tostring(math.floor(n)) .. unit
+	end
+	if v < 1000000 then return short(v / 1000, "K") end
+	return short(v / 1000000, "M")
 end
+local function fmtScore(v) return HUD.ScoreText(v) end
 
 
 -- 검수 10/09: near 0 : all or all : 0 the crown ran past the bar's end; 상단 HUD 1안 ①: its image stays over the track
