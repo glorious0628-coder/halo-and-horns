@@ -683,9 +683,10 @@ local function publishFlags(player, st)
 	if player:GetAttribute("StoryFlags") ~= value then player:SetAttribute("StoryFlags", value) end
 end
 
--- Fx "StoryScene" { Id, Key, Value } to the player: a scene the client plays now (never a reward)
-local function scene(player, id, key, value)
-	local ok, err = pcall(Net.Fx, player, "StoryScene", { Id = id, Key = key, Value = value })
+-- Fx "StoryScene" { Id, Key, Value, St } to the player: a scene the client plays now (never a reward). St = the step it
+-- belongs to (A23-208 Find / Scene: the client reads that step's Npc / Guide / On = "Self" from Config)
+local function scene(player, id, key, value, st)
+	local ok, err = pcall(Net.Fx, player, "StoryScene", { Id = id, Key = key, Value = value, St = st })
 	if not ok then Util.Warn(TAG, "scene: " .. tostring(err)) end
 end
 
@@ -709,7 +710,7 @@ end
 -- Fx StoryScene { Id, Key = "Find", Value = "<step number>" } (the client reads the words from Config)
 function findScene(player, id, track)
 	local step = stepOf(player, DEFS[id], track.St)
-	if step and type(step.Find) == "string" then scene(player, id, "Find", tostring(track.St)) end
+	if step and type(step.Find) == "string" then scene(player, id, "Find", tostring(track.St), track.St) end
 end
 
 -- the active step reached its goal: next step (saved first), or the quest is finished / waits for [받기]
@@ -727,7 +728,7 @@ local function advance(player, data, id, track)
 		setFlag(player, data, id, doneStep.SetFlag.Key, value)
 	end
 	-- A23-208: Scene = what the people do when this step is done (Fx StoryScene Key "Scene", Value = the scene; nothing saved)
-	if doneStep and type(doneStep.Scene) == "string" then scene(player, id, "Scene", doneStep.Scene) end
+	if doneStep and type(doneStep.Scene) == "string" then scene(player, id, "Scene", doneStep.Scene, track.St) end
 	if panels[player] then panels[player][id .. ":" .. tostring(track.St)] = nil end
 	StoryQuestService.StepDone:Fire(player, id, track.St)
 	track.P, track.T = 0, {}

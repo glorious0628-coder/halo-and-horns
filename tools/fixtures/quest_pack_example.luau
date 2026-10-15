@@ -14,8 +14,9 @@ return {
 				Lines = { All = { "Bright: Please guard this parcel cart across the bridge." } } },
 			Requires = { Level = 5 },
 			Steps = {
+				-- On = "Self": no NPC here, so the Find bubble / Scene play on the player's own avatar (A23-208, 10/15)
 				{ Text = "Walk beside the cart to the bridge", ShortName = "To the bridge", Guide = "HaloBridge",
-					Find = "A tiny sock is stuck on the wheel!",
+					Find = "A tiny sock is stuck on the wheel!", On = "Self", Scene = "Cheer",
 					Obj = { Type = "Near", Spot = "HaloBridge", Radius = 16 } },
 				{ Text = "Tell Bright the cart is safe", ShortName = "Back to Bright", Npc = "Bright", Panel = true,
 					Lines = { All = { "Bright: Safe and sound! And the sock is mine. Shh." } }, Obj = { Type = "Talk" },
@@ -45,7 +46,9 @@ return {
 		HX_DailyLamp = {
 			Kind = "Sub", Type = "Repair", Repeat = "Daily", Difficulty = "Hard", Factions = { Halo = true },
 			Title = "Lamp Check", ShortName = "Lamp check", Speaker = "Bright",
-			Offer = { Npc = "Bright", Before = "The town lamp flickers again tonight.",
+			-- BeforeBy: the situation line by my own result of an earlier day (Story.Flags), Default = the first visit
+			Offer = { Npc = "Bright", BeforeBy = { Flag = "LampH", Moth = "The moth is back. It brought a friend.",
+				Default = "The town lamp flickers again tonight." },
 				Lines = { All = { "Bright: Please check the town lamp for me." } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true, -- a daily repeat has no next hook
@@ -53,7 +56,8 @@ return {
 				{ Text = "Check the town lamp", ShortName = "The lamp", Guide = "LampH", Obj = { Type = "Near", Spot = "LampH", Radius = 12 },
 					Find = "A moth is dancing in the lamp." },
 				{ Text = "Tell Bright", ShortName = "Back to Bright", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Bright: Bright as ever. Like me!" } }, Scene = "Laugh" },
+					Lines = { All = { "Bright: Bright as ever. Like me!" } }, Scene = "Laugh",
+					SetFlag = { Key = "LampH", Value = "Moth" } },
 			},
 			Reward = { Item = "Enh70", N = 1 },
 		},
@@ -63,7 +67,9 @@ return {
 	-- the Halo version of a shared quest: same number of steps as the base (M2_2 has 1)
 	Variants = {
 		M2_2 = {
-			Offer = { Npc = "Bright", Lines = { All = { "Bright: Please catch the sample before it floats away." } } },
+			Offer = { Npc = "Bright", Before = "A glowing sample bobs on the pond.",
+				Lines = { All = { "Bright: Please catch the sample before it floats away." } } },
+			Next = { Id = "M2_3", Line = "Bright: The sample is humming. Let's ask around." }, -- this side's own hook
 			Steps = {
 				[1] = { Text = "Catch the floating sample at the pond", ShortName = "The sample", Guide = "SlimePond",
 					Obj = { Type = "Near", Spot = "SlimePond", Radius = 20 } },
