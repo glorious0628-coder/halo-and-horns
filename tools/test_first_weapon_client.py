@@ -92,11 +92,12 @@ def main():
          and "or string.format(T.WeaponLevelF, info.MinLevel, info.Level)" in panels),
         ("Panels: send() never buys while the Forge sells none (tier 1 = the gift path stays)",
          'if action == "Buy" and tier > 1 and not WSHOP.Sells() then return end' in panels),
-        ("Panels: the note and the far line say equip / sell (no 'buy')",
-         "WSHOP.Sells() and T.WeaponNote or T.WeaponNoteDrop" in panels
-         and "if far and not WSHOP.Sells() then accessLabel.Text = T.WeaponFarDrop end" in panels
-         and not re.search(r'WeaponNoteDrop = "[^"]*\bbuy', panels, re.I)
-         and not re.search(r'WeaponFarDrop = "[^"]*\bbuy', panels, re.I)),
+        # A23-191 (English dump 10/15, 게임성 개발 1): no note, no far line, no first-weapon price / reason line
+        ("Panels: the forge window has no explanation lines (note, far line, first weapon's price / reason)",
+         "T.WeaponNote" not in panels and "T.WeaponFarDrop" not in panels and "T.WeaponFar" not in panels
+         and "T.WeaponStarter\n" not in panels and '\t\taccessLabel.Text = far and "" or (access or "")\n' in panels
+         and "ui.Price.Visible, ui.Sale.Visible = info ~= nil and ui.Tier > 1, info ~= nil" in panels
+         and "ui.Reason.Text = (ui.Tier > 1 and buyReason ~= T.WeaponEquipped and buyReason) or \"\"" in panels),
         ("HUD keeps the server's GoalKind and asks QuestTarget.IronGold for the anvil trip",
          'GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil' in hud
          and "qt.IronGold(e, level) == true" in hud and "if not e.NextGoal or ironGold then" in hud),
