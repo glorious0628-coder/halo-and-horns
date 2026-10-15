@@ -1,5 +1,14 @@
 # 게임성 개발 1 — 인계 상태
 
+## ▶ 내일 아침 할 일 (최종 검수 10/15 밤, 이 순서; 화면 사용은 최종 검수 '전달함, 시작' 뒤)
+1. **오프닝 카메라** (main 사진 docs/art/verification_2026-10-15/main_a1d06f69/844_f10_02): 자막 2 "Some grew halos…" 장면 카메라가 흰 조각상 안에 박혀 흐린 클로즈업 → Intro.luau 3장면(SPOT.Halo 샷, look(SPOT.Halo + Vector3.new(18,14,95)…))의 카메라 위치·경로만 조각상 피하게(최소 수정, 오프닝은 임시판).
+2. **'Blast from far!'**: phone_f10_03 마법사 카드 'Blast from far away!'가 'Blast from far'로 잘림 → Config ClassPicker Tag Mage = "Blast from far!" (dev1-easy-words 문구 되돌려 짧게).
+3. **폰 HUD 잘림**: 'Lv 1 · Power 0'(HUD.Stats.PowerLine)·미니맵 'N' 글자 잘림, 11~12px 작은 글(직업 카드 Paladin·Pick!·Best for beginners).
+4. **Tutorial 이야기 화면** (dev2 45fbdb32 / dev2-ch1-finish c9a2762a): Fx StoryScene {Id="Tutorial", Key="Find"|"Scene", Value, St = 단계 이름 "Teacher"/"Forge"}; 글 = Config.Tutorial.Story: Steps[St].Find[진영] = 그 단계 NPC 머리 위 말풍선(Teacher = 내 스승 Gleam/Rose, Forge = Otto), Scene = 그 NPC 몸짓, Steps.Forge.Lines[진영] = 무기 받은 뒤 오토 끝 대사 한 줄, Next[진영] = 예고 줄 + M1_1 '!' 통통, Before[진영] = 안내자 Welcome 창 맨 위 작은 기울임 한 줄(부탁 창과 같은 모양). 장인(Neutral)은 Teacher 없음(Forge만). StoryNpcs.Find/PlayScene/ExpectNext·Panels STORY.Before 재사용.
+5. **PhoneTest 폰 사진**: 위 1~4 + 1장 이야기 말풍선·폰 Before. 도구 = scratchpad phone_cards.py(start/probe/shot/fireshot/stop, STUDIO_NAME=PhoneTest_1015), build/PhoneTest_1015.rbxlx 복사본. MCP 캡처는 BillboardGui(말풍선)를 안 찍음 → 값(TextBounds·AbsoluteSize)으로 확인.
+6. 남은 큐.
+- 병합 대기(보고함): dev1-codex-where **c672eb17**, dev1-crown-mine 5d751602, dev1-friend-mark 6db57610. 작업 폴더 모두 깨끗(커밋 안 한 것 없음).
+
 ## 10/15 밤 (클리어 뒤 새 세션) — 1·2·3② 끝, 보고함
 - **dev1-nudges-cut aff7935e** (wt_kosweep): 꺼둔 클라 Nudges 11개 + 그림 코드 삭제(HUD.Hint 체계, QuestHead 줄, 길 Beam·이름표, TugSub, SackLore, WSHOP.Farewell…). test_nudges_gone 117·8/8. 스윕 72개 새 실패 0(attendance_ui·first_weapon_client·walk_forge_client·loot·halloween·a23_14 = main도). 옛 가지 dev1-first-hunt-hint 4681edff와 부딪힘(버릴 것). 서버 4개(GuideDone·DailyReady·EnteredSafe·WeaponUsableNow)는 개발 2에 넘김.
 - **dev1-story-screen f7761733** (wt_grip, dev2-story-fields + main fcee99b6): Before(Config.QuestBefore)·Find 말풍선(BarkBubble 4초, St, On=Self)·Scene 몸짓(SceneKeys 10개)·끝 줄 Config.QuestNext + 다음 부탁 NPC 통통. test_story_fields_screen 34·12/12. 폰 사진 = 실제 묶음 데이터 들어온 뒤.
