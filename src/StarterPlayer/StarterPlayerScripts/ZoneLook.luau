@@ -396,6 +396,93 @@ function ZoneLook.RefreshEdges()
 	return shown
 end
 
+------------------------------------------------------------------ the invisible walls
+-- 최종 검수 10/15 #2 ('why does this not work?'): an invisible wall (the map's border walls, the Goose Square's walls)
+-- shows itself when I walk up to it - one soft pale panel on its face at the spot nearest me, clearer the closer I am,
+-- gone past Near studs. No words, no rays. Client-only parts in workspace.WallEdges (no collision, no query).
+ZoneLook.WALL = { Folder = "WallEdges", Near = 12, Piece = 14, Height = 8, Thick = 0.2, Alpha = 0.7,
+	Color = Color3.fromRGB(245, 240, 225), Rescan = 5 }
+
+-- (pure) where my position meets a standing wall (cf, size): nil when farther than near from its face (or past its
+-- ends), else { Thin = "X" | "Z" (its thin local axis), Side = 1 | -1 (my side), Along = local offset along its length,
+-- Y = local height of me (clamped), Dist = studs from its face }
+function ZoneLook.WallSpot(cf, size, pos, near)
+	if typeof(cf) ~= "CFrame" or typeof(size) ~= "Vector3" or typeof(pos) ~= "Vector3" then return nil end
+	local lp = cf:PointToObjectSpace(pos)
+	local thin = size.X <= size.Z and "X" or "Z"
+	local long = thin == "X" and "Z" or "X"
+	local half = size / 2
+	local d = math.abs(lp[thin]) - half[thin]
+	if d < 0 or d > near or math.abs(lp[long]) > half[long] + near then return nil end
+	return { Thin = thin, Side = lp[thin] >= 0 and 1 or -1, Along = math.clamp(lp[long], -half[long], half[long]),
+		Y = math.clamp(lp.Y, -half.Y, half.Y), Dist = d }
+end
+
+-- (pure) the panel's alpha at a distance: Alpha at the face, fully clear at near
+function ZoneLook.WallAlpha(dist, near)
+	local W = ZoneLook.WALL
+	return W.Alpha + (1 - W.Alpha) * math.clamp(dist / math.max(near, 1), 0, 1)
+end
+
+-- the invisible standing walls: Map.Walls' clear parts with collision + the Goose Square's Wall_* (rescanned now and then)
+function ZoneLook.Walls()
+	local now = os.clock()
+	if ZoneLook.WallList and now - (ZoneLook.WallAt or 0) < ZoneLook.WALL.Rescan then return ZoneLook.WallList end
+	local out = {}
+	local map = workspace:FindFirstChild("Map")
+	local walls = map and map:FindFirstChild("Walls")
+	for _, p in walls and walls:GetChildren() or {} do
+		if p:IsA("BasePart") and p.Transparency >= 0.95 and p.CanCollide then table.insert(out, p) end
+	end
+	local sq = workspace:FindFirstChild("GooseSquare")
+	for _, p in sq and sq:GetChildren() or {} do
+		if p:IsA("BasePart") and string.sub(p.Name, 1, 5) == "Wall_" and p.Transparency >= 0.95 and p.CanCollide then
+			table.insert(out, p)
+		end
+	end
+	ZoneLook.WallList, ZoneLook.WallAt = out, now
+	return out
+end
+
+-- one pass: a panel on each wall I am near (one per wall, moved to the spot nearest me), the others hidden
+function ZoneLook.RefreshWalls()
+	local W = ZoneLook.WALL
+	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	local pos = root and root.Position
+	local folder = workspace:FindFirstChild(W.Folder)
+	local shown = 0
+	for i, wall in ZoneLook.Walls() do
+		local s = pos and ZoneLook.WallSpot(wall.CFrame, wall.Size, pos, W.Near)
+		local panel = folder and folder:FindFirstChild("Wall" .. i)
+		if s then
+			if not folder then
+				folder = Instance.new("Folder")
+				folder.Name = W.Folder
+				folder.Parent = workspace
+			end
+			if not panel then
+				panel = Instance.new("Part")
+				panel.Name = "Wall" .. i
+				panel.Color, panel.Material = W.Color, Enum.Material.Neon
+				panel.Anchored, panel.CanCollide, panel.CanQuery, panel.CanTouch, panel.CastShadow = true, false, false, false, false
+				panel.Parent = folder
+			end
+			local half = wall.Size / 2
+			local h = math.min(W.Height, wall.Size.Y)
+			local y = math.clamp(s.Y + h / 2 - 2.5, -half.Y + h / 2, half.Y - h / 2) -- from my feet up
+			local face = s.Side * (half[s.Thin] + W.Thick / 2 + 0.05)
+			local width = math.min(W.Piece, wall.Size[s.Thin == "X" and "Z" or "X"])
+			panel.Size = s.Thin == "X" and Vector3.new(W.Thick, h, width) or Vector3.new(width, h, W.Thick)
+			panel.CFrame = wall.CFrame * CFrame.new(s.Thin == "X" and face or s.Along, y, s.Thin == "X" and s.Along or face)
+			panel.Transparency = ZoneLook.WallAlpha(s.Dist, W.Near)
+			shown += 1
+		elseif panel and panel.Transparency ~= 1 then
+			panel.Transparency = 1
+		end
+	end
+	return shown
+end
+
 function ZoneLook.Init() end
 
 function ZoneLook.Start()
@@ -471,6 +558,8 @@ function ZoneLook.Start()
 		while true do
 			local ok, err = pcall(ZoneLook.RefreshEdges)
 			if not ok then Util.Warn("ZoneLook", "edges: " .. tostring(err)) end
+			ok, err = pcall(ZoneLook.RefreshWalls)
+			if not ok then Util.Warn("ZoneLook", "walls: " .. tostring(err)) end
 			task.wait(ZoneLook.EDGE.Every)
 		end
 	end)
