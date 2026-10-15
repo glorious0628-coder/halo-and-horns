@@ -3286,7 +3286,8 @@ function STORY.TimingResult(grades)
 	for _, g in type(grades) == "table" and grades or {} do
 		if g == "Good" or g == "Great" or g == "Perfect" then good += 1 end
 	end
-	return { Good = good, Tries = 5 }
+	-- 개발 2 10/15: the remote takes strings only - "good/tries"
+	return string.format("%d/%d", good, 5)
 end
 
 function STORY.Timing(arg)
@@ -3309,7 +3310,7 @@ function STORY.ShapeDef(id)
 	return type(d) == "table" and d or { Shape = "Ring", Color = theme.Gold }
 end
 
--- one shape drawn without art in a square holder: Ring / Disc / Square / Diamond / Cross / Bars
+-- one shape drawn without art in a square holder: Ring / Knot / Disc / Square / Diamond / Cross / Bars (else Ring)
 function STORY.DrawShape(holder, id)
 	local d = STORY.ShapeDef(id)
 	local col = typeof(d.Color) == "Color3" and d.Color or theme.Gold
@@ -3344,11 +3345,25 @@ function STORY.DrawShape(holder, id)
 		part("Square", UDim2.fromScale(0.6, 0.6))
 	elseif kind == "Diamond" then
 		part("Diamond", UDim2.fromScale(0.52, 0.52), nil, 45)
+	elseif kind == "Knot" then -- two rings linked (개발 2's Config.QuestShapes)
+		for i, x in { 0.38, 0.62 } do
+			local r = part("Loop" .. i, UDim2.fromScale(0.46, 0.46), UDim2.fromScale(x, 0.5), 0, true)
+			r.BackgroundTransparency = 1
+			local st = Instance.new("UIStroke")
+			st.Color, st.Thickness, st.ApplyStrokeMode = col, 6, Enum.ApplyStrokeMode.Border
+			st.Parent = r
+		end
 	elseif kind == "Cross" then
 		part("CrossA", UDim2.fromScale(0.7, 0.18))
 		part("CrossB", UDim2.fromScale(0.18, 0.7))
-	else -- Bars
+	elseif kind == "Bars" then
 		for i = 1, 3 do part("Bar" .. i, UDim2.fromScale(0.16, 0.62), UDim2.fromScale(0.25 * i, 0.5)) end
+	else -- an unknown shape: a ring (never nothing)
+		local r = part("Ring", UDim2.fromScale(0.7, 0.7), nil, 0, true)
+		r.BackgroundTransparency = 1
+		local st = Instance.new("UIStroke")
+		st.Color, st.Thickness, st.ApplyStrokeMode = col, 8, Enum.ApplyStrokeMode.Border
+		st.Parent = r
 	end
 	return holder
 end
@@ -3376,7 +3391,7 @@ BUILDERS.Match = function(parent)
 		local b = makeButton(row, "", PALETTE.Button, UDim2.fromOffset(M.Option, M.Option), function()
 			if STORY.MatchWait then return end
 			STORY.MatchWait = { Id = arg.Id, Pick = i }
-			fire("StoryAction", arg.Id, "Match", i)
+			fire("StoryAction", arg.Id, "Match", tostring(i)) -- 개발 2 10/15: strings only ("1".."3")
 		end)
 		b.Name = "Option" .. i
 		STORY.DrawShape(b, id)
@@ -3393,6 +3408,10 @@ function STORY.OnMatch(kind, data)
 	STORY.MatchWait = nil
 	if kind == "MatchHit" then
 		if currentId == "Match" then Panels.Close() end
+		return
+	end
+	if kind == "TimingMiss" then -- not enough good strikes: the refusal sound (talk to her again to retry, nothing lost)
+		if UIKit and type(UIKit.Refuse) == "function" then pcall(UIKit.Refuse, nil) end
 		return
 	end
 	local pick = tonumber(data.Pick) or (wait and wait.Pick)
@@ -4004,7 +4023,7 @@ function Panels.Start()
 			end)
 			-- §15 P1 ④: the shape match's answer
 			Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
-				if kind == "MatchHit" or kind == "MatchMiss" then pcall(STORY.OnMatch, kind, data) end
+				if kind == "MatchHit" or kind == "MatchMiss" or kind == "TimingMiss" then pcall(STORY.OnMatch, kind, data) end
 			end)
 		end)
 		if not ok then Util.Warn(TAG, "OpenPanel hookup failed: " .. tostring(err)) end
