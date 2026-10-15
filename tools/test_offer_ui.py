@@ -26,7 +26,9 @@ if not LUAU.exists():
     LUAU = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 
 PURE = r"""
-local Config = { StoryQuests = { Speakers = { Tiny = "Tiny", Bright = "Bright" } } }
+local Config = { StoryQuests = { Speakers = { Tiny = "Tiny", Bright = "Bright" } },
+	HuntValue = function(level, minutes) return minutes * 10 * level, minutes * 20 end, XPToNext = function() return 100 end }
+local Util = { FormatInt = tostring }
 local StoryNpcs, STORY = {}, {}
 __FUNCS__
 local fails = 0
@@ -47,6 +49,14 @@ v = STORY.OfferView(def, "Bright", "Horns")
 check("the payload's Npc first", v.Npc == "Bright" and v.Name == "Bright")
 v = STORY.OfferView({ Offer = { Npc = "Nobody" } }, nil, "Halo")
 check("an unknown speaker: her id, no lines, never an error", v.Name == "Nobody" and #v.Lines == 0)
+-- §15 P1 ①: what a request pays, as the server sums it at my level
+local r = STORY.RewardPreview({ Gold = 2, XP = 1, GoldN = 5, XPBar = 0.25, Item = "Petal", N = 3, BagSlots = 4 }, 3)
+check("gold = HuntValue minutes at my level + exact gold", r[1].Icon == "IconCoin" and r[1].N == 65, r[1] and r[1].N)
+check("XP = HuntValue minutes + a share of my bar", r[2].Icon == "IconExp" and r[2].N == 45, r[2] and r[2].N)
+check("an item by its own icon, its count", r[3].Icon == "Petal" and r[3].N == 3)
+check("bag slots by the bag icon", r[4].Icon == "IconBag" and r[4].N == 4)
+check("no reward: no row", #STORY.RewardPreview(nil, 3) == 0 and #STORY.RewardPreview({}, 3) == 0)
+check("an item without N counts 1", STORY.RewardPreview({ Item = "Petal" }, 1)[1].N == 1)
 print(fails == 0 and "OFFER_PURE_OK" or "OFFER_PURE_FAILED")
 """
 
@@ -71,6 +81,8 @@ def statics(s: dict) -> list[tuple[str, bool]]:
          and 'fire("StoryAction", arg.Id, what)' in offer),
         ("its title is 'Name · Title' and its icon the story one", 'if currentId == "Offer" then titleLabel.Text = STORY.OfferTitle() end' in pan
          and 'Offer = "IconNews"' in pan),
+        ("the Offer window shows what helping pays (icons, numbers)",
+         'STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1)))' in offer),
         ("the words are in Config", 'OfferAccept = "Sure!", OfferDecline = "Not now", Pickup = "Pick up",' in cfg),
         ("a Pickup step: my side's override first, the Landmarks spot",
          'obj.Type == "Pickup"' in pick and "type(over) == \"table\" and type(over.Obj) == \"table\" and over.Obj" in pick
@@ -94,12 +106,15 @@ MUTATIONS = [
     ("PANELS", "the buttons from the first page", "\t\tfor _, b in { yes, no } do\n\t\t\tb.Visible = last()", "\t\tfor _, b in { yes, no } do\n\t\t\tb.Visible = true"),
     ("PANELS", "All before my side", "(type(src[f]) == \"table\" and src[f]) or (type(src.All) == \"table\" and src.All) or {}",
      "(type(src.All) == \"table\" and src.All) or {}"),
+    ("PANELS", "no reward row", '	STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1)))', '	local _ = 0'),
+    ("PANELS", "exact gold forgotten", "\tif n(reward.GoldN) > 0 then g += math.floor(n(reward.GoldN)) end\n", ""),
+    ("PANELS", "gold at level 1 always", "g = select(1, Config.HuntValue(level, reward.Gold))", "g = select(1, Config.HuntValue(1, reward.Gold))"),
     ("PANELS", "the payload's Npc ignored", "local who = (type(npc) == \"string\" and npc ~= \"\") and npc or offer.Npc", "local who = offer.Npc"),
 ]
 
 
 def run(src: dict) -> tuple[bool, list, str]:
-    funcs = block(src["NPC"], "StoryNpcs.Offers") + block(src["PANELS"], "STORY.OfferView")
+    funcs = block(src["NPC"], "StoryNpcs.Offers") + block(src["PANELS"], "STORY.OfferView") + block(src["PANELS"], "STORY.RewardPreview")
     with tempfile.TemporaryDirectory() as d:
         f = Path(d) / "offer.luau"
         f.write_text(PURE.replace("__FUNCS__", funcs), encoding="utf-8")

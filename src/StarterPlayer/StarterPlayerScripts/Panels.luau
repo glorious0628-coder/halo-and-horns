@@ -2965,6 +2965,7 @@ end
 -- row shows STORY.Text.Row* with a gentle pulse, and tapping that row (HUD → Panels.ExpectStory + StoryAction "Open")
 -- opens it even mid-fight. "Fight" = PvP combat tag, dead, or my own attack / hurt Fx within CalmSeconds.
 local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, CalmSeconds = 4, Toasted = nil,
+	Reward = { H = 34, Gap = 18 }, -- §15 P1 ①: the Offer window's reward icons (du)
 	Face = { Size = 104, Short = 68, Gap = 12 }, -- portrait width (px): PC / short phone screens (height < 520)
 	Text = {
 		RowShard = "Your shard is talking", -- A23-130: shorter (was "... — tap to see")
@@ -3223,6 +3224,60 @@ function STORY.OfferView(def, npc, f)
 	return { Npc = who, Name = names[who] or tostring(who or ""), Lines = lines, Title = def and def.Title or "" }
 end
 
+-- 퀘스트 바이블 §15 P1 ① (10/15): what a request pays, shown under her lines as icons and numbers (pure): the server's
+-- own sums at my level (StoryQuestService.payReward: Gold / XP = minutes of Config.HuntValue, GoldN = exact gold, XPBar =
+-- a share of my level's bar), an item reward by its icon (+N), bag slots by the bag icon. -> { { Icon, N } }
+function STORY.RewardPreview(reward, level)
+	local out = {}
+	if type(reward) ~= "table" then return out end
+	level = math.max(1, math.floor(tonumber(level) or 1))
+	local function n(v) return tonumber(v) or 0 end
+	local g, x = 0, 0
+	if n(reward.Gold) > 0 and type(Config.HuntValue) == "function" then g = select(1, Config.HuntValue(level, reward.Gold)) end
+	if n(reward.XP) > 0 and type(Config.HuntValue) == "function" then x = select(2, Config.HuntValue(level, reward.XP)) end
+	if n(reward.GoldN) > 0 then g += math.floor(n(reward.GoldN)) end
+	if n(reward.XPBar) > 0 and type(Config.XPToNext) == "function" then x += math.floor(Config.XPToNext(level) * n(reward.XPBar)) end
+	if g > 0 then table.insert(out, { Icon = "IconCoin", N = g }) end
+	if x > 0 then table.insert(out, { Icon = "IconExp", N = x }) end
+	if type(reward.Item) == "string" and reward.Item ~= "" then
+		table.insert(out, { Icon = reward.Item, N = math.max(1, math.floor(n(reward.N))) })
+	end
+	if n(reward.BagSlots) > 0 then table.insert(out, { Icon = "IconBag", N = math.floor(n(reward.BagSlots)) }) end
+	return out
+end
+
+-- the reward row: each icon with its number ("+N", numbers only)
+function STORY.RewardRow(parent, list)
+	if #list == 0 or not UIKit or type(UIKit.ItemIcon) ~= "function" then return nil end
+	local row = addRow(parent, STORY.Reward.H, STORY.Reward.Gap)
+	row.Name = "OfferReward"
+	for i, r in list do
+		local cell = Instance.new("Frame")
+		cell.Name = "Reward" .. i
+		cell.BackgroundTransparency = 1
+		cell.Size = UDim2.fromOffset(0, STORY.Reward.H)
+		cell.AutomaticSize = Enum.AutomaticSize.X
+		cell.LayoutOrder = i
+		local list2 = Instance.new("UIListLayout")
+		list2.FillDirection = Enum.FillDirection.Horizontal
+		list2.VerticalAlignment = Enum.VerticalAlignment.Center
+		list2.Padding = UDim.new(0, 4)
+		list2.Parent = cell
+		local icon = UIKit.ItemIcon(r.Icon, { Name = "Icon", Size = UDim2.fromOffset(STORY.Reward.H, STORY.Reward.H) })
+		if icon then
+			icon.LayoutOrder = 1
+			icon.Parent = cell
+		end
+		local num = addText(cell, "+" .. Util.FormatInt(r.N), { Name = "N", Size = 20, Color = theme.Gold,
+			Width = UDim2.new(0, 0, 0, STORY.Reward.H) })
+		num.AutomaticSize = Enum.AutomaticSize.X
+		num.TextWrapped = false
+		num.LayoutOrder = 2
+		cell.Parent = row
+	end
+	return row
+end
+
 function STORY.OfferTitle()
 	local def, arg = STORY.OfferDef()
 	if not def then return "" end
@@ -3244,6 +3299,7 @@ BUILDERS.Offer = function(parent)
 	local typing = {}
 	TYPE.Tap(typing, line)
 	local pageLabel = addText(talk, "", { Name = "OfferPage", Size = 15, Color = theme.SubText, Align = align })
+	STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1))) -- §15 P1 ①: what helping pays
 	local actions = addRow(parent, 64, 10)
 	local last = function() return page >= #v.Lines end
 	local update
