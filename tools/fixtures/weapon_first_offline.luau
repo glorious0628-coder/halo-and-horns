@@ -284,7 +284,8 @@ runGroup("weapon first", function()
 	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
 	check(done and d.BankGold > 150, "M1_1's reward line and a little gold (Reward Gold 1)", show(lines))
 	w.Story.Refresh(p)
-	check(st.Main.Id == "M1_3" and w.Config.StoryQuests.Defs.M1_2 == nil, "then M1_3 (10/15: no second Prince quest M1_2)", show(st.Main))
+	check(st.Main.Id == "" and w.Config.StoryQuests.Defs.M1_2 == nil and w.Config.StoryQuests.Defs.M1_3.Requires.Level == 5,
+		"then M1_3 waits for Lv5 (quest P1 ⑤: the teacher's test; 10/15: no second Prince quest M1_2)", show(st.Main))
 end)
 
 ------------------------------------------------------------------ 2b. a step's gift (GiveItem: given once when the step opens, tried again at a join)
@@ -574,6 +575,8 @@ runGroup("p1 guide and teacher", function()
 	-- the lesson is not offered before the teacher is met
 	w.Story.Refresh(p)
 	check(string.find(p:GetAttribute("StoryOffers") or "", "Gleam", 1, true) == nil, "before the meeting: Sir Gleam offers nothing", p:GetAttribute("StoryOffers"))
+	check(w.Story.TalkToNpc(p, "Gleam") == nil and step(p) == T.Steps.Teacher and d.Story.First.TeacherMet ~= true,
+		"talking to Sir Gleam from 50 studs: not met", step(p))
 	rootOf(p).Position = vec(-12, 3, -374)
 	local n0 = #w.Fired
 	local said = w.Story.TalkToNpc(p, "Gleam")
@@ -703,7 +706,7 @@ runGroup("save", function()
 		fill(d, "P1")
 		return d.TutorialStep
 	end
-	for _, case in { { 3, 3 }, { 0, 0 }, { 1, 1 }, { 2, 2 }, { 99, 99 }, { 4, 4 }, { 5, 99 }, { -1, 99 } } -- P1 ②: 4 = the Teacher step do
+	for _, case in { { 3, 3 }, { 0, 0 }, { 1, 1 }, { 2, 2 }, { 99, 99 }, { 4, 4 }, { 5, 99 }, { -1, 99 } } do -- P1 ②: 4 = the Teacher step
 		check(load(case[1]) == case[2], "TutorialStep " .. case[1] .. " loads as " .. case[2], load(case[1]))
 	end
 end)

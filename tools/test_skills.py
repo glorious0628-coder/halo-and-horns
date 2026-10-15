@@ -215,6 +215,11 @@ MUTATIONS = [
     ("Locked said again", SK, "\tif not flagOn(slot) or SLOT[slot] > slotsOf(player) then return false end",
      "\tif not flagOn(slot) or SLOT[slot] > slotsOf(player) then if not isAuto then press(player, slot, \"Locked\") end return false end"),
     ("PressBuffer 0.5", C, "\tPressBuffer = 0.35, AirReach = 12,", "\tPressBuffer = 0.5, AirReach = 12,"),
+    # quest P1 ⑤: the Lv5 test gate
+    ("P1: the gate never closes", "SKILL_SOURCE", "\t\tif ok and open == false then return i - 1 end\n", ""),
+    ("P1: ready ignores the gate", "SKILL_SOURCE", "LEARN.Mirror(player, open > have and open or 0, open > have and teacher or nil)", "LEARN.Mirror(player, want, teacher)"),
+    ("P1: taught past the gate", "SKILL_SOURCE", "\twant = LEARN.Gated(player, have, want) -- P1 ⑤", "\twant = want -- P1 ⑤"),
+    ("P1: no CatchUp", "SKILL_SOURCE", "function SkillService.CatchUp(player)\n\tcatchUp(player, false)\nend", "function SkillService.CatchUp(player)\nend"),
 ]
 
 

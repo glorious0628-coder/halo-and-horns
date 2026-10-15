@@ -891,6 +891,19 @@ function LEARN.Body(npcId)
 	return nil
 end
 
+-- P1 ⑤: the slots past `have` the story lets the teacher teach now (StoryQuestService.LearnOpen per slot: Q waits for the Lv5
+-- test); want when there is no story service
+function LEARN.Gated(player, have, want)
+	local story = S.StoryQuestService
+	if type(story) ~= "table" or type(story.LearnOpen) ~= "function" then return want end
+	local order = K.Order or { "Q", "Z", "X" }
+	for i = have + 1, want do
+		local ok, open = pcall(story.LearnOpen, player, order[i])
+		if ok and open == false then return i - 1 end
+	end
+	return want
+end
+
 function LEARN.Mirror(player, ready, teacher)
 	if player.Parent == nil then return end
 	local changed = player:GetAttribute("SkillLearnReady") ~= ready
@@ -924,7 +937,8 @@ local function catchUp(player, announce)
 	local want = slotsFor(player)
 	local teacher = num(player:GetAttribute("Rebirths")) < 1 and LEARN.Teacher(player) or nil
 	if want > have and teacher and LEARN.Body(teacher) then
-		LEARN.Mirror(player, want, teacher)
+		local open = LEARN.Gated(player, have, want) -- P1 ⑤: a slot behind the test is not ready yet
+		LEARN.Mirror(player, open > have and open or 0, open > have and teacher or nil)
 		return TASK.Mirror(player)
 	end
 	LEARN.Mirror(player, 0, nil)
@@ -940,6 +954,7 @@ function SkillService.TryLearn(player, npcId)
 	local teacher = LEARN.Teacher(player)
 	if not teacher or npcId ~= teacher then return false end
 	local have, want = slotsOf(player), slotsFor(player)
+	want = LEARN.Gated(player, have, want) -- P1 ⑤: Q only at the Lv5 test's Learn step (or after it)
 	if want <= have then return false end
 	local pos, root = LEARN.Body(teacher), Util.GetRoot(player)
 	if not pos or not root or Util.FlatDistance(root.Position, pos) > num(K.Learn.Range, 16) then return false end
@@ -962,6 +977,11 @@ function TASK.Add(player, kind, ok)
 	local n = math.max(1, math.floor(num(def.Count, 1)))
 	saved[slot] = math.min(n, math.floor(num(saved[slot])) + 1)
 	catchUp(player, true) -- done: the slot opens (+ the "New skill!" Fx while its switch is on); else the count mirrors
+end
+
+-- P1 ⑤: StoryQuestService asks again when a Learn step opens (the gate just opened): SkillLearnReady follows
+function SkillService.CatchUp(player)
+	catchUp(player, false)
 end
 
 ------------------------------------------------------------------ remote

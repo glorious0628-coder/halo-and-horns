@@ -3132,6 +3132,7 @@ Config.Tutorial = {
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
 		Teacher = "Meet %s", -- P1 ②: the teacher step (%s = the teacher's name)
+		SkillTest = "Lv5 test", -- P1 ⑤
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
@@ -3221,7 +3222,8 @@ Config.Tutorial = {
 		NextIronDrop = "Next goal · Beat a King Slime for an Iron weapon",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)",
-		NextLearn = "Next goal · Learn a skill: meet %s", -- A23-193: a ready skill waits at the side's teacher -- SKL-3 (skill_kit §2): the next skill to learn
+		NextLearn = "Next goal · Learn a skill: meet %s",
+		NextTest = "Next goal · Take %s's test", -- P1 ⑤: Lv5 reached, the test not taken yet (%s = the teacher) -- A23-193: a ready skill waits at the side's teacher -- SKL-3 (skill_kit §2): the next skill to learn
 		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
 		NextRebirth = "Next goal · Lv%d: Rebirth and start again (now Lv%d)",
 		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
@@ -3472,34 +3474,77 @@ Config.StoryQuests = {
 			-- M1_3 at the join (an unknown main id is dropped; the chain starts at the first one not done)
 			Reward = { Gold = 1 },
 		},
-		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
-		-- the step is also done once Q is learned below that level (slots kept after a free class change resets the level).
-		-- S8: the Level step's own Start is said when the quest starts below Lv5; at Lv5+ the step passes at once and the
-		-- skill step's Start is said instead.
+		-- quest bible v3 H03 / R03 / N03 (P1 ⑤): the Lv5 test. The side's teacher ASKS at Lv5 ([Accept] / [Decline]); four
+		-- slimes with basic attacks only, then one real help that differs by side (Halo: the neighbour's lost bag back to them;
+		-- Horns: Rose's snack-prank parcel to Tiny; artisans: something of their own craft for Tiny), then back to the teacher, who
+		-- teaches the first skill there (Config.Skills.Learn.Gate: Q waits for this quest's Learn step). Old saves: Story.Schema 3
 		M1_3 = {
-			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!", ShortName = "Skill boom",
+			Kind = "Main", Chapter = 1, Title = "The Teacher's Test", ShortName = "Lv5 test",
+			Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" }, Lines = {
+				Halo = { "Sir Gleam: Beat four slimes, then return our neighbor's bag." },
+				Horns = { "Rose: Beat four slimes, then take Tiny this snack prank." },
+				Neutral = { "Otto: Beat four slimes, then make something for Tiny." } } },
+			Requires = { Level = 5 },
 			Steps = {
-				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Guide = "SlimeMeadow",
-					Start = "Grow to Lv5 to learn your first skill!", Obj = { Type = "Level", Level = 5, Skill = true } },
-				{ Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Start = "Dusty slimes move in groups. Skills use MP!",
-					Obj = { Type = "SkillHit", Min = 1, Count = 3 } },
+				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "SlimeMeadow",
+					Obj = { Type = "BasicKill", Kind = "Slime", Count = 4 } },
+				{ Text = "Pick up the lost bag", ShortName = "Lost bag", Guide = "LostBag", Obj = { Type = "Pickup", Spot = "LostBag", Radius = 8 },
+					Horns = { Text = "Get the snack parcel by Rose", ShortName = "Snack parcel", Guide = "SnackParcel",
+						Obj = { Type = "Pickup", Spot = "SnackParcel", Radius = 8 } },
+					Neutral = { Text = "Make something for Tiny %d/%d", ShortName = "Make it", Guide = "Blacksmith",
+						Obj = { Type = "Craft", Role = "Own", Count = 1 } } },
+				{ Text = "Give the bag back to its owner", ShortName = "Return bag", Npc = "Folk1", Obj = { Type = "Deliver" },
+					SetFlag = { Key = "Help", Value = "Bag" }, -- P1 ⑦: the neighbour's big wave (bible rule 3)
+					Horns = { Text = "Give Tiny the snack parcel", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Prank" } },
+					-- the artisan's made thing is used (Value Class = by craft: Smith the wheel rolls, Alch Tiny drinks and hops, Tame the
+					-- baby slime eats the treat and comes close; bible rule 5)
+					Neutral = { Text = "Give Tiny what you made", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Class" } } },
+				{ Text = "Learn your first skill from Sir Gleam", ShortName = "Learn a skill", Npc = "Gleam", Obj = { Type = "Learn", Slot = "Q" },
+					Horns = { Text = "Learn your first skill from Rose", Npc = "Smokey" },
+					Neutral = { Text = "Learn your first skill from Otto", Npc = "Otto" } },
 			},
 			Reward = { Gold = 1 },
 		},
+		-- quest bible v3 H04 / R04 / N04 (P1 ⑦): the first chapter's ending. The side's townsperson ASKS (Bright / Rose / Tiny), the
+		-- player stands at the lamp and chooses where the dust goes: the shared lamp or their own light (a personal result: Story.Flags
+		-- Lamp = Common | Mine, Fx StoryScene; nobody else's lamp changes), then the townsperson reacts. Claim and the reward stay.
+		-- Old saves on the old steps start at the lamp (Story.Schema 4)
 		M1_4 = {
-			Kind = "Main", Chapter = 1, Title = "Report to Your Side", ShortName = "Report home", Claim = true,
+			Kind = "Main", Chapter = 1, Title = "A Light for the Lamp", ShortName = "The lamp", Claim = true,
+			Offer = { Npc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" }, Lines = {
+				Halo = { "Bright: Please try your dust in this lamp." },
+				Horns = { "Rose: Please show us what that dust can do." },
+				Neutral = { "Tiny: Please choose a home for our repaired lamp." } } },
 			Steps = {
-				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
-				{ Text = "Report to the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					Halo = { "Hallie here! Now you know my name.", "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards.",
-						"They say a Horn broke the Crown. Pure greed!\nBroken things get fixed. Right?",
-						"More shards are out there.\nWhat will you do with the next one?" },
-					Horns = { "Finders keepers! HA!", "See the lava cracks? Our horn power boils up from there!",
-						"They say a Halo broke it. So greedy. Typical!\nShiny! Finders keepers!",
-						"More shards are out there.\nWhat will you do with the next one?" },
-					Neutral = { "Fix first. Talk later.", "Nice dust. The guild doesn't grab. It shapes.",
-						"More shards are out there.\nWhat will you do with the next one?" },
-				} },
+				{ Text = "Go to the town lamp", ShortName = "To the lamp", Guide = "LampH", Obj = { Type = "Near", Spot = "LampH", Radius = 12 },
+					Horns = { Guide = "LampR", Obj = { Type = "Near", Spot = "LampR", Radius = 12 } },
+					Neutral = { Text = "Go to the Crossroads lamp", Guide = "LampN", Obj = { Type = "Near", Spot = "LampN", Radius = 12 } } },
+				{ Text = "Where does the dust go?", ShortName = "The dust", Panel = true, Guide = "LampH",
+					Lines = { All = { "The lamp is cold. Your dust glitters in your hand." } },
+					Obj = { Type = "Choice", Good = { Label = "Light the town lamp", Points = 0, Pick = "Common" },
+						Evil = { Label = "Keep the light for me", Points = 0, Pick = "Mine" },
+						Neutral = { A = "Light the town lamp", B = "Light my work lamp" },
+						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } },
+					Horns = { Guide = "LampR", Obj = { Type = "Choice", Good = { Label = "Light the lamp for all", Points = 0, Pick = "Common" },
+						Evil = { Label = "Shine it on my horns", Points = 0, Pick = "Mine" },
+						Neutral = { A = "Light the lamp for all", B = "Shine it on my horns" },
+						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } } },
+					Neutral = { Guide = "LampN", Obj = { Type = "Choice", Good = { Label = "Fix the town lamp", Points = 0, Pick = "Common" },
+						Evil = { Label = "Light my work lamp", Points = 0, Pick = "Mine" },
+						Neutral = { A = "Fix the town lamp", B = "Light my work lamp" },
+						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } } } },
+				{ Text = "Back to Bright", ShortName = "Back to Bright", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Bright: Look at that!" } },
+					LinesBy = { From = "M1_4",
+						Good = { Halo = { "Bright: Look! Everyone is waving at you!" }, Horns = { "Rose: The whole town is glowing! Not bad, boss." },
+							Neutral = { "Tiny: Everyone's gathering round the lamp!" } },
+						Evil = { Halo = { "Bright: So shiny! …I'm covering my eyes, hee hee." }, Horns = { "Rose: Your shadow looks so silly! HA!" },
+							Neutral = { "Tiny: Your tools are sparkling!" } },
+						A = { All = { "Tiny: Everyone's gathering round the lamp!" } },
+						B = { All = { "Tiny: Your tools are sparkling!" } },
+						Default = { All = { "Bright: Look at that!" } } },
+					Horns = { Text = "Back to Rose", ShortName = "Back to Rose", Npc = "Smokey" },
+					Neutral = { Text = "Back to Tiny", ShortName = "Back to Tiny", Npc = "Tiny" } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
@@ -4636,6 +4681,22 @@ for _, id in { "H_Basics", "R_Basics", "N_Basics" } do table.insert(Config.Story
 -- cheer (arms up: the paper crown drops on my head) or a wave (a deep bow); Rose laughs either way (rule 4). A record only:
 -- no reward, no score (the M1_2 clue slot; bible §3 'no new pay')
 Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
+-- P1 ⑤ the Lv5 test's help: the neighbour's bag lies at the meadow entrance (Halo), Rose's snack parcel beside her (Horns); the
+-- neighbour is Folk1 of Halo town (now a quest NPC too: it keeps its TownFolk bubbles)
+Config.StoryQuests.Landmarks.LostBag = Vector3.new(188, 0, -12)
+Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
+-- P1 ⑦ the lamps of the first chapter's ending (a placed StoryLandmark model with the same Spot moves them)
+Config.StoryQuests.Landmarks.LampH = Vector3.new(30, 0, -440)
+Config.StoryQuests.Landmarks.LampR = Vector3.new(-30, 0, 440)
+Config.StoryQuests.Landmarks.LampN = Vector3.new(-20, 0, -20)
+for _, e in Config.TownNpcs.List do
+	if e.Id == "Folk1" then
+		e.Story = e.Story or "Folk1"
+		e.Label = e.Label or "Neighbor"
+	end
+end
+-- P1 ⑤: the first skill waits for the Lv5 test (Q is taught only at M1_3's Learn step or after it; StoryQuestService.LearnOpen)
+Config.Skills.Learn.Gate = { Q = "M1_3" }
 Config.StoryQuests.Defs.H_Band = {
 	Kind = "Sub", Title = "Two-Color Band", ShortName = "The band", Speaker = "Bright", Factions = { Halo = true },
 	Requires = { Done = { "M1_1" }, Level = 3 },

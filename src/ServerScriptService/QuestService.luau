@@ -825,6 +825,16 @@ local function nextGoalText(data, player)
 		and num(player:GetAttribute("SkillLearnReady")) > num(data.SkillSlots) then
 		return string.format(TUT_MESSAGES.NextLearn, Config.SkillTeacherName(player:GetAttribute("Faction"))), "SkillLearn", nil
 	end
+	-- P1 ⑤: Lv5 reached but the first skill waits for the teacher's test (not taken yet): go to the teacher
+	if typeof(player) == "Instance" and type(TUT_MESSAGES.NextTest) == "string" and num(data.SkillSlots) < 1
+		and num(data.Rebirths) < 1 and level >= num((Config.Skills.Unlock or {}).Q, 5) then
+		local story = S.StoryQuestService
+		local okL, open = false, nil
+		if type(story) == "table" and type(story.LearnOpen) == "function" then okL, open = pcall(story.LearnOpen, player, "Q") end
+		if okL and open == false then
+			return string.format(TUT_MESSAGES.NextTest, Config.SkillTeacherName(player:GetAttribute("Faction"))), "SkillTest", nil
+		end
+	end
 	local iron = Config.Weapons[IRON_TIER]
 	local owned = math.floor(num(data.WeaponOwnedMask, 1))
 	-- A23-186: the equipped weapon counts when it is at least Iron by strength (never a joke weapon's tier number)

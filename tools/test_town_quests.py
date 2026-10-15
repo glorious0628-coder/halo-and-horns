@@ -514,7 +514,7 @@ MUTATIONS = [
     ("P1: a practice swing from anywhere", ST, "Util.FlatDistance(ev.Pos, spot) > num(obj.Radius, 8) then return 0 end", "false then return 0 end"),
     ("P1: a practice swing facing away", ST, "look.Unit:Dot(to.Unit) < num(SQ.PracticeFacing, 0.3) then return 0 end", "false then return 0 end"),
     ("P1: no PracticeTool", ST, "if player:GetAttribute(\"PracticeTool\") ~= practice then player:SetAttribute(\"PracticeTool\", practice) end", ""),
-    ("P1: swings not heard", ST, "\tconnect(\"CombatService\", \"BasicSwing\", onBasicSwing) -- P1 ①-2\n", ""),
+    ("P1: swings not heard", ST, "\t\tcombat.BasicSwing:Connect(onBasicSwing)\n", ""),
     ("P1: an emote anywhere", ST, "if not spot or not root or Util.FlatDistance(root.Position, spot) > num(obj.Radius, 10) then return end", "if false then return end"),
     ("P1: any emote", ST, "\tif side ~= \"Good\" and side ~= \"Evil\" then return end\n\tlocal spot = landmark(obj.Spot)", "\tside = side or \"Good\"\n\tlocal spot = landmark(obj.Spot)"),
     ("P1: the emote's flag never written", ST, "\tflagBySide(player, data, id, obj.Flag, side)\n\tStoryQuestService.Picked", "\tStoryQuestService.Picked"),
@@ -541,6 +541,20 @@ MUTATIONS = [
     ("P1: the band before Lv3", C, "\tRequires = { Done = { \"M1_1\" }, Level = 3 },\n\tOffer = { Npc = \"Bright\"", "\tRequires = { Done = { \"M1_1\" } },\n\tOffer = { Npc = \"Bright\""),
     ("P1: the band's flag never written", C, "\t\t\t\tFlag = { Key = \"Band\", Good = \"Show\", Evil = \"Hide\" } } },", "\t\t\t\tFlag_ = { Key = \"Band\", Good = \"Show\", Evil = \"Hide\" } } },"),
     ("P1: the choice flag ignored", ST, "\t\t\tflagBySide(player, data, id, obj.Flag, option) -- P1 ①-4\n", ""),
+    # --- quest P1 ⑤
+    ("P1: an artisan's own craft not recognised", ST, "\t\tif role == \"Own\" then", "\t\tif false then"),
+    ("P1: old M1_3 saves not moved", ST, "\t\tif st.Main.Id == \"M1_3\" then st.Main.St, st.Main.P, st.Main.T, st.Main.Claim = 1, 0, {}, false end\n", ""),
+    ("P1: no learn gate", C, "Config.Skills.Learn.Gate = { Q = \"M1_3\" }", "Config.Skills.Learn.Gate = nil"),
+    ("P1: the test counts skill kills", C, "Obj = { Type = \"BasicKill\", Kind = \"Slime\", Count = 4 } },\n\t\t\t\t{ Text = \"Pick up the lost bag\"",
+     "Obj = { Type = \"Kill\", Kind = \"Slime\", Count = 4 } },\n\t\t\t\t{ Text = \"Pick up the lost bag\""),
+    # --- quest P1 ⑦
+    ("P1: the craft scene not by class", ST, "\t\tif value == \"Class\" then -- P1 ⑦", "\t\tif false then -- P1 ⑦"),
+    ("P1: old M1_4 saves not moved", ST, "\t\tif st.Main.Id == \"M1_4\" and st.Main.Claim ~= true then st.Main.St, st.Main.P, st.Main.T = 1, 0, {} end\n", ""),
+    ("P1: the lamp leaves no flag", C, "\t\t\t\t\t\tNeutral = { A = \"Light the town lamp\", B = \"Light my work lamp\" },\n\t\t\t\t\t\tFlag = { Key = \"Lamp\", Good = \"Common\", Evil = \"Mine\" } },",
+     "\t\t\t\t\t\tNeutral = { A = \"Light the town lamp\", B = \"Light my work lamp\" } },"),
+    ("P1: the lamp picks have no side", ST, "\tCommon = \"Good\", Mine = \"Evil\" } -- P1 ⑦ M1_4's lamp", "\tCommon_ = \"Good\" } -- P1 ⑦ M1_4's lamp"),
+    ("P1: the bag leaves no scene", C, "\t\t\t\t\tSetFlag = { Key = \"Help\", Value = \"Bag\" }, -- P1 ⑦", "\t\t\t\t\t-- P1 ⑦"),
+    ("P1: the Lv5 test before Lv5", C, "\t\t\tRequires = { Level = 5 },\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks", "\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks"),
 ]
 
 

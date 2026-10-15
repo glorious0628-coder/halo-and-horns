@@ -591,9 +591,18 @@ SHORT_NEEDS = [(("StoryQuests", "Defs"), "story quest"), (("Quests", "Templates"
                (("Board", "Jobs"), "board job")]
 TUT_SHORT_KEYS = ("Welcome", "Travel", "Quest", "Forge", "IronLevel", "SkillIron", "IronGold", "Zone", "Skill")
 # a ShortName '%s' the checker can fill: path -> every value it can take (3rd idea round #3: 'Meet %s' = the guide names)
+def _teacher_names(tree) -> list[str]:
+    """quest P1 ②: 'Meet %s' of the Teacher step = the teachers' town labels (Skills.Learn.Teachers -> TownNpcs.List Label)"""
+    ids = set((get(tree, ("Skills", "Learn", "Teachers")) or {}).values())
+    npcs = get(tree, ("TownNpcs", "List")) or {}
+    rows = npcs.values() if isinstance(npcs, dict) else npcs
+    return [r["Label"] for r in rows if isinstance(r, dict) and r.get("Story") in ids and isinstance(r.get("Label"), str)]
+
+
 SHORT_SUBS = {("Tutorial", "ShortNames", "Welcome"): lambda tree: [
     w["Name"] for w in (get(tree, ("Tutorial", "Welcome")) or {}).values()
-    if isinstance(w, dict) and isinstance(w.get("Name"), str)]}
+    if isinstance(w, dict) and isinstance(w.get("Name"), str)],
+    ("Tutorial", "ShortNames", "Teacher"): _teacher_names}
 
 
 def count_phrase(after: str) -> str | None:

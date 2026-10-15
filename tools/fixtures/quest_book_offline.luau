@@ -71,7 +71,8 @@ runGroup("done", function()
 end)
 
 runGroup("available", function()
-	local w = bookWorld()
+	-- quest P1: more optional subs wait at Lv1~3 now (the lessons, the lunchbox, the band): room for the ones checked below
+	local w = bookWorld({ EditConfig = function(c) c.QuestBook.AvailableMax = 40 end })
 	local B = w.Reg.StoryQuestService.BookRows
 	-- after chapter 1 at Lv3 (Halo): S6 / XR1 (Lv5) and H2 (Lv8, Halo) wait for a level; S3 (no level) is ready; N1 (the
 	-- artisan guild's) and R5 (Horns) are not this player's

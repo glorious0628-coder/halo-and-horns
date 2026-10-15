@@ -260,6 +260,7 @@ runGroup("teacher", function()
 	check(#L.Text.Lines.Halo >= 1 and #L.Text.Lines.Halo <= 2 and L.Text.Lines.Horns[1]:find("%%s") ~= nil
 		and L.Text.Lines.Neutral[1]:find("%%s") ~= nil, "1-2 teacher lines per side, the first names the skill", "")
 	local w = skillWorld({ Z = true, RealUnlock = true })
+	w.Config.Skills.Learn.Gate = nil -- quest P1 ⑤: the Lv5 test gate has its own checks (test_town_quests p1 lv5 test)
 	local bodies = {}
 	w.Services.CollectionService = { GetTagged = function(_, tag) return tag == "StoryNpc" and bodies or {} end }
 	local function body(id, pos)
@@ -318,6 +319,19 @@ runGroup("teacher", function()
 	check(j:GetAttribute("SkillLearnReady") == 2 and j:GetAttribute("SkillSlots") == 0, "Lv4 -> 16: Q and Z wait", show(a(j)))
 	check(w.Skills.TryLearn(j, "Gleam") == true and j:GetAttribute("SkillSlots") == 2
 		and #w:FxOf("SkillLearned", f1) == 1 and #w:FxOf("SkillLearned", f1)[1].Data.Slots == 2, "one talk: both", show(a(j)))
+	-- quest P1 ⑤: with the Lv5 test gate on, Q waits for M1_3's Learn step (not ready, not taught); once the test is done, ready
+	w.Config.Skills.Learn.Gate = { Q = "M1_3" }
+	local g = w:Hero(11, { Level = 5, Faction = "Halo", Pos = vec(0, 0, -4) })
+	local gd = w.Data[g]
+	check(g:GetAttribute("SkillLearnReady") == 0 and w.Skills.TryLearn(g, "Gleam") == false and g:GetAttribute("SkillSlots") == 0,
+		"the gate: Lv5 before the teacher's test - nothing ready, nothing taught", show(a(g)))
+	gd.Story = gd.Story or {}
+	gd.Story.Done = gd.Story.Done or {}
+	gd.Story.Done.M1_3 = true
+	w.Skills.CatchUp(g)
+	check(g:GetAttribute("SkillLearnReady") == 1 and w.Skills.TryLearn(g, "Gleam") == true and g:GetAttribute("SkillSlots") == 1,
+		"the gate: the test done - ready (CatchUp) and taught", show(a(g)))
+	w.Config.Skills.Learn.Gate = nil
 	-- old saves keep their skills; a rebirth needs no teacher; no teacher body here (Otto) = the slot opens at once
 	local old = w:Hero(4, { Level = 30, Faction = "Halo", Data = { SkillSlots = 3 } })
 	check(old:GetAttribute("SkillSlots") == 3 and old:GetAttribute("SkillLearnReady") == 0, "an old save with its skills: kept, nothing to learn", show(a(old)))

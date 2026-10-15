@@ -168,6 +168,10 @@ local function mark(npc, entry, C)
 	if entry.Story then
 		CollectionService:AddTag(npc, Config.StoryQuests.NpcTag or "StoryNpc")
 		npc:SetAttribute("NpcId", entry.Story)
+		if entry.Folk then -- P1 ⑤: a townsperson who is also a quest NPC (Folk1) keeps the TownFolk bubbles
+			CollectionService:AddTag(npc, "TownFolk")
+			npc:SetAttribute("FolkId", entry.Folk)
+		end
 	elseif entry.Merchant == true then
 		CollectionService:AddTag(npc, (Config.Vitals and Config.Vitals.PotionMerchantTag) or "PotionMerchant") -- ShopService sells at every tagged seller
 		npc:SetAttribute("HHC_PotionMerchant", true)

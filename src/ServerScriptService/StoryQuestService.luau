@@ -54,7 +54,8 @@ local panels = {}
 -- counted as a change of mind; A23-70 Lunch1's GiveBack / Bite too)
 local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil", Guard = "Good",
 	Take = "Evil", GiveBack = "Good", Bite = "Evil", Care = "Good", Minion = "Evil", -- Care / Minion: PET-4 Pet1
-	Show = "Good", Hide = "Evil" } -- P1 ③ H_Band
+	Show = "Good", Hide = "Evil", -- P1 ③ H_Band
+	Common = "Good", Mine = "Evil" } -- P1 ⑦ M1_4's lamp
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -131,14 +132,27 @@ end
 -- P1 ③ (Story.Schema 2, once per save): Lunch1's first step (the talk with Tiny) became its offer, so a track on the old steps
 -- moves one step back (on the talk = at the pond hunt from 0; a pond hunt keeps its count)
 local function migrate(st)
-	if num(st.Schema, 1) >= 2 then return end
-	local tr = st.Subs.Lunch1
-	if type(tr) == "table" then
-		local old = math.floor(num(tr.St, 1))
-		tr.St = math.max(1, old - 1)
-		if old ~= 2 then tr.P, tr.T = 0, {} end
+	if num(st.Schema, 1) < 2 then
+		local tr = st.Subs.Lunch1
+		if type(tr) == "table" then
+			local old = math.floor(num(tr.St, 1))
+			tr.St = math.max(1, old - 1)
+			if old ~= 2 then tr.P, tr.T = 0, {} end
+		end
+		st.Schema = 2
 	end
-	st.Schema = 2
+	-- P1 ⑤ (Schema 3): M1_3 is the Lv5 test now: a save on the old steps (waiting for Lv5 / hitting with a skill) takes the test
+	-- from its first step (a learned skill passes its Learn step at once; the quest still pays once)
+	if num(st.Schema, 1) < 3 then
+		if st.Main.Id == "M1_3" then st.Main.St, st.Main.P, st.Main.T, st.Main.Claim = 1, 0, {}, false end
+		st.Schema = 3
+	end
+	-- P1 ⑦ (Schema 4): M1_4 is the lamp now: a save on its old steps (going home / the report) goes to the lamp; one already
+	-- waiting for [Claim] keeps waiting (the reward is the same)
+	if num(st.Schema, 1) < 4 then
+		if st.Main.Id == "M1_4" and st.Main.Claim ~= true then st.Main.St, st.Main.P, st.Main.T = 1, 0, {} end
+		st.Schema = 4
+	end
 end
 
 -- drop unknown ids / bad numbers (fillDefaults only fills the top level)
@@ -409,7 +423,12 @@ local function eventAmount(player, obj, ev)
 		if t ~= "Craft" then return 0 end
 		local r = type(Config.Craft) == "table" and type(Config.Craft.Recipes) == "table" and Config.Craft.Recipes[ev.Recipe] or nil
 		if type(r) ~= "table" then return 0 end
-		if obj.Role and r.Role ~= obj.Role then return 0 end
+		local role = obj.Role
+		if role == "Own" then -- P1 ⑤: the player's own craft (Config.Craft.Roles by class: Smith / Alch / Tame)
+			local roles = type(Config.Craft) == "table" and Config.Craft.Roles or nil
+			role = type(roles) == "table" and roles[player:GetAttribute("Class")] or "?"
+		end
+		if role and r.Role ~= role then return 0 end
 		if obj.Kind and r.Kind ~= obj.Kind then return 0 end
 		return 1
 	elseif ev.Kind == "SellMat" then -- 장인 ②: gathered materials sold at the Forge (SellItem)
@@ -650,7 +669,14 @@ local function advance(player, data, id, track)
 	-- P1 ①-4: SetFlag = { Key, Value } a step leaves behind when it is done (after the save of the step below would be too late
 	-- for its scene: the flag is a record of what happened, so it is written first)
 	local doneStep = stepOf(player, def, track.St)
-	if doneStep and type(doneStep.SetFlag) == "table" then setFlag(player, data, id, doneStep.SetFlag.Key, doneStep.SetFlag.Value) end
+	if doneStep and type(doneStep.SetFlag) == "table" then
+		local value = doneStep.SetFlag.Value
+		if value == "Class" then -- P1 ⑦: by the player's craft (Config.Craft.Roles: Smith / Alch / Tame)
+			local roles = type(Config.Craft) == "table" and Config.Craft.Roles or nil
+			value = type(roles) == "table" and roles[player:GetAttribute("Class")] or nil
+		end
+		setFlag(player, data, id, doneStep.SetFlag.Key, value)
+	end
 	if panels[player] then panels[player][id .. ":" .. tostring(track.St)] = nil end
 	StoryQuestService.StepDone:Fire(player, id, track.St)
 	track.P, track.T = 0, {}
@@ -663,6 +689,13 @@ local function advance(player, data, id, track)
 		giveStepItem(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
+		-- P1 ⑤: a Learn step opened: the teacher may teach now (SkillLearnReady follows at once)
+		local now = stepOf(player, def, track.St)
+		local skills = S.SkillService
+		if now and type(now.Obj) == "table" and now.Obj.Type == "Learn" and type(skills) == "table" and type(skills.CatchUp) == "function" then
+			local ok, err = pcall(skills.CatchUp, player)
+			if not ok then Util.Warn(TAG, "SkillService.CatchUp: " .. tostring(err)) end
+		end
 		return
 	end
 	if def.Claim then
@@ -1810,7 +1843,11 @@ function StoryQuestService.Start()
 	connect("MonsterService", "MonsterKilled", onMonsterKilled)
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
-	connect("CombatService", "BasicSwing", onBasicSwing) -- P1 ①-2
+	-- P1 ①-2: the practice swings (looked up softly: a world without the signal has no Practice step to count)
+	local combat = S.CombatService
+	if type(combat) == "table" and type(combat.BasicSwing) == "table" and type(combat.BasicSwing.Connect) == "function" then
+		combat.BasicSwing:Connect(onBasicSwing)
+	end
 	connect("GooseService", "GooseFinished", onGooseFinished)
 	-- 장인 ②: the guild's steps (looked up softly: a world without these services connects nothing, with no warning)
 	for _, hook in {
