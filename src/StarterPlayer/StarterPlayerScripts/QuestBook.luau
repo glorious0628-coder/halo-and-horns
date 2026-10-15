@@ -318,6 +318,27 @@ local function label(kit, parent, text, size, color, order, width)
 	return l
 end
 
+-- 최종 검수 10/15 (Korean client: the list row 'Go to Otto's Forge in the Crossroads' stayed English, like the HUD goal
+-- line did - HUD.QuestGoal): the server sends the English sentence, so translate it by its English text (UIKit.TrWord)
+-- before drawing; a "words · tail" row is tried whole first, then piece by piece. English client = unchanged
+function QuestBook.RowWords(text, trWord)
+	if type(text) ~= "string" or text == "" or type(trWord) ~= "function" then return text end
+	local ok, out = pcall(trWord, text)
+	if ok and type(out) == "string" and out ~= "" and out ~= text then return out end
+	if not string.find(text, " · ", 1, true) then return text end
+	local parts = {}
+	for piece in string.gmatch(text .. " · ", "(.-) · ") do
+		local okp, p = pcall(trWord, piece)
+		table.insert(parts, (okp and type(p) == "string" and p ~= "") and p or piece)
+	end
+	return table.concat(parts, " · ")
+end
+
+local function rowWords(text)
+	local ui = C and C.UIKit
+	return QuestBook.RowWords(text, type(ui) == "table" and ui.TrWord or nil)
+end
+
 -- one row: the words (+ 3/5), [Claim] / [New]; a press on a quest row guides me there and closes the window
 local function drawRow(kit, parent, row)
 	local press = row.Kind == "Quest" or row.Kind == "Link"
@@ -349,7 +370,7 @@ local function drawRow(kit, parent, row)
 	local buttons = (row.CanClaim and 1 or 0) + (row.CanReroll and 1 or 0)
 	local reserve = buttons * (T.BtnW + 8) + (row.Nums and 64 or 0)
 	local color = row.Kind == "Done" and kit.Theme.SubText or kit.Theme.Text
-	label(kit, f, row.Text, T.RowText, color, 1, UDim2.new(1, -reserve, 0, 0))
+	label(kit, f, rowWords(row.Text), T.RowText, color, 1, UDim2.new(1, -reserve, 0, 0))
 	if row.Nums then
 		local n = label(kit, f, row.Nums, T.NumText, kit.Theme.Gold, 2, UDim2.fromOffset(56, 0))
 		n.TextXAlignment = Enum.TextXAlignment.Right

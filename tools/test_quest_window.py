@@ -27,6 +27,10 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-08/offline_quest_window_2026-10-08.json"
 
 MUTATIONS = [
+    # 최종 검수 10/15: the list rows are translated by their English words
+    ("BOOK", "list rows drawn in English", "\tlabel(kit, f, rowWords(row.Text), T.RowText,", "\tlabel(kit, f, row.Text, T.RowText,"),
+    ("BOOK", "a 'words · tail' row never split", '\tif not string.find(text, " · ", 1, true) then return text end\n',
+     "\tdo return text end\n"),
     ("BOOK", "no tab icons", "\t\ttabIcon(b, id)\n", ""),
     ("BOOK", "an icon without art", '\tif not ok or type(img) ~= "string" or img == "" then return nil end\n', ""),
     # 검수 10/09: the Studio-only preview hook
