@@ -1955,6 +1955,8 @@ function WSHOP.Finite(value)
 	return type(value) == "number" and value == value and value > -math.huge and value < math.huge
 end
 
+-- WSHOP.Access's answer when I am just not at the anvil (look, do not buy); never drawn (A23-191: no far line)
+WSHOP.Far = "Far"
 function WSHOP.Access()
 	if attr("DataLoaded", false) ~= true then return T.WeaponLoading end
 	if isDead() then return cfgFmt("WaitRespawn", T.WaitRespawn) end
@@ -1970,14 +1972,14 @@ function WSHOP.Access()
 		or not guild or not guild:IsA("Model") or guild.Parent ~= landmarks
 		or not anvil or not anvil:IsA("BasePart") or anvil.Parent ~= guild or not anvil.Anchored
 		or not character or not character:IsDescendantOf(workspace)
-		or not hrp or not hrp:IsA("BasePart") then return T.WeaponFar end
+		or not hrp or not hrp:IsA("BasePart") then return WSHOP.Far end
 	local prompt = anvil:FindFirstChild(WSHOP.PromptName)
 	if not prompt or not prompt:IsA("ProximityPrompt") or prompt.Parent ~= anvil or not prompt.Enabled then
-		return T.WeaponFar
+		return WSHOP.Far
 	end
 	local limit, distance = prompt.MaxActivationDistance, (hrp.Position - anvil.Position).Magnitude
 	if not WSHOP.Finite(limit) or limit <= 0 or not WSHOP.Finite(distance)
-		or distance > math.min(WSHOP.Distance, limit) then return T.WeaponFar end
+		or distance > math.min(WSHOP.Distance, limit) then return WSHOP.Far end
 	return nil
 end
 
@@ -2882,9 +2884,10 @@ BUILDERS.WeaponShop = function(parent)
 			session.SlowUntil = os.clock() + WSHOP.SlowNoteSeconds
 		end
 		local access = WSHOP.Access()
-		accessLabel.Text, accessLabel.Visible = access or "", access ~= nil
-		local far = access == T.WeaponFar -- loaded, alive, class picked, just not at the anvil: look but do not buy
-		if far and not WSHOP.Sells() then accessLabel.Text = T.WeaponFarDrop end -- A23-127: nothing to buy here
+		local far = access == WSHOP.Far -- loaded, alive, class picked, just not at the anvil: look but do not buy
+		-- A23-191 (English dump 10/15): no 'Come close to the Forge anvil to ...' line - the way row says where to go
+		accessLabel.Text = far and "" or (access or "")
+		accessLabel.Visible = accessLabel.Text ~= ""
 		details.Visible = access == nil or far
 		wayRow.Visible = far
 		local first = WSHOP.Offer(1)
@@ -2906,14 +2909,15 @@ BUILDERS.WeaponShop = function(parent)
 			ui.Name.Text = info and (Config.WeaponStars(ui.Tier) .. " " .. info.Name .. ITEMS.PlusText(ITEMS.Enh(enh, ui.Tier))
 				.. " · " .. (info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponOwned or T.WeaponUnowned))) or T.WeaponInvalid
 			ui.Name.TextColor3 = Config.WeaponGrade(ui.Tier).Color -- design §1 B2: grade color everywhere a weapon is listed
-			ui.Price.Visible, ui.Sale.Visible = info ~= nil, info ~= nil
+			-- A23-191 (English dump 10/15): the first weapon has no price line ('First weapon · free to re-equip ...')
+			ui.Price.Visible, ui.Sale.Visible = info ~= nil and ui.Tier > 1, info ~= nil
 			-- A23-127: a weapon I do not own and the Forge does not sell = where it comes from, no buttons
 			local dropOnly = info ~= nil and not sells and not info.Owned and ui.Tier > 1
 			ui.Buttons.Visible = not dropOnly
 			if dropOnly then buyReason = nil end -- (its "buy from Lv N" line is not for this Forge)
 			if info then
 				ui.DisplayedAction = info.Owned and "Equip" or (not dropOnly and "Buy" or nil)
-				ui.Price.Text = ui.Tier == 1 and T.WeaponStarter
+				ui.Price.Text = ui.Tier == 1 and ""
 					or (sells and string.format(T.WeaponPriceF, exactNumber(info.Price), info.MinLevel, info.Level))
 					or (dropOnly and string.format(T.WeaponFromF, Config.WeaponSource(ui.Tier)))
 					or string.format(T.WeaponLevelF, info.MinLevel, info.Level)
@@ -2939,7 +2943,8 @@ BUILDERS.WeaponShop = function(parent)
 			elseif ui.DisplayedAction == "Buy" and os.clock() < (ui.ArmedUntil or 0) then
 				ui.Buy.Text = UserInputService.TouchEnabled and WSHOP.AgainTouch or WSHOP.AgainMouse
 			end
-			ui.Reason.Text = (buyReason ~= T.WeaponEquipped and buyReason) or ""
+			-- A23-191 (English dump 10/15): tier 1 says nothing under it ('Not sold. Quest reward.' - its button says it)
+			ui.Reason.Text = (ui.Tier > 1 and buyReason ~= T.WeaponEquipped and buyReason) or ""
 			ui.Reason.Visible = ui.Reason.Text ~= ""
 			setEnabled(ui.Buy, info ~= nil and not blocked and buyReason == nil)
 			setEnabled(ui.Sell, info ~= nil and not blocked and sellReason == nil)
