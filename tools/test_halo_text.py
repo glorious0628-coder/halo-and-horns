@@ -4,9 +4,9 @@
 - #44: the first-mission row says where the Forge is: Text.Forge = "Go to Otto's Forge in the Crossroads" (phone ShortName
   "To the Forge" stays).
 - #55 easy English: the Sprout Oath side quests (OathH / OathR) say "promise" (title, phone name, step, Bright's / Smokey's line),
-  H6 "Dusty Heroes" says where the statues are ("... in Halo Citadel"); Hallie's fixed catchphrase stays on page 2 of her
+  H6 "Dusty Heroes" says where the statues are ("... in Halo Citadel"); Hallie's fixed catchphrase stays on page 1 of her
   welcome and opens the M1_4 report; its payoff line in M3_5 is untouched.
-- ui_clutter_review (A23-99 less hand-holding): each guide's welcome has two pages (the mission card, the catchphrase).
+- ui_clutter_review (A23-99 less hand-holding): each guide's welcome has two pages (the catchphrase, the mission card).
 Reads the CURRENT Config on tools/fixtures/dev2_kit.luau with tools/fixtures/halo_text_offline.luau and the installed official
 Luau CLI. No Studio, network, DataStore or Roblox API calls; mutations run on in-memory copies of the Config only.
 
@@ -43,14 +43,15 @@ MUTATIONS = [
     ("H6 forgets the town", C, "{ Text = \"Look at the hero statues in Halo Citadel %d/%d s\"", "{ Text = \"Look at the hero statues %d/%d s\""),
     ("Hallie's catchphrase is replaced", C, "\"Hallie here! Now you know my name.\", \"Did you see the statues",
      "\"You're back! Good work out there.\", \"Did you see the statues"),
-    ("Halo welcome has a third page", C, "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t},",
-     "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"Thank you for joining the Knights of Light.\",\n\t\t\t},"),
-    ("Horns welcome has a third page", C, "\t\t\t\t\"Finders keepers! HA! You're with us now. I'm Magpie.\",\n\t\t\t},",
-     "\t\t\t\t\"Finders keepers! HA! You're with us now. I'm Magpie.\",\n\t\t\t\t\"Welcome, rookie!\",\n\t\t\t},"),
-    ("Guild welcome has a third page", C, "\t\t\t\t\"Fix first. Talk later. I'm Kit. Welcome to the Guild!\",\n\t\t\t},",
-     "\t\t\t\t\"Fix first. Talk later. I'm Kit. Welcome to the Guild!\",\n\t\t\t\t\"Thanks for joining.\",\n\t\t\t},"),
-    ("the mission card is gone from page 1 (Halo)", C, "\t\t\tLines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)\n\t\t\t\t\"First, go to Otto's Forge and get your weapon!\", -- A23-188: the first mission = the Forge visit\n",
-     "\t\t\tLines = {\n\t\t\t\t\"Hi!\", -- A23-188: the first mission = the Forge visit\n"),
+    # 사용자 10/15 (fix/welcome-order): page 1 = the hello, page 2 = the mission
+    ("Halo welcome has a third page", C, "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"First, go to Otto's Forge",
+     "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"Thank you for joining the Knights of Light.\",\n\t\t\t\t\"First, go to Otto's Forge"),
+    ("Horns welcome has a third page", C, "\t\t\t\t\"Finders keepers! HA! You're with us now. I'm Magpie.\",\n\t\t\t\t\"First, go to Otto's Forge",
+     "\t\t\t\t\"Finders keepers! HA! You're with us now. I'm Magpie.\",\n\t\t\t\t\"Welcome, rookie!\",\n\t\t\t\t\"First, go to Otto's Forge"),
+    ("Guild welcome has a third page", C, "\t\t\t\t\"Fix first. Talk later. I'm Kit. Welcome to the Guild!\",\n\t\t\t\t\"First, go to Otto's Forge",
+     "\t\t\t\t\"Fix first. Talk later. I'm Kit. Welcome to the Guild!\",\n\t\t\t\t\"Thanks for joining.\",\n\t\t\t\t\"First, go to Otto's Forge"),
+    ("the mission card is gone from page 2 (Halo)", C, "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"First, go to Otto's Forge and get your weapon!\",",
+     "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"Hi!\","),
 ]
 
 
@@ -82,8 +83,8 @@ SUITE = Suite(
     contract="#44 Text.Forge 'Go to Otto's Forge in the Crossroads' (ShortName 'To the Forge'); #55 OathH / OathR title 'The Sprout "
              "Promise', phone name 'Sprout promise', steps 'Make your promise to Bright / Smokey', 'Make your promise.' in the "
              "guides' lines (no 'oath' in the player-facing text but the closing line, which game dev 2 rewrites in #54); H6 step "
-             "'Look at the hero statues in Halo Citadel'; Hallie's catchphrase stays page 2 of her welcome and opens the M1_4 "
-             "report; every guide's welcome has two pages (the mission card, the catchphrase).",
+             "'Look at the hero statues in Halo Citadel'; Hallie's catchphrase stays page 1 of her welcome and opens the M1_4 "
+             "report; every guide's welcome has two pages (the catchphrase, the mission card).",
     limitations="Text only: where the client draws the welcome (page buttons) is game dev 1's window; the Halo / Horns welcome "
                 "counts are also asserted by test_onboarding / test_english.",
 )
