@@ -3244,6 +3244,9 @@ runGroup("daily repeat requests", function()
 		and w:Track(d, ids[2]) ~= nil, "the next day: both ask again; yesterday's open one is still open", show({ offers(), dims() }))
 	w:Act(p, ids[1], "Accept")
 	check(w:Track(d, ids[1]) ~= nil, "yesterday's done request can be taken again", "")
+	w:Act(p, ids[1], "Talk")
+	w:Act(p, ids[1], "Accept")
+	check(w:Track(d, ids[1]) == nil and d.Story.Daily.Done[ids[1]] == true, "done again today (1 of 5 taken): not offered again until tomorrow", show(d.Story.Daily))
 	for _, id in ids do
 		SQ.Defs[id] = nil
 		table.remove(SQ.Subs, table.find(SQ.Subs, id))
