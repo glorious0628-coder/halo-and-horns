@@ -32,6 +32,8 @@ local LIST = { Last = setmetatable({}, { __mode = "k" }), Queued = setmetatable(
 -- ⑥ PetArmor: the part of a pet XP gain below 1 kept for the next gain ([player][uid] = fraction; memory only, a leave
 -- drops it), so a kill's 1 pet XP x 1.2 still adds up (5 kills = 6)
 local GEARREM = setmetatable({}, { __mode = "k" })
+-- A23-194: the part of a kill-gold / kill-XP bonus below 1 kept for the next kill ([player][kind] = fraction; memory only)
+local BONUSREM = setmetatable({}, { __mode = "k" })
 
 PetService.PetGranted = Util.Signal.new() -- (player, uid, species): PET-6 announcements later
 
@@ -183,6 +185,13 @@ local function publish(player, data)
 	-- ⑥ gear (게임성 개발 3): the following pet's PetAcc bonus; nil = none (and always nil while the switch is off)
 	local acc = petGear(data, uid, "PetAcc")
 	player:SetAttribute("PetAcc", acc > 0 and acc or nil)
+	-- A23-194: the following pet's bonus kind and size (nil = none / a look-only pet; the walk speed stays PetLv / PetRoll).
+	-- The value is the pet's own: the server uses 0 in a PvP zone or the Crown Pit (PetService.Bonus; ZonePvP tells the UI)
+	local def = p and PETS.Species[p.Sp] or nil
+	local kind = type(def) == "table" and type(def.Bonus) == "table" and def.Bonus.Type or nil
+	local size = (kind and kind ~= "None") and Config.PetBonus(p.Sp, p.Lv, kind, p.Roll and p.Roll.Spd) or 0
+	player:SetAttribute("PetBonusType", (kind and kind ~= "None") and kind or nil)
+	player:SetAttribute("PetBonus", size > 0 and size or nil)
 	refreshSpeed(player)
 	if type(pets) == "table" and type(pets.List) == "table" then sendList(player, data) end
 end
@@ -227,7 +236,7 @@ end
 -- (its pet is its weapon) brings it out anyway. A new pet always comes out when nothing follows.
 local function grant(player, species, lean, name, text, bringOut)
 	local data = getData(player)
-	if not data or not known(species) then return nil end
+	if not data or not known(species) or not Config.PetReady(species) then return nil end -- A23-194: no model, no pet
 	local pets = PetService.Sanitize(data)
 	lean = (lean == "Good" or lean == "Evil") and lean or ""
 	name = type(name) == "string" and string.sub(name, 1, LIMIT.NameLen) or ""
@@ -260,13 +269,152 @@ end
 -- docs/design/tamer_server_2026-10-12.md §2-§4 (game dev 2 agreed the shapes 10/12). SummonPet: a NEW pet of `species`
 -- even when one is owned, Bound, with its in-game random stats roll = { Spd } (Config.SaveV4.PetRollSpd; never made up
 -- here). nil = an unknown species, a bad roll, or LIMIT.Pets pets already. CraftService calls it at the end of a summon.
+-- A23-194: roll = nil for a species without a walk roll (S2-S5: their own Bonus line); a roll given must be valid
 function PetService.SummonPet(player, species, roll)
 	local data = getData(player)
-	if not data or not known(species) then return nil end
-	local r = sanitizeRoll(roll)
-	if not r then return nil end
+	if not data or not known(species) or not Config.PetReady(species) then return nil end
+	local r = nil
+	local def = PETS.Species[species]
+	if roll ~= nil or (type(def.Bonus) ~= "table" or def.Bonus.Type == "Speed") then -- a walk-speed species needs its roll
+		r = sanitizeRoll(roll)
+		if not r then return nil end
+	end
 	local pets = PetService.Sanitize(data)
 	return addPet(player, data, pets, { Sp = species, Lv = 1, XP = 0, Name = "", Lean = "", Bound = true, Roll = r }, nil)
+end
+
+------------------------------------------------------------------ A23-194 the pet bonus + the sure pet gifts
+-- in a PvP zone or the Crown Pit (ZoneService.IsPvPZone): the pet's numbers are off there (looks only)
+local function pvpNow(player)
+	local z = S.ZoneService
+	if type(z) ~= "table" or type(z.IsPvPZone) ~= "function" then return false end
+	local ok, yes = pcall(z.IsPvPZone, player)
+	return ok and yes == true
+end
+
+-- the following pet's bonus of `kind` ("Potion" | "KillGold" | "KillXP" | "MatLuck" | "Speed") for this player now: a
+-- fraction, 0 = none (no pet, another kind, a species not Ready, a PvP zone / the Crown Pit)
+function PetService.Bonus(player, kind)
+	local data = getData(player)
+	local pets = data and data.Pets
+	local uid = type(pets) == "table" and type(pets.Equipped) == "table" and pets.Equipped[1] or nil
+	local p = uid and type(pets.List) == "table" and pets.List[uid] or nil
+	if type(p) ~= "table" or not Config.PetReady(p.Sp) or pvpNow(player) then return 0 end
+	local ok, b = pcall(Config.PetBonus, p.Sp, p.Lv, kind, type(p.Roll) == "table" and p.Roll.Spd or nil)
+	return (ok and type(b) == "number" and b == b and b > 0 and b ~= math.huge) and b or 0
+end
+
+-- the whole extra of `base` (a kill's gold / XP) the pet adds: base x Bonus(kind), the part below 1 carried to the next
+-- call (so +2% of 5 gold still adds 1 every 10 kills)
+function PetService.BonusExtra(player, kind, base)
+	base = num(base)
+	if base <= 0 then return 0 end
+	local b = PetService.Bonus(player, kind)
+	if b <= 0 then return 0 end
+	local rem = BONUSREM[player]
+	if not rem then
+		rem = {}
+		BONUSREM[player] = rem
+	end
+	local x = base * b + num(rem[kind])
+	local whole = math.floor(x + 1e-9) -- 10 x 0.1 must make 1 (float sums)
+	rem[kind] = math.max(0, x - whole)
+	return whole
+end
+
+-- data.PetGrants repaired in place: N[count key] = whole tallies >= 0, Got[row id] = true
+local function grantsOf(data)
+	local g = data.PetGrants
+	if type(g) ~= "table" then
+		g = {}
+		data.PetGrants = g
+	end
+	local n, got = {}, {}
+	for k, v in type(g.N) == "table" and g.N or {} do
+		if type(k) == "string" and #k <= 32 and type(v) == "number" and v == v and v >= 0 then n[k] = math.min(math.floor(v), 1e6) end
+	end
+	for k, v in type(g.Got) == "table" and g.Got or {} do
+		if type(k) == "string" and #k <= 32 and v == true then got[k] = true end
+	end
+	g.N, g.Got = n, got
+	return g
+end
+
+local function ownsSpecies(pets, species)
+	for _, p in pets.List do
+		if p.Sp == species then return true end
+	end
+	return false
+end
+
+-- every Config.PetGrants row whose condition is met now gives its pet once. No line (A23-191: the pet window / codex
+-- show the new pet; a non-bad notice would carry no text anyway)
+local function checkGrants(player, data)
+	if type(Config.PetGrants) ~= "table" then return end
+	local g = grantsOf(data)
+	local st = type(data.Story) == "table" and type(data.Story.Done) == "table" and data.Story.Done or {}
+	local side = type(data.Faction) == "string" and data.Faction or ""
+	for _, row in Config.PetGrants do
+		if type(row) ~= "table" or type(row.Id) ~= "string" or g.Got[row.Id] or not Config.PetReady(row.Species) then continue end
+		if num(data.Level, 1) < num(row.Level, 1) or (type(row.Factions) == "table" and not row.Factions[side]) then continue end
+		local met = false
+		if type(row.Count) == "string" then
+			met = num(g.N[row.Count]) >= math.max(1, num(row.Need, 1))
+		elseif type(row.Quests) == "table" and #row.Quests > 0 then
+			met = true
+			for _, q in row.Quests do
+				if st[q] ~= true then met = false end
+			end
+		end
+		if met then
+			local pets = PetService.Sanitize(data)
+			if ownsSpecies(pets, row.Species) then
+				g.Got[row.Id] = true
+			else
+				if addPet(player, data, pets, { Sp = row.Species, Lv = 1, XP = 0, Name = "", Lean = "", Bound = true }, nil) then
+					g.Got[row.Id] = true
+				end
+			end
+		end
+	end
+end
+
+-- one more event tally (Config.PetGrants Count) for a ready player, then the gifts
+local function tally(player, key)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or not S.PlayerService.IsReady(player) then return end
+	local data = getData(player)
+	if not data then return end
+	local g = grantsOf(data)
+	g.N[key] = math.min(num(g.N[key]) + 1, 1e6)
+	checkGrants(player, data)
+end
+
+local function onGrantCheck(player)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or not S.PlayerService.IsReady(player) then return end
+	local data = getData(player)
+	if data then checkGrants(player, data) end
+end
+
+local function onBossDefeated(key, _kind, ids)
+	local count = type(Config.PetGrantBoss) == "table" and Config.PetGrantBoss[key] or nil
+	if type(count) ~= "string" or type(ids) ~= "table" then return end
+	for _, id in ids do
+		local p = type(id) == "number" and Players:GetPlayerByUserId(id) or nil
+		if p then tally(p, count) end
+	end
+end
+
+local function onKaijuEnded(kaiju, outcome, participants)
+	if outcome ~= "Defeated" and outcome ~= "Survived" then return end
+	local seen = {}
+	local list = { kaiju }
+	for _, p in type(participants) == "table" and participants or {} do table.insert(list, p) end
+	for _, p in list do
+		if typeof(p) == "Instance" and not seen[p] then
+			seen[p] = true
+			tally(p, "Kaiju")
+		end
+	end
 end
 
 -- room for one more pet (CraftService checks it before a summon takes anything)
@@ -438,6 +586,8 @@ local function onPlayerReady(player, data)
 	PetService.Sanitize(data)
 	local okC, errC = pcall(catchUp, player, data) -- PET-2 (also for non-tamers)
 	if not okC then Util.Warn(TAG, "catch-up: " .. tostring(errC)) end
+	local okG, errG = pcall(checkGrants, player, data) -- A23-194: a gift already earned
+	if not okG then Util.Warn(TAG, "gifts: " .. tostring(errG)) end
 	publish(player, data)
 	if not isTamer(player, data) then return end
 	if data.TamerNotice ~= true then
@@ -523,6 +673,16 @@ function PetService.Start()
 	connect("FactionService", "FactionChanged", function(player) onBecame(player) end)
 	if S.StoryQuestService then connect("StoryQuestService", "Picked", onStoryPicked) end -- PET-4
 	if S.MonsterService then connect("MonsterService", "MonsterKilled", onKilled) end -- PET-2 pet XP
+	-- A23-194: the sure pet gifts (Config.PetGrants); a service without its signal (a test world) is skipped quietly
+	local function connectIf(serviceName, signalName, fn)
+		local svc = S[serviceName]
+		if type(svc) == "table" and type(svc[signalName]) == "table" then connect(serviceName, signalName, fn) end
+	end
+	connectIf("GooseService", "GooseRewarded", function(p) tally(p, "Goose") end)
+	connectIf("KaijuService", "KaijuEnded", onKaijuEnded)
+	connectIf("FieldBossService", "Defeated", onBossDefeated)
+	connectIf("StoryQuestService", "QuestDone", onGrantCheck)
+	connectIf("ProgressionService", "LeveledUp", onGrantCheck)
 	Net.Get("EquipPet").OnServerEvent:Connect(function(player, ...) -- PET-2
 		local ok, err = pcall(onEquip, player, ...)
 		if not ok then Util.Warn(TAG, "EquipPet: " .. tostring(err)) end
@@ -530,6 +690,7 @@ function PetService.Start()
 	Players.PlayerRemoving:Connect(function(player) -- PET-2b L4
 		LIST.Last[player], LIST.Queued[player] = nil, nil
 		GEARREM[player] = nil -- ⑥ PetArmor fractions
+		BONUSREM[player] = nil -- A23-194
 	end)
 	print("[PetService] started")
 end

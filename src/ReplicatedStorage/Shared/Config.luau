@@ -8512,11 +8512,64 @@ Config.Pets = {
 	RollGrow = 0.03,
 	ListEvery = 1,
 	NoticeAfter = 0.5,
+	-- A23-194 (최종 검수 10/15, build/codex/pets_roster.md): 12 beta species. Name / Icon: the pet window (PetWindow.luau)
+	-- when the pet has no story name ("" icon = the window's default). Rarity "Common" | "Fine" | "Rare" | "Event" (looks
+	-- only: never the bonus size). Family = the tamer's research family (S2-S5 need its points). Acquire = "Story" |
+	-- "Craft" | "Quest" | "Event" (Config.PetGrants rows / Config.Craft S1-S5). Bonus = { Type, Min, Max }: the following
+	-- pet's one tiny bonus from Lv1 (Min) to MaxLv (Max), Type "Speed" (the old Speed line: walk speed) | "Potion" (HP
+	-- potion heal) | "KillGold" / "KillXP" (a monster kill's gold / XP) | "MatLuck" (plain material drop chance) | "None"
+	-- (Emote = its look-only act, game dev 1). Off in PvP zones and the Crown Pit (PetService.Bonus). Ready = false: no
+	-- model yet -> never granted, crafted or shown (ShowUnready = true shows them for a Studio check only).
+	ShowUnready = false,
 	Species = {
-		-- Name / Icon: the pet window (PetWindow.luau) when the pet has no story name
-		BabySlime = { Speed = { 0.07, 0.10 }, Name = "Baby Slime", Icon = "IconPetBabySlime" },
+		BabySlime = { Speed = { 0.07, 0.10 }, Name = "Baby Slime", Icon = "IconPetBabySlime", Rarity = "Common", Family = "Slime",
+			Acquire = "Story", Bonus = { Type = "Speed" }, Ready = true },
+		FlowerSlime = { Name = "Flower Slime", Icon = "", Rarity = "Fine", Family = "Slime", Acquire = "Craft",
+			Bonus = { Type = "Potion", Min = 0.01, Max = 0.03 }, Ready = false },
+		CrownSlime = { Name = "Crown Slime", Icon = "", Rarity = "Rare", Family = "Slime", Acquire = "Event",
+			Bonus = { Type = "None" }, Emote = "CrownBow", Ready = false },
+		SproutGoblin = { Name = "Sprout Goblin", Icon = "", Rarity = "Fine", Family = "Goblin", Acquire = "Craft",
+			Bonus = { Type = "KillGold", Min = 0.01, Max = 0.02 }, Ready = false },
+		AcornGoblin = { Name = "Acorn Goblin", Icon = "", Rarity = "Rare", Family = "Goblin", Acquire = "Craft",
+			Bonus = { Type = "MatLuck", Min = 0.005, Max = 0.01 }, Ready = false },
+		BonePup = { Name = "Bone Pup", Icon = "", Rarity = "Fine", Family = "Skeleton", Acquire = "Craft",
+			Bonus = { Type = "KillXP", Min = 0.01, Max = 0.02 }, Ready = false },
+		MiniClatter = { Name = "Mini Clatter", Icon = "", Rarity = "Rare", Family = "Skeleton", Acquire = "Event",
+			Bonus = { Type = "None" }, Emote = "Salute", Ready = false },
+		HaloChick = { Speed = { 0.07, 0.10 }, Name = "Halo Chick", Icon = "", Rarity = "Fine", Family = "Bird", Acquire = "Quest",
+			Bonus = { Type = "Speed" }, Ready = false },
+		HornsBat = { Speed = { 0.07, 0.10 }, Name = "Horns Bat", Icon = "", Rarity = "Fine", Family = "Bat", Acquire = "Quest",
+			Bonus = { Type = "Speed" }, Ready = false },
+		GearMouse = { Name = "Gear Mouse", Icon = "", Rarity = "Fine", Family = "Mouse", Acquire = "Quest",
+			Bonus = { Type = "KillXP", Min = 0.01, Max = 0.02 }, Ready = false },
+		GoldenGosling = { Name = "Golden Gosling", Icon = "", Rarity = "Event", Family = "Goose", Acquire = "Event",
+			Bonus = { Type = "KillGold", Min = 0.01, Max = 0.02 }, Ready = false },
+		PocketKaiju = { Name = "Pocket Kaiju", Icon = "", Rarity = "Event", Family = "Kaiju", Acquire = "Event",
+			Bonus = { Type = "None" }, Emote = "Roar", Ready = false },
 	},
 }
+
+-- A23-194: a species that may be granted / crafted / shown now (known and Ready, or Pets.ShowUnready)
+function Config.PetReady(species)
+	local def = type(species) == "string" and Config.Pets.Species[species] or nil
+	if type(def) ~= "table" then return false end
+	return def.Ready ~= false or Config.Pets.ShowUnready == true
+end
+
+-- A23-194: the bonus of a pet of `species` at level lv when its Bonus.Type is `kind` (a fraction; 0 otherwise). "Speed"
+-- = Config.PetSpeedBonus (roll = a summoned pet's Roll.Spd); the rest go Min -> Max over Lv1..MaxLv
+function Config.PetBonus(species, lv, kind, roll)
+	local P = Config.Pets
+	local def = type(species) == "string" and P.Species[species] or nil
+	local b = type(def) == "table" and type(def.Bonus) == "table" and def.Bonus or nil
+	if not b or b.Type ~= kind or kind == "None" then return 0 end
+	if kind == "Speed" then return Config.PetSpeedBonus(species, lv, roll) end
+	local lo, hi = tonumber(b.Min), tonumber(b.Max)
+	if not lo or not hi then return 0 end
+	if type(lv) ~= "number" or lv ~= lv then lv = 1 end
+	lv = math.clamp(math.floor(lv), 1, P.MaxLv)
+	return lo + (hi - lo) * (lv - 1) / math.max(1, P.MaxLv - 1)
+end
 
 -- the walk speed bonus of a pet (0 for none / an unknown species); levels clamp to 1..MaxLv. roll = a summoned pet's
 -- Roll.Spd (whole %, cut to Config.SaveV4.PetRollSpd): Lv1 = roll %, MaxLv = roll % + Pets.RollGrow; nil / 0 = the
@@ -9349,6 +9402,25 @@ Config.PetGrant = {
 	Text = { Got = "New pet: Baby Slime!" },
 }
 
+-- A23-194 (최종 검수 10/15, pets_roster.md): the sure pet gifts (PetService). Each row once per account (data.PetGrants.Got
+-- [Id]; an owned pet of the species counts as got), only for a Ready species (Config.PetReady), from Level, Factions =
+-- only these sides (nil = any). Count = an event tally in data.PetGrants.N[Count] reaching Need: "Goose" = a paid goose
+-- round (GooseService.GooseRewarded), "Kaiju" = a kaiju event that ended Defeated / Survived with me in it (the kaiju or
+-- a participant), "KingSlime" / "Clatter" = a field boss kill that paid me (FieldBossService.Defeated, Config.PetGrantBoss).
+-- Quests = every one of these story quests done. The tallies count from now on (old rounds are not known); a join catches
+-- up a row whose condition is already met.
+Config.PetGrants = {
+	{ Id = "GoldenGosling", Species = "GoldenGosling", Count = "Goose", Need = 3, Level = 5 },
+	{ Id = "CrownSlime", Species = "CrownSlime", Count = "KingSlime", Need = 5, Level = 8 },
+	{ Id = "HaloChick", Species = "HaloChick", Quests = { "H2", "H3", "H6" }, Level = 10, Factions = { Halo = true } },
+	{ Id = "HornsBat", Species = "HornsBat", Quests = { "R3", "R5", "R7" }, Level = 10, Factions = { Horns = true } },
+	{ Id = "GearMouse", Species = "GearMouse", Quests = { "N0b", "N2", "N4" }, Level = 10, Factions = { Neutral = true } },
+	{ Id = "PocketKaiju", Species = "PocketKaiju", Count = "Kaiju", Need = 3, Level = 15 },
+	{ Id = "MiniClatter", Species = "MiniClatter", Count = "Clatter", Need = 3, Level = 30 },
+}
+Config.PetGrantBoss = { SlimeKing = "KingSlime", Clatter = "Clatter" } -- FieldBossService key -> PetGrants Count
+Config.Data.Defaults.PetGrants = { N = {}, Got = {} } -- A23-194: additive (Version unchanged)
+
 ----------------------------------------------------------------- A23-110 the first KO King (게임성 개발 2)
 -- The personal King Slime of game dev 3's quest Config.FirstKO (KO1; FirstKOService reads StoryQuestService.CurrentStep):
 --   step Config.FirstKO.Step "Defeat the King Slime" = the FIRST King: a quiet personal King (only its owner sees and hits
@@ -9597,6 +9669,12 @@ Config.Craft = {
 		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
 		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
 		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 10 },
+		-- A23-194 (pets_roster.md): the tamer's other summons. No Spd: these species grow on their own Bonus line (no roll);
+		-- each waits for its species' model (Config.PetReady)
+		S2 = { Role = "Tame", Kind = "Pet", Species = "FlowerSlime", Family = "Slime", Research = 150, Lv = 3, Gold = 150, Mats = { Jelly = 30, Petal = 15, Herb = 5 }, XP = 60 },
+		S3 = { Role = "Tame", Kind = "Pet", Species = "SproutGoblin", Family = "Goblin", Research = 150, Lv = 6, Gold = 300, Mats = { GoblinTooth = 25, OakLog = 8, Herb = 5 }, XP = 100 },
+		S4 = { Role = "Tame", Kind = "Pet", Species = "AcornGoblin", Family = "Goblin", Research = 400, Lv = 10, Gold = 800, Mats = { GoblinTooth = 35, BruteHorn = 8, OakLog = 12 }, XP = 180 },
+		S5 = { Role = "Tame", Kind = "Pet", Species = "BonePup", Family = "Skeleton", Research = 150, Lv = 12, Gold = 1200, Mats = { Bone = 30, KnightCrest = 5 }, XP = 250 },
 		-- ⑥ gear (docs/design/gear_slots_2026-10-12.md §4; 게임성 검수 OK 10/12; Config.Gear has the numbers). Kind Gear pays
 		-- into data.Gear.Own["<Slot>:T:P"] (T = Tier, P = the hammer's +N). Smith: armor + ring (Lv 8 / 16 / 24: iron, silver,
 		-- moon crystal + the monster materials of the same zones); the tamer: pet armor + pet accessory (Lv 5 / 12 / 20:

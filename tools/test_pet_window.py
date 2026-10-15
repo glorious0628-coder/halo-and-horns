@@ -79,8 +79,11 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("the HUD's Pet tile opens the window \"Pet\"",
          '{ Id = "Pet", Icon = "IconPetBabySlime", Window = "Pet", Keep = ' in src["HUD"]),
         ("every Config.Pets species has a Name and an Icon for the window",
-         re.search(r"\n\t\tBabySlime = \{ Speed = \{ 0\.07, 0\.10 \}, Name = \"Baby Slime\", Icon = \"IconPetBabySlime\" \},\n",
-                   src["CONFIG"]) is not None),
+         # A23-194 (10/15): 12 species, each row `<Id> = { ... Name = "...", Icon = "..." ...` (Icon "" = the default)
+         re.search(r"\n\t\tBabySlime = \{ Speed = \{ 0\.07, 0\.10 \}, Name = \"Baby Slime\", Icon = \"IconPetBabySlime\",",
+                   src["CONFIG"]) is not None
+         and len(re.findall(r"\n\t\t[A-Z]\w+ = \{ (?:Speed = \{ [\d.]+, [\d.]+ \}, )?Name = \"[^\"]+\", Icon = \"\w*\",",
+                            src["CONFIG"].split("Config.Pets = {", 1)[1].split("\n}\n", 1)[0])) == 12),
     ]
 
 

@@ -538,6 +538,14 @@ function LootService.RollKill(player, info)
 		info.RowBonus = num(Config.Ranking.RewardMult, 1)
 	end
 	if S.BuffService then info.MatMult = S.BuffService.Mult(player, "MaterialDrop") end
+	-- A23-194: a MatLuck pet (Acorn Goblin) x at most 1.01 on the plain materials (PetService.Bonus: 0 in a PvP zone)
+	local pet = S.PetService
+	if type(pet) == "table" and type(pet.Bonus) == "function" then
+		local okP, luck = pcall(pet.Bonus, player, "MatLuck")
+		if okP and type(luck) == "number" and luck == luck and luck > 0 then
+			info.MatMult = num(info.MatMult, 1) * (1 + math.min(luck, 0.05))
+		end
+	end
 	rollRows(info, function(row, isJackpot)
 		if row.Item then
 			giveItem(row.Item, math.max(1, math.floor(num(row.N, 1))))

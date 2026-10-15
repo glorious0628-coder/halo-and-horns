@@ -135,10 +135,12 @@ function CraftService.RecipeOn(id)
 		-- 장인 ⑤: HP / MP potions into the potion stock (LootService.GrantItem pays potions too)
 		if type(r.Potion) ~= "string" or not Config.PotionStockKey(r.Potion) then return nil end
 	elseif r.Kind == "Pet" then
-		-- ⑤ a summon needs the research switch, a known species and both services' calls
+		-- ⑤ a summon needs the research switch, a known species and both services' calls. A23-194: the species Ready (its
+		-- model is in: Config.PetReady); Spd (the walk roll) only for a roll species (S1), the others have none
 		local P, T = S and S.PetService, S and S.TamerService
 		if not (Config.FeatureOn("Research") and type(r.Species) == "string" and type(Config.Pets.Species[r.Species]) == "table"
-			and type(r.Family) == "string" and type(r.Spd) == "table" and P and type(P.SummonPet) == "function"
+			and Config.PetReady(r.Species) and type(r.Family) == "string" and (r.Spd == nil or type(r.Spd) == "table")
+			and P and type(P.SummonPet) == "function"
 			and type(P.HasRoom) == "function" and T and type(T.Points) == "function") then
 			return nil
 		end
@@ -210,10 +212,13 @@ end
 -- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }
 local function payOut(player, data, r, plus)
 	if r.Kind == "Pet" then
-		local lo = math.floor(num(r.Spd[1], 5))
-		local spd = math.min(Config.SaveV4.PetRollSpd[2], ST.Rng:NextInteger(lo, math.max(lo, math.floor(num(r.Spd[2], lo))))
-			+ math.max(0, math.floor(num(plus))))
-		local ok, uid = pcall(S.PetService.SummonPet, player, r.Species, { Spd = spd })
+		local spd = nil -- A23-194: no Spd = no roll (the species' own Bonus line)
+		if type(r.Spd) == "table" then
+			local lo = math.floor(num(r.Spd[1], 5))
+			spd = math.min(Config.SaveV4.PetRollSpd[2], ST.Rng:NextInteger(lo, math.max(lo, math.floor(num(r.Spd[2], lo))))
+				+ math.max(0, math.floor(num(plus))))
+		end
+		local ok, uid = pcall(S.PetService.SummonPet, player, r.Species, spd and { Spd = spd } or nil)
 		if not ok or type(uid) ~= "string" then return false end
 		local okS, err = pcall(S.TamerService.AddSummon, player, r.Family)
 		if not okS then Util.Warn(TAG, "AddSummon: " .. tostring(err)) end
