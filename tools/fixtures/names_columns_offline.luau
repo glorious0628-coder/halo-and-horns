@@ -197,12 +197,9 @@ runGroup("pvp-lines", function()
 	for _, p in { shownVillain, hiddenVillain, shownHero, hiddenHero } do w.PvP.DebugSetStars(p, 0) end
 	local from = #w.All
 	w.PvP.DebugSetStars(hiddenVillain, C.PvP.AnnounceStars)
-	local line = (w.All[from + 1] or {}).Text
-	check(line ~= nil and has(line, "Most Wanted: " .. string.format(T.HiddenName, HORNS) .. " ") and not has(line, "숨은악당"),
-		"Most Wanted line names a hidden villain 'A member of the Horn Legion'", line)
 	w.PvP.DebugSetStars(shownVillain, C.PvP.AnnounceStars)
-	line = (w.All[from + 2] or {}).Text
-	check(line ~= nil and has(line, "Most Wanted: 보이는악당" .. T.Honorific .. " "), "Most Wanted line names a shown villain by nickname", line)
+	-- A23-191 (최종 검수 10/15): no server-wide 'Most Wanted' line any more (WantedStars / Bounty and the board say it)
+	check(#w.All == from, "no Most Wanted line for a hidden or a shown villain (A23-191)", #w.All)
 	-- board: refreshed by Start's first update and by the loop; run the loop body's board step through Start again
 	w.PvP.Start()
 	local board = w.Label.Text
