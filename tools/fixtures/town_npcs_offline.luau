@@ -223,7 +223,8 @@ runGroup("config", function()
 				e.Id .. " stands inside Halo Citadel", show(e.At))
 		end
 	end
-	check(kinds.Story == 2 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam, 4 townsfolk, 1 potion seller, Otto", show(kinds))
+	-- A23-193: Otto teaches the artisans their skills, so he is a Story NPC too (Story "Otto")
+	check(kinds.Story == 3 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam + Otto, 4 townsfolk, 1 potion seller, Otto at the anvil", show(kinds))
 	-- the shop people stand in front of their shop (A23-112 halo_layout_plan: each shop has its own yaw; tools/test_town_npcs.py
 	-- checks the 2..8 studs in front of the face against the plan), on the shop street terrace (Y 9; Folk4 stands on the fountain plaza, Y 20)
 	local spot = {}
@@ -354,7 +355,10 @@ runGroup("build", function()
 	check(o ~= nil and near(op.Position.X, 39 + 39 / len * 4) and near(op.Position.Z, 49 + 49 / len * 4) and near(op.Position.Y, 0.2 + 2.6),
 		"Otto stands 4 studs behind the anvil (away from the Crossroads middle), feet on the ground", show(op.Position))
 	check(near(op.Look.X, 0) and near(op.Look.Z, 0), "... facing the Crossroads middle", show(op.Look))
-	check(t.PromptOf(o, "TalkPrompt") == nil and t.Tagged(o, "NPC") and not t.Tagged(o, "StoryNpc"), "Otto is decorative: no prompt (the anvil keeps the shop prompt)", "")
+	-- A23-193: Otto teaches the artisans their skills: a Talk prompt (StoryNpcId "Otto"); the anvil keeps the shop prompt
+	local op2 = t.PromptOf(o, "TalkPrompt")
+	check(op2 ~= nil and op2:GetAttribute("StoryNpcId") == "Otto" and t.Tagged(o, "NPC") and t.Tagged(o, "StoryNpc") and o:GetAttribute("NpcId") == "Otto",
+		"Otto is the artisans' skill teacher: a Talk prompt, tagged StoryNpc, NpcId Otto", show(t.Tags[o]))
 	-- the ground ray: from high up, straight down, ignoring the NPC folder
 	local ray = t.Rays[1]
 	check(ray.Origin.Y == 150 and ray.Direction.X == 0 and ray.Direction.Y == -210 and ray.Direction.Z == 0, "the ray starts 150 up and goes 210 down", show({ ray.Origin, ray.Direction }))
