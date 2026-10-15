@@ -28,7 +28,6 @@ local IS_TOUCH = UserInputService.TouchEnabled -- same test as UIKit's scale / H
 local STRIP_Y = 64 -- event strip slot (just under HUD's 50 px war meter that starts at y 8; follows its real bottom)
 local STRIP_W = 360 -- same width as the war meter
 local BAR_H = 24
-local SUB_H = 13
 local GOOSE_CHIP_W = 196
 local KAIJU_CHIP_W = IS_TOUCH and 200 or 150 -- touch: the 15 px minimum text needs the wider pill
 local LUCK_Y = 52
@@ -62,7 +61,6 @@ local L = {
 	-- pill, as wide as its whole line needs (never narrower than GOOSE_CHIP_W) - SQ.FitGoose / SQ.GooseNeed
 	GooseChip = { Left = 10, Right = 12, Gap = 6, IconK = 0.65, PlusH = 4 }, -- 1안 ③: a 26 px goose in the 40 px chip
 	StripGap = 6, -- gap under HUD's war meter
-	SubHTouch = 15, -- tug hint line on touch (15 logical = 11 real px at UIScale 0.75)
 	TugSide = 74, -- rescue / poach label width inside the tug bar (at the full STRIP_W; scales with the strip, CR-L36)
 	StripMinW = 200, -- CR-L36: narrowest strip (HUD clamps its war meter to 200..WarW on narrow phones)
 	Clover = 26,
@@ -132,7 +130,6 @@ local ui = {}
 local arrows = {}
 local activeTargets = {}
 local built = false
-local loreShown = false
 local gameState = nil
 local lastLayoutKey = nil
 local layoutTimer = 0
@@ -473,13 +470,12 @@ local function build()
 	end
 
 	-- event strip (top-center, right under HUD's war meter: war bar > war timer > goose pill > HUD's status chips)
-	local subH = IS_TOUCH and L.SubHTouch or SUB_H
 	ui.Strip = make("Frame", {
 		Name = "EventStrip",
 		BackgroundTransparency = 1,
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, STRIP_Y),
-		Size = UDim2.fromOffset(STRIP_W, math.max(L.PillH, BAR_H + subH)),
+		Size = UDim2.fromOffset(STRIP_W, math.max(L.PillH, BAR_H)),
 		ZIndex = 3,
 	}, root)
 
@@ -605,15 +601,6 @@ local function build()
 		Visible = false,
 		ZIndex = 7,
 	}, ui.Tug)
-	ui.TugSub = Art.text("light", {
-		Name = "GooseSub",
-		AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, BAR_H),
-		Size = UDim2.new(1, 0, 0, subH),
-		Color = AC.LightSub,
-		Visible = false,
-		ZIndex = 3,
-	}, 13, ui.Strip)
 	SQ.build()
 
 	-- kaiju chip (right of the strip): red-tinted chip with red ink
@@ -1212,7 +1199,6 @@ local function updateGoose(now)
 		if eggMode and type(eggFx.Here) == "function" and not eggFx.Here() then
 			SQ.Out = true
 			setVisible(ui.Tug, false)
-			setVisible(ui.TugSub, false)
 			if ui.TugCrown then setVisible(ui.TugCrown, false) end
 			local endAt = eggFx.TickEnd(gsAttr("GooseEndsAt", 0), gsAttr("GooseOvertimeUntil", 0), now)
 			setVisible(ui.GooseChip, true)
@@ -1221,18 +1207,14 @@ local function updateGoose(now)
 		end
 		setVisible(ui.GooseChip, false)
 		setVisible(ui.Tug, true)
-		-- A23-130: the bar alone (Config.Nudges.GooseSub = false hides the "My points …" line under it)
-		setVisible(ui.TugSub, not (type(Config.Nudges) == "table" and Config.Nudges.GooseSub == false))
+		-- A23-130: the bar alone (no "My points …" line under it)
 		local rescue = math.max(0, num(gsAttr("GooseRescue", 0)))
 		local poach = math.max(0, num(gsAttr("GoosePoach", 0)))
 		local timeLeft = Util.FormatTime(num(gsAttr("GooseEndsAt", 0)) - now)
-		local faction = myAttr("Faction", "None")
-		local mine = math.floor(math.max(0, num(myAttr("GooseCount", 0))))
 		-- A23-131 황금 알 줍기 (Config.Goose.Mode "Eggs", EggFx.Bar; contract golden_egg_contract §5): the bar alone - the
 		-- Knights' points left (gold fill), the Horn Legion's right, the time in the middle; co-op = "50 / 160" in that
 		-- side's colour; the crown egg's overtime = the crown icon and a gold clock. No line under it (A23-130).
 		if eggMode then
-			setVisible(ui.TugSub, false)
 			local b = eggFx.Bar({ Rescue = rescue, Poach = poach, EndsAt = gsAttr("GooseEndsAt", 0),
 				OvertimeUntil = gsAttr("GooseOvertimeUntil", 0), Mode = gsAttr("GooseMode", "Versus"),
 				CoopSide = gsAttr("GooseCoopSide", "None"), CoopTarget = gsAttr("GooseCoopTarget", 0) }, now)
@@ -1261,22 +1243,6 @@ local function updateGoose(now)
 			setText(ui.TugLeftText, safeFormat(gt.HudProgress, math.floor(total), target))
 			setText(ui.TugRightText, safeFormat(gt.HudPeople, math.floor(num(gsAttr("GooseCoopPeople", 0)))))
 			setText(ui.TugCenterText, safeFormat(gt.HudTitle[side], timeLeft))
-			local coopSub
-			if faction == side then
-				if total < target then
-					coopSub = safeFormat(type(gt.HudSub) == "table" and gt.HudSub[side] or nil, mine)
-				else
-					coopSub = Config.Plural(safeFormat(type(gt.HudFull) == "table" and gt.HudFull[side] or nil, mine,
-						math.floor(num(Config.Goose.MinManualHits)))) -- "Hit it 1 time"
-				end
-			elseif faction == "Halo" or faction == "Horns" then
-				coopSub = type(gt.HudOther) == "table" and gt.HudOther[side] or ""
-			elseif faction == "Neutral" then
-				coopSub = TXT.HintNeutral
-			else
-				coopSub = L.Tx(TXT, "MyCount", mine)
-			end
-			setText(ui.TugSub, coopSub)
 			return
 		end
 		-- tug (Versus): restore the pieces the co-op view changed
@@ -1291,20 +1257,8 @@ local function updateGoose(now)
 		setText(ui.TugLeftText, L.Tx(TXT, "Rescue", math.floor(rescue)))
 		setText(ui.TugRightText, L.Tx(TXT, "Poach", math.floor(poach)))
 		setText(ui.TugCenterText, L.Tx(TXT, "GooseTitle", timeLeft))
-		local sub
-		if faction == "Halo" then
-			sub = L.Tx(TXT, "MyCount", mine) .. " · " .. TXT.HintHalo
-		elseif faction == "Horns" then
-			sub = L.Tx(TXT, "MyCount", mine) .. " · " .. TXT.HintHorns
-		elseif faction == "Neutral" then
-			sub = TXT.HintNeutral
-		else
-			sub = L.Tx(TXT, "MyCount", mine)
-		end
-		setText(ui.TugSub, sub)
 	else
 		setVisible(ui.Tug, false)
-		setVisible(ui.TugSub, false)
 		local nextAt = num(gsAttr("GooseNextAt", 0))
 		-- 개발 2 10/13: still in the Goose Square after the round = the chip stays for the Leave button (SQ.update)
 		local eggFx = C and C.EggFx
@@ -1679,22 +1633,15 @@ local function gatherTargets(now)
 		return a.Dist < b.Dist
 	end)
 	local out = {}
-	local sawSack = false
 	for i = 1, math.min(#list, MAX_ARROWS) do
 		out[i] = list[i]
-		if list[i].IsSack then sawSack = true end
 	end
 	activeTargets = out
-
-	-- lore hint: the first time this session a sack-carrier arrow appears for a Halo player
-	if sawSack and isHalo and not loreShown and (Config.Nudges or {}).SackLore ~= false then
-		loreShown = true
-	end
 end
 
 ----------------------------------------------------------------- HUD v2 notify column (A23-26)
 -- The column is C.HUD.Layout.Rects.notify (logical MainGui units, the top bar already included). Top-down priority:
--- personal line > kaiju siren > goose tug (+ its hint line) > kaiju pill > Pumpkin King pill (live, else its
+-- personal line > kaiju siren > goose tug > kaiju pill > Pumpkin King pill (live, else its
 -- countdown) > goose countdown pill. Every row is centred on the column, min(natural width, column width) wide; a row
 -- that would pass the column's bottom is hidden (a later HUD step may fold those into chips). The per-tick updates
 -- still decide what wants to show (Visible); V2.tick reads that right after them and places / hides the rows in the
@@ -1834,19 +1781,18 @@ end
 -- switch to the column: remember the build-time / legacy spot of every moved element (V2.leave puts them back)
 function V2.enter()
 	if V2.Active then return end
-	local subH = IS_TOUCH and L.SubHTouch or SUB_H
 	-- W = natural width, H = height; Strip = child of the event strip (else of the gui root); Flex = as tall as the
-	-- room left, up to H (at least a pill); Tail = a line under the row, dropped first when the column is full
+	-- room left, up to H (at least a pill)
 	V2.Rows = {
 		{ Inst = ui.Personal, W = PERSONAL_W, H = PERSONAL_H },
 		{ Inst = ui.Siren, W = math.huge, H = SIREN_H, Flex = true },
-		{ Inst = ui.Tug, W = STRIP_W, H = BAR_H, Strip = true, Tail = ui.TugSub, TailH = subH },
+		{ Inst = ui.Tug, W = STRIP_W, H = BAR_H, Strip = true },
 		{ Inst = ui.KaijuChip, W = KAIJU_CHIP_W, H = L.PillH, Strip = true },
 		{ Inst = ui.KingChip, W = L.KingW, H = L.PillH, Strip = true, King = true },
 		{ Inst = ui.GooseChip, W = GOOSE_CHIP_W, H = L.PillH + L.GooseChip.PlusH, Strip = true, Goose = true },
 	}
 	V2.Saved = {}
-	for _, inst in { ui.Strip, ui.Personal, ui.Siren, ui.SirenText, ui.Tug, ui.TugSub, ui.KaijuChip, ui.KingChip,
+	for _, inst in { ui.Strip, ui.Personal, ui.Siren, ui.SirenText, ui.Tug, ui.KaijuChip, ui.KingChip,
 		ui.GooseChip } do
 		table.insert(V2.Saved, { inst, inst.AnchorPoint, inst.Position, inst.Size, inst.ZIndex })
 	end
@@ -1967,7 +1913,7 @@ function V2.stack()
 	-- 1안 ⑤: the notify rows start under the event chip's drawn bottom (its rows grew to 40 / 44 px)
 	local y, last = math.max(top, V2.EventBottom and math.ceil(V2.EventBottom + gap) or top), nil
 	for _, row in V2.Rows do
-		local inst, tail = row.Inst, row.Tail
+		local inst = row.Inst
 		if ev and (inst == ui.KingChip or inst == ui.GooseChip or inst == ui.KaijuChip) then continue end -- the event line owns them
 		local w = row.W
 		if row.King then w = math.max(L.KingW, KING.need(ui.KingChipText and ui.KingChipText.Text)) end
@@ -1976,21 +1922,16 @@ function V2.stack()
 		local h = row.H
 		if row.Flex then h = math.floor(math.min(row.H, bottom - y)) end
 		local fits = want[inst] == true and h >= (row.Flex and L.PillH or h) and y + h <= bottom + 0.5
-		local tailFits = fits and tail ~= nil and want[tail] == true and y + h + row.TailH <= bottom + 0.5
 		if fits then
 			if row.Strip then
 				V2.put(inst, anchor, UDim2.new(0.5, 0, 0, y - top), UDim2.fromOffset(w, h))
-				if tailFits then
-					V2.put(tail, anchor, UDim2.new(0.5, 0, 0, y - top + h), UDim2.fromOffset(w, row.TailH))
-				end
 			else
 				V2.put(inst, anchor, UDim2.new(0, cx, 0, y), UDim2.fromOffset(w, h))
 			end
-			last = y + h + (tailFits and row.TailH or 0)
+			last = y + h
 			y = last + gap
 		end
 		setVisible(inst, fits)
-		if tail then setVisible(tail, tailFits) end
 	end
 	local stackBottom = last or top
 	if ui.Strip:GetAttribute("BottomY") ~= stackBottom then ui.Strip:SetAttribute("BottomY", stackBottom) end
@@ -2006,7 +1947,7 @@ function V2.tick()
 		end
 		return
 	end
-	V2.WantList = V2.WantList or { ui.Personal, ui.Siren, ui.Tug, ui.TugSub, ui.KaijuChip, ui.KingChip, ui.GooseChip }
+	V2.WantList = V2.WantList or { ui.Personal, ui.Siren, ui.Tug, ui.KaijuChip, ui.KingChip, ui.GooseChip }
 	for _, inst in V2.WantList do
 		V2.Want[inst] = inst.Visible
 	end

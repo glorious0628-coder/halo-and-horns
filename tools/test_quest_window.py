@@ -153,9 +153,8 @@ def main():
         ("검수 10/10: a waiting story (B15) on a More row stays on the HUD (its row to tap and pulse)",
          "\t\tlocal waiting = call ~= nil and e.Story ~= nil and e.Story.Panel and e.Story.Id == call.Id\n" in hud
          and hud.find("\tlocal call = L.StoryPending()\n\tlocal entries = {}\n") > 0),
-        ("검수 10/10: the head count and the claim count cover every row (the window's More rows too)",
-         'ui.questHead.Text.Text = L.Tx(TXT, "QuestHead", #all)' in hud  # 10/14: by key (UIKit.Tr)
-         and "\tfor _, e in all do\n\t\tif e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == \"Daily\" or e.Kind == \"Sub\") then claimable += 1 end\n" in hud),
+        ("검수 10/10: the claim count covers every row (the window's More rows too; the head count is gone, A23-99)",
+         "\tfor _, e in all do\n\t\tif e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == \"Daily\" or e.Kind == \"Sub\") then claimable += 1 end\n" in hud),
         ("#19: a More row (no HUD row) is claimed straight from the window",
          "\tif e.More and e.Story and type(e.Id) == \"string\" and not throttled(\"claim\", 0.35) then\n\t\tfire(\"ClaimQuest\", e.Id)\n" in hud),
         ("the HUD tells the window when its quests change", "pcall(function() HUD.QuestsChanged:Fire() end)" in hud

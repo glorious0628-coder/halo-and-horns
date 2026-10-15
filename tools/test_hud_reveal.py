@@ -42,20 +42,11 @@ STATIC = [
     ("potion row: Config.HudReveal, kept once shown, Level watched", "VITALS", [
         "\tif ui.Row and not ui.PotionSeen then\n", "\t\tui.PotionSeen = Config.HudReveal.Shows(\"Potions\",",
         "\t\tif ui.Row.Visible ~= ui.PotionSeen then ui.Row.Visible = ui.PotionSeen end\n", "\tLevel = true,"]),
-    ("검수 10/09: the guide's floating name chip and its ground line are off (Config.Nudges GuideLabel / GuideBeam)", "HUD", [
-        "\tif (Config.Nudges or {}).GuideLabel ~= false then\n\t\t-- 검수 2026-10-08",
-        "\tif (Config.Nudges or {}).GuideBeam ~= false then\n\t\tlocal beam = Instance.new(\"Beam\")"]),
-    ("Config.Nudges.GuideLabel = false, GuideBeam = false", "CONFIG", ["\tGuideLabel = false, --", "\tGuideBeam = false, --"]),
     ("pouch line: Config.HudReveal, kept once shown", "HUD", [
         '\tL.PouchOn = L.PouchOn or Config.HudReveal.Shows("Pouch", { Level = num("Level", 0), Carried = carried })\n',
         "\tlocal fits = L.PouchOn == true and need <="]),
 ]
 MUTATIONS = [
-    ("HUD", "the ground line is back", "\tif (Config.Nudges or {}).GuideBeam ~= false then\n", "\tif true then\n"),
-    ("CONFIG", "GuideBeam switched on", "\tGuideBeam = false, --", "\tGuideBeam = true, --"),
-    ("HUD", "the guide name chip is back", "\tif (Config.Nudges or {}).GuideLabel ~= false then\n\t\t-- 검수 2026-10-08",
-     "\tif true then\n\t\t-- 검수 2026-10-08"),
-    ("CONFIG", "GuideLabel switched on", "\tGuideLabel = false, --", "\tGuideLabel = true, --"),
     ("CONFIG", "potions from Lv1", "Config.HudReveal = { Level = 5, LowHP = 0.5,", "Config.HudReveal = { Level = 1, LowHP = 0.5,"),
     ("CONFIG", "potions hidden at the start again", "LowHP = 0.5, PotionsAlways = true }", "LowHP = 0.5, PotionsAlways = false }"),
     ("CONFIG", "low HP never counts", "or (maxHP > 0 and hp > 0 and hp < maxHP * Config.HudReveal.LowHP)", ""),
