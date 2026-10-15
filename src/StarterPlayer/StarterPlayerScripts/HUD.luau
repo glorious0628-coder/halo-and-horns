@@ -4809,6 +4809,30 @@ end
 
 L.AIM = { Target = nil, LastAttack = -math.huge, Turn = nil, Hold = nil, Ring = nil, RingConn = nil, RingFor = nil }
 
+-- 최종 검수 10/15 #1 (why it failed, at the spot): my attack had nothing in reach - the nearest monster just out of reach
+-- (within FarK x the range) gets a soft outline for FarShow s (once per FarGap s); no words, no sound
+function L.AIM.TooFar(model)
+	local A = Config.AutoFace or {}
+	if typeof(model) ~= "Instance" or os.clock() - (L.AIM.FarAt or -math.huge) < (tonumber(A.FarGap) or 0.8) then return false end
+	L.AIM.FarAt = os.clock()
+	local h = model:FindFirstChild("HH_TooFar")
+	if not h then
+		h = Instance.new("Highlight")
+		h.Name = "HH_TooFar"
+		h.FillTransparency = 1
+		h.DepthMode = Enum.HighlightDepthMode.Occluded
+		h.Parent = model
+	end
+	h.OutlineColor = A.RingColor or Color3.fromRGB(255, 236, 170)
+	h.OutlineTransparency = 0.1
+	h.Enabled = true
+	local at = L.AIM.FarAt
+	task.delay(tonumber(A.FarShow) or 0.7, function()
+		if L.AIM.FarAt == at and h.Parent then h.Enabled = false end
+	end)
+	return true
+end
+
 -- the small ring under my target while I attack: the approved soft round FxShockRing art tinted RingColor (no rays;
 -- code fallback a flat disc), RingPad x the body's width within RingSize..RingMax studs, on the floor (RootHeight).
 -- Hidden when the target dies or hides (an ambusher), or RingShow s after my last attack
@@ -4937,6 +4961,7 @@ function L.FaceTarget(which)
 	local serverNow, me = Util.Now(), LocalPlayer.UserId
 	local attackerFor, attackerReach = tonumber(A.AttackerFor) or 2, tonumber(A.AttackerReach) or 9
 	local cands = {}
+	local far, farD = nil, range * (tonumber(A.FarK) or 2) -- 최종 검수 10/15 #1: the nearest one just out of reach
 	for _, m in folder:GetChildren() do
 		local r = m:FindFirstChild("HumanoidRootPart")
 		local mh = m:FindFirstChildOfClass("Humanoid")
@@ -4951,6 +4976,8 @@ function L.FaceTarget(which)
 				local windup = tonumber(m:GetAttribute("WindupAt")) or -math.huge
 				table.insert(cands, { Key = r, D = d, Range = range, Front = d < 1 or dot >= frontDot, Dot = dot,
 					CamDot = camLook:Dot(u), Attacker = serverNow - windup < attackerFor and d <= attackerReach })
+			elseif d < farD then
+				far, farD = m, d
 			end
 		end
 	end
@@ -4961,7 +4988,7 @@ function L.FaceTarget(which)
 	if manual then
 		L.AIM.LastAttack = now
 		L.AIM.Target = best
-		if best then L.AIM.ShowRing() end
+		if best then L.AIM.ShowRing() elseif far then L.AIM.TooFar(far) end
 	end
 	if not best then return false end
 	return L.AIM.TurnTo(root, hum, best.Position), best.Parent

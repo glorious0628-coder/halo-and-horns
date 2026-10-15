@@ -71,6 +71,7 @@ local T = {
 	Disc = "BtnSpecial", -- the approved skill disc (BtnSkill art)
 	Rim = { Halo = "BtnSkillHalo", Horns = "BtnSkillHorns", Neutral = "BtnSkillNeutral" }, -- faction rims when drawn
 	Sweep = 0.4, -- transparency of the cooldown shade
+	WhyGap = 0.8, -- s: 최종 검수 10/15 #1 - a refused press flashes its why (MP bar / slot rim) at most this often
 	PressBuffer = 0.35, -- s: a press this close to the cooldown's end still goes (Config.Skills.PressBuffer wins)
 	Heavy = { Siren = true, Active = true }, -- kaiju states that block the Hop (SkillService TUNE.Kaiju)
 	Flash = 0.28, -- s: the ready flash
@@ -486,6 +487,27 @@ function SkillBar.Gate(st, buffer)
 	return true
 end
 
+-- (pure) where a refused press shows its why: "MP" = the MP bar, "Cooldown" = the slot itself, else nowhere
+function SkillBar.WhySpot(why)
+	if why == "MP" then return "MPBar" elseif why == "Cooldown" then return "Slot" end
+	return nil
+end
+
+-- 최종 검수 10/15 #1: the refused press's rim flash at its spot (once per WhyGap s; A23-180 no shake, no sound)
+function SkillBar.ShowWhy(slot, why)
+	local spot = SkillBar.WhySpot(why)
+	if not spot or os.clock() - (S.whyAt or -math.huge) < T.WhyGap or type(UIKit.Refuse) ~= "function" then return false end
+	S.whyAt = os.clock()
+	local target = SkillBar.Button(slot)
+	if spot == "MPBar" then
+		local pg = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+		local gui = pg and pg:FindFirstChild("MainGui")
+		target = gui and gui:FindFirstChild("MPBar", true) or nil
+	end
+	pcall(UIKit.Refuse, target, { Shake = false, Sound = false })
+	return target ~= nil
+end
+
 local function pressBuffer()
 	local v = tonumber(skills().PressBuffer)
 	return (v and v >= 0) and v or T.PressBuffer
@@ -876,8 +898,13 @@ function SkillBar.Use(slot)
 		return false
 	end
 	-- A23-180: the screen gates first and says nothing (no shake, no word, no sound); a cooldown with PressBuffer s or
-	-- less left still goes - the server holds that press until the cooldown ends
-	if not SkillBar.Gate(st, pressBuffer()) then return false end
+	-- less left still goes - the server holds that press until the cooldown ends. 최종 검수 10/15 #1 (why it failed, at
+	-- the spot): MP short = the MP bar's rim flashes red, a cooldown = this slot's rim (still no shake, no sound)
+	local ok, why = SkillBar.Gate(st, pressBuffer())
+	if not ok then
+		SkillBar.ShowWhy(slot, why)
+		return false
+	end
 	if os.clock() < S.gapUntil then
 		-- inside the gap between casts: this press waits in line (the newest one wins)
 		S.queued = slot

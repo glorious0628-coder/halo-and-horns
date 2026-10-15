@@ -5379,6 +5379,9 @@ Config.AutoFace = {
 	SkipDeg = 10, TurnTime = 0.08, SwingHold = 0.35,
 	RingSize = 3.2, RingMax = 12, RingPad = 1.1, RingShow = 1.5, RingTransparency = 0.2,
 	RingColor = Color3.fromRGB(255, 236, 170),
+	-- 최종 검수 10/15 #1: an attack with nothing in reach outlines the nearest monster within FarK x the range (FarShow s,
+	-- at most once per FarGap s)
+	FarK = 2, FarShow = 0.7, FarGap = 0.8,
 }
 
 Config.Visuals = {
