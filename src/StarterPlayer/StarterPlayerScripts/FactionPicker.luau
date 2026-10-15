@@ -1271,10 +1271,14 @@ local function layoutPerks(c, W, H, minT, scale)
 	-- at the floor cannot hold it), the perk rows share the rest
 	if c.NewArt and c.Motto and c.Motto.Visible then
 		local pitchH = ph * LAY.PitchFrac
-		local lineH = pitchH / 2
-		c.Motto.Text = cardText(c.Motto, c.FullMotto, LAY.MottoShort[c.Id], LAY.MottoTiny[c.Id], pw * 2 * scale * 0.9,
+		local lines = 2
+		-- English dump 10/15 (phone: the perk rows were 10 px for an 11 px line, cut): when the rows under a two-line
+		-- pitch would be shorter than a real 11 px line + 3, the pitch takes one line (its shorter wording)
+		if (ph - pitchH) / math.max(LAY.PerkRows, #c.Perks) * scale < MIN_TEXT + 3 then pitchH, lines = pitchH / 2, 1 end
+		local lineH = pitchH / lines
+		c.Motto.Text = cardText(c.Motto, c.FullMotto, LAY.MottoShort[c.Id], LAY.MottoTiny[c.Id], pw * lines * scale * 0.9,
 			lineH * scale, scale)
-		c.Motto.TextWrapped = true
+		c.Motto.TextWrapped = lines == 2
 		c.Motto.TextXAlignment = Enum.TextXAlignment.Center
 		place(c.Motto, px, py + ph * 0.02, pw, pitchH)
 		setTextRange(c.Motto, minT, math.max(minT, lineH * 0.82))
@@ -1495,11 +1499,16 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 		end
 	end
 	if n == 0 then return end
-	-- A23-167 ④: room under the cards for the 'what this pick changes' lines (the most lines of a card)
+	local phone = UserInputService.TouchEnabled and areaW * s < 700
+	-- A23-167 ④: room under the cards for the 'what this pick changes' lines (the most lines of a card). English dump
+	-- 10/15 (phone: the 3 lines took a third of the height, so the cards' words were 11 px and cut): none on a phone
 	local chLines = 0
 	for _, id in FACTION_IDS do
 		local c = cards[id]
-		if c and c.Changes then chLines = math.max(chLines, #c.Changes.Labels) end
+		if c and c.Changes then
+			c.Changes.Frame.Visible = not phone
+			if not phone then chLines = math.max(chLines, #c.Changes.Labels) end
+		end
 	end
 	local chSize = math.ceil(minT * LAY.ChangesK)
 	local chLineH = math.ceil(chSize * LAY.ChangesLineK)
@@ -1507,7 +1516,6 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 	areaH = math.max(1, areaH - chH)
 	LAY.ChangesH = chH -- placeMascots: the mascots stand on the cards, not on the lines
 	local gaps = LAY.Gap * (n - 1)
-	local phone = UserInputService.TouchEnabled and areaW * s < 700
 	local cardH = fittedCardHeight(areaW, areaH, sumA, gaps, LAY.BalancedHeight, s)
 	if phone then cardH = math.max(needH, cardH) end
 	cardH = math.max(1, math.floor(cardH))
@@ -1546,7 +1554,7 @@ local function placeCards(x, y, areaW, areaH, needH, minT, s)
 				layoutOldCard(c, ch < 420, s)
 			end
 			c.LayoutArgs = { cw, ch }
-			if c.Changes then -- A23-167 ④: under the card row's common bottom, one line each, centred on the card
+			if c.Changes and not phone then -- A23-167 ④: under the card row's common bottom, one line each, centred on the card
 				local y0 = lift + math.ceil(cardH * LAY.BalancedHeight) + lift + LAY.ChangesGap
 				place(c.Changes.Frame, cx, y0, cw, chH - LAY.ChangesGap)
 				for i, l in c.Changes.Labels do
