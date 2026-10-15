@@ -3243,7 +3243,6 @@ Config.Tutorial = {
 		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
 		RebirthNoteHalo = "Stay a knight, or not?", -- a second line under the rebirth goal, by side
 		RebirthNoteHorns = "Stay a rascal, or not?",
-		GuideDone = "That's all from me! Now hunt and get stronger.",
 		-- P1 ②: the rows while the guide / the teacher has a body to walk to (%s = the name)
 		WelcomeBody = "Talk to %s",
 		Teacher = "Meet %s at the town gate",
@@ -5403,6 +5402,9 @@ Config.AutoFace = {
 	SkipDeg = 10, TurnTime = 0.08, SwingHold = 0.35,
 	RingSize = 3.2, RingMax = 12, RingPad = 1.1, RingShow = 1.5, RingTransparency = 0.2,
 	RingColor = Color3.fromRGB(255, 236, 170),
+	-- 최종 검수 10/15 #1: an attack with nothing in reach outlines the nearest monster within FarK x the range (FarShow s,
+	-- at most once per FarGap s)
+	FarK = 2, FarShow = 0.7, FarGap = 0.8,
 }
 
 Config.Visuals = {
@@ -6606,11 +6608,7 @@ Config.Nudges = {
 	-- softly while I am in the Crossroads, and [Menu] + its Travel square pulse until I open Travel once
 	PadGlow = true,
 	TravelPulse = true,
-	-- server (the service owners read these keys; nil / true = shown as before)
-	GuideDone = false, -- "That's all from me! Now hunt and get stronger." (QuestService)
-	EnteredSafe = false, -- "Safe zone." on every safe-zone entry (ZoneService)
-	DailyReady = false, -- "Daily quest done! Press [Claim]." (the line already says Done! / [Claim])
-	WeaponUsableNow = false, -- "You can now use %s! ..." when a weapon's level limit opens
+	-- (최종 검수 10/15: the off server lines GuideDone / EnteredSafe / DailyReady / WeaponUsableNow are deleted with their code)
 }
 
 Config.ChatText = {
@@ -8223,7 +8221,6 @@ Config.Text = {
 	NeedLevel = "You need Lv %d or higher to enter!",
 	EnteredPvP = "PvP zone!",
 	EnteredPvPNeutral = "PvP zone, but the Artisan Guild can't be attacked.", -- CR-L24: Neutral entering a PvP zone ("info")
-	EnteredSafe = "Safe zone.",
 	Banked = "%s gold went into your vault.",
 	HaloCourier = "An angel courier put %s gold in your vault.",
 	LevelUp = "Level up! Lv %d",
@@ -8240,8 +8237,6 @@ Config.Text = {
 	-- A23-74: the first weapon comes right after the Guide's first quest is accepted (the Forge step)
 	WeaponFromQuest = "Not sold. Quest reward.",
 	WeaponFromQuestEn = "Not sold. Quest reward.",
-	WeaponUsableNow = "You can now use %s! Equip it at the Forge or from your Bag.",
-	WeaponUsableNowEn = "You can now use %s! Equip it at the Forge or from your Bag.",
 	NeedFaction = "Pick a side first.",
 	-- ShopService (blacksmith / potion merchant)
 	WeaponShopFar = "Too far from the Forge.",
@@ -8341,7 +8336,6 @@ Config.Text = {
 	RebirthAnnounce = "%s was reborn! (Rebirth #%d)", -- BB37: PublicName(p, true)
 	-- quests
 	QuestDone = "Extra quest done! +%s gold",
-	DailyReady = "Daily quest done! Press [Claim].",
 	DailyClaimed = "Daily reward! +%s gold +%s XP",
 	DailyChest = "Bonus chest! +%s gold +%s XP",
 	DailyChestTicket = "+1 Class Change Ticket!",

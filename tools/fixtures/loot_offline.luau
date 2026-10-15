@@ -817,7 +817,7 @@ runGroup("config", function()
 		end
 	end
 	-- A23-28 player-facing lines (central text table, Korean + English)
-	for key, nArgs in { EquipNeedLevel = 1, WeaponAutoSwap = 2, WeaponUsableNow = 1, WeaponNeedLevel = 1 } do
+	for key, nArgs in { EquipNeedLevel = 1, WeaponAutoSwap = 2, WeaponNeedLevel = 1 } do
 		local s = C.Text[key]
 		local okFmt = type(s) == "string" and pcall(string.format, s, table.unpack(nArgs == 2 and { 30, "x" } or { 5 }))
 		check(type(s) == "string" and s ~= "" and okFmt, "Config.Text." .. key .. " is a Korean format string", key)
@@ -2669,15 +2669,13 @@ runGroup("levelrule", function()
 		check(got == case[3], "Config.BestUsableWeapon: " .. case[4], "got " .. tostring(got))
 	end
 
-	local function mk(level, tier, owned, enh, nudgeOff)
+	local function mk(level, tier, owned, enh)
 		local saved = deepCopy(DEFAULT_ROW)
 		saved.Level, saved.WeaponTier, saved.WeaponOwnedMask = level, tier, owned
 		saved.WeaponEnhance = enh or { 1, 2, 3, 4, 5, 6, 7, 8 }
 		saved.PlaytimeSeconds = 3600 -- past A23-167's first-minutes 2x XP (these checks count exact level-ups)
 		local x = fixture({ Saved = saved })
 		x.Data.LootFlags.FirstScroll = true
-		-- the real Config has the "You can now use ..." line off (Nudges.WeaponUsableNow, 검수 10/09): these checks look at the rule, so turn it on
-		if not nudgeOff then x.Config.Nudges.WeaponUsableNow = true end
 		return x
 	end
 	local function name(x, t) return C.WeaponName(t, x.Player:GetAttribute("Class") or "Warrior", x.Player:GetAttribute("Faction") or "None") end
@@ -2688,10 +2686,11 @@ runGroup("levelrule", function()
 			guard += 1
 			x.Notices = {}
 			x.Prog.AddXP(x.Player, C.XPToNext(x.Data.Level) - math.floor(x.Data.XP or 0))
-			for _, n in weaponNotices(x, "WeaponUsableNow") do
-				seen[x.Data.Level] = seen[x.Data.Level] or {}
-				table.insert(seen[x.Data.Level], n.Tier)
-				check(n.Kind == "good", "A23-28 WeaponUsableNow notice kind is good", n.Kind)
+			for _, n in x.Notices do -- (최종 검수 10/15: the 'You can now use ...' line is deleted: any weapon line here is a leak)
+				if type(n) == "table" and n.Tier ~= nil then
+					seen[x.Data.Level] = seen[x.Data.Level] or {}
+					table.insert(seen[x.Data.Level], n.Tier)
+				end
 			end
 		end
 		return seen
@@ -2714,20 +2713,15 @@ runGroup("levelrule", function()
 		"A23-28 the auto-swap keeps ownership (WeaponOwnedMask untouched)", a.Data.WeaponOwnedMask)
 	check(deepEqual(a.Data.WeaponEnhance, enhA), "A23-28 the auto-swap keeps every tier's +N", show(a.Data.WeaponEnhance))
 	check(a.Player:GetAttribute("WeaponEnhance") == 1, "A23-28 the WeaponEnhance attribute follows the swapped-in tier", a.Player:GetAttribute("WeaponEnhance"))
-	-- leveling back up: one notice per crossing of an owned stronger weapon's MinLevel, never an auto-equip
+	-- leveling back up: no line at an owned stronger weapon's MinLevel (deleted 10/15), never an auto-equip
 	local upA = levelUp(a, 29)
-	check(upA[5] and #upA[5] == 1 and upA[5][1] == 3, "A23-28 reaching Lv5 notifies WeaponUsableNow once for the owned tier 3", show(upA))
-	check(upA[6] == nil, "A23-28 no notice on the level-up after the crossing (Lv6)", show(upA[6]))
-	check(upA[12] == nil and upA[20] == nil, "A23-28 no notice at unowned tiers' MinLevel (tier 4 Lv12, tier 5 Lv20)", show(upA))
-	check(count(upA) == 1 and a.Data.Level == 29, "A23-28 Lv1 -> Lv29: exactly one WeaponUsableNow notice", show(upA))
+	check(count(upA) == 0 and a.Data.Level == 29, "Lv1 -> Lv29 past tier 3's MinLevel: no weapon line at all", show(upA))
 	check(a.Data.WeaponTier == 1 and a.Player:GetAttribute("WeaponTier") == 1, "A23-28 level-ups never change WeaponTier (no auto-equip)",
 		a.Data.WeaponTier)
 	a:Equip(3)
 	check(a.Data.WeaponTier == 3, "the player equips tier 3 at Lv29", a.Data.WeaponTier)
 	upA = levelUp(a, 31)
-	check(upA[30] and #upA[30] == 1 and upA[30][1] == 6, "A23-28 reaching Lv30 notifies WeaponUsableNow once for tier 6 (stronger than the equipped tier 3)",
-		show(upA))
-	check(upA[31] == nil and count(upA) == 1, "A23-28 no notice on the next level-up (Lv31)", show(upA))
+	check(count(upA) == 0, "reaching tier 6's MinLevel (Lv30): no weapon line", show(upA))
 	check(a.Data.WeaponTier == 3, "A23-28 reaching tier 6's MinLevel does not auto-equip it", a.Data.WeaponTier)
 
 	-- (b) the same with the legendary also owned -> tier 8 is chosen (76 > tier 1); tier 3 at Lv5 is weaker: no notice
@@ -2739,9 +2733,7 @@ runGroup("levelrule", function()
 		"A23-28 reborn Lv1 with tier 6 equipped and the legendary owned -> tier 8 + one notice", show({ b.Data.WeaponTier, swapB }))
 	check(b.Data.WeaponOwnedMask == tierMask(1, 3, 6, 8) and b.Player:GetAttribute("WeaponEnhance") == 0, "the legendary swap keeps ownership; +N follows tier 8")
 	local upB = levelUp(b, 31)
-	check(upB[5] == nil, "A23-28 no notice when the newly usable owned weapon is weaker than the equipped one (tier 3 vs the legendary)", show(upB))
-	check(upB[30] and upB[30][1] == 6 and count(upB) == 1 and b.Data.WeaponTier == 8, "A23-28 with the legendary equipped: one notice at Lv30 (tier 6)",
-		show(upB))
+	check(count(upB) == 0 and b.Data.WeaponTier == 8, "with the legendary equipped: no weapon line up to Lv31, still tier 8", show(upB))
 
 	-- (c) the legendary equipped with tier 6 owned: usable at Lv1, it stays and nothing is said
 	local c = mk(100, 8, tierMask(1, 6, 8))
@@ -2765,17 +2757,10 @@ runGroup("levelrule", function()
 	for l = 1, 39 do xp += C.XPToNext(l) end
 	d.Notices = {}
 	d.Prog.AddXP(d.Player, xp)
-	local nowD = weaponNotices(d, "WeaponUsableNow")
-	check(d.Data.Level == 40 and #nowD == 1 and nowD[1].Tier == 6 and d.Data.WeaponTier == 2,
-		"A23-28 one LeveledUp from Lv1 to Lv40: one WeaponUsableNow (tier 6), no auto-equip", show({ d.Data.Level, nowD }))
-
-	-- 검수 10/09 (user: too kind): with the real Config the "You can now use ..." line is off; the rule (no auto-equip) is the same
-	local q = mk(1, 2, tierMask(1, 2, 6), enhD, true)
-	check(q.Config.Nudges.WeaponUsableNow == false, "Nudges.WeaponUsableNow is off in the real Config", tostring(q.Config.Nudges.WeaponUsableNow))
-	q.Notices = {}
-	q.Prog.AddXP(q.Player, xp)
-	check(q.Data.Level == 40 and #weaponNotices(q, "WeaponUsableNow") == 0 and q.Data.WeaponTier == 2,
-		"Nudges.WeaponUsableNow off: Lv1 -> Lv40 with tier 6 owned sends no notice and still no auto-equip", show({ q.Data.Level, weaponNotices(q, "WeaponUsableNow") }))
+	check(d.Data.Level == 40 and #d.Notices == 0 and d.Data.WeaponTier == 2,
+		"one LeveledUp from Lv1 to Lv40 past tier 6: no line, no auto-equip", show({ d.Data.Level, d.Notices }))
+	check(C.Nudges.WeaponUsableNow == nil and C.Text.WeaponUsableNow == nil and C.Text.WeaponUsableNowEn == nil,
+		"최종 검수 10/15: the 'You can now use ...' switch and words are deleted", "")
 
 	-- (e) a save from before the rule (Lv10, tier 6 equipped, tiers 1+3+6): PlayerReady fits it -> tier 3 + notice
 	local e = mk(10, 6, tierMask(1, 3, 6), enhA)

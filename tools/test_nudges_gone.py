@@ -1,8 +1,8 @@
 """Off nudges deleted as a kind (게임성 개발 1, 최종 검수 10/15; user rule: a UI the user disliked goes with its code, never
 behind a switch).
 
-Static: Config.Nudges keeps only the live client switches (PadGlow, TravelPulse) and the server ones (GuideDone,
-EnteredSafe, DailyReady, WeaponUsableNow - 개발 2's files); the 11 off client switches (DailiesOpened, QuestHead, WarIntro,
+Static: Config.Nudges keeps only the live client switches (PadGlow, TravelPulse); the 4 off server ones (GuideDone,
+EnteredSafe, DailyReady, WeaponUsableNow - 개발 2's files, deleted 10/15 with their lines) and the 11 off client switches (DailiesOpened, QuestHead, WarIntro,
 GooseSub, AttackHint, ShopFarewell, ZoneStoryLine, SackLore, HuntSlimes, GuideLabel, GuideBeam) are gone from Config and
 no client module reads them; their drawing code is gone too: the 'Quests (N) ▼' head row + its ▼ (HUD), the HUD.Hint
 bubbles, the guide's ground Beam and floating name chip (the guide target itself stays: QuestMarker / the minimap read
@@ -26,9 +26,8 @@ CONFIG = ROOT / "src/ReplicatedStorage/Shared/Config.luau"
 OUT = ROOT / "docs/art/verification_2026-10-15/offline_nudges_gone_2026-10-15.json"
 
 GONE = ["DailiesOpened", "QuestHead", "WarIntro", "GooseSub", "AttackHint", "ShopFarewell", "ZoneStoryLine", "SackLore",
-        "HuntSlimes", "GuideLabel", "GuideBeam"]
-KEPT = ["PadGlow = true,", "TravelPulse = true,", "GuideDone = false,", "EnteredSafe = false,", "DailyReady = false,",
-        "WeaponUsableNow = false,"]
+        "HuntSlimes", "GuideLabel", "GuideBeam", "GuideDone", "EnteredSafe", "DailyReady", "WeaponUsableNow"]
+KEPT = ["PadGlow = true,", "TravelPulse = true,"]
 # drawing code / words that went with them: file key -> strings that must not appear
 ABSENT = {
     "HUD": ["ui.questHead", "QuestHeadOn", "ui.questFold", "function HUD.Hint(", "HUD.ClearHint", "L.Hints",
@@ -36,9 +35,14 @@ ABSENT = {
             "TXT.QuestOpenList"],
     "EVENT": ["TugSub", "loreShown", "TXT.HintHalo", "MyCount"],
     "PANELS": ["WSHOP.Farewell", "WeaponBye"],
-    "CONFIG": ["WeaponBye", "Config.StoryLines", "HintTap =", "HintClick =", "HintSkill =", "QuestOpenList =",
+    "CONFIG": ["WeaponBye", "Config.StoryLines", 'GuideDone = "', 'EnteredSafe = "', 'DailyReady = "', 'WeaponUsableNow = "',
+               'WeaponUsableNowEn = "', "HintTap =", "HintClick =", "HintSkill =", "QuestOpenList =",
                "QuestCloseList =", 'QuestHead = "', 'WarIntro = "', 'HuntSlimes = "', 'DailiesOpened = "', 'SackLore = "',
                "HudSub =", "HudFull =", "HudOther =", "HintHalo =", "HintHorns ="],
+    # the 4 server lines (개발 2, 10/15)
+    "QUEST": ["hadNextGoal", "TUT_MESSAGES.GuideDone", "Text.DailyReady"],
+    "ZONE": ['fmt("EnteredSafe")'],
+    "LOOT": ["onLeveledUp", "Text.WeaponUsableNow", "STATE.Level"],
 }
 # what must keep running
 PRESENT = {
@@ -60,6 +64,9 @@ MUTATIONS = [
     ("PANELS", "the merchant's farewell is back", "function Panels.Close(manual)\n",
      "function Panels.Close(manual)\n\tlocal farewell = WSHOP.Farewell and WSHOP.Farewell()\n"),
     ("CONFIG", "the pad glow switched off", "\tPadGlow = true,\n", "\tPadGlow = false,\n"),
+    ("CONFIG", "a server switch is back", "\tPadGlow = true,\n", "\tDailyReady = false,\n\tPadGlow = true,\n"),
+    ("ZONE", "the server reads a deleted switch again", "\tend -- (leaving PvP: no line;",
+     "\telseif (Config.Nudges or {}).EnteredSafe then\n\tend -- (leaving PvP: no line;"),
 ]
 
 
@@ -117,6 +124,9 @@ def main() -> int:
         "FIRST": (CLIENT / "FirstSteps.luau").read_text(encoding="utf-8"),
         "FX": (CLIENT / "Fx.luau").read_text(encoding="utf-8"),
         "CONFIG": CONFIG.read_text(encoding="utf-8"),
+        "QUEST": (ROOT / "src/ServerScriptService/QuestService.luau").read_text(encoding="utf-8"),
+        "ZONE": (ROOT / "src/ServerScriptService/ZoneService.luau").read_text(encoding="utf-8"),
+        "LOOT": (ROOT / "src/ServerScriptService/LootService.luau").read_text(encoding="utf-8"),
     }
     checks, fails = run(files)
     for f in fails:

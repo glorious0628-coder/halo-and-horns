@@ -330,9 +330,7 @@ local function applyZone(player, zone, pos)
 		if getFaction(player) ~= "Neutral" then
 			notify(player, fmt("EnteredPvP"), "bad", "None") -- happens to me: no Deny
 		end
-	elseif not pvp and wasPvP and (Config.Nudges or {}).EnteredSafe ~= false then
-		notify(player, fmt("EnteredSafe"), "good") -- off by default (Config.Nudges.EnteredSafe, 검수 10/09)
-	end
+	end -- (leaving PvP: no line; the HUD chip shows it. 'Safe zone.' deleted, 최종 검수 10/15)
 	if zone.Id ~= old then ZoneService.ZoneChanged:Fire(player, zone.Id, old) end
 end
 

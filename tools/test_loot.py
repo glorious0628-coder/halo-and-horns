@@ -218,20 +218,10 @@ MUTATIONS = [
      "for _, sig in { prog and prog.LevelReset, prog and prog.Rebirthed } do", "for _, sig in { prog and prog.Rebirthed } do"),
     ("FitWeaponToLevel not run on PlayerReady", "LOOT_SOURCE",
      "\t\tLootService.FitWeaponToLevel(player) -- A23-28: a save from before the rule may hold a weapon above the level\n", ""),
-    # A23-28 level-up notice (once per MinLevel crossing, never an auto-equip)
-    ("level-up notice repeats after the crossing (no min > before)", "LOOT_SOURCE",
-     "and min > before and min <= level", "and min <= level"),
-    ("level-up notice also for a weaker weapon", "LOOT_SOURCE",
-     "\n\t\t\tand num(def.Damage) > bestDamage then", " then"),
-    ("level-up notice ignores ownership", "LOOT_SOURCE",
-     "bit32.band(mask, bit32.lshift(1, t - 1)) ~= 0 and min > before", "true and min > before"),
-    ("level-up auto-equips the newly usable weapon", "LOOT_SOURCE",
-     "if best and (Config.Nudges or {}).WeaponUsableNow ~= false then notify(player, string.format(Config.Text.WeaponUsableNow",
-     "if best and (Config.Nudges or {}).WeaponUsableNow ~= false then S.PlayerService.SetStat(player, \"WeaponTier\", best); notify(player, string.format(Config.Text.WeaponUsableNow"),
-    ("the usable-weapon line ignores Nudges", "LOOT_SOURCE",
-     "if best and (Config.Nudges or {}).WeaponUsableNow ~= false then notify(", "if best then notify("),
-    ("LeveledUp never connected", "LOOT_SOURCE",
-     "if prog and type(prog.LeveledUp) == \"table\" then", "if false then"),
+    # A23-28 level-ups: no line (deleted 최종 검수 10/15), never an auto-equip
+    ("a level-up line is back", "LOOT_SOURCE",
+     "\tlocal prog = S.ProgressionService\n",
+     "\tlocal prog = S.ProgressionService\n\tif prog and prog.LeveledUp then prog.LeveledUp:Connect(function(p) notify(p, \"You can now use it!\", \"good\") end) end\n"),
     # A23-27 BelowLevel weapon rows (the king's T4 row: 3 candies below Lv12)
     ("BelowLevel branch dropped (king's T4 row rolled at any level)", "LOOT_SOURCE",
      "if row.Weapon and type(row.BelowLevel) == \"table\" and info.Level ~= nil\n\t\t\tand not Config.WeaponUsable(row.Weapon, info.Level) then\n"
