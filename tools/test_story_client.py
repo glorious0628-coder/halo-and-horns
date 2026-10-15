@@ -165,7 +165,7 @@ def static_checks(src: dict[str, str]) -> list[tuple[str, bool]]:
         ("a story page waiting for a calm moment keeps the server's Var",
          "STORY.Pending = { Id = arg.Id, St = arg.St, Var = arg.Var }" in panels),
         ("the Story window takes its lines from STORY.Lines(step, f, arg.Var) (+ A23-208 Next.Line, STORY.WithNext) and its hint from STORY.Hint(obj, f)",
-         story is not None and "local lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St)" in story.group(1)
+         story is not None and "local lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f)" in story.group(1)
          and "STORY.Hint(obj, f, STORY.Points(f))" in story.group(1) and "step.Lines" not in story.group(1)),
         ("the Story line and page sit beside the speaker's portrait (STORY.Talk(parent, voice) builds the row with "
          "UIKit.Portrait; 검수 2026-10-07)",

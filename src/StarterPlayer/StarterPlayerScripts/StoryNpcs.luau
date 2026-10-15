@@ -706,10 +706,10 @@ function StoryNpcs.Scene(data)
 		if value == "Common" then StoryNpcs.Hop("Folk1", 1) end -- the neighbours wave
 		StoryNpcs.Hop(T.World.LampNpc[f or ""] or "Bright", 1)
 		return true
-	elseif key == "Find" then -- A23-208: what I find as a step starts (Value = the step number)
-		return StoryNpcs.Find(data.Id, value, me and me:GetAttribute("Faction"))
-	elseif key == "Scene" then -- A23-208: what the people do as a step is done (Value = a Config.StoryQuests.SceneKeys key)
-		return StoryNpcs.PlayScene(data.Id, value, me and me:GetAttribute("Faction"))
+	elseif key == "Find" then -- A23-208: what I find as a step starts (St / Value = the step number)
+		return StoryNpcs.Find(data.Id, data.St or value, me and me:GetAttribute("Faction"))
+	elseif key == "Scene" then -- A23-208: what the people do as step St is done (Value = a Config.StoryQuests.SceneKeys key)
+		return StoryNpcs.PlayScene(data.Id, value, me and me:GetAttribute("Faction"), data.St)
 	end
 	return false
 end
@@ -718,11 +718,14 @@ end
 -- docs/design/quest_data_contract_2026-10-15.md §3-2 (개발 2 dev2-story-fields): a step's Find = a short bubble over that
 -- step's NPC (no NPC: over its Guide place) for Find.Seconds, two lines at most - never a toast or a banner; a step's
 -- Scene = that NPC's move + a round sparkle (no rays); Next = after the last card the next asker's "!" hops once, the
--- first time it shows. The Offer window's Before line and the last card's Next.Line are Panels' (STORY.Before /
+-- first time it shows. A step with On = "Self" (10/15: no NPC, e.g. a bag step) = the bubble over MY head and the Scene
+-- on my own avatar (Wave / Cheer / Laugh = the avatar's emote, Hop = a jump, the rest = the round sparkle only). The Offer
+-- window's Before line and the last card's Next.Line are Panels' (Config.QuestBefore / Config.QuestNext via STORY.Before /
 -- STORY.WithNext). Bubble art = the approved 9-slice BarkBubble (512 x 190, tail bottom-left), kept at its aspect.
 T.Story = {
 	Find = { Seconds = 4, W = 280, Aspect = 512 / 190, TextPx = 18, Lift = 1.6, Spot = 3, Distance = 120, TailX = 0.068 },
 	NextFor = 900, -- s the next asker's one hop waits for her "!"
+	SelfEmote = { Wave = "wave", Cheer = "cheer", Laugh = "laugh" }, -- On = "Self": the avatar's own emotes
 	-- each move: N times Time s; Off(k) = the offset from home at k = 0..1 (Hip = studs from the pivot down to the bend)
 	Hip = 1,
 	Moves = {
@@ -850,6 +853,10 @@ function StoryNpcs.Find(id, n, faction)
 	local text = type(step) == "table" and step.Find or nil
 	if type(text) ~= "string" or text == "" then return false end
 	local body = type(step.Npc) == "string" and StoryNpcs.Body(step.Npc) or nil
+	if step.On == "Self" then -- 10/15: my own words, over my head
+		local me = game:GetService("Players").LocalPlayer
+		body = me and me.Character or nil
+	end
 	local head = body and body:FindFirstChild("Head")
 	if head and head:IsA("BasePart") then return StoryNpcs.Bubble(head, text) ~= nil end
 	local qt = C and C.QuestTarget
@@ -885,18 +892,27 @@ function StoryNpcs.MoveOffset(kind, k)
 	return cf
 end
 
--- Fx StoryScene Scene: the NPC plays the move (anchored town bodies move on this client only) + a round sparkle over
--- her head; no body near = the sparkle over me
-function StoryNpcs.PlayScene(id, scene, faction)
+-- Fx StoryScene Scene: the NPC of step st (else StoryNpcs.SceneNpc) plays the move (anchored town bodies move on this
+-- client only) + a round sparkle over her head; On = "Self" or no body near = my own avatar (emote / jump + sparkle)
+function StoryNpcs.PlayScene(id, scene, faction, st)
 	local SK = type(Config.StoryQuests) == "table" and Config.StoryQuests.SceneKeys or nil
 	if type(scene) ~= "string" or not (type(SK) == "table" and SK[scene]) then return false end
 	local M = T.Story.Moves[scene] or T.Story.Moves.Sparkle
-	local npc = StoryNpcs.SceneNpc(id, scene, faction)
-	local m = type(npc) == "string" and StoryNpcs.Body(npc) or nil
+	local step = st ~= nil and StoryNpcs.StepFor(id, st, faction) or nil
+	local mine = type(step) == "table" and step.On == "Self"
+	local npc = (type(step) == "table" and type(step.Npc) == "string" and step.Npc) or StoryNpcs.SceneNpc(id, scene, faction)
+	local m = (not mine and type(npc) == "string") and StoryNpcs.Body(npc) or nil
 	if not m then
 		local me = game:GetService("Players").LocalPlayer
-		local root = me and me.Character and me.Character:FindFirstChild("HumanoidRootPart")
+		local char = me and me.Character
+		local root = char and char:FindFirstChild("HumanoidRootPart")
 		if root then burst(root.Position + Vector3.new(0, 3, 0), T.Gold, 16) end
+		if mine and T.Story.SelfEmote[scene] then
+			pcall(StoryNpcs.PlayEmote, T.Story.SelfEmote[scene])
+		elseif mine and scene == "Hop" then
+			local hum = char and char:FindFirstChildOfClass("Humanoid")
+			if hum then hum.Jump = true end
+		end
 		return root ~= nil
 	end
 	local head = m:FindFirstChild("Head")

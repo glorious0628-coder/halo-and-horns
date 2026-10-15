@@ -3023,9 +3023,10 @@ function STORY.Lines(step, f, var)
 end
 
 -- A23-208 (pure; docs/design/quest_data_contract_2026-10-15.md §3-2): the last step's card ends with the hook to the
--- next quest (def.Next.Line, its speaker's name as written) - a new list, the step's own lines untouched
-function STORY.WithNext(lines, def, st)
-	local nx = type(def) == "table" and def.Next or nil
+-- next quest (Config.QuestNext(def, f).Line: shared or my side's, its speaker's name as written) - a new list, the
+-- step's own lines untouched
+function STORY.WithNext(lines, def, st, f)
+	local nx = type(Config.QuestNext) == "function" and Config.QuestNext(def, f) or nil
 	local n = type(def) == "table" and type(def.Steps) == "table" and #def.Steps or 0
 	if type(nx) ~= "table" or type(nx.Line) ~= "string" or nx.Line == "" or tonumber(st) ~= n or n == 0 then return lines end
 	local out = table.clone(lines)
@@ -3033,10 +3034,12 @@ function STORY.WithNext(lines, def, st)
 	return out
 end
 
--- A23-208 (pure): the Offer's situation line (Offer.Before: one line before her ask; a side table = mine, else All)
-function STORY.Before(def, f)
-	local b = type(def) == "table" and type(def.Offer) == "table" and def.Offer.Before or nil
-	if type(b) == "table" then b = b[f] or b.All end
+-- A23-208 (pure): the Offer's situation line - Config.QuestBefore(def, f, flags): Offer.BeforeBy by my own results
+-- (flags = the attribute StoryFlags "Key=Value,..."), else my side's / the shared Before
+function STORY.Before(def, f, flagText)
+	local flags = {}
+	for k, v in string.gmatch(type(flagText) == "string" and flagText or "", "([^,=%s]+)=([^,]+)") do flags[k] = v end
+	local b = type(Config.QuestBefore) == "function" and Config.QuestBefore(def, f, flags) or nil
 	return (type(b) == "string" and b ~= "") and b or nil
 end
 
@@ -3142,7 +3145,7 @@ BUILDERS.Story = function(parent)
 	local f = myFaction()
 	local over = step[f]
 	local obj = (type(over) == "table" and over.Obj) or step.Obj
-	local lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St) -- A23-208: + the hook to the next quest
+	local lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f) -- A23-208: + the hook to the next quest
 	local TXT = Config.StoryQuests.Text
 	local page = 1
 	local voice = def.Speaker or (f == "Neutral" and "Guild" or f) -- no speaker = my faction's guide
@@ -3172,10 +3175,10 @@ BUILDERS.Story = function(parent)
 			fire("StoryAction", arg.Id, "Choose", option)
 		end
 		-- A23-208: after the hook (#lines > the step's own), the next asker hops once when her "!" shows
-		local npcs = C and C.StoryNpcs
-		if #lines > #STORY.Lines(step, f, arg.Var) and type(def.Next) == "table" and type(npcs) == "table"
+		local npcs, nx = C and C.StoryNpcs, type(Config.QuestNext) == "function" and Config.QuestNext(def, f) or nil
+		if #lines > #STORY.Lines(step, f, arg.Var) and type(nx) == "table" and type(npcs) == "table"
 			and type(npcs.ExpectNext) == "function" then
-			pcall(npcs.ExpectNext, def.Next.Id)
+			pcall(npcs.ExpectNext, nx.Id)
 		end
 		Panels.Close()
 	end
@@ -3497,7 +3500,7 @@ BUILDERS.Offer = function(parent)
 	local TXT = Config.StoryQuests.Text
 	local page = 1
 	-- A23-208: what is going on, one small italic line over her ask (phones: 2 lines at 18 px, Before <= 70 characters)
-	local before = STORY.Before(def, myFaction())
+	local before = STORY.Before(def, myFaction(), attr("StoryFlags", ""))
 	if before then
 		local b = addText(parent, before, { Name = "OfferBefore", Size = 18, Color = theme.SubText })
 		local face = b.FontFace

@@ -57,8 +57,13 @@ local DEFS = {
 		Next = { Id = "R", Line = "Bright: Oh! My ribbon..." } },
 	R = { Steps = { { Npc = "Tiny", Obj = { Type = "Talk" } } } }, -- no Offer: the first step's Npc asks
 	S = { Speaker = "Rose", Steps = { { Guide = "Pond", Obj = { Type = "Near" } } } }, -- nobody at a step
-	B = { Offer = { Npc = "Bright", Before = { Halo = "Halo side line", All = "Everyone's line" }, Lines = {} },
+	B = { Offer = { Npc = "Bright", Before = { Halo = "Halo side line", Horns = "Horns side line" }, Lines = {} },
 		Steps = { { Npc = "Bright", Obj = { Type = "Talk" } } } },
+	-- 10/15: a hook per side (a pack's Variants[id].Next) and a situation line by my own results (BeforeBy)
+	V = { Offer = { Npc = "Bright", Before = "Plain line", BeforeBy = { Flag = "Lamp", Mine = "You lit your own lamp.",
+			Default = "First time here." }, Lines = {} },
+		Steps = { { Npc = "Bright", Obj = { Type = "Talk" }, Lines = { All = { "Bright: Hi." } } } },
+		Next = { Halo = { Id = "R", Line = "Bright: Halo next" }, Horns = { Id = "S", Line = "Smokey: Horns next" } } },
 }
 local env = { StoryNpcs = {}, STORY = {}, Config = { StoryQuests = { Defs = DEFS } } }
 setmetatable(env, { __index = getfenv() })
@@ -84,22 +89,32 @@ check("AskerOf: Offer.Npc by side", N.AskerOf("Q", "Horns") == "Smokey" and N.As
 check("AskerOf: no Offer -> the first step's Npc", N.AskerOf("R", "Halo") == "Tiny")
 check("AskerOf: no quest = nil", N.AskerOf("Nope", "Halo") == nil)
 local own = DEFS.Q.Steps[3].Lines.All
-local last = ST.WithNext(own, DEFS.Q, 3)
+local last = ST.WithNext(own, DEFS.Q, 3, "Halo")
 check("WithNext: the last card ends with Next.Line", #last == 3 and last[3] == "Bright: Oh! My ribbon...", #last)
 check("WithNext: the step's own lines untouched", #own == 2)
-check("WithNext: not on an earlier step", #ST.WithNext(own, DEFS.Q, 2) == 2)
-check("WithNext: a step number as text", #ST.WithNext(own, DEFS.Q, "3") == 3)
-check("WithNext: no Next = the same lines", ST.WithNext(own, DEFS.R, 1) == own)
-check("Before: the plain line", ST.Before(DEFS.Q, "Halo") == "The cart wobbles.")
-check("Before: a side table = mine, else All", ST.Before(DEFS.B, "Halo") == "Halo side line" and ST.Before(DEFS.B, "Horns") == "Everyone's line")
-check("Before: none = nil", ST.Before(DEFS.R, "Halo") == nil)
+check("WithNext: not on an earlier step", #ST.WithNext(own, DEFS.Q, 2, "Halo") == 2)
+check("WithNext: a step number as text", #ST.WithNext(own, DEFS.Q, "3", "Halo") == 3)
+check("WithNext: no Next = the same lines", ST.WithNext(own, DEFS.R, 1, "Halo") == own)
+local vl = DEFS.V.Steps[1].Lines.All
+check("WithNext: my side's hook (Config.QuestNext)", ST.WithNext(vl, DEFS.V, 1, "Horns")[2] == "Smokey: Horns next"
+	and ST.WithNext(vl, DEFS.V, 1, "Halo")[2] == "Bright: Halo next")
+check("WithNext: a side without a hook = no line", #ST.WithNext(vl, DEFS.V, 1, "Neutral") == 1)
+check("Before: the plain line", ST.Before(DEFS.Q, "Halo", "") == "The cart wobbles.")
+check("Before: a side table = mine", ST.Before(DEFS.B, "Halo", "") == "Halo side line" and ST.Before(DEFS.B, "Horns", nil) == "Horns side line")
+check("Before: BeforeBy by my own flag (StoryFlags text)", ST.Before(DEFS.V, "Halo", "Crown=Paper,Lamp=Mine") == "You lit your own lamp.")
+check("Before: BeforeBy without the flag = its Default", ST.Before(DEFS.V, "Halo", "Crown=Paper") == "First time here.")
+check("Before: none = nil", ST.Before(DEFS.R, "Halo", "") == nil)
 print(("STORY_SCREEN_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 STATIC = [
-    ("NPCS", "Fx StoryScene Find / Scene reach StoryNpcs.Find / PlayScene", [
-        '\telseif key == "Find" then -- A23-208', "\t\treturn StoryNpcs.Find(data.Id, value, me and me:GetAttribute(\"Faction\"))\n",
-        "\t\treturn StoryNpcs.PlayScene(data.Id, value, me and me:GetAttribute(\"Faction\"))\n"]),
+    ("NPCS", "Fx StoryScene Find / Scene (with the Fx St) reach StoryNpcs.Find / PlayScene", [
+        '\telseif key == "Find" then -- A23-208', "\t\treturn StoryNpcs.Find(data.Id, data.St or value, me and me:GetAttribute(\"Faction\"))\n",
+        "\t\treturn StoryNpcs.PlayScene(data.Id, value, me and me:GetAttribute(\"Faction\"), data.St)\n"]),
+    ("NPCS", "On = \"Self\": the bubble over my head, the Scene on my avatar (emote / jump / sparkle)", [
+        "\tif step.On == \"Self\" then -- 10/15: my own words, over my head\n",
+        "\tlocal mine = type(step) == \"table\" and step.On == \"Self\"\n",
+        "\t\t\tpcall(StoryNpcs.PlayEmote, T.Story.SelfEmote[scene])\n"]),
     ("NPCS", "Find bubble: 4 s, 18 px, the approved BarkBubble at its aspect, its text box", [
         "\tFind = { Seconds = 4, W = 280, Aspect = 512 / 190, TextPx = 18,",
         '\t\tframe = UIKit.ArtFrame("BarkBubble", { Name = "Bubble", Size = UDim2.fromScale(1, 1) },',
@@ -117,12 +132,12 @@ STATIC = [
     ("NPCS", "Refresh: the next asker hops once when her \"!\" shows", [
         "\t\telseif nx and called[nx.Npc] and StoryNpcs.Body(nx.Npc) then\n\t\t\tS.Next = nil\n\t\t\tStoryNpcs.Hop(nx.Npc, 1)\n"]),
     ("PANELS", "Offer window: the italic Before line (18 px) before her talk", [
-        "\tlocal before = STORY.Before(def, myFaction())\n",
+        "\tlocal before = STORY.Before(def, myFaction(), attr(\"StoryFlags\", \"\"))\n",
         '\t\tlocal b = addText(parent, before, { Name = "OfferBefore", Size = 18, Color = theme.SubText })\n',
         "\t\tb.FontFace = Font.new(face.Family, face.Weight, Enum.FontStyle.Italic)\n"]),
     ("PANELS", "Story card: WithNext's lines; after a hook StoryNpcs.ExpectNext", [
-        "\tlocal lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St)",
-        "\t\t\tpcall(npcs.ExpectNext, def.Next.Id)\n"]),
+        "\tlocal lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f)",
+        "\t\t\tpcall(npcs.ExpectNext, nx.Id)\n"]),
     ("CONFIG", "the SceneKeys list (dev2)", ["Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,"]),
 ]
 MUTATIONS = [
@@ -132,7 +147,9 @@ MUTATIONS = [
     ("PANELS", "the hook on every step", "or tonumber(st) ~= n or n == 0 then return lines end", "or n == 0 then return lines end"),
     ("PANELS", "the hook written into the step's own lines", "\tlocal out = table.clone(lines)\n\ttable.insert(out, nx.Line)\n",
      "\tlocal out = lines\n\ttable.insert(out, nx.Line)\n"),
-    ("PANELS", "Before ignores my side", "\tif type(b) == \"table\" then b = b[f] or b.All end\n", "\tif type(b) == \"table\" then b = b.All end\n"),
+    ("PANELS", "Before ignores my flags", "and Config.QuestBefore(def, f, flags) or nil", "and Config.QuestBefore(def, f, {}) or nil"),
+    ("PANELS", "the hook ignores my side", "Config.QuestNext(def, f) or nil\n\tlocal n =", "Config.QuestNext(def, \"Halo\") or nil\n\tlocal n ="),
+    ("NPCS", "On = Self ignored by the Scene", "\tlocal mine = type(step) == \"table\" and step.On == \"Self\"\n", "\tlocal mine = false\n"),
     ("NPCS", "the bubble stays forever", "\ttask.delay(F.Seconds, function()\n", "\ttask.delay(math.huge, function()\n"),
     ("NPCS", "any scene word plays", "\tif type(scene) ~= \"string\" or not (type(SK) == \"table\" and SK[scene]) then return false end\n",
      "\tif type(scene) ~= \"string\" then return false end\n"),
@@ -148,7 +165,8 @@ def cut(src: str, table: str, name: str) -> str:
 
 
 def run(files: dict[str, str]) -> tuple[int, int, str]:
-    srcs = [cut(files["NPCS"], "StoryNpcs", n) for n in NPC_FNS] + [cut(files["PANELS"], "STORY", n) for n in PANEL_FNS]
+    srcs = ([cut(files["NPCS"], "StoryNpcs", n) for n in NPC_FNS] + [cut(files["PANELS"], "STORY", n) for n in PANEL_FNS]
+            + [cut(files["CONFIG"], "Config", n) for n in ("QuestNext", "QuestBefore")])
     failed = sum(1 for s in srcs if not s)
     lua = "local SOURCES = {\n" + "".join(f"[==========[{s}]==========],\n" for s in srcs if s) + "}\n" + FIXTURE
     with tempfile.TemporaryDirectory() as d:
