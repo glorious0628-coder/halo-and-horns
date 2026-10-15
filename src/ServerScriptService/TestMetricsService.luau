@@ -9,6 +9,7 @@
 --   Min[milestone][minute] (new accounts reaching Lv5 / Lv10 / Weapon (the first weapon: the Forge's tier 1, A23-188) / Claim (the first
 --   mission claimed) at that whole minute of play, capped at MaxMinute), Ten (new accounts with Lv5 + Weapon + Claim all
 --   before TenMinutes), Side[faction] / Device[device] (a new account's first side / first Perf sample's device),
+--   Perf[device] = every Perf sample's sums (fps / lowest second / memory, see perfSample),
 --   Pass[key] = { Bought, Back (bought, then joined again), Kept (on that later join Roblox said it is owned), Unknown (Roblox
 --   had not answered by then: MonetizationService.PassAnswer nil - the saved last answer is never counted as Kept) }.
 -- Per account (the save, additive): data.Telemetry.Test = { R = round, N = new, J = joins this round, I / S / D = intro / side /
@@ -289,15 +290,33 @@ function TestMetricsService.OnPassBought(player, key)
 	bump(sub(sub(X.Delta, "Pass"), key), "Bought")
 end
 
+-- 최종 검수 10/15 (A23-162: the technical test watches real phones' frames and memory): every Perf sample of any account
+-- (veterans too, every window) is summed per device: Perf[device] = { N (samples), F / W / M (sums of the average fps, the
+-- lowest second's fps, the memory MB), Low (samples with W under Config.Analytics.Perf.Low), Under20 / Under30 / Under45 /
+-- Smooth (samples by the average fps F: < 20, < 30, < 45, 45+) }. The board shows the averages and the shares.
+local function perfSample(dev, arg)
+	local f, w, m = num(arg.F, -1), num(arg.W, -1), num(arg.M, -1)
+	if f < 0 or w < 0 or m < 0 then return end
+	local P = Config.Analytics and Config.Analytics.Perf or {}
+	local row = sub(sub(X.Delta, "Perf"), dev)
+	bump(row, "N")
+	bump(row, "F", math.floor(f))
+	bump(row, "W", math.floor(w))
+	bump(row, "M", math.floor(m))
+	if w < num(P.Low, 20) then bump(row, "Low") end
+	bump(row, f < 20 and "Under20" or (f < 30 and "Under30" or (f < 45 and "Under45" or "Smooth")))
+end
+
 function TestMetricsService.OnClientMetric(player, id, arg)
 	if id ~= "Perf" or type(arg) ~= "table" then return end
+	local dev = arg.D
+	local devices = Config.Analytics and Config.Analytics.PerfDevices or {}
+	if type(dev) ~= "string" or not table.find(devices, dev) then return end
 	local data = getData(player)
 	if not data then return end
 	local rec = recordOf(data)
-	local dev = arg.D
-	if rec.N ~= true or rec.D or type(dev) ~= "string" then return end
-	local devices = Config.Analytics and Config.Analytics.PerfDevices or {}
-	if not table.find(devices, dev) then return end
+	perfSample(dev, arg)
+	if rec.N ~= true or rec.D then return end
 	rec.D = true
 	bump(sub(X.Delta, "Device"), dev)
 end
