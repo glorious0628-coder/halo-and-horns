@@ -598,7 +598,7 @@ check(m ~= nil and #T.S.Queue == 0 and T.S.Busy == true, "a quiet screen: the ca
 check(m and m.Position.Args[2] == 0.5 and m.AnchorPoint.Y == 0.5, "the moment is centred on the screen (below the event line)")
 local mc = m and m:FindFirstChild("CodexCard")
 local line = m and m:FindFirstChild("Line")
-check(line ~= nil and line.Text == "New card: Goblin! +48 gold · +84 XP", "the server's line under the card", line and line.Text)
+check(line == nil, "최종 검수 10/15 (feedback_audit #1): no line under the moment card", line and line.Text)
 check(#plays == 2 and plays[2] == "QuestDone", "a card moment rings QuestDone", #plays)
 local front = mc and mc:FindFirstChild("Face"):FindFirstChild("Front")
 local view = front and front:FindFirstChild("Monster3D")

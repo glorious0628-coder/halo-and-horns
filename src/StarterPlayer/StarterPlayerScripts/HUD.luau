@@ -5197,7 +5197,10 @@ local function doRelease()
 	if throttled("release", 0.2) then return end
 	if num("SkillReadyAt", 0) > Util.Now() then return end
 	if num("Mana", 0) < Config.BasicSkill.ManaCost then
-		if not throttled("skillMana", 1.5) then UIKit.Toast(TXT.NoMana, "bad", 1.5) end
+		-- 최종 검수 10/15 (feedback_audit #1; A23-180 no shake, no sound at a skill gate): the MP bar flashes red - the why
+		if not throttled("skillMana", 1.5) then
+			UIKit.Refuse(ui.stats and ui.stats:FindFirstChild("MPBar", true) or nil, { Shake = false, Sound = false })
+		end
 		return
 	end
 	local turned, target = L.FaceTarget("Release") -- the skill waits for the turn (TurnTime)

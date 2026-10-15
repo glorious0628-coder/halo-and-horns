@@ -1028,9 +1028,8 @@ function MOMENT.Card(payload, done)
 		before = CodexUI.View(kind, prev, faction(), false)
 	end
 	CARD.Set(c, before)
-	local line = text({ Name = "Line", Text = tostring(payload.Text or ""), AnchorPoint = Vector2.new(0.5, 0),
-		Position = UDim2.new(0.5, 0, 0, L.Moment.H + 8), Size = UDim2.new(1.6, 0, 0, 56), TextScaled = true, TextWrapped = true,
-		MaxTextSize = 24, Title = true, ZIndex = L.Moment.Z + 5, Parent = frame }, true)
+	-- 최종 검수 10/15 (feedback_audit #1, A23-191): no line under the card - the card's own change (silhouette into colour,
+	-- the rim / holo turning) says what happened
 	local gone = false
 	local function finish()
 		if gone then return end
@@ -1042,7 +1041,6 @@ function MOMENT.Card(payload, done)
 			return
 		end
 		local tw = TweenService:Create(pop, TweenInfo.new(L.Moment.Out), { Scale = 0.6 * fit })
-		TweenService:Create(line, TweenInfo.new(L.Moment.Out), { TextTransparency = 1 }):Play()
 		tw.Completed:Connect(function()
 			frame:Destroy()
 			done()

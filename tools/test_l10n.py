@@ -104,7 +104,7 @@ def static(src: dict) -> list[tuple[str, bool]]:
          'me:GetAttributeChangedSignal("Lang"):Connect(langCheck)' in ui and "UIKit.LangChanged:Fire(lang)" in ui),
         ("the Notify listener uses L10n.Msg when payload.Key",
          re.search(r"if payload\.Key ~= nil then\n\t+-- [^\n]*\n\t+local ok, s = pcall\(UIKit\.L10n\.Msg, payload, UIKit\.Lang\(\)\)",
-                   listener) is not None and listener.find("payload.Key") < listener.find("UIKit.Toast(text")),
+                   listener) is not None and listener.find("payload.Key") < listener.find("UIKit.Refuse(nil")),
         # A23-191 (최종 검수 10/15): Notify / NotifyAll go through the gate (Net.NotifyText: only "bad" keeps its text)
         ("Net.Notify / NotifyAll through the A23-191 gate",
          "Net.Get(\"Notify\"):FireClient(player, { Text = t, Kind = kind, Duration = duration, Sound = sound })" in net

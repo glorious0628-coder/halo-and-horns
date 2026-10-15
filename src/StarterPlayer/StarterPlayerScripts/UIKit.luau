@@ -616,8 +616,97 @@ local function feelApply(btn)
 	st.Tween:Play()
 end
 
+-- 최종 검수 10/15 (user: "재미 = 조작에 게임이 어떻게 반응하는지를 비주얼로", Codex build/codex/feedback_audit.md #1;
+-- A23-191 no explanation text): a refusal shows on the thing I pressed, never as words - it shakes a little (not with
+-- reduced motion), its rim flashes red twice, and the Deny sound plays (opts.Sound = false when the server's Notify
+-- already rang it). target = a GuiObject, else the button pressed in the last Refuse.Recent s, else the sound alone.
+-- opts.Shake = false: the red rim only (A23-180: the skill gates never shake)
+MOTION.Refuse = { Recent = 1.5, Shake = 6, ShakeTime = 0.3, Flash = 0.5, Color = Color3.fromRGB(235, 60, 60), Last = nil,
+	At = -math.huge, Tokens = setmetatable({}, { __mode = "k" }) }
+
+-- (pure) the shake's x offset (px) at t s of a refusal: three quick swings that die out
+function UIKit.RefuseOffset(t, amp, time)
+	amp, time = tonumber(amp) or MOTION.Refuse.Shake, tonumber(time) or MOTION.Refuse.ShakeTime
+	if t <= 0 or t >= time then return 0 end
+	return amp * (1 - t / time) * math.sin(t / time * math.pi * 6)
+end
+
+-- (pure) the red rim's transparency at t s: two flashes over `time`, then gone (1)
+function UIKit.RefuseRim(t, time)
+	time = tonumber(time) or MOTION.Refuse.Flash
+	if t <= 0 or t >= time then return 1 end
+	return 1 - math.abs(math.sin(t / time * math.pi * 2))
+end
+
+function UIKit.Refuse(target, opts)
+	opts = type(opts) == "table" and opts or {}
+	local R = MOTION.Refuse
+	if opts.Sound ~= false then
+		local audio = C and C.Audio
+		if type(audio) == "table" and type(audio.Play) == "function" then pcall(audio.Play, "Deny") end
+	end
+	if target == nil and R.Last and os.clock() - R.At <= R.Recent then target = R.Last end
+	if typeof(target) ~= "Instance" or not target:IsA("GuiObject") or not target.Parent or not target.Visible then return nil end
+	local token = (R.Tokens[target] or 0) + 1
+	R.Tokens[target] = token
+	-- the button's own border stroke turns red for the moment (one border stroke shows per object), else our own rim
+	local rim, saved = nil, nil
+	for _, ch in target:GetChildren() do
+		if ch:IsA("UIStroke") and ch.ApplyStrokeMode == Enum.ApplyStrokeMode.Border then
+			rim = ch
+			break
+		end
+	end
+	if rim and rim.Name ~= "RefuseRim" then
+		saved = rim:GetAttribute("RefuseSaved") and {
+			rim:GetAttribute("RefuseColor"), rim:GetAttribute("RefuseTransparency"), rim:GetAttribute("RefuseEnabled") }
+			or { rim.Color, rim.Transparency, rim.Enabled }
+		rim:SetAttribute("RefuseSaved", true)
+		rim:SetAttribute("RefuseColor", saved[1])
+		rim:SetAttribute("RefuseTransparency", saved[2])
+		rim:SetAttribute("RefuseEnabled", saved[3])
+	elseif not rim then
+		rim = Instance.new("UIStroke")
+		rim.Name = "RefuseRim"
+		rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		rim.Thickness = 3
+		rim.Parent = target
+	end
+	rim.Color, rim.Transparency, rim.Enabled = R.Color, 1, true
+	local function restore()
+		if saved then
+			rim.Color, rim.Transparency, rim.Enabled = saved[1], saved[2], saved[3]
+			rim:SetAttribute("RefuseSaved", nil)
+		else
+			rim.Enabled = false
+		end
+	end
+	local shake = opts.Shake ~= false and not UIKit.ReducedMotion()
+	local base = target:GetAttribute("RefuseBase") or target.Position
+	target:SetAttribute("RefuseBase", base)
+	local t0 = os.clock()
+	local conn
+	conn = game:GetService("RunService").RenderStepped:Connect(function()
+		local t = os.clock() - t0
+		if R.Tokens[target] ~= token or not target.Parent then
+			conn:Disconnect()
+			return
+		end
+		rim.Transparency = UIKit.RefuseRim(t)
+		if shake then target.Position = base + UDim2.fromOffset(UIKit.RefuseOffset(t), 0) end
+		if t >= math.max(R.Flash, R.ShakeTime) then
+			conn:Disconnect()
+			restore()
+			if shake then target.Position = base end
+			target:SetAttribute("RefuseBase", nil)
+		end
+	end)
+	return target
+end
+
 function UIKit.FeelPress(btn, down)
 	if typeof(btn) ~= "Instance" then return end
+	if down == true then MOTION.Refuse.Last, MOTION.Refuse.At = btn, os.clock() end -- the button a refusal shakes
 	local st = MOTION.States[btn]
 	if not st then
 		st = { Hover = false, Down = false, Fast = false }
@@ -2943,9 +3032,14 @@ end
 -- top; default 2.5 s. icon (optional) = a Config.Loot.Items id or a UIArt key (UIKit.ItemIcon), drawn left of the text.
 -- A toast whose text is already on screen is refreshed instead of stacked twice.
 function UIKit.Toast(text, kind, duration, icon)
-	-- A23-191 (user 10/14 "설명이 뜨는 파란 UI 다 삭제"): notice / good / reward / tip toasts are not drawn at all; only a
-	-- failure line (kind "bad": why what I just did did not work) is
+	-- A23-191 (user 10/14 "설명이 뜨는 파란 UI 다 삭제"): notice / good / reward / tip toasts are not drawn at all;
+	-- 최종 검수 10/15 (feedback_audit #1): a failure (kind "bad") is no line either - the pressed button refuses
+	-- (UIKit.Refuse: a shake, a red rim, the Deny sound). NOTIFY.Words = true draws the old failure line again (tests)
 	if kind ~= "bad" then return end
+	if not NOTIFY.Words then
+		UIKit.Refuse(nil)
+		return
+	end
 	if text == nil then return end
 	text = tostring(text)
 	if text == "" or not toastHolder then return end
@@ -4207,7 +4301,8 @@ function UIKit.Start()
 			end
 			-- A23-191 (user 10/14 "다 삭제하라고"): no banner (Kind "announce") and no notice / reward / tip toast - only a
 			-- failure line (Kind "bad": why the server refused what I just did) is still drawn
-			if payload.Kind == "bad" then UIKit.Toast(text, "bad", tonumber(payload.Duration)) end
+			-- 최종 검수 10/15: no words either - the button I just pressed refuses (Audio already rang Deny for it)
+			if payload.Kind == "bad" then UIKit.Refuse(nil, { Sound = false }) end
 		end)
 	end)
 
