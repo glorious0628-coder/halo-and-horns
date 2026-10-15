@@ -1,7 +1,7 @@
 """A23-167 ① ③ ④ (게임성 개발 1, 2026-10-14; plan docs/design/gameplay_plan_2026-10-14.md §2-A ①②③), offline.
 
 Runs, in the official Luau CLI, the CURRENT Config.luau with:
-1. HUD L.GoalTiers (cut out of HUD.luau): goal chip tier 2 'Next' = the nearest Config.GoalChips.Steps level above my
+1. (gone 10/15: the goal chip tiers 2-3 are removed - statics) HUD L.GoalTiers (cut out of HUD.luau): goal chip tier 2 'Next' = the nearest Config.GoalChips.Steps level above my
    level and past the level the tracker's own next-goal row names (QuestService GoalKind), Z / X skills only while their
    switch is on, no skill step after a rebirth, seasonal zones never, the rebirth level last; tier 3 'Big goal' = my
    side's crown (none for the Artisan Guild / no side); switched off = nothing. L.GoalTiersOn: phones tier 1 only.
@@ -35,7 +35,6 @@ BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-14/offline_goal_chips_2026-10-14.json"
-HUD_CUTS = [("function L.GoalTiers(", "\nend\n"), ("function L.GoalTiersOn()", "\nend\n")]
 FP_CUT = ("function FactionPicker.ChangeLines(id)", "\nend\n")
 
 FIXTURE = r'''
@@ -67,78 +66,7 @@ local cf = assert(loadstring(CONFIG_SOURCE, "=Config"))
 setfenv(cf, cfgEnv)
 local Config = cf()
 
------------------------------------------------------------------- 1. goal chip tiers
-local L = {}
-local TOUCH = false
-local hf = assert(loadstring(HUD_SOURCE, "=HUD"))
-local hudEnv = setmetatable({ L = L, Config = Config }, { __index = function(_, k)
-	if k == "IS_TOUCH" then return TOUCH end
-	return getfenv()[k]
-end })
-setfenv(hf, hudEnv)
-hf()
-local G = Config.GoalChips
-check(type(G) == "table" and G.Enabled == true and G.TouchTiers == 1, "Config.GoalChips on, phones tier 1 only", G and G.TouchTiers)
-local Sk = Config.Skills
-local q = Sk.Unlock.Q
-local woods, ruins = Config.Zones.GoblinWoods.MinLevel, Config.Zones.SkeletonRuins.MinLevel
-local rb0 = Config.RebirthLevel(0)
-Sk.ZEnabled, Sk.XEnabled = false, false
-local n, b = L.GoalTiers(1, 0, 0, "Halo", nil)
-check(n == string.format("Next: Lv %d · first skill", q), "Lv1, no skill: Next = the first skill", n)
-check(b == "Big goal: Win the Crown", "Knights: Big goal = the crown (short; the side is the line's colour)", b)
-n, b = L.GoalTiers(1, 0, 0, "Horns", nil)
-check(b == "Big goal: Win the Crown", "Legion: the same short crown line", b)
-n, b = L.GoalTiers(3, 0, 0, "Neutral", nil)
-check(b == nil and n ~= nil, "the Artisan Guild: no crown line (Next still)", tostring(b))
--- 최종 검수 10/14 MINOR: no crown line for Neutral / None / no side on purpose, not by a format error
-local bigWords = G.Text.Big
-G.Text.Big = "Big goal"
-local _, bn = L.GoalTiers(3, 0, 0, "Neutral", nil)
-local _, bx = L.GoalTiers(3, 0, 0, "None", nil)
-local _, bz = L.GoalTiers(3, 0, 0, nil, nil)
-local _, bh = L.GoalTiers(3, 0, 0, "Halo", nil)
-check(bn == nil and bx == nil and bz == nil and bh == "Big goal", "Neutral / None / no side: no crown line even when the words need no side",
-	tostring(bn) .. "/" .. tostring(bx) .. "/" .. tostring(bz) .. "/" .. tostring(bh))
-G.Text.Big = bigWords
-n = L.GoalTiers(3, 0, 0, "Halo", { NextGoal = true, GoalKind = "SkillIron" })
-check(n == string.format("Next: Lv %d · Goblin Woods", woods), "the tracker says Lv5 skill + iron: Next = the woods", n)
-n = L.GoalTiers(3, 0, 0, "Halo", { NextGoal = true, GoalKind = "IronLevel" })
-check(n == string.format("Next: Lv %d · Goblin Woods", woods), "the tracker says the iron weapon level: Next = the woods", n)
-n = L.GoalTiers(3, 0, 0, "Halo", { NextGoal = false, GoalKind = "SkillIron" })
-check(n == string.format("Next: Lv %d · first skill", q), "a story / tutorial row: the nearest step", n)
-n = L.GoalTiers(6, 0, 1, "Halo", { NextGoal = true, GoalKind = "Zone" })
-check(n == string.format("Next: Lv %d · Skeleton Ruins", ruins), "Lv6, the tracker says the woods: Next = the ruins (Z off)", n)
-n = L.GoalTiers(6, 0, 1, "Halo", { NextGoal = true, GoalKind = "IronDrop" })
-check(n == string.format("Next: Lv %d · Goblin Woods", woods), "the King Slime row (no level): the nearest step", n)
-Sk.ZEnabled = true
-n = L.GoalTiers(11, 0, 1, "Halo", nil)
-check(n == string.format("Next: Lv %d · new skill", Sk.Unlock.Z), "Z switched on: Lv11 Next = the Z skill", n)
-n = L.GoalTiers(11, 0, 1, "Halo", { NextGoal = true, GoalKind = "Skill" })
-check(n == string.format("Next: Lv %d · Skeleton Ruins", ruins), "the tracker says the Z skill: Next = the ruins", n)
-n = L.GoalTiers(11, 0, 2, "Halo", nil)
-check(n == string.format("Next: Lv %d · Skeleton Ruins", ruins), "Z learned: no Z step", n)
-Sk.ZEnabled = false
-n = L.GoalTiers(2, 1, 0, "Halo", nil)
-check(n == string.format("Next: Lv %d · Goblin Woods", woods), "after a rebirth: no skill steps", n)
-n = L.GoalTiers(30, 0, 1, "Halo", nil)
-check(n == string.format("Next: Lv %d · Rebirth", rb0), "past the ruins: the rebirth level", n)
-n = L.GoalTiers(rb0 - 2, 0, 1, "Halo", { NextGoal = true, GoalKind = "Rebirth" })
-check(n == nil, "the tracker already says the rebirth: no Next line", tostring(n))
-n = L.GoalTiers(52, 1, 1, "Halo", nil)
-check(n == string.format("Next: Lv %d · Rebirth", Config.RebirthLevel(1)), "after a rebirth: its own rebirth level", n)
-G.Enabled = false
-n, b = L.GoalTiers(1, 0, 0, "Halo", nil)
-check(n == nil and b == nil, "switched off: no tiers", tostring(n))
-G.Enabled = true
-TOUCH = false
-check(L.GoalTiersOn() == true, "PC: tiers 2-3 on", "")
-TOUCH = true
-check(L.GoalTiersOn() == false, "phones: tier 1 only", "")
-G.TouchTiers = 3
-check(L.GoalTiersOn() == true, "phones with TouchTiers 3: on", "")
-G.TouchTiers = 1
-TOUCH = false
+-- 1. (최종 검수 10/15) the goal chip tiers 2-3 are gone: the statics check it
 
 ------------------------------------------------------------------ 2. KO screen 'This run'
 local function obj(c)
@@ -269,17 +197,6 @@ print(("GOALCHIPS_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
-    ("HUD", "Next repeats the tracker's step", "if (shown == nil or s.At > shown) and", "if true and"),
-    ("HUD", "a reached level still shown", "if at and text and at > level then", "if at and text then"),
-    ("HUD", "Z / X ignore their switch", '(s.Slot == "Q" or skills[s.Slot .. "Enabled"] == true)', "true"),
-    ("HUD", "skills after a rebirth", "if i and need and rebirths < 1 and", "if i and need and"),
-    ("HUD", "learned skills shown", "and i > skillSlots and", "and"),
-    ("HUD", "the farthest step", "(best == nil or s.At < best.At)", "(best == nil or s.At > best.At)"),
-    ("HUD", "phones show all tiers", "(not IS_TOUCH or (tonumber(G.TouchTiers) or 1) >= 2)", "true"),
-    ("HUD", "Neutral leans on a format error", "local big = type(sideWord) == \"string\" and fmt(\"Big\", sideWord) or nil",
-     "local big = fmt(\"Big\", W[faction])"),
-    ("HUD", "the switch ignored", 'if type(G) ~= "table" or G.Enabled ~= true then return nil, nil end',
-     'if type(G) ~= "table" then return nil, nil end'),
     ("DS", "spending counts", "and new[k] > old[k] then got[k]", "then got[k]"),
     ("DS", "a side switch adds", "if old.Faction ~= new.Faction or old.Rebirths ~= new.Rebirths then return end", ""),
     ("DS", "no Flush at the KO", "\tDeathScreen.Flush() -- A23-167 ③: the last change before the KO counts\n", ""),
@@ -308,9 +225,8 @@ def cut(text: str, start: str, end: str) -> str:
 
 
 def run(src: dict) -> tuple[int, int, str]:
-    hud = "\n".join(cut(src["HUD"], s, e) for s, e in HUD_CUTS)
     fp = cut(src["FP"], *FP_CUT)
-    text = ("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) + "\nlocal HUD_SOURCE = " + lua_str(hud)
+    text = ("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) 
             + "\nlocal DS_SOURCE = " + lua_str(src["DS"]) + "\nlocal FP_SOURCE = " + lua_str(fp) + "\n" + FIXTURE)
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "goal_chips.luau"
@@ -330,21 +246,10 @@ def tier_block(h: str) -> str:
 def statics(src: dict) -> list[tuple[str, bool]]:
     h, ds, fp = src["HUD"], src["DS"], src["FP"]
     return [
-        ("SetTracker refreshes the tiers", "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n" in h),
-        ("level / rebirths / skills / side refresh the tiers",
-         'UIKit.OnAttr({ "Level", "Rebirths", "SkillSlots", "Faction", "SkillTaskSlot", "SkillTaskN", "SkillLearnReady", "SkillTeacher" }, function() L.RefreshGoalTiers() end)' in h),
-        ("the tiers draw only while on and the tracker shows", "if L.GoalTiersOn() and t.Frame.Visible then" in h),
-        ("the tracker's room on small PC windows counts the tiers",
-         "+ (L.GoalTiersOn() and (math.ceil(L.GoalTierSize(bodySize) * 1.2) * (1 + L.TierLines) + T.Gap * 2) or 0)" in h
-         and "L.TierLines = 2" in h),
-        ("the tiers sit under the progress line (LayoutOrder 4-5)", "LayoutOrder = 2 + i," in h),
-        # 최종 검수 10/14 (user photo): a tier wraps (two lines at most), never a '…'; its box = its drawn text
-        ("the tiers wrap, never cut, sized from their drawn text; tier 3 in my side's colour",
-         "TextWrapped = true, TextTruncate = Enum.TextTruncate.None," in h and "Enum.TextTruncate.AtEnd" not in tier_block(h)
-         and 'l:GetPropertyChangedSignal("TextBounds"):Connect(function() L.FitTierHeight(l) end)' in h
-         and "local h = math.ceil(l.TextBounds.Y / math.max(0.05, currentScale()))" in h
-         and 'local col = (f == "Halo" or f == "Horns") and factionColor(f) or ac("GoldText", Theme.Gold)' in h
-         and 'Halo = "Win the Crown", Horns = "Win the Crown",' in src["CONFIG"]),
+        # 최종 검수 10/15 (user photo: "이런 내용들 안 나와도 돼. 굳이 다음 퀘스트 뭔지"): no tiers 2-3, no switch back
+        ("no goal chip tiers 2-3 on PC or phones (code and switch gone)",
+         "GoalTier" not in h and "RefreshGoalTiers" not in h and "Tiers = tiers" not in h and "Config.GoalChips" not in src["CONFIG"]),
+        ("SetTracker draws line 1 only", "\tt.Frame.Visible = label ~= nil\n\tif not label then return end\n" in h),
         ("the KO screen draws the Got labels", 'S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i)' in ds),
         ("the KO screen paints the run", "DeathScreen.Lines(S.Data, left, G, S.Faction" in ds),
         ("the run's attributes are watched", re.search(r'for _, k in \{ "Level", "XP", "CarriedGold", "BankGold", "Honor", "Infamy", '
@@ -356,15 +261,8 @@ def statics(src: dict) -> list[tuple[str, bool]]:
 
 
 STATIC_MUTATIONS = [
-    ("HUD", "a tier cut with '…' again", "TextWrapped = true, TextTruncate = Enum.TextTruncate.None,",
-     "TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd,"),
-    ("HUD", "a tier's box ignores its drawn text", 'l:GetPropertyChangedSignal("TextBounds"):Connect(function() L.FitTierHeight(l) end)', ""),
-    ("HUD", "the room counts one line for tier 3", "* (1 + L.TierLines) + T.Gap * 2) or 0)", "* 2 + T.Gap * 2) or 0)"),
-    ("HUD", "tier 3 not in my side's colour", 'local col = (f == "Halo" or f == "Horns") and factionColor(f) or ac("GoldText", Theme.Gold)',
-     'local col = ac("GoldText", Theme.Gold)'),
-    ("CONFIG", "the long crown line again", 'Halo = "Win the Crown", Horns = "Win the Crown",',
-     'Halo = "Win the Crown for the Knights", Horns = "Win the Crown for the Legion",'),
-    ("HUD", "no tier refresh with the tracker", "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n", "\tt.Frame.Visible = label ~= nil\n"),
+    ("HUD", "the tiers come back", "\tt.Frame.Visible = label ~= nil\n\tif not label then return end\n",
+     "\tt.Frame.Visible = label ~= nil\n\tL.RefreshGoalTiers(e)\n\tif not label then return end\n"),
     ("FP", "no room for the lines", "areaH = math.max(1, areaH - chH)", "areaH = math.max(1, areaH)"),
     ("DS", "the KO screen ignores the run", "DeathScreen.Lines(S.Data, left, G, S.Faction, DeathScreen.ReviveLeft())", "DeathScreen.Lines(S.Data, left)"),
 ]
@@ -373,7 +271,7 @@ STATIC_MUTATIONS = [
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     src = {k: p.read_text(encoding="utf-8-sig").replace("\r\n", "\n") for k, p in FILES.items()}
-    found = all(cut(src["HUD"], s, e) for s, e in HUD_CUTS) and cut(src["FP"], *FP_CUT) != ""
+    found = cut(src["FP"], *FP_CUT) != ""
     checks, failed, out = run(src)
     print(out.strip())
     st = [{"check": n, "ok": ok} for n, ok in statics(src)]

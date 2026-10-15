@@ -1136,7 +1136,7 @@ local function resNumber(box, kind, before, after)
 	local sc = Instance.new("UIScale")
 	sc.Parent = holder
 	local txt = label(holder, "+" .. tostring(before), L.Size.Count, kind == "Down" and R.Red or colorOf("Gold"), { Name = "N",
-		Size = UDim2.fromScale(1, 1), TextWrapped = false, AutoLocalize = false, ZIndex = holder.ZIndex, Style = "Number" })
+		Size = UDim2.fromScale(1, 1), TextWrapped = false, ZIndex = holder.ZIndex, Style = "Number" })
 	local function done()
 		if holder.Parent then holder:Destroy() end
 		if own and own.Parent then own.Visible = true end

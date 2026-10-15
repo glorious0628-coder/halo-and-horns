@@ -108,23 +108,7 @@ check(out == "KO[CraftWindow.TXT.Power]120|150", "UIKit.Tx with arguments -> UIK
 TEMPLATES["CraftWindow.TXT.Title"] = "Crafting"
 out = UIKit.Tx(Craft, "Title")
 check(out == "KO[CraftWindow.TXT.Title]" and #fcalls == 4, "UIKit.Tx without arguments: by its key too", out)
--- 5. the goal chips (HUD L.GoalTiers, the real function): the inner pieces (the step, the side word) are translated
--- by their keys BEFORE they go into 'Next: %s' / 'Big goal: %s' (publish5: they stayed English)
-for k, v in { Next = "Next: %s", Big = "Big goal: %s", FirstSkill = "Lv %d · first skill", Halo = "Win the Crown" } do
-	TEMPLATES["Config.GoalChips.Text." .. k] = v
-end
-local Config = { GoalChips = { Enabled = true, Steps = { { Kind = "Skill", Slot = "Q" } },
-	Text = { __path = "Config.GoalChips.Text", Next = "Next: %s", Big = "Big goal: %s", FirstSkill = "Lv %d · first skill",
-		Skill = "Lv %d · new skill", Halo = "Win the Crown", Horns = "Win the Crown" } },
-	Skills = { Order = { "Q", "Z", "X" }, Unlock = { Q = 5 } }, Zones = {} }
-local L = {}
-function L.Tx(t, key, ...) return UIKit.Tx(t, key, ...) end
-local fg = assert(loadstring(GOAL, "=GoalTiers"))
-setfenv(fg, setmetatable({ L = L, Config = Config }, { __index = getfenv() }))
-fg()
-local nextLine, big = L.GoalTiers(1, 0, 0, "Halo", nil)
-check(nextLine == "KO[Config.GoalChips.Text.Next]KO[Config.GoalChips.Text.FirstSkill]5", "goal chip tier 2: the step inside is translated too", nextLine)
-check(big == "KO[Config.GoalChips.Text.Big]KO[Config.GoalChips.Text.Halo]", "goal chip tier 3: the side word inside is translated too", big)
+-- 5. (최종 검수 10/15) the goal chip tiers are gone
 -- 6. 개발 1 10/14 (Korean client: '다음: Enhance', '출처: Flower Slime', '· Pouch 0'): the arguments' words are
 -- translated by their English text (Translator:Translate); numbers never go there
 local words = { Woods = "숲", Pouch = "주머니" }
@@ -238,9 +222,8 @@ def first_minutes() -> list[tuple[str, bool]]:
     sb, fs, pc = read("SkillBar.luau"), read("FirstSteps.luau"), read("PauseCard.luau")
     plain = re.compile(r"string\.format\((?:TXT|T\.Text)\.\w+")
     return [
-        ("HUD: no %-sentence of its words by plain string.format; HUD.TXT registered; goal chips by key",
-         not plain.search(hud) and 'UIKit.L10n.Register("HUD.TXT", TXT)' in hud and "function L.Tx(t, key, ...)" in hud
-         and 'fmt("Next", best.Text)' in hud and 'fmt("Big", sideWord)' in hud),
+        ("HUD: no %-sentence of its words by plain string.format; HUD.TXT registered",
+         not plain.search(hud) and 'UIKit.L10n.Register("HUD.TXT", TXT)' in hud and "function L.Tx(t, key, ...)" in hud),
         ("EventHUD: its sentences by key (L.Tx), EventHUD.TXT registered",
          not plain.search(ev) and 'C.UIKit.L10n.Register("EventHUD.TXT", TXT)' in ev),
         ("KO screen: cause / lost / back / 'This run' by key (Config.Death.Text)",

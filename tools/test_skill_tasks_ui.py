@@ -4,7 +4,7 @@
    ("Lv15 skill: Defeat 40 monsters with basic attacks (3/40)"), each piece by its key (the slot name too); "" for Q /
    an unknown kit / the tasks off.
 2. SkillBook.State: a locked slot whose level is there shows its task line; below the level "Unlocks at Lv15".
-3. HUD L.GoalTiers: while a class task runs (SkillTaskSlot), its line is the 'Next' goal; else "Lv 15 · new skill".
+3. (gone 10/15) the goal chip tiers are removed: a static checks no tier carries the task.
 Static: SkillBar's lock = the saved SkillSlots (the level rule only before the data), SkillBook.learned never the level
 alone, a locked key press says the task line, the task attributes redraw the bar / book / goal chip.
 Runs the CURRENT Config.luau (doubles) + the cut functions. Mutations: each must be caught.
@@ -89,14 +89,7 @@ check(s1 == line and k1 == "lock", "skill book: level there, task running -> its
 local s2 = SkillBook.State(row, { Level = 9, Tasks = { Z = line } })
 check(s2 == "Unlocks at Lv15", "skill book: below the level -> 'Unlocks at Lv15'", s2)
 
--- 3. the goal chip (skill 2 switched on, as from 10/20: Config.Skills.ZEnabled)
-local keepZ = Config.Skills.ZEnabled
-Config.Skills.ZEnabled = true
-local nextLine = L.GoalTiers(16, 0, 1, "Halo", nil, { Slot = "Z", Text = line })
-check(nextLine == string.format(Config.GoalChips.Text.Next, line), "goal chip: the running task is the next goal", nextLine)
-local plain = L.GoalTiers(12, 0, 1, "Halo", nil, nil)
-check(type(plain) == "string" and not plain:find("Defeat", 1, true), "goal chip: no task -> the usual step", plain)
-Config.Skills.ZEnabled = keepZ
+-- 3. (최종 검수 10/15) the goal chip tiers are gone: no 'Next' line carries the task
 print(("SKILL_TASKS_UI_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -106,7 +99,6 @@ MUTATIONS = [
     ("BAR", "the bar opens a slot by the level again", "\tif type(slots) == \"number\" then locked = slots < idx end\n",
      "\tif locked and type(slots) == \"number\" and slots >= idx then locked = false end\n"),
     ("BOOK", "the book never shows the task", "if type(task) == \"string\" and task ~= \"\" and num(ctx.Level, 1) >= row.Unlock then return task, \"lock\" end", ""),
-    ("HUD", "the goal chip ignores the task", "\t\t\t\t\tat, text = level + 0.001, task.Text\n", ""),
     ("BAR", "the slot name not by its key", 'and trx(TT.SlotName, def.Slot) or "a skill"', 'and "Skill" or "a skill"'),
     ("BAR", "a locked key never says the task", "\tlocal line = task ~= \"\" and task or trx(TXT, \"Later\", level)\n",
      "\tlocal line = trx(TXT, \"Later\", level)\n"),
@@ -139,15 +131,14 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("SkillBook: never the level alone; its context carries the task lines; the task attributes rebuild it",
          "\t\tif ok and num(n, 0) >= idx then return true end\n\tend\n\treturn false\nend" in book
          and "\t\tTasks = tasks," in book and "SkillTaskSlot = true, SkillTaskN = true," in book),
-        ("HUD: the goal chip gets the running task (SkillBar.TaskFor) and redraws on its count",
-         "math.floor(num(\"SkillSlots\", 0)), getFaction(), e, task," in hud
-         and '"SkillTaskSlot", "SkillTaskN", "SkillLearnReady", "SkillTeacher" }, function() L.RefreshGoalTiers() end)' in hud),
+        # 최종 검수 10/15: the goal chip tiers are gone (the task shows in the skill book and on a locked key)
+        ("HUD: no goal chip tier carries the task any more", "RefreshGoalTiers" not in hud),
     ]
 
 
 def run(src: dict) -> tuple[int, int, str]:
     parts = (cut(src["BAR"], "local function trx(t, key, ...)") + "\n" + cut(src["BAR"], "function SkillBar.TaskLine(kit, slot, done)")
-             + "\n" + cut(src["BOOK"], "function SkillBook.State(row, ctx)") + "\n" + cut(src["HUD"], "function L.GoalTiers("))
+             + "\n" + cut(src["BOOK"], "function SkillBook.State(row, ctx)"))
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "skill_tasks_ui.luau"
         p.write_text("local CONFIG_SOURCE = " + lua_str(src["CONFIG"]) + "\nlocal PARTS = " + lua_str(parts) + "\n" + FIXTURE,
@@ -175,7 +166,7 @@ def main() -> int:
             caught = run(m)[1] > 0
         muts.append({"name": name, "applied": hits == 1, "caught": caught})
         print(("MUTATION caught  " if caught else "MUTATION MISSED ") + name + ("" if hits == 1 else f" (matched {hits})"))
-    ok = failed == 0 and checks >= 10 and all(m["caught"] for m in muts)
+    ok = failed == 0 and checks >= 9 and all(m["caught"] for m in muts)  # 10/15: the 2 goal chip checks went with the tiers
     status = "passed" if ok else "failed"
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({"checks": checks, "failed": failed, "mutations": muts, "status": status,

@@ -7853,12 +7853,6 @@ Config.NextGoal = {
 	GuideZones = { "GoblinWoods", "SkeletonRuins" }, -- guide on reaching these zones' MinLevel (Lv 10 / Lv 25)
 }
 
--- A23-167 ① (게임성 개발 1, 2026-10-14; plan 2026-10-14 §2-A ①): the HUD goal chips in three tiers - tier 1 = the 'now
--- do' quest (the tracker, as before), tier 2 = 'Next' (the nearest of Steps above my level, after the level the
--- tracker's own next-goal row already names), tier 3 = 'Big goal' (my side's crown). HUD.L.GoalTiers (pure). Phones
--- show tier 1 only (TouchTiers). Steps: Skill = that slot's Config.Skills.Unlock level (Z / X only while their switch
--- is on, none after a rebirth - like QuestService's next-goal row), Zone = the zone's MinLevel (seasonal zones never),
--- Rebirth = Config.RebirthLevel. Equal levels: the first row here wins. No clock, no buy word (A23-79).
 -- 최종 검수 10/14 (감사 2 '못 하는 일 숨기기': in the first 10 minutes rows you CANNOT do now showed as much as the
 -- things to do): a quest row whose thing is far away folds out of the HUD lines / tracker (the quest window keeps it),
 -- and comes back by itself in time. Goose = a story step guided to the goose (S1 / GW5 'Join a Golden Egg hunt'):
@@ -7866,23 +7860,6 @@ Config.NextGoal = {
 -- crown war chest): shown while the war is fought (WarMode not Idle) and the round ends within Window s. Check = s
 -- between the HUD's looks (the time passing). Words: none (the row just waits).
 Config.QuestNotNow = { Enabled = true, Window = 3600, Check = 15, GooseGuide = "Goose", WarRows = { S2 = true } }
-
-Config.GoalChips = {
-	Enabled = true,
-	TouchTiers = 1,
-	SizeK = 0.85, -- tiers 2-3 text size / the goal sentence's (PC)
-	Steps = {
-		{ Kind = "Skill", Slot = "Q" }, { Kind = "Skill", Slot = "Z" }, { Kind = "Skill", Slot = "X" },
-		{ Kind = "Zone", Zone = "GoblinWoods" }, { Kind = "Zone", Zone = "SkeletonRuins" },
-		{ Kind = "Rebirth" },
-	},
-	Text = {
-		Next = "Next: %s", Big = "Big goal: %s",
-		FirstSkill = "Lv %d · first skill", Skill = "Lv %d · new skill", Zone = "Lv %d · %s", Rebirth = "Lv %d · Rebirth",
-		-- 최종 검수 10/14 (user photo: 'Big goal: Win the Crown for the…' was cut): short; the side shows as the line's colour
-		Halo = "Win the Crown", Horns = "Win the Crown",
-	},
-}
 
 -- English message templates (always through string.format). Use these for the listed situations.
 Config.Text = {
