@@ -7,7 +7,7 @@
 4. **Tutorial 이야기 화면** (dev2 45fbdb32 / dev2-ch1-finish c9a2762a): Fx StoryScene {Id="Tutorial", Key="Find"|"Scene", Value, St = 단계 이름 "Teacher"/"Forge"}; 글 = Config.Tutorial.Story: Steps[St].Find[진영] = 그 단계 NPC 머리 위 말풍선(Teacher = 내 스승 Gleam/Rose, Forge = Otto), Scene = 그 NPC 몸짓, Steps.Forge.Lines[진영] = 무기 받은 뒤 오토 끝 대사 한 줄, Next[진영] = 예고 줄 + M1_1 '!' 통통, Before[진영] = 안내자 Welcome 창 맨 위 작은 기울임 한 줄(부탁 창과 같은 모양). 장인(Neutral)은 Teacher 없음(Forge만). StoryNpcs.Find/PlayScene/ExpectNext·Panels STORY.Before 재사용.
 5. **PhoneTest 폰 사진**: 위 1~4 + 1장 이야기 말풍선·폰 Before. 도구 = scratchpad phone_cards.py(start/probe/shot/fireshot/stop, STUDIO_NAME=PhoneTest_1015), build/PhoneTest_1015.rbxlx 복사본. MCP 캡처는 BillboardGui(말풍선)를 안 찍음 → 값(TextBounds·AbsoluteSize)으로 확인.
 6. 남은 큐.
-- 병합됨: dev1-codex-where c672eb17 (main bc0b5bf4). 병합 대기(보고함): dev1-crown-mine 5d751602, dev1-friend-mark 6db57610. 작업 폴더 모두 깨끗(커밋 안 한 것 없음).
+- 병합됨: dev1-codex-where c672eb17 (main bc0b5bf4). dev1-crown-mine 5d751602·dev1-friend-mark 6db57610도 main a1d06f69에 병합됨(최종 검수 확인). 작업 폴더 모두 깨끗(커밋 안 한 것 없음).
 
 ## 10/15 밤 (클리어 뒤 새 세션) — 1·2·3② 끝, 보고함
 - **dev1-nudges-cut aff7935e** (wt_kosweep): 꺼둔 클라 Nudges 11개 + 그림 코드 삭제(HUD.Hint 체계, QuestHead 줄, 길 Beam·이름표, TugSub, SackLore, WSHOP.Farewell…). test_nudges_gone 117·8/8. 스윕 72개 새 실패 0(attendance_ui·first_weapon_client·walk_forge_client·loot·halloween·a23_14 = main도). 옛 가지 dev1-first-hunt-hint 4681edff와 부딪힘(버릴 것). 서버 4개(GuideDone·DailyReady·EnteredSafe·WeaponUsableNow)는 개발 2에 넘김.
