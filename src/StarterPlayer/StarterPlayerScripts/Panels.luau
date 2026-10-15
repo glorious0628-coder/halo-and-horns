@@ -866,8 +866,32 @@ function FRAME.BuildTitle()
 	local disc0 = math.floor(th * FRAME.Disc)
 	FRAME.TitleCap = UIKit.Create("UISizeConstraint", { MinSize = Vector2.new(math.max(0, FRAME.TitleMinW - 2 * disc0), 0),
 		MaxSize = Vector2.new(400, th), Parent = titleLabel })
+	-- 최종 검수 10/15 (user photo: '안내자 · 보급로 되찾기' next to the icon, the ribbon's right half empty - "가운데 정렬,
+	-- 그래야지 퀄리티가 높아 보여"): an AutomaticSize label kept its words' width under the ribbon's least width, so a
+	-- short (translated) title sat left. The label's width is set here instead: its drawn words (TextBounds) between the
+	-- least and the most room, so the words are centred between the icon disc and the equal right end
+	titleLabel.AutomaticSize = Enum.AutomaticSize.None
+	titleLabel:GetPropertyChangedSignal("TextBounds"):Connect(function() FRAME.FitTitle() end)
+	titleLabel:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() FRAME.FitTitle() end)
 	UIKit.Create("Frame", { Name = "End", Size = UDim2.new(0, disc0, 1, 0), BackgroundTransparency = 1,
 		LayoutOrder = 3, Active = false, Parent = ribbon })
+end
+
+-- (pure) the title label's width (du): its drawn words + a little air, between lo and hi; words that do not fit take hi
+function FRAME.TitleWidth(boundsX, scale, fits, lo, hi)
+	scale = (type(scale) == "number" and scale > 0.05) and scale or 1
+	local want = fits == false and hi or (math.ceil((tonumber(boundsX) or 0) / scale) + 6)
+	return math.clamp(want, lo, math.max(lo, hi))
+end
+
+function FRAME.FitTitle()
+	local l, cap = titleLabel, FRAME.TitleCap
+	if not (l and cap and l.Parent) then return end
+	local th = FRAME.TitleH
+	local scale = l.AbsoluteSize.Y > 0 and th > 0 and l.AbsoluteSize.Y / th or 1
+	local w = FRAME.TitleWidth(l.TextBounds.X, scale, l.TextFits, cap.MinSize.X, cap.MaxSize.X)
+	local size = UDim2.new(0, w, 1, 0)
+	if l.Size ~= size then l.Size = size end
 end
 
 -- the window's icon in the ribbon's disc (FRAME.Icons; hidden for a window without one)
@@ -928,6 +952,7 @@ local function layoutChrome(s)
 			local capW = math.max(40, maxW - 2 * math.floor(th * FRAME.Disc)) -- the disc + the equally wide right end
 			FRAME.TitleCap.MinSize = Vector2.new(math.min(capW, math.max(0, FRAME.TitleMinW - 2 * math.floor(th * FRAME.Disc))), 0)
 			FRAME.TitleCap.MaxSize = Vector2.new(capW, th)
+			FRAME.FitTitle()
 		end
 	end
 	local contentTop = FRAME.TitleH / 2 + 8
