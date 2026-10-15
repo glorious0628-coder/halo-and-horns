@@ -84,6 +84,7 @@
 | ⑤ | M1_3 = 스승 Lv5 시험(BasicKill Slime4 → 빛 LostBag→Folk1 / 뿔 SnackParcel→Tiny / 장인 자기 직업 제작→Tiny → 스승에게서 Learn), Q는 그 Learn 단계부터만 배움(Config.Skills.Learn.Gate), 다음 목표 줄 SkillTest | Schema 3 M1_3 처음부터 |
 | ⑥ | Emote 단계(R_Band에서 사용) | — |
 | ⑦ | M1_4 = 등불(Bright/Rose/Tiny 부탁 → 등불 자리 → 공용/내 빛 선택 Lamp 깃발 → 반응 → [Claim]), 시험 도움 장면 Help=Bag/Prank/Smith·Alch·Tame | Schema 4 M1_4 등불부터(Claim 기다리던 건 그대로) |
+| ⑧ (10/15 밤 마무리) | 호위 이벤트가 자기 몬스터를 부름: Event.Kind를 지역 이벤트 몬스터(MonsterService.SpawnEvent, 수레 근처 15 studs 안, 보상은 보통 몬스터와 같음)로, 남은 처치 수만큼 2초마다 채움(남이 잡으면 다시 나옴), Radius 밖에 생기면 바로 돌려보냄, 이벤트당 최대 Count×3, 이벤트 끝·단계 끝·접속 종료면 남은 몬스터는 돌아감. 조용한 길에서 멈추지 않음. Kind 몬스터의 지역(def.Zone)이 길과 같아야 함(데이터 작성 규칙) | — |
 | ⑨ | Telemetry QuestAccept(분)·QuestDecline·QuestMiniMiss·MinutesToFirstSkill | — |
 
 ### 화면 몫 (개발 1)
