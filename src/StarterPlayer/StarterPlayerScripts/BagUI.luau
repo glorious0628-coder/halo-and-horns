@@ -757,8 +757,11 @@ local function pollResult()
 	local ok, r, at = pcall(panels.LastEnhance)
 	if not ok or type(r) ~= "table" or type(at) ~= "number" or at <= S.ResultAt then return false end
 	S.Result, S.ResultAt = r, at
+	-- user 10/15 ("강화가 된 건지 안 된 건지 모르겠어", 최종 검수 feedback ⑥): the result shows on that weapon's cells
+	task.delay(BagUI.RES.Wait, function() pcall(BagUI.PlayResult, r) end)
 	return true
 end
+
 
 -- the new things of a tab the player has looked at stop being new
 local function markSeen(tab)
@@ -1070,6 +1073,196 @@ local function drawGrid(area, all, list, cols)
 		local box = slot(grid, nil, nil, L.Cell, nil, "Empty")
 		box.LayoutOrder = i
 	end
+end
+
+-- user 10/15 / 최종 검수 feedback ⑥: a scroll's result on that weapon's cells (the picked big one and its grid cell), only
+-- after the server's answer (Before / After / Success), no words, no rays. Up = a gold flash, a round gold ring growing,
+-- a few stars popping out, the "+N" growing and settling on +N+1; Keep = a grey dim pulse, a little grey smoke, a small
+-- shake, the number trembling; Down = the same plus the number going red and sliding down to +N-1. The sounds are
+-- Audio's (ScrollSuccess / ScrollFail); the character's own gold burst is Fx's
+BagUI.RES = { Wait = 0.15, Gold = Color3.fromRGB(255, 205, 70), Grey = Color3.fromRGB(70, 74, 86), Red = Color3.fromRGB(235, 70, 60),
+	Flash = 0.35, Ring = 0.5, RingGrow = 1.9, Stars = 4, StarFly = 0.45, Pop = 1.6, Settle = 0.3, Shake = 5, ShakeTime = 0.3,
+	Smoke = 3, SmokeTime = 0.6, Slide = 0.35 }
+
+-- (pure) a scroll result's look: "Up" / "Keep" / "Down"; nil for a move (the transfer scroll) or a broken result
+function BagUI.ResultKind(r)
+	if type(r) ~= "table" or r.Move == true then return nil end
+	local b, a = tonumber(r.Before), tonumber(r.After)
+	if not (b and a) then return nil end
+	if r.Success == true and a > b then return "Up" end
+	if a < b then return "Down" end
+	return "Keep"
+end
+
+-- the open bag's cells showing weapon tier `tier`: the detail's big cell (when it is that weapon) and its grid cell
+function BagUI.ResultCells(tier)
+	local out = {}
+	local grid = VIEW.Grid
+	local cell = grid and grid:FindFirstChild("Cell_W:" .. tostring(tier), true)
+	if cell then table.insert(out, cell) end
+	local picked = VIEW.Picked
+	local big = VIEW.Detail and VIEW.Detail:FindFirstChild("Big")
+	if big and type(picked) == "table" and picked.Kind == "Weapon" and picked.Tier == tier then table.insert(out, big) end
+	return out
+end
+
+local function resOverlay(box, name, color, transparency, z)
+	local f = Instance.new("Frame")
+	f.Name = name
+	f.BackgroundColor3 = color
+	f.BackgroundTransparency = transparency
+	f.BorderSizePixel = 0
+	f.Size = UDim2.fromScale(1, 1)
+	f.ZIndex = (tonumber(box.ZIndex) or 1) + z
+	local c = Instance.new("UICorner")
+	c.CornerRadius = UDim.new(0.14, 0)
+	c.Parent = f
+	f.Parent = box
+	return f
+end
+
+-- the "+N" moving from Before to After over the cell's own number (hidden while it moves)
+local function resNumber(box, kind, before, after)
+	local R, T = BagUI.RES, game:GetService("TweenService")
+	local own = box:FindFirstChild("Plus")
+	if own then own.Visible = false end
+	local holder = Instance.new("Frame")
+	holder.Name = "ResultPlus"
+	holder.BackgroundTransparency = 1
+	holder.Position = UDim2.fromOffset(L.CountInset, L.CountInset)
+	holder.Size = UDim2.fromOffset(L.Size.Count * 3, L.Size.Count + 6)
+	holder.ZIndex = (tonumber(box.ZIndex) or 1) + 8
+	holder.Parent = box
+	local sc = Instance.new("UIScale")
+	sc.Parent = holder
+	local txt = label(holder, "+" .. tostring(before), L.Size.Count, kind == "Down" and R.Red or colorOf("Gold"), { Name = "N",
+		Size = UDim2.fromScale(1, 1), TextWrapped = false, AutoLocalize = false, ZIndex = holder.ZIndex, Style = "Number" })
+	local function done()
+		if holder.Parent then holder:Destroy() end
+		if own and own.Parent then own.Visible = true end
+	end
+	if kind == "Up" then
+		T:Create(sc, TweenInfo.new(R.Settle * 0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = R.Pop }):Play()
+		task.delay(R.Settle * 0.5, function()
+			txt.Text = "+" .. tostring(after)
+			T:Create(sc, TweenInfo.new(R.Settle, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+		end)
+		task.delay(R.Settle * 1.6, done)
+	elseif kind == "Down" then
+		task.delay(R.ShakeTime, function()
+			txt.Text = "+" .. tostring(after)
+			txt.Position = UDim2.fromOffset(0, -L.Size.Count)
+			T:Create(txt, TweenInfo.new(R.Slide, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = UDim2.new() }):Play()
+		end)
+		task.delay(R.ShakeTime + R.Slide + 0.5, done)
+	else
+		-- Keep: the number trembles, stays
+		local t0 = os.clock()
+		local conn
+		conn = game:GetService("RunService").RenderStepped:Connect(function()
+			local t = os.clock() - t0
+			if t >= R.ShakeTime or not holder.Parent then
+				conn:Disconnect()
+				txt.Position = UDim2.new()
+				return
+			end
+			txt.Position = UDim2.fromOffset(math.sin(t * 90) * 1.5, 0)
+		end)
+		task.delay(R.ShakeTime + 0.3, done)
+	end
+end
+
+local function resUp(box)
+	local R, T = BagUI.RES, game:GetService("TweenService")
+	local flash = resOverlay(box, "ResultFlash", R.Gold, 0.15, 6)
+	T:Create(flash, TweenInfo.new(R.Flash), { BackgroundTransparency = 1 }):Play()
+	local ring = Instance.new("Frame")
+	ring.Name = "ResultRing"
+	ring.AnchorPoint = Vector2.new(0.5, 0.5)
+	ring.Position = UDim2.fromScale(0.5, 0.5)
+	ring.Size = UDim2.fromScale(0.7, 0.7)
+	ring.BackgroundTransparency = 1
+	ring.ZIndex = (tonumber(box.ZIndex) or 1) + 7
+	local rc = Instance.new("UICorner")
+	rc.CornerRadius = UDim.new(0.5, 0)
+	rc.Parent = ring
+	local st = Instance.new("UIStroke")
+	st.Color, st.Thickness, st.ApplyStrokeMode = R.Gold, 4, Enum.ApplyStrokeMode.Border
+	st.Parent = ring
+	ring.Parent = box
+	T:Create(ring, TweenInfo.new(R.Ring, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+		{ Size = UDim2.fromScale(R.RingGrow, R.RingGrow) }):Play()
+	T:Create(st, TweenInfo.new(R.Ring), { Transparency = 1 }):Play()
+	local kit = ui()
+	for i = 1, R.Stars do
+		local a = (i - 0.5) / R.Stars * math.pi * 2 + 0.4
+		local star = type(kit) == "table" and kit.ArtImage("RewardSparkle", { Name = "ResultStar", AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(0.28, 0.28), ImageColor3 = R.Gold,
+			ZIndex = (tonumber(box.ZIndex) or 1) + 8 }) or nil
+		if star then
+			star.Parent = box
+			T:Create(star, TweenInfo.new(R.StarFly, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+				Position = UDim2.fromScale(0.5 + math.cos(a) * 0.62, 0.5 + math.sin(a) * 0.62), ImageTransparency = 1 }):Play()
+		end
+	end
+	task.delay(math.max(R.Ring, R.StarFly) + 0.1, function()
+		for _, ch in box:GetChildren() do
+			if ch.Name == "ResultFlash" or ch.Name == "ResultRing" or ch.Name == "ResultStar" then ch:Destroy() end
+		end
+	end)
+end
+
+local function resFail(box)
+	local R, T = BagUI.RES, game:GetService("TweenService")
+	local dim = resOverlay(box, "ResultDim", R.Grey, 1, 6)
+	T:Create(dim, TweenInfo.new(R.Flash * 0.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, 0, true),
+		{ BackgroundTransparency = 0.35 }):Play()
+	for i = 1, R.Smoke do
+		local puff = Instance.new("Frame")
+		puff.Name = "ResultSmoke"
+		puff.AnchorPoint = Vector2.new(0.5, 0.5)
+		puff.Position = UDim2.fromScale(0.3 + i * 0.13, 0.62)
+		puff.Size = UDim2.fromScale(0.16, 0.16)
+		puff.BackgroundColor3 = Color3.fromRGB(150, 150, 160)
+		puff.BackgroundTransparency = 0.35
+		puff.ZIndex = (tonumber(box.ZIndex) or 1) + 7
+		local pc = Instance.new("UICorner")
+		pc.CornerRadius = UDim.new(0.5, 0)
+		pc.Parent = puff
+		puff.Parent = box
+		T:Create(puff, TweenInfo.new(R.SmokeTime, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+			Position = UDim2.fromScale(0.3 + i * 0.13, 0.25), Size = UDim2.fromScale(0.26, 0.26), BackgroundTransparency = 1 }):Play()
+	end
+	local base = box.Position
+	local t0 = os.clock()
+	local reduced = type(ui()) == "table" and type(ui().ReducedMotion) == "function" and ui().ReducedMotion()
+	local conn
+	conn = game:GetService("RunService").RenderStepped:Connect(function()
+		local t = os.clock() - t0
+		if t >= R.ShakeTime or not box.Parent then
+			conn:Disconnect()
+			if box.Parent then box.Position = base end
+			return
+		end
+		if not reduced then box.Position = base + UDim2.fromOffset(R.Shake * (1 - t / R.ShakeTime) * math.sin(t / R.ShakeTime * math.pi * 6), 0) end
+	end)
+	task.delay(math.max(R.Flash, R.SmokeTime) + 0.1, function()
+		for _, ch in box:GetChildren() do
+			if ch.Name == "ResultDim" or ch.Name == "ResultSmoke" then ch:Destroy() end
+		end
+	end)
+end
+
+-- plays a scroll result on the open bag (nothing when the bag is closed or the weapon is not on screen)
+function BagUI.PlayResult(r)
+	local kind = BagUI.ResultKind(r)
+	if not kind or not VIEW.Kit then return 0 end
+	local cells = BagUI.ResultCells(r.Tier)
+	for _, box in cells do
+		if kind == "Up" then resUp(box) else resFail(box) end
+		resNumber(box, kind, math.floor(r.Before), math.floor(r.After))
+	end
+	return #cells
 end
 
 local function drawDetail(frame, all, picked)
