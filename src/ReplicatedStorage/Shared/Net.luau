@@ -105,6 +105,11 @@ Net.Names = {
 	"PackWeapon", -- c->s (tier): an owned weapon (not in hand, not tier 1) -> a spare "T:P"
 	"UnpackSpare", -- c->s (spare key "T:P"): a spare of a tier I do not own -> owned
 	"ReviveSkip", -- 99N G c->s (): the KO'd player waiting for a friend gets up in town now (ReviveService)
+	-- A23-201 the party (PartyService): c->s (op "Invite" | "Accept" | "Decline" | "Leave" | "Kick", arg: UserId | InviteId)
+	"PartyAction",
+	-- s->c owner only: { Kind = "State", Id (0 = none), Leader (UserId), Members = { UserId } } on every change;
+	-- { Kind = "Invite", Id, From (UserId), TTL } a card; { Kind = "InviteGone", Id } (accepted / declined / expired)
+	"Party",
 }
 
 Net.GameStateDefaults = {

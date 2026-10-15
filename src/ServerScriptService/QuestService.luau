@@ -1431,6 +1431,8 @@ end
 local function onMonsterKilled(player, info)
 	if type(info) ~= "table" then return end
 	if info.Practice == true then return end -- A23-110: the retry King (a practice King) counts for no daily job
+	-- A23-201 (최종 검수 10/15 a): daily jobs have no Credit mode = as before: every player the kill pays, + party proxies
+	if type(info.Credit) == "table" and info.Credit.Any ~= true then return end
 	local data = getData(player)
 	if not data then return end
 	local step = getStep(player)
@@ -1580,6 +1582,12 @@ function M.Init(registry)
 	connectSignal("PlayerService", "PlayerLeaving", onPlayerLeaving)
 	connectSignal("PlayerService", "CharacterSpawned", onCharacterSpawned)
 	connectSignal("MonsterService", "MonsterKilled", onMonsterKilled)
+	local questKill = S.MonsterService and S.MonsterService.QuestKill -- A23-201: quest credit of a kill that does not pay me
+	if type(questKill) == "table" and type(questKill.Connect) == "function" then
+		questKill:Connect(function(player, info)
+			if type(info) == "table" and type(info.Credit) == "table" then onMonsterKilled(player, info) end
+		end)
+	end
 	connectSignal("ProgressionService", "GoldEarned", onGoldEarned)
 	connectSignal("ProgressionService", "Rebirthed", onRebirthed)
 	connectSignal("ProgressionService", "LevelReset", onRebirthed) -- CR-M6

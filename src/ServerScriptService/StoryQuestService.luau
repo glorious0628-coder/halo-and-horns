@@ -403,6 +403,11 @@ local function eventAmount(player, obj, ev)
 		local info = ev.Info
 		-- a personal monster never counts, except for a step that asks for exactly that (KO1's rematch Personal = true)
 		if (info.Personal == true) ~= (obj.Personal == true) then return 0 end
+		-- A23-201 (QuestCreditService): a kill with info.Credit counts only where it credits this player: a joint step
+		-- (obj.Credit "Shared") = every real hitter, a strict personal step (obj.Credit "Personal") = the first hitter (+ the
+		-- parties that hit it), a step with no mode (최종 검수 10/15 a) = as before: every player the kill pays (+ party proxies)
+		local mode = obj.Credit == "Shared" and "Shared" or obj.Credit == "Personal" and "Personal" or "Any"
+		if type(info.Credit) == "table" and info.Credit[mode] ~= true then return 0 end
 		-- A23-135: a crown step counts the kill's units (1, golden 5), not the whole points (100 units = 1; final review
 		-- 10/13: a whole-point step stalled the main line)
 		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
@@ -427,6 +432,9 @@ local function eventAmount(player, obj, ev)
 			if obj.Zone and info.ZoneId ~= obj.Zone then return 0 end
 		end
 		if obj.Golden and info.Golden ~= true then return 0 end
+		-- docs §1-2 (공유하지 않는 행동): HOW-to-kill steps (a basic swing, auto combat, keeping HP) are the player's own; a
+		-- party's quest-only credit (info.QuestOnly: a kill this player did not hit) never fills them
+		if info.QuestOnly == true and (t == "BasicKill" or t == "AutoKill" or t == "SafeKill") then return 0 end
 		if obj.Near then
 			local spot = landmark(obj.Near)
 			if not spot or typeof(info.Position) ~= "Vector3" or Util.FlatDistance(info.Position, spot) > (obj.Radius or 40) then return 0 end
@@ -2074,6 +2082,19 @@ end
 function StoryQuestService.Start()
 	Net.Get("StoryAction").OnServerEvent:Connect(onStoryAction)
 	connect("MonsterService", "MonsterKilled", onMonsterKilled)
+	local questKill = S.MonsterService and S.MonsterService.QuestKill -- A23-201: quest credit of a kill that does not pay me
+	if type(questKill) == "table" and type(questKill.Connect) == "function" then
+		questKill:Connect(function(player, info)
+			if type(info) == "table" and type(info.Credit) == "table" and typeof(player) == "Instance" and player:IsA("Player") then
+				feed(player, { Kind = "Kill", Info = info })
+				-- P1 ⑧: a party member's kill near my escort counts for its event too (a personal-credit kill only)
+				if info.Credit.Any == true then
+					local ok, err = pcall(MOVER.Kill, player, info)
+					if not ok then Util.Warn(TAG, "mover kill: " .. tostring(err)) end
+				end
+			end
+		end)
+	end
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
 	-- P1 ①-2: the practice swings (looked up softly: a world without the signal has no Practice step to count)

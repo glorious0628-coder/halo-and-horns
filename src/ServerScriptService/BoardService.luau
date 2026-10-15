@@ -469,6 +469,14 @@ function BoardService.Start()
 			feed(player, { Kind = "Kill", Info = info })
 		end
 	end)
+	local questKill = S.MonsterService and S.MonsterService.QuestKill -- A23-201: quest credit of a kill that does not pay me
+	if type(questKill) == "table" and type(questKill.Connect) == "function" then
+		questKill:Connect(function(player, info)
+			if type(info) == "table" and type(info.Credit) == "table" and typeof(player) == "Instance" and player:IsA("Player") then
+				feed(player, { Kind = "Kill", Info = info })
+			end
+		end)
+	end
 	connect("CombatService", "Released", function(player, info)
 		if type(info) == "table" then feed(player, { Kind = "Skill", Info = info }) end
 	end)

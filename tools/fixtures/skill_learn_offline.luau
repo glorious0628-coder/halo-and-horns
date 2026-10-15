@@ -126,7 +126,6 @@ local function run(opts)
 	Config = cfn()
 	Config.Skills.Unlock = { Q = 5, Z = 15, X = 25 } -- A23-71 numbers (dev2 moves Config there)
 	Config.Skills.ZEnabled, Config.Skills.XEnabled = true, true -- every slot in play for this test
-	if opts.KeysTip ~= nil then Config.Nudges.KeysTip = opts.KeysTip end -- 검수 10/09: the tip card is off in the real Config
 	local bfn = assert(loadstring(BAR_SOURCE, "=SkillBar"))
 	setfenv(bfn, env)
 	local SB = bfn()
@@ -283,9 +282,9 @@ do
 	check(key ~= nil and key.Visible == false, "Key hints off again: hidden (also redrawn on a key change)", key and tostring(key.Visible))
 end
 
--- 6. A23-191 (user 10/14): no keys tip card at all (A23-81's tip stays in Help), even with the old switch on
+-- 6. A23-191 (user 10/14; 최종 검수 10/15: the switch is gone too): no keys tip card at all
 do
-	local SB7, W7, set7 = run({ Attr = copy(base), KeysTip = true })
+	local SB7, W7, set7 = run({ Attr = copy(base) })
 	set7("Level", 5)
 	SB7.Use("Q")
 	runDelays(W7, 0, 30)

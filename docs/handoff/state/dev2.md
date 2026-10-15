@@ -5,6 +5,9 @@
 2. **질문**: M1_4가 등불로 바뀌며 옛 '안내자 보고' 대사(영웅 동상·용암 틈 설명, "More shards are out there. What will you do with the next one?")가 빠짐 — 옮길 곳(예: 1장 끝 안내자 한마디 / 도감 / 삭제)?
 3. 이미 보낸 것: dev2-en-apply d8a47d89, dev2-mut-fix 584e2629 (옛 최종 검수가 병합했는지 확인 필요).
 
+- **10/15 밤 (최신)**: 파티 dev2-party-fix **08e9ac2e**(최종 검수 결정 a~d 반영, 스윕 새로 깨진 것 0 → 병합 요청함; ../wt_party). 이야기 칸 더하기 dev2-story-more **905f5b89**(story-fields 위: On="Self", 진영 Next/Before = Config.QuestNext/QuestBefore, Offer.BeforeBy; ../wt_story) → 최종 검수 보고, 개발 1에 화면 ⑤⑥⑦ 보냄. 다음 = 1장 데이터 옮기기(build/codex/story_emotion_r2.md §2, 사용자 스토리 결정 뒤). 스윕 도구 = 스크래치 sweep.py(세션마다 다시), 스윕 worktree ../wt_swbase ../wt_swmerge(지워도 됨).
+- **A23-208 이야기 칸 dev2-story-fields 498ae457**: 화면 몫(①Offer.Before ②Find 말풍선 ③Scene 몸짓 ④Next 줄·'!' 통통)은 개발 1이 받음(10/15 밤). 개발 1 세션 클리어 → 새 개발 1이 state/dev1.md 맨 위 ①~④로 이음. 내 쪽 할 일 없음, 화면 가지 나오면 서버 신호 맞는지만 확인.
+
 ## 가지 dev2-quest-p1 (worktree ../wt_p1) 내용
 - P1 ①~⑨ 서버 전부: 부탁 장치(Main Offer·진영별 NPC·몸 필요·보상 미리보기·AcceptScene), 단계 Practice/Emote/Match/Timing/Learn/Skip/Escort/Chase, Story.Flags·StoryScene, 안내자 몸·스승 단계(TutorialStep 4)·H/R/N_Basics, M1_1 Otto 부탁, Lunch1 부탁+줍기, H_Band/R_Band, N0 Lv3 주문표 맞추기, M1_3 = 스승 Lv5 시험 + 배움 문(Skills.Learn.Gate), M1_4 = 등불, 계측, Story.Schema 2~5 이관. 계약·화면 몫 = docs/design/quest_p1_server_contract_2026-10-15.md.
 - 퀘스트 데이터 묶음: Config.AddQuests + Shared/Quests 폴더, 규격 docs/design/quest_data_contract_2026-10-15.md(난이도 A23-207 포함), 검사 `py tools/test_quest_data.py`(자기 변이 17/17), test_story_text도 묶음 읽음.

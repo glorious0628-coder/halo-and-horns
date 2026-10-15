@@ -46,6 +46,8 @@ STATIC_ONLY = {
     "PANELS": PLAYER_SCRIPTS / "Panels.luau",
     "STORY": ROOT / "src/ServerScriptService/StoryQuestService.luau",
     "INTRO": PLAYER_SCRIPTS / "Intro.luau",
+    "SKILL_BAR": PLAYER_SCRIPTS / "SkillBar.luau",
+    "SETTINGS_UI": PLAYER_SCRIPTS / "SettingsUI.luau",
 }
 ALL_SOURCES = {**FILES, **STATIC_ONLY}
 # review B5 (2026-10-06): a key-hint decision may not test these device flags; it asks Keybinds.ShowsKeys()
@@ -399,6 +401,9 @@ def static_checks(over: dict[str, str] | None = None) -> tuple[int, list[str]]:
     wm_shows = function_body(wmap, "function WorldMap.ShowsKeys(")
     check("hintLabel" not in wmap and "HintText" not in wmap,
           "A23-191: the map draws no control hint line (no hintLabel / HintText)")
+    # 최종 검수 10/15 (user rule: a disliked UI goes as code, never behind a switch): no keys tip card / line anywhere
+    check(all("KeysTip" not in text_of(k) for k in ("CONFIG_SOURCE", "SKILL_BAR", "SETTINGS_UI", "HUD", "PANELS")),
+          "A23-191: no keys tip (no KeysTip switch, card or Help line; the Key settings button stays)")
     check(wm_shows != "" and "kb.ShowsKeys()" in wm_shows and not DEVICE_FLAGS.search(wm_shows),
           "B5 one rule: WorldMap.ShowsKeys uses Keybinds.ShowsKeys (KeyboardEnabled before Keybinds is up; no TouchEnabled "
           "/ MouseEnabled)")

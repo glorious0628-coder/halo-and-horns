@@ -296,7 +296,7 @@ local function newRow(i)
 	})
 	rec.Actions = k.Create("Frame", {
 		Name = "Actions", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -T.CellPad, 0, 2),
-		Size = UDim2.new(0, math.max(used - T.CellPad, 120), 1, -4), BackgroundTransparency = 1, Visible = false,
+		Size = UDim2.new(0, math.max(used - T.CellPad, 180), 1, -4), BackgroundTransparency = 1, Visible = false,
 		ZIndex = 5, Parent = row,
 	}, {
 		{ "UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right,
@@ -310,9 +310,28 @@ local function newRow(i)
 		S.Pick = nil
 		PlayerListUI.ShowPick()
 	end
+	-- A23-201: [Party] asks the server to invite this player (Party.luau; the server checks friend / 60 studs / room)
+	local function partyInvite()
+		local target = rec.Player
+		local party = C and C.Party
+		if party and type(party.Invite) == "function" then
+			local ok, err = pcall(party.Invite, target)
+			if not ok then warnThrottled("party invite failed: " .. tostring(err)) end
+		end
+		S.Pick = nil
+		PlayerListUI.ShowPick()
+	end
+	local partyWord = Config.ClientText.Party and Config.ClientText.Party.Invite or nil
+	local share = partyWord and 1 / 3 or 0.5
+	if partyWord and type(k.Button) == "function" then
+		local pb = k.Button({ Name = "PartyInvite", Text = partyWord, TextSize = T.HeaderText,
+			Color = themeColor("Good", Color3.fromRGB(60, 62, 85)), Size = UDim2.new(share, -4, 1, 0), LayoutOrder = 0, ZIndex = 6,
+			Parent = rec.Actions }, function() partyInvite() end)
+		if pb then pb.Name = "PartyInvite" end
+	end
 	for i, a in { { TXT.Friend, "PromptSendFriendRequest", "Good" }, { TXT.Block, "PromptBlockPlayer", "Bad" } } do
 		local b = type(k.Button) == "function" and k.Button({ Name = a[2], Text = a[1], TextSize = T.HeaderText,
-			Color = themeColor(a[3], Color3.fromRGB(60, 62, 85)), Size = UDim2.new(0.5, -3, 1, 0), LayoutOrder = i, ZIndex = 6,
+			Color = themeColor(a[3], Color3.fromRGB(60, 62, 85)), Size = UDim2.new(share, -4, 1, 0), LayoutOrder = i, ZIndex = 6,
 			Parent = rec.Actions }, function() prompt(a[2]) end) or nil
 		if b then b.Name = a[2] end
 	end
