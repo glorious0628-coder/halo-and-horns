@@ -3279,7 +3279,7 @@ Config.StoryQuests = {
 	-- (StoryQuestService; e.g. the hero statue pair's centre, Spot = "HeroStatue"). Without one the spot below stays.
 	LandmarkTag = "StoryLandmark",
 	Badge = { Main = "Main", Sub = "Side" },
-	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
+	Main = { "M1_1", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
 		"M3_1", "M3_2", "M3_3", "M3_4", "M3_6", "M3_7", "M3_8" }, -- A23-86: M3_5 (graduation) is a side line now
 	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
@@ -3428,14 +3428,11 @@ Config.StoryQuests = {
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },
 				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
 					Obj = { Type = "Event", Name = "ScrollUsed", Past = true } } },
-			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!",
+			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!\nDust spills out! …And a braided band? Gold and purple.",
+			-- 최종 검수 10/15 (user: a second Slime Prince right after the scroll felt like a repeat): M1_2 "one more Prince" is
+			-- gone; its line (Bright's bracelet clue) closes M1_1 above, then M1_3 (the first skill). A save on M1_2 goes on to
+			-- M1_3 at the join (an unknown main id is dropped; the chain starts at the first one not done)
 			Reward = { Gold = 1 },
-		},
-		M1_2 = {
-			Kind = "Main", Chapter = 1, Title = "The Prince Who Ate the Dust", ShortName = "Slime Princes",
-			Start = "Slime Princes full of shard dust guard their little brothers and sisters.",
-			Steps = { { Text = "Slime Princes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } } }, -- A23-188: one more (M1_1 had the first: two in all)
-			Finish = "Dust spills out! …And a braided band? Gold and purple.", Reward = { Gold = 1 },
 		},
 		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
 		-- the step is also done once Q is learned below that level (slots kept after a free class change resets the level).
@@ -4433,7 +4430,7 @@ Config.StoryQuests.Defs.SZ1 = {
 }
 for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id) end
 
--- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Princes (M1_2) a new player with no
+-- A23-109 / A23-110 (user 2026-10-10, 검수 design 2026-10-10): The King's Hop. After the Slime Prince (M1_1) a new player with no
 -- potions meets the King Slime, who hops over and lands on them (a lossless KO: game dev 2's personal King, which tells us with
 -- StoryQuestService.Event "FirstKO"), then buys a potion, puts it in a quick slot (a new player's slots start empty, 검수 10/10:
 -- "물약 사고 슬롯에 장착하는 퀘스트"), drinks it from there and wins the rematch. Five plain rows, no popups, no tips, no closing
@@ -4451,7 +4448,7 @@ Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold int
 Config.StoryQuests.Events.ScrollUsed = true
 Config.StoryQuests.Defs.KO1 = {
 	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
-	Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },
+	Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true }, -- 10/15: M1_2 is gone
 	Steps = {
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
 		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,

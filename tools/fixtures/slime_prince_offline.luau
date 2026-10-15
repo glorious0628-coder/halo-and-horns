@@ -83,7 +83,7 @@ runGroup("no King Slime left", function()
 end)
 
 runGroup("quest texts", function()
-	local want = { S0 = 1, M1_2 = 1, M2_6 = 1, H1 = 1, XR1 = 1, R5 = 1 }
+	local want = { S0 = 1, M1_1 = 1, M2_6 = 1, H1 = 1, XR1 = 1, R5 = 1 }
 	for id, n in want do
 		local steps = princeSteps(id)
 		local named = 0
@@ -92,8 +92,9 @@ runGroup("quest texts", function()
 		end
 		check(named >= n, id .. ": its Slime Prince step says 'Slime Prince'", show(steps))
 	end
-	check(DEFS.M1_2.Title == "The Prince Who Ate the Dust" and DEFS.M1_2.ShortName == "Slime Princes"
-		and #DEFS.M1_2.ShortName <= 14, "M1_2: 'The Prince Who Ate the Dust' / 'Slime Princes'", show({ DEFS.M1_2.Title, DEFS.M1_2.ShortName }))
+	-- 최종 검수 10/15: M1_2 ("one more Prince") is gone; its braided-band line closes M1_1
+	check(DEFS.M1_2 == nil and string.find(DEFS.M1_1.Finish, "braided band", 1, true) ~= nil,
+		"M1_2 gone; M1_1 ends with the braided band", tostring(DEFS.M1_1.Finish))
 	local s0 = princeSteps("S0")[1][2]
 	check(string.find(s0.Start or "", "A Slime Prince swallowed a shard!", 1, true) ~= nil, "S0: a Slime Prince swallowed the shard",
 		tostring(s0.Start))
@@ -106,8 +107,6 @@ runGroup("quest texts", function()
 end)
 
 runGroup("the family (A23-84 / A23-85)", function()
-	check(string.find(DEFS.M1_2.Start, "little brothers and sisters", 1, true) ~= nil,
-		"M1_2: the princes guard their little brothers and sisters (the green slimes)", DEFS.M1_2.Start)
 	check(string.find(DEFS.M1_1.Finish, "Otto: Big brothers", 1, true) ~= nil, "M1_1: Otto's big-brother line", DEFS.M1_1.Finish)
 	local odd = {}
 	for _, e in strings() do
@@ -123,9 +122,9 @@ end)
 
 runGroup("objectives unchanged (the first 10 minutes)", function()
 	local function count(id) local n = 0; for _, p in princeSteps(id) do n += p[2].Obj.Count or 1 end; return n end
-	check(count("S0") >= 1 and count("M1_1") + count("M1_2") == 2 and count("M2_6") == 2 and count("XR1") == 1 and count("R5") == 1
-		and count("H1") >= 1, "S0 / M1_1 + M1_2 (two in all, A23-188) / M2_6 / H1 / XR1 / R5 still count BigSlime",
-		show({ count("S0"), count("M1_2"), count("M2_6"), count("H1"), count("XR1"), count("R5") }))
+	check(count("S0") >= 1 and count("M1_1") == 1 and count("M2_6") == 2 and count("XR1") == 1 and count("R5") == 1
+		and count("H1") >= 1, "S0 / M1_1 (one Prince, 10/15: no M1_2) / M2_6 / H1 / XR1 / R5 still count BigSlime",
+		show({ count("S0"), count("M1_1"), count("M2_6"), count("H1"), count("XR1"), count("R5") }))
 	check(C.Loot.FirstScroll.Monster == "BigSlime", "the first 70% scroll still drops from the first Slime Prince",
 		tostring(C.Loot.FirstScroll.Monster))
 	check(C.Board.Boards.Meadow.Big == "BigSlime", "the meadow board's big job is the Slime Prince", tostring(C.Board.Boards.Meadow.Big))

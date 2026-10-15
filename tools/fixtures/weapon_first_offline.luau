@@ -284,7 +284,7 @@ runGroup("weapon first", function()
 	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
 	check(done and d.BankGold > 150, "M1_1's reward line and a little gold (Reward Gold 1)", show(lines))
 	w.Story.Refresh(p)
-	check(st.Main.Id == "M1_2" and DEFS_COUNT(w, "M1_2") == 1, "then M1_2: one more Slime Prince (two in all)", show(st.Main))
+	check(st.Main.Id == "M1_3" and w.Config.StoryQuests.Defs.M1_2 == nil, "then M1_3 (10/15: no second Prince quest M1_2)", show(st.Main))
 end)
 
 ------------------------------------------------------------------ 2b. a step's gift (GiveItem: given once when the step opens, tried again at a join)

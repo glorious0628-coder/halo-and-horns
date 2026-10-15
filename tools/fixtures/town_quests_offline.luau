@@ -103,8 +103,8 @@ end
 -- a ready player who finished M2_3 (chapter 2's fountain) standing at `pos`
 local function joinAfterM23(w, userId, faction, o)
 	o = o or {}
-	local done = { M1_1 = true, M1_2 = true, M1_3 = true, M1_4 = true, M2_1 = true, M2_2 = true, M2_3 = true }
-	if o.Before then done = { M1_1 = true, M1_2 = true } end
+	local done = { M1_1 = true, M1_3 = true, M1_4 = true, M2_1 = true, M2_2 = true, M2_3 = true }
+	if o.Before then done = { M1_1 = true } end
 	local p, d = w:Join(userId, { Faction = faction, Class = o.Class or "Warrior", Level = o.Level or 6, Pos = o.Pos,
 		Data = { Story = { Main = { Id = "" }, Subs = {}, Done = done, Pick = {}, First = { Migrated = true } } } })
 	w.Story.Refresh(p)
@@ -541,7 +541,8 @@ runGroup("clues", function()
 		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",
 			line)
 	end
-	check(string.find(SQ.Defs.M1_2.Finish, "braided band", 1, true) ~= nil, "M1_2: the braided band", SQ.Defs.M1_2.Finish)
+	check(SQ.Defs.M1_2 == nil and string.find(SQ.Defs.M1_1.Finish, "braided band", 1, true) ~= nil,
+		"the braided band closes M1_1 (10/15: no M1_2)", SQ.Defs.M1_1.Finish)
 	check(string.find(SQ.Defs.M2_3.Finish or "", "Two kids", 1, true) ~= nil, "M2_3: two kids run off", SQ.Defs.M2_3.Finish)
 	check(string.find(SQ.Defs.H1.Clue or "", "wristband", 1, true) ~= nil and string.find(SQ.Defs.R1.Clue or "", "wristband", 1, true) ~= nil,
 		"H1 / R1: the wristband toasts", show({ SQ.Defs.H1.Clue, SQ.Defs.R1.Clue }))
@@ -910,9 +911,9 @@ runGroup("a23-71 skill quests", function()
 		for _, t in w:NoticesFor(p, from) do if t == text then n += 1 end end
 		return n
 	end
-	-- M1_3 starts at Lv3 (after M1_2): 'Grow to Lv5…' only; at Lv5 the skill step says its line
+	-- M1_3 starts at Lv3 (after M1_1): 'Grow to Lv5…' only; at Lv5 the skill step says its line
 	local n0 = #w.Notices
-	local ps, ds = w:Join(7103, { Faction = "Halo", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true }) } })
+	local ps, ds = w:Join(7103, { Faction = "Halo", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true }) } })
 	w.Story.Refresh(ps)
 	w:Flush()
 	-- A23-130 (server text verdicts 2026-10-11): quest / step Start lines are not sent (the rows carry the goal)
@@ -926,25 +927,25 @@ runGroup("a23-71 skill quests", function()
 		"Lv5: the skill step, no Start line (A23-130)", show(w:NoticesFor(ps, n1)))
 	-- M1_3 starts at Lv7: straight to the skill step, its line once, no 'Grow to Lv5'
 	local n2 = #w.Notices
-	local pq, dq = w:Join(7104, { Faction = "Horns", Level = 7, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true }) } })
+	local pq, dq = w:Join(7104, { Faction = "Horns", Level = 7, Data = { Story = story(nil, {}, { M1_1 = true }) } })
 	w.Story.Refresh(pq)
 	w:Flush()
 	check(dq.Story.Main.Id == "M1_3" and dq.Story.Main.St == 2 and count(pq, n2, DUSTY) == 0 and count(pq, n2, GROW) == 0,
 		"M1_3 starts at Lv7: straight to the skill step, no Start line", show(w:NoticesFor(pq, n2)))
 	-- a Lv1 who kept Q (a free class change from Lv5+ took the level back, the slots stay) passes the Lv5 step at once
 	local pk, dk = w:Join(7105, { Faction = "Halo", Level = 1, Data = { SkillSlots = 1,
-		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
 	w.Story.Refresh(pk)
 	w:Flush()
 	check(dk.Story.Main.St == 2, "a Lv1 who kept Q: M1_3's Lv5 step passes at once (Skill)", dk.Story.Main.St)
 	local p2, d2 = w:Join(7106, { Faction = "Halo", Level = 1, Data = { SkillSlots = 0,
-		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
 	w.Story.Refresh(p2)
 	w:Flush()
 	check(d2.Story.Main.St == 1, "a Lv1 without Q still waits at M1_3's Lv5 step", d2.Story.Main.St)
 	-- M1_3 at Lv3: the row waits for Lv5; at Lv5 the skill hits begin (no 'Skills come' tail any more)
 	local p, d = w:Join(7101, { Faction = "Halo", Level = 3,
-		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
 	w.Story.Refresh(p)
 	w:Flush()
 	local row = w.Story.MainRow(p, d)
@@ -966,7 +967,7 @@ runGroup("a23-71 skill quests", function()
 		"Q learned: no tail", show(row and { d.Story.Main.St, row.Text, row.Target }))
 	-- a Lv7 who reaches M1_3 passes the Lv5 step at once
 	local p7, d7 = w:Join(7102, { Faction = "Horns", Level = 7,
-		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true, M1_2 = true }) } })
+		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
 	w.Story.Refresh(p7)
 	w:Flush()
 	check(d7.Story.Main.St == 2, "a Lv7 at M1_3: straight to the skill hits", d7.Story.Main.St)
@@ -992,7 +993,7 @@ runGroup("a23-71 skill quests", function()
 	check(rk and rk.Text == "Hit 2 monsters with one skill", "a Lv2 who kept Q (saved slots 1): no tail", rk and rk.Text)
 	-- N1 (Neutral, after M1_4; with the guild switch on, A23-57): not before Lv5
 	w.Config.Features.NeutralFaction = true
-	local n3, nd3 = w:Join(7120, { Faction = "Neutral", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true, M1_2 = true,
+	local n3, nd3 = w:Join(7120, { Faction = "Neutral", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true,
 		M1_3 = true, M1_4 = true }) } })
 	w.Story.Refresh(n3)
 	w:Flush()
@@ -2310,7 +2311,7 @@ runGroup("a23-64 town pick", function()
 		return w:Join(id, { Faction = faction, Class = "Warrior", Level = level, Data = { Story = { Main = { Id = "" },
 			Subs = subs, Done = done, Pick = {}, First = { Migrated = true } } } })
 	end
-	local base = { M1_1 = true, M1_2 = true, M1_3 = true, M1_4 = true, Lunch1 = true }
+	local base = { M1_1 = true, M1_3 = true, M1_4 = true, Lunch1 = true }
 	-- a Halo player at H2's card (the lantern is back): the pick sets TownPick and the save
 	local p, d = joinAt(6411, "Halo", 9, { H2 = { St = 4, P = 0, T = {}, Claim = false } }, table.clone(base)) -- step 4: the pick (#36 way home is 3)
 	check(p:GetAttribute("TownPick") == "", "no town pick yet: TownPick = ''", tostring(p:GetAttribute("TownPick")))

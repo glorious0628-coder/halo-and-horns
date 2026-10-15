@@ -196,7 +196,7 @@ local function fkWorld(o)
 		root.CFrame = { LookVector = vec(0, 0, -1), Position = pos }
 	end
 	-- a ready player in the meadow (o2.Pos; o2.Done = the account had its first KO). The double: on the quest's KO row
-	-- unless o2.Step (false = no step). The real story: a save that finished M1_1 / M1_2 with no potion (KO1 starts at join)
+	-- unless o2.Step (false = no step). The real story: a save that finished M1_1 with no potion (KO1 starts at join)
 	function w:Hunter(userId, faction, o2)
 		o2 = o2 or {}
 		local tier = o2.Tier or 1
@@ -204,7 +204,7 @@ local function fkWorld(o)
 			WeaponOwnedMask = tier >= 1 and bit32.lshift(1, tier - 1) or 0 }
 		if self.Story then
 			data.TutorialStep = 99
-			data.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true, M1_2 = true }, Pick = {}, First = { Migrated = true } }
+			data.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } }
 		end
 		for k, v in o2.Data or {} do data[k] = v end
 		local p = self:Join(userId, faction or "Halo", { Level = o2.Level or 3, Carried = o2.Carried, Data = data })

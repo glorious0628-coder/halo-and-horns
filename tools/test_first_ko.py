@@ -1,6 +1,6 @@
 """A23-109 / A23-110 the King's Hop quest KO1 (게임성 개발 3, 2026-10-10), offline.
 
-Design docs/design/first_ko_quest_2026-10-10.md (검수 approved the numbers 2026-10-10): after the Slime Princes (M1_2) a new player
+Design docs/design/first_ko_quest_2026-10-10.md (검수 approved the numbers 2026-10-10): after the Slime Prince (M1_1) a new player
 with no potions (Lv <= 8) gets the side quest KO1 as five plain rows - no popup, no toast: 1 Defeat the King Slime (game dev 2's
 personal King hops over and lands on the player: a lossless KO, reported with StoryQuestService.Event "FirstKO"), 2 Buy a
 potion (the step opens with the carried gold topped up to 50 = two potions; ShopService.BuyPotion reports "PotionBought"),
@@ -41,21 +41,21 @@ DEF_STEP5 = 'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Pe
 
 MUTATIONS = [
     # the definition
-    ("KO1 opens before M1_2", C, 'Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
+    ("KO1 opens before M1_1", C, 'Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
      'Requires = { MaxLevel = 8, NoPotionYet = true, KingOn = true },'),
-    ("KO1 has no level cap", C, 'Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
-     'Requires = { Done = { "M1_2" }, NoPotionYet = true, KingOn = true },'),
-    ("KO1 level cap 9", C, 'Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
-     'Requires = { Done = { "M1_2" }, MaxLevel = 9, NoPotionYet = true, KingOn = true },'),
-    ("KO1 does not need the King", C, 'Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
-     'Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true },'),
+    ("KO1 has no level cap", C, 'Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
+     'Requires = { Done = { "M1_1" }, NoPotionYet = true, KingOn = true },'),
+    ("KO1 level cap 9", C, 'Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
+     'Requires = { Done = { "M1_1" }, MaxLevel = 9, NoPotionYet = true, KingOn = true },'),
+    ("KO1 does not need the King", C, 'Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
+     'Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true },'),
     ("KingOn ignored", ST, "\tif req.KingOn and kingOff() then return false end\n", ""),
     ("a started quest stays when the King goes off", ST,
      "elseif st.Subs[id] and type(def.Requires) == \"table\" and def.Requires.KingOn and kingOff() then", "elseif false then"),
     ("the King is never off", ST, "return type(k) == \"table\" and k.Enabled == false", "return false"),
     ("a missing King table counts as off", ST, "return type(k) == \"table\" and k.Enabled == false", "return type(k) ~= \"table\" or k.Enabled == false"),
-    ("KO1 is offered to players with potions", C,'Requires = { Done = { "M1_2" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
-     'Requires = { Done = { "M1_2" }, MaxLevel = 8 },'),
+    ("KO1 is offered to players with potions", C,'Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true },',
+     'Requires = { Done = { "M1_1" }, MaxLevel = 8 },'),
     ("KO1 step 1 passes on an old KO", C, 'Obj = { Type = "Event", Name = "FirstKO" } },',
      'Obj = { Type = "Event", Name = "FirstKO", Past = true } },'),
     ("KO1 step 2 never passes early", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionBought" } },'),
@@ -238,7 +238,7 @@ SUITE = Suite(
     world=ROOT / "tools/fixtures/dev2_combat_world.luau",
     out=ROOT / "docs/art/verification_2026-10-10/offline_dev3_first_ko_2026-10-10.json",
     files=FILES, bindings=bindings, mutations=MUTATIONS, static=static,
-    contract="A23-109 / A23-110: the sub KO1 'The King's Hop' starts by itself after M1_2 for a Lv <= 8 save with no potion (no stock, "
+    contract="A23-109 / A23-110: the sub KO1 'The King's Hop' starts by itself after M1_1 for a Lv <= 8 save with no potion (no stock, "
              "none bought or drunk, Requires.MaxLevel / NoPotionYet), as a plain row (no popup, no toast, no Start / Finish): "
              "Defeat the King Slime (Event FirstKO) -> Buy a potion (Event PotionBought, TopUpGold 50: the missing part of 50 "
              "gold is added to the carried gold once, source Choice, nothing when already rich or when the step passes at once) "
