@@ -7,6 +7,8 @@
 --   * Party.Invite(player) (PlayerListUI's [Party] row button) -> PartyAction "Invite"; Party.Leave() -> "Leave".
 --   * Party.Marked(player) -> true for my party members and Roblox friends (MiniMap's bigger dots; friends asked once per
 --     player in the background, never yielding the caller).
+--   * 최종 검수 10/15 #8 (friends could not find each other): a marked player farther than Mark.Near studs gets a small
+--     round dot in their side's colour over the head, seen through walls up to Mark.Far studs (no name, no words).
 -- Words: Config.ClientText.Party only.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -27,6 +29,7 @@ local L = { -- layout, logical MainGui units
 	CardW = 240, CardH = 86, CardY = 0.22, Z = 40, Refresh = 0.25, MaxRows = 3, NameSize = 15, BtnSize = 15,
 }
 local S = { Id = 0, Leader = 0, Members = {}, Card = nil, Friends = {}, WarnAt = -math.huge, Started = false }
+L.Mark = { Name = "HH_FriendMark", Px = 14, Lift = 3.2, Near = 25, Far = 600, Rim = 2 }
 local ui = { rows = {} }
 
 local function warnThrottled(msg)
@@ -102,6 +105,51 @@ function Party.Marked(player)
 		return false
 	end
 	return f == true
+end
+
+------------------------------------------------------------------ the friend marks
+-- (pure) does a marked player at distance d (studs) show the dot? -> bool
+function Party.MarkShows(marked, d)
+	return marked == true and type(d) == "number" and d > L.Mark.Near and d <= L.Mark.Far
+end
+
+-- one pass: the dot over each other player's head follows Party.Marked and the distance (made once per head)
+function Party.RefreshMarks()
+	local me = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	local M = L.Mark
+	for _, p in Players:GetPlayers() do
+		local head = p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Head")
+		if head and head:IsA("BasePart") then
+			local d = me and (head.Position - me.Position).Magnitude or nil
+			local on = Party.MarkShows(Party.Marked(p), d)
+			local bb = head:FindFirstChild(M.Name)
+			if on and not bb then
+				bb = Instance.new("BillboardGui")
+				bb.Name = M.Name
+				bb.Size = UDim2.fromOffset(M.Px, M.Px)
+				bb.StudsOffset = Vector3.new(0, M.Lift, 0)
+				bb.AlwaysOnTop, bb.LightInfluence, bb.MaxDistance = true, 0, M.Far
+				local dot = Instance.new("Frame")
+				dot.Name = "Dot"
+				dot.Size = UDim2.fromScale(1, 1)
+				dot.BorderSizePixel = 0
+				local corner = Instance.new("UICorner")
+				corner.CornerRadius = UDim.new(0.5, 0)
+				corner.Parent = dot
+				local rim = Instance.new("UIStroke")
+				rim.Thickness, rim.Color = M.Rim, Color3.new(1, 1, 1)
+				rim.Parent = dot
+				dot.Parent = bb
+				bb.Adornee = head
+				bb.Parent = head
+			end
+			if bb then
+				bb.Enabled = on
+				local dot = bb:FindFirstChild("Dot")
+				if dot and on then dot.BackgroundColor3 = sideColor(p:GetAttribute("Faction")) end
+			end
+		end
+	end
 end
 
 ------------------------------------------------------------------ the frames
@@ -290,6 +338,7 @@ function Party.Start()
 				stepBars()
 				if S.Card and os.clock() > S.Card.Until then hideCard() end
 				if ui.root and ui.root.Visible then render() end -- a member's name / side after they load
+				Party.RefreshMarks() -- #8: the far friends' dots
 			end)
 			if not ok then warnThrottled("step: " .. tostring(err)) end
 		end
