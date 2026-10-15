@@ -20,6 +20,10 @@ local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
 local Net = require(Shared:WaitForChild("Net"))
+-- P1 ②: the anvil-relative spots (Kit, the artisans' practice dummy) use the town bodies' own rule (soft: a world without it
+-- simply has no such spot)
+local okTownNpcs, TownNpcs = pcall(function() return require(script.Parent:WaitForChild("TownNpcs", 5)) end)
+if not okTownNpcs or type(TownNpcs) ~= "table" then TownNpcs = nil end
 
 local StoryQuestService = {}
 -- A23-79 (게임성 개발 3): (player, quest id) a story quest finished / (player, quest id, saved pick) a choice was made
@@ -42,11 +46,15 @@ local TICK = 1
 -- E4 Near.Stay: [Player] = { [questId .. ":" .. step] = os.clock() when the player came inside } (never saved: a rejoin
 -- or leaving the spot starts the count again)
 local stays = {}
+-- P1 ④ Match / Timing: [Player] = { [questId .. ":" .. step] = { Kind = "Match", Answer = index } | { Kind = "Timing", At } }
+-- (never saved: a rejoin opens the panel again)
+local panels = {}
 -- story_depth E1 / E2 / E3: a pick's side (Good / Purify / A on one side, Evil / Devour / B on the other). Every Pick in
 -- Config.StoryQuests has its side here (검수 2026-10-07: SKL-3 SK2's Guard / Take were missing, so that pick never
 -- counted as a change of mind; A23-70 Lunch1's GiveBack / Bite too)
 local SIDE = { Good = "Good", Purify = "Good", A = "Good", Evil = "Evil", Devour = "Evil", B = "Evil", Guard = "Good",
-	Take = "Evil", GiveBack = "Good", Bite = "Evil", Care = "Good", Minion = "Evil" } -- Care / Minion: PET-4 Pet1
+	Take = "Evil", GiveBack = "Good", Bite = "Evil", Care = "Good", Minion = "Evil", -- Care / Minion: PET-4 Pet1
+	Show = "Good", Hide = "Evil" } -- P1 ③ H_Band
 
 local function num(v, default)
 	if type(v) == "number" and v == v and v ~= math.huge and v ~= -math.huge then return v end
@@ -91,7 +99,7 @@ local function story(data)
 		st = {}
 		data.Story = st
 	end
-	for _, k in { "Subs", "Done", "Pick", "First" } do
+	for _, k in { "Subs", "Done", "Pick", "First", "Flags" } do
 		if type(st[k]) ~= "table" then st[k] = {} end
 	end
 	if type(st.Main) ~= "table" then st.Main = { Id = "" } end
@@ -120,9 +128,23 @@ local function publishTownPick(player, st)
 	if player:GetAttribute("TownPick") ~= value then player:SetAttribute("TownPick", value) end
 end
 
+-- P1 ③ (Story.Schema 2, once per save): Lunch1's first step (the talk with Tiny) became its offer, so a track on the old steps
+-- moves one step back (on the talk = at the pond hunt from 0; a pond hunt keeps its count)
+local function migrate(st)
+	if num(st.Schema, 1) >= 2 then return end
+	local tr = st.Subs.Lunch1
+	if type(tr) == "table" then
+		local old = math.floor(num(tr.St, 1))
+		tr.St = math.max(1, old - 1)
+		if old ~= 2 then tr.P, tr.T = 0, {} end
+	end
+	st.Schema = 2
+end
+
 -- drop unknown ids / bad numbers (fillDefaults only fills the top level)
 local function sanitize(data)
 	local st = story(data)
+	migrate(st)
 	local function fixTrack(tr, id)
 		local def = DEFS[id]
 		if type(tr) ~= "table" or not def then return nil end
@@ -151,6 +173,12 @@ local function sanitize(data)
 		if not DEFS[id] then st.Done[id] = nil end
 	end
 	if st.LastSide ~= "Good" and st.LastSide ~= "Evil" then st.LastSide = nil end -- E2: the side of the last real pick
+	-- P1 ①-4: personal scene results are short words under short keys
+	for k, v in st.Flags do
+		if type(k) ~= "string" or type(v) ~= "string" or #k > 24 or #v > 24 or string.find(k, "[,=]") or string.find(v, "[,=]") then
+			st.Flags[k] = nil
+		end
+	end
 	-- A23-64 ①: a missing or bad TownLast (an old save) = the last quest of Config.TownReact.Order with a saved pick that
 	-- the save's faction can have (Defs[id].Factions); TownFaction = the faction that made it (an old save: today's)
 	if type(st.TownFaction) ~= "string" then st.TownFaction = nil end
@@ -232,12 +260,56 @@ local function npcNear(player, npcId)
 	return not found
 end
 
+-- P1 ①-1: where npcId's body stands (the StoryNpc-tagged model with that NpcId), or nil when this world has none. An offer,
+-- a practice and an emote need the body itself (bible §12: no body = not offered; no "no body passes" rule there)
+local function npcBody(npcId)
+	if type(npcId) ~= "string" then return nil end
+	local okTag, tagged = pcall(function()
+		return game:GetService("CollectionService"):GetTagged(SQ.NpcTag or "StoryNpc")
+	end)
+	if not okTag or type(tagged) ~= "table" then return nil end
+	for _, inst in tagged do
+		if inst:GetAttribute("NpcId") == npcId then
+			local okPos, pos = pcall(function()
+				if inst:IsA("Model") then return inst:GetPivot().Position end
+				return inst.Position
+			end)
+			if okPos and typeof(pos) == "Vector3" then return pos end
+		end
+	end
+	return nil
+end
+
+-- the player stands within NpcRange of npcId's body (false when there is no body)
+local function nearBody(player, npcId)
+	local pos = npcBody(npcId)
+	local root = Util.GetRoot(player)
+	return pos ~= nil and root ~= nil and Util.FlatDistance(root.Position, pos) <= (SQ.NpcRange or 16)
+end
+
+-- P1 ①-1: the NPC that offers def to this player (Offer.Npc, or Offer.Npc[faction] when it is a table), nil = none
+local function offerNpc(player, def)
+	local o = type(def) == "table" and def.Offer or nil
+	if type(o) ~= "table" then return nil end
+	local npc = o.Npc
+	if type(npc) == "table" then npc = npc[faction(player)] end
+	return type(npc) == "string" and npc or nil
+end
+
 -- 빛 마을 점검 #2: a landmark follows its placed model (Util.TaggedSpot: a workspace instance tagged SQ.LandmarkTag
 -- with the attribute Spot = the key, e.g. on the hero statue pair's centre; the client guides read the same rule), else
 -- the Config spot. Read when a step needs it (like npcNear); only flat distances use it, so its height does not matter.
 local function landmark(id)
 	if type(id) ~= "string" then return nil end
-	return Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", id) or SQ.Landmarks[id]
+	local tagged = Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", id)
+	if tagged then return tagged end
+	-- P1 ②: a spot beside the Crossroads anvil (SQ.AnvilSpots: Behind / Side, the same rule as Kit's body)
+	local a = type(SQ.AnvilSpots) == "table" and SQ.AnvilSpots[id] or nil
+	if type(a) == "table" and TownNpcs and type(TownNpcs.Spot) == "function" then
+		local ok, at = pcall(TownNpcs.Spot, { Anvil = true, Behind = a.Behind, Side = a.Side })
+		if ok and type(at) == "table" then return Vector3.new(at.X, 0, at.Z) end
+	end
+	return SQ.Landmarks[id]
 end
 
 local function ownsIron(player)
@@ -342,6 +414,14 @@ local function eventAmount(player, obj, ev)
 		return 1
 	elseif ev.Kind == "SellMat" then -- 장인 ②: gathered materials sold at the Forge (SellItem)
 		return t == "SellMat" and math.max(0, math.floor(num(ev.N))) or 0
+	elseif ev.Kind == "Swing" then -- P1 ①-2 Practice: a manual basic swing at the dummy (within Radius, facing it)
+		if t ~= "Practice" then return 0 end
+		local spot = landmark(obj.Spot)
+		if not spot or typeof(ev.Pos) ~= "Vector3" or Util.FlatDistance(ev.Pos, spot) > num(obj.Radius, 8) then return 0 end
+		local to = Vector3.new(spot.X - ev.Pos.X, 0, spot.Z - ev.Pos.Z)
+		local look = typeof(ev.Look) == "Vector3" and Vector3.new(ev.Look.X, 0, ev.Look.Z) or nil
+		if to.Magnitude > 1 and look and look.Magnitude > 0 and look.Unit:Dot(to.Unit) < num(SQ.PracticeFacing, 0.3) then return 0 end
+		return 1
 	end
 	return 0
 end
@@ -530,9 +610,48 @@ local function openStep(player, id, track, manual)
 	end)
 end
 
+-- P1 ①-4: the personal scene results (data.Story.Flags) as the attribute StoryFlags "Key=Value,..." (keys sorted; the client
+-- restores my lamp / band / crown from it after a rejoin)
+local function publishFlags(player, st)
+	local keys = {}
+	for k in st.Flags or {} do table.insert(keys, k) end
+	table.sort(keys)
+	local parts = {}
+	for _, k in keys do table.insert(parts, k .. "=" .. st.Flags[k]) end
+	local value = table.concat(parts, ",")
+	if player:GetAttribute("StoryFlags") ~= value then player:SetAttribute("StoryFlags", value) end
+end
+
+-- Fx "StoryScene" { Id, Key, Value } to the player: a scene the client plays now (never a reward)
+local function scene(player, id, key, value)
+	local ok, err = pcall(Net.Fx, player, "StoryScene", { Id = id, Key = key, Value = value })
+	if not ok then Util.Warn(TAG, "scene: " .. tostring(err)) end
+end
+
+-- P1 ①-4: one personal result, saved first, then the attribute and the scene. Short words only (sanitize's rule)
+local function setFlag(player, data, id, key, value)
+	if type(key) ~= "string" or type(value) ~= "string" or key == "" or value == "" then return end
+	if #key > 24 or #value > 24 or string.find(key, "[,=]") or string.find(value, "[,=]") then return end
+	local st = story(data)
+	st.Flags[key] = value
+	publishFlags(player, st)
+	scene(player, id, key, value)
+end
+
+-- a step's Flag = { Key, Good = "...", Evil = "..." } by the side ("Good" | "Evil") of what the player did
+local function flagBySide(player, data, id, flag, side)
+	if type(flag) ~= "table" or (side ~= "Good" and side ~= "Evil") then return end
+	setFlag(player, data, id, flag.Key or id, flag[side])
+end
+
 -- the active step reached its goal: next step (saved first), or the quest is finished / waits for [받기]
 local function advance(player, data, id, track)
 	local def = DEFS[id]
+	-- P1 ①-4: SetFlag = { Key, Value } a step leaves behind when it is done (after the save of the step below would be too late
+	-- for its scene: the flag is a record of what happened, so it is written first)
+	local doneStep = stepOf(player, def, track.St)
+	if doneStep and type(doneStep.SetFlag) == "table" then setFlag(player, data, id, doneStep.SetFlag.Key, doneStep.SetFlag.Value) end
+	if panels[player] then panels[player][id .. ":" .. tostring(track.St)] = nil end
 	StoryQuestService.StepDone:Fire(player, id, track.St)
 	track.P, track.T = 0, {}
 	if stays[player] then stays[player][id .. ":" .. tostring(track.St)] = nil end
@@ -646,6 +765,8 @@ local function requirementsMet(player, data, def)
 		if not Config.FeatureOn(f) then return false end
 	end
 	if req.Tutorial and num(data.TutorialStep) == 0 then return false end
+	-- P1 ②: TeacherMet = the first mission took the player to their teacher (Story.First.TeacherMet), or it is done already
+	if req.TeacherMet and not (st.First.TeacherMet == true or num(data.TutorialStep) == TUT_DONE) then return false end
 	-- A23-70: TutorialDone = the first mission is claimed (TutorialStep 99); NotDone = none of these quests is done yet
 	if req.TutorialDone and num(data.TutorialStep) ~= TUT_DONE then return false end
 	for _, gone in req.NotDone or {} do
@@ -690,6 +811,21 @@ local function requirementsMet(player, data, def)
 	return data.ClassChosen == true
 end
 
+-- P1 ①-2 Learn: the saved slots reach this skill's place in Config.Skills.Order
+local function learned(data, slot)
+	local order = (Config.Skills and Config.Skills.Order) or { "Q", "Z", "X" }
+	local index = table.find(order, slot or "Q")
+	return index ~= nil and num(data.SkillSlots) >= index
+end
+
+-- the first main of the chain not done yet (nil = the chain is finished)
+local function nextMain(st)
+	for _, id in SQ.Main do
+		if not st.Done[id] and DEFS[id] then return id end
+	end
+	return nil
+end
+
 -- start the next main / newly available subs; check state / level / zone steps (1 s loop and on demand)
 local function refresh(player)
 	if not S.PlayerService.IsReady(player) then return end
@@ -728,24 +864,30 @@ local function refresh(player)
 			changed = true
 		end
 	end
+	local offers = {} -- A23-199: npc id -> true while it has a quest to offer this player
 	-- main chain starts after the first mission is claimed
 	if st.Main.Id == "" and num(data.TutorialStep) == TUT_DONE and data.ClassChosen == true then
-		for _, id in SQ.Main do
-			if not st.Done[id] then
-				st.Main = { Id = id, St = 1, P = 0, T = {}, Claim = false }
-				-- A23-130: no Start line (the new row, its marker and the QuestNew sound announce the quest)
-				changed = true
-				openStep(player, id, st.Main)
-				break
-			end
+		local id = nextMain(st)
+		local def = id and DEFS[id]
+		local npc = def and offerNpc(player, def)
+		if def and type(def.Offer) == "table" and npc and npcBody(npc) then
+			-- P1 ①-1: this main waits at its NPC ([Accept] starts it); its requirements (a level) first
+			if requirementsMet(player, data, def) then offers[npc] = true end
+		elseif def and (type(def.Offer) ~= "table" or requirementsMet(player, data, def)) then
+			-- no Offer, or its NPC has no body in this world: it starts by itself as before (the chain never waits on a missing body)
+			st.Main = { Id = id, St = 1, P = 0, T = {}, Claim = false }
+			-- A23-130: no Start line (the new row, its marker and the QuestNew sound announce the quest)
+			changed = true
+			openStep(player, id, st.Main)
 		end
 	end
-	local offers = {} -- A23-199: npc id -> true while it has a quest to offer this player
 	for _, id in SQ.Subs do
 		local def = DEFS[id]
 		if def and type(def.Offer) == "table" and not st.Done[id] and not st.Subs[id] then
-			-- A23-199: offered, not taken: the NPC asks ([Accept] / [Decline], StoryAction); nothing is saved until Accept
-			if type(def.Offer.Npc) == "string" and requirementsMet(player, data, def) then offers[def.Offer.Npc] = true end
+			-- A23-199: offered, not taken: the NPC asks ([Accept] / [Decline], StoryAction); nothing is saved until Accept.
+			-- P1 ①-1: only while that NPC has a body in this world
+			local npc = offerNpc(player, def)
+			if npc and npcBody(npc) and requirementsMet(player, data, def) then offers[npc] = true end
 		elseif def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
 			if def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once
@@ -778,6 +920,8 @@ local function refresh(player)
 			elseif obj.Type == "Level" then
 				done = levelReached(data, obj)
 				if not done then changed = true end -- the row shows "(지금 LvN)"
+			elseif obj.Type == "Learn" then
+				done = learned(data, obj.Slot) -- P1 ①-2: the teacher taught it (an old save that has it passes at once)
 			elseif obj.Type == "Enter" then
 				done = zoneMatches(player, obj.Zone, currentZone(player))
 			elseif obj.Type == "Near" then
@@ -816,6 +960,16 @@ local function refresh(player)
 			if done then advance(player, data, t.Id, tr) end
 		end
 	end
+	-- P1 ①-2: PracticeTool = the quest whose Practice step is open ("" = none): the client puts the borrowed practice tool in hand
+	local practice = ""
+	for _, t in tracks(data) do
+		local step = (not t.Track.Claim) and stepOf(player, DEFS[t.Id], t.Track.St) or nil
+		if step and type(step.Obj) == "table" and step.Obj.Type == "Practice" then
+			practice = t.Id
+			break
+		end
+	end
+	if player:GetAttribute("PracticeTool") ~= practice then player:SetAttribute("PracticeTool", practice) end
 	-- user 2026-10-05: no window or waiting choice card ever pauses auto combat ("아이템 열어도 그대로 자동 전투"),
 	-- and monsters keep attacking as usual; the old ChoicePending flag is cleared for saves/servers that set it
 	if player:GetAttribute("ChoicePending") == true then player:SetAttribute("ChoicePending", false) end
@@ -926,6 +1080,36 @@ function StoryQuestService.DebugDone(player, id)
 	if st.Main.Id == id then st.Main = { Id = "" } end
 	dirty(player)
 	return "ok"
+end
+
+-- P1 ②: a saved first-time mark (data.Story.First[key], e.g. "TeacherMet" when the first mission met the teacher); the quests
+-- that wait for it (Requires.TeacherMet) are offered from the next refresh
+function StoryQuestService.Mark(player, key)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(key) ~= "string" then return end
+	local data = getData(player)
+	if not data then return end
+	local st = story(data)
+	if st.First[key] == true then return end
+	st.First[key] = true
+	dirty(player)
+	local ok, err = pcall(refresh, player)
+	if not ok then Util.Warn(TAG, "Mark refresh: " .. tostring(err)) end
+end
+
+-- P1 ⑤: may the teacher teach `slot` now? Config.Skills.Learn.Gate[slot] = the quest of the test: open only while that quest is
+-- at its Learn step or done. No gate for the slot = yes (as before)
+function StoryQuestService.LearnOpen(player, slot)
+	local L = Config.Skills and Config.Skills.Learn
+	local gate = type(L) == "table" and type(L.Gate) == "table" and L.Gate[slot] or nil
+	if type(gate) ~= "string" or DEFS[gate] == nil then return true end
+	local data = getData(player)
+	if not data then return false end
+	local st = story(data)
+	if st.Done[gate] then return true end
+	local tr = (st.Main.Id == gate) and st.Main or st.Subs[gate]
+	if type(tr) ~= "table" or tr.Claim then return false end
+	local step = stepOf(player, DEFS[gate], tr.St)
+	return step ~= nil and type(step.Obj) == "table" and step.Obj.Type == "Learn" and (step.Obj.Slot or "Q") == slot
 end
 
 -- A23-110: true while an open step of this player's quests waits for that happening (and has not seen it before)
@@ -1256,39 +1440,69 @@ local function changedMind(player, st, obj, pick)
 	st.LastSide = side -- A23-130: saved only, no ChangedGood / ChangedEvil line
 end
 
--- A23-199: the quest `id` this player may be offered now (a sub with Offer, not taken, not done, its requirements met)
+-- A23-199: the quest `id` this player may be offered now (a sub with Offer, not taken, not done, its requirements met).
+-- P1 ①-1: or the next main with an Offer while no main runs (after the first mission); its NPC must have a body
 local function offerable(player, data, id)
 	local def = DEFS[id]
 	local st = story(data)
-	return def ~= nil and def.Kind == "Sub" and type(def.Offer) == "table" and not st.Done[id] and st.Subs[id] == nil
-		and requirementsMet(player, data, def)
+	if def == nil or type(def.Offer) ~= "table" or st.Done[id] or not npcBody(offerNpc(player, def)) then return false end
+	if def.Kind == "Main" then
+		return st.Main.Id == "" and nextMain(st) == id and num(data.TutorialStep) == TUT_DONE and requirementsMet(player, data, def)
+	end
+	return def.Kind == "Sub" and st.Subs[id] == nil and requirementsMet(player, data, def)
 end
 
--- the quests npcId offers this player now, in Subs order
+-- the quests npcId offers this player now: the next main first, then in Subs order
 local function offersOf(player, data, npcId)
 	local out = {}
+	local main = nextMain(story(data))
+	if main and offerNpc(player, DEFS[main]) == npcId and offerable(player, data, main) then table.insert(out, main) end
 	for _, id in SQ.Subs do
 		local def = DEFS[id]
-		if def and type(def.Offer) == "table" and def.Offer.Npc == npcId and offerable(player, data, id) then table.insert(out, id) end
+		if def and offerNpc(player, def) == npcId and offerable(player, data, id) then table.insert(out, id) end
 	end
 	return out
+end
+
+-- P1 ①-1 (rule 11): what def really pays at this level, for the Offer window (nil = nothing): Gold / XP as payReward counts
+-- them (before a 2x pass), Items = { { Id, N } }, BagSlots
+local function rewardPreview(player, def)
+	local r = type(def) == "table" and def.Reward or nil
+	if type(r) ~= "table" then return nil end
+	local level = math.max(1, math.floor(num(player:GetAttribute("Level"), 1)))
+	local g, x = 0, 0
+	if num(r.Gold) > 0 then g = select(1, Config.HuntValue(level, r.Gold)) end
+	if num(r.XP) > 0 then x = select(2, Config.HuntValue(level, r.XP)) end
+	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
+	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
+	local out = {}
+	if g > 0 then out.Gold = math.floor(g) end
+	if x > 0 then out.XP = math.floor(x) end
+	if type(r.Item) == "string" then out.Items = { { Id = r.Item, N = math.max(1, math.floor(num(r.N, 1))) } } end
+	if num(r.BagSlots) > 0 then out.BagSlots = math.floor(r.BagSlots) end
+	return next(out) ~= nil and out or nil
 end
 
 -- A23-199: [Accept] / [Decline] of an offered quest at its NPC. Accept = the track starts (saved) and its first step opens;
 -- Decline = nothing is saved (the NPC asks again at the next talk). True when it was a valid answer.
 local function answerOffer(player, data, id, action)
 	if action ~= "Accept" and action ~= "Decline" then return false end
-	if not offerable(player, data, id) or not npcNear(player, DEFS[id].Offer.Npc) then return false end
+	local def = DEFS[id]
+	local npc = offerNpc(player, def)
+	if not offerable(player, data, id) or not nearBody(player, npc) then return false end
 	if action == "Decline" then
 		StoryQuestService.Declined:Fire(player, id)
 		return true
 	end
 	local st = story(data)
-	st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
+	local track = { St = 1, P = 0, T = {}, Claim = false }
+	if def.Kind == "Main" then st.Main = { Id = id, St = 1, P = 0, T = {}, Claim = false } else st.Subs[id] = track end
 	dirty(player)
 	StoryQuestService.Accepted:Fire(player, id)
+	-- P1 ②: AcceptScene = what the NPC does right away (the teacher's demo swing): Fx StoryScene { Id, Key, Value = the NPC }
+	if type(def.Offer.AcceptScene) == "string" then scene(player, id, def.Offer.AcceptScene, npc) end
 	refresh(player)
-	local tr = st.Subs[id]
+	local tr = (st.Main.Id == id) and st.Main or st.Subs[id]
 	if tr and not tr.Claim then openStep(player, id, tr, true) end
 	return true
 end
@@ -1301,6 +1515,97 @@ local function pickupOk(player, obj)
 	local spot = landmark(obj.Spot)
 	local root = Util.GetRoot(player)
 	return spot ~= nil and root ~= nil and Util.FlatDistance(root.Position, spot) <= num(obj.Radius, 8)
+end
+
+-- P1 ④: the player may open a Match / Timing step here: next to the step's Npc, or within Radius (default 10) of its Spot
+local function miniNear(player, step)
+	if step.Npc then return npcNear(player, step.Npc) end
+	local spot = landmark(step.Obj.Spot)
+	local root = Util.GetRoot(player)
+	if not spot then return true end -- no place: anywhere (a step without a place is a card)
+	return root ~= nil and Util.FlatDistance(root.Position, spot) <= num(step.Obj.Radius, 10)
+end
+
+-- P1 ④: OpenPanel "Match" { Id, Target, Options } (the right answer's place kept here, never sent) / "Timing" { Id }
+local function openMini(player, id, tr, step)
+	local obj = step.Obj
+	local mine = panels[player]
+	if not mine then
+		mine = {}
+		panels[player] = mine
+	end
+	local key = id .. ":" .. tostring(tr.St)
+	if obj.Type == "Match" then
+		local shapes = Config.QuestShapes or {}
+		local wrong = type(obj.Wrong) == "table" and obj.Wrong or {}
+		local options = { obj.Target, wrong[1], wrong[2] }
+		for _, sid in options do
+			if type(sid) ~= "string" or shapes[sid] == nil then
+				Util.Warn(TAG, "Match " .. id .. ": unknown shape " .. tostring(sid))
+				return false
+			end
+		end
+		for i = #options, 2, -1 do
+			local j = math.random(1, i)
+			options[i], options[j] = options[j], options[i]
+		end
+		mine[key] = { Kind = "Match", Answer = table.find(options, obj.Target) }
+		pcall(function() Net.Get("OpenPanel"):FireClient(player, "Match", { Id = id, Target = obj.Target, Options = options }) end)
+		return true
+	elseif obj.Type == "Timing" then
+		mine[key] = { Kind = "Timing", At = os.clock() }
+		pcall(function() Net.Get("OpenPanel"):FireClient(player, "Timing", { Id = id }) end)
+		return true
+	end
+	return false
+end
+
+-- P1 ④: the answer of an open Match / Timing panel (option = "1".."3" / "Good/Tries"). Right = MatchHit / TimingHit + the next
+-- step; wrong = MatchMiss { Pick } / TimingMiss, nothing lost, try again (Timing: TimingMinSeconds before the next answer)
+local function answerMini(player, data, id, tr, step, action, option)
+	local mine = panels[player]
+	local key = id .. ":" .. tostring(tr.St)
+	local p = mine and mine[key]
+	if type(p) ~= "table" or p.Kind ~= action or type(option) ~= "string" then return end
+	if action == "Match" then
+		local pick = tonumber(option)
+		if pick == nil or pick ~= math.floor(pick) or pick < 1 or pick > 3 then return end
+		if pick == p.Answer then
+			pcall(Net.Fx, player, "MatchHit", { Id = id })
+			advance(player, data, id, tr)
+		else
+			pcall(Net.Fx, player, "MatchMiss", { Id = id, Pick = pick })
+		end
+		return
+	end
+	local good, tries = string.match(option, "^(%d+)/(%d+)$")
+	good, tries = tonumber(good), tonumber(tries)
+	if not good or not tries then return end
+	local pass = tries == math.floor(num(SQ.TimingTries, 5)) and good <= tries and good >= math.floor(num(SQ.TimingPass, 3))
+		and os.clock() - num(p.At) >= num(SQ.TimingMinSeconds, 2)
+	if pass then
+		pcall(Net.Fx, player, "TimingHit", { Id = id })
+		advance(player, data, id, tr)
+	else
+		p.At = os.clock() -- the next try waits its own time again
+		pcall(Net.Fx, player, "TimingMiss", { Id = id })
+	end
+end
+
+-- P1 ⑥ Emote: a free emote at the step's Spot (within Radius, default 10). Allowed = { [emote name] = "Good" | "Evil" }: the
+-- name's side is saved as the pick (and its Flag); nothing else is believed from the client
+local function emoteStep(player, data, id, tr, step, name)
+	local obj = step.Obj
+	local side = type(obj.Allowed) == "table" and type(name) == "string" and obj.Allowed[name] or nil
+	if side ~= "Good" and side ~= "Evil" then return end
+	local spot = landmark(obj.Spot)
+	local root = Util.GetRoot(player)
+	if not spot or not root or Util.FlatDistance(root.Position, spot) > num(obj.Radius, 10) then return end
+	local st = story(data)
+	st.Pick[id] = side -- saved before the scene
+	flagBySide(player, data, id, obj.Flag, side)
+	StoryQuestService.Picked:Fire(player, id, side)
+	advance(player, data, id, tr)
 end
 
 local function onStoryAction(player, id, action, option, ...)
@@ -1326,6 +1631,15 @@ local function onStoryAction(player, id, action, option, ...)
 		return
 	elseif action == "Deliver" and step.Obj.Type == "Deliver" then
 		if npcNear(player, step.Obj.Npc or step.Npc) then advance(player, data, id, tr) end
+		return
+	elseif action == "Emote" and step.Obj.Type == "Emote" then
+		emoteStep(player, data, id, tr, step, option) -- P1 ⑥
+		return
+	elseif (action == "Match" or action == "Timing") and step.Obj.Type == action then
+		answerMini(player, data, id, tr, step, action, option) -- P1 ④
+		return
+	elseif action == "Open" and (step.Obj.Type == "Match" or step.Obj.Type == "Timing") then
+		if miniNear(player, step) then openMini(player, id, tr, step) end
 		return
 	end
 	if not step.Panel then return end
@@ -1354,6 +1668,7 @@ local function onStoryAction(player, id, action, option, ...)
 			choiceFx(player, option, { Stat = stat, Before = before, After = after, RankFrom = rankOf(before), RankTo = rankOf(after) })
 			changedMind(player, st, obj, st.Pick[id])
 			payChoice(player, obj, option)
+			flagBySide(player, data, id, obj.Flag, option) -- P1 ①-4
 		else
 			if option ~= "A" and option ~= "B" then return end
 			st.Pick[id] = option -- Neutral: recorded only (no good/evil score, A6)
@@ -1361,6 +1676,7 @@ local function onStoryAction(player, id, action, option, ...)
 			-- A23-130: no "Your choice is saved." line (the Choice Fx answers the pick)
 			changedMind(player, st, obj, option)
 			payChoice(player, obj, option == "A" and "Good" or "Evil")
+			flagBySide(player, data, id, obj.Flag, option == "A" and "Good" or "Evil") -- P1 ①-4
 		end
 		if isTownPick(id) then
 			st.TownLast, st.TownFaction = id, faction(player) -- A23-64 ①: the townsfolk remember this town pick (saved; its side = SIDE[st.Pick[id]])
@@ -1380,6 +1696,12 @@ end
 local function onReleased(player, info)
 	if type(info) ~= "table" then return end
 	feed(player, { Kind = "Skill", Info = info })
+end
+
+-- P1 ①-2: a manual basic swing (CombatService.BasicSwing) for the Practice steps
+local function onBasicSwing(player, pos, look)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then return end
+	feed(player, { Kind = "Swing", Pos = pos, Look = look })
 end
 
 local function onGoldEarned(player, amount, source)
@@ -1416,6 +1738,13 @@ function StoryQuestService.TalkToNpc(player, npcId)
 	if not S.PlayerService.IsReady(player) or player:GetAttribute("ClassChosen") ~= true then return nil end
 	local data = getData(player)
 	if not data then return nil end
+	-- P1 ②: the first mission is talked through the guide (its lines) and the teacher (met: the lesson's offer below, same talk)
+	local quests = S.QuestService
+	if type(quests) == "table" and type(quests.TalkNpc) == "function" then
+		local okT, what = pcall(quests.TalkNpc, player, npcId)
+		if not okT then Util.Warn(TAG, "QuestService.TalkNpc: " .. tostring(what)) end
+		if okT and what == "Welcome" then return "Welcome" end
+	end
 	-- A23-193: the side's teacher teaches a ready skill first (a quest step of the same NPC opens on the next talk)
 	local skills = S.SkillService
 	if type(skills) == "table" and type(skills.TryLearn) == "function" then
@@ -1443,13 +1772,19 @@ function StoryQuestService.TalkToNpc(player, npcId)
 			openStep(player, id, tr, true)
 			return id
 		end
+		-- P1 ④: a Match / Timing step at this NPC opens its panel
+		if step and step.Npc == npcId and (step.Obj.Type == "Match" or step.Obj.Type == "Timing") and npcNear(player, npcId) then
+			if openMini(player, id, tr, step) then return id end
+		end
 	end
 	-- A23-199: nothing open with this NPC: the first quest it offers -> OpenPanel "Offer" { Id, Npc } ([Accept] / [Decline];
 	-- the lines are Config.StoryQuests.Defs[Id].Offer.Lines)
 	local offered = offersOf(player, data, npcId)
-	if offered[1] and npcNear(player, npcId) then
+	if offered[1] and nearBody(player, npcId) then
+		-- P1 ①-1: Reward = what the quest really pays (rule 11; nil = nothing)
+		local reward = rewardPreview(player, DEFS[offered[1]])
 		pcall(function()
-			Net.Get("OpenPanel"):FireClient(player, "Offer", { Id = offered[1], Npc = npcId })
+			Net.Get("OpenPanel"):FireClient(player, "Offer", { Id = offered[1], Npc = npcId, Reward = reward })
 		end)
 		return "Offer:" .. offered[1]
 	end
@@ -1475,6 +1810,7 @@ function StoryQuestService.Start()
 	connect("MonsterService", "MonsterKilled", onMonsterKilled)
 	connect("CombatService", "Released", onReleased)
 	connect("ProgressionService", "GoldEarned", onGoldEarned)
+	connect("CombatService", "BasicSwing", onBasicSwing) -- P1 ①-2
 	connect("GooseService", "GooseFinished", onGooseFinished)
 	-- 장인 ②: the guild's steps (looked up softly: a world without these services connects nothing, with no warning)
 	for _, hook in {
@@ -1510,6 +1846,7 @@ function StoryQuestService.Start()
 		if data then
 			sanitize(data)
 			publishTownPick(player, story(data)) -- A23-64 ①: TownPick from the save (sanitize backfilled it)
+			publishFlags(player, story(data)) -- P1 ①-4: my scene results after a rejoin
 			local okGift, errGift = pcall(StoryQuestService.RetryGifts, player) -- a step gift that gave nothing, again
 			if not okGift then Util.Warn(TAG, "RetryGifts: " .. tostring(errGift)) end
 			local okBag, errBag = pcall(StoryQuestService.CatchUpBagSlots, player, data)
@@ -1562,6 +1899,9 @@ function StoryQuestService.Start()
 			end
 			for p in stays do
 				if p.Parent == nil then stays[p] = nil end -- E4 counts of players who left
+			end
+			for p in panels do
+				if p.Parent == nil then panels[p] = nil end -- P1 ④ open panels of players who left
 			end
 		end
 	end)

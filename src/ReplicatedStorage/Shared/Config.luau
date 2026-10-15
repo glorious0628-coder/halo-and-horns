@@ -3112,7 +3112,12 @@ end
 -- the class basic weapon (QuestService.ForgeGift) -> step 1 (the trip to the meadow) -> step 2 -> claim -> step 99.
 -- A save that owns the first weapon already (from before A23-34) goes from [Accept] straight to step 1.
 Config.Tutorial = {
-	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },
+	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99, Teacher = 4 },
+	-- quest bible v3 H00 / R00 / N00 (P1 ②): the faction guide is a body in the world (Config.TownNpcs, Story = these ids); the
+	-- first mission is opened by talking to it (the row tap only guides there). Halo / Horns then meet their teacher (step
+	-- Teacher) before the Forge; the artisans' teacher is Otto at the Forge itself. A guide / teacher with no body in this
+	-- world = the old way (the row tap opens the guide's lines, no teacher step)
+	Guides = { Halo = "Hallie", Horns = "Magpie", Neutral = "Kit" },
 	Monster = "Slime",
 	MonsterHP = 10,
 	Golden = true,
@@ -3126,6 +3131,7 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
+		Teacher = "Meet %s", -- P1 ②: the teacher step (%s = the teacher's name)
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
@@ -3223,6 +3229,9 @@ Config.Tutorial = {
 		RebirthNoteHorns = "Stay a rascal, or not?",
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
+		-- P1 ②: the rows while the guide / the teacher has a body to walk to (%s = the name)
+		WelcomeBody = "Talk to %s",
+		Teacher = "Meet %s at the town gate",
 	},
 }
 -- Codex B5 (최종 검수 10/14): the King Slime iron line (Buy = false) shows only while a King is here or comes within this many s
@@ -3380,17 +3389,18 @@ Config.StoryQuests = {
 		-- Crossroads) sneaked a lunch out to see the slimes, they were scarier than expected, Tiny ran and dropped it. Talk to
 		-- Tiny -> shoo the slimes by the pond -> pick the lunchbox up (Landmarks.Lunchbox; game dev 1 draws a small shining box
 		-- there) -> the old pick (give it back / one bite, same rewards) -> back to Tiny for one line by the pick -> +4 bag slots
+		-- quest bible v3 (P1 ③): Tiny ASKS ([Accept] / [Decline], the old talk page is the offer now); optional and asked again any
+		-- time after the first weapon (no NotDone M1_1 any more: a late accept works, a decline blocks nothing). The lunchbox is
+		-- picked up for real (Pickup at the spot) - a save on the old talk step goes on at the pond (Story.Schema 2)
 		Lunch1 = {
 			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Speaker = "Tiny",
-			Requires = { TutorialDone = true, NotDone = { "M1_1" } },
-			Start = "Tiny is sniffling at the Crossroads.",
+			Requires = { TutorialDone = true },
+			Offer = { Npc = "Tiny", Lines = { All = { "Tiny: I packed lunch in secret.", "Tiny: The slimes chased me!",
+				"Tiny: Please don't tell Mom.", "Tiny: Please find the lunch I dropped near the slimes." } } },
 			Steps = {
-				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Tiny: *sniff* I just wanted to see the slimes up close.", "Tiny: I packed a lunch. Mom doesn't know!",
-						"Tiny: They were SO grumpy. I ran and dropped my lunchbox.", "Tiny: Can you find it? Shh, don't tell Mom!" } } },
 				{ Text = "Shoo the slimes by the pond %d/%d", Guide = "SlimePond",
 					Obj = { Type = "Kill", Kind = "Slime", Near = "SlimePond", Radius = 45, Count = 2 } },
-				{ Text = "Pick up the lunchbox", Guide = "Lunchbox", Obj = { Type = "Near", Spot = "Lunchbox", Radius = 10 } },
+				{ Text = "Pick up the lunchbox", Guide = "Lunchbox", Obj = { Type = "Pickup", Spot = "Lunchbox", Radius = 10 } },
 				{ Text = "Return the lunchbox, or take a bite?", Panel = true,
 					Lines = { All = { "Tiny's lunchbox! Still warm. It smells SO good." } },
 					Obj = { Type = "Choice",
@@ -3441,8 +3451,14 @@ Config.StoryQuests = {
 		-- opens with Otto's one Enhance Scroll (GiveItem, once per step) and passes when a scroll is used on a weapon
 		-- (Event ScrollUsed, success or not; Past: a save that used one before passes at once). The first mission's 150 gold
 		-- goes to potions
+		-- quest bible v3 H01 / R01 / N01 (P1 ③): Otto ASKS after the first weapon ([Accept] / [Decline]); nothing counts before
+		-- the Accept. Each side asks in its own words; the steps stay
 		M1_1 = {
 			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
+			Offer = { Npc = "Otto", Lines = {
+				Halo = { "Otto: Please free the shiny band from that slime." },
+				Horns = { "Otto: Please grab the shiny band from that slime." },
+				Neutral = { "Otto: Please bring back the shiny band from that slime." } } },
 			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
 			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
 			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
@@ -4541,6 +4557,111 @@ table.insert(Config.TownNpcs.List, { Id = "Tiny", Name = "Npc_Tiny", Story = "Ti
 table.insert(Config.TownNpcs.List, { Id = "Rose", Name = "Npc_Rose", Story = "Smokey", Label = "Rose", At = Vector3.new(-18, 0, 424),
 	Look = Vector3.new(-18, 0, 380),
 	Colors = { Head = Color3.fromRGB(205, 150, 115), Torso = Color3.fromRGB(150, 60, 80), Legs = Color3.fromRGB(70, 50, 60) } })
+-- quest bible v3 P1 ② (게임성 개발 2, docs/design/quest_p1_server_contract_2026-10-15.md): the faction guides and Rex get
+-- temporary default bodies (the final looks come later). Kit stands beside the Crossroads anvil (Anvil + Side, TownNpcs.Spot)
+table.insert(Config.TownNpcs.List, { Id = "Hallie", Name = "Npc_Hallie", Story = "Hallie", Label = "Hallie",
+	At = Vector3.new(-16, 0, -428), Look = Vector3.new(0, 0, -420),
+	Colors = { Head = Color3.fromRGB(240, 205, 175), Torso = Color3.fromRGB(250, 235, 170), Legs = Color3.fromRGB(235, 235, 245) } })
+table.insert(Config.TownNpcs.List, { Id = "Magpie", Name = "Npc_Magpie", Story = "Magpie", Label = "Magpie",
+	At = Vector3.new(16, 0, 428), Look = Vector3.new(0, 0, 420),
+	Colors = { Head = Color3.fromRGB(215, 165, 130), Torso = Color3.fromRGB(110, 60, 130), Legs = Color3.fromRGB(55, 45, 60) } })
+table.insert(Config.TownNpcs.List, { Id = "Kit", Name = "Npc_Kit", Story = "Kit", Label = "Kit", Anvil = true, Behind = -8, Side = 7,
+	Colors = { Head = Color3.fromRGB(225, 180, 145), Torso = Color3.fromRGB(120, 150, 110), Legs = Color3.fromRGB(90, 75, 60) } })
+table.insert(Config.TownNpcs.List, { Id = "Rex", Name = "Npc_Rex", Story = "Rex", Label = "Rascal Rex",
+	At = Vector3.new(28, 0, 412), Look = Vector3.new(0, 0, 420),
+	Colors = { Head = Color3.fromRGB(200, 150, 120), Torso = Color3.fromRGB(170, 70, 60), Legs = Color3.fromRGB(60, 50, 50) } })
+
+-- P1 ②: the practice dummies beside each teacher (H00a / R00a / N00a). A workspace instance tagged StoryLandmark with Spot =
+-- the key moves a spot to it (like every landmark); PracticeN follows the Crossroads anvil like Kit (AnvilSpots)
+Config.StoryQuests.Landmarks.PracticeH = Vector3.new(-18, 0, -366)
+Config.StoryQuests.Landmarks.PracticeR = Vector3.new(-26, 0, 418)
+Config.StoryQuests.AnvilSpots = { PracticeN = { Behind = -8, Side = -7 } }
+-- P1 ① Practice steps: a manual basic swing within Radius of the Spot that faces it (dot of the look and the way to the spot)
+Config.StoryQuests.PracticeFacing = 0.3
+-- P1 ④ (agreed with game dev 1): shape matching (OpenPanel "Match" { Id, Target, Options }) and the workbench timing (OpenPanel
+-- "Timing" { Id }: five taps on CraftView's practice ring, StoryAction(Id, "Timing", "Good/Tries")). Shape = one of the six the
+-- client draws without art (Ring, Disc, Square, Diamond, Cross, Bars); a set's three never share a shape or a colour
+Config.StoryQuests.TimingPass = 3 -- good taps of TimingTries to pass
+Config.StoryQuests.TimingTries = 5
+Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
+Config.QuestShapes = {
+	Knot = { Shape = "Ring", Color = Color3.fromRGB(240, 196, 70) },
+	Seal = { Shape = "Disc", Color = Color3.fromRGB(150, 90, 200) },
+	Tag = { Shape = "Square", Color = Color3.fromRGB(80, 170, 230) },
+	Gem = { Shape = "Diamond", Color = Color3.fromRGB(230, 90, 110) },
+	Patch = { Shape = "Cross", Color = Color3.fromRGB(110, 200, 120) },
+	Rack = { Shape = "Bars", Color = Color3.fromRGB(200, 140, 80) },
+}
+
+-- quest bible v3 H00a / R00a / N00a (P1 ②): the teacher's first lesson, offered at the teacher once the first mission met them
+-- (Requires.TeacherMet). Accept = the teacher shows one basic attack (Fx StoryScene Key "Demo"), the player hits the dummy once
+-- with a basic attack (a borrowed practice tool while bare-handed: attribute PracticeTool), then hands the tool back. Optional:
+-- declining blocks nothing (the Forge, the story and Lv5 go on); no reward of its own (a record only)
+Config.StoryQuests.Defs.H_Basics = {
+	Kind = "Sub", Title = "Sir Gleam's Lesson", ShortName = "First lesson", Speaker = "Gleam", Factions = { Halo = true },
+	Requires = { TeacherMet = true },
+	Offer = { Npc = "Gleam", AcceptScene = "Demo", Lines = { All = { "Sir Gleam: Watch my swing, then try one hit." } } },
+	Steps = {
+		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeH",
+			Obj = { Type = "Practice", Spot = "PracticeH", Radius = 10, Count = 1 } },
+		{ Text = "Give the practice tool back to Sir Gleam", ShortName = "Return tool", Npc = "Gleam", Guide = "PracticeH",
+			Obj = { Type = "Deliver" } },
+	},
+}
+Config.StoryQuests.Defs.R_Basics = {
+	Kind = "Sub", Title = "Rose's Lesson", ShortName = "First lesson", Speaker = "Smokey", Factions = { Horns = true },
+	Requires = { TeacherMet = true },
+	Offer = { Npc = "Smokey", AcceptScene = "Demo", Lines = { All = { "Rose: Watch my hit, then try one of your own." } } },
+	Steps = {
+		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeR",
+			Obj = { Type = "Practice", Spot = "PracticeR", Radius = 10, Count = 1 } },
+		{ Text = "Give the practice tool back to Rose", ShortName = "Return tool", Npc = "Smokey", Guide = "PracticeR",
+			Obj = { Type = "Deliver" } },
+	},
+}
+Config.StoryQuests.Defs.N_Basics = {
+	Kind = "Sub", Title = "Otto's Lesson", ShortName = "First lesson", Speaker = "Smith", Factions = { Neutral = true },
+	Requires = { TeacherMet = true },
+	Offer = { Npc = "Otto", AcceptScene = "Demo", Lines = { All = { "Otto: Watch my hit, then try it with your tool." } } },
+	Steps = {
+		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeN",
+			Obj = { Type = "Practice", Spot = "PracticeN", Radius = 10, Count = 1 } },
+		{ Text = "Show Otto your hit", ShortName = "Back to Otto", Npc = "Otto", Guide = "Blacksmith", Obj = { Type = "Deliver" } },
+	},
+}
+for _, id in { "H_Basics", "R_Basics", "N_Basics" } do table.insert(Config.StoryQuests.Subs, id) end
+
+-- quest bible v3 H02 / R02 (P1 ③): the band from the Slime Prince, at Lv3. Halo: Bright holds it beside her ribbon - show it or
+-- hide it for now (her wrist hides / she peeks on tiptoe). Horns: Rose asks for the biggest victory pose at the pose spot - a
+-- cheer (arms up: the paper crown drops on my head) or a wave (a deep bow); Rose laughs either way (rule 4). A record only:
+-- no reward, no score (the M1_2 clue slot; bible §3 'no new pay')
+Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
+Config.StoryQuests.Defs.H_Band = {
+	Kind = "Sub", Title = "Two-Color Band", ShortName = "The band", Speaker = "Bright", Factions = { Halo = true },
+	Requires = { Done = { "M1_1" }, Level = 3 },
+	Offer = { Npc = "Bright", Lines = { All = { "Bright: Please hold that band beside my ribbon." } } },
+	Steps = {
+		{ Text = "Show Bright the band", ShortName = "Show the band", Npc = "Bright", Panel = true,
+			Lines = { All = { "Bright: Gold and purple… just like my ribbon!" } },
+			Obj = { Type = "Choice", Good = { Label = "Show it", Points = 0, Pick = "Show" },
+				Evil = { Label = "Hide it for now", Points = 0, Pick = "Hide" },
+				Neutral = { A = "Show it", B = "Hide it for now" },
+				Flag = { Key = "Band", Good = "Show", Evil = "Hide" } } },
+	},
+}
+Config.StoryQuests.Defs.R_Band = {
+	Kind = "Sub", Title = "Victory Pose", ShortName = "Victory pose", Speaker = "Smokey", Factions = { Horns = true },
+	Requires = { Done = { "M1_1" }, Level = 3 },
+	Offer = { Npc = "Smokey", Lines = { All = { "Rose: Please show me your biggest victory pose." } } },
+	Steps = {
+		{ Text = "Strike a pose on the spot (cheer or wave)", ShortName = "Strike a pose", Guide = "PoseSpot",
+			Obj = { Type = "Emote", Spot = "PoseSpot", Radius = 10, Allowed = { cheer = "Evil", wave = "Good" },
+				Flag = { Key = "Crown", Good = "Bow", Evil = "Paper" } } },
+	},
+}
+table.insert(Config.StoryQuests.Subs, "H_Band")
+table.insert(Config.StoryQuests.Subs, "R_Band")
+
 -- A23-193: Otto teaches the artisans their skills: his body gets a Talk prompt (Story "Otto": no quest step uses it; the
 -- anvil keeps the weapon shop prompt)
 for _, e in Config.TownNpcs.List do
