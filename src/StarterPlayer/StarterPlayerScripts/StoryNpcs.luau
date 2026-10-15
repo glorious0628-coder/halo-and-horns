@@ -723,7 +723,8 @@ end
 -- window's Before line and the last card's Next.Line are Panels' (Config.QuestBefore / Config.QuestNext via STORY.Before /
 -- STORY.WithNext). Bubble art = the approved 9-slice BarkBubble (512 x 190, tail bottom-left), kept at its aspect.
 T.Story = {
-	Find = { Seconds = 4, W = 280, Aspect = 512 / 190, TextPx = 18, Lift = 1.6, Spot = 3, Distance = 120, TailX = 0.068 },
+	Find = { Seconds = 4, W = 280, Aspect = 512 / 190, TextPx = 18, Lift = 1.6, Spot = 3, Distance = 120, TailX = 0.068,
+		MaxW = 380 },
 	NextFor = 900, -- s the next asker's one hop waits for her "!"
 	SelfEmote = { Wave = "wave", Cheer = "cheer", Laugh = "laugh" }, -- On = "Self": the avatar's own emotes
 	-- each move: N times Time s; Off(k) = the offset from home at k = 0..1 (Hip = studs from the pivot down to the bend)
@@ -788,13 +789,14 @@ function StoryNpcs.AskerOf(id, faction)
 end
 
 -- the Find bubble on adornee (a head or an attachment): BarkBubble art, the words inside its text box; one at a time
--- per adornee, gone after Find.Seconds
-function StoryNpcs.Bubble(adornee, text)
+-- per adornee, gone after seconds (Find.Seconds); a line longer than 48 characters gets a wider bubble (up to MaxW)
+function StoryNpcs.Bubble(adornee, text, seconds)
 	local F = T.Story.Find
 	local UIKit = C and C.UIKit
 	local old = adornee:FindFirstChild("StoryFindBubble")
 	if old then old:Destroy() end
-	local w, h = F.W, math.floor(F.W / F.Aspect + 0.5)
+	local w = math.min(F.MaxW, F.W + math.max(0, #text - 48) * 6)
+	local h = math.floor(F.W / F.Aspect + 0.5)
 	local bb = Instance.new("BillboardGui")
 	bb.Name = "StoryFindBubble"
 	bb.Adornee = adornee
@@ -836,7 +838,7 @@ function StoryNpcs.Bubble(adornee, text)
 		game:GetService("TweenService"):Create(scale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	end
 	bb.Parent = adornee
-	task.delay(F.Seconds, function()
+	task.delay(tonumber(seconds) or F.Seconds, function()
 		if not bb.Parent then return end
 		if not still then
 			game:GetService("TweenService"):Create(scale, TweenInfo.new(0.15), { Scale = 0.7 }):Play()
@@ -943,6 +945,110 @@ function StoryNpcs.ExpectNext(id)
 	return true
 end
 
+-- 개발 2 ch1 data (10/15): a step that is NOT a card (Deliver / Learn / Emote ...) may still have closing words (Lines):
+-- when it is done they show one by one as bubbles over whoever says them (Talk.Seconds each), and after a finished
+-- quest's last such step its hook (Config.QuestNext Line) too, then the next asker's one hop. A card step's words stay in
+-- Panels' card. Done = my quest row moved past the step, or waits for [Claim] / left the list after its last step.
+T.Story.Talk = { Seconds = 3.5 }
+
+-- (pure) the steps that just ended: prev / now = { [quest id] = { St, Done } } -> { { Id, St } } in order
+function StoryNpcs.StepEnds(prev, now, stepCount)
+	local out = {}
+	if type(prev) ~= "table" then return out end
+	for id, p in prev do
+		local n = now[id]
+		local last = tonumber(stepCount(id)) or 0
+		local from = tonumber(p.St) or 0
+		local to = nil
+		if n and not p.Done then
+			to = n.Done and last or (tonumber(n.St) or from) - 1
+		elseif n == nil and not p.Done and from >= last and last > 0 then
+			to = last -- a quest without [Claim] leaves the list after its last step
+		end
+		for st = from, to or (from - 1) do table.insert(out, { Id = id, St = st }) end
+	end
+	table.sort(out, function(a, b) return a.Id < b.Id or (a.Id == b.Id and a.St < b.St) end)
+	return out
+end
+
+-- (pure) the words a non-card step closes with (my side's Lines, LinesBy's Default), + the hook after the last step
+function StoryNpcs.EndLines(id, st, faction)
+	local step, def = StoryNpcs.StepFor(id, st, faction)
+	if type(step) ~= "table" or step.Panel == true then return {}, nil end
+	local src = (type(step.LinesBy) == "table" and step.LinesBy.Default) or step.Lines
+	local list = type(src) == "table" and (src[faction] or src.All) or nil
+	local out = {}
+	for _, l in type(list) == "table" and list or {} do
+		if type(l) == "string" and l ~= "" then table.insert(out, l) end
+	end
+	local n = type(def) == "table" and type(def.Steps) == "table" and #def.Steps or 0
+	local nx = (tonumber(st) == n and type(Config.QuestNext) == "function") and Config.QuestNext(def, faction) or nil
+	if type(nx) == "table" and type(nx.Line) == "string" and nx.Line ~= "" then table.insert(out, nx.Line) end
+	return out, nx
+end
+
+-- (pure) who says a line "Name: words": the NPC whose speaker name it is, else the step's Npc (On = "Self": me) ->
+-- npc id or nil (= me), the words without the name when someone says them
+function StoryNpcs.SpeakerOf(line, stepNpc)
+	local name, words = string.match(line, "^([^:]+):%s*(.+)$")
+	local names = type(Config.StoryQuests) == "table" and Config.StoryQuests.Speakers or {}
+	if name then
+		for id, shown in type(names) == "table" and names or {} do
+			if shown == name then return id, words end
+		end
+		if type(stepNpc) == "string" then return stepNpc, words end
+	end
+	return stepNpc, (stepNpc and words) or line
+end
+
+-- the closing words of the steps that just ended, one bubble after another (a running queue)
+function StoryNpcs.SayEnds(ends, faction)
+	S.Talk = S.Talk or {}
+	for _, e in ends do
+		local step = StoryNpcs.StepFor(e.Id, e.St, faction)
+		local lines, nx = StoryNpcs.EndLines(e.Id, e.St, faction)
+		local npc = type(step) == "table" and step.On ~= "Self" and step.Npc or nil
+		for _, l in lines do table.insert(S.Talk, { Line = l, Npc = npc }) end
+		if nx and type(nx.Id) == "string" then pcall(StoryNpcs.ExpectNext, nx.Id) end
+	end
+	if S.Talking or #S.Talk == 0 then return end
+	S.Talking = true
+	task.spawn(function()
+		while #S.Talk > 0 do
+			local t = table.remove(S.Talk, 1)
+			local id, words = StoryNpcs.SpeakerOf(t.Line, t.Npc)
+			local body = type(id) == "string" and StoryNpcs.Body(id) or nil
+			if not body then
+				local me = game:GetService("Players").LocalPlayer
+				body, words = me and me.Character, t.Line
+			end
+			local head = body and body:FindFirstChild("Head")
+			if head and head:IsA("BasePart") then pcall(StoryNpcs.Bubble, head, words, T.Story.Talk.Seconds) end
+			task.wait(T.Story.Talk.Seconds + 0.2)
+		end
+		S.Talking = false
+	end)
+end
+
+-- one pass: my story rows' steps -> the ended ones speak (the first pass after joining only remembers)
+function StoryNpcs.WatchSteps(entries, faction)
+	local now = {}
+	for _, e in type(entries) == "table" and entries or {} do
+		local st = type(e) == "table" and e.Story or nil
+		if type(st) == "table" and type(st.Id) == "string" then
+			now[st.Id] = { St = tonumber(st.St) or 0,
+				Done = (tonumber(e.Progress) or 0) >= (tonumber(e.Target) or math.huge) and e.CanClaim == true }
+		end
+	end
+	local ends = StoryNpcs.StepEnds(S.Steps, now, function(id)
+		local _, def = StoryNpcs.StepFor(id, 1, faction)
+		return type(def) == "table" and type(def.Steps) == "table" and #def.Steps or 0
+	end)
+	S.Steps = now
+	if #ends > 0 then StoryNpcs.SayEnds(ends, faction) end
+	return ends
+end
+
 -- one pass of the world pieces (Refresh calls it)
 function StoryNpcs.RefreshWorld(entries, me)
 	local spots = StoryNpcs.Spots(entries, me:GetAttribute("Faction"))
@@ -985,6 +1091,8 @@ function StoryNpcs.Refresh()
 			(type(teacher) == "string" and teacher ~= "" and ready > slots) and teacher or nil)
 		pcall(StoryNpcs.DrawPickups, StoryNpcs.Pickups(entries, me:GetAttribute("Faction")))
 		pcall(StoryNpcs.RefreshWorld, entries, me) -- quest P1: dummies, practice tools, the lamp, the pose spot, saved looks
+		-- ch1 data: a non-card step that ended says its closing words (an empty list = not loaded / between lists: wait)
+		if type(entries) == "table" and #entries > 0 then pcall(StoryNpcs.WatchSteps, entries, me:GetAttribute("Faction")) end
 		-- A23-208: the next asker's "!" shows after the hook to her quest: she hops once (waits while her body is away)
 		local nx = S.Next
 		if nx and os.clock() > nx.Until then
