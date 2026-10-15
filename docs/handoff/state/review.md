@@ -410,3 +410,5 @@
 - 개발 2 내일: 매일 12종 정의(GPT 검토 반영 보상 확정: DH2 HP1·DH3 Oak4·DH1 Enh70·DR3 MP1·DR2 Jelly10·DR1 Move70·DN3 Treat3·DN1 Herb10·DN2 Glowcap8·DC1 Copper3·DC2 Guard2·DC3 Moon8, 골드 GoldN 30/60/100/200, Hard 과제 실제로 어렵게) + 소품·Pip(임시 기본 NPC) 배치 목록 → 메인 반영 1이 파트로 놓음 + 제작 스위치 확인.
 - GPT 상의 남은 것: 디자인 쪽은 아직 시작 안 함(사용자 역할 지정: 퀘스트·게임성(스토리 포함)·디자인 GPT 상의). 2~5장 데이터는 1장 화면 확인 뒤.
 - 10/16 게시판: 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P (+ 배지 7개 docs/design/badges_2026-10-15.md, Env place id).
+- (추가, 밤 끝) 병합 c672eb17 → main bc0b5bf4. 개발 1·2·메인 반영 1 모두 정리·클리어함. **dev2-daily12 53256460 = 병합 안 함**: R 표가 옛 초안 숫자(DH2 HP3·DR1 Move30 등)이고 Hard 과제가 아직 Normal과 같은 크기(Slime 3) → 내일 개발 2가 수정 보상표·Hard 강화 커밋 붙인 뒤 병합. 소품 목록 docs/design/daily_props_2026-10-15.md(그 가지).
+- **내일 결정할 것:** Config.Features.Gathering·Crafting·Tonics·Research = false, NeutralFaction = false(베타 Live 꺼짐) → 장인 재료·간식·강장제 보상이 쓸 곳 없고 장인 DN 3종은 아무도 못 봄. A23-162는 베타(12/15)에 장인 길드 포함 → 계획 순서표 3번(장인 최소판) 언제 켤지 + 그 전까지 매일 보상을 쓸모 있는 것으로 바꿀지(GPT 상의 후 정함).
