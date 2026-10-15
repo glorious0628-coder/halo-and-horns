@@ -382,9 +382,73 @@ function VitalsUI.Request(kind)
 	return true
 end
 
+-- 최종 검수 10/15 (feedback_audit #4; server Fx "Drink" { Kind, From, To, Max } = a real drink only): the part of the bar
+-- that came back lights up and fades (From..To of Max), and small drops of the potion's colour rise round me. No words
+VitalsUI.DRINK = { Glow = 0.15, Fade = 0.7, Drops = 14, Lift = 2 }
+
+-- (pure) the lit part of a bar: its start and width as shares of the bar (nil for nothing / a broken payload)
+function VitalsUI.DrinkSpan(from, to, max)
+	from, to, max = tonumber(from), tonumber(to), tonumber(max)
+	if not (from and to and max) or max <= 0 or to <= from then return nil end
+	local a = math.clamp(from / max, 0, 1)
+	local b = math.clamp(to / max, 0, 1)
+	if b - a <= 0 then return nil end
+	return a, b - a
+end
+
+function VitalsUI.OnDrink(data)
+	if type(data) ~= "table" or (data.Kind ~= "HP" and data.Kind ~= "MP") then return false end
+	local D = VitalsUI.DRINK
+	local bar = ui[data.Kind]
+	local x, w = VitalsUI.DrinkSpan(data.From, data.To, data.Max)
+	if bar and bar.Frame and bar.Frame.Parent and x then
+		local glow = Instance.new("Frame")
+		glow.Name = "DrinkGlow"
+		glow.BorderSizePixel = 0
+		glow.BackgroundColor3 = Color3.new(1, 1, 1)
+		glow.BackgroundTransparency = D.Glow
+		glow.Position = UDim2.fromScale(x, 0)
+		glow.Size = UDim2.fromScale(w, 1)
+		glow.ZIndex = (tonumber(bar.Frame.ZIndex) or 1) + 3
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0.5, 0)
+		corner.Parent = glow
+		glow.Parent = bar.Frame
+		game:GetService("TweenService"):Create(glow, TweenInfo.new(D.Fade, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+			{ BackgroundTransparency = 1 }):Play()
+		task.delay(D.Fade + 0.05, function() glow:Destroy() end)
+	end
+	local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if root then
+		local att = Instance.new("Attachment")
+		att.Name = "DrinkDrops"
+		att.Position = Vector3.new(0, 0.5, 0)
+		local e = Instance.new("ParticleEmitter")
+		e.Color = ColorSequence.new(COL[data.Kind])
+		e.LightEmission, e.Rate, e.SpreadAngle = 0.6, 0, Vector2.new(60, 60)
+		e.Lifetime, e.Speed = NumberRange.new(0.5, 0.9), NumberRange.new(3, 6)
+		e.Acceleration = Vector3.new(0, D.Lift, 0)
+		e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.25), NumberSequenceKeypoint.new(1, 0) })
+		e.EmissionDirection = Enum.NormalId.Top
+		e.Parent = att
+		att.Parent = root
+		e:Emit(D.Drops)
+		task.delay(1.2, function() att:Destroy() end)
+	end
+	return true
+end
+
 function VitalsUI.Start()
 	if ui.Started then return end
 	ui.Started = true
+	task.spawn(function()
+		local ok, fx = pcall(function() return Net.Get("Fx") end)
+		if ok and fx then
+			fx.OnClientEvent:Connect(function(kind, data)
+				if kind == "Drink" then pcall(VitalsUI.OnDrink, data) end
+			end)
+		end
+	end)
 	-- This game equips custom Parts, so its potion shortcuts own 1/2 and its HP bar owns health display.
 	local starterGui = game:GetService("StarterGui")
 	pcall(starterGui.SetCoreGuiEnabled, starterGui, Enum.CoreGuiType.Backpack, false)
