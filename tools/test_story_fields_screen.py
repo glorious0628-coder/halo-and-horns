@@ -35,7 +35,7 @@ if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-15/offline_story_fields_screen_2026-10-15.json"
 
-NPC_FNS = ["StepFor", "SceneNpc", "AskerOf"]
+NPC_FNS = ["StepFor", "SceneNpc", "AskerOf", "StepEnds", "EndLines", "SpeakerOf"]
 PANEL_FNS = ["WithNext", "Before"]
 
 FIXTURE = r'''
@@ -65,7 +65,15 @@ local DEFS = {
 		Steps = { { Npc = "Bright", Obj = { Type = "Talk" }, Lines = { All = { "Bright: Hi." } } } },
 		Next = { Halo = { Id = "R", Line = "Bright: Halo next" }, Horns = { Id = "S", Line = "Smokey: Horns next" } } },
 }
-local env = { StoryNpcs = {}, STORY = {}, Config = { StoryQuests = { Defs = DEFS } } }
+-- ch1 data (개발 2 10/15): a non-card step with closing words (Deliver) and a last non-card step (Learn) + a hook
+DEFS.D = { Steps = {
+		{ Guide = "Meadow", Obj = { Type = "Kill" } },
+		{ Npc = "Folk1", Obj = { Type = "Deliver" }, Lines = { Halo = { "Neighbor: Wait! I need a free hand to wave!" },
+			Horns = { "Tiny: Ha! The snack is mine." } } },
+		{ Npc = "Gleam", Obj = { Type = "Learn" }, Lines = { All = { "Sir Gleam: They'll wave when they see you now." } } },
+	},
+	Next = { Halo = { Id = "R", Line = "Sir Gleam: Bright wants that dust." } } }
+local env = { StoryNpcs = {}, STORY = {}, Config = { StoryQuests = { Defs = DEFS, Speakers = { Tiny = "Tiny", Gleam = "Sir Gleam" } } } }
 setmetatable(env, { __index = getfenv() })
 for _, src in SOURCES do
 	local f = assert(loadstring(src, "=cut"))
@@ -104,6 +112,28 @@ check("Before: a side table = mine", ST.Before(DEFS.B, "Halo", "") == "Halo side
 check("Before: BeforeBy by my own flag (StoryFlags text)", ST.Before(DEFS.V, "Halo", "Crown=Paper,Lamp=Mine") == "You lit your own lamp.")
 check("Before: BeforeBy without the flag = its Default", ST.Before(DEFS.V, "Halo", "Crown=Paper") == "First time here.")
 check("Before: none = nil", ST.Before(DEFS.R, "Halo", "") == nil)
+local function count(id) return #(DEFS[id] and DEFS[id].Steps or {}) end
+local function keys(list) local o = {} for _, e in list do table.insert(o, e.Id .. ":" .. e.St) end return table.concat(o, ",") end
+check("StepEnds: the first pass only remembers", #N.StepEnds(nil, { D = { St = 2 } }, count) == 0)
+check("StepEnds: a step moved on = that step ended", keys(N.StepEnds({ D = { St = 2 } }, { D = { St = 3 } }, count)) == "D:2")
+check("StepEnds: two steps at once = both", keys(N.StepEnds({ D = { St = 1 } }, { D = { St = 3 } }, count)) == "D:1,D:2")
+check("StepEnds: waits for [Claim] = the rest to the last ended", keys(N.StepEnds({ D = { St = 3 } }, { D = { St = 3, Done = true } }, count)) == "D:3")
+check("StepEnds: left the list after its last step = it ended", keys(N.StepEnds({ D = { St = 3 } }, {}, count)) == "D:3")
+check("StepEnds: left the list mid-way = nothing", #N.StepEnds({ D = { St = 2 } }, {}, count) == 0)
+check("StepEnds: already done = nothing again", #N.StepEnds({ D = { St = 3, Done = true } }, { D = { St = 3, Done = true } }, count) == 0)
+local l2 = N.EndLines("D", 2, "Halo")
+check("EndLines: a non-card step's words for my side", #l2 == 1 and l2[1] == "Neighbor: Wait! I need a free hand to wave!")
+check("EndLines: the other side's words", N.EndLines("D", 2, "Horns")[1] == "Tiny: Ha! The snack is mine.")
+local l3, nx = N.EndLines("D", 3, "Halo")
+check("EndLines: the last step + the hook (my side)", #l3 == 2 and l3[2] == "Sir Gleam: Bright wants that dust." and nx and nx.Id == "R")
+check("EndLines: a side without a hook = the words only", #N.EndLines("D", 3, "Horns") == 1)
+check("EndLines: a card step says nothing here (its card does)", #N.EndLines("Q", 3, "Halo") == 0)
+local who, words = N.SpeakerOf("Sir Gleam: They'll wave.", "Folk1")
+check("SpeakerOf: the speaker's name -> that NPC, words without the name", who == "Gleam" and words == "They'll wave.")
+who, words = N.SpeakerOf("Neighbor: Wait!", "Folk1")
+check("SpeakerOf: an unknown name -> the step's Npc", who == "Folk1" and words == "Wait!")
+who, words = N.SpeakerOf("Neighbor: Wait!", nil)
+check("SpeakerOf: no NPC (On = Self) -> me, the whole line", who == nil and words == "Neighbor: Wait!")
 print(("STORY_SCREEN_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -119,7 +149,7 @@ STATIC = [
         "\tFind = { Seconds = 4, W = 280, Aspect = 512 / 190, TextPx = 18,",
         '\t\tframe = UIKit.ArtFrame("BarkBubble", { Name = "Bubble", Size = UDim2.fromScale(1, 1) },',
         "\tif type(art) == \"table\" and type(art.TextRect) == \"table\" and #art.TextRect == 4 then rect = art.TextRect end\n",
-        "\ttask.delay(F.Seconds, function()\n"]),
+        "\ttask.delay(tonumber(seconds) or F.Seconds, function()\n"]),
     ("NPCS", "Find: over the step NPC's head, else its Guide / Obj.Spot place", [
         "\tif head and head:IsA(\"BasePart\") then return StoryNpcs.Bubble(head, text) ~= nil end\n",
         "\tfor _, key in { step.Guide, obj.Spot } do\n"]),
@@ -138,6 +168,10 @@ STATIC = [
     ("PANELS", "Story card: WithNext's lines; after a hook StoryNpcs.ExpectNext", [
         "\tlocal lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f)",
         "\t\t\tpcall(npcs.ExpectNext, nx.Id)\n"]),
+    ("NPCS", "Refresh: ended non-card steps speak (one bubble after another, Talk.Seconds)", [
+        "\t\tif type(entries) == \"table\" and #entries > 0 then pcall(StoryNpcs.WatchSteps, entries, me:GetAttribute(\"Faction\")) end\n",
+        "\t\t\tif head and head:IsA(\"BasePart\") then pcall(StoryNpcs.Bubble, head, words, T.Story.Talk.Seconds) end\n",
+        "\t\tif nx and type(nx.Id) == \"string\" then pcall(StoryNpcs.ExpectNext, nx.Id) end\n"]),
     ("CONFIG", "the SceneKeys list (dev2)", ["Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,"]),
 ]
 MUTATIONS = [
@@ -150,10 +184,15 @@ MUTATIONS = [
     ("PANELS", "Before ignores my flags", "and Config.QuestBefore(def, f, flags) or nil", "and Config.QuestBefore(def, f, {}) or nil"),
     ("PANELS", "the hook ignores my side", "Config.QuestNext(def, f) or nil\n\tlocal n =", "Config.QuestNext(def, \"Halo\") or nil\n\tlocal n ="),
     ("NPCS", "On = Self ignored by the Scene", "\tlocal mine = type(step) == \"table\" and step.On == \"Self\"\n", "\tlocal mine = false\n"),
-    ("NPCS", "the bubble stays forever", "\ttask.delay(F.Seconds, function()\n", "\ttask.delay(math.huge, function()\n"),
+    ("NPCS", "the bubble stays forever", "\ttask.delay(tonumber(seconds) or F.Seconds, function()\n", "\ttask.delay(math.huge or F.Seconds, function()\n"),
     ("NPCS", "any scene word plays", "\tif type(scene) ~= \"string\" or not (type(SK) == \"table\" and SK[scene]) then return false end\n",
      "\tif type(scene) ~= \"string\" then return false end\n"),
     ("NPCS", "the next asker never hops", "\t\t\tStoryNpcs.Hop(nx.Npc, 1)\n", ""),
+    ("NPCS", "a card step speaks twice", "\tif type(step) ~= \"table\" or step.Panel == true then return {}, nil end\n",
+     "\tif type(step) ~= \"table\" then return {}, nil end\n"),
+    ("NPCS", "a quest leaving mid-way speaks", "elseif n == nil and not p.Done and from >= last and last > 0 then",
+     "elseif n == nil and not p.Done then"),
+    ("NPCS", "the speaker's name kept over the speaker", "if shown == name then return id, words end", "if shown == name then return id, line end"),
     ("PANELS", "no Before line", '\t\tlocal b = addText(parent, before, { Name = "OfferBefore", Size = 18, Color = theme.SubText })\n',
      '\t\tlocal b = Instance.new("TextLabel")\n'),
 ]
