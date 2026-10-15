@@ -1,4 +1,11 @@
-# 게임성 개발 2 — 상태 (2026-10-15 오전~낮, 큐 비움 → 대기)
+# 게임성 개발 2 — 상태 (2026-10-15 오후: 영어 반영 끝 → 퀘스트 P1 묶음 2 진행 중)
+
+## 지금 (10/15 오후)
+- **dev2-en-apply d8a47d89** (보고, 병합 대기): 영어 191줄(리뷰 199 중; 안 바뀐 8 = build/l10n/en_not_applied_1015.csv), 결과 build/l10n/en_applied_1015.csv. worktree ../wt_en.
+- **dev2-mut-fix 584e2629** (보고): golden_egg·pet_speed·crown_points 변이 패턴. worktree ../wt_mutfix.
+- **dev2-quest-p1** (진행 중, worktree ../wt_p1, en-apply 위): 계약 docs/design/quest_p1_server_contract_2026-10-15.md (7a75fde0 push). 끝난 것(로컬, 시험 통과): ① Main Offer·진영별 Offer.Npc·몸 없으면 Offer 없음·보상 미리보기·AcceptScene, 새 단계 Practice(CombatService.BasicSwing)/Emote/Match/Timing/Learn, Story.Flags+StoryFlags+Fx StoryScene, LearnOpen ② 안내자 몸(Hallie/Magpie/Kit/Rex), TutorialStep Teacher=4, H/R/N_Basics, DataService가 4 유지 ③ M1_1 Otto Offer, Lunch1 Offer+Pickup(Schema 2 이관), H_Band/R_Band. 시험: town_quests 1174/1174(P1 변이 36/36), weapon_first 140/140(11/11). 다음: ⑤ M1_3 Lv5 시험 + 배움 문(스크래치 p1_5.py 준비됨) → ⑦ M1_4 등불 → ④ N0 준비 Match/Timing → ⑨.
+- 개발 1과 합의: Match = StoryAction(Id,"Match","1~3"), Fx MatchHit/MatchMiss{Pick}; Timing = OpenPanel "Timing"{Id}, StoryAction(Id,"Timing","Good/Tries") 5번 중 3, 최소 2초, Fx TimingHit/TimingMiss; QuestShapes 6모양.
+- 도구(스크래치, 세션마다 다시): sweep.py(절대경로 wt 필요), only_mut.py `<wt> tools/test_x.py "접두|접두"`, failnames.py, cmp_fail.py. **Bash heredoc은 \\t \\n을 진짜 탭/줄바꿈으로 바꿈 → 이스케이프 든 패치는 Write로 .py 만든 뒤 실행.**
 
 ## 지금 (10/15) — 오늘 가지 (모두 push, SHA는 최종 검수에 보고)
 | 가지 | tip | 무엇 | 상태 |
