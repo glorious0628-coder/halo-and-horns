@@ -32,6 +32,10 @@ local function metricsWorld(o)
 	w.Reg.DiaryService = { PageOpened = Signal.new(), CandyTraded = Signal.new() }
 	w.Reg.MonetizationService.PassBought = Signal.new()
 	w.Reg.StoryQuestService.StepDone = Signal.new() -- A23-113 #2 (the steps of a funnel quest)
+	-- quest P1 ⑨: offers answered, Match / Timing misses
+	w.Reg.StoryQuestService.Accepted = Signal.new()
+	w.Reg.StoryQuestService.Declined = Signal.new()
+	w.Reg.StoryQuestService.MiniMiss = Signal.new()
 	w.Reg.PvPService = { PlayerKO = Signal.new() } -- A23-113 #5
 	w.Reg.JusticeService = { GetFactionScale = function(f) return f == "Halo" and 1.3 or f == "Horns" and 1.05 or 1 end }
 	local env = w:Env()
@@ -657,6 +661,31 @@ runGroup("minutes to Lv5 (A23-113 #2)", function()
 	up:Fire(r, "5")
 	up:Fire(r, 0 / 0)
 	check(#w:Named("MinutesToLv5", r) == 0, "a bad level logs nothing", "")
+end)
+
+runGroup("quest P1 first 30 minutes", function()
+	local w = metricsWorld()
+	local SQ = w.Reg.StoryQuestService
+	local p = hero(w, 51, { Data = { Level = 5, PlaytimeSeconds = 290, Faction = "Halo" } })
+	SQ.Accepted:Fire(p, "M1_3")
+	local acc = w:Named("QuestAccept", p)
+	check(#acc == 1 and acc[1].Value == 5 and field(acc[1], 1) == "M1_3" and field(acc[1], 2) == "Halo",
+		"QuestAccept: the minutes of play (290 s = 5), the quest, the side", brief(acc))
+	SQ.Accepted:Fire(p, "GW3")
+	check(#w:Named("QuestAccept", p) == 1, "a quest outside the first 30 minutes' list: nothing", "")
+	SQ.Declined:Fire(p, "Lunch1")
+	local dec = w:Named("QuestDecline", p)
+	check(#dec == 1 and field(dec[1], 1) == "Lunch1", "QuestDecline: the quest", brief(dec))
+	SQ.MiniMiss:Fire(p, "N0", "Match")
+	local miss = w:Named("QuestMiniMiss", p)
+	check(#miss == 1 and field(miss[1], 1) == "Match" and field(miss[1], 2) == "N0", "QuestMiniMiss: the kind, the quest", brief(miss))
+	SQ.StepDone:Fire(p, "M1_3", 3)
+	check(#w:Named("MinutesToFirstSkill", p) == 0, "the test's help step: not yet", "")
+	SQ.StepDone:Fire(p, "M1_3", 4)
+	SQ.StepDone:Fire(p, "M1_3", 4)
+	local sk = w:Named("MinutesToFirstSkill", p)
+	check(#sk == 1 and sk[1].Value == 5 and field(sk[1], 1) == "Halo" and w.Data[p].Telemetry.FirstSkill == true,
+		"MinutesToFirstSkill once per account, when the test's Learn step passes", brief(sk))
 end)
 
 runGroup("PvP result line (A23-113 #5)", function()

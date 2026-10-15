@@ -198,6 +198,10 @@ Config.Data = {
 		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
 		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first Slime Prince scroll)
 		Items = {},
+		-- A23-206 (user 10/15): how many of each Items[id] are bound to this character (quest / daily request / teacher test /
+		-- web-end rewards): never listed on the market or sold; using one takes the bound ones first. An additive field (no
+		-- version bump: an old save has none bound = every item free, as before)
+		ItemsBound = {},
 		WeaponEnhance = {},
 		LootFlags = {},
 		HideAnnounceName = false, -- P5: server-wide chat announcements show "<faction> 한 명" instead of my name
@@ -3112,7 +3116,12 @@ end
 -- the class basic weapon (QuestService.ForgeGift) -> step 1 (the trip to the meadow) -> step 2 -> claim -> step 99.
 -- A save that owns the first weapon already (from before A23-34) goes from [Accept] straight to step 1.
 Config.Tutorial = {
-	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 },
+	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99, Teacher = 4 },
+	-- quest bible v3 H00 / R00 / N00 (P1 ②): the faction guide is a body in the world (Config.TownNpcs, Story = these ids); the
+	-- first mission is opened by talking to it (the row tap only guides there). Halo / Horns then meet their teacher (step
+	-- Teacher) before the Forge; the artisans' teacher is Otto at the Forge itself. A guide / teacher with no body in this
+	-- world = the old way (the row tap opens the guide's lines, no teacher step)
+	Guides = { Halo = "Hallie", Horns = "Magpie", Neutral = "Kit" },
 	Monster = "Slime",
 	MonsterHP = 10,
 	Golden = true,
@@ -3126,6 +3135,8 @@ Config.Tutorial = {
 	-- ShortName per first-mission row (검수 2026-10-07: the phone HUD quest row; %d = the level the goal needs)
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
+		Teacher = "Meet %s", -- P1 ②: the teacher step (%s = the teacher's name)
+		SkillTest = "Lv5 test", -- P1 ⑤
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
@@ -3215,7 +3226,8 @@ Config.Tutorial = {
 		NextIronDrop = "Next goal · Beat a King Slime for an Iron weapon",
 		NextZone = "Next goal · Lv%d opens %s (now Lv%d)",
 		NextSkill = "Next goal · New skill at Lv%d (now Lv%d)",
-		NextLearn = "Next goal · Learn a skill: meet %s", -- A23-193: a ready skill waits at the side's teacher -- SKL-3 (skill_kit §2): the next skill to learn
+		NextLearn = "Next goal · Learn a skill: meet %s",
+		NextTest = "Next goal · Take %s's test", -- P1 ⑤: Lv5 reached, the test not taken yet (%s = the teacher) -- A23-193: a ready skill waits at the side's teacher -- SKL-3 (skill_kit §2): the next skill to learn
 		-- A23-86 F (content_beyond_10min): the ladder when no story row is pinned (after the last chapter, after a rebirth)
 		NextRebirth = "Next goal · Lv%d: Rebirth and start again (now Lv%d)",
 		NextRebirthReady = "Next goal · Rebirth is open! Choose your side again",
@@ -3223,6 +3235,9 @@ Config.Tutorial = {
 		RebirthNoteHorns = "Stay a rascal, or not?",
 		GuideDone = "That's all from me! Now hunt and get stronger.",
 		DailiesOpened = "Daily quests are open! Try them along with your first mission.",
+		-- P1 ②: the rows while the guide / the teacher has a body to walk to (%s = the name)
+		WelcomeBody = "Talk to %s",
+		Teacher = "Meet %s at the town gate",
 	},
 }
 -- Codex B5 (최종 검수 10/14): the King Slime iron line (Buy = false) shows only while a King is here or comes within this many s
@@ -3380,17 +3395,18 @@ Config.StoryQuests = {
 		-- Crossroads) sneaked a lunch out to see the slimes, they were scarier than expected, Tiny ran and dropped it. Talk to
 		-- Tiny -> shoo the slimes by the pond -> pick the lunchbox up (Landmarks.Lunchbox; game dev 1 draws a small shining box
 		-- there) -> the old pick (give it back / one bite, same rewards) -> back to Tiny for one line by the pick -> +4 bag slots
+		-- quest bible v3 (P1 ③): Tiny ASKS ([Accept] / [Decline], the old talk page is the offer now); optional and asked again any
+		-- time after the first weapon (no NotDone M1_1 any more: a late accept works, a decline blocks nothing). The lunchbox is
+		-- picked up for real (Pickup at the spot) - a save on the old talk step goes on at the pond (Story.Schema 2)
 		Lunch1 = {
 			Kind = "Sub", Title = "Lost Lunchbox!", ShortName = "Lost lunchbox", Speaker = "Tiny",
-			Requires = { TutorialDone = true, NotDone = { "M1_1" } },
-			Start = "Tiny is sniffling at the Crossroads.",
+			Requires = { TutorialDone = true },
+			Offer = { Npc = "Tiny", Lines = { All = { "Tiny: I packed lunch in secret.", "Tiny: The slimes chased me!",
+				"Tiny: Please don't tell Mom.", "Tiny: Please find the lunch I dropped near the slimes." } } },
 			Steps = {
-				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Tiny: *sniff* I just wanted to see the slimes up close.", "Tiny: I packed a lunch. Mom doesn't know!",
-						"Tiny: They were SO grumpy. I ran and dropped my lunchbox.", "Tiny: Can you find it? Shh, don't tell Mom!" } } },
 				{ Text = "Shoo the slimes by the pond %d/%d", Guide = "SlimePond",
 					Obj = { Type = "Kill", Kind = "Slime", Near = "SlimePond", Radius = 45, Count = 2 } },
-				{ Text = "Pick up the lunchbox", Guide = "Lunchbox", Obj = { Type = "Near", Spot = "Lunchbox", Radius = 10 } },
+				{ Text = "Pick up the lunchbox", Guide = "Lunchbox", Obj = { Type = "Pickup", Spot = "Lunchbox", Radius = 10 } },
 				{ Text = "Return the lunchbox, or take a bite?", Panel = true,
 					Lines = { All = { "Tiny's lunchbox! Still warm. It smells SO good." } },
 					Obj = { Type = "Choice",
@@ -3441,8 +3457,14 @@ Config.StoryQuests = {
 		-- opens with Otto's one Enhance Scroll (GiveItem, once per step) and passes when a scroll is used on a weapon
 		-- (Event ScrollUsed, success or not; Past: a save that used one before passes at once). The first mission's 150 gold
 		-- goes to potions
+		-- quest bible v3 H01 / R01 / N01 (P1 ③): Otto ASKS after the first weapon ([Accept] / [Decline]); nothing counts before
+		-- the Accept. Each side asks in its own words; the steps stay
 		M1_1 = {
-			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
+			Kind = "Main", Chapter = 1, Type = "Combat", Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
+			Offer = { Npc = "Otto", Lines = {
+				Halo = { "Otto: Please free the shiny band from that slime." },
+				Horns = { "Otto: Please grab the shiny band from that slime." },
+				Neutral = { "Otto: Please bring back the shiny band from that slime." } } },
 			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
 			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
 			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
@@ -3456,34 +3478,77 @@ Config.StoryQuests = {
 			-- M1_3 at the join (an unknown main id is dropped; the chain starts at the first one not done)
 			Reward = { Gold = 1 },
 		},
-		-- A23-71: the first skill comes at Lv5 (Level = Config.Skills.Unlock.Q), so the step before waits for it. Skill =
-		-- the step is also done once Q is learned below that level (slots kept after a free class change resets the level).
-		-- S8: the Level step's own Start is said when the quest starts below Lv5; at Lv5+ the step passes at once and the
-		-- skill step's Start is said instead.
+		-- quest bible v3 H03 / R03 / N03 (P1 ⑤): the Lv5 test. The side's teacher ASKS at Lv5 ([Accept] / [Decline]); four
+		-- slimes with basic attacks only, then one real help that differs by side (Halo: the neighbour's lost bag back to them;
+		-- Horns: Rose's snack-prank parcel to Tiny; artisans: something of their own craft for Tiny), then back to the teacher, who
+		-- teaches the first skill there (Config.Skills.Learn.Gate: Q waits for this quest's Learn step). Old saves: Story.Schema 3
 		M1_3 = {
-			Kind = "Main", Chapter = 1, Title = "Boom, All at Once!", ShortName = "Skill boom",
+			Kind = "Main", Chapter = 1, Type = "Test", Title = "The Teacher's Test", ShortName = "Lv5 test",
+			Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" }, Lines = {
+				Halo = { "Sir Gleam: Beat four slimes, then return our neighbor's bag." },
+				Horns = { "Rose: Beat four slimes, then take Tiny this snack prank." },
+				Neutral = { "Otto: Beat four slimes, then make something for Tiny." } } },
+			Requires = { Level = 5 },
 			Steps = {
-				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", Guide = "SlimeMeadow",
-					Start = "Grow to Lv5 to learn your first skill!", Obj = { Type = "Level", Level = 5, Skill = true } },
-				{ Text = "Hit monsters with a skill %d/%d", Guide = "SlimeMeadow", Start = "Dusty slimes move in groups. Skills use MP!",
-					Obj = { Type = "SkillHit", Min = 1, Count = 3 } },
+				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "SlimeMeadow",
+					Obj = { Type = "BasicKill", Kind = "Slime", Count = 4 } },
+				{ Text = "Pick up the lost bag", ShortName = "Lost bag", Guide = "LostBag", Obj = { Type = "Pickup", Spot = "LostBag", Radius = 8 },
+					Horns = { Text = "Get the snack parcel by Rose", ShortName = "Snack parcel", Guide = "SnackParcel",
+						Obj = { Type = "Pickup", Spot = "SnackParcel", Radius = 8 } },
+					Neutral = { Text = "Make something for Tiny %d/%d", ShortName = "Make it", Guide = "Blacksmith",
+						Obj = { Type = "Craft", Role = "Own", Count = 1 } } },
+				{ Text = "Give the bag back to its owner", ShortName = "Return bag", Npc = "Folk1", Obj = { Type = "Deliver" },
+					SetFlag = { Key = "Help", Value = "Bag" }, -- P1 ⑦: the neighbour's big wave (bible rule 3)
+					Horns = { Text = "Give Tiny the snack parcel", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Prank" } },
+					-- the artisan's made thing is used (Value Class = by craft: Smith the wheel rolls, Alch Tiny drinks and hops, Tame the
+					-- baby slime eats the treat and comes close; bible rule 5)
+					Neutral = { Text = "Give Tiny what you made", ShortName = "To Tiny", Npc = "Tiny", SetFlag = { Key = "Help", Value = "Class" } } },
+				{ Text = "Learn your first skill from Sir Gleam", ShortName = "Learn a skill", Npc = "Gleam", Obj = { Type = "Learn", Slot = "Q" },
+					Horns = { Text = "Learn your first skill from Rose", Npc = "Smokey" },
+					Neutral = { Text = "Learn your first skill from Otto", Npc = "Otto" } },
 			},
 			Reward = { Gold = 1 },
 		},
+		-- quest bible v3 H04 / R04 / N04 (P1 ⑦): the first chapter's ending. The side's townsperson ASKS (Bright / Rose / Tiny), the
+		-- player stands at the lamp and chooses where the dust goes: the shared lamp or their own light (a personal result: Story.Flags
+		-- Lamp = Common | Mine, Fx StoryScene; nobody else's lamp changes), then the townsperson reacts. Claim and the reward stay.
+		-- Old saves on the old steps start at the lamp (Story.Schema 4)
 		M1_4 = {
-			Kind = "Main", Chapter = 1, Title = "Report to Your Side", ShortName = "Report home", Claim = true,
+			Kind = "Main", Chapter = 1, Type = "Choice", Title = "A Light for the Lamp", ShortName = "The lamp", Claim = true,
+			Offer = { Npc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" }, Lines = {
+				Halo = { "Bright: Please try your dust in this lamp." },
+				Horns = { "Rose: Please show us what that dust can do." },
+				Neutral = { "Tiny: Please choose a home for our repaired lamp." } } },
 			Steps = {
-				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
-				{ Text = "Report to the Guide", Panel = true, Obj = { Type = "Talk" }, Lines = {
-					Halo = { "Hallie here! Now you know my name.", "Did you see the statues on the Heroes' Road? They are the knights who guarded the shards.",
-						"They say a Horn broke the Crown. Pure greed!\nBroken things get fixed. Right?",
-						"More shards are out there.\nWhat will you do with the next one?" },
-					Horns = { "Finders keepers! HA!", "See the lava cracks? Our horn power boils up from there!",
-						"They say a Halo broke it. So greedy. Typical!\nShiny! Finders keepers!",
-						"More shards are out there.\nWhat will you do with the next one?" },
-					Neutral = { "Fix first. Talk later.", "Nice dust. The guild doesn't grab. It shapes.",
-						"More shards are out there.\nWhat will you do with the next one?" },
-				} },
+				{ Text = "Go to the town lamp", ShortName = "To the lamp", Guide = "LampH", Obj = { Type = "Near", Spot = "LampH", Radius = 12 },
+					Horns = { Guide = "LampR", Obj = { Type = "Near", Spot = "LampR", Radius = 12 } },
+					Neutral = { Text = "Go to the Crossroads lamp", Guide = "LampN", Obj = { Type = "Near", Spot = "LampN", Radius = 12 } } },
+				{ Text = "Where does the dust go?", ShortName = "The dust", Panel = true, Guide = "LampH",
+					Lines = { All = { "The lamp is cold. Your dust glitters in your hand." } },
+					Obj = { Type = "Choice", Good = { Label = "Light the town lamp", Points = 0, Pick = "Common" },
+						Evil = { Label = "Keep the light for me", Points = 0, Pick = "Mine" },
+						Neutral = { A = "Light the town lamp", B = "Light my work lamp" },
+						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } },
+					Horns = { Guide = "LampR", Obj = { Type = "Choice", Good = { Label = "Light the lamp for all", Points = 0, Pick = "Common" },
+						Evil = { Label = "Shine it on my horns", Points = 0, Pick = "Mine" },
+						Neutral = { A = "Light the lamp for all", B = "Shine it on my horns" },
+						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } } },
+					Neutral = { Guide = "LampN", Obj = { Type = "Choice", Good = { Label = "Fix the town lamp", Points = 0, Pick = "Common" },
+						Evil = { Label = "Light my work lamp", Points = 0, Pick = "Mine" },
+						Neutral = { A = "Fix the town lamp", B = "Light my work lamp" },
+						Flag = { Key = "Lamp", Good = "Common", Evil = "Mine" } } } },
+				{ Text = "Back to Bright", ShortName = "Back to Bright", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
+					Lines = { All = { "Bright: Look at that!" } },
+					LinesBy = { From = "M1_4",
+						Good = { Halo = { "Bright: Look! Everyone is waving at you!" }, Horns = { "Rose: The whole town is glowing! Not bad, boss." },
+							Neutral = { "Tiny: Everyone's gathering round the lamp!" } },
+						Evil = { Halo = { "Bright: So shiny! …I'm covering my eyes, hee hee." }, Horns = { "Rose: Your shadow looks so silly! HA!" },
+							Neutral = { "Tiny: Your tools are sparkling!" } },
+						A = { All = { "Tiny: Everyone's gathering round the lamp!" } },
+						B = { All = { "Tiny: Your tools are sparkling!" } },
+						Default = { All = { "Bright: Look at that!" } } },
+					Horns = { Text = "Back to Rose", ShortName = "Back to Rose", Npc = "Smokey" },
+					Neutral = { Text = "Back to Tiny", ShortName = "Back to Tiny", Npc = "Tiny" } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 		},
@@ -3727,34 +3792,43 @@ Config.StoryQuests = {
 		-- 3 herbs -> AP1), N0T the pet tamer (Archer: 3 herbs -> T1); same title and 150 gold
 		N0 = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
+			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
+			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
 			Start = "Kit: Pick herbs, mine copper, then make something!",
 			Steps = {
 				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
 					{ Key = "a", Type = "Gather", Item = "Herb", Count = 3 },
 					{ Key = "b", Type = "Gather", Item = "CopperOre", Count = 2 },
 				} } },
-				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
+					Obj = { Type = "Match", Target = "Knot", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
 			},
 			Reward = { GoldN = 150, EquipCrafted = true },
 		},
 		N0A = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
+			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
+			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
 			Start = "Kit: Pick herbs, then brew something!",
 			Steps = {
 				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
-				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
+					Obj = { Type = "Match", Target = "Gem", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
 			},
 			Reward = { GoldN = 150 },
 		},
 		N0T = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
+			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
+			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
 			Start = "Kit: Pick herbs, then make pet treats!",
 			Steps = {
 				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
-				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
+					Obj = { Type = "Match", Target = "Patch", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
 			},
 			Reward = { GoldN = 150 },
 		},
@@ -4541,6 +4615,133 @@ table.insert(Config.TownNpcs.List, { Id = "Tiny", Name = "Npc_Tiny", Story = "Ti
 table.insert(Config.TownNpcs.List, { Id = "Rose", Name = "Npc_Rose", Story = "Smokey", Label = "Rose", At = Vector3.new(-18, 0, 424),
 	Look = Vector3.new(-18, 0, 380),
 	Colors = { Head = Color3.fromRGB(205, 150, 115), Torso = Color3.fromRGB(150, 60, 80), Legs = Color3.fromRGB(70, 50, 60) } })
+-- quest bible v3 P1 ② (게임성 개발 2, docs/design/quest_p1_server_contract_2026-10-15.md): the faction guides and Rex get
+-- temporary default bodies (the final looks come later). Kit stands beside the Crossroads anvil (Anvil + Side, TownNpcs.Spot)
+table.insert(Config.TownNpcs.List, { Id = "Hallie", Name = "Npc_Hallie", Story = "Hallie", Label = "Hallie",
+	At = Vector3.new(-16, 0, -428), Look = Vector3.new(0, 0, -420),
+	Colors = { Head = Color3.fromRGB(240, 205, 175), Torso = Color3.fromRGB(250, 235, 170), Legs = Color3.fromRGB(235, 235, 245) } })
+table.insert(Config.TownNpcs.List, { Id = "Magpie", Name = "Npc_Magpie", Story = "Magpie", Label = "Magpie",
+	At = Vector3.new(16, 0, 428), Look = Vector3.new(0, 0, 420),
+	Colors = { Head = Color3.fromRGB(215, 165, 130), Torso = Color3.fromRGB(110, 60, 130), Legs = Color3.fromRGB(55, 45, 60) } })
+table.insert(Config.TownNpcs.List, { Id = "Kit", Name = "Npc_Kit", Story = "Kit", Label = "Kit", Anvil = true, Behind = -8, Side = 7,
+	Colors = { Head = Color3.fromRGB(225, 180, 145), Torso = Color3.fromRGB(120, 150, 110), Legs = Color3.fromRGB(90, 75, 60) } })
+table.insert(Config.TownNpcs.List, { Id = "Rex", Name = "Npc_Rex", Story = "Rex", Label = "Rascal Rex",
+	At = Vector3.new(28, 0, 412), Look = Vector3.new(0, 0, 420),
+	Colors = { Head = Color3.fromRGB(200, 150, 120), Torso = Color3.fromRGB(170, 70, 60), Legs = Color3.fromRGB(60, 50, 50) } })
+
+-- P1 ②: the practice dummies beside each teacher (H00a / R00a / N00a). A workspace instance tagged StoryLandmark with Spot =
+-- the key moves a spot to it (like every landmark); PracticeN follows the Crossroads anvil like Kit (AnvilSpots)
+Config.StoryQuests.Landmarks.PracticeH = Vector3.new(-18, 0, -366)
+Config.StoryQuests.Landmarks.PracticeR = Vector3.new(-26, 0, 418)
+Config.StoryQuests.AnvilSpots = { PracticeN = { Behind = -8, Side = -7 } }
+-- P1 ① Practice steps: a manual basic swing within Radius of the Spot that faces it (dot of the look and the way to the spot)
+Config.StoryQuests.PracticeFacing = 0.3
+-- P1 ④ (agreed with game dev 1): shape matching (OpenPanel "Match" { Id, Target, Options }) and the workbench timing (OpenPanel
+-- "Timing" { Id }: five taps on CraftView's practice ring, StoryAction(Id, "Timing", "Good/Tries")). Shape = one of the six the
+-- client draws without art (Ring, Disc, Square, Diamond, Cross, Bars); a set's three never share a shape or a colour
+Config.StoryQuests.TimingPass = 3 -- good taps of TimingTries to pass
+-- A23-205 (user 10/15): the daily repeat requests (Defs with Repeat = "Daily", at most 12 kinds): a player takes at most this many a
+-- KST day (their own picks; one done already pays), then the other askers' '!' dims. Read by the repeat engine (next step)
+Config.StoryQuests.RepeatDailyMax = 5
+Config.StoryQuests.TimingTries = 5
+Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
+-- P1 ⑧ (bible §13-3): the paths of the short chases and escorts (Obj Type "Chase" / "Escort", Path = a key here): waypoints in
+-- order (at least two), flat X / Z (the client puts the mover on the ground). Quest packs add theirs (pack.Paths)
+Config.StoryQuests.Paths = {}
+Config.QuestShapes = {
+	Knot = { Shape = "Ring", Color = Color3.fromRGB(240, 196, 70) },
+	Seal = { Shape = "Disc", Color = Color3.fromRGB(150, 90, 200) },
+	Tag = { Shape = "Square", Color = Color3.fromRGB(80, 170, 230) },
+	Gem = { Shape = "Diamond", Color = Color3.fromRGB(230, 90, 110) },
+	Patch = { Shape = "Cross", Color = Color3.fromRGB(110, 200, 120) },
+	Rack = { Shape = "Bars", Color = Color3.fromRGB(200, 140, 80) },
+}
+
+-- quest bible v3 H00a / R00a / N00a (P1 ②): the teacher's first lesson, offered at the teacher once the first mission met them
+-- (Requires.TeacherMet). Accept = the teacher shows one basic attack (Fx StoryScene Key "Demo"), the player hits the dummy once
+-- with a basic attack (a borrowed practice tool while bare-handed: attribute PracticeTool), then hands the tool back. Optional:
+-- declining blocks nothing (the Forge, the story and Lv5 go on); no reward of its own (a record only)
+Config.StoryQuests.Defs.H_Basics = {
+	Kind = "Sub", Title = "Sir Gleam's Lesson", ShortName = "First lesson", Speaker = "Gleam", Factions = { Halo = true },
+	Requires = { TeacherMet = true },
+	Offer = { Npc = "Gleam", AcceptScene = "Demo", Lines = { All = { "Sir Gleam: Watch my swing, then try one hit." } } },
+	Steps = {
+		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeH",
+			Obj = { Type = "Practice", Spot = "PracticeH", Radius = 10, Count = 1 } },
+		{ Text = "Give the practice tool back to Sir Gleam", ShortName = "Return tool", Npc = "Gleam", Guide = "PracticeH",
+			Obj = { Type = "Deliver" } },
+	},
+}
+Config.StoryQuests.Defs.R_Basics = {
+	Kind = "Sub", Title = "Rose's Lesson", ShortName = "First lesson", Speaker = "Smokey", Factions = { Horns = true },
+	Requires = { TeacherMet = true },
+	Offer = { Npc = "Smokey", AcceptScene = "Demo", Lines = { All = { "Rose: Watch my hit, then try one of your own." } } },
+	Steps = {
+		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeR",
+			Obj = { Type = "Practice", Spot = "PracticeR", Radius = 10, Count = 1 } },
+		{ Text = "Give the practice tool back to Rose", ShortName = "Return tool", Npc = "Smokey", Guide = "PracticeR",
+			Obj = { Type = "Deliver" } },
+	},
+}
+Config.StoryQuests.Defs.N_Basics = {
+	Kind = "Sub", Title = "Otto's Lesson", ShortName = "First lesson", Speaker = "Smith", Factions = { Neutral = true },
+	Requires = { TeacherMet = true },
+	Offer = { Npc = "Otto", AcceptScene = "Demo", Lines = { All = { "Otto: Watch my hit, then try it with your tool." } } },
+	Steps = {
+		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeN",
+			Obj = { Type = "Practice", Spot = "PracticeN", Radius = 10, Count = 1 } },
+		{ Text = "Show Otto your hit", ShortName = "Back to Otto", Npc = "Otto", Guide = "Blacksmith", Obj = { Type = "Deliver" } },
+	},
+}
+for _, id in { "H_Basics", "R_Basics", "N_Basics" } do table.insert(Config.StoryQuests.Subs, id) end
+
+-- quest bible v3 H02 / R02 (P1 ③): the band from the Slime Prince, at Lv3. Halo: Bright holds it beside her ribbon - show it or
+-- hide it for now (her wrist hides / she peeks on tiptoe). Horns: Rose asks for the biggest victory pose at the pose spot - a
+-- cheer (arms up: the paper crown drops on my head) or a wave (a deep bow); Rose laughs either way (rule 4). A record only:
+-- no reward, no score (the M1_2 clue slot; bible §3 'no new pay')
+Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
+-- P1 ⑤ the Lv5 test's help: the neighbour's bag lies at the meadow entrance (Halo), Rose's snack parcel beside her (Horns); the
+-- neighbour is Folk1 of Halo town (now a quest NPC too: it keeps its TownFolk bubbles)
+Config.StoryQuests.Landmarks.LostBag = Vector3.new(188, 0, -12)
+Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
+-- P1 ⑦ the lamps of the first chapter's ending (a placed StoryLandmark model with the same Spot moves them)
+Config.StoryQuests.Landmarks.LampH = Vector3.new(30, 0, -440)
+Config.StoryQuests.Landmarks.LampR = Vector3.new(-30, 0, 440)
+Config.StoryQuests.Landmarks.LampN = Vector3.new(-20, 0, -20)
+for _, e in Config.TownNpcs.List do
+	if e.Id == "Folk1" then
+		e.Story = e.Story or "Folk1"
+		e.Label = e.Label or "Neighbor"
+	end
+end
+-- P1 ⑤: the first skill waits for the Lv5 test (Q is taught only at M1_3's Learn step or after it; StoryQuestService.LearnOpen)
+Config.Skills.Learn.Gate = { Q = "M1_3" }
+Config.StoryQuests.Defs.H_Band = {
+	Kind = "Sub", Title = "Two-Color Band", ShortName = "The band", Speaker = "Bright", Factions = { Halo = true },
+	Requires = { Done = { "M1_1" }, Level = 3 },
+	Offer = { Npc = "Bright", Lines = { All = { "Bright: Please hold that band beside my ribbon." } } },
+	Steps = {
+		{ Text = "Show Bright the band", ShortName = "Show the band", Npc = "Bright", Panel = true,
+			Lines = { All = { "Bright: Gold and purple… just like my ribbon!" } },
+			Obj = { Type = "Choice", Good = { Label = "Show it", Points = 0, Pick = "Show" },
+				Evil = { Label = "Hide it for now", Points = 0, Pick = "Hide" },
+				Neutral = { A = "Show it", B = "Hide it for now" },
+				Flag = { Key = "Band", Good = "Show", Evil = "Hide" } } },
+	},
+}
+Config.StoryQuests.Defs.R_Band = {
+	Kind = "Sub", Title = "Victory Pose", ShortName = "Victory pose", Speaker = "Smokey", Factions = { Horns = true },
+	Requires = { Done = { "M1_1" }, Level = 3 },
+	Offer = { Npc = "Smokey", Lines = { All = { "Rose: Please show me your biggest victory pose." } } },
+	Steps = {
+		{ Text = "Strike a pose on the spot (cheer or wave)", ShortName = "Strike a pose", Guide = "PoseSpot",
+			Obj = { Type = "Emote", Spot = "PoseSpot", Radius = 10, Allowed = { cheer = "Evil", wave = "Good" },
+				Flag = { Key = "Crown", Good = "Bow", Evil = "Paper" } } },
+	},
+}
+table.insert(Config.StoryQuests.Subs, "H_Band")
+table.insert(Config.StoryQuests.Subs, "R_Band")
+
 -- A23-193: Otto teaches the artisans their skills: his body gets a Talk prompt (Story "Otto": no quest step uses it; the
 -- anvil keeps the weapon shop prompt)
 for _, e in Config.TownNpcs.List do
@@ -6269,6 +6470,7 @@ Config.Loot = {
 		-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): one gathered / crafted material at a time (SellItem)
 		SellItemDone = "Sold %d %s! Gold +%s", -- (n, item name, gold)
 		SellItemNone = "You don't have that many.",
+		SellBound = "Quest rewards can't be sold.", -- A23-206: the bound ones (the free ones of the same item still sell)
 	},
 }
 -- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
@@ -8735,6 +8937,14 @@ Config.Analytics.Funnels = {
 }
 -- A23-113 #2: story quests whose steps are a funnel's steps (quest id -> funnel name; step i done = Steps[i]; StoryQuestService.StepDone)
 Config.Analytics.QuestFunnels = { KO1 = "FirstKO" }
+-- quest P1 ⑨ (bible §13 / §15 ⑨): the first 30 minutes measured. QuestAccept (value = minutes of play, fields = quest id, faction)
+-- when one of these is accepted, QuestDecline (1, quest id), QuestMiniMiss (1, "Match" | "Timing", quest id) and once per account
+-- MinutesToFirstSkill (minutes of play, faction) when the Lv5 test's Learn step passes
+Config.Analytics.QuestTimes = {
+	Accept = { M1_1 = true, M1_3 = true, M1_4 = true, H_Basics = true, R_Basics = true, N_Basics = true, H_Band = true,
+		R_Band = true, Lunch1 = true, N0 = true, N0A = true, N0T = true },
+	FirstSkill = { Quest = "M1_3", Step = 4, Event = "MinutesToFirstSkill" },
+}
 -- A23-113 #2: minutes of play (data.PlaytimeSeconds) it took to reach Level (the custom event MinutesToLv5, once per account,
 -- when the level is reached; field 1 = the faction)
 Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }
@@ -10643,6 +10853,7 @@ Config.Market = {
 		Off = "The market is closed.",
 		Own = "That's your own listing.",
 		NoItem = "You don't have that.",
+		Bound = "Quest rewards can't be traded.", -- A23-206: only the free ones of an item may be listed
 		CantSell = "You can't sell that.",
 		InHand = "Unequip it first.",
 	},
@@ -11452,5 +11663,86 @@ Config.ClientText.BagUI = {
 	SellWhere = "Sell it at the Forge's anvil.",
 	From = "From: %s",
 }
+
+----------------------------------------------------------------- quest data modules (최종 검수 10/15; docs/design/quest_data_contract_2026-10-15.md)
+-- The whole quest bible is written as data packs in Shared/Quests (one ModuleScript per side + chapter: Halo_Ch2, Horns_Ch2,
+-- Artisan_Ch2, Common_Web ...). Each returns a pack table; Config.AddQuests merges it here at load (module name order), so every
+-- reader keeps reading Config.StoryQuests. A pack:
+--   Faction = "Halo" | "Horns" | "Neutral" | nil  (the side its Variants are for)
+--   Defs = { [id] = def }            new quests (an id already defined = an error: never overwrite a quest)
+--   Subs = { id, ... }               appended to StoryQuests.Subs (offer order)
+--   Main = { { After = id | nil, Ids = { id, ... } }, ... }   main quests put into StoryQuests.Main after `After` (nil = the end);
+--                                    a main quest with Factions is skipped by the other sides (StoryQuestService nextMain)
+--   Variants = { [shared id] = { Steps = { [i] = step }, Offer = { Npc = "X", Lines = { ... } } } }
+--                                    this side's own version of a shared quest (M2_2 ...): each step becomes the step's
+--                                    [Faction] override (stepOf), the offer NPC / lines this side's. A side needs the same number
+--                                    of steps as the base quest (a step the side does not need: Obj = { Type = "Skip" })
+--   Landmarks / Speakers / Portraits = { [key] = value }   added (an existing key = an error)
+--   Npcs = { TownNpcs.List entries }  new temporary bodies
+function Config.AddQuests(pack, name)
+	-- (no top-level local here: Config sits near the 200-locals limit)
+	local function questError(_, text)
+		error("quest pack " .. tostring(name) .. ": " .. text, 0)
+	end
+	local SQ = Config.StoryQuests
+	if type(pack) ~= "table" then questError(name, "not a table") end
+	for id, def in type(pack.Defs) == "table" and pack.Defs or {} do
+		if SQ.Defs[id] ~= nil then questError(name, "quest id " .. tostring(id) .. " is defined already") end
+		SQ.Defs[id] = def
+	end
+	for _, id in type(pack.Subs) == "table" and pack.Subs or {} do
+		if table.find(SQ.Subs, id) then questError(name, "sub " .. tostring(id) .. " is listed already") end
+		table.insert(SQ.Subs, id)
+	end
+	for _, block in type(pack.Main) == "table" and pack.Main or {} do
+		local at = block.After and table.find(SQ.Main, block.After) or #SQ.Main
+		if block.After and not at then questError(name, "Main.After " .. tostring(block.After) .. " is not a main quest") end
+		for i, id in type(block.Ids) == "table" and block.Ids or {} do
+			if table.find(SQ.Main, id) then questError(name, "main " .. tostring(id) .. " is listed already") end
+			table.insert(SQ.Main, at + i, id)
+		end
+	end
+	local side = pack.Faction
+	for id, var in type(pack.Variants) == "table" and pack.Variants or {} do
+		local def = SQ.Defs[id]
+		if type(def) ~= "table" then questError(name, "variant of an unknown quest " .. tostring(id)) end
+		if side ~= "Halo" and side ~= "Horns" and side ~= "Neutral" then questError(name, "a variant pack needs Faction") end
+		for i, step in type(var.Steps) == "table" and var.Steps or {} do
+			if type(def.Steps[i]) ~= "table" then questError(name, id .. " has no step " .. tostring(i)) end
+			def.Steps[i][side] = step
+		end
+		if type(var.Offer) == "table" then
+			def.Offer = def.Offer or { Lines = {} }
+			if type(def.Offer.Npc) ~= "table" then
+				local shared = def.Offer.Npc
+				def.Offer.Npc = { Halo = shared, Horns = shared, Neutral = shared }
+			end
+			def.Offer.Npc[side] = var.Offer.Npc or def.Offer.Npc[side]
+			def.Offer.Lines = def.Offer.Lines or {}
+			local lines = type(var.Offer.Lines) == "table" and (var.Offer.Lines.All or var.Offer.Lines[side]) or nil
+			if lines then def.Offer.Lines[side] = lines end
+		end
+	end
+	for _, field in { "Landmarks", "Speakers", "Portraits", "Paths" } do
+		for key, value in type(pack[field]) == "table" and pack[field] or {} do
+			if SQ[field][key] ~= nil then questError(name, field .. "." .. tostring(key) .. " exists already") end
+			SQ[field][key] = value
+		end
+	end
+	for _, entry in type(pack.Npcs) == "table" and pack.Npcs or {} do table.insert(Config.TownNpcs.List, entry) end
+end
+
+-- the packs in Shared/Quests, in name order (offline tests without the folder load none; their own harness may call AddQuests)
+do
+	local okFolder, folder = pcall(function() return script.Parent:FindFirstChild("Quests") end)
+	if okFolder and folder then
+		local mods = {}
+		for _, m in folder:GetChildren() do
+			if m:IsA("ModuleScript") then table.insert(mods, m) end
+		end
+		table.sort(mods, function(a, b) return a.Name < b.Name end)
+		for _, m in mods do Config.AddQuests(require(m), m.Name) end
+	end
+end
 
 return Config

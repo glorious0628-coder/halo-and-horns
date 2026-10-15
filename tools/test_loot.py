@@ -136,8 +136,8 @@ MUTATIONS = [
      "\tif false then\n"),
     ("bag: a held kind refused too", "LOOT_SOURCE", "\tif have < 1 and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n",
      "\tif Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n"),
-    ("bag: a reward refused when full", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n)\n"),
-    ("bag: every source skips the slots", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, true)\n"),
+    ("bag: a reward refused when full", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, false, source == \"Reward\")\n"),
+    ("bag: every source skips the slots", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, true, source == \"Reward\")\n"),
     ("bag: no Full line", "LOOT_SOURCE", "\t\tfullNotice(player, \"Bag\", Config.BagSlots.Text.Full)\n", ""),
     ("bag: spares never full", "LOOT_SOURCE", "Config.BagSlots.Counts.Spare and not Config.BagHasRoom(data) then return false end", "false then return false end"),
     ("bag: slots past Max", "LOOT_SOURCE", "\tlocal after = math.min(Config.BagSlots.Max, before + n)\n", "\tlocal after = before + n\n"),
@@ -415,6 +415,14 @@ MUTATIONS = [
     ("monster hit ignores enhancement", "COMBAT_SOURCE",
      "local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, \"WeaponEnhance\", 0))",
      "local dmg = Config.WeaponDamage(tier, level, 0)"),
+    # --- A23-206 bound quest rewards
+    ("A23-206: rewards not bound", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", false)\n"),
+    ("A23-206: the market takes bound ones", "LOOT_SOURCE", "\tif mode == \"Trade\" and have - before < n then return false end\n", ""),
+    ("A23-206: a use takes free ones first", "LOOT_SOURCE", "\t\tBOUND.Used(data, id, n, before)\n\tend\n\tpublish(player, data)", "\t\tBOUND.Set(data, id, math.min(before, math.floor(num(data.Items[id]))))\n\tend\n\tpublish(player, data)"),
+    ("A23-206: the Forge sells bound ones", "LOOT_SOURCE", "\tif BOUND.Free(data, id) < n then notify(player, TXT.SellBound or TXT.SellItemNone, \"bad\"); return end\n", ""),
+    ("A23-206: the sell-all sells bound ones", "LOOT_SOURCE", "\t\t\tlocal bound = BOUND.Of(data, id) -- A23-206: bound ones stay\n", "\t\t\tlocal bound = 0\n"),
+    ("A23-206: no Bound in the bag push", "LOOT_SOURCE", "Spares = spares, Bound = bound }", "Spares = spares }"),
+    ("A23-206: a saved bound count above the held kept", "LOOT_SOURCE", "local c = type(id) == \"string\" and math.min(math.floor(num(n)), math.floor(num(items[id]))) or 0", "local c = type(id) == \"string\" and math.floor(num(n)) or 0"),
 ]
 
 

@@ -515,8 +515,8 @@ runGroup("debug aids", function()
 	w.Story.Refresh(r)
 	check(w:Track(rd, "KO1") == nil and #done == 0 and #w.XP == 0 and #w.Granted == 0 and #w.GoldGiven == gold0, "... never restarted, no QuestDone, no reward", "")
 	-- a main quest done: the main slot is free
-	local m, md = joinKO(w, 1604, "Halo", { Level = 3, Done = { M1_1 = true } })
-	check(md.Story.Main.Id == "M1_3", "M1_3 is the active main quest (10/15: M1_1 -> M1_3)", show(md.Story.Main))
+	local m, md = joinKO(w, 1604, "Halo", { Level = 5, Done = { M1_1 = true } }) -- P1 ⑤: M1_3 (the Lv5 test) from Lv5
+	check(md.Story.Main.Id == "M1_3", "M1_3 is the active main quest (10/15: M1_1 -> M1_3; no teacher body here: it starts by itself)", show(md.Story.Main))
 	check(w.Story.DebugDone(m, "M1_3") == "ok" and md.Story.Done.M1_3 == true and md.Story.Main.Id ~= "M1_3", "DebugDone on the active main quest: done, the slot is free", show(md.Story.Main))
 	check(string.find(w.Story.DebugDone(m, "Nope"), "no such quest", 1, true) ~= nil and w.Story.DebugDone(w:NewPlayer(1698, {}), "KO1") == "no data", "unknown quest / no save: refused", "")
 end)

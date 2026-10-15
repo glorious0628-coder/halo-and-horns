@@ -35,6 +35,10 @@ local TUT_DONE = TUT_CFG.Steps.Done -- 99
 -- A23-74: the Forge step's settings (Config.Tutorial.Forge) and its session state (Late[Player] = the late gift for an
 -- old save was tried this session)
 local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {}, AcceptedAt = {}, Reached = {} }
+-- quest bible v3 H00 / R00 / N00 (P1 ②, docs/design/quest_p1_server_contract_2026-10-15.md): the first mission is talked through
+-- the faction guide's body (Config.Tutorial.Guides) and, for Halo / Horns, the teacher's (Config.Skills.Learn.Teachers) at the
+-- step Teacher (4) before the Forge. No body in this world = the old way (the row tap / no teacher step)
+local TEACH = { Step = TUT_CFG.Steps.Teacher }
 local TUT_TARGET = TUT_CFG.QuestKills
 local TUT_GOLD = TUT_CFG.QuestRewardGold
 local TUT_XP = TUT_CFG.QuestRewardXP or 0
@@ -534,6 +538,67 @@ local function setStep(player, step)
 	end -- A23-130: the hunt starts without a line (the pinned row shows it)
 end
 
+-- P1 ②: where npcId's body stands (the StoryNpc-tagged model with that NpcId), or nil when this world has none
+function TEACH.Body(npcId)
+	if type(npcId) ~= "string" then return nil end
+	local okT, tagged = pcall(function()
+		return game:GetService("CollectionService"):GetTagged((Config.StoryQuests and Config.StoryQuests.NpcTag) or "StoryNpc")
+	end)
+	if not okT or type(tagged) ~= "table" then return nil end
+	for _, inst in tagged do
+		if inst:GetAttribute("NpcId") == npcId then
+			local okP, pos = pcall(function()
+				if inst:IsA("Model") then return inst:GetPivot().Position end
+				return inst.Position
+			end)
+			if okP and typeof(pos) == "Vector3" then return pos end
+		end
+	end
+	return nil
+end
+
+-- the player stands within the story NPC range of npcId's body
+function TEACH.Near(player, npcId)
+	local pos, root = TEACH.Body(npcId), Util.GetRoot(player)
+	return pos ~= nil and root ~= nil and Util.FlatDistance(root.Position, pos) <= num((Config.StoryQuests or {}).NpcRange, 16)
+end
+
+-- this player's guide NpcId while it has a body (nil = no body: the row tap opens the guide's lines as before)
+function TEACH.Guide(player)
+	local g = TUT_CFG.Guides
+	local id = type(g) == "table" and g[getFaction(player)] or nil
+	return type(id) == "string" and TEACH.Body(id) ~= nil and id or nil
+end
+
+-- this player's teacher NpcId for the Teacher step (Halo / Horns with a body; the artisans meet Otto at the Forge itself)
+function TEACH.Teacher(player)
+	local f = getFaction(player)
+	if (f ~= "Halo" and f ~= "Horns") or TEACH.Step == nil then return nil end
+	local L = Config.Skills and Config.Skills.Learn
+	local id = type(L) == "table" and type(L.Teachers) == "table" and L.Teachers[f] or nil
+	return type(id) == "string" and TEACH.Body(id) ~= nil and id or nil
+end
+
+-- the name a row says for an NpcId (the guide's Welcome name, the teacher's Config.SkillTeacherName)
+function TEACH.Name(player, npcId)
+	local w = TUT_CFG.Welcome and TUT_CFG.Welcome[getFaction(player)]
+	if type(w) == "table" and npcId == (TUT_CFG.Guides or {})[getFaction(player)] and type(w.Name) == "string" then return w.Name end
+	local ok, name = pcall(Config.SkillTeacherName, getFaction(player))
+	return ok and type(name) == "string" and name or npcId
+end
+
+-- after the teacher (or when there is none): the Forge while bare-handed with an anvil in the world, else the mission is done
+function TEACH.After(player)
+	if STEP_FORGE and needsFirstWeapon(getData(player)) then
+		if FORGE.Anvil() then
+			setStep(player, STEP_FORGE)
+			return
+		end
+		FORGE.Give(player, "first weapon (no anvil)")
+	end
+	finishFirst(player)
+end
+
 local function canWelcome(player)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players
 		or not Util.IsAlive(player) then return false end
@@ -553,6 +618,7 @@ end
 local function onRequestTutorial(player, ...)
 	if select("#", ...) ~= 0 then return end
 	if not canWelcome(player) then return end
+	if TEACH.Guide(player) then return end -- P1 ②: the guide has a body: talking to it opens the lines (the row only guides)
 	if not Util.RateLimit(player, "RequestTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
 	openWelcome(player)
 end
@@ -598,12 +664,19 @@ end
 local function onAcceptTutorial(player, ...)
 	if select("#", ...) ~= 0 or not canWelcome(player) then return end
 	if not Util.RateLimit(player, "AcceptTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
+	local guide = TEACH.Guide(player)
+	if guide and not TEACH.Near(player, guide) then return end -- P1 ②: accepted next to the guide's body
 	welcomeShown[player] = true
 	S.PlayerService.SetStat(player, "TutorialKills", 0) -- a fresh acceptance never inherits stale kills
 	-- A23-74 weapon first: a bare-handed player without the first weapon walks to the Forge (A23-88: no automatic move);
 	-- one holding a weapon already goes on to the travel step. 검수 2026-10-07: with no anvil in the world (the weapon shop
 	-- closed) the gift comes at once and the mission goes on, never stuck at the Forge step
 	FORGE.AcceptedAt[player] = os.clock()
+	-- P1 ②: Halo / Horns meet their teacher first (step Teacher; the Forge follows), when the teacher has a body here
+	if TEACH.Teacher(player) then
+		setStep(player, TEACH.Step)
+		return
+	end
 	if STEP_FORGE and needsFirstWeapon(getData(player)) then
 		if FORGE.Anvil() then
 			setStep(player, STEP_FORGE)
@@ -677,8 +750,36 @@ local function tryTutorial(player)
 		end
 		return
 	end
+	if step == TEACH.Step then
+		-- P1 ②: the teacher's body is gone from this world: never stuck at the step
+		if not TEACH.Teacher(player) then TEACH.After(player) end
+		return
+	end
 	if step ~= STEP_WELCOME or welcomeShown[player] then return end
+	if TEACH.Guide(player) then return end -- P1 ②: no automatic lines: the player walks to the guide (the row guides there)
 	openWelcome(player)
+end
+
+-- P1 ② (StoryQuestService.TalkToNpc asks first): a talk to the guide opens the first mission's lines ("Welcome"); a talk to the
+-- teacher at the Teacher step meets them (saved mark TeacherMet: the lesson is offered in the same talk) and moves on to the
+-- Forge ("Teacher"). nil = this talk is not the first mission's
+function M.TalkNpc(player, npcId)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or type(npcId) ~= "string" then return nil end
+	local step = getStep(player)
+	if step == STEP_WELCOME and npcId == TEACH.Guide(player) and canWelcome(player) and TEACH.Near(player, npcId) then
+		openWelcome(player)
+		return "Welcome"
+	end
+	if step == TEACH.Step and npcId == TEACH.Teacher(player) and TEACH.Near(player, npcId) then
+		local sq = S.StoryQuestService
+		if type(sq) == "table" and type(sq.Mark) == "function" then
+			local ok, err = pcall(sq.Mark, player, "TeacherMet")
+			if not ok then Util.Warn(TAG, "Mark TeacherMet: " .. tostring(err)) end
+		end
+		TEACH.After(player)
+		return "Teacher"
+	end
+	return nil
 end
 
 local function tutorialKill(player, info)
@@ -723,6 +824,16 @@ local function nextGoalText(data, player)
 	if typeof(player) == "Instance" and type(TUT_MESSAGES.NextLearn) == "string"
 		and num(player:GetAttribute("SkillLearnReady")) > num(data.SkillSlots) then
 		return string.format(TUT_MESSAGES.NextLearn, Config.SkillTeacherName(player:GetAttribute("Faction"))), "SkillLearn", nil
+	end
+	-- P1 ⑤: Lv5 reached but the first skill waits for the teacher's test (not taken yet): go to the teacher
+	if typeof(player) == "Instance" and type(TUT_MESSAGES.NextTest) == "string" and num(data.SkillSlots) < 1
+		and num(data.Rebirths) < 1 and level >= num((Config.Skills.Unlock or {}).Q, 5) then
+		local story = S.StoryQuestService
+		local okL, open = false, nil
+		if type(story) == "table" and type(story.LearnOpen) == "function" then okL, open = pcall(story.LearnOpen, player, "Q") end
+		if okL and open == false then
+			return string.format(TUT_MESSAGES.NextTest, Config.SkillTeacherName(player:GetAttribute("Faction"))), "SkillTest", nil
+		end
 	end
 	local iron = Config.Weapons[IRON_TIER]
 	local owned = math.floor(num(data.WeaponOwnedMask, 1))
@@ -821,6 +932,19 @@ local function tutorialEntry(player, data)
 		local name = type(guide) == "table" and type(guide.Name) == "string" and guide.Name or "the Guide"
 		entry.Text = string.format(TUT_MESSAGES.Welcome or "Tap here: first quest from %s", name)
 		entry.ShortName = type(TUT_SHORT.Welcome) == "string" and string.format(TUT_SHORT.Welcome, name) or nil
+		-- P1 ②: the guide has a body: the row walks there (GuideNpc = its NpcId; the talk opens the lines)
+		local body = TEACH.Guide(player)
+		if body then
+			entry.Text = string.format(TUT_MESSAGES.WelcomeBody or "Talk to %s", name)
+			entry.GuideNpc = body
+		end
+	elseif step == TEACH.Step then
+		-- P1 ②: meet the teacher (GuideNpc = the teacher's NpcId)
+		local teacher = TEACH.Teacher(player)
+		local name = TEACH.Name(player, teacher or "")
+		entry.Text = string.format(TUT_MESSAGES.Teacher or "Meet %s at the town gate", name)
+		entry.ShortName = type(TUT_SHORT.Teacher) == "string" and string.format(TUT_SHORT.Teacher, name) or nil
+		entry.GuideNpc = teacher
 	elseif step == STEP_GUIDE then
 		entry.Text = TUT_MESSAGES.Travel or "Go to the Squishy Meadow · Menu > Travel > Squishy Meadow"
 		entry.ShortName = TUT_SHORT.Travel

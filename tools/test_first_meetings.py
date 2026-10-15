@@ -70,7 +70,7 @@ MUTATIONS = [
     ("Requires.Seen reads the wrong table", ST, "if req.Seen and st.First[req.Seen] ~= true then return false end",
      "if req.Seen and st.Done[req.Seen] ~= true then return false end"),
     ("the meetings are never checked", ST, LOOP, "\tif false then\n"),
-    ("a meeting is not remembered", ST, "\t\t\tst.First[name] = true\n\t\t\tchanged = true\n\t\tend\n\tend\n\t-- main chain", "\t\t\tchanged = true\n\t\tend\n\tend\n\t-- main chain"),
+    ("a meeting is not remembered", ST, "\t\t\tst.First[name] = true\n\t\t\tchanged = true\n\t\tend\n\tend\n", "\t\t\tchanged = true\n\t\tend\n\tend\n"),
     ("any item counts as a scroll", ST, HOLD, "if type(def) == \"table\" and num(n) > 0 then return true end"),
     ("an empty stack counts", ST, HOLD, "if type(def) == \"table\" and def.Kind == rule.HoldKind then return true end"),
     ("the bag is never read", ST, "if type(rule.HoldKind) == \"string\" and type(data.Items) == \"table\" then", "if false then"),

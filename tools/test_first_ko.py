@@ -217,7 +217,8 @@ def static() -> tuple[int, list[str]]:
     # nothing else reports a happening: a client has no way to send one (StoryAction is Open / Talk / Choose, and since
     # A23-199 Accept / Decline an offer, Pickup / Deliver - steps the server checks itself, never a named happening)
     check(story.count("OnServerEvent:Connect(") == 1, "StoryQuestService has one remote handler (StoryAction)")
-    check(re.search(r'action == "(?!Open"|Talk"|Choose"|Accept"|Decline"|Pickup"|Deliver")\w+"',
+    # quest P1: Emote / Match / Timing are answers the server checks (the step, the place, its own panel), never a happening
+    check(re.search(r'action == "(?!Open"|Talk"|Choose"|Accept"|Decline"|Pickup"|Deliver"|Emote"|Match"|Timing")\w+"',
                     function_block(story, "local function onStoryAction(")) is None
           and "StoryQuestService.Event(" not in function_block(story, "local function onStoryAction("),
           "StoryAction has no action that could report a happening")

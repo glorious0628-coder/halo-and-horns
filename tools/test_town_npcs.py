@@ -67,7 +67,7 @@ MUTATIONS = [
     ("ground: a body is placed without its Y", T, "TownNpcs.GroundY(spot.X, spot.Z, { folder }, entry.Y)\n\tif not ground then return false", "TownNpcs.GroundY(spot.X, spot.Z, { folder })\n\tif not ground then return false"),
     ("spot: a NaN spot passes", T, "if typeof(at) ~= \"Vector3\" or not finite(at.X) or not finite(at.Z) or", "if typeof(at) ~= \"Vector3\" or"),
     ("spot: a far spot passes", T, " or math.abs(at.X) > num(C.MaxCoord, 3000) or math.abs(at.Z) > num(C.MaxCoord, 3000) then", " then"),
-    ("spot: Otto in front of the anvil", T, "return { X = anvil.Position.X + dx / len * back, Z = anvil.Position.Z + dz / len * back,", "return { X = anvil.Position.X - dx / len * back, Z = anvil.Position.Z - dz / len * back,"),
+    ("spot: Otto in front of the anvil", T, "local x = anvil.Position.X + dx / len * back - dz / len * side", "local x = anvil.Position.X - dx / len * back - dz / len * side"),
     ("spot: Otto looks away", T, "LookX = center.X, LookZ = center.Z }", "LookX = anvil.Position.X * 2, LookZ = anvil.Position.Z * 2 }"),
     ("spot: no anvil still builds Otto", T, "\t\tlocal anvil = findAnvil()\n\t\tif not anvil then return nil end\n", "\t\tlocal anvil = findAnvil() or { Position = Vector3.new(30, 0, 30) }\n"),
     ("spot: a part named Anvil anywhere", T, "if anvil and anvil:IsA(\"BasePart\") then return anvil end", "if anvil then return anvil end"),

@@ -132,7 +132,21 @@ MUTATIONS = [
      "\tif FORGE.Late[player] then return end\n"),
     # --- the save
     ("save: the Forge step reset at load", D,
-     "and d.TutorialStep ~= steps.Done and d.TutorialStep ~= steps.Forge then", "and d.TutorialStep ~= steps.Done then"),
+     "and d.TutorialStep ~= steps.Done and d.TutorialStep ~= steps.Forge and", "and d.TutorialStep ~= steps.Done and"),
+    # --- quest P1 ② (the guide's and the teacher's bodies)
+    ("save: the Teacher step reset at load", D, "(steps.Teacher == nil or d.TutorialStep ~= steps.Teacher)", "true"),
+    ("P1: the welcome lines open by themselves beside a guide body", Q,
+     "\tif TEACH.Guide(player) then return end -- P1 ②: no automatic lines", "\tif false then return end -- P1 ②: no automatic lines"),
+    ("P1: the row tap opens the lines beside a guide body", Q,
+     "\tif TEACH.Guide(player) then return end -- P1 ②: the guide has a body", "\tif false then return end -- P1 ②: the guide has a body"),
+    ("P1: [Accept] from anywhere", Q, "\tif guide and not TEACH.Near(player, guide) then return end", ""),
+    ("P1: no teacher step", Q, "\tif TEACH.Teacher(player) then\n\t\tsetStep(player, TEACH.Step)", "\tif false then\n\t\tsetStep(player, TEACH.Step)"),
+    ("P1: the teacher met from afar", Q, "if step == TEACH.Step and npcId == TEACH.Teacher(player) and TEACH.Near(player, npcId) then",
+     "if step == TEACH.Step and npcId == TEACH.Teacher(player) then"),
+    ("P1: the meeting is not saved", Q, "local ok, err = pcall(sq.Mark, player, \"TeacherMet\")", "local ok, err = true, nil"),
+    ("P1: stuck at the Teacher step without a body", Q, "\t\tif not TEACH.Teacher(player) then TEACH.After(player) end\n", ""),
+    ("P1: the Teacher row has no NPC", Q, "\t\tentry.GuideNpc = teacher\n", ""),
+    ("P1: the lesson before the meeting", C, "\tRequires = { TeacherMet = true },\n\tOffer = { Npc = \"Gleam\"", "\tRequires = {},\n\tOffer = { Npc = \"Gleam\""),
 ]
 
 

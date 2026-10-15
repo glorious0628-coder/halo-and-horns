@@ -868,6 +868,31 @@ function TelemetryService.Start()
 		local stepName = def and type(def.Steps) == "table" and def.Steps[math.floor(num(step))] or nil
 		if stepName then funnel(player, name, stepName) end
 	end)
+	-- quest P1 ⑨: the first 30 minutes (Config.Analytics.QuestTimes): accept minutes, declines, Match / Timing misses, and the
+	-- minutes of play to the first skill (once per account, saved first)
+	local QT = type(A.QuestTimes) == "table" and A.QuestTimes or {}
+	local function playMinutes(data) return math.max(0, math.floor(num(data.PlaytimeSeconds) / 60 + 0.5)) end
+	connect("StoryQuestService", "Accepted", function(player, quest)
+		local data = getData(player)
+		if not data or type(QT.Accept) ~= "table" or QT.Accept[quest] ~= true then return end
+		TelemetryService.Custom(player, "QuestAccept", playMinutes(data), tostring(quest), tostring(data.Faction))
+	end)
+	connect("StoryQuestService", "Declined", function(player, quest)
+		if type(QT.Accept) == "table" and QT.Accept[quest] == true then TelemetryService.Custom(player, "QuestDecline", 1, tostring(quest)) end
+	end)
+	connect("StoryQuestService", "MiniMiss", function(player, quest, kind)
+		TelemetryService.Custom(player, "QuestMiniMiss", 1, tostring(kind), tostring(quest))
+	end)
+	connect("StoryQuestService", "StepDone", function(player, quest, step)
+		local rule = QT.FirstSkill
+		if type(rule) ~= "table" or quest ~= rule.Quest or math.floor(num(step)) ~= math.floor(num(rule.Step)) then return end
+		local data = getData(player)
+		if not data then return end
+		local tel = telemetryOf(data)
+		if tel.FirstSkill then return end
+		tel.FirstSkill = true -- saved first: once per account
+		TelemetryService.Custom(player, tostring(rule.Event or "MinutesToFirstSkill"), math.max(1, playMinutes(data)), tostring(data.Faction))
+	end)
 	-- A23-113 #2: how many minutes of play it took to reach Lv5 (once per account, when the level is reached)
 	connect("ProgressionService", "LeveledUp", function(player, level)
 		local rule = A.TimeToLevel

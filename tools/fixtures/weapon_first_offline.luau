@@ -284,7 +284,8 @@ runGroup("weapon first", function()
 	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
 	check(done and d.BankGold > 150, "M1_1's reward line and a little gold (Reward Gold 1)", show(lines))
 	w.Story.Refresh(p)
-	check(st.Main.Id == "M1_3" and w.Config.StoryQuests.Defs.M1_2 == nil, "then M1_3 (10/15: no second Prince quest M1_2)", show(st.Main))
+	check(st.Main.Id == "" and w.Config.StoryQuests.Defs.M1_2 == nil and w.Config.StoryQuests.Defs.M1_3.Requires.Level == 5,
+		"then M1_3 waits for Lv5 (quest P1 ⑤: the teacher's test; 10/15: no second Prince quest M1_2)", show(st.Main))
 end)
 
 ------------------------------------------------------------------ 2b. a step's gift (GiveItem: given once when the step opens, tried again at a join)
@@ -523,6 +524,110 @@ runGroup("no anvil / held weapon", function()
 		show({ step(o), od.WeaponOwnedMask, #w2:FxFor(o, "Travel", fx2) }))
 end)
 
+------------------------------------------------------------------ quest P1 ② (bible v3 H00 / R00 / N00, H00a / R00a / N00a): the guide's and the
+-- teacher's bodies. The first mission is opened by a talk to the guide (no automatic lines, the row only guides), Halo / Horns meet
+-- their teacher (step Teacher = 4: met = the lesson is offered in the same talk) and then walk to the Forge; the artisans go
+-- to the Forge at once (Otto is their teacher there). A world without the bodies keeps the old way.
+runGroup("p1 guide and teacher", function()
+	local w = forgeWorld()
+	local T = w.Config.Tutorial
+	local SQ = w.Config.StoryQuests
+	local bodies = {}
+	w.Services.CollectionService = { GetTagged = function(_, tag)
+		if tag == SQ.NpcTag then return bodies end
+		return {}
+	end }
+	local function body(id, pos)
+		local part = newInstance("Part", w)
+		part.Name, part.Position = "Npc" .. id, pos
+		part.Attrs.NpcId = id
+		table.insert(bodies, part)
+		return part
+	end
+	startStory(w)
+	local HALLIE, GLEAM, KIT, OTTO = vec(-16, 0, -428), vec(-10, 0, -372), vec(47, 0, 45), vec(39, 0, 49)
+	body("Hallie", HALLIE)
+	body("Gleam", GLEAM)
+	body("Kit", KIT)
+	body("Otto", OTTO)
+	check(T.Steps.Teacher == 4 and T.Guides.Halo == "Hallie" and T.Guides.Horns == "Magpie" and T.Guides.Neutral == "Kit"
+		and #T.ShortNames.Teacher <= 16, "Config: step Teacher = 4, the guides' NpcIds, the row texts", show(T.Guides))
+	-- Halo: no automatic lines, the row tap opens nothing, the talk to Hallie does
+	local p, d = w:Newbie(301, { Faction = "Halo" })
+	check(w:Panels(p, "Welcome") == 0, "a guide with a body: no automatic welcome lines at the join", w:Panels(p, "Welcome"))
+	local row = w:Rows(p)[1] or {}
+	check(row.TutorialStep == 0 and row.GuideNpc == "Hallie" and row.Text == string.format(T.Text.WelcomeBody, "Hallie"),
+		"the row: 'Talk to Hallie' with GuideNpc = Hallie", show({ row.Text, row.GuideNpc }))
+	w:Request(p)
+	check(w:Panels(p, "Welcome") == 0, "the row tap (RequestTutorial) opens nothing while the guide has a body", "")
+	rootOf(p).Position = vec(0, 3, -380)
+	check(w.Story.TalkToNpc(p, "Hallie") == nil and w:Panels(p, "Welcome") == 0, "talking to Hallie from 48 studs: nothing", "")
+	w:Accept(p)
+	check(step(p) == 0, "[Accept] far from Hallie: refused", step(p))
+	rootOf(p).Position = vec(-14, 3, -426)
+	check(w.Story.TalkToNpc(p, "Hallie") == "Welcome" and w:Panels(p, "Welcome") == 1, "next to Hallie: her lines open", "")
+	w:Accept(p)
+	check(step(p) == T.Steps.Teacher and d.TutorialStep == 4, "[Accept] next to Hallie: step Teacher (4), not the Forge yet", step(p))
+	row = w:Rows(p)[1] or {}
+	check(row.TutorialStep == 4 and row.GuideNpc == "Gleam" and row.Text == string.format(T.Text.Teacher, "Sir Gleam")
+		and row.ShortName == string.format(T.ShortNames.Teacher, "Sir Gleam"),
+		"the row: 'Meet Sir Gleam at the town gate', GuideNpc = Gleam", show({ row.Text, row.ShortName, row.GuideNpc }))
+	-- the lesson is not offered before the teacher is met
+	w.Story.Refresh(p)
+	check(string.find(p:GetAttribute("StoryOffers") or "", "Gleam", 1, true) == nil, "before the meeting: Sir Gleam offers nothing", p:GetAttribute("StoryOffers"))
+	check(w.Story.TalkToNpc(p, "Gleam") == nil and step(p) == T.Steps.Teacher and d.Story.First.TeacherMet ~= true,
+		"talking to Sir Gleam from 50 studs: not met", step(p))
+	rootOf(p).Position = vec(-12, 3, -374)
+	local n0 = #w.Fired
+	local said = w.Story.TalkToNpc(p, "Gleam")
+	check(said == "Offer:H_Basics" and step(p) == T.Steps.Forge and d.Story.First.TeacherMet == true and w:Panels(p, "Offer", n0) == 1,
+		"the talk to Sir Gleam: met (saved), the Forge step, and his lesson offered in the same talk", show({ said, step(p) }))
+	w:Remote(p, "StoryAction", "H_Basics", "Decline")
+	check(d.Story.Subs.H_Basics == nil and step(p) == T.Steps.Forge, "Decline the lesson: nothing saved, the Forge goes on", "")
+	local fx0 = #w.Fx
+	w:Remote(p, "StoryAction", "H_Basics", "Accept")
+	local demo = w:FxFor(p, "StoryScene", fx0)
+	check(d.Story.Subs.H_Basics ~= nil and #demo == 1 and demo[1].Data.Key == "Demo" and demo[1].Data.Value == "Gleam",
+		"Accept the lesson: it starts + the teacher's demo scene", show(demo[1] and demo[1].Data))
+	w.Story.Refresh(p)
+	check(p:GetAttribute("PracticeTool") == "H_Basics", "the borrowed practice tool while the dummy step is open", p:GetAttribute("PracticeTool"))
+	local dummy = SQ.Landmarks.PracticeH
+	w.Registry.CombatService.BasicSwing:Fire(p, vec(dummy.X - 4, 0, dummy.Z), vec(1, 0, 0))
+	w:Flush()
+	check(d.Story.Subs.H_Basics and d.Story.Subs.H_Basics.St == 2, "a basic swing at the dummy: hit", show(d.Story.Subs.H_Basics))
+	rootOf(p).Position = vec(-12, 3, -374)
+	w.Story.TalkToNpc(p, "Gleam")
+	check(d.Story.Done.H_Basics == true and (d.WeaponTier or 0) == 0, "the tool handed back: the lesson is done (no weapon given by it)", "")
+	-- the Forge as before: the first weapon and the 150 gold once
+	w:Walk(p, "Crossroads")
+	rootOf(p).Position = vec(39, 3, 37)
+	w:Press(p)
+	check(step(p) == 99 and d.WeaponTier == 1 and d.BankGold == 150, "then Otto's gift: the first weapon + 150, the mission done", show({ step(p), d.BankGold }))
+	-- the artisans: Kit at the anvil, no teacher step, the lesson offered by Otto after the weapon (the guild's own quests wait for
+	-- its switch, A23-57: on here)
+	w.Config.Features.NeutralFaction = true
+	local n, nd = w:Newbie(302, { Faction = "Neutral", Zone = "Crossroads" })
+	check(w:Panels(n, "Welcome") == 0, "Kit has a body: no automatic lines", "")
+	rootOf(n).Position = vec(46, 3, 44)
+	check(w.Story.TalkToNpc(n, "Kit") == "Welcome", "next to Kit: the lines", "")
+	w:Accept(n)
+	check(step(n) == T.Steps.Forge, "an artisan goes to the Forge at once (Otto is their teacher there)", step(n))
+	w.Story.Refresh(n)
+	check(string.find(n:GetAttribute("StoryOffers") or "", "Otto", 1, true) == nil, "no lesson before the first weapon", n:GetAttribute("StoryOffers"))
+	rootOf(n).Position = vec(39, 3, 37)
+	w:Press(n)
+	w.Story.Refresh(n)
+	check(step(n) == 99 and string.find(n:GetAttribute("StoryOffers") or "", "Otto", 1, true) ~= nil,
+		"after the weapon: Otto offers his lesson", n:GetAttribute("StoryOffers"))
+	-- Horns without a teacher body here: [Accept] goes to the Forge as before; a save at step 4 whose teacher is gone moves on
+	local r, rd = w:Newbie(303, { Faction = "Horns" })
+	check(w:Panels(r, "Welcome") == 1, "Magpie has no body here: the old automatic lines", w:Panels(r, "Welcome"))
+	w:Accept(r)
+	check(step(r) == T.Steps.Forge, "no teacher body (Rose): no teacher step", step(r))
+	local s4, sd = w:Newbie(304, { Faction = "Horns", Tutorial = 4 })
+	check(step(s4) == T.Steps.Forge, "a save at the Teacher step whose teacher has no body: on to the Forge at the join", step(s4))
+end)
+
 ------------------------------------------------------------------ 5. old saves: never left bare-handed
 runGroup("old saves", function()
 	local w = forgeWorld()
@@ -601,7 +706,7 @@ runGroup("save", function()
 		fill(d, "P1")
 		return d.TutorialStep
 	end
-	for _, case in { { 3, 3 }, { 0, 0 }, { 1, 1 }, { 2, 2 }, { 99, 99 }, { 4, 99 }, { -1, 99 } } do
+	for _, case in { { 3, 3 }, { 0, 0 }, { 1, 1 }, { 2, 2 }, { 99, 99 }, { 4, 4 }, { 5, 99 }, { -1, 99 } } do -- P1 ②: 4 = the Teacher step
 		check(load(case[1]) == case[2], "TutorialStep " .. case[1] .. " loads as " .. case[2], load(case[1]))
 	end
 end)

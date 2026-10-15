@@ -66,8 +66,7 @@ runGroup("Hallie's catchphrase stays", function()
 	local halo = TC.Welcome.Halo
 	-- 사용자 10/15 (fix/welcome-order): page 1 = the guide's own hello, page 2 = the mission
 	check(halo.Name == "Hallie" and halo.Lines[1] == "Hallie here! Now you know my name. Welcome to the Knights!", "Hallie opens page 1 of her welcome", show(halo.Lines))
-	local m14 = SQ.Defs.M1_4.Steps[2].Lines.Halo
-	check(m14[1] == "Hallie here! Now you know my name.", "the M1_4 report keeps the catchphrase as its first line", m14[1])
+	-- (quest P1 ⑦: M1_4 is the lamp now - the guide's chapter-1 report and its catchphrase line left with it)
 	local payoff = hasWord(strings(SQ.Defs.M3_5), "mine")
 	check(payoff ~= nil and string.find(payoff, "So now I give mine", 1, true) ~= nil, "its payoff line in M3_5 is still there", tostring(payoff))
 end)

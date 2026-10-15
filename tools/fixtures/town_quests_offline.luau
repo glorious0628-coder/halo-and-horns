@@ -368,21 +368,24 @@ end
 
 -- A23-70: the lost lunchbox - one card right after the first [Claim], no score, both buttons for every side
 runGroup("a23-70 lunchbox", function()
-	local w = townWorld({ Npcs = false })
+	local w = townWorld()
+	local TINY = vec(24, 0, 12)
+	w:Npc("Tiny", TINY)
 	local T = w.Config.StoryQuests.Text
 	local function has(list, text)
 		for _, t in list do if t == text then return true end end
 		return false
 	end
 	local L = SQ0.Defs.Lunch1
-	local CH = L and L.Steps[4] and L.Steps[4].Obj
-	-- A23-197 (user 10/15): a story, no pop-up card: Tiny -> the pond's slimes -> the lunchbox -> the pick -> back to Tiny
-	check(L and L.Pop == nil and L.Speaker == "Tiny" and #L.Steps == 5 and L.Steps[1].Npc == "Tiny" and L.Steps[1].Obj.Type == "Talk"
-		and L.Steps[2].Obj.Type == "Kill" and L.Steps[2].Obj.Near == "SlimePond" and L.Steps[3].Obj.Spot == "Lunchbox"
-		and CH and CH.Type == "Choice" and CH.Good.Points == 0 and CH.Evil.Points == 0 and L.Steps[5].Npc == "Tiny"
-		and L.Steps[5].LinesBy.From == "Lunch1" and L.Steps[5].LinesBy.GiveBack and L.Steps[5].LinesBy.Bite
-		and L.Steps[5].LinesBy.Default and SQ0.Landmarks.Lunchbox ~= nil,
-		"Config: Lunch1 = talk to Tiny, 2 slimes by the pond, the lunchbox, the pick (0 points), back to Tiny (lines by pick)",
+	local CH = L and L.Steps[3] and L.Steps[3].Obj
+	-- A23-197 (user 10/15): a story, no pop-up card. P1 ③: Tiny ASKS (Offer, [Accept] / [Decline]) -> the pond's slimes -> the
+	-- lunchbox picked up -> the pick -> back to Tiny
+	check(L and L.Pop == nil and L.Speaker == "Tiny" and L.Offer and L.Offer.Npc == "Tiny" and #L.Offer.Lines.All == 4 and #L.Steps == 4
+		and L.Steps[1].Obj.Type == "Kill" and L.Steps[1].Obj.Near == "SlimePond" and L.Steps[2].Obj.Type == "Pickup"
+		and L.Steps[2].Obj.Spot == "Lunchbox" and CH and CH.Type == "Choice" and CH.Good.Points == 0 and CH.Evil.Points == 0
+		and L.Steps[4].Npc == "Tiny" and L.Steps[4].LinesBy.From == "Lunch1" and L.Steps[4].LinesBy.GiveBack and L.Steps[4].LinesBy.Bite
+		and L.Steps[4].LinesBy.Default and SQ0.Landmarks.Lunchbox ~= nil and L.Requires.NotDone == nil,
+		"Config: Lunch1 = Tiny asks, 2 slimes by the pond, the lunchbox picked up, the pick (0 points), back to Tiny (lines by pick)",
 		show(L and L.Steps and #L.Steps))
 	local pond, box = SQ0.Landmarks.SlimePond, SQ0.Landmarks.Lunchbox
 	local function slimeAt(p, pos)
@@ -390,15 +393,17 @@ runGroup("a23-70 lunchbox", function()
 			Position = pos, WarPoints = 0 })
 		w:Flush()
 	end
-	-- up to the pick: Tiny's talk, 2 slimes by the pond, the lunchbox
+	-- up to the pick: Tiny's [Accept], 2 slimes by the pond, the lunchbox
 	local function toPick(p, d)
-		w:Act(p, "Lunch1", "Talk")
+		w:MoveTo(p, TINY + vec(2, 0, 0))
+		w:Act(p, "Lunch1", "Accept")
 		slimeAt(p, pond + vec(5, 0, 5))
 		slimeAt(p, pond + vec(-8, 0, 3))
 		w:MoveTo(p, box + vec(2, 0, 0))
-		w:Tick(p, 1)
+		w:Act(p, "Lunch1", "Pickup")
 		return w:Track(d, "Lunch1")
 	end
+	local function offered(p) return string.find(p:GetAttribute("StoryOffers") or "", "Tiny", 1, true) ~= nil end
 	local function fresh(id, faction, step, done)
 		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 2,
 			Data = { TutorialStep = step, Story = { Main = { Id = "" }, Subs = {}, Done = done or {}, Pick = {}, First = { Migrated = true } } } })
@@ -406,29 +411,37 @@ runGroup("a23-70 lunchbox", function()
 		w:Flush()
 		return p, d
 	end
-	local _, d0 = fresh(1701, "Halo", 2)
-	check(w:Track(d0, "Lunch1") == nil, "before the first [Claim]: no lunchbox")
-	local _, dv = fresh(1702, "Halo", 99, { M1_1 = true })
-	check(w:Track(dv, "Lunch1") == nil, "a player past the Forge (M1_1 done) never gets it")
+	local p0, d0 = fresh(1701, "Halo", 2)
+	check(w:Track(d0, "Lunch1") == nil and not offered(p0), "before the first [Claim]: no lunchbox, Tiny asks nothing")
+	local pv, dv = fresh(1702, "Halo", 99, { M1_1 = true })
+	check(w:Track(dv, "Lunch1") == nil and offered(pv), "P1 ③: past M1_1 Tiny still asks (a late accept works)", pv:GetAttribute("StoryOffers"))
 	local opens = w:Opens(0)
 	local p, d = fresh(1703, "Halo", 99)
-	check(w:Track(d, "Lunch1") ~= nil and w:Track(d, "Lunch1").St == 1 and w:Opens(0) == opens,
-		"right after the first [Claim]: offered at Tiny's talk, no card pops by itself (A23-197)",
+	check(w:Track(d, "Lunch1") == nil and offered(p) and w:Opens(0) == opens,
+		"right after the first [Claim]: Tiny asks (her '!'), nothing taken or popped by itself (A23-197)",
 		show({ w:Track(d, "Lunch1") ~= nil, w:Opens(0) - opens }))
-	w:Act(p, "Lunch1", "Talk")
-	check(w:Track(d, "Lunch1").St == 2, "Tiny's story told: the pond step", show(w:Track(d, "Lunch1")))
+	slimeAt(p, pond + vec(5, 0, 5))
+	w:MoveTo(p, TINY + vec(2, 0, 0))
+	w:Act(p, "Lunch1", "Decline")
+	check(w:Track(d, "Lunch1") == nil and offered(p), "Decline: nothing saved, she asks again (a slime before the Accept counted nothing)", "")
+	w:Act(p, "Lunch1", "Accept")
+	check(w:Track(d, "Lunch1") ~= nil and w:Track(d, "Lunch1").St == 1 and (w:Track(d, "Lunch1").P or 0) == 0,
+		"Accept next to Tiny: the pond step from 0", show(w:Track(d, "Lunch1")))
 	slimeAt(p, vec(0, 0, 0))
-	check(w:Track(d, "Lunch1").St == 2 and (w:Track(d, "Lunch1").P or 0) == 0, "a slime far from the pond counts for nothing",
+	check(w:Track(d, "Lunch1").St == 1 and (w:Track(d, "Lunch1").P or 0) == 0, "a slime far from the pond counts for nothing",
 		show(w:Track(d, "Lunch1")))
 	slimeAt(p, pond + vec(5, 0, 5))
 	slimeAt(p, pond + vec(-8, 0, 3))
-	check(w:Track(d, "Lunch1").St == 3, "2 slimes by the pond: the lunchbox step", show(w:Track(d, "Lunch1")))
-	w:MoveTo(p, box + vec(40, 0, 0))
-	w:Tick(p, 1)
-	check(w:Track(d, "Lunch1").St == 3, "40 studs away: not picked up yet", show(w:Track(d, "Lunch1")))
+	check(w:Track(d, "Lunch1").St == 2, "2 slimes by the pond: the lunchbox step", show(w:Track(d, "Lunch1")))
 	w:MoveTo(p, box + vec(2, 0, 0))
 	w:Tick(p, 1)
-	check(w:Track(d, "Lunch1").St == 4, "at the lunchbox: the pick", show(w:Track(d, "Lunch1")))
+	check(w:Track(d, "Lunch1").St == 2, "standing at the lunchbox does not pick it up (P1 ③: a real pickup)", show(w:Track(d, "Lunch1")))
+	w:MoveTo(p, box + vec(40, 0, 0))
+	w:Act(p, "Lunch1", "Pickup")
+	check(w:Track(d, "Lunch1").St == 2, "Pickup 40 studs away: refused", show(w:Track(d, "Lunch1")))
+	w:MoveTo(p, box + vec(2, 0, 0))
+	w:Act(p, "Lunch1", "Pickup")
+	check(w:Track(d, "Lunch1").St == 3, "Pickup at the lunchbox: the pick", show(w:Track(d, "Lunch1")))
 	-- A23-130 (user 2026-10-11 "너무 설명해주는 게 많은 거 같애"): no Reply line after a pick, the reward toast only
 	local LT = w.Config.Loot.Text
 	local potionLine = string.format(LT.Got, LT.Potion.HP)
@@ -442,8 +455,9 @@ runGroup("a23-70 lunchbox", function()
 	local lines = w:NoticesFor(p, n0)
 	check(has(lines, potionLine), "Give it back: the reward toast '" .. potionLine .. "'", show(lines))
 	check(#lines == #first, "... and nothing comes after it (no thanks line 0.35 s later)", show({ first, lines }))
-	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 ~= true and w:Track(d, "Lunch1").St == 5,
+	check((d.HPPotionCount or 0) == hp + 1 and (d.Honor or 0) == honor and d.Story.Done.Lunch1 ~= true and w:Track(d, "Lunch1").St == 4,
 		"Give it back: +1 HP potion, Honor unchanged; back to Tiny next", show({ d.HPPotionCount, d.Honor, d.Story.Done.Lunch1 }))
+	w:MoveTo(p, TINY + vec(2, 0, 0))
 	w:Act(p, "Lunch1", "Talk")
 	lines = w:NoticesFor(p, n0)
 	check(d.Story.Done.Lunch1 == true and d.Story.Pick.Lunch1 == "GiveBack", "Tiny gets it back: done (its pick GiveBack)", show(d.Story.Done))
@@ -457,9 +471,10 @@ runGroup("a23-70 lunchbox", function()
 	check(fx and fx.Option == "Good", "Fx Choice { Option = 'Good' }", show(fx))
 	-- [One bite!] (a Halo player may bite too): +25 gold to the bank, no Honor / Infamy
 	local p2, d2 = fresh(1704, "Halo", 99)
-	check(toPick(p2, d2).St == 4, "the second child at the pick", show(w:Track(d2, "Lunch1")))
+	check(toPick(p2, d2).St == 3, "the second child at the pick", show(w:Track(d2, "Lunch1")))
 	local bank, n2 = d2.BankGold or 0, #w.Notices
 	w:Act(p2, "Lunch1", "Choose", "Evil")
+	w:MoveTo(p2, TINY + vec(2, 0, 0))
 	w:Act(p2, "Lunch1", "Talk")
 	w:Advance(0.4)
 	local bite = w:NoticesFor(p2, n2)
@@ -492,7 +507,7 @@ runGroup("a23-70 lunchbox", function()
 		"a Horns player can give it back too", show({ d3.HPPotionCount, d3.Infamy, d3.Story.Pick.Lunch1 }))
 	-- the artisan guild (Neutral: A / B): the reward toast only, no "Your choice is saved." line (A23-130)
 	local p4, d4 = fresh(1706, "Neutral", 99)
-	if w:Track(d4, "Lunch1") ~= nil then
+	if offered(p4) then
 		toPick(p4, d4)
 		local n4 = #w.Notices
 		w:Act(p4, "Lunch1", "Choose", "B")
@@ -503,6 +518,22 @@ runGroup("a23-70 lunchbox", function()
 	else
 		check(true, "a Neutral B pick: the reward toast, no saved line (the guild is off: no card)")
 	end
+	-- P1 ③ Story.Schema 2: a save on the old steps (the talk was step 1) moves one step back, once
+	local function old(id, st, pp)
+		local pl, dd = w:Join(id, { Faction = "Halo", Class = "Warrior", Level = 3, Data = { TutorialStep = 99,
+			Story = { Main = { Id = "" }, Subs = { Lunch1 = { St = st, P = pp or 0, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true } } } })
+		return dd, pl
+	end
+	local o1 = old(1711, 1)
+	local o2, po2 = old(1712, 2, 1)
+	local o3, o5 = old(1713, 3), old(1714, 5)
+	check(o1.Story.Subs.Lunch1.St == 1 and o2.Story.Subs.Lunch1.St == 1 and o2.Story.Subs.Lunch1.P == 1 and o3.Story.Subs.Lunch1.St == 2
+		and o5.Story.Subs.Lunch1.St == 4 and o5.Story.Schema >= 2,
+		"old Lunch1 saves: talk -> the pond (0), the pond keeps its count, lunchbox -> 2, back-to-Tiny -> 4 (Schema 2)",
+		show({ o1.Story.Subs.Lunch1.St, o2.Story.Subs.Lunch1, o3.Story.Subs.Lunch1.St, o5.Story.Subs.Lunch1.St }))
+	w.Registry.PlayerService.PlayerReady:Fire(po2, o2)
+	w:Flush()
+	check(o2.Story.Subs.Lunch1.St == 1, "a second join moves nothing again", show(o2.Story.Subs.Lunch1))
 end)
 
 runGroup("a23-58", function()
@@ -596,8 +627,8 @@ runGroup("clues", function()
 	end
 	check(anyLine(SQ.Defs.H1, "Page 12") and anyLine(SQ.Defs.H1, "Happy birthday, S.") and anyLine(SQ.Defs.R1, "signed 'B.'")
 		and anyLine(SQ.Defs.R1, "gold spyglass") and anyLine(SQ.Defs.N3, "two kids"), "H1 / R1 / N3 carry their clues")
-	check(anyLine(SQ.Defs.M1_4, "What will you do with the next one?") and anyLine(SQ.Defs.M2_7, "why would a goblin need dust?"),
-		"chapter-end questions (M1_4, M2_7)")
+	-- (quest P1 ⑦: M1_4 ends chapter 1 with the lamp choice itself, no closing question line)
+	check(anyLine(SQ.Defs.M2_7, "why would a goblin need dust?"), "chapter-end question (M2_7)")
 end)
 
 ------------------------------------------------------------------ 5d. story_depth E0: old saves skip only the chapters below them
@@ -633,13 +664,15 @@ end)
 
 ------------------------------------------------------------------ 장인 ② the guild's first quests (N0 / N0b / N4)
 runGroup("artisan quests", function()
-	local w = townWorld({ Npcs = false, Hooks = function(world, reg)
+	local w = townWorld({ Hooks = function(world, reg) -- (P1 ④: the NPC bodies on: Otto asks)
 		reg.GatherService = { Gathered = world.Util.Signal.new() }
 		reg.CraftService = { Crafted = world.Util.Signal.new() }
 	end })
 	local C, R = w.Config, w.Registry
 	local D = C.StoryQuests.Defs
-	check(D.N0 and D.N0.Factions.Neutral and D.N0.Requires.TutorialDone and table.find(D.N0.Requires.Feature, "Gathering")
+	check(D.N0 and D.N0.Factions.Neutral and D.N0.Requires.TutorialDone and D.N0.Requires.Level == 3 and D.N0.Offer.Npc == "Otto"
+		and D.N0.Steps[2].Obj.Type == "Match" and D.N0A.Steps[2].Obj.Type == "Match" and D.N0T.Steps[2].Obj.Type == "Match"
+		and table.find(D.N0.Requires.Feature, "Gathering")
 		and table.find(D.N0.Requires.Feature, "Crafting") and D.N0.Reward.GoldN == 150 and D.N0.Reward.EquipCrafted == true,
 		"Config N0: Neutral, from the first mission, Gathering + Crafting, 150 gold + the crafted weapon in hand", show(D.N0 and D.N0.Requires))
 	check(D.N0b and D.N0b.Requires.Done == nil and table.concat(D.N0b.Requires.DoneAny, ",") == "N0,N0A,N0T"
@@ -654,14 +687,37 @@ runGroup("artisan quests", function()
 		and C.Craft.Recipes.T1.Mats.Jelly == nil, "Config N0 / N0A / N0T by class (same title, 150 gold); AP1 / T1 = 3 herbs", "")
 	check(C.Craft.Recipes.W1 == nil and C.Craft.Recipes.W2.Mats.Herb == 3 and C.Craft.Recipes.W2.Mats.CopperOre == 2
 		and C.Craft.Recipes.W2.Mats.Jelly == nil, "no W1 recipe; W2 = N0's harvest only (3 herbs + 2 copper)", show(C.Craft.Recipes.W2))
+	-- P1 ④: Otto asks (his body by the anvil); the order tag is matched at him before the craft
+	local OTTO = vec(40, 0, 50)
+	w:Npc("Otto", OTTO)
+	local panels = {}
+	do -- (panelsOf is defined further down the file)
+		local op = w.Net.Get("OpenPanel")
+		local base = op.FireClient
+		op.FireClient = function(self, pl, kind, arg)
+			table.insert(panels, { P = pl, Kind = kind, Arg = arg })
+			return base(self, pl, kind, arg)
+		end
+	end
 	local function join(id, faction, extra, class)
 		local data = { TutorialStep = 99, WeaponTier = 1, WeaponOwnedMask = 1,
 			Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } }
 		for k, v in extra or {} do data[k] = v end
-		local p, d = w:Join(id, { Faction = faction, Class = class or "Warrior", Level = 3, Data = data })
+		local p, d = w:Join(id, { Faction = faction, Class = class or "Warrior", Level = 3, Data = data, Pos = OTTO + vec(2, 0, 0) })
 		w.Story.Refresh(p)
 		w:Flush()
+		for _, qid in { "N0", "N0A", "N0T" } do
+			if string.find(p:GetAttribute("StoryOffers") or "", "Otto", 1, true) and d.Story.Subs[qid] == nil and not d.Story.Done[qid] then
+				w:Act(p, qid, "Accept")
+			end
+		end
 		return p, d
+	end
+	-- the order tag: Otto's talk opens the Match panel, the right shape moves on to the craft
+	local function tag(p, qid)
+		w.Story.TalkToNpc(p, "Otto")
+		local arg = panels[#panels].Arg
+		w:Act(p, qid, "Match", tostring(table.find(arg.Options, arg.Target)))
 	end
 	-- switches off (as shipped): no N0 for anybody
 	local _, d0 = join(1801, "Neutral")
@@ -685,7 +741,12 @@ runGroup("artisan quests", function()
 	G:Fire(p, "Herb", 5, "HerbBush")
 	w:Flush()
 	tr = w:Track(d, "N0")
-	check(tr and tr.St == 2, "3 herbs + 2 copper: the craft step", show(tr))
+	check(tr and tr.St == 2, "3 herbs + 2 copper: Tiny's order tag", show(tr))
+	R.CraftService.Crafted:Fire(p, "W2", 1)
+	w:Flush()
+	check(w:Track(d, "N0").St == 2, "a craft before the tag counts nothing", show(w:Track(d, "N0")))
+	tag(p, "N0")
+	check(w:Track(d, "N0").St == 3, "the right tag: the craft step", show(w:Track(d, "N0")))
 	-- the craft: the weapon made (a spare W2 +1) goes into the hand, + 150 gold
 	w.Loot.AddSpare(p, 2, 1)
 	local bank, n0 = d.BankGold or 0, #w.Notices
@@ -721,7 +782,9 @@ runGroup("artisan quests", function()
 			show(w:Track(da, qid)))
 		G:Fire(a, "Herb", 1, "HerbBush")
 		w:Flush()
-		check(w:Track(da, qid) and w:Track(da, qid).St == 2, cls .. ": 3 herbs -> the craft step", show(w:Track(da, qid)))
+		check(w:Track(da, qid) and w:Track(da, qid).St == 2, cls .. ": 3 herbs -> the order tag", show(w:Track(da, qid)))
+		tag(a, qid)
+		check(w:Track(da, qid) and w:Track(da, qid).St == 3, cls .. ": the tag matched -> the craft step", show(w:Track(da, qid)))
 		local bk = da.BankGold or 0
 		R.CraftService.Crafted:Fire(a, rid, 0)
 		w:Flush()
@@ -737,10 +800,19 @@ runGroup("artisan quests", function()
 	local q, e = join(1805, "Neutral", { WeaponTier = 3, WeaponOwnedMask = 5, Level = 5 })
 	G:Fire(q, "Herb", 3, "HerbBush")
 	G:Fire(q, "CopperOre", 2, "CopperRock")
+	w:Flush()
+	tag(q, "N0")
 	w.Loot.AddSpare(q, 2, 0)
 	R.CraftService.Crafted:Fire(q, "W2", 0)
 	w:Flush()
 	check(e.Story.Done.N0 == true and e.WeaponTier == 3 and (e.Spares["2:0"] or 0) == 1, "holding Iron: the W2 stays a spare", show({ e.WeaponTier, e.Spares }))
+	-- P1 ④ (Schema 5): an old save on N0's craft step moves past the new tag step; one still harvesting stays
+	local _, oc = w:Join(1820, { Faction = "Neutral", Class = "Warrior", Level = 3, Data = { TutorialStep = 99, Story = { Main = { Id = "" },
+		Subs = { N0 = { St = 2, P = 0, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
+	local _, oh = w:Join(1821, { Faction = "Neutral", Class = "Mage", Level = 3, Data = { TutorialStep = 99, Story = { Main = { Id = "" },
+		Subs = { N0A = { St = 1, P = 2, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
+	check(oc.Story.Subs.N0.St == 3 and oh.Story.Subs.N0A.St == 1 and oh.Story.Subs.N0A.P == 2 and oc.Story.Schema == 5,
+		"old N0 saves: on the craft -> the craft (3); still harvesting -> unchanged (Schema 5)", show({ oc.Story.Subs.N0, oh.Story.Subs.N0A }))
 	-- N4: after N2, two crafts, then the Crossroads
 	d.Story.Done.N2 = true
 	w.Story.Refresh(p)
@@ -928,89 +1000,54 @@ runGroup("a23-71 skill quests", function()
 	local w = townWorld({ Npcs = false })
 	local Q = w.Config.Skills.Unlock.Q
 	check(Q == 5, "the first skill at Lv5", Q)
-	for _, id in { "M1_3", "M2_5" } do
-		local steps = SQ0.Defs[id].Steps
-		check(steps[1].Obj.Type == "Level" and steps[1].Obj.Level == Q and steps[1].ShortName == "Reach Lv 5"
-			and steps[2].Obj.Type == "SkillHit", id .. ": a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)",
-			show(steps[1]))
-	end
+	-- quest P1 ⑤: M1_3 is the Lv5 test now (its own group 'p1 lv5 test'); M2_5 keeps the A23-71 Lv5 step + the skill hits
+	local steps = SQ0.Defs.M2_5.Steps
+	check(steps[1].Obj.Type == "Level" and steps[1].Obj.Level == Q and steps[1].ShortName == "Reach Lv 5"
+		and steps[2].Obj.Type == "SkillHit", "M2_5: a 'reach Lv5' step before the skill hits (Level = Skills.Unlock.Q)", show(steps[1]))
 	check(SQ0.Defs.N1.Requires.Level == Q, "N1 (a skill sub) opens at Lv5", show(SQ0.Defs.N1.Requires))
-	-- S8: M1_3 has no Start of its own; its Lv5 step says 'Grow to Lv5…' (and guides to the meadow), the skill step says
-	-- the old line. Skill: both Lv5 steps also pass once Q is learned below Lv5.
-	local m13 = SQ0.Defs.M1_3
-	local GROW, DUSTY = "Grow to Lv5 to learn your first skill!", "Dusty slimes move in groups. Skills use MP!"
-	check(m13.Start == nil and m13.Steps[1].Start == GROW and m13.Steps[1].Guide == "SlimeMeadow" and m13.Steps[2].Start == DUSTY,
-		"S8: M1_3's start lines sit on its steps (the Lv5 step guides to the meadow)",
-		show({ m13.Start, m13.Steps[1].Start, m13.Steps[1].Guide, m13.Steps[2].Start }))
-	check(m13.Steps[1].Obj.Skill == true and SQ0.Defs.M2_5.Steps[1].Obj.Skill == true, "both Lv5 steps pass once Q is learned (Skill)")
+	check(steps[1].Obj.Skill == true, "M2_5's Lv5 step passes once Q is learned (Skill)")
 	local function story(main, subs, done)
 		return { Main = main or { Id = "" }, Subs = subs or {}, Done = done or {}, Pick = {}, First = { Migrated = true } }
 	end
-	local function count(p, from, text)
-		local n = 0
-		for _, t in w:NoticesFor(p, from) do if t == text then n += 1 end end
-		return n
+	local CH1 = { M1_1 = true, M1_3 = true, M1_4 = true, M2_1 = true, M2_2 = true, M2_3 = true, M2_4 = true }
+	local function at25(level, slots)
+		return { SkillSlots = slots or 0, Story = story({ Id = "M2_5", St = 1, P = 0, T = {}, Claim = false }, {}, CH1) }
 	end
-	-- M1_3 starts at Lv3 (after M1_1): 'Grow to Lv5…' only; at Lv5 the skill step says its line
-	local n0 = #w.Notices
-	local ps, ds = w:Join(7103, { Faction = "Halo", Level = 3, Data = { Story = story(nil, {}, { M1_1 = true }) } })
-	w.Story.Refresh(ps)
-	w:Flush()
-	-- A23-130 (server text verdicts 2026-10-11): quest / step Start lines are not sent (the rows carry the goal)
-	check(ds.Story.Main.Id == "M1_3" and ds.Story.Main.St == 1 and count(ps, n0, GROW) == 0 and count(ps, n0, DUSTY) == 0,
-		"M1_3 starts at Lv3: the Lv5 step, no Start line (A23-130)", show(w:NoticesFor(ps, n0)))
-	local n1 = #w.Notices
-	w.PS.SetStat(ps, "Level", 5)
-	w.Story.Refresh(ps)
-	w:Flush()
-	check(ds.Story.Main.St == 2 and count(ps, n1, DUSTY) == 0 and count(ps, n1, GROW) == 0,
-		"Lv5: the skill step, no Start line (A23-130)", show(w:NoticesFor(ps, n1)))
-	-- M1_3 starts at Lv7: straight to the skill step, its line once, no 'Grow to Lv5'
-	local n2 = #w.Notices
-	local pq, dq = w:Join(7104, { Faction = "Horns", Level = 7, Data = { Story = story(nil, {}, { M1_1 = true }) } })
-	w.Story.Refresh(pq)
-	w:Flush()
-	check(dq.Story.Main.Id == "M1_3" and dq.Story.Main.St == 2 and count(pq, n2, DUSTY) == 0 and count(pq, n2, GROW) == 0,
-		"M1_3 starts at Lv7: straight to the skill step, no Start line", show(w:NoticesFor(pq, n2)))
 	-- a Lv1 who kept Q (a free class change from Lv5+ took the level back, the slots stay) passes the Lv5 step at once
-	local pk, dk = w:Join(7105, { Faction = "Halo", Level = 1, Data = { SkillSlots = 1,
-		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
+	local pk, dk = w:Join(7105, { Faction = "Halo", Level = 1, Data = at25(1, 1) })
 	w.Story.Refresh(pk)
 	w:Flush()
-	check(dk.Story.Main.St == 2, "a Lv1 who kept Q: M1_3's Lv5 step passes at once (Skill)", dk.Story.Main.St)
-	local p2, d2 = w:Join(7106, { Faction = "Halo", Level = 1, Data = { SkillSlots = 0,
-		Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
+	check(dk.Story.Main.St == 2, "a Lv1 who kept Q: M2_5's Lv5 step passes at once (Skill)", dk.Story.Main.St)
+	local p2, d2 = w:Join(7106, { Faction = "Halo", Level = 1, Data = at25(1, 0) })
 	w.Story.Refresh(p2)
 	w:Flush()
-	check(d2.Story.Main.St == 1, "a Lv1 without Q still waits at M1_3's Lv5 step", d2.Story.Main.St)
-	-- M1_3 at Lv3: the row waits for Lv5; at Lv5 the skill hits begin (no 'Skills come' tail any more)
-	local p, d = w:Join(7101, { Faction = "Halo", Level = 3,
-		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
+	check(d2.Story.Main.St == 1, "a Lv1 without Q still waits at M2_5's Lv5 step", d2.Story.Main.St)
+	-- at Lv3: the row waits for Lv5; at Lv5 the skill hits begin (the row sends me to the teacher while Q waits there)
+	local p, d = w:Join(7101, { Faction = "Halo", Level = 3, Data = at25(3, 0) })
 	w.Story.Refresh(p)
 	w:Flush()
 	local row = w.Story.MainRow(p, d)
 	check(row and row.Text == "Lv5 · Learn your first skill (now Lv3)" and row.ShortName == "Reach Lv 5" and d.Story.Main.St == 1,
-		"M1_3 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'", show(row and { row.Text, row.ShortName }))
+		"M2_5 at Lv3: 'Lv5 · Learn your first skill (now Lv3)' / 'Reach Lv 5'", show(row and { row.Text, row.ShortName }))
 	w.PS.SetStat(p, "Level", 5)
 	p:SetAttribute("SkillLearnReady", 1) -- A23-193: SkillService: Q waits at the teacher
 	w.Story.Refresh(p)
 	w:Flush()
 	row = w.Story.MainRow(p, d)
-	check(d.Story.Main.St == 2 and row and row.Text == "Hit monsters with a skill · Learn it from Sir Gleam first",
+	check(d.Story.Main.St == 2 and row and row.Text == "Hit 3 monsters with one skill · Learn it from Sir Gleam first",
 		"Lv5, Q not learned yet: the skill hits begin, the row sends me to Sir Gleam", show(row and { d.Story.Main.St, row.Text }))
 	w.PS.SetStat(p, "SkillSlots", 1)
 	p:SetAttribute("SkillLearnReady", 0)
 	w.Story.Refresh(p)
 	w:Flush()
 	row = w.Story.MainRow(p, d)
-	check(d.Story.Main.St == 2 and row and row.Text == "Hit monsters with a skill" and row.Target == 3,
+	check(d.Story.Main.St == 2 and row and row.Text == "Hit 3 monsters with one skill" and row.Target == 2,
 		"Q learned: no tail", show(row and { d.Story.Main.St, row.Text, row.Target }))
-	-- a Lv7 who reaches M1_3 passes the Lv5 step at once
-	local p7, d7 = w:Join(7102, { Faction = "Horns", Level = 7,
-		Data = { Story = story({ Id = "M1_3", St = 1, P = 0, T = {}, Claim = false }, {}, { M1_1 = true }) } })
+	-- a Lv7 who reaches M2_5 passes the Lv5 step at once
+	local p7, d7 = w:Join(7102, { Faction = "Horns", Level = 7, Data = at25(7, 1) })
 	w.Story.Refresh(p7)
 	w:Flush()
-	check(d7.Story.Main.St == 2, "a Lv7 at M1_3: straight to the skill hits", d7.Story.Main.St)
+	check(d7.Story.Main.St == 2, "a Lv7 at M2_5: straight to the skill hits", d7.Story.Main.St)
 	-- S0's trials (b = a skill hit on 2) before the first skill: the row says when the skill comes
 	local function s0(level, t, extra)
 		local data = { Story = story(nil, { S0 = { St = 2, P = 0, T = t, Claim = false } }) }
@@ -2182,6 +2219,7 @@ runGroup("npc-talk", function()
 	check(#panels == before + 2, "a prompt without a StoryNpcId, a bad id, no player: nothing", tostring(#panels - before))
 	-- after the card is done the step moves on: nothing left to say
 	w:Act(p, "H1", "Talk")
+	d.Story.Done.H_Band = true -- P1 ③: Bright's own band offer is not this check's business
 	check(w:Track(d, "H1").St == 2 and w.Story.TalkToNpc(p, "Bright") == nil, "H1 moved on (no more card at Bright): nothing opens", show(w:Track(d, "H1")))
 	-- two quests wait at Bright: the newest sub first
 	local talk = function(who) return { Text = "Talk", Panel = true, Npc = "Bright", Obj = { Type = "Talk" }, Lines = { All = { who } } } end
@@ -2196,6 +2234,7 @@ runGroup("npc-talk", function()
 	local c, cd = joinAfterM23(w, 983, "Halo", { Pos = vec(2, 0, -398) })
 	cd.Story.Subs.H1, cd.Story.Subs.TX_NB = nil, nil
 	cd.Story.Subs.TX_NA.Claim = true
+	cd.Story.Done.H_Band = true -- P1 ③: Bright's band offer aside
 	local b3 = #panels
 	check(w.Story.TalkToNpc(c, "Bright") == nil and #panels == b3, "a quest waiting for [Claim] is skipped", "")
 	-- a dialogue that has no NPC is never opened by a nil / missing NPC id
@@ -2247,10 +2286,12 @@ end
 
 runGroup("a23-64 afterglow", function()
 	local cards, finisher = nil, nil
-	local w = townWorld({ Npcs = false, Hooks = function(world, reg)
+	local w = townWorld({ Hooks = function(world, reg)
 		cards, finisher = { Picked = world.Util.Signal.new() }, { Picked = world.Util.Signal.new() }
 		reg.ChoiceCard, reg.FinisherService = cards, finisher
 	end })
+	local TINY = vec(24, 0, 12)
+	w:Npc("Tiny", TINY) -- P1 ③: Tiny asks for the lunchbox (her body)
 	local A = w.Config.Afterglow
 	check(type(A) == "table" and A.Enabled == true and A.Seconds == 60 and type(A.From) == "table" and A.From.Story == true
 		and A.From.Card == true and A.From.Finisher == true, "Config.Afterglow: on, 60 s, story + card + finisher picks", show(A))
@@ -2262,16 +2303,17 @@ runGroup("a23-64 afterglow", function()
 			Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 		w.Story.Refresh(p)
 		w:Flush()
-		-- A23-197: Lunch1 is a story now: Tiny's talk, 2 slimes by the pond, the lunchbox, then the pick
+		-- A23-197: Lunch1 is a story now. P1 ③: Tiny asks ([Accept]), 2 slimes by the pond, the lunchbox picked up, then the pick
+		w:MoveTo(p, TINY + vec(2, 0, 0))
+		w:Act(p, "Lunch1", "Accept")
 		if w:Track(d, "Lunch1") ~= nil then
-			w:Act(p, "Lunch1", "Talk")
 			for _ = 1, 2 do
 				w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false,
 					Personal = false, Position = LM.SlimePond, WarPoints = 0 })
 			end
 			w:Flush()
 			w:MoveTo(p, LM.Lunchbox)
-			w:Tick(p, 1)
+			w:Act(p, "Lunch1", "Pickup")
 		end
 		return p, d
 	end
@@ -2322,6 +2364,7 @@ runGroup("a23-64 afterglow", function()
 	local s2, s2d = fresh(6406, "Halo")
 	fx0 = #w.Fx
 	w:Act(s2, "Lunch1", "Choose", "Good")
+	w:MoveTo(s2, TINY + vec(2, 0, 0))
 	w:Act(s2, "Lunch1", "Talk")
 	check(#glowsOf(w, s2, fx0) == 0 and s2d.Story.Done.Lunch1 == true, "From.Story = false: the pick works, no glow",
 		#glowsOf(w, s2, fx0))
@@ -2734,13 +2777,582 @@ runGroup("a23-199 offer, pickup, deliver", function()
 	table.remove(SQ.Subs, table.find(SQ.Subs, "TOFFER"))
 end)
 
+------------------------------------------------------------------ quest P1 ① (게임성 개발 2, docs/design/quest_p1_server_contract_2026-10-15.md):
+-- an offer needs the NPC's body, a main can be offered too, Offer.Npc by side, the reward preview, the accept scene, and the new
+-- step kinds Practice / Emote / Match / Timing / Learn with the personal scene flags
+runGroup("p1 core", function()
+	local w = townWorld({ Prompts = true })
+	local panels = panelsOf(w)
+	local SQ = w.Config.StoryQuests
+	local function fxOf(p, kind, from)
+		local out = {}
+		for i = (from or 0) + 1, #w.Fx do
+			local f = w.Fx[i]
+			if f.Kind == kind and f.Player == p then table.insert(out, f.Data) end
+		end
+		return out
+	end
+	-- 1. no body, no offer (bible §12); a body brings the '!' back
+	SQ.Defs.TP1A = { Kind = "Sub", Title = "Test A", ShortName = "Test A",
+		Offer = { Npc = { Halo = "TKidH", Horns = "TKidR" }, AcceptScene = "Demo", Lines = { All = { "Kid: Help?" } } },
+		Steps = { { Text = "Hit the dummy", Guide = "TDummy", Obj = { Type = "Practice", Spot = "TDummy", Radius = 10, Count = 1 } },
+			{ Text = "Back to the kid", Npc = "TKidH", Obj = { Type = "Deliver" }, Horns = { Npc = "TKidR" } } },
+		Reward = { GoldN = 9, Item = "Enh70", N = 1 } }
+	table.insert(SQ.Subs, "TP1A")
+	SQ.Landmarks.TDummy = vec(40, 0, 0)
+	local p, d = joinAfterM23(w, 9911, "Halo", { Pos = vec(2, 0, 2) })
+	check(string.find(p:GetAttribute("StoryOffers") or "", "TKidH", 1, true) == nil and w.Story.TalkToNpc(p, "TKidH") == nil,
+		"no body for the offering NPC: not offered (no '!', a talk opens nothing)", p:GetAttribute("StoryOffers"))
+	w:Act(p, "TP1A", "Accept")
+	check(w:Track(d, "TP1A") == nil, "... and an Accept without the body is refused", show(w:Track(d, "TP1A")))
+	w:Npc("TKidH", vec(0, 0, 0))
+	w:Npc("TKidR", vec(0, 0, 300))
+	w.Story.Refresh(p)
+	check(string.find(p:GetAttribute("StoryOffers") or "", "TKidH", 1, true) ~= nil
+		and string.find(p:GetAttribute("StoryOffers") or "", "TKidR", 1, true) == nil,
+		"Offer.Npc by side: a Halo player is asked by the Halo NPC only", p:GetAttribute("StoryOffers"))
+	local before = #panels
+	check(w.Story.TalkToNpc(p, "TKidH") == "Offer:TP1A" and #panels == before + 1, "the Halo NPC's talk opens the offer", "")
+	local arg = panels[#panels].Arg
+	check(type(arg.Reward) == "table" and arg.Reward.Gold == 9 and arg.Reward.XP == nil and type(arg.Reward.Items) == "table"
+		and arg.Reward.Items[1].Id == "Enh70" and arg.Reward.Items[1].N == 1,
+		"the offer shows what it really pays (rule 11): 9 gold, the scroll; no XP key", show(arg.Reward))
+	check(w.Story.TalkToNpc(p, "TKidR") == nil, "the Horns NPC asks a Halo player nothing", "")
+	local hr = joinAfterM23(w, 9918, "Horns", { Pos = vec(0, 0, 302) })
+	check(string.find(hr:GetAttribute("StoryOffers") or "", "TKidR", 1, true) ~= nil
+		and string.find(hr:GetAttribute("StoryOffers") or "", "TKidH", 1, true) == nil,
+		"... and a Horns player is asked by the Horns NPC", hr:GetAttribute("StoryOffers"))
+	local fx0 = #w.Fx
+	w:Act(p, "TP1A", "Accept")
+	local scenes = fxOf(p, "StoryScene", fx0)
+	check(w:Track(d, "TP1A") ~= nil and #scenes == 1 and scenes[1].Id == "TP1A" and scenes[1].Key == "Demo" and scenes[1].Value == "TKidH",
+		"Accept: the quest starts + Fx StoryScene { Id, Key = 'Demo', Value = the NPC } (the teacher's demo)", show(scenes))
+	-- 2. Practice: PracticeTool while the step is open; a swing far / facing away does nothing; at the dummy facing it = done
+	w.Story.Refresh(p)
+	check(p:GetAttribute("PracticeTool") == "TP1A", "PracticeTool = the quest while its Practice step is open", p:GetAttribute("PracticeTool"))
+	local swing = w.Registry.CombatService.BasicSwing
+	swing:Fire(p, vec(0, 0, 0), vec(1, 0, 0))
+	w:Flush()
+	check(w:Track(d, "TP1A").St == 1, "a swing 40 studs from the dummy: nothing", show(w:Track(d, "TP1A")))
+	swing:Fire(p, vec(34, 0, 0), vec(-1, 0, 0))
+	w:Flush()
+	check(w:Track(d, "TP1A").St == 1, "a swing next to it facing away: nothing", show(w:Track(d, "TP1A")))
+	local q, dq = joinAfterM23(w, 9912, "Halo", { Pos = vec(2, 0, 2) })
+	swing:Fire(q, vec(34, 0, 0), vec(1, 0, 0))
+	w:Flush()
+	check(w:Track(d, "TP1A").St == 1 and w:Track(dq, "TP1A") == nil, "another player's swing counts for nobody", "")
+	swing:Fire(p, vec(34, 0, 0), vec(1, 0, 0))
+	w:Flush()
+	check(w:Track(d, "TP1A").St == 2, "a swing next to the dummy facing it: the step is done", show(w:Track(d, "TP1A")))
+	w.Story.Refresh(p)
+	check(p:GetAttribute("PracticeTool") == "", "the tool goes back when the Practice step ends", p:GetAttribute("PracticeTool"))
+	w:MoveTo(p, vec(2, 0, 2))
+	local bank = d.BankGold or 0
+	check(w.Story.TalkToNpc(p, "TKidH") == "TP1A" and d.Story.Done.TP1A == true and (d.BankGold or 0) == bank + 9,
+		"handed back at the NPC: done, paid once", show({ d.Story.Done.TP1A, (d.BankGold or 0) - bank }))
+	-- 3. a main can be offered: it waits at its NPC (Accept starts it); no body = it starts by itself as before
+	local mains = SQ.Main
+	SQ.Main = { "TP1M" }
+	SQ.Defs.TP1M = { Kind = "Main", Chapter = 1, Title = "Test Main", ShortName = "Test main",
+		Offer = { Npc = "TKidM", Lines = { All = { "Kid: A big job!" } } }, Requires = { Level = 3 },
+		Steps = { { Text = "Talk", Npc = "TKidM", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "Hi" } } } } }
+	w:Npc("TKidM", vec(4, 0, 0))
+	local m, dm = w:Join(9913, { Faction = "Halo", Class = "Warrior", Level = 2, Pos = vec(2, 0, 2),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(m)
+	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) == nil,
+		"an offered main below its level: not started, not offered", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
+	dm.Level = 3
+	m:SetAttribute("Level", 3)
+	w.Story.Refresh(m)
+	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) ~= nil,
+		"at its level: not started by itself, its NPC offers it", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
+	check(w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M", "the talk offers the main", "")
+	w:Act(m, "TP1M", "Decline")
+	check(dm.Story.Main.Id == "", "Decline: nothing saved", show(dm.Story.Main))
+	w:Act(m, "TP1M", "Accept")
+	check(dm.Story.Main.Id == "TP1M" and dm.Story.Main.St == 1, "Accept: the main runs", show(dm.Story.Main))
+	local m2, dm2 = w:Join(9914, { Faction = "Halo", Class = "Warrior", Level = 3, Pos = vec(2, 0, 2),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
+	SQ.Defs.TP1M.Offer.Npc = "TNobody"
+	w.Story.Refresh(m2)
+	check(dm2.Story.Main.Id == "TP1M", "an offered main whose NPC has no body here starts by itself (never stuck)", show(dm2.Story.Main))
+	SQ.Main = mains
+	SQ.Defs.TP1M = nil
+	-- 4. Emote: the step's spot, an allowed name; the name's side is the pick + the personal flag (attribute + scene)
+	SQ.Landmarks.TPose = vec(60, 0, 0)
+	SQ.Defs.TP1E = { Kind = "Sub", Title = "Test E", ShortName = "Test E",
+		Steps = { { Text = "Strike a pose", Guide = "TPose",
+			Obj = { Type = "Emote", Spot = "TPose", Radius = 10, Allowed = { cheer = "Evil", wave = "Good" },
+				Flag = { Key = "Crown", Good = "Bow", Evil = "Paper" } } } } }
+	table.insert(SQ.Subs, "TP1E")
+	local e, de = joinAfterM23(w, 9915, "Horns", { Pos = vec(2, 0, 2) })
+	w.Story.DebugSub(e, "TP1E", 1)
+	w:Act(e, "TP1E", "Emote", "cheer")
+	check(w:Track(de, "TP1E") ~= nil, "an emote far from the spot: nothing", show(w:Track(de, "TP1E")))
+	w:MoveTo(e, vec(62, 0, 0))
+	w:Act(e, "TP1E", "Emote", "dance")
+	check(w:Track(de, "TP1E") ~= nil, "an emote not on the list: nothing", show(w:Track(de, "TP1E")))
+	local fx1 = #w.Fx
+	w:Act(e, "TP1E", "Emote", "cheer")
+	local sc = fxOf(e, "StoryScene", fx1)
+	check(de.Story.Done.TP1E == true and de.Story.Pick.TP1E == "Evil" and de.Story.Flags.Crown == "Paper"
+		and e:GetAttribute("StoryFlags") == "Crown=Paper" and #sc == 1 and sc[1].Key == "Crown" and sc[1].Value == "Paper",
+		"cheer at the spot: done, pick Evil, flag Crown=Paper (saved, attribute, one scene)", show({ de.Story.Pick.TP1E, de.Story.Flags, sc }))
+	-- 5. Match: the panel never says which one is right; a miss loses nothing, the right one moves on
+	SQ.Defs.TP1X = { Kind = "Sub", Title = "Test X", ShortName = "Test X",
+		Steps = { { Text = "Match the knot", Npc = "TKidH", Obj = { Type = "Match", Target = "Knot", Wrong = { "Seal", "Tag" } } },
+			{ Text = "Time the hammer", Npc = "TKidH", Obj = { Type = "Timing" } },
+			{ Text = "Learn it", Npc = "TKidH", Obj = { Type = "Learn", Slot = "Q" } } } }
+	table.insert(SQ.Subs, "TP1X")
+	local x, dx = joinAfterM23(w, 9916, "Halo", { Pos = vec(2, 0, 2) })
+	w.Story.DebugSub(x, "TP1X", 1)
+	local n0 = #panels
+	check(w.Story.TalkToNpc(x, "TKidH") == "TP1X" and panels[#panels].Kind == "Match" and #panels == n0 + 1, "the NPC opens the Match panel", "")
+	local ma = panels[#panels].Arg
+	local right = table.find(ma.Options, "Knot")
+	check(ma.Target == "Knot" and #ma.Options == 3 and right ~= nil and ma.Answer == nil,
+		"Match { Id, Target, Options } (the right place is never sent)", show(ma))
+	local wrongPick = right == 1 and 2 or 1
+	local fx2 = #w.Fx
+	w:Act(x, "TP1X", "Match", tostring(wrongPick))
+	check(w:Track(dx, "TP1X").St == 1 and #fxOf(x, "MatchMiss", fx2) == 1 and fxOf(x, "MatchMiss", fx2)[1].Pick == wrongPick,
+		"a wrong pick: Fx MatchMiss { Pick }, still the same step", show(w:Track(dx, "TP1X")))
+	w:Act(x, "TP1X", "Match", "9")
+	check(w:Track(dx, "TP1X").St == 1, "a pick out of range: nothing", "")
+	w:Act(x, "TP1X", "Match", tostring(right))
+	check(w:Track(dx, "TP1X").St == 2 and #fxOf(x, "MatchHit", fx2) == 1, "the right pick: Fx MatchHit, the next step", show(w:Track(dx, "TP1X")))
+	w:Act(x, "TP1X", "Match", tostring(right))
+	check(w:Track(dx, "TP1X").St == 2, "an old Match answer after the step: nothing", "")
+	-- 6. Timing: a panel first; too soon / too few = TimingMiss (nothing lost), 3 of 5 after the wait = done
+	w:Act(x, "TP1X", "Timing", "5/5")
+	check(w:Track(dx, "TP1X").St == 2, "an answer with no panel open: nothing", "")
+	w:Act(x, "TP1X", "Open")
+	check(panels[#panels].Kind == "Timing" and panels[#panels].Arg.Id == "TP1X", "Open: the Timing panel { Id }", show(panels[#panels].Arg))
+	local fx3 = #w.Fx
+	w:Act(x, "TP1X", "Timing", "5/5")
+	check(w:Track(dx, "TP1X").St == 2 and #fxOf(x, "TimingMiss", fx3) == 1, "five good taps 1 s after it opened: too soon (miss)", "")
+	w:Advance(3)
+	w:Act(x, "TP1X", "Timing", "2/5")
+	check(w:Track(dx, "TP1X").St == 2 and #fxOf(x, "TimingMiss", fx3) == 2, "2 of 5: a miss", "")
+	w:Advance(3)
+	w:Act(x, "TP1X", "Timing", "6/5")
+	check(w:Track(dx, "TP1X").St == 2, "more good taps than tries: refused", "")
+	w.Config.Skills.Learn.Gate = { Q = "TP1X" }
+	check(w.Story.LearnOpen(x, "Q") == false, "LearnOpen: the gate quest before its Learn step = closed", "")
+	w.Config.Skills.Learn.Gate = nil
+	w:Advance(3)
+	w:Act(x, "TP1X", "Timing", "3/5")
+	check(w:Track(dx, "TP1X").St == 3 and #fxOf(x, "TimingHit", fx3) == 1, "3 of 5 after the wait: TimingHit, the next step", show(w:Track(dx, "TP1X")))
+	-- 7. Learn: passes when the slot is learned (the teacher taught it); LearnOpen = the gate of Config.Skills.Learn.Gate
+	w.Story.Refresh(x)
+	check(w:Track(dx, "TP1X").St == 3, "Learn: waits while Q is not learned", "")
+	w.Config.Skills.Learn.Gate = { Q = "TP1X" }
+	check(w.Story.LearnOpen(x, "Q") == true and w.Story.LearnOpen(e, "Q") == false and w.Story.LearnOpen(x, "Z") == true,
+		"LearnOpen: true at the gate quest's Learn step only (Z has no gate)", "")
+	dx.SkillSlots = 1
+	w.Story.Refresh(x)
+	check(dx.Story.Done.TP1X == true and w.Story.LearnOpen(x, "Q") == true, "Q learned: the Learn step passes; the gate stays open after", "")
+	w.Config.Skills.Learn.Gate = nil
+	-- 8. a bad saved flag is dropped at the join
+	local b, db = w:Join(9917, { Faction = "Halo", Class = "Warrior", Level = 6, Pos = vec(2, 0, 2), Data = { TutorialStep = 99,
+		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true },
+			Flags = { Lamp = "Mine", ["A=B"] = "x", Bad = "a,b", [5] = "five" } } } })
+	check(db.Story.Flags.Lamp == "Mine" and db.Story.Flags["A=B"] == nil and db.Story.Flags.Bad == nil and db.Story.Flags[5] == nil
+		and b:GetAttribute("StoryFlags") == "Lamp=Mine", "a saved flag with ',' / '=' / a number key is dropped; the attribute at the join",
+		show({ db.Story.Flags, b:GetAttribute("StoryFlags") }))
+	for _, id in { "TP1A", "TP1E", "TP1X" } do
+		SQ.Defs[id] = nil
+		local at = table.find(SQ.Subs, id)
+		if at then table.remove(SQ.Subs, at) end
+	end
+end)
+
+------------------------------------------------------------------ quest P1 ③ (bible v3 H01 / R01 / N01, H02 / R02): Otto asks for the first Slime
+-- Prince (M1_1 is an offered main now: nothing counts before the Accept), the band at Lv3 (Halo: show / hide it at Bright's
+-- ribbon; Horns: a victory pose on Rose's spot - the paper crown)
+runGroup("p1 band and main offers", function()
+	local w = townWorld({ Prompts = true })
+	local panels = panelsOf(w)
+	local SQ = w.Config.StoryQuests
+	local OTTO, BRIGHT, ROSE = vec(40, 0, 50), vec(18, 0, -424), vec(-18, 0, 424)
+	w:Npc("Otto", OTTO)
+	w:Npc("Bright", BRIGHT)
+	w:Npc("Smokey", ROSE)
+	local M11 = SQ.Defs.M1_1
+	check(M11.Offer and M11.Offer.Npc == "Otto" and M11.Offer.Lines.Halo and M11.Offer.Lines.Horns and M11.Offer.Lines.Neutral
+		and M11.Offer.Lines.Halo[1] ~= M11.Offer.Lines.Horns[1], "Config: Otto offers M1_1 in each side's words", show(M11.Offer))
+	-- M1_1: waits at Otto; a Slime Prince before the Accept counts nothing
+	local p, d = w:Join(9931, { Faction = "Horns", Class = "Warrior", Level = 1, Pos = vec(41, 0, 48),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(p)
+	check(d.Story.Main.Id == "" and string.find(p:GetAttribute("StoryOffers") or "", "Otto", 1, true) ~= nil,
+		"after the first weapon: M1_1 is not started, Otto offers it ('!')", show({ d.Story.Main, p:GetAttribute("StoryOffers") }))
+	w:Kill(p, "BigSlime", 1)
+	local n0 = #panels
+	check(w.Story.TalkToNpc(p, "Otto") == "Offer:M1_1" and panels[#panels].Kind == "Offer" and #panels == n0 + 1, "the talk to Otto: the M1_1 offer", "")
+	w:Act(p, "M1_1", "Accept")
+	check(d.Story.Main.Id == "M1_1" and d.Story.Main.St == 1 and (d.Story.Main.P or 0) == 0,
+		"Accept: M1_1 runs from 0 (the Prince before the Accept did not count)", show(d.Story.Main))
+	w:Kill(p, "BigSlime", 1)
+	check(d.Story.Main.St == 2, "a Slime Prince after the Accept: the scroll step", show(d.Story.Main))
+	-- H_Band: Halo, M1_1 done, Lv3, at Bright: show it (a record only: no gold, no score)
+	local h, hd = w:Join(9932, { Faction = "Halo", Class = "Warrior", Level = 2, Pos = BRIGHT + vec(2, 0, 0),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(h)
+	check(string.find(h:GetAttribute("StoryOffers") or "", "Bright", 1, true) == nil, "Lv2: Bright does not ask yet", h:GetAttribute("StoryOffers"))
+	hd.Level = 3
+	w.Story.Refresh(h)
+	check(string.find(h:GetAttribute("StoryOffers") or "", "Bright", 1, true) ~= nil, "Lv3: Bright asks about the band", h:GetAttribute("StoryOffers"))
+	w:Act(h, "H_Band", "Accept")
+	check(w:Track(hd, "H_Band") ~= nil, "accepted at Bright", show(w:Track(hd, "H_Band")))
+	local bank, honor = hd.BankGold or 0, hd.Honor or 0
+	w:Act(h, "H_Band", "Choose", "Good")
+	check(hd.Story.Done.H_Band == true and hd.Story.Pick.H_Band == "Show" and hd.Story.Flags.Band == "Show"
+		and h:GetAttribute("StoryFlags") == "Band=Show" and (hd.BankGold or 0) == bank and (hd.Honor or 0) == honor,
+		"Show it: done, pick Show, flag Band=Show; no gold, no Honor (a record only)", show({ hd.Story.Flags, hd.BankGold, hd.Honor }))
+	-- R_Band: Horns, a cheer on the pose spot = the paper crown
+	local r, rd = w:Join(9933, { Faction = "Horns", Class = "Warrior", Level = 3, Pos = ROSE + vec(2, 0, 0),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(r)
+	check(string.find(r:GetAttribute("StoryOffers") or "", "Smokey", 1, true) ~= nil
+		and string.find(r:GetAttribute("StoryOffers") or "", "Bright", 1, true) == nil, "Horns: Rose asks for the pose (Bright never)", r:GetAttribute("StoryOffers"))
+	w:Act(r, "R_Band", "Accept")
+	w:MoveTo(r, SQ.Landmarks.PoseSpot + vec(1, 0, 1))
+	local fx0 = #w.Fx
+	w:Act(r, "R_Band", "Emote", "cheer")
+	local scene = nil
+	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "StoryScene" and w.Fx[i].Player == r then scene = w.Fx[i].Data end end
+	check(rd.Story.Done.R_Band == true and rd.Story.Flags.Crown == "Paper" and scene and scene.Key == "Crown" and scene.Value == "Paper",
+		"a cheer on the spot: done, the paper crown (flag + scene)", show({ rd.Story.Flags, scene }))
+end)
+
+------------------------------------------------------------------ quest P1 ⑤ (bible v3 H03 / R03 / N03): the Lv5 test at the side's teacher - four slimes
+-- with basic attacks, one real help that differs by side, then back to the teacher who teaches the first skill (the learn gate)
+runGroup("p1 lv5 test", function()
+	local w = townWorld({ Prompts = true })
+	local panels = panelsOf(w)
+	local SQ = w.Config.StoryQuests
+	local LM = SQ.Landmarks
+	local GLEAM, ROSE, OTTO, FOLK1, TINY = vec(-10, 0, -372), vec(-18, 0, 424), vec(40, 0, 50), vec(38, 0, -499), vec(24, 0, 12)
+	w:Npc("Gleam", GLEAM)
+	w:Npc("Smokey", ROSE)
+	w:Npc("Otto", OTTO)
+	w:Npc("Folk1", FOLK1)
+	w:Npc("Tiny", TINY)
+	local M = SQ.Defs.M1_3
+	check(M.Kind == "Main" and M.Offer.Npc.Halo == "Gleam" and M.Offer.Npc.Horns == "Smokey" and M.Offer.Npc.Neutral == "Otto"
+		and M.Requires.Level == 5 and M.Steps[1].Obj.Type == "BasicKill" and M.Steps[1].Obj.Kind == "Slime" and M.Steps[1].Obj.Count == 4
+		and M.Steps[2].Obj.Type == "Pickup" and M.Steps[2].Horns.Obj.Spot == "SnackParcel" and M.Steps[2].Neutral.Obj.Type == "Craft"
+		and M.Steps[3].Obj.Type == "Deliver" and M.Steps[3].Npc == "Folk1" and M.Steps[3].Horns.Npc == "Tiny"
+		and M.Steps[4].Obj.Type == "Learn" and w.Config.Skills.Learn.Gate.Q == "M1_3" and M.Reward.Gold == 1,
+		"Config: M1_3 = the teacher's Lv5 test (Slime 4 basic, the side's help, Learn), Q gated on it, Gold 1 kept", show(M.Steps[2]))
+	local function hero(id, faction, level, o)
+		o = o or {}
+		local p, d = w:Join(id, { Faction = faction, Class = o.Class or "Warrior", Level = level, Pos = o.Pos,
+			Data = { TutorialStep = 99, SkillSlots = o.Slots or 0,
+				Story = { Main = o.Main or { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true },
+					Schema = o.Schema } } })
+		w.Story.Refresh(p)
+		w:Flush()
+		return p, d
+	end
+	local function slime(p, skill)
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = vec(230, 0, 0), WarPoints = 0, SkillHit = skill == true })
+		w:Flush()
+	end
+	-- Lv4: nothing; Lv5: Sir Gleam asks, the first skill is gated until the Learn step
+	local p4, d4 = hero(9941, "Halo", 4, { Pos = GLEAM + vec(2, 0, 0) })
+	check(d4.Story.Main.Id == "" and w.Story.TalkToNpc(p4, "Gleam") ~= "Offer:M1_3", "Lv4: no test yet (Sir Gleam may still offer his lesson)", "")
+	local p, d = hero(9942, "Halo", 5, { Pos = GLEAM + vec(2, 0, 0) })
+	check(d.Story.Main.Id == "" and string.find(p:GetAttribute("StoryOffers") or "", "Gleam", 1, true) ~= nil
+		and w.Story.LearnOpen(p, "Q") == false, "Lv5: Sir Gleam offers the test; Q stays closed until its Learn step", p:GetAttribute("StoryOffers"))
+	check(w.Story.TalkToNpc(p, "Gleam") == "Offer:M1_3", "the talk: the test's offer", "")
+	w:Act(p, "M1_3", "Accept")
+	check(d.Story.Main.Id == "M1_3" and d.Story.Main.St == 1, "Accept: the test runs (step 1: 4 slimes)", show(d.Story.Main))
+	slime(p, true)
+	check(d.Story.Main.P == 0, "a slime beaten by a skill does not count (basic attacks only)", show(d.Story.Main))
+	for _ = 1, 4 do slime(p) end
+	check(d.Story.Main.St == 2, "4 slimes with basic attacks: the help step", show(d.Story.Main))
+	local row = w.Story.MainRow(p, d)
+	check(row and row.Text == "Pick up the lost bag" and row.Story.Guide == "LostBag", "Halo: the neighbour's lost bag (row guides to it)", show(row and row.Text))
+	w:MoveTo(p, LM.LostBag + vec(20, 0, 0))
+	w:Act(p, "M1_3", "Pickup")
+	check(d.Story.Main.St == 2, "Pickup 20 studs from the bag: refused", "")
+	w:MoveTo(p, LM.LostBag + vec(2, 0, 0))
+	w:Act(p, "M1_3", "Pickup")
+	check(d.Story.Main.St == 3, "picked up: carry it to its owner", show(d.Story.Main))
+	check(w.Story.TalkToNpc(p, "Folk1") == nil and d.Story.Main.St == 3, "far from the neighbour: nothing", "")
+	w:MoveTo(p, FOLK1 + vec(2, 0, 0))
+	check(w.Story.TalkToNpc(p, "Folk1") == "M1_3" and d.Story.Main.St == 4, "handed to the neighbour (Folk1): back to Sir Gleam", show(d.Story.Main))
+	check(w.Story.LearnOpen(p, "Q") == true, "at the Learn step: Sir Gleam may teach Q now", "")
+	local bank = d.BankGold or 0
+	w.Story.Refresh(p)
+	check(d.Story.Main.St == 4 and not d.Story.Done.M1_3, "the test waits for the lesson (Q not learned yet)", show(d.Story.Main))
+	d.SkillSlots = 1 -- SkillService.TryLearn at Sir Gleam
+	w.Story.Refresh(p)
+	check(d.Story.Done.M1_3 == true and (d.BankGold or 0) > bank, "Q learned: the test is done, its reward once", show({ d.Story.Done.M1_3, (d.BankGold or 0) - bank }))
+	check(w.Story.LearnOpen(p, "Q") == true, "after the test the gate stays open", "")
+	-- Horns: Rose's snack parcel to Tiny
+	local r, rd = hero(9943, "Horns", 5, { Pos = ROSE + vec(2, 0, 0) })
+	w:Act(r, "M1_3", "Accept")
+	for _ = 1, 4 do slime(r) end
+	local rrow = w.Story.MainRow(r, rd)
+	check(rd.Story.Main.St == 2 and rrow and rrow.Story.Guide == "SnackParcel", "Horns: the snack parcel step", show(rrow and rrow.Text))
+	w:MoveTo(r, LM.SnackParcel + vec(1, 0, 1))
+	w:Act(r, "M1_3", "Pickup")
+	w:MoveTo(r, FOLK1 + vec(2, 0, 0))
+	check(w.Story.TalkToNpc(r, "Folk1") == nil and rd.Story.Main.St == 3, "the Halo neighbour takes no parcel", "")
+	w:MoveTo(r, TINY + vec(2, 0, 0))
+	check(w.Story.TalkToNpc(r, "Tiny") == "M1_3" and rd.Story.Main.St == 4, "Tiny gets the snack prank: back to Rose", show(rd.Story.Main))
+	-- artisans: a craft of their own role counts, another role's does not
+	local Ev = w.Story.EventAmount
+	local obj = M.Steps[2].Neutral.Obj
+	local n, nd = hero(9944, "Neutral", 5, { Class = "Mage", Pos = OTTO + vec(2, 0, 0) })
+	check(Ev(n, obj, { Kind = "Craft", Recipe = "A1" }) == 1 and Ev(n, obj, { Kind = "Craft", Recipe = "W2" }) == 0,
+		"an alchemist (Mage): their own brew counts, a smith's weapon does not", "")
+	-- an old save on the old M1_3 (the skill hits) takes the test from its first step once (Story.Schema 3)
+	local o, od = hero(9945, "Halo", 6, { Slots = 1, Main = { Id = "M1_3", St = 2, P = 2, T = {}, Claim = false } })
+	check(od.Story.Main.Id == "M1_3" and od.Story.Main.St == 1 and od.Story.Main.P == 0 and od.Story.Schema >= 3,
+		"an old save on M1_3's skill hits: the test from step 1 (Schema 3)", show(od.Story.Main))
+	local o2, od2 = hero(9946, "Halo", 6, { Main = { Id = "M1_3", St = 2, P = 0, T = {}, Claim = false }, Schema = 3 })
+	check(od2.Story.Main.St == 2, "a save already on Schema 3 is left alone", show(od2.Story.Main))
+end)
+
+------------------------------------------------------------------ quest P1 ⑦ (bible v3 H04 / R04 / N04 + rules 3-5): the first chapter's lamp - a personal
+-- result (Story.Flags Lamp, the attribute, one scene), the townsperson's reaction by the pick; the Lv5 test's help leaves its scene
+runGroup("p1 lamp and scenes", function()
+	local w = townWorld({ Prompts = true })
+	local SQ = w.Config.StoryQuests
+	local LM = SQ.Landmarks
+	local BRIGHT, ROSE, TINY = vec(18, 0, -424), vec(-18, 0, 424), vec(24, 0, 12)
+	w:Npc("Bright", BRIGHT)
+	w:Npc("Smokey", ROSE)
+	w:Npc("Tiny", TINY)
+	local function scenes(p, from)
+		local out = {}
+		for i = (from or 0) + 1, #w.Fx do
+			local f = w.Fx[i]
+			if f.Kind == "StoryScene" and f.Player == p then table.insert(out, f.Data.Key .. "=" .. tostring(f.Data.Value)) end
+		end
+		return table.concat(out, ",")
+	end
+	local M = SQ.Defs.M1_4
+	check(M.Claim == true and M.Offer.Npc.Halo == "Bright" and M.Offer.Npc.Horns == "Smokey" and M.Offer.Npc.Neutral == "Tiny"
+		and M.Steps[1].Obj.Spot == "LampH" and M.Steps[1].Horns.Obj.Spot == "LampR" and M.Steps[1].Neutral.Obj.Spot == "LampN"
+		and M.Steps[2].Obj.Flag.Key == "Lamp" and M.Steps[3].Horns.Npc == "Smokey" and M.Reward.Gold == 2 and M.Reward.XP == 2,
+		"Config: M1_4 = the lamp (offered by Bright / Rose / Tiny), Claim and Gold 2 / XP 2 kept", show(M.Offer.Npc))
+	local function hero(id, faction, pos, main)
+		local p, d = w:Join(id, { Faction = faction, Class = "Warrior", Level = 5, Pos = pos,
+			Data = { TutorialStep = 99, SkillSlots = 1, Story = { Main = main or { Id = "" }, Subs = {},
+				Done = { M1_1 = true, M1_3 = true }, Pick = {}, First = { Migrated = true } } } })
+		w.Story.Refresh(p)
+		w:Flush()
+		return p, d
+	end
+	-- Halo: Bright asks; the lamp; the shared light; Bright's reaction by the pick; [Claim]
+	local p, d = hero(9951, "Halo", BRIGHT + vec(2, 0, 0))
+	check(d.Story.Main.Id == "" and w.Story.TalkToNpc(p, "Bright") == "Offer:M1_4", "after the test: Bright offers the lamp", "")
+	w:Act(p, "M1_4", "Accept")
+	check(d.Story.Main.Id == "M1_4" and d.Story.Main.St == 1, "accepted: go to the lamp", show(d.Story.Main))
+	w:MoveTo(p, LM.LampH + vec(3, 0, 0))
+	w:Tick(p, 1)
+	check(d.Story.Main.St == 2, "at the lamp: the choice", show(d.Story.Main))
+	local fx0 = #w.Fx
+	w:Act(p, "M1_4", "Choose", "Good")
+	check(d.Story.Main.St == 3 and d.Story.Pick.M1_4 == "Common" and d.Story.Flags.Lamp == "Common"
+		and p:GetAttribute("StoryFlags") == "Lamp=Common" and scenes(p, fx0) == "Lamp=Common" and (d.Honor or 0) == 0,
+		"the town lamp: pick Common, flag + attribute + ONE scene, no score", show({ d.Story.Flags, scenes(p, fx0) }))
+	local row = w.Story.MainRow(p, d)
+	check(row and row.Story.Npc == "Bright" and row.Story.Var == "Good", "back to Bright, her lines by my pick (Var Good)", show(row and row.Story))
+	w:MoveTo(p, BRIGHT + vec(2, 0, 0))
+	w:Act(p, "M1_4", "Talk")
+	check(d.Story.Main.Claim == true, "Bright reacts: [Claim] waits (as before)", show(d.Story.Main))
+	-- Horns: Rose, my own light
+	local r, rd = hero(9952, "Horns", ROSE + vec(2, 0, 0))
+	w:Act(r, "M1_4", "Accept")
+	w:MoveTo(r, LM.LampR + vec(3, 0, 0))
+	w:Tick(r, 1)
+	local fx1 = #w.Fx
+	w:Act(r, "M1_4", "Choose", "Evil")
+	check(rd.Story.Flags.Lamp == "Mine" and scenes(r, fx1) == "Lamp=Mine", "Horns, my horns: Lamp=Mine (its scene)", show(rd.Story.Flags))
+	local rrow = w.Story.MainRow(r, rd)
+	check(rrow and rrow.Story.Npc == "Smokey" and rrow.Story.Var == "Evil", "back to Rose, her lines for my pick", show(rrow and rrow.Story))
+	-- an old save on the old M1_4 (the report) goes to the lamp; one waiting for [Claim] keeps waiting (Schema 4)
+	local o, od = hero(9953, "Halo", nil, { Id = "M1_4", St = 2, P = 0, T = {}, Claim = false })
+	local c, cd = hero(9954, "Halo", nil, { Id = "M1_4", St = 2, P = 0, T = {}, Claim = true })
+	check(od.Story.Main.St == 1 and cd.Story.Main.St == 2 and cd.Story.Main.Claim == true and od.Story.Schema >= 4,
+		"old M1_4 saves: to the lamp; a finished one still waits for [Claim]", show({ od.Story.Main, cd.Story.Main }))
+	-- the Lv5 test's help leaves its scene: Halo the bag (the neighbour waves), the artisan's own craft (the wheel / the potion / the treat)
+	local T3 = SQ.Defs.M1_3.Steps[3]
+	check(T3.SetFlag.Key == "Help" and T3.SetFlag.Value == "Bag" and T3.Horns.SetFlag.Value == "Prank" and T3.Neutral.SetFlag.Value == "Class",
+		"Config: the test's help step leaves Help = Bag / Prank / the craft", show(T3.SetFlag))
+	w:Npc("Folk1", vec(38, 0, -499))
+	local n, nd = w:Join(9955, { Faction = "Neutral", Class = "Archer", Level = 5, Pos = TINY + vec(2, 0, 0),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "M1_3", St = 3, P = 0, T = {}, Claim = false }, Subs = {},
+			Done = { M1_1 = true }, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
+	w.Story.Refresh(n)
+	local fx2 = #w.Fx
+	check(w.Story.TalkToNpc(n, "Tiny") == "M1_3" and nd.Story.Flags.Help == "Tame" and scenes(n, fx2) == "Help=Tame",
+		"a tamer (Archer) gives Tiny the treat: Help = Tame (the baby slime scene)", show({ nd.Story.Flags, scenes(n, fx2) }))
+end)
+
+------------------------------------------------------------------ A23-205 (user 10/15): daily repeat requests - at most RepeatDailyMax (5) accepted a KST
+-- day (the player picks), done = done for today, the askers' '!' dims once today's are taken, a new day brings them back
+runGroup("daily repeat requests", function()
+	local w = townWorld({ Prompts = true })
+	local SQ = w.Config.StoryQuests
+	check(SQ.RepeatDailyMax == 5, "Config: RepeatDailyMax = 5", SQ.RepeatDailyMax)
+	local KID = vec(0, 0, 0)
+	w:Npc("TKidD", KID)
+	w:Npc("TKidE", vec(6, 0, 0))
+	local ids = {}
+	for i = 1, 7 do
+		local id = "TRP" .. i
+		SQ.Defs[id] = { Kind = "Sub", Repeat = "Daily", Title = "Rep " .. i, ShortName = "Rep " .. i,
+			Offer = { Npc = i <= 6 and "TKidD" or "TKidE", Lines = { All = { "Kid: Again?" } } },
+			Steps = { { Text = "Talk", Npc = i <= 6 and "TKidD" or "TKidE", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "ok" } } } },
+			Reward = { GoldN = 3 } }
+		table.insert(SQ.Subs, id)
+		table.insert(ids, id)
+	end
+	local p, d = joinAfterM23(w, 9961, "Halo", { Pos = KID + vec(2, 0, 0) })
+	local function offers() return p:GetAttribute("StoryOffers") or "" end
+	local function dims() return p:GetAttribute("StoryOffersDim") or "" end
+	check(string.find(offers(), "TKidD", 1, true) ~= nil and dims() == "", "a new day: the repeat askers ask", offers())
+	for i = 1, 5 do w:Act(p, ids[i], "Accept") end
+	w.Story.Refresh(p)
+	local taken = 0
+	for i = 1, 5 do if w:Track(d, ids[i]) then taken += 1 end end
+	check(taken == 5, "5 accepted", taken)
+	w:Act(p, ids[6], "Accept")
+	check(w:Track(d, ids[6]) == nil, "the 6th the same day: refused (RepeatDailyMax 5)", show(w:Track(d, ids[6])))
+	check(string.find(offers(), "TKidE", 1, true) == nil and string.find(dims(), "TKidE", 1, true) ~= nil,
+		"today's 5 taken: TKidE's '!' dims (StoryOffersDim), not offered", show({ offers(), dims() }))
+	-- finishing one pays and it is done for today only (never Done forever)
+	local bank = d.BankGold or 0
+	w:Act(p, ids[1], "Talk")
+	check(d.Story.Done[ids[1]] == nil and d.Story.Daily.Done[ids[1]] == true and (d.BankGold or 0) == bank + 3 and w:Track(d, ids[1]) == nil,
+		"one done: paid, done for today (Story.Daily), not Done forever", show(d.Story.Daily))
+	w:Act(p, ids[1], "Accept")
+	check(w:Track(d, ids[1]) == nil, "the same request again today: refused", "")
+	-- a new KST day: the count and the done list start again; a request still open stays
+	w:Advance(86400)
+	w.Story.Refresh(p)
+	check(string.find(offers(), "TKidD", 1, true) ~= nil and string.find(offers(), "TKidE", 1, true) ~= nil and dims() == ""
+		and w:Track(d, ids[2]) ~= nil, "the next day: both ask again; yesterday's open one is still open", show({ offers(), dims() }))
+	w:Act(p, ids[1], "Accept")
+	check(w:Track(d, ids[1]) ~= nil, "yesterday's done request can be taken again", "")
+	w:Act(p, ids[1], "Talk")
+	w:Act(p, ids[1], "Accept")
+	check(w:Track(d, ids[1]) == nil and d.Story.Daily.Done[ids[1]] == true, "done again today (1 of 5 taken): not offered again until tomorrow", show(d.Story.Daily))
+	for _, id in ids do
+		SQ.Defs[id] = nil
+		table.remove(SQ.Subs, table.find(SQ.Subs, id))
+	end
+end)
+
+------------------------------------------------------------------ quest P1 ⑧ (bible §13-3): a short escort (moves only while I am near; one event; a saved
+-- checkpoint a rejoin goes on from) and a short chase (catch it; fall far behind = it waits at the last waypoint)
+runGroup("p1 chase and escort", function()
+	local w = townWorld({ Prompts = true })
+	local SQ = w.Config.StoryQuests
+	SQ.Paths.TPath = { vec(0, 0, 0), vec(40, 0, 0), vec(40, 0, 40) } -- 80 studs, waypoints at 0 / 40 / 80
+	SQ.Defs.TESC = { Kind = "Sub", Title = "Escort", ShortName = "Escort",
+		Steps = { { Text = "Walk with the cart", Guide = "SlimePond",
+			Obj = { Type = "Escort", Path = "TPath", Speed = 10, Near = 20, Event = { At = 0.75, Kind = "Slime", Count = 2, Radius = 30 } } } },
+		Reward = { GoldN = 5 } }
+	SQ.Defs.TCHS = { Kind = "Sub", Title = "Chase", ShortName = "Chase",
+		Steps = { { Text = "Catch the runner", Guide = "SlimePond", Obj = { Type = "Chase", Path = "TPath", Speed = 10, Catch = 8, Lose = 60, LoseSeconds = 4 } } } }
+	table.insert(SQ.Subs, "TESC")
+	table.insert(SQ.Subs, "TCHS")
+	local p, d = joinAfterM23(w, 9971, "Halo", { Pos = vec(2, 0, 0) })
+	w.Story.DebugSub(p, "TESC", 1)
+	local function tick(n) for _ = 1, n or 1 do w:Advance(1); w.Story.Refresh(p) end end
+	tick(1)
+	check(p:GetAttribute("StoryMover") == "TESC" and p:GetAttribute("StoryMoverKind") == "Escort", "the escort's mover is published", "")
+	tick(2)
+	local pos = p:GetAttribute("StoryMoverPos")
+	check(pos and pos.X > 15 and pos.X < 35, "near it: the cart moves (10 studs a second)", show(pos))
+	-- the player walks away: it waits
+	w:MoveTo(p, vec(-60, 0, 0))
+	local before = p:GetAttribute("StoryMoverPos")
+	tick(3)
+	check(p:GetAttribute("StoryMoverState") == "Wait" and p:GetAttribute("StoryMoverPos").X == before.X, "the player 60 studs away: it waits", show(p:GetAttribute("StoryMoverPos")))
+	-- back beside it: on to the first waypoint (saved)
+	for _ = 1, 6 do
+		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
+		tick(1)
+	end
+	check(math.floor(w:Track(d, "TESC").P or 0) >= 2, "past the 40-stud waypoint: the checkpoint is saved (P)", show(w:Track(d, "TESC")))
+	-- a rejoin (a new server: no live mover) goes on from the checkpoint
+	local saved = w:Track(d, "TESC").P
+	local r = w:Join(9973, { Faction = "Halo", Class = "Warrior", Level = 6, Pos = vec(40, 0, 2), Data = { TutorialStep = 99,
+		Story = { Main = { Id = "" }, Subs = { TESC = { St = 1, P = saved, T = {}, Claim = false } },
+			Done = { M1_1 = true, M1_3 = true, M1_4 = true, TCHS = true }, Pick = {}, First = { Migrated = true }, Schema = 5 } } })
+	w:Advance(1)
+	w.Story.Refresh(r)
+	local again = r:GetAttribute("StoryMoverPos")
+	check(again and again.X == 40 and again.Z <= 15, "a rejoined escort goes on from the saved waypoint (40, 0), not the start", show(again))
+	-- the event at 75%: it stops until 2 slimes near it are beaten
+	for _ = 1, 4 do
+		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
+		tick(1)
+	end
+	check(p:GetAttribute("StoryMoverState") == "Event" and p:GetAttribute("StoryMoverPos").Z <= 20.5, "at 75%: the event (it stops)", show({ p:GetAttribute("StoryMoverState"), p:GetAttribute("StoryMoverPos") }))
+	local at = p:GetAttribute("StoryMoverPos")
+	local function slime(where)
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = where, WarPoints = 0 })
+		w:Flush()
+	end
+	slime(at + vec(100, 0, 0))
+	slime(at + vec(0, 0, 100))
+	tick(2)
+	check(p:GetAttribute("StoryMoverState") == "Event", "slimes far away do not count", "")
+	slime(at + vec(5, 0, 0))
+	slime(at + vec(-5, 0, 0))
+	tick(1)
+	check(w:Track(d, "TESC").T.e == 1, "2 slimes near it: the event is over (saved once)", show(w:Track(d, "TESC")))
+	local bank = d.BankGold or 0
+	for _ = 1, 4 do
+		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
+		tick(1)
+	end
+	check(d.Story.Done.TESC == true and (d.BankGold or 0) == bank + 5 and p:GetAttribute("StoryMover") == "",
+		"the path's end: done, paid, the mover gone", show({ d.Story.Done.TESC, p:GetAttribute("StoryMover") }))
+	-- the chase: it runs ahead; far behind for 4 s = lost (back to the last waypoint, waiting); caught when I reach it
+	local q, dq = joinAfterM23(w, 9972, "Halo", { Pos = vec(0, 0, 0) })
+	dq.Story.Subs.TESC, dq.Story.Done.TESC = nil, true -- (this player has only the chase open)
+	w.Story.DebugSub(q, "TCHS", 1)
+	local function qtick(n) for _ = 1, n or 1 do w:Advance(1); w.Story.Refresh(q) end end
+	w:MoveTo(q, vec(-100, 0, 0))
+	qtick(7)
+	check(q:GetAttribute("StoryMoverState") == "Lost" or q:GetAttribute("StoryMoverState") == "Move", "far behind: it runs, then waits (Lost)", q:GetAttribute("StoryMoverState"))
+	qtick(4)
+	check(q:GetAttribute("StoryMoverState") == "Lost", "more than 60 behind for 4 s: Lost (it waits at a waypoint)", q:GetAttribute("StoryMoverState"))
+	local wait = q:GetAttribute("StoryMoverPos")
+	qtick(3)
+	local nowPos = q:GetAttribute("StoryMoverPos")
+	check(nowPos.X == wait.X and nowPos.Z == wait.Z, "while lost it does not run on", show({ wait, q:GetAttribute("StoryMoverPos"), q:GetAttribute("StoryMoverState") }))
+	w:MoveTo(q, wait + vec(4, 0, 0))
+	qtick(1)
+	check(dq.Story.Done.TCHS == true and q:GetAttribute("StoryMover") == "", "reaching it: caught (done)", show(dq.Story.Done.TCHS))
+	SQ.Paths.TPath = nil
+	for _, id in { "TESC", "TCHS" } do
+		SQ.Defs[id] = nil
+		table.remove(SQ.Subs, table.find(SQ.Subs, id))
+	end
+end)
+
 -- A23-199: every quest step shows where to go: a Guide, or an Npc (the client guides to that NPC), except a card that
 -- opens right where the player stands (Panel without Npc). KNOWN = today's steps without one (the quest redesign fixes them;
 -- the list may only shrink)
 runGroup("a23-199 every step has a guide", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local KNOWN = { -- 10/15: 33 steps
-		"EG01.1", "EG02.1", "EG03.1", "EG04.1", "EG14.1", "GW4.1", "GW8.1", "M2_1.1", "M2_4.1", "M2_5.1", "M2_7.1", "M3_5.1", "M3_6.1", "M3_7.1", "M3_8.1", "N0.1", "N0.2", "N0A.1", "N0A.2", "N0T.1", "N0T.2", "N1.1", "N2.1", "N4.1", "R3.2", "R6.2", "R7.2", "S2.1", "S3.1", "S4.1", "S4.2", "SK1.1", "SK2.3" }
+		"EG01.1", "EG02.1", "EG03.1", "EG04.1", "EG14.1", "GW4.1", "GW8.1", "M2_1.1", "M2_4.1", "M2_5.1", "M2_7.1", "M3_5.1", "M3_6.1", "M3_7.1", "M3_8.1", "N0.1", "N0A.1", "N0T.1", "N1.1", "N2.1", "N4.1", "R3.2", "R6.2", "R7.2", "S2.1", "S3.1", "S4.1", "S4.2", "SK1.1", "SK2.3" }
 	local known = {}
 	for _, k in KNOWN do known[k] = true end
 	local missing, fixed = {}, {}

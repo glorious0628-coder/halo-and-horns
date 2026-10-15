@@ -10,7 +10,8 @@
 --             reaction lines of A23-64 attach to these: game dev 2's lines, game dev 1's bubble).
 --   Merchant = true: a potion stall seller. Tagged "PotionMerchant" like the Crossroads seller, same prompt, attribute
 --             HHC_PotionMerchant; Enabled = false until ShopService accepts more than the one named seller (game dev 2).
---   Anvil   = true: Otto, decorative: he stands behind the Crossroads anvil (the shop prompt stays on the anvil).
+--   Anvil   = true: Otto, decorative: he stands behind the Crossroads anvil (the shop prompt stays on the anvil). Behind =
+--             studs behind it (negative = in front), Side = studs along its side (P1 ②: Kit beside it).
 -- A model that already exists under the name is reused (its tags, attributes and prompt repaired, moved when its spot changed);
 -- nothing here ever deletes anything that is not its own (attribute HHC_TownNpc). Build never yields: the bodies are made in
 -- one task after Build returns (the avatar call loads Roblox's default meshes).
@@ -98,7 +99,11 @@ function TownNpcs.Spot(entry)
 		local len = math.sqrt(dx * dx + dz * dz)
 		if len < 1 then return nil end
 		local back = num(entry.Behind, 4)
-		return { X = anvil.Position.X + dx / len * back, Z = anvil.Position.Z + dz / len * back, LookX = center.X, LookZ = center.Z }
+		-- P1 ②: Side = studs along the anvil's side (Kit and the artisans' practice dummy beside it; negative = the other side)
+		local side = num(entry.Side, 0)
+		local x = anvil.Position.X + dx / len * back - dz / len * side
+		local z = anvil.Position.Z + dz / len * back + dx / len * side
+		return { X = x, Z = z, LookX = center.X, LookZ = center.Z }
 	end
 	local at = entry.At
 	if typeof(at) ~= "Vector3" or not finite(at.X) or not finite(at.Z) or math.abs(at.X) > num(C.MaxCoord, 3000) or math.abs(at.Z) > num(C.MaxCoord, 3000) then
@@ -163,6 +168,10 @@ local function mark(npc, entry, C)
 	if entry.Story then
 		CollectionService:AddTag(npc, Config.StoryQuests.NpcTag or "StoryNpc")
 		npc:SetAttribute("NpcId", entry.Story)
+		if entry.Folk then -- P1 ⑤: a townsperson who is also a quest NPC (Folk1) keeps the TownFolk bubbles
+			CollectionService:AddTag(npc, "TownFolk")
+			npc:SetAttribute("FolkId", entry.Folk)
+		end
 	elseif entry.Merchant == true then
 		CollectionService:AddTag(npc, (Config.Vitals and Config.Vitals.PotionMerchantTag) or "PotionMerchant") -- ShopService sells at every tagged seller
 		npc:SetAttribute("HHC_PotionMerchant", true)

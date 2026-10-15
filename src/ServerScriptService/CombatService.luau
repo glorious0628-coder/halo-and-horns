@@ -25,6 +25,9 @@ CombatService.KnockedOut = Util.Signal.new()
 -- (player, record, killed) A23-68 #5 funnel: a player's hit landed on a monster (a swing, Q or a skill; not a refused
 -- hit), fired right after the damage. Handlers must not yield.
 CombatService.MonsterHit = Util.Signal.new()
+-- (player, position, lookVector) quest P1 ②: a manual basic swing the server accepted (bare-handed punches too), right after its
+-- cooldown is set; StoryQuestService counts a Practice step with it (the practice dummy is no monster). Handlers must not yield.
+CombatService.BasicSwing = Util.Signal.new()
 
 local S = nil
 
@@ -1001,6 +1004,7 @@ function CombatService.Swing(player, isManual, hint)
 		return
 	end
 	nextSwingAt[player] = now + (w.SwingInterval or 1)
+	if isManual then CombatService.BasicSwing:Fire(player, root.Position, root.CFrame.LookVector) end
 
 	local pos = root.Position
 	local fac = faction(player)

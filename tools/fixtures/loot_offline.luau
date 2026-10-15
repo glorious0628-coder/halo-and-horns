@@ -909,10 +909,10 @@ runGroup("sanitize", function()
 	local keys = 0
 	for k in payload or {} do
 		keys += 1
-		check(k == "Items" or k == "Enhance" or k == "Seen" or k == "ItemSeq" or k == "WeaponSeq" or k == "Spares",
-			"Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq, C1 Spares)", tostring(k))
+		check(k == "Items" or k == "Enhance" or k == "Seen" or k == "ItemSeq" or k == "WeaponSeq" or k == "Spares" or k == "Bound",
+			"Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq, C1 Spares, A23-206 Bound)", tostring(k))
 	end
-	check(keys == 6, "Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq, Spares }", keys)
+	check(keys == 7, "Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq, Spares, Bound }", keys)
 	check(payload and type(payload.Seen) == "table" and next(payload.Seen) == nil, "P7 no kills yet: payload Seen = {}", show(payload and payload.Seen))
 	check(f.Player:GetAttribute("WeaponEnhance") == 10, "WeaponEnhance attribute = +N of the equipped tier (4)", f.Player:GetAttribute("WeaponEnhance"))
 	-- unknown ids can never be used, sold or given
@@ -965,7 +965,7 @@ runGroup("sanitize", function()
 	local np = n:LastPayload()
 	check(deepEqual(n.Data.Items, {}) and #n.Data.WeaponEnhance == 11 and n.Player:GetAttribute("WeaponEnhance") == 0
 		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Seen = {}, ItemSeq = {},
-			WeaponSeq = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Spares = {} }),
+			WeaponSeq = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Spares = {}, Bound = {} }),
 		"new player: empty items, 11 tiers, Inventory pushed and WeaponEnhance attribute 0", show(np))
 	-- a burst of changes in one frame is one push; a player who left gets none; a real spawn resends (safety net)
 	n:Give("Jelly", 1); n:Give("Jelly", 1); n:Give("Bone", 1)
@@ -2931,6 +2931,48 @@ runGroup("sell", function()
 end)
 
 ------------------------------------------------------------------ 7b. SellItem (artisan min ②, 2026-10-14)
+------------------------------------------------------------------ A23-206 (user 10/15): quest reward items are bound to the character
+runGroup("bound rewards", function()
+	local f = fixture()
+	local L = f.L
+	local function bound(id) return (f.Data.ItemsBound or {})[id] or 0 end
+	f:Give("Herb", 2) -- picked: free
+	check(f.Loot.GrantItem(f.Player, "Herb", 3, "Reward") == 3 and f:Count("Herb") == 5 and bound("Herb") == 3,
+		"a quest reward (source Reward): 3 more herbs, those 3 bound", show({ f:Count("Herb"), f.Data.ItemsBound }))
+	check(f.Loot.GrantItem(f.Player, "Herb", 1) == 1 and bound("Herb") == 3, "a drop (no source): free", show(f.Data.ItemsBound))
+	local free, b = f.Loot.Bound(f.Player, "Herb")
+	check(free == 3 and b == 3, "Bound(): 3 free, 3 bound", show({ free, b }))
+	-- the market takes free ones only
+	check(f.Loot.TakeItem(f.Player, "Herb", 4, "Trade") == false and f:Count("Herb") == 6, "Trade: 4 asked, only 3 free - nothing taken", "")
+	check(f.Loot.TakeItem(f.Player, "Herb", 2, "Trade") == true and f:Count("Herb") == 4 and bound("Herb") == 3,
+		"Trade: 2 free ones go, the bound 3 stay", show({ f:Count("Herb"), f.Data.ItemsBound }))
+	-- a use (crafting, a tonic, a treat) takes the bound ones first
+	check(f.Loot.TakeItem(f.Player, "Herb", 2) == true and f:Count("Herb") == 2 and bound("Herb") == 1,
+		"a use of 2: the bound ones first (1 bound, 1 free left)", show({ f:Count("Herb"), f.Data.ItemsBound }))
+	-- the Forge sells free ones only
+	f.NearAnvil = true
+	f.Notices = {}
+	f:Fire("SellItem", "Herb", 2)
+	check(f:Count("Herb") == 2 and f:Noticed(L.Text.SellBound) == 1, "selling 2 with 1 bound: refused, 'Quest rewards can't be sold.'", show(f.Data.Items))
+	f:Fire("SellItem", "Herb", 1)
+	check(f:Count("Herb") == 1 and bound("Herb") == 1, "the free one sells; the bound one stays", show({ f:Count("Herb"), f.Data.ItemsBound }))
+	-- a bound scroll is used first like any other
+	check(f.Loot.GrantItem(f.Player, "Enh70", 1, "Reward") == 1 and bound("Enh70") == 1, "a reward scroll: bound", "")
+	-- the sell-all keeps bound monster materials
+	f.Loot.GrantItem(f.Player, "Jelly", 2, "Reward")
+	f:Give("Jelly", 3)
+	f:Sell()
+	check(f:Count("Jelly") == 2 and bound("Jelly") == 2, "the sell-all sells the 3 free Jelly, the 2 bound stay", show({ f:Count("Jelly"), f.Data.ItemsBound }))
+	-- the bag push carries Bound; a bad saved bound count is cut to what is held
+	local pay = f:LastPayload()
+	check(pay and pay.Bound and pay.Bound.Jelly == 2 and pay.Bound.Herb == 1, "the bag payload: Bound { id = n }", show(pay and pay.Bound))
+	local saved = deepCopy(DEFAULT_ROW)
+	saved.Items, saved.ItemsBound = { Herb = 2 }, { Herb = 9, Nope = "x" }
+	local g = fixture({ Saved = saved })
+	check(g.Data.ItemsBound.Herb == 2 and g.Data.ItemsBound.Nope == nil,
+		"a saved bound count above the held one is cut (9 -> 2); bad keys / values dropped", show(g.Data.ItemsBound))
+end)
+
 runGroup("sell one gathered kind", function()
 	local f = fixture()
 	local L = f.L

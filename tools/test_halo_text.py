@@ -41,8 +41,8 @@ MUTATIONS = [
     ("Bright says oath", C, "Bright: You did it! Make your promise.", "Bright: You did it! Say your oath."),
     ("Rose says oath", C, "Rose: Not bad, rascal! Make your promise.", "Rose: Not bad, rascal! Say your oath."),
     ("H6 forgets the town", C, "{ Text = \"Look at the hero statues in Halo Citadel %d/%d s\"", "{ Text = \"Look at the hero statues %d/%d s\""),
-    ("Hallie's catchphrase is replaced", C, "\"Hallie here! Now you know my name.\", \"Did you see the statues",
-     "\"You're back! Good work out there.\", \"Did you see the statues"),
+    ("Hallie's catchphrase is replaced", C, "\"Hallie here! Now you know my name. Welcome to the Knights!\",",
+     "\"You're back! Good work out there. Welcome to the Knights!\","),
     # 사용자 10/15 (fix/welcome-order): page 1 = the hello, page 2 = the mission
     ("Halo welcome has a third page", C, "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"First, go to Otto's Forge",
      "\t\t\t\t\"Hallie here! Now you know my name. Welcome to the Knights!\",\n\t\t\t\t\"Thank you for joining the Knights of Light.\",\n\t\t\t\t\"First, go to Otto's Forge"),

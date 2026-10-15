@@ -780,7 +780,10 @@ local function doList(player, data, kind, id, n, price)
 	if info.Kind == "I" then
 		local items = type(data.Items) == "table" and data.Items or {}
 		if math.floor(num(items[info.Id], 0)) < n then return note(player, "NoItem") end
-		if not S.LootService.TakeItem(player, info.Id, n) then return note(player, "NoItem") end
+		-- A23-206: bound quest rewards never leave the character (the free ones of the same item still list)
+		local okB, free = pcall(S.LootService.Bound, player, info.Id)
+		if okB and type(free) == "number" and free < n then return note(player, "Bound") end
+		if not S.LootService.TakeItem(player, info.Id, n, "Trade") then return note(player, "NoItem") end
 	else
 		if not S.LootService.TakeSpare(player, info.Tier, info.Plus, n) then return note(player, "NoItem") end
 	end
