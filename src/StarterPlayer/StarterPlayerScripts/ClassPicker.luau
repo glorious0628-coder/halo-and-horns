@@ -12,6 +12,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiService = game:GetService("GuiService")
 local TweenService = game:GetService("TweenService")
 local TextService = game:GetService("TextService")
+local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -56,6 +57,9 @@ local LAY = {
 	CardMaxH = 640,
 	CardMinH = 300, -- below this (or 20 x the min text size) the row scrolls sideways instead of shrinking further
 	Lift = 0.035, -- room around the cards for the hover lift (fraction of the card height)
+	-- 10/16 phone dump (class cards 11-12 px): touch has no hover lift, only the 1.03 tap pop -> less room, taller
+	-- cards; chips and the Pick! word aim at PhoneText real px
+	PhoneLift = 0.016, PhoneText = 14,
 	TouchTarget = 44, -- real px of the invisible hit areas and the code-styled choose buttons (CR-L41)
 	FixedTextMin = 15, -- CR-L40: min TextSize of non-scaled code-card text (>= 11 real px under a 0.75 UIScale)
 	HoverScale = 1.03,
@@ -1258,8 +1262,15 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 
 	-- button: glow, label, and a hit area at least TouchTarget real px tall, kept inside the card
 	place(c.Shade, kx + kw * 0.03, ky + kh * 0.08, kw * 0.94, kh * 0.84)
-	place(c.Label, kx + kw * 0.1, ky + kh * 0.12, kw * 0.8, kh * 0.72)
-	setTextRange(c.Label, minT, kh * 0.62)
+	local phone = UserInputService.TouchEnabled
+	if phone then
+		-- 10/16 phone dump ('Pick!' 11 px in a 12 px box): the word gets the button's whole height
+		place(c.Label, kx + kw * 0.06, ky + kh * 0.02, kw * 0.88, kh * 0.96)
+		setTextRange(c.Label, minT, math.max(kh * 0.62, math.min(kh * 0.82, LAY.PhoneText / s)))
+	else
+		place(c.Label, kx + kw * 0.1, ky + kh * 0.12, kw * 0.8, kh * 0.72)
+		setTextRange(c.Label, minT, kh * 0.62)
+	end
 	c.Choose = c.Redraw and T.ChooseShort or T.Choose
 	if c.Label.Text ~= T.Wait then c.Label.Text = c.Choose end
 	local hitH = math.min(math.max(kh * 1.2, LAY.TouchTarget / s), H * 0.2)
@@ -1271,11 +1282,16 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 	-- characters hold on the right), badge over the top ornament. The A23-57 frames: the class word centred over the
 	-- name ribbon, its bottom on the ribbon's rim (CardLayout RibbonTop) - user 2026-10-07 via 검수: centred reads better
 	local chipT = math.max(minT, math.floor(nh * 0.48))
+	if phone then chipT = math.max(chipT, math.ceil(LAY.PhoneText / s)) end
 	local chipH = math.floor(chipT * 1.5)
 	local function chipW(label)
+		if phone then -- measured (the 1.02 em per letter guess made every phone chip hit its cap)
+			local _, tw = textBounds(label.Text, chipT, label.Font, 10000)
+			return tw + chipH * 0.9
+		end
 		return (utf8.len(label.Text) or #label.Text) * chipT * 1.02 + chipH * 0.9
 	end
-	local gw = math.min(chipW(c.ChipText), pw * 0.6)
+	local gw = math.min(chipW(c.ChipText), (phone and c.Redraw) and W * 0.84 or pw * 0.6)
 	if c.Redraw then
 		local rim = (type(L.RibbonTop) == "number" and L.RibbonTop or (ny / H - 0.014)) * H
 		place(c.Chip, (W - gw) / 2, rim - chipH - 1, gw, chipH)
@@ -1284,7 +1300,7 @@ local function layoutArtCard(c, L, img, W, H, minT, s)
 	end
 	setTextRange(c.ChipText, minT, chipT)
 	if c.Badge then
-		local bw2 = math.min(chipW(c.BadgeText), W * 0.9)
+		local bw2 = math.min(chipW(c.BadgeText), phone and W * 0.98 or W * 0.9)
 		place(c.Badge, (W - bw2) / 2, H * 0.012, bw2, chipH)
 		setTextRange(c.BadgeText, minT, chipT)
 	end
@@ -1300,10 +1316,11 @@ local function layoutArtCards(w, cardsTop, cardsBottom, minT, s)
 	local availW = w - 2 * LAY.Gutter
 	local availH = math.max(120, cardsBottom - cardsTop)
 	local gap = math.clamp(math.floor(w * 0.015), 10, 28)
-	local cardH = math.min(availH / (1 + 2 * LAY.Lift), LAY.CardMaxH)
+	local liftK = UserInputService.TouchEnabled and LAY.PhoneLift or LAY.Lift
+	local cardH = math.min(availH / (1 + 2 * liftK), LAY.CardMaxH)
 	local scroll = false
-	if n * cardH * aspect + (n - 1) * gap + 2 * cardH * LAY.Lift > availW then
-		local fitH = (availW - (n - 1) * gap) / (n * aspect + 2 * LAY.Lift)
+	if n * cardH * aspect + (n - 1) * gap + 2 * cardH * liftK > availW then
+		local fitH = (availW - (n - 1) * gap) / (n * aspect + 2 * liftK)
 		local minH = math.max(LAY.CardMinH, 20 * minT)
 		if fitH >= minH then
 			cardH = fitH
@@ -1314,7 +1331,7 @@ local function layoutArtCards(w, cardsTop, cardsBottom, minT, s)
 	end
 	cardH = math.floor(cardH)
 	local cardW = math.floor(cardH * aspect)
-	local lift = math.ceil(cardH * LAY.Lift)
+	local lift = math.ceil(cardH * liftK)
 	local canvasW = n * cardW + (n - 1) * gap + 2 * lift
 	local frameH = cardH + 2 * lift
 	cardsRow.Position = UDim2.fromOffset(w / 2, cardsTop + math.max(0, (availH - frameH) / 2))

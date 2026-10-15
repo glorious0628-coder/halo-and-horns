@@ -597,8 +597,10 @@ function L.PowerBuild(parent)
 		return L.FitText(artLabel(false, {
 			Name = name,
 			LayoutOrder = order,
-			AutomaticSize = Enum.AutomaticSize.X,
-			Size = UDim2.new(0, 0, 1, 0),
+			-- 10/16 phone dump: the 16 px floor text in the 12 px row read 'cut'; the label's box now follows the text
+			-- both ways (the row's UIListLayout centres it, so the drawn line stays where it was)
+			AutomaticSize = Enum.AutomaticSize.XY,
+			Size = UDim2.new(0, 0, 0, 0),
 			TextSize = 14,
 			Number = true,
 			Color = color,

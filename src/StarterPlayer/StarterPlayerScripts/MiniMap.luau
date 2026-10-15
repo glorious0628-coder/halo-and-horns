@@ -57,7 +57,7 @@ local T = {
 	MeArt = "MapPlayerArrow", -- white art with a navy rim: ImageColor3 = my faction colour, up = forward
 	NorthR = 0.435, -- 'N' marker: distance from the centre / side (on the ring's navy band)
 	NorthD = 0.13, -- 'N' marker disc / side
-	NorthPx = 17, -- ...but never under this many real px
+	NorthPx = IS_TOUCH and 20 or 17, -- ...but never under this many real px (10/16 phones: the 16 px N floor did not fit the 17 px disc)
 	StrongDot = 8, -- big monsters (Scale >= StrongScale): a bigger dot with a dark rim
 	StrongScale = 1.4,
 	BossIcon = IS_TOUCH and 18 or 20, -- event bosses (MonsterTypes Boss): their IconMon<Kind> head

@@ -11375,7 +11375,7 @@ Config.ClientText.ClassPicker = {
 	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
 	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
 	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
-	Tag = { Warrior = "Smash up close!", Mage = "Blast from far away!", Archer = "Two arrows, fast!" },
+	Tag = { Warrior = "Smash up close!", Mage = "Blast from far!", Archer = "Two arrows, fast!" },
 	Wait = "One moment...",
 	Recommend = "Best for beginners",
 	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come
