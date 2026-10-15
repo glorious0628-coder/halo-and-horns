@@ -387,3 +387,11 @@
 - **SPEC A23-208**(사용자): 퀘스트 이야기 촘촘하게·감정 있게, GPT와 상의. GPT 1회차 = build/codex/story_emotion_r1.md (프롬프트 _prompt.md). 다음: Claude 비평 → 2회차 → 바이블 반영 → 장별 데이터.
 - 메인 반영 1: sync ed7d03e7 + 영어 덤프 사진(en_first10·en_windows) 진행 중(🟠 알림 함).
 - 파티 api/party2 도는 중, 다섯 언어 49/65.
+
+## 10/15 19:45 (최종 검수) — 병합·GPT 상의 진행
+- 사용자: 최종 검수 = 퀘스트·게임성(스토리 포함)·디자인을 GPT와 상의 + 세션 검수. 참신한 이야기는 그때그때 사용자와 논의(메모리 final-review-role-gpt-and-review).
+- 병합 main fa5db567: dev1-keystip 82f59fd9 + dev1-phone2 b6723a3c (시험 12개 통과).
+- 파티 api/party2 17819828: main 위 합친 판 시험 통과(test_party 100/104 assert, town_quests·crown_points·skills·board·field_boss·notify_gate·next_goal·quest_data·hardcoded 0) → **개발 2 반박 검토 기다림**(이중 보상·복제·개인 몬스터) 뒤 병합. a23_14는 아직 안 돌림.
+- GPT: r1(build/codex/story_emotion_r1.md) → Claude 비평 → r2(story_emotion_r2.md: peak 15개, 1장 빛·뿔·장인 데이터 초안, 매일 12종) → 기술 질문 3개 개발 2에. r3 = 게임 전체 스토리(입력 build/codex/story_world_claude_draft.md, 프롬프트 story_world_r3_prompt.md, 결과 story_world_r3.md) 도는 중.
+- 개발 1 클리어됨: 큐 = Nudges false 스위치 UI 코드 삭제 → A23-208 화면(dev2-story-fields 498ae457) → 영어 덤프 몫 → #2 남은 것.
+- 개발 2 대기 중 가지: dev2-after-p1 50b8d91c(M1_4 한 줄) → dev2-story-fields 498ae457(이야기 칸 엔진·검사) — 원래 실패 비교 끝나면 한 번에.
