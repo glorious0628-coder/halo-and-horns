@@ -81,6 +81,7 @@ local T = {
 	Icon = IS_TOUCH and 14 or 16, -- potion merchant / anvil icons
 	-- players vs monsters: Horns red is close to the monster red, so the size gap (and the players' outline) tells them apart
 	PlayerDot = 9,
+	FriendDot = 13, -- A23-201: my party members and Roblox friends (Party.Marked) get a bigger dot
 	MonsterDot = 5,
 	BossDot = 10,
 	MaxPlayers = 19,
@@ -803,7 +804,11 @@ local function scanPlayers(x, z)
 						dot = newDot("Player" .. used, T.PlayerDot, COL.Quest, 8, true)
 						pool.players[used] = dot
 					end
-					placeDot(dot, pos, factionColor(p:GetAttribute("Faction"), UIKit.Theme.SubText), T.PlayerDot)
+					local party = C and C.Party
+					local okM, marked = false, false
+					if party and type(party.Marked) == "function" then okM, marked = pcall(party.Marked, p) end
+					placeDot(dot, pos, factionColor(p:GetAttribute("Faction"), UIKit.Theme.SubText),
+						(okM and marked == true) and T.FriendDot or T.PlayerDot)
 				end
 			end
 		end

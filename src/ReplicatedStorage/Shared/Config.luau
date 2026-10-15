@@ -4651,6 +4651,33 @@ Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = tr
 	Spin = true, Hug = true, Clap = true }
 -- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
 Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
+
+-- A23-208 (최종 검수 10/15): the next hook of a quest def for faction f -> { Id, Line } or nil. Next is either shared
+-- ({ Id, Line }) or per side ({ Halo = {...}, Horns = {...}, Neutral = {...} }, made by a pack's Variants[id].Next). Pure
+function Config.QuestNext(def, f)
+	local n = type(def) == "table" and def.Next or nil
+	if type(n) ~= "table" then return nil end
+	if n.Id ~= nil then return n end
+	local mine = n[f]
+	return type(mine) == "table" and mine.Id ~= nil and mine or nil
+end
+
+-- A23-208 (최종 검수 10/15): the situation line over the ask for faction f and the player's personal results (flags = the
+-- Story.Flags table, or the attribute StoryFlags "Key=Value,..." split by the client): Offer.BeforeBy = { Flag = "Key",
+-- [value] = line, Default = the line while that flag is not set (a first visit) } first, then the side's / shared Before. Pure
+function Config.QuestBefore(def, f, flags)
+	local offer = type(def) == "table" and def.Offer or nil
+	if type(offer) ~= "table" then return nil end
+	local by = offer.BeforeBy
+	if type(by) == "table" and type(by.Flag) == "string" then
+		local v = type(flags) == "table" and flags[by.Flag] or nil
+		if v ~= nil and v ~= "Flag" and v ~= "Default" and type(by[v]) == "string" then return by[v] end
+		if type(by.Default) == "string" then return by.Default end
+	end
+	local b = offer.Before
+	if type(b) == "table" then b = b[f] end
+	return type(b) == "string" and b or nil
+end
 Config.StoryQuests.TimingTries = 5
 Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
 -- P1 ⑧ (bible §13-3): the paths of the short chases and escorts (Obj Type "Chase" / "Escort", Path = a key here): waypoints in
@@ -6507,7 +6534,6 @@ Config.Nudges = {
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
 	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
 	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
-	KeysTip = false, -- the keys tip card after the first skill (SkillBar LEARN.Tip)
 	GuideLabel = false, -- 검수 10/09: the floating name chip over the guide target / pad ("First weapon"; HUD showGuide)
 	GuideBeam = false, -- 검수 10/09 (user): the gold line on the ground to the target (HUD showGuide); A23-88 too
 	-- A23-88 (검수 10/09, no lines / words): after the first weapon (TutorialStep Guide) the meadow travel pad itself glows
@@ -9375,6 +9401,34 @@ end
 Config.RateLimits.GoToFriend = 3
 Config.RateLimits.CandyTrade = 1
 
+-- A23-201 / A23-204 the party (PartyService + QuestCreditService; docs/design/party_guild_2026-10-15.md §1, party chunk).
+-- 2~4 players on this server; an invite goes to a Roblox friend or a player within InviteRange studs; one invite card
+-- waits InviteTTL s (single-use InviteId); the leader passes on when the leader leaves; 1 member left = disbanded.
+-- Quest credit of a kill: CreditWindow s since the player's last hit, within CreditRange studs of the kill; a boss needs
+-- BossMinHits hits at least BossHitGap s apart. ActiveWindow: a party member who never hit it gets personal quest credit
+-- only when near AND did something within this many s (no AFK riders). Text = failure lines only (A23-191: "bad").
+Config.Party = {
+	Enabled = true,
+	MinSize = 2,
+	MaxSize = 4,
+	InviteRange = 60,
+	InviteTTL = 30,
+	MaxOutgoing = 3,
+	CreditWindow = 15,
+	CreditRange = 80,
+	BossMinHits = 2,
+	BossHitGap = 3,
+	ActiveWindow = 30,
+	Text = {
+		Full = "The party is full.",
+		Busy = "They are in a party already.",
+		Far = "Get closer to invite them.",
+		Gone = "That invite is gone.",
+		Leader = "Only the leader can do that.",
+	},
+}
+Config.RateLimits.PartyAction = 0.4
+
 ----------------------------------------------------------------- A23-81 quest window book (게임성 개발 3, 2026-10-08)
 -- the "Quests" remote also carries Book = { Available, Done } (StoryQuestService.BookRows; the client's Q window tabs).
 -- DoneMax = finished story quests listed (newest first); AvailableMax = subs listed that wait for a level / start.
@@ -11472,6 +11526,8 @@ Config.ClientText.UIKit = {
 Config.ClientText.ComeBack = { MyWay = "Your way: %s" }
 Config.ClientText.FxLoot = { Hint = "%s · use it from your Bag" }
 Config.ClientText.Invite = { Joined = "Your friend %s joined!", Message = "Come play Halo & Horns with me!" }
+-- A23-201 the party frames + invite card (Party.luau, PlayerListUI's row button): words only, no paragraphs
+Config.ClientText.Party = { Invite = "Party", Join = "Join", NotNow = "Not now", Leave = "Leave", Kick = "Kick", Leader = "Leader" }
 Config.ClientText.PauseCard = {
 	PauseTitle = "Saved!",
 	PauseNext = "Next time: %s",
@@ -11705,6 +11761,22 @@ function Config.AddQuests(pack, name)
 			def.Offer.Lines = def.Offer.Lines or {}
 			local lines = type(var.Offer.Lines) == "table" and (var.Offer.Lines.All or var.Offer.Lines[side]) or nil
 			if lines then def.Offer.Lines[side] = lines end
+			-- A23-208 (최종 검수 10/15): this side's own situation line (Config.QuestBefore reads it)
+			if type(var.Offer.Before) == "string" then
+				if type(def.Offer.Before) ~= "table" then
+					local shared = def.Offer.Before
+					def.Offer.Before = { Halo = shared, Horns = shared, Neutral = shared }
+				end
+				def.Offer.Before[side] = var.Offer.Before
+			end
+		end
+		-- A23-208 (최종 검수 10/15): this side's own next hook { Id, Line } (Config.QuestNext reads it)
+		if type(var.Next) == "table" then
+			if type(def.Next) ~= "table" or def.Next.Id ~= nil then
+				local shared = def.Next
+				def.Next = { Halo = shared, Horns = shared, Neutral = shared }
+			end
+			def.Next[side] = var.Next
 		end
 	end
 	for _, field in { "Landmarks", "Speakers", "Portraits", "Paths" } do

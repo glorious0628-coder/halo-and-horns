@@ -18,6 +18,9 @@ local MonsterService = {}
 -- fired once PER CONTRIBUTOR: (player, info). info.WarPoints = personal war points, info.WarShare = this player's
 -- part of the faction pool points (WarPoints / same-faction contributors, CR-M18)
 MonsterService.MonsterKilled = Util.Signal.new()
+-- A23-201 (QuestCreditService): (player, info) a kill's QUEST credit for a player it does not pay (a party member near
+-- the kill, a real hitter under the damage bar). Quests only: nothing pays, drops or scores on it. info.Credit is set.
+MonsterService.QuestKill = Util.Signal.new()
 -- ③ monster barks (BarkService, Config.Barks): (rec, "Spot") when a monster picks a new target (a personal monster: the
 -- first time it goes for its owner), (rec, "Hit") when a hit leaves it alive. Synchronous; handlers must not yield.
 MonsterService.Moment = Util.Signal.new()
@@ -1659,6 +1662,30 @@ local function killRecord(rec)
 		local n = tonumber(firstAt[cand.Player]) or math.huge
 		if firstP == nil or n < firstN then firstP, firstN = cand.Player, n end
 	end
+	-- A23-201 / A23-204: who the kill's quests credit (info.Credit) and the party-boss crown (info.PartyBoss); a personal
+	-- monster keeps its old rules (no Credit)
+	local credit, creditExtras = nil, {}
+	if not isPersonal and S and S.QuestCreditService then
+		local paidList = {}
+		for _, e in eligible do table.insert(paidList, e.Player) end
+		local okC, c, extras = pcall(S.QuestCreditService.Judge, rec, pos, paidList, firstP, minors)
+		if okC and type(c) == "table" then
+			credit, creditExtras = c, type(extras) == "table" and extras or {}
+		elseif not okC then
+			warnThrottled("credit", c)
+		end
+	end
+	local function creditOf(p)
+		local c = credit and credit[p]
+		if not c then return nil end
+		return { Personal = c.Personal == true, Shared = c.Shared == true, Any = c.Any == true }
+	end
+	-- 최종 검수 10/15 c: a party boss adds to each side's pool once
+	local bossPools = {}
+	if credit and type(S.QuestCreditService.BossPools) == "function" then
+		local okP, pools = pcall(S.QuestCreditService.BossPools, credit, eligible, firstP, info.WarPoints)
+		if okP and type(pools) == "table" then bossPools = pools end
+	end
 	rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt, rec._firstAt = {}, {}, {}, {}, {}, {}
 	for _, e in eligible do
 		local i = table.clone(info)
@@ -1672,6 +1699,9 @@ local function killRecord(rec)
 			if o.Player ~= e.Player then table.insert(i.Others, o.Player) end
 		end
 		i.First = e.Player == firstP -- A23-181
+		i.Credit = creditOf(e.Player) -- A23-201 (nil = the old rules)
+		i.PartyBoss = credit ~= nil and credit[e.Player] ~= nil and credit[e.Player].PartyBoss == true or nil -- A23-204
+		i.PartyBossPool = i.PartyBoss and (bossPools[e.Player] or 0) or nil -- 최종 검수 10/15 c
 		MonsterService.MonsterKilled:Fire(e.Player, i)
 	end
 	-- the free riders' small share (MinorShare of XP / gold only; LootService rolls nothing for info.Minor)
@@ -1683,7 +1713,18 @@ local function killRecord(rec)
 		i.Manual, i.SkillHit = false, false
 		i.Party, i.Others = #eligible, {}
 		i.First = false -- A23-181: a free rider is never the first hitter's credit
+		i.Credit = creditOf(p) -- A23-201
 		MonsterService.MonsterKilled:Fire(p, i)
+	end
+	-- A23-201: quest credit for players the kill does not pay (a party member near it, a real hitter under the bar)
+	for _, p in creditExtras do
+		local i = table.clone(info)
+		i.Credit = creditOf(p)
+		i.QuestOnly, i.First, i.Minor = true, false, true
+		i.XP, i.Gold, i.WarPoints, i.WarShare = 0, 0, 0, 0
+		i.Manual, i.SkillHit = false, false
+		i.Party, i.Others = #eligible, {}
+		if i.Credit then MonsterService.QuestKill:Fire(p, i) end
 	end
 
 	deathPop(rec, true)
@@ -1724,6 +1765,10 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 	if record._hidden then MOB3.Show(record) end -- A23-87: a hit flower slime pops out
 	if player then
 		record._contributors[player] = os.clock()
+		if S and S.QuestCreditService then -- A23-201: the quest-credit ledger (last hit, boss hits >= BossHitGap apart)
+			local okQ, errQ = pcall(S.QuestCreditService.Hit, record, player)
+			if not okQ then warnThrottled("credit", errQ) end
+		end
 		-- A23-181: when each player FIRST hit it (the kill's hunt honor / crown units go to one player: the earliest)
 		record._firstAt = record._firstAt or {}
 		if record._firstAt[player] == nil then

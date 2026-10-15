@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -227,16 +228,34 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
             limits = get(tree, "StoryQuests", "StoryLimits") or {}
             scenes = get(tree, "StoryQuests", "SceneKeys") or {}
             before = offer.get("Before") if isinstance(offer, dict) else None
-            if not isinstance(before, str) or not before:
+            by = offer.get("BeforeBy") if isinstance(offer, dict) else None
+            befores = list(before.values()) if isinstance(before, dict) else [before]
+            if isinstance(by, dict):
+                # 10/15: BeforeBy = { Flag, [value] = line, Default = the first visit's line } (Config.QuestBefore)
+                if not isinstance(by.get("Flag"), str) or not 0 < len(by["Flag"]) <= 24:
+                    add("story-before", i, "BeforeBy.Flag is a personal result key (1~24 letters)")
+                if not isinstance(by.get("Default"), str) or not by.get("Default"):
+                    add("story-before", i, "BeforeBy.Default (the line before the flag is set) is needed")
+                befores = [v for k, v in by.items() if k != "Flag"]
+            if not befores or any(not isinstance(b, str) or not b for b in befores):
                 add("story-before", i, "Offer.Before (the situation, one line before the ask) is needed (A23-208)")
-            elif len(before) > (limits.get("Before") or 70):
-                add("story-length", i, f"Offer.Before {len(before)} characters (phone limit {limits.get('Before') or 70})")
+            for b in befores:
+                if isinstance(b, str) and len(b) > (limits.get("Before") or 70):
+                    add("story-length", i, f"Offer.Before {len(b)} characters (phone limit {limits.get('Before') or 70})")
             finds = [st.get("Find") for st in steps if isinstance(st, dict) and st.get("Find") is not None]
             if not finds:
                 add("story-find", i, "at least one step has Find (what the player finds on the way, A23-208)")
             for f in finds:
                 if not isinstance(f, str) or len(f) > (limits.get("Find") or 40):
                     add("story-length", i, f"Find must be a line of at most {limits.get('Find') or 40} characters: {f!r}")
+            for si, st in enumerate(steps, 1):
+                if not isinstance(st, dict):
+                    continue
+                if st.get("On") is not None and st.get("On") != "Self":
+                    add("story-on", f"{i}.{si}", f"On must be \"Self\" (the player's own avatar), not {st.get('On')!r}")
+                for v in [st] + [st[f] for f in ("Halo", "Horns", "Neutral") if isinstance(st.get(f), dict)]:
+                    if v.get("Scene", st.get("Scene")) and not v.get("Npc", st.get("Npc")) and st.get("On") != "Self":
+                        add("story-scene", f"{i}.{si}", "a Scene on a step with no Npc needs On = \"Self\" (who plays it?)")
             last = steps[-1] if steps and isinstance(steps[-1], dict) else {}
             if not (last.get("Lines") or last.get("LinesBy")):
                 add("story-end", i, "the last step has the closing words (Lines / LinesBy, A23-208)")
@@ -246,20 +265,35 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
                 sc = st.get("Scene") if isinstance(st, dict) else None
                 if sc is not None and sc not in scenes:
                     add("story-scene", i, f"Scene {sc} is not in StoryQuests.SceneKeys")
-            nxt = d.get("Next")
             if d.get("Last") is not True:
-                if not isinstance(nxt, dict) or not nxt.get("Id") or not isinstance(nxt.get("Line"), str):
+                nxt = d.get("Next")
+                fs = d.get("Factions") if isinstance(d.get("Factions"), dict) else {}
+                sides = [f for f in ("Halo", "Horns", "Neutral") if fs.get(f)] or ["Halo", "Horns", "Neutral"]
+                if isinstance(nxt, dict) and nxt.get("Id") is None and any(isinstance(nxt.get(f), dict) for f in sides):
+                    for f in sides:  # 10/15: a side's own hook (Variants[id].Next)
+                        if not isinstance(nxt.get(f), dict):
+                            add("story-next", i, f"Next has no hook for {f} (each side of the quest needs one)")
+                elif not isinstance(nxt, dict) or not nxt.get("Id") or not isinstance(nxt.get("Line"), str):
                     add("story-next", i, "Next = { Id, Line } (the hook to the next quest; the chain's last quest: Last = true)")
-                else:
-                    if len(nxt["Line"]) > (limits.get("NextLine") or 60):
-                        add("story-length", i, f"Next.Line {len(nxt['Line'])} characters (phone limit {limits.get('NextLine') or 60})")
-                    target = defs.get(nxt["Id"])
-                    if not isinstance(target, dict):
-                        add("story-next", i, f"Next.Id {nxt['Id']} is no quest")
-                    else:
-                        treq = target.get("Requires") if isinstance(target.get("Requires"), dict) else {}
-                        if i not in arr(treq.get("Done")) + arr(treq.get("DoneAny")) and nxt["Id"] not in main:
-                            add("story-next", i, f"Next.Id {nxt['Id']} does not wait for {i} (Requires.Done) and is no main")
+        # ---- every Next written (a shared one, or a side's): a real quest that waits for this one, a short line
+        nxt = d.get("Next")
+        hooks = [nxt] if isinstance(nxt, dict) and nxt.get("Id") is not None else \
+            [v for f, v in (nxt.items() if isinstance(nxt, dict) else []) if f in ("Halo", "Horns", "Neutral") and isinstance(v, dict)]
+        limits = get(tree, "StoryQuests", "StoryLimits") or {}
+        for h in hooks:
+            if not h.get("Id") or not isinstance(h.get("Line"), str):
+                add("story-next", i, "Next = { Id, Line }")
+                continue
+            if len(h["Line"]) > (limits.get("NextLine") or 60):
+                add("story-length", i, f"Next.Line {len(h['Line'])} characters (phone limit {limits.get('NextLine') or 60})")
+            target = defs.get(h["Id"])
+            if not isinstance(target, dict):
+                add("story-next", i, f"Next.Id {h['Id']} is no quest")
+            else:
+                treq = target.get("Requires") if isinstance(target.get("Requires"), dict) else {}
+                if i not in arr(treq.get("Done")) + arr(treq.get("DoneAny")) and h["Id"] not in main:
+                    add("story-next", i, f"Next.Id {h['Id']} does not wait for {i} (Requires.Done) and is no main")
+        if is_pack:
             if d.get("Type") not in QUEST_TYPES:
                 add("quest-type", i, f"Type {d.get('Type')} is not on the list (bible §3)")
             if not d.get("Title") or not d.get("ShortName"):
@@ -330,8 +364,57 @@ SELF_TESTS = [
     ("an unknown scene", "Scene = \"Wave\",", "Scene = \"Dab\",", "story-scene"),
     ("no next hook", "Next = { Id = \"HX_Ribbon\", Line = \"Bright: Oh! My ribbon got crumpled on the cart...\" },", "", "story-next"),
     ("a hook to a quest that does not wait", "Next = { Id = \"HX_Ribbon\"", "Next = { Id = \"HX_DailyLamp\"", "story-next"),
+    ("a scene on the road with no one", "Find = \"A tiny sock is stuck on the wheel!\", On = \"Self\", Scene = \"Cheer\",",
+     "Find = \"A tiny sock is stuck on the wheel!\", Scene = \"Cheer\",", "story-scene"),
+    ("an On that is not Self", "On = \"Self\", Scene = \"Cheer\",", "On = \"Bright\", Scene = \"Cheer\",", "story-on"),
+    ("a remembered line with no first-visit line", "\n\t\t\t\tDefault = \"The town lamp flickers again tonight.\" },", " },", "story-before"),
+    ("a remembered line too long", "Moth = \"The moth is back. It brought a friend.\",",
+     "Moth = \"The moth is back. It brought a friend. And another. And their whole family too.\",", "story-length"),
+    ("a side's hook to nowhere", "Next = { Id = \"M2_3\", Line", "Next = { Id = \"M9_9\", Line", "story-next"),
+    ("a side's hook to a quest that does not wait", "Next = { Id = \"M2_3\", Line", "Next = { Id = \"HX_Ribbon\", Line", "story-next"),
+    ("a side's hook missing for its own side", "Next = { Id = \"HX_Ribbon\", Line = \"Bright: Oh! My ribbon got crumpled on the cart...\" },",
+     "Next = { Horns = { Id = \"HX_Ribbon\", Line = \"Bright: Oh! My ribbon got crumpled on the cart...\" } },", "story-next"),
     ("two mains of one type in a row", "Kind = \"Main\", Chapter = 2, Type = \"Escort\"", "Kind = \"Main\", Chapter = 2, Type = \"Choice\"", "chain-type"),
 ]
+
+
+FN_CHECKS = r"""
+local function ok(c, m) print((c and "FN_OK " or "FN_FAIL ") .. m) end
+local shared = { Next = { Id = "A", Line = "x" } }
+ok(Config.QuestNext(shared, "Horns").Id == "A", "a shared Next for every side")
+local side = { Next = { Halo = { Id = "H", Line = "h" }, Horns = { Id = "R", Line = "r" } } }
+ok(Config.QuestNext(side, "Horns").Id == "R" and Config.QuestNext(side, "Neutral") == nil, "a side's own Next")
+ok(Config.QuestNext({}, "Halo") == nil and Config.QuestNext(nil, "Halo") == nil, "no Next")
+ok(Config.QuestBefore({ Offer = { Before = { Halo = "hb", Horns = "rb" } } }, "Horns", {}) == "rb", "a side's own Before")
+local e = { Offer = { Before = "plain", BeforeBy = { Flag = "K", Moth = "again", Default = "first" } } }
+ok(Config.QuestBefore(e, "Halo", {}) == "first" and Config.QuestBefore(e, "Halo", nil) == "first", "BeforeBy: first visit = Default")
+ok(Config.QuestBefore(e, "Halo", { K = "Moth" }) == "again", "BeforeBy: the remembered result's line")
+ok(Config.QuestBefore(e, "Halo", { K = "Other" }) == "first", "BeforeBy: a value with no line = Default")
+ok(Config.QuestBefore(e, "Halo", { K = "Flag" }) == "first", "BeforeBy: the Flag key itself is no line")
+ok(Config.QuestBefore({ Offer = { Before = "plain" } }, "Halo", nil) == "plain", "a plain Before")
+"""
+FN_COUNT = 9
+
+
+def check_functions(luau: Path, src: Path, work: Path) -> int:
+    """Config.QuestNext / Config.QuestBefore (pure) cut out of Config and run alone; returns the number of problems"""
+    text = (src / ST.CONFIG_REL).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    fns = [m.group(0) for m in re.finditer(r"\nfunction Config\.(QuestNext|QuestBefore)\(.*?\nend\n", text, re.S)]
+    if len(fns) != 2:
+        print("CHECK_FAIL Config.QuestNext / Config.QuestBefore not found")
+        return 1
+    path = work / "fn.luau"
+    path.write_text("local Config = {}\n" + "".join(fns) + FN_CHECKS, encoding="utf-8")
+    out = subprocess.run([str(luau), str(path)], capture_output=True, timeout=60).stdout.decode("utf-8", "replace")
+    good = out.count("FN_OK ")
+    for line in out.splitlines():
+        if line.startswith("FN_FAIL"):
+            print("CHECK_FAIL " + line)
+    if good == FN_COUNT:
+        print(f"CHECK_OK Config.QuestNext / QuestBefore {good}/{FN_COUNT}")
+        return 0
+    print(f"CHECK_FAIL Config.QuestNext / QuestBefore {good}/{FN_COUNT}")
+    return 1
 
 
 def main() -> int:
@@ -396,6 +479,7 @@ def main() -> int:
                 failed += 1
                 print(f"MUTATION MISSED {name} (wanted {rule}; got {sorted(rules)})")
         print(f"MUTATIONS caught={caught}/{len(SELF_TESTS)}")
+        failed += check_functions(args.luau, src, work)
         # a duplicate id across packs is refused at load (Config.AddQuests)
         d_tree, d_err = load(args.luau, src, work, "dup", [("Example", example), ("Example2", example)])
         if d_tree is None and "defined already" in (d_err or ""):

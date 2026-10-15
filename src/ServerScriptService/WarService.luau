@@ -482,7 +482,9 @@ function WarService.AddKill(player, u, poolU)
 	local data = S.PlayerService.GetData(player)
 	if type(data) ~= "table" then return end
 	local per = math.max(1, tonumber(Config.War.KillsPerPoint) or 100)
-	points[f] += (isValidAmount(poolU) and math.min(poolU, u) or u) / per
+	-- poolU 0 = personal units only (최종 검수 10/15 c: a party boss's side already has its pool share)
+	local pool = poolU == 0 and 0 or (isValidAmount(poolU) and math.min(poolU, u) or u)
+	points[f] += pool / per
 	-- saved (data.CrownUnits, additive): the units carry over rounds, sessions and servers (final review 10/13: a child who
 	-- hunts 60 a session must still reach a whole point); only a side switch drops them
 	local have = savedUnits(data) + u
@@ -544,6 +546,11 @@ function WarService.Init(registry)
 					WarService.AddKill(player, info.WarPoints, info.WarPoints)
 				elseif info.First == nil then
 					WarService.AddKill(player, info.WarPoints, info.WarShare) -- kill units; CR-M18: pool share per contributor
+				elseif info.PartyBoss == true then
+					-- A23-204: a boss killed by a party: every party hitter gets the units for their OWN side; each side's
+					-- pool takes the kill once (최종 검수 10/15 c: info.PartyBossPool = WarPoints for one member of a side, 0 else)
+					local pool = type(info.PartyBossPool) == "number" and info.PartyBossPool or 0
+					WarService.AddKill(player, info.WarPoints, pool)
 				end
 			end
 		end)
