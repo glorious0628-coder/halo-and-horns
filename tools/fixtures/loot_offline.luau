@@ -748,8 +748,8 @@ runGroup("config", function()
 		check(type(L.Text[key]) == "string" and L.Text[key] ~= "", "Config.Loot.Text." .. key .. " is a Korean string", key)
 	end
 	-- A23-130 (server text verdicts 2026-10-11): the full line says the cap only (no sell / use tip)
-	check(L.Text.ItemFull == "%s is full (max %d)." and L.Text.ItemFullUse == L.Text.ItemFull,
-		"B7 ItemFull / ItemFullUse: '%s is full (max %d).' (no Forge / Bag tip)", L.Text.ItemFull)
+	check(L.Text.ItemFull == "%s limit reached (max %d)." and L.Text.ItemFullUse == L.Text.ItemFull,
+		"B7 ItemFull / ItemFullUse: '%s limit reached (max %d).' (no Forge / Bag tip)", L.Text.ItemFull)
 	-- review B3: legendary = exactly 2 x tier 3 (38), below tier 4
 	check(C.Weapons[8].Damage == 76 and C.Weapons[8].Damage == 2 * C.Weapons[3].Damage and C.Weapons[8].Damage < C.Weapons[4].Damage,
 		"B3 legendary damage 76 = 2 x tier 3, below tier 4", C.Weapons[8].Damage)

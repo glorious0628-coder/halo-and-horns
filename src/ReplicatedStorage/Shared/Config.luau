@@ -542,7 +542,7 @@ Config.Classes = {
 	Mage = {
 		Id = "Mage",
 		Names = { Halo = "Light Mage", Horns = "Dark Mage", Neutral = "Alchemist", None = "Mage" },
-		Desc = "Magic orbs for far enemies! Boom, it hits the area too!",
+		Desc = "Blast far-away enemies with magic orbs. Boom! The area around them gets hit too!",
 		PickLine = "Stay back and blast a wide area", -- addendum A7-4
 		Weapon = "Staff",
 		HealthMult = 0.8, Damage = 1.3, SwingInterval = 1.1, -- 2026-10-06 user: mage a bit stronger (was 1.25)
@@ -561,8 +561,8 @@ Config.Classes = {
 		Id = "Archer",
 		-- A23-39: the artisan guild's Archer is the pet tamer (same Archer numbers; the baby slime fights, Config.Tamer)
 		Names = { Halo = "Ranger", Horns = "Shadow Hunter", Neutral = "Pet Tamer", None = "Archer" },
-		Desc = "Shoots two foes at a time, fast. Quick feet!",
-		PickLine = "Shoot foes one by one from afar", -- addendum A7-4
+		Desc = "Quick shots hit two foes at once. Quick feet, too!",
+		PickLine = "Shoot two foes at once from afar", -- addendum A7-4
 		Weapon = "Bow",
 		HealthMult = 1.0, Damage = 0.55, SwingInterval = 0.5,
 		Pattern = "Multi", -- the Targets nearest valid targets within Range
@@ -573,7 +573,7 @@ Config.Classes = {
 		Ranged = true, PvPMult = 0.85,
 		WalkSpeedMult = 1.1,
 		ReleaseMult = 1.0,
-		Stats = { "HP ×1.0", "ATK ×0.55 (2x fast)", "Hits 2 at 30 studs · Move +10%" },
+		Stats = { "HP ×1.0", "ATK ×0.55 (2x attack speed)", "Hits 2 at 30 studs · Move +10%" },
 		DisplayStats = { HP = 3, Atk = 2, Spd = 4 },
 	},
 }
@@ -694,12 +694,12 @@ Config.Skills = {
 			-- A23-116: Q and Z have a name and a line per side (the numbers are the same for both sides); a split slot seen
 			-- with no side yet shows the Halo words (Config.SkillDef), like X
 			Q = { Shape = "SelfCircle", Radius = 9, Mult = 6, MP = 20, CD = 3, Push = 2, Auto = { Min = 1, Radius = 9 },
-				Halo = { NameEn = "Halo Slam", DescEn = "Slam your sword down. A gold ring hits and heals you and friends." },
+				Halo = { NameEn = "Halo Slam", DescEn = "Slam your sword down. A gold ring hits monsters and heals you and your friends." },
 				Horns = { NameEn = "Crater Smash", DescEn = "Smash the ground hard! Hit monsters around you and steal HP." } },
 			Z = { Shape = "Line", Len = 22, Width = 10, AimCone = 75, Mult = 7.5, MP = 25, CD = 6, Pull = 5,
 				Auto = { Min = 2, OrBig = true, NoPull = true },
-				Halo = { NameEn = "Glow Lasso", DescEn = "Throw a glowing rope and pull monsters in. Heals you and friends." },
-				Horns = { NameEn = "Fire Rake", DescEn = "Drag a fire crack ahead. Pull monsters in and steal HP." } },
+				Halo = { NameEn = "Glow Lasso", DescEn = "Throw a glowing rope and pull monsters in. Heals you and your friends." },
+				Horns = { NameEn = "Fire Rake", DescEn = "Rake a fiery crack across the ground. Pull monsters in and steal HP." } },
 			X = { Shape = "Roar", Radius = 12, Mult = 2, TauntRadius = 16, TauntSec = 4, SelfGuard = 0.4, GuardSec = 6,
 				MP = 30, CD = 15, Auto = { Min = 3, Radius = 16, LowHP = 0.5, LowHPRadius = 10 },
 				Halo = { NameEn = "Guardian Roar", DescEn = "Shout! Monsters chase you. You and your friends take less damage.",
@@ -709,26 +709,26 @@ Config.Skills = {
 		},
 		Mage = {
 			Q = { Shape = "TargetCircle", Range = 35, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 35 },
-				Halo = { NameEn = "Star Fall", DescEn = "A big star falls on the closest monster. Heals you and friends." },
+				Halo = { NameEn = "Star Fall", DescEn = "A big star falls on the closest monster. Heals you and your friends." },
 				Horns = { NameEn = "Purple Pop", DescEn = "Purple bubbles pop up under the closest monster. Steal HP." } },
 			Z = { Shape = "Chain", Range = 35, Jump = 10, Hits = 4, Mult = 5, MP = 25, CD = 5, NeedTarget = true,
 				Auto = { Min = 1, Range = 35, BeforeQIfSpread = 2 },
-				Halo = { NameEn = "Birdie Bounce", DescEn = "A gold bird hops from monster to monster. Heals you and friends." },
+				Halo = { NameEn = "Birdie Bounce", DescEn = "A gold bird hops from monster to monster. Heals you and your friends." },
 				Horns = { NameEn = "Bat Zigzag", DescEn = "A little bat zigzags from monster to monster. Steal HP." } },
 			X = { Shape = "Field", Range = 35, Ahead = 10, Radius = 12, Duration = 5, Tick = 1, TickMult = 1.5, Slow = 0.5,
 				MP = 30, CD = 14, Auto = { Min = 2, Radius = 12 },
-				Halo = { NameEn = "Sun Circle", DescEn = "A sunny circle. Monsters slow down. Friends inside are guarded.",
+				Halo = { NameEn = "Sun Circle", DescEn = "A sunny circle. Monsters inside slow down. Friends inside take less damage.",
 					AllyGuard = 0.2 },
-				Horns = { NameEn = "Hex Circle", DescEn = "A curse circle. Monsters slow down. Steal MP every second.",
+				Horns = { NameEn = "Hex Circle", DescEn = "A cursed circle. Monsters slow down. Steal MP every second.",
 					MPStealTick = 2 } },
 		},
 		Archer = {
 			Q = { Shape = "TargetCircle", Range = 30, Radius = 9, Mult = 6, MP = 20, CD = 3, Auto = { Min = 1, Range = 30 },
-				Halo = { NameEn = "Feather Rain", DescEn = "Gold arrows rain on the closest group. Heals you and friends." },
+				Halo = { NameEn = "Feather Rain", DescEn = "Gold arrows rain on the closest group. Heals you and your friends." },
 				Horns = { NameEn = "Spark Shower", DescEn = "Shoot twice! Dark arrows rain on the closest group. Steal HP." } },
 			Z = { Shape = "Line", Range = 40, Len = 40, Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 },
-				Halo = { NameEn = "Comet Arrow", DescEn = "A giant gold arrow flies through a line. Heals you and friends." },
-				Horns = { NameEn = "Moon Shot", DescEn = "A dark moon arrow flies through a line. Steal HP." } },
+				Halo = { NameEn = "Comet Arrow", DescEn = "A giant gold arrow flies through a line of monsters. Heals you and your friends." },
+				Horns = { NameEn = "Moon Shot", DescEn = "A dark moon arrow flies through a line of monsters. Steal HP." } },
 			X = { Shape = "Hop", Hop = 10, HopTime = 0.25, Radius = 7, Mult = 3, Push = 6, MP = 25, CD = 10,
 				Auto = { Never = true },
 				Halo = { NameEn = "Light Step", DescEn = "Hop back on the wind. Friends near you are guarded.",
@@ -759,7 +759,7 @@ Config.Skills = {
 		Tamer = {
 			Q = { NameEn = "Pet Rush", DescEn = "Your slime jumps in and bonks the group.", Shape = "TargetCircle", Range = 30,
 				Radius = 9, Mult = 6, MP = 20, CD = 3, Style = "PetDash", Auto = { Min = 1, Range = 30 } },
-			Z = { NameEn = "Slime Roll", DescEn = "Your slime rolls through a whole line.", Shape = "Line", Range = 40, Len = 40,
+			Z = { NameEn = "Slime Roll", DescEn = "Your slime rolls through a whole line of monsters.", Shape = "Line", Range = 40, Len = 40,
 				Width = 4, Mult = 9, MP = 25, CD = 5, Push = 3, Auto = { Min = 1 } },
 			X = { NameEn = "Big Boing", DescEn = "Your slime grows big and bounces you back.", Shape = "Hop", Hop = 10,
 				HopTime = 0.25, Radius = 7, Mult = 3, Push = 6, MP = 25, CD = 10, Craft = "BigSlime", Auto = { Never = true } },
@@ -1014,8 +1014,8 @@ Config.Factions = {
 		ChargeCap = 150,
 		ReleaseSupport = true, -- MP skill heals allies (Config.BasicSkill)
 		Perks = {
-			"XP +30% (level up faster)",
-			"HP +20%, keeps healing",
+			"XP +30%",
+			"HP +20%, steady healing",
 			"Your skill heals nearby allies",
 			"Half your pouch gold goes to the vault",
 			"Catch Grudge Sack thieves to win gold back",
@@ -1036,13 +1036,13 @@ Config.Factions = {
 		ChargeCap = 175,
 		ReleaseSupport = false,
 		Perks = {
-			"Gold +25% (get rich faster)",
+			"Gold +25%",
 			"ATK +15%, your hits steal HP",
 			"Keep stolen gold safe and it is yours",
 			"Rob the Knights and guard the Grudge Sack",
 			"5 Wanted stars = turn into a Kaiju!",
 		},
-		Pitch = "Sneaky tricks and grab gold in PvP zones!", -- 검수 10/09 (system review ①)
+		Pitch = "Play sneaky tricks and grab gold in PvP zones!", -- 검수 10/09 (system review ①)
 	},
 	-- addendum A6: third playable faction "장인 길드". No combat/economy perks, PvP-immune both ways, no plunder,
 	-- sacks, stars, bounty, bully stacks, revenge or kaiju; excluded from war points, blessing, power sums and ratios
@@ -1064,8 +1064,8 @@ Config.Factions = {
 		ChargeCap = 150,
 		ReleaseSupport = false, -- release: no heal, no stack sharing
 		Perks = {
-			"No fight buffs (no XP, gold, HP or ATK bonus)",
-			"No PvP: you never attack or get attacked",
+			"No XP, gold, HP or ATK bonuses",
+			"No PvP: you never fight other players",
 			"No worries about loot, Wanted or Grudge Sacks",
 			"The Crossroads is your home",
 			"Crafting expert",
@@ -1186,12 +1186,12 @@ Config.Stats = {
 		FirstManual = "Tap + to pick. Reset is free!", -- once, the first time Auto is turned off
 		-- the Hero window's Stats tab (게임성 개발 1, CharacterUI.StatPanel; 최종 검수 10/15 계획 5 / 2-C #3)
 		Head = "Stat Points",
-		Free = "Free points: %d",
+		Free = "Points left: %d",
 		Points = "%d pts · +%s%%", -- (points in it, its bonus)
 		Plus = "+", Plus5 = "+5",
 		AutoOn = "Auto: On", AutoOff = "Auto: Off",
 		Reset = "Reset (free)",
-		AutoAsk = "Turn Auto on?", AutoAskBody = "Your class will place every point again.", AutoAskOk = "Turn on",
+		AutoAsk = "Turn Auto on?", AutoAskBody = "All your points will be placed again to fit your class.", AutoAskOk = "Turn on",
 		NextPower = "+1: Power %s → %s", -- what one more point in it gives
 		Hunt = "Hunting fame", HuntValue = "%d / %d", -- the HuntFame bar (Config.HuntFame: KillsPerPoint units = Points)
 	},
@@ -1417,12 +1417,12 @@ Config.Bully = {
 Config.Bully.Text = {
 	Title = "When you become a bully", TitleEn = "When you become a bully",
 	Lines = {
-		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
+		string.format("KO a player with less than %d%% of your Power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
 		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
 		Config.Plural(string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60))),
 	},
 	LinesEn = {
-		string.format("KO a player weaker than %d%% of your power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
+		string.format("KO a player with less than %d%% of your Power", math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5)),
 		string.format("KO a player who respawned less than %d s ago", Config.Bully.FreshSpawnSeconds),
 		Config.Plural(string.format("KO the same player %d times within %d minutes", Config.Bully.RepeatKOs, math.floor(Config.Bully.RepeatWindow / 60))),
 	},
@@ -1880,7 +1880,7 @@ Config.Goose = {
 		-- EventHUD labels while GameState GooseActive and GooseMode == "Coop" (side = GooseCoopSide)
 		HudTitle = { Halo = "Team Rescue! %s", Horns = "Team Poach! %s" }, -- (time left)
 		HudProgress = "%d / %d", -- (side total = GooseRescue for Halo / GoosePoach for Horns, GooseCoopTarget)
-		HudPeople = "%d together", -- (GooseCoopPeople)
+		HudPeople = "%d players", -- (GooseCoopPeople)
 		HudSub = { -- (my GooseCount) players of the co-op side, gauge not full yet
 			Halo = "My points %d · Knights, fill the gauge!",
 			Horns = "My points %d · Horn Legion, fill the gauge!",
@@ -2053,7 +2053,7 @@ end
 Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet", Ranking = "Chapter" }
 Config.HudReveal.FirstChapterLast = "M1_4"
 -- the locked tile's word (short, under the icon; %d = the level)
-Config.HudReveal.TileWords = { Character = "Lv 2", Skills = "Lv %d", Pet = "Get pet", Ranking = "Story 1" }
+Config.HudReveal.TileWords = { Character = "Lv 2", Skills = "Lv %d", Pet = "Get a pet", Ranking = "Story 1" }
 function Config.HudReveal.TileWord(id)
 	local w = Config.HudReveal.TileWords[id]
 	if type(w) ~= "string" then return "" end
@@ -3329,7 +3329,7 @@ Config.StoryQuests = {
 		ChangedGood = "You kept it last time. Now you give. People change. Shards too.", -- E2 (story_depth §7)
 		ChangedEvil = "You gave it last time. Now you keep. Shards change too.",
 		NewTitle = "New title: %s!", -- E3 (a stat-free title)
-		SkillLater = "%s · Skills come at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
+		SkillLater = "%s · Learn skills at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
 		SkillLearnFirst = "%s · Learn it from %s first", -- A23-193: the same row while the skill waits at the teacher
 	},
 	Defs = {
@@ -3343,9 +3343,9 @@ Config.StoryQuests = {
 				{ Text = "The shard's test %d/3", Guide = "SlimeMeadow", Start = "Shard: Show me how you fight!",
 					-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet (a trial's Text), not just "0/3"
 					Obj = { Type = "Trials", List = {
-						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3, Text = "Beat slimes with basic attacks %d/%d" },
+						{ Key = "a", Type = "BasicKill", Kind = "Slime", Count = 3, Text = "Beat slimes using only basic attacks %d/%d" },
 						{ Key = "b", Type = "SkillHit", Min = 2, Count = 1, Text = "Hit 2 monsters with one skill" },
-						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1, Text = "Beat a Slime Prince above half HP" },
+						{ Key = "c", Type = "SafeKill", Kind = "BigSlime", MinHP = 0.5, Count = 1, Text = "Beat a Slime Prince with at least half your HP left" },
 					} } },
 				{ Text = "What will you do with the shard?", Panel = true,
 					Lines = { All = { "I saw it all! Now I can fight like you.", "What will you do with me?" } },
@@ -3420,12 +3420,12 @@ Config.StoryQuests = {
 		},
 		SK2 = {
 			Kind = "Sub", Title = "The Shard's Gift", ShortName = "Shard's gift", Speaker = "Shard", Requires = { Skill = "X" },
-			Start = "Shard: You grew strong. Come to the Crossroads fountain.",
+			Start = "Shard: You've grown strong. Come to the Crossroads fountain.",
 			Steps = {
 				{ Text = "Go to the Crossroads fountain", Guide = "Fountain",
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "How will you use your power?", Panel = true,
-					Lines = { All = { "You grew strong. Your side's power woke up in you.\nHow will you use it?" } },
+					Lines = { All = { "You've grown strong. Your side's power has woken up in you.\nHow will you use it?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Guard my friends", Points = 1, Pick = "Guard" },
 						Evil = { Label = "Take what I want", Points = 1, Pick = "Take" },
@@ -3481,7 +3481,7 @@ Config.StoryQuests = {
 					Horns = { "Finders keepers! HA!", "See the lava cracks? Our horn power boils up from there!",
 						"They say a Halo broke it. So greedy. Typical!\nShiny! Finders keepers!",
 						"More shards are out there.\nWhat will you do with the next one?" },
-					Neutral = { "Fix first. Talk later.", "Nice dust. The guild doesn't grab, it shapes.",
+					Neutral = { "Fix first. Talk later.", "Nice dust. The guild doesn't grab. It shapes.",
 						"More shards are out there.\nWhat will you do with the next one?" },
 				} },
 			},
@@ -3492,8 +3492,8 @@ Config.StoryQuests = {
 			Start = "The sky crown glows for the side with more shards.\nEvery 100 monsters you beat = 1 point for your side!",
 			-- A23-135: a WarPoints step counts the kill units (monsters for the crown, golden = 5), not the whole points (final
 			-- review 10/13: 1 whole point = 100 kills blocked the main line for short sessions); 15 as before
-			Steps = { { Text = "Monsters for the crown %d/%d", Obj = { Type = "WarPoints", Count = 15 },
-				Neutral = { Text = "Supply gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
+			Steps = { { Text = "Defeat monsters for your side's crown %d/%d", Obj = { Type = "WarPoints", Count = 15 },
+				Neutral = { Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 45 } } } },
 			Reward = { Gold = 1 },
 		},
 		M2_2 = {
@@ -3520,20 +3520,20 @@ Config.StoryQuests = {
 						Neutral = { A = "Shape it and give it back", B = "Leave it with the guild" } } },
 			},
 			Reward = { Gold = 1 },
-			Finish = "Two kids by the fountain. They see you and run… opposite ways.", -- story_depth §2-1 (no speaker)
+			Finish = "Two kids by the fountain. They see you and run… in opposite directions.", -- story_depth §2-1 (no speaker)
 		},
 		M2_4 = {
 			Kind = "Main", Chapter = 2, Title = "Supply Road Fund", ShortName = "Road fund",
 			Start = "Collect gold to fix the supply road. Walk into a town and it goes into your vault!",
 			Steps = {
-				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
+				{ Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
 				{ Text = "Put it in the town vault", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "AnyTown" } },
 			},
 			Reward = { Gold = 1 },
 		},
 		M2_5 = {
 			Kind = "Main", Chapter = 2, Title = "The Dusty Slime Swarm", ShortName = "Slime swarm",
-			Start = "The dust smell brings a slime swarm! Gather them and hit them all at once!",
+			Start = "The smell of dust draws a slime swarm! Gather them and hit them all at once!",
 			Steps = {
 				{ Text = "Lv5 · Learn your first skill (now Lv%d)", ShortName = "Reach Lv 5", -- A23-71 (Skill: see M1_3)
 					Obj = { Type = "Level", Level = 5, Skill = true } },
@@ -3543,7 +3543,7 @@ Config.StoryQuests = {
 		},
 		M2_6 = {
 			Kind = "Main", Chapter = 2, Title = "Little Footprints on the Hill", ShortName = "Hill tracks",
-			Start = "The Slime Prince dust is gone. Little footprints lead to the woods…",
+			Start = "The Slime Prince's dust is gone. Little footprints lead to the woods…",
 			-- A23-86 "Call of the Woods" (content_beyond_10min A): from Lv10 the woods can fill this step too (Alt.Pairs = a
 			-- kind AND its zone that count as well: Goblin Brutes in the Goblin Woods), so a Lv10 hunter is not tied to the
 			-- meadow. AltText is the row from that level.
@@ -3592,7 +3592,7 @@ Config.StoryQuests = {
 				{ Key = "a", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp1", Radius = 40, Count = 1,
 					Say = "Jars of dust… glowing like night-lights?" },
 				{ Key = "b", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp2", Radius = 40, Count = 1,
-					Say = "A goblin drawing: a tiny goblin, a big dark." },
+					Say = "A goblin drawing: a tiny goblin in the big dark." },
 				{ Key = "c", Type = "Kill", Kind = "Goblin", Near = "GoblinCamp3", Radius = 40, Count = 1,
 					Say = "Meeting #47. Topic: Grab more. Result: Meet again." },
 			} } } },
@@ -3614,11 +3614,11 @@ Config.StoryQuests = {
 				{ Text = "Go to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Whose shard is it?", Panel = true,
 					-- Lines = the Default for a client without LinesBy (E2)
-					Lines = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+					Lines = { All = { "Another shard. Another choice.", "A tiny goblin followed you home.\nPip: Wait! Please, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
 					LinesBy = { From = "M2_3",
-						Good = { All = { "Last time you gave the shard back. The fountain still sparkles.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
-						Evil = { All = { "Last time you kept the shard. Still shiny in your pocket!", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
-						Default = { All = { "Another shard. Another choice.", "Pip: Wait! A tiny goblin followed you home.\nPlease, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } } },
+						Good = { All = { "Last time you gave the shard back. The fountain still sparkles.", "A tiny goblin followed you home.\nPip: Wait! Please, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+						Evil = { All = { "Last time you kept the shard. Still shiny in your pocket!", "A tiny goblin followed you home.\nPip: Wait! Please, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } },
+						Default = { All = { "Another shard. Another choice.", "A tiny goblin followed you home.\nPip: Wait! Please, just a little dust? Our woods are so dark at night.", "Pip: We took it for lamps. Then the big ones kept taking." } } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Leave some for their lamps", Points = 3 },
 						Evil = { Label = "Keep it. Goblins stole it first!", Points = 3, Reward = { Gold = 192 } },
@@ -3647,7 +3647,7 @@ Config.StoryQuests = {
 						"When the crown broke, I was lost. A stranger gave me their lamp.\nI never knew their name. So now I give mine.",
 						"And you? Why are you here?" },
 					Horns = { "No more Sprout Shield. Now you can raid the knights. Hold the sack for 45 seconds!",
-						"When the shards fell, we were too far. We got nothing.\nSo now we never wait. We take first!",
+						"When the shards fell, we were too far away. We got nothing.\nSo now we never wait. We take first!",
 						"And you? Why are you here?" },
 					Neutral = { "The Guild is still safe, shield or not.",
 						"Both sides break things. We fix them. For both.\n…Is fixing for both sides a side too?",
@@ -3669,7 +3669,7 @@ Config.StoryQuests = {
 			Kind = "Main", Chapter = 3, Title = "Campfire Dust", ShortName = "Campfire dust",
 			Steps = {
 				{ Text = "Lv21 · Campfire Dust (now Lv%d)", Obj = { Type = "Level", Level = 21 } },
-				{ Text = "Hit 3 at once with a skill %d/%d", Guide = "GoblinWoods", Start = "They grab in a line. Break the line!",
+				{ Text = "Hit 3 monsters with one skill %d/%d", Guide = "GoblinWoods", Start = "They grab in a line. Break the line!",
 					Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
 			},
 			Reward = { Gold = 1 },
@@ -3682,7 +3682,7 @@ Config.StoryQuests = {
 				{ Text = "Listen to the tombs", Panel = true, Obj = { Type = "Talk" }, Lines = {
 					All = { "A big shard sleeps in the old kingdom's tombs.",
 						"From the tombs, a sleepy voice: 'Is it still Tuesday?'",
-						"The goblins took for light. Then they forgot why.\nWhat do YOU want the shard for?" },
+						"The goblins took dust for light. Then they forgot why.\nWhat do YOU want the shard for?" },
 				} },
 			},
 			Reward = { Gold = 2, XP = 2 },
@@ -3715,7 +3715,7 @@ Config.StoryQuests = {
 			Start = "Shard: Now I'll fight monsters for you. Players, only by your own hand!",
 			Steps = {
 				{ Text = "Turn on Auto Battle ({Auto})", Obj = { Type = "State", Key = "AutoOn" } }, -- {Auto}: HUD fills it (phone: button name)
-				{ Text = "Auto Battle defeats %d/%d", Obj = { Type = "AutoKill", Count = 5 } },
+				{ Text = "Defeat monsters with Auto Battle %d/%d", Obj = { Type = "AutoKill", Count = 5 } },
 			},
 			Reward = { Gold = 1 },
 		},
@@ -3762,7 +3762,7 @@ Config.StoryQuests = {
 			Kind = "Sub", Title = "Sell to the Smith", ShortName = "Sell harvest", Speaker = "Guild", Factions = { Neutral = true },
 			Requires = { DoneAny = { "N0", "N0A", "N0T" }, Feature = "Gathering" }, -- 최종 검수 10/15: any class's first harvest
 			Start = "Kit: Extra herbs? Otto pays gold for them!",
-			Steps = { { Text = "Sell harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
+			Steps = { { Text = "Sell your harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
 			Reward = { GoldN = 30 },
 		},
 		N1 = {
@@ -3773,7 +3773,7 @@ Config.StoryQuests = {
 		},
 		N2 = {
 			Kind = "Sub", Title = "Guild Supply Book", ShortName = "Supply book", Speaker = "Guild", Factions = { Neutral = true }, Requires = { Done = { "M2_1" } },
-			Start = "Kit: Both sides need our gear. Collect supply gold.",
+			Start = "Kit: Both sides need our gear. Collect gold for supplies.",
 			Steps = {
 				{ Text = "Supply book %d/2", Obj = { Type = "Trials", List = {
 					{ Key = "a", Type = "Kill", Kind = "BigSlime", Count = 3 },
@@ -3789,7 +3789,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "N2" }, Feature = "Crafting" },
 			Start = "Kit: A real order! Make two things for the Guild.",
 			Steps = {
-				{ Text = "Make things %d/%d", Obj = { Type = "Craft", Count = 2 } },
+				{ Text = "Craft items %d/%d", Obj = { Type = "Craft", Count = 2 } },
 				{ Text = "Go to the Crossroads", Guide = "Crossroads", Obj = { Type = "Enter", Zone = "Crossroads" } },
 			},
 			Reward = { Gold = 3, XP = 3 },
@@ -3863,16 +3863,16 @@ Config.StoryQuests = {
 						"Can you watch both bridges for me? Quietly." } } },
 				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
 				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
-				{ Text = "Hunting gold for the guild %d/%d", Guide = "SlimeMeadow",
+				{ Text = "Gold from monsters for the guild %d/%d", Guide = "SlimeMeadow",
 					Obj = { Type = "EarnGold", Source = "Monster", Count = 30 } },
 				{ Text = "Show Tiny your notes", Guide = "Crossroads", Npc = "Tiny", Panel = true,
-					Lines = { All = { "Both sides buy spy glasses. To spy on each other. From us.",
-						"Suspicious: two kids. Bench behind the fountain. Every evening.\nTheir halo and horns are tiny. Smaller than anyone's.",
+					Lines = { All = { "Both sides buy spyglasses. To spy on each other. From us.",
+						"Suspicious: two kids. Bench behind the fountain. Every evening.\nTheir halo and horns are tiny. Smaller than anyone else's.",
 						"Noted. …Is selling to both sides a side too?" } },
 					Obj = { Type = "Choice",
 						Good = { Label = "Send both sides a peace letter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "Sell more spy glasses to both!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
-						Neutral = { A = "Send both sides a peace letter", B = "Sell more spy glasses to both!" } } },
+						Evil = { Label = "Sell more spyglasses to both!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
+						Neutral = { A = "Send both sides a peace letter", B = "Sell more spyglasses to both!" } } },
 			},
 			Reward = { GoldN = 120, XPBar = 0.5 },
 			Finish = "Tiny: Noted. Suspicious: everyone. …So who started it?",
@@ -3919,10 +3919,10 @@ Config.StoryQuests = {
 				{ Text = "Talk to Rose in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Rose: A real Horn raids knights in the woods!",
 						"Rose: Hold the sack for 45 seconds and it's yours!",
-						"Rose: Warm up first. Two goblin camps, then punch a Goblin Brute. Basic hits only!" } } },
+						"Rose: Warm up first. Find two goblin camps, then beat a Goblin Brute. Basic attacks only!" } } },
 				{ Text = "Find the first goblin camp", Guide = "GoblinCamp1", Obj = { Type = "Near", Spot = "GoblinCamp1", Radius = 10 } },
 				{ Text = "Find the second goblin camp", Guide = "GoblinCamp2", Obj = { Type = "Near", Spot = "GoblinCamp2", Radius = 10 } },
-				{ Text = "Basic hits on a Goblin Brute %d/%d", Guide = "GoblinWoods", Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
+				{ Text = "Beat a Goblin Brute with basic attacks %d/%d", Guide = "GoblinWoods", Obj = { Type = "BasicKill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 1 } },
 				{ Text = "Make your promise to Rose", Guide = "HornsTown", Npc = "Smokey", Panel = true,
 					Lines = { All = { "Rose: Not bad, rascal! Make your promise. What kind of Horn are you?" } },
 					Obj = { Type = "Choice", Good = { Label = "I'll guard the small ones", Points = 2 },
@@ -3961,9 +3961,9 @@ Config.StoryQuests = {
 			Kind = "Sub", Title = "Keep the Path Safe", ShortName = "Safe path", Factions = { Halo = true, Horns = true },
 			Requires = { Done = { "M1_4" }, Level = 5 },
 			Steps = {
-				{ Text = "Slimes by the meadow arrival %d/%d", Guide = "SlimeMeadow",
+				{ Text = "Slimes near the meadow entrance %d/%d", Guide = "SlimeMeadow",
 					Obj = { Type = "Kill", Kind = "Slime", Near = "MeadowArrival", Radius = 40, Count = 5 },
-					Horns = { Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },
+					Horns = { Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },
 				{ Text = "Back to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Talk with the Guide", Panel = true,
 					Lines = { Halo = { "New kids walk this path. Keep it safe!", "The new kids keep asking for help…" },
@@ -4053,7 +4053,7 @@ Config.StoryQuests = {
 			Start = "Sir Gleam needs help in Halo Citadel!",
 			Steps = {
 				{ Text = "Talk to Sir Gleam", Guide = "HaloTown", Npc = "Gleam", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: Each rescue is a heart. 10,001 hearts!\nClear the slimes so I can reach it." } } },
+					Lines = { All = { "Sir Gleam: Day 40: Cat in tree. Again!", "Sir Gleam: A heart for every rescue. 10,001 hearts!\nClear the slimes so I can reach the cat." } } },
 				{ Text = "Slimes %d/%d", Guide = "SlimeMeadow", Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 6 } },
 				{ Text = "Back to Sir Gleam", Guide = "HaloTown", Obj = { Type = "Enter", Zone = "HaloTown" } },
 				{ Text = "Talk with Sir Gleam", Guide = "HaloTown", Npc = "Gleam", Panel = true, -- 검수 10/10: at Sir Gleam (TownNpcs)
@@ -4070,7 +4070,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Talk to Rascal Rex", Guide = "HornsTown", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Rascal Rex: Prank number 200! Same as 199?", "Rascal Rex: Pranks cost gold. Go hunt some!" } } },
-				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
+				{ Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 60 } },
 				{ Text = "Back to Rascal Rex", Guide = "HornsTown", Panel = true,
 					Lines = { All = { "Rascal Rex: The boos are the best part!", "Rascal Rex: So. Which prank?" } },
 					Obj = { Type = "Choice", Good = { Label = "Plan a surprise party instead", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -4086,7 +4086,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Watch the woods path %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
-				{ Text = "Goblins by the woods arrival %d/%d", Guide = "GoblinWoods",
+				{ Text = "Goblins at the woods entrance %d/%d", Guide = "GoblinWoods",
 					Obj = { Type = "Kill", Kind = "Goblin", Near = "WoodsArrival", Radius = 40, Count = 4 } },
 				{ Text = "What will you put up?", Panel = true,
 					Lines = { All = { "The path is clear for now.", "What will you put up by the path?" } },
@@ -4102,7 +4102,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 14 },
 			Start = "A goblin painted himself gold to look rich!",
 			Steps = {
-				{ Text = "A golden monster in the woods %d/%d", Guide = "GoblinWoods",
+				{ Text = "Defeat a golden monster in Goblin Woods %d/%d", Guide = "GoblinWoods",
 					Obj = { Type = "Kill", Golden = true, Zone = "GoblinWoods", Count = 1 } },
 				{ Text = "The gold goblin", Panel = true,
 					Lines = { All = { "Goblin: Don't tell! The gold comes off in the rain.", "Goblin: Do I look rich? Be honest." } },
@@ -4135,7 +4135,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Talk to Rose", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Rose: Plan B failed. Time for… Plan B?", "Rose: Plans cost gold. Lots of it." } } },
-				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 200 } },
+				{ Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 200 } },
 				{ Text = "Back to Rose", Guide = "HornsTown", Npc = "Smokey", Panel = true,
 					Lines = { All = { "Rose: Gold! Now, the plan…", "Rose: Which plan?" } },
 					Obj = { Type = "Choice", Good = { Label = "Try a brand-new plan", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -4149,7 +4149,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 16 },
 			Start = "The Crown War is close! Win points for your side.",
 			Steps = {
-				{ Text = "Monsters for the crown %d/%d", Obj = { Type = "WarPoints", Count = 100 } }, -- A23-135: kill units (was 40)
+				{ Text = "Defeat monsters for your side's crown %d/%d", Obj = { Type = "WarPoints", Count = 100 } }, -- A23-135: kill units (was 40)
 				{ Text = "The round is over", Panel = true,
 					Lines = { All = { "What a round!", "How will you end it?" } },
 					Obj = { Type = "Choice", Good = { Label = "Cheer for both sides", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -4177,7 +4177,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 19 },
 			Start = "Beat a Brute and stay above half HP. He wants a nap.",
 			Steps = {
-				{ Text = "Goblin Brute above half HP %d/%d", Guide = "GoblinWoods",
+				{ Text = "Goblin Brute · stay above half HP %d/%d", Guide = "GoblinWoods",
 					Obj = { Type = "SafeKill", Kind = "GoblinBrute", MinHP = 0.5, Count = 1 } },
 				{ Text = "The sleepy Brute", Panel = true,
 					Lines = { All = { "Brute: Zzz… five more minutes…", "What will you do?" } },
@@ -4199,7 +4199,7 @@ Config.StoryQuests = {
 						Good = { All = { "Grabbo: Last time someone said 'give it back'. We wrote it down!", "Grabbo: Now help us practice. Gently!" } },
 						Evil = { All = { "Grabbo: Meeting #48! Topic: MORE. Same as always!", "Grabbo: Show us how you grab three at once!" } },
 						Default = { All = { "Grabbo: Grab Club meets again. Same topic?", "Grabbo: Show us how you grab three at once!" } } } },
-				{ Text = "Hit 3 at once with a skill %d/%d", Guide = "GoblinWoods", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
+				{ Text = "Hit 3 monsters with one skill %d/%d", Guide = "GoblinWoods", Obj = { Type = "SkillHit", Min = 3, Count = 2 } },
 				{ Text = "The club votes", Panel = true,
 					Lines = { All = { "Grabbo: Time to vote!" } },
 					Obj = { Type = "Choice", Good = { Label = "Bring the club a new idea", Points = 1, Reward = { Item = "Enh70", N = 1 } },
@@ -4233,11 +4233,11 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Warm up at the lava %d/%d s", Guide = "LavaCrack",
 					Obj = { Type = "Near", Spot = "LavaCrack", Radius = 16, Stay = 10 } },
-				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 300 } },
+				{ Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 300 } },
 				{ Text = "Party time", Guide = "HornsTown", Panel = true,
 					Lines = { All = { "Rose: Snacks! Gold! Music!", "Rose: Who gets in?" } },
 					Obj = { Type = "Choice", Good = { Label = "Invite the whole den", Points = 1, Reward = { Item = "Enh70", N = 1 } },
-						Evil = { Label = "VIP only. Just us!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
+						Evil = { Label = "VIPs only. Just us!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } } } },
 			},
 			Reward = { Gold = 2, XP = 2 },
 			Finish = "Rose: Is a party better big, or just right?",
@@ -4247,7 +4247,7 @@ Config.StoryQuests = {
 			Requires = { Done = { "M2_7" }, Level = 23 },
 			Start = "Your vault is SO full. What is all this gold for?",
 			Steps = {
-				{ Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 500 } },
+				{ Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 500 } },
 				{ Text = "Back to your town", Guide = "OwnTown", Obj = { Type = "Enter", Zone = "OwnTown" } },
 				{ Text = "Talk about the vault", Panel = true,
 					Lines = { All = { "So much gold! The vault door barely shuts.", "Is a bigger vault ever big enough?" } },
@@ -4287,7 +4287,7 @@ Config.StoryQuests.Defs.GW10 = {
 		{ Text = "Goblins %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 15 } },
 		{ Text = "Goblin Brutes %d/%d", Guide = "GoblinWoods", Obj = { Type = "Kill", Kind = "GoblinBrute", Zone = "GoblinWoods", Count = 3 } },
 		{ Text = "Before the ruins", Panel = true,
-			Lines = { All = { "Your weapon feels ready.", "The ruins are big. Who goes with you?" } },
+			Lines = { All = { "Your weapon feels ready.", "The ruins are big. Who's coming with you?" } },
 			Obj = { Type = "Choice", Good = { Label = "Wait for a new hunter", Points = 1, Reward = { Item = "Enh70", N = 1 } },
 				Evil = { Label = "Go first. Take the best spot!", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },
 				Neutral = { A = "Wait for a new hunter", B = "Go first. Take the best spot!" } } },
@@ -4587,18 +4587,18 @@ Config.Board = {
 			Sneaky = { Meadow = "Best spot in the meadow. Claim it!", Woods = "Best spot in the woods. Claim it!" } },
 		{ Id = "J3", ShortName = "Big hunt", Obj = { Type = "Kill", Kind = "$Big" }, Count = { Meadow = 2, Woods = 1 }, Goal = "{Big} %d/%d",
 			Kind = "A big one blocks the road. Stop it!", Sneaky = "Bonk the big one. Show who's boss!" },
-		{ Id = "J4", ShortName = "Hit 3 at once", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, NeedSkill = true, Goal = "Hit 3 at once with a skill %d/%d",
+		{ Id = "J4", ShortName = "Hit 3 at once", Obj = { Type = "SkillHit", Min = 3 }, Count = { Meadow = 2, Woods = 2 }, NeedSkill = true, Goal = "Hit 3 monsters with one skill %d/%d",
 			Kind = "A swarm blocks a cart. Clear it at once!", Sneaky = "Hit three at once. Make everyone look!" },
-		{ Id = "J5", ShortName = "Basic hits", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic hits only · {Unit} %d/%d",
-			Kind = "Basic hits only. Keep it quiet for the birds.", Sneaky = "No skills needed. Too easy!" },
-		{ Id = "J6", ShortName = "Hunting gold", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Hunting gold %d/%d",
+		{ Id = "J5", ShortName = "Basic attacks", Obj = { Type = "BasicKill", Kind = "$Unit" }, Count = { Meadow = 6, Woods = 4 }, Goal = "Basic attacks only · {Unit} %d/%d",
+			Kind = "Basic attacks only. Keep it quiet for the birds.", Sneaky = "No skills needed. Too easy!" },
+		{ Id = "J6", ShortName = "Hunting gold", Obj = { Type = "EarnGold", Source = "Monster" }, Count = { Meadow = 40, Woods = 150 }, Goal = "Gold from monsters %d/%d",
 			Kind = "Collect gold for the town road fund.", Sneaky = "Fill your pouch. Bigger pouch, bigger grin!" },
-		{ Id = "J7", ShortName = "Auto defeats", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Auto Battle defeats %d/%d",
+		{ Id = "J7", ShortName = "Auto Battle", Obj = { Type = "AutoKill" }, Count = { Meadow = 8, Woods = 6 }, NeedAuto = true, Goal = "Defeat monsters with Auto Battle %d/%d",
 			Kind = "Let your shard guard the road.", Sneaky = "Let your shard do the boring part." },
-		{ Id = "J8", ShortName = "Golden monster", Obj = { Type = "Kill", Golden = true }, Count = 1, Weight = 1, Goal = "A golden monster %d/%d",
+		{ Id = "J8", ShortName = "Golden monster", Obj = { Type = "Kill", Golden = true }, Count = 1, Weight = 1, Goal = "Defeat a golden monster %d/%d",
 			Kind = "A golden one is lost. Bring it home!", Sneaky = "A golden one! Finders keepers!" },
-		{ Id = "J9", ShortName = "Safe big hunt", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} above half HP %d/%d",
-			Kind = "Show the sprouts how to fight safely.", Sneaky = "Win without a scratch. Show off!" },
+		{ Id = "J9", ShortName = "Safe big hunt", Obj = { Type = "SafeKill", Kind = "$Big", MinHP = 0.5 }, Count = 1, Goal = "{Big} · stay above half HP %d/%d",
+			Kind = "Show the sprouts how to fight safely.", Sneaky = "Win with HP to spare. Show off!" },
 		{ Id = "J10", ShortName = "Gate guard", Obj = { Type = "Near", Spot = "$Gate", Radius = 14 }, Count = 15, Goal = "Stand guard at the gate %d/%d s",
 			Kind = "Stand guard at the gate.", Sneaky = "Stand at the gate and look tough." },
 	},
@@ -4668,7 +4668,7 @@ Config.Quests = {
 		{ Id = "Release", ShortName = "Skill hits", Weight = 20, Units = { 2, 3 }, DailyUnits = { 3 }, RewardPerUnit = 8,
 			Text = "Hit monsters with skills %d times" },
 		{ Id = "Goose", ShortName = "Egg hunt", Weight = 10, Units = { 1 }, DailyUnits = { 1 }, RewardPerUnit = 20, NonHunt = true,
-			Text = "Golden Egg hunt %d times" },
+			Text = "Join the Golden Egg hunt %d times" },
 		{ Id = "Hunt", ShortName = "Catch Wanted", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Halo", PvP = true, NonHunt = true,
 			Text = "Catch %d Wanted players (Kaiju count)" },
 		{ Id = "Plunder", ShortName = "Rob Knights", Weight = 3, Units = { 1, 2 }, DailyUnits = { 1 }, RewardPerUnit = 40, Faction = "Horns", PvP = true, NonHunt = true,
@@ -4906,7 +4906,7 @@ Config.PassInfo = {
 	PrivateServer = { Line = "Play with just your friends.",
 		Desc = "Your own private server for you and your friends. Create it on the game page: open Servers, then Create. No stats are for sale." },
 	Bubbles = { Line = "Fancy chat bubbles",
-		Desc = "Show off when you chat: every fancy chat bubble skin. Your side's own bubble is free for everyone. No stats are for sale." },
+		Desc = "Get every fancy chat bubble skin. Your side's own bubble is free for everyone. No stats are for sale." },
 	Stickers = { Line = "13 more chat stickers",
 		Desc = "13 more stickers to pop over your head: hearts, a crown, Nice!, GG and more. 5 basic stickers are free for everyone. No stats are for sale." },
 	-- the Shop window's own words (ShopUI, game dev 1; plan 10/13 §1-A #6 moved them here from ShopUI). A pass card's name =
@@ -5395,7 +5395,7 @@ Config.Keybinds = {
 		{ Id = "SkillZ", Group = "Combat", Key = "X", Pad = "ButtonL1", Label = "Skill 2", LabelEn = "Skill 2", Button = "Skill 2 button", ButtonEn = "Skill 2 button", Flag = "Skills.ZEnabled" },
 		{ Id = "SkillX", Group = "Combat", Key = "C", Pad = "ButtonR3", Label = "Skill 3", LabelEn = "Skill 3", Button = "Skill 3 button", ButtonEn = "Skill 3 button", Flag = "Skills.XEnabled" },
 		{ Id = "Auto", Group = "Combat", Key = "R", Pad = "ButtonR1", Label = "Auto Battle", LabelEn = "Auto Battle", Button = "Auto Battle button", ButtonEn = "Auto Battle button" },
-		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost hold", LabelEn = "Ghost hold", Button = "Ghost button", ButtonEn = "Ghost button" },
+		{ Id = "GhostHold", Group = "Combat", Key = "T", Pad = "DPadRight", Label = "Ghost grab", LabelEn = "Ghost grab", Button = "Ghost grab button", ButtonEn = "Ghost grab button" },
 		{ Id = "PotionHP", Group = "Potion", Key = "One", Pad = "DPadUp", Label = "HP potion", LabelEn = "HP potion", Button = "HP potion button", ButtonEn = "HP potion button" },
 		{ Id = "PotionMP", Group = "Potion", Key = "Two", Pad = "DPadDown", Label = "MP potion", LabelEn = "MP potion", Button = "MP potion button", ButtonEn = "MP potion button" },
 		-- A23-109 quick slots: the keys 1 / 2 above use slots 1 / 2 (QuickSlots.luau), this one slot 3
@@ -5753,7 +5753,7 @@ Config.Settings.Window = {
 	Open = "Open", Watch = "Watch", Change = "Change",
 	Class = "Change Class",
 	Rebirth = "Rebirth", RebirthReady = "Rebirth (ready!)",
-	Intro = "Replay Opening", IntroUnsafe = "You can replay the opening inside a town.",
+	Intro = "Replay Opening", IntroUnsafe = "Return to a town to replay the opening.",
 	Vacation = "Vacation Bonus",
 	Nickname = "Nickname", -- until the Character window (BB8) holds it
 	NameHide = "Hide my name", -- + Config.Announce.Text.SettingNotesEn under it
@@ -5767,7 +5767,7 @@ Config.Settings.Window = {
 	KeysHint = "Pick an action, then press its new key. Esc cancels.",
 	Press = "Press a key (5 s)",
 	Clear = "Clear", None = "None",
-	Reset = "Default Keys", ResetTitle = "Default keys", ResetBody = "Put every key back the way it was at the start?",
+	Reset = "Default Keys", ResetTitle = "Default keys", ResetBody = "Reset all keys to default?",
 	ResetOk = "Reset",
 	NoKeyboard = "No keyboard here. Use the buttons on the screen.",
 	PadTitle = "Gamepad buttons (fixed)",
@@ -5804,7 +5804,7 @@ Config.Help = {
 		-- 검수 2026-10-09 (system review ③ Help & Safety): right after Controls, so kids and parents find it
 		{ Id = "Safety", Title = "Safety", Lines = {
 			"Block or report someone: open the Roblox menu (Esc), then Players.",
-			"Player list (Tab): press a name for Add friend or Block.",
+			"Player list (Tab): click a name to add a friend or block them.",
 			"PvP zones (orange and red on the map): other players can fight you there.",
 			"Ask a parent before using Robux. Never share your password.",
 		} },
@@ -5815,9 +5815,9 @@ Config.Help = {
 			"No input for 20 minutes? Roblox will disconnect you.",
 		} },
 		{ Id = "Honor", Title = "Honor & Mischief", Lines = {
-			"Knights earn Honor and the Horn Legion earns Mischief, from fair fights, story choices and hunting (100 monsters of your level = 1).",
-			"Artisan Guild: each success with a scroll you hunted yourself earns Artisan Fame.",
-			"A free side switch at the Altar resets your old side's points to 0.",
+			"Knights earn Honor and the Horn Legion earns Mischief through fair fights, story choices and hunting (100 monsters at your level = 1 point).",
+			"Artisan Guild: earn Artisan Fame each time you succeed with a scroll you got from hunting.",
+			"Switching sides for free at the Altar of Fate resets your old side's points to 0.",
 			"Each week's top 3 get a title and +10% XP and drops the next week.",
 		} },
 		{ Id = "Sprout", Title = "Sprout Shield & Bullies", Lines = {
@@ -5826,10 +5826,10 @@ Config.Help = {
 				math.floor(Config.Bully.WeakPowerRatio * 100 + 0.5), Config.Bully.FreshSpawnSeconds),
 			Config.Plural(string.format("KO the same player %d times in %d minutes: Bully too!", Config.Bully.RepeatKOs,
 				math.floor(Config.Bully.RepeatWindow / 60))),
-			"Bullies get no Auto Battle, and half XP and drops.",
+			"Bullies can't use Auto Battle and get half the XP and drops.",
 		} },
 		{ Id = "Wanted", Title = "Wanted Stars & Grudge Sacks", Lines = {
-			"When the Horn Legion KOs a Knight, they get a Wanted star (max 5).",
+			"Horn Legion members get a Wanted star each time they KO a Knight (max 5).",
 			"Knights who KO a Wanted player win the Bounty gold.",
 			"Stolen gold goes in the thief's Grudge Sack. After 45 s in PvP, it's theirs.",
 			"If a Knight catches the thief within 45 s, you get 120% back.",
@@ -5841,10 +5841,10 @@ Config.Help = {
 			"Each Rebirth: +25% gold and XP forever (+40% on the smaller side).",
 		} },
 		{ Id = "Scrolls", Title = "Scrolls", Lines = {
-			"Enhance Scroll: 70% gives +1, 30% gives +3, 10% gives +5.",
-			"On a fail it stays or drops one step (50/50), never below +0.",
+			"Enhance Scroll 70% gives +1, 30% gives +3, 10% gives +5 (the % is its chance to work).",
+			"If it fails, your enhancement stays the same or drops by 1 (50/50), never below +0.",
 			"Max +10, and each +1 adds 10% attack.",
-			"Transfer Scroll: moves your + to another weapon. A fail changes nothing.",
+			"Transfer Scroll: moves your + to another weapon. If it fails, nothing changes.",
 		} },
 		{ Id = "Chat", Title = "Team Chat", Lines = {
 			"Type /t in the chat to talk only to your own side.",
@@ -6197,9 +6197,9 @@ Config.Loot = {
 		Potion = { HP = "HP Potion", MP = "MP Potion" },
 		PotionFull = "No room for %s.",
 		-- full-stack notices: at most once per item id (or potion kind) per player per FullNoticeSeconds, kind "info"
-		ItemFull = "%s is full (max %d).", -- materials (A23-130: the cap only, no sell / use tip)
-		ItemFullUse = "%s is full (max %d).", -- scrolls (not sellable)
-		ItemFullKeep = "%s is full (max %d).", -- gathered / crafted materials (a Source: not in the Forge's sell-all)
+		ItemFull = "%s limit reached (max %d).", -- materials (A23-130: the cap only, no sell / use tip)
+		ItemFullUse = "%s limit reached (max %d).", -- scrolls (not sellable)
+		ItemFullKeep = "%s limit reached (max %d).", -- gathered / crafted materials (a Source: not in the Forge's sell-all)
 		UseCombat = "You can't use scrolls in combat.",
 		EquipDead = "You can't change weapons while knocked out.",
 		RareWeapon = "%s weapon! You got %s!", -- grade name (Rare / Epic / Legendary), weapon
@@ -6240,11 +6240,11 @@ Config.Loot = {
 		EnhanceOk = "%s +%d → +%d!",
 		EnhanceFailDown = "%s +%d → +%d", -- red (kind "bad") with ScrollFail: the lower number says it failed
 		EnhanceFailKeep = "%s stays +%d", -- (kind "info" with ScrollFail)
-		EnhanceMax = "Already at max enhance (+%d).",
+		EnhanceMax = "Already at max enhancement (+%d).",
 		MoveOk = "%.0s%.0s%s +%d!",
 		MoveFail = "Transfer failed… %s stays +%d.",
 		MoveSame = "Pick a different weapon.",
-		MoveNothing = "There is no enhance to move.",
+		MoveNothing = "No enhancement to transfer.",
 		NotOwned = "You don't have that weapon.",
 		NoItem = "You don't have that item.",
 		Equip = "%s equipped!",
@@ -6317,7 +6317,7 @@ Config.Announce = {
 	Text = {
 		Subject = "%s", -- the finder's game nickname
 		Anon = "A member of the %s", -- name hidden (P5): "A member of the Knights of Light"
-		RareWeapon = "%s beat a %s and got a %s weapon: [%s]!", -- subject, monster, grade, weapon
+		RareWeapon = "%s defeated %s! %s weapon: [%s]!", -- subject, monster, grade, weapon
 		Jackpot = "★ JACKPOT! %s got the legendary weapon [%s] from a slime! ★", -- subject, weapon
 		FirstMax = "%s is the first to enhance [%s] to +10!", -- subject, weapon
 		More = "%s found %d more great items!", -- subject, count (grouped)
@@ -7789,20 +7789,20 @@ Config.FactionChanges = {
 Config.UIArt.FactionPerks = {
 	Halo = {
 		{ Icon = "IconExp", Text = "XP +30%" },
-		{ Icon = "IconHeart", Text = "HP +20%, keeps healing", Short = "HP +20%, regen" },
+		{ Icon = "IconHeart", Text = "HP +20%, steady healing", Short = "HP +20%, regen" },
 		{ Icon = "IconWings", Text = "Skills heal allies" },
-		{ Icon = "IconPouch", Text = "Pouch gold auto-saved", Short = "Auto-save gold" },
+		{ Icon = "IconPouch", Text = "Pouch gold auto-banked", Short = "Auto-bank gold" },
 	},
 	Horns = {
 		{ Icon = "IconGoldPile", Text = "Gold +25%" },
 		{ Icon = "IconBloodSword", Text = "ATK +15%, Lifesteal", Short = "ATK +15%, steal HP" },
-		{ Icon = "IconGoldGuard", Text = "Keep your loot gold", Short = "Guard loot gold" },
+		{ Icon = "IconGoldGuard", Text = "Keep your looted gold", Short = "Keep looted gold" },
 		{ Icon = "IconDemon", Text = "5 stars = Kaiju form!", Short = "5★ = Kaiju!" },
 	},
 	Neutral = {
 		{ Icon = "IconNoBuff", Text = "No fight buffs" },
-		{ Icon = "IconShieldBlue", Text = "No PvP (safe)" },
-		{ Icon = "IconNoLoot", Text = "No loot or Wanted worries", Short = "No loot or Wanted" },
+		{ Icon = "IconShieldBlue", Text = "No PvP" },
+		{ Icon = "IconNoLoot", Text = "No looting or Wanted stars", Short = "No loot or Wanted" },
 		{ Icon = "IconHammer", Text = "Crafting", Short = "Crafting" },
 	},
 }
@@ -7845,7 +7845,7 @@ Config.Story = {
 	-- A23-9 opening (subtitles: see OpeningRumor above; plain text). The last chapter asks the same with "today".
 	OpeningAsk = "Which side will you choose?",
 	OpeningSkip = "Skip",
-	OpeningReplay = "Watch the opening again",
+	OpeningReplay = "Replay Opening",
 	OpeningReplayUnsafe = "You can rewatch the opening inside a town.",
 	IntroNeutral = {},
 	FactionLore = {
@@ -7864,8 +7864,8 @@ Config.Story = {
 	},
 	-- format strings (always through string.format)
 	WarWin = {
-		Halo = "Crown won! Gold, XP +25%%", -- A23-130: to the winning side only (WarService)
-		Horns = "Crown won! Gold, XP +25%%",
+		Halo = "Crown won! Gold & XP +25%%", -- A23-130: to the winning side only (WarService)
+		Horns = "Crown won! Gold & XP +25%%",
 	},
 	WarDraw = "Nobody won the crown this round!",
 	GooseResult = {
@@ -7874,7 +7874,7 @@ Config.Story = {
 		Tie = "The Golden Goose flew away! It's a tie.",
 	},
 	-- (GooseNoRival removed by A23-14: a goose with no rival is now a "Team Rescue", texts in Config.Goose.Text)
-	KaijuSiren = "Alert! %s is being swallowed by the Crown Shard's darkness! A Kaiju in 10 seconds!",
+	KaijuSiren = "Alert! The Crown Shard's darkness is swallowing %s! Kaiju in 10 seconds!",
 	KaijuStart = "Kaiju %s is here!",
 	KaijuDefeated = "The Knights defeated the Kaiju %s! They share a %s gold reward.", -- (name, gold actually paid: CR-L19)
 	KaijuDefeatedNoReward = "The Kaiju %s was defeated.", -- CR-L19: (name) nobody was paid
@@ -7918,15 +7918,15 @@ Config.Text = {
 	EnteredPvP = "PvP zone!",
 	EnteredPvPNeutral = "PvP zone, but the Artisan Guild can't be attacked.", -- CR-L24: Neutral entering a PvP zone ("info")
 	EnteredSafe = "Safe zone.",
-	Banked = "Put %s gold in your vault.",
+	Banked = "%s gold went into your vault.",
 	HaloCourier = "An angel courier put %s gold in your vault.",
 	LevelUp = "Level up! Lv %d",
 	NotEnoughGold = "Not enough gold.",
 	WeaponBought = "%s equipped!",
 	WeaponMaxed = "You already have the best weapon!",
-	WeaponNeedLevel = "You can buy this weapon from Lv %d.", -- purchase gate (an owned one: EquipNeedLevel)
+	WeaponNeedLevel = "Reach Lv %d to buy this weapon.", -- purchase gate (an owned one: EquipNeedLevel)
 	-- A23-28: equipping keeps MinLevel too (also after a rebirth / Lv5+ free class change)
-	EquipNeedLevel = "You can use this weapon from Lv %d.", EquipNeedLevelEn = "You can use this weapon from Lv %d.",
+	EquipNeedLevel = "Reach Lv %d to use this weapon.", EquipNeedLevelEn = "Reach Lv %d to use this weapon.",
 	WeaponAutoSwap = "Needs Lv %d. Now using %s.",
 	WeaponAutoSwapEn = "Needs Lv %d. Now using %s.",
 	-- A23-34: bare hands (weapon tier 0)
@@ -7981,11 +7981,11 @@ Config.Text = {
 	MostWanted = "Most Wanted: %s · Bounty %s gold", -- BB37: PublicName(p, true)
 	BullyKO = "Bully KO! No reward. ATK -15%%",
 	BullyVictim = "A bully knocked you out. You lost nothing!",
-	BullyDecay = "Your bully level went down (level %d)",
-	BullyNoAuto = "No Auto during bully penalty.", -- A23-22
-	BullyAutoOff = "Bully penalty: no Auto, half rewards", -- A23-22 (auto was ON)
-	BullyPenaltyEnd = "Bully penalty over! Auto is back.", -- A23-22
-	BullyPenaltyEndEn = "Bully penalty over! Auto is back.",
+	BullyDecay = "Your bully level dropped to %d.",
+	BullyNoAuto = "No Auto Battle during a bully penalty.", -- A23-22
+	BullyAutoOff = "Bully penalty: no Auto Battle, half rewards", -- A23-22 (auto was ON)
+	BullyPenaltyEnd = "Bully penalty over! Auto Battle is back.", -- A23-22
+	BullyPenaltyEndEn = "Bully penalty over! Auto Battle is back.",
 	BullyPenaltyEndNoAuto = "Bully penalty over!", -- auto combat not unlocked yet
 	BullyPenaltyEndNoAutoEn = "Bully penalty over!",
 	Revenge = "Revenge! ATK +25%%",
@@ -7998,8 +7998,8 @@ Config.Text = {
 	GrudgeMail = "Stolen gold back: +%s", -- P3
 	DailyAllDone = "All done for today! Play more if you like.", -- P8
 	GhostHoldOk = "Your ghost grabbed the thief! Their hold time +%d s (max +%d s)", -- A23-18
-	GhostHoldMax = "Max hold reached.",
-	GhostHeld = "Ghost holds you!",
+	GhostHoldMax = "Hold time limit reached.",
+	GhostHeld = "A ghost grabbed you!",
 	GhostButton = "Ghost grab ({GhostHold})", -- BB1 key token: the key part shows only on keyboards
 	GhostWait = "Grab again in %d s",
 	AvengerBonus = "Avenger bonus +%s gold!",
@@ -8018,13 +8018,13 @@ Config.Text = {
 	WaitRespawn = "You can do that after you respawn.", -- CR-L30: travel / class / rebirth / altar while dead
 	-- faction / class / tickets
 	UnderdogSignOn = "Smaller side bonus: +%d gold!",
-	SwitchDoneFree = "%s back to 0.", -- (score name)
+	SwitchDoneFree = "%s reset to 0.", -- (score name)
 	SwitchDoneTicket = "You joined the %s! (Ticket used, points kept)",
 	SwitchCooldown = "You can switch sides again in %s.",
 	NoTicket = "No change ticket.",
 	ClassChangedFree = "Class: %s. Back to Lv 1!", -- free change from Lv ClassChange.FreeKeepLevelBelow on
 	ClassChangedFreeKeep = "Class: %s (level kept)", -- A23-14 (className)
-	ClassFreeKeepLevelF = "Level kept under Lv%d", -- A23-14 client preview (FreeKeepLevelBelow)
+	ClassFreeKeepLevelF = "Under Lv%d: you keep your level", -- A23-14 client preview (FreeKeepLevelBelow)
 	ClassChangeRuleF = "You can change class later in Menu. Free below Lv%d.", -- A23-14 ClassPicker footer (FreeKeepLevelBelow)
 	ClassChangedTicket = "Class: %s (ticket used)",
 	ClassSame = "You already have that class.",
@@ -8052,7 +8052,7 @@ Config.Text = {
 	-- kaiju
 	KaijuQueued = "Another Kaiju is out. You'll transform when it's over!",
 	KaijuReward = "Kaiju hunt reward +%s gold!",
-	KaijuSurviveReward = "Survived! +%s gold to vault",
+	KaijuSurviveReward = "Survived! +%s gold to your vault",
 	-- addendum A3 (review fixes)
 	AutoUnderAttack = "You're under attack! Hit back with the Attack button", -- M3: auto ON + took PvP damage (once per 60 s)
 	EnemyTown = "You can't enter the other side's town!", -- L1: bounced to Crossroads (also Neutral in either town)
@@ -8192,17 +8192,17 @@ Config.Ranking = {
 		OutlawChipShortEn = "Outlaw",
 		RewardChip = "This week's %s #%d: XP and drops +10%% (until Monday)", -- (board name, rank)
 		RewardChipEn = "This week's %s #%d: XP and drops +10%% (until Monday)",
-		OutlawStart = "Outlaw week: no Auto, half rewards, 2x bounty",
-		OutlawStartEn = "Outlaw week: no Auto, half rewards, 2x bounty",
-		OutlawEnd = "Outlaw week over! Auto is back.",
-		OutlawEndEn = "Outlaw week over! Auto is back.",
+		OutlawStart = "Outlaw week: no Auto Battle, half rewards, 2x bounty",
+		OutlawStartEn = "Outlaw week: no Auto Battle, half rewards, 2x bounty",
+		OutlawEnd = "Outlaw week over! Auto Battle is back.",
+		OutlawEndEn = "Outlaw week over! Auto Battle is back.",
 		OutlawEndNoAuto = "Outlaw week over!", -- auto combat not unlocked yet
 		OutlawEndNoAutoEn = "Outlaw week over!",
 		-- (still a bully at the end of the outlaw week: no line here; CombatService says BullyPenaltyEnd when the stacks go)
-		OutlawNoAuto = "No Auto for outlaws.",
-		OutlawNoAutoEn = "No Auto for outlaws.",
-		OutlawAutoOff = "Outlaw: no Auto, half rewards",
-		OutlawAutoOffEn = "Outlaw: no Auto, half rewards",
+		OutlawNoAuto = "No Auto Battle for outlaws.",
+		OutlawNoAutoEn = "No Auto Battle for outlaws.",
+		OutlawAutoOff = "Outlaw: no Auto Battle, half rewards",
+		OutlawAutoOffEn = "Outlaw: no Auto Battle, half rewards",
 		RewardStart = "%s #%d! New title · XP, drops +10%%", -- (board name, rank)
 		RewardStartEn = "%s #%d! New title · XP, drops +10%%",
 		-- a top-3 player who switched faction since: the title is given, the bonus waits for that faction
@@ -8498,8 +8498,8 @@ Config.Tamer = {
 		DescEn = "Your Baby Slime pet fights for you! It headbutts enemies from afar.",
 		PickLine = "Your pet bonks foes one by one",
 		PickLineEn = "Your pet bonks foes one by one",
-		Stats = { "HP ×1.0", "ATK ×0.55 (2x fast)", "Pet hits 2 at 30 studs · Move +10%" },
-		StatsEn = { "HP ×1.0", "ATK ×0.55 (2x fast)", "Pet hits 2 at 30 studs · Move +10%" },
+		Stats = { "HP ×1.0", "ATK ×0.55 (2x attack speed)", "Pet hits 2 foes at 30 studs · Move +10%" },
+		StatsEn = { "HP ×1.0", "ATK ×0.55 (2x attack speed)", "Pet hits 2 foes at 30 studs · Move +10%" },
 	},
 }
 
@@ -8670,7 +8670,7 @@ Config.Attendance = {
 		XP = "+%s XP",
 		Item = "+%s",
 		ItemN = "+%s x%d",
-		Days = "%d days collected!",
+		Days = "%d daily gifts claimed!",
 		NewTitle = "New title: %s!",
 		NewLook = "New look: %s!",
 		NewBorder = "New name frame!",
@@ -8684,7 +8684,7 @@ Config.Attendance = {
 		Today = "Today · Day %d: %s", -- (slot, the parts with Gold / XP / Item / ItemN joined " · ")
 		Next = "Tomorrow · Day %d: %s",
 		WeekDone = "Week done! A new week starts tomorrow.",
-		Collected = "Days collected: %d",
+		Collected = "Gifts claimed: %d",
 		Goal = "%d days: %s", -- the next milestone (days, what it gives joined " + ")
 		GoalTitle = "%s title",
 		GoalBorder = "Name frame", -- the 28-day ribbon by my name (NameTagPrefs.BorderOf)
@@ -8828,7 +8828,7 @@ Config.Return = {
 		TomorrowLine = "Come back tomorrow for your Day %d gift!", -- (Tomorrow slot)
 		TodayLine = "Today's gift is waiting too!", -- Today ~= nil: [Open] opens the attendance window
 		BackLines = { "You're back! We missed you.", "There you are! Ready for more?", "Welcome back, hero!" },
-		NewsWar = "While you were away, crown wars won: %s %d, %s %d", -- (my side first)
+		NewsWar = "Crown war wins while you were away: %s %d, %s %d", -- (my side first)
 		NewsGoose = "Goose rounds while you were away: %d",
 		NewsSides = { Halo = "Halo", Horns = "Horns" },
 	},
@@ -8975,9 +8975,9 @@ Config.TownReact = {
 				Rank = {
 					Halo = { "Welcome, Squire. Stand tall!", "Knight! Your armor shines. Well done.", "Paladin! It is an honor.",
 						"A Saint! I must polish my armor.", "Archangel! Sir Gleam salutes you!" },
-					Horns = { "A Rascal! Halt. Hmm. Hello.", "Raider! Keep your hands to yourself.", "Warlord! I do not bow. Quite.",
+					Horns = { "A Rascal! Halt. Hmm. Hello.", "Raider! Keep your hands to yourself.", "Warlord! I do not bow. Ahem.",
 						"Dread Lord! I shall stay polite. Barely.", "Demon King! A knight stays calm. Gulp." },
-					Neutral = "A crafter! My armor needs a dent fixed.",
+					Neutral = "A crafter! Can you fix this dent in my armor?",
 				},
 				Lean = {
 					TrueKnight = "A true knight's heart. Well done!",
@@ -8996,11 +8996,11 @@ Config.TownReact = {
 					Neutral = "A crafter! Can you fix my oven?",
 				},
 				Lean = {
-					TrueKnight = "Such a kind child. Here, a bun!",
+					TrueKnight = "Such a kind child. Here, have a bun!",
 					RebelAngel = "A halo with a grin? Eat your crust.",
 					ProudRascal = "Trouble again? Sit and eat first.",
 					SoftDevil = "A nice Horn? Take extra jam!",
-					BalanceWalker = "Kind or naughty? Both like cake!",
+					BalanceWalker = "Kind or naughty? Everyone likes cake!",
 				},
 			},
 			Folk1 = { -- the juice man: jolly, fresh-squeezed puns
@@ -9120,7 +9120,7 @@ Config.Invite = {
 		NotHere = "Your friend is not on this server.",
 		Away = "Your friend is far away.",
 		OtherTown = "Your friend is in the other side's town.",
-		SproutPvP = "Your friend is in a PvP zone. Come at Lv %d!",
+		SproutPvP = "Your friend is in a PvP zone. You can join at Lv %d!",
 		SameZone = "You're already there!",
 	},
 }
@@ -9726,9 +9726,9 @@ Config.Craft = {
 		Far = "Go to your workbench.",
 		Busy = "Finish this craft first.",
 		Full = "No room for it.",
-		Auto = "Turn off auto combat first.",
+		Auto = "Turn off Auto Battle first.",
 		NotReady = "You can't make this yet.", -- a recipe the server has switched off (its drops / spares are not in yet)
-		NeedResearch = "Research this monster more first.", -- a summon before its research stage
+		NeedResearch = "Do more research on this monster first.", -- a summon before its research stage
 		Prompt = "Craft", -- the workbench prompt (ActionKey)
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 		Goal = "Make something new at the %s", -- 최종 검수 10/15: the next-goal craft row (CraftService.NextGoal; the station)
@@ -9828,7 +9828,7 @@ Config.Alchemy = {
 	},
 	Text = {
 		TwoMax = "Only two tonics at a time.",
-		NoTonic = "You have none of that tonic.",
+		NoTonic = "You don't have that tonic.",
 	},
 }
 Config.RateLimits.UseTonic = 1
@@ -10391,8 +10391,8 @@ Config.Codex = {
 	Text = {
 		Name = "Monster Codex",
 		Card = "New card: %s!", -- (the monster's Short name)
-		Silver = "%s card is now Silver!",
-		Holo = "%s card is now Gold Holo!",
+		Silver = "Your %s card is now Silver!",
+		Holo = "Your %s card is now Gold Holo!",
 		Golden = "Gold Foil card: %s!",
 		Reward = "+%s gold · +%s XP",
 		RewardGold = "+%s gold", -- no XP added (the top level)
@@ -10405,7 +10405,7 @@ Config.Codex = {
 	-- the card back's one line in my side's voice (GDD §0): Halo = a kind watcher, Horns = a playful tease, Neutral = an
 	-- artisan's material note (side None reads Neutral). Draft lines for 최종 검수 to edit.
 	Lore = {
-		Slime = { Halo = "The youngest slime. Be gentle, it is just a baby.",
+		Slime = { Halo = "The youngest slime. Be gentle. It's just a baby.",
 			Horns = "Poke it and it wobbles. Poke it again. Ha!",
 			Neutral = "Drops Jelly. Soft, sticky, always handy." },
 		FlowerSlime = { Halo = "It hides in the flowers and naps in the sun.",
@@ -10424,12 +10424,12 @@ Config.Codex = {
 			Horns = "Pebbles in the face? Rude. Funny, but rude.",
 			Neutral = "Same teeth as his friends. Same bad aim." },
 		GoblinBrute = { Halo = "Big and slow. He only wants his nap.",
-			Horns = "All muscles, no plan. I respect that.",
+			Horns = "All muscle, no plan. I respect that.",
 			Neutral = "A Brute Horn is hard as stone." },
 		Skeleton = { Halo = "A guard of the old kingdom, still on duty.",
 			Horns = "Rattle rattle! Who needs skin anyway?",
 			Neutral = "Old Bones. Light, hard and useful." },
-		SkeletonArcher = { Halo = "His arrows fly slow. Step aside and stay safe.",
+		SkeletonArcher = { Halo = "His arrows fly slowly. Step aside to dodge them.",
 			Horns = "No eyes, still aims. What a show-off.",
 			Neutral = "More Old Bones. The ruins never run out." },
 		SkeletonKnight = { Halo = "A knight who never left his post.",
@@ -10610,27 +10610,27 @@ Config.Market = {
 		-- gold back by itself and says only this
 		MarketRefund = "Purchase failed.",
 		Checking = "Checking the Market…",
-		NeedLevelBuy = "You can buy from Lv 5.",
-		NeedLevelList = "You can sell from Lv 10.",
-		NeedPlaytime = "You can sell after 1 hour of play.",
-		NeedAccountAge = "You can sell when your account is 7 days old.",
+		NeedLevelBuy = "Reach Lv 5 to buy.",
+		NeedLevelList = "Reach Lv 10 to sell.",
+		NeedPlaytime = "Play for 1 hour to sell.",
+		NeedAccountAge = "Your account must be 7 days old to sell.",
 		PriceChanged = "The price changed.",
 		AlreadySold = "Already sold.",
 		NotEnoughGold = "Not enough gold.",
 		CantReceive = "No room for it.",
 		Owned = "You have this weapon already.",
-		TooMany = "10 listings at once at most.",
-		DayLimit = "That's all for today.",
+		TooMany = "Max 10 listings at once.",
+		DayLimit = "Daily limit reached.",
 		PriceRange = "That price is out of range.",
-		Resting = "The market is resting.",
+		Resting = "The market is closed for now.",
 		Full = "The market is full.",
-		PairLimit = "Too many trades with them today.",
+		PairLimit = "Too many trades with this player today.",
 		TooFast = "Too fast. Try again.",
 		Off = "The market is closed.",
 		Own = "That's your own listing.",
 		NoItem = "You don't have that.",
 		CantSell = "You can't sell that.",
-		InHand = "Put it away first.",
+		InHand = "Unequip it first.",
 	},
 }
 for name, s in { MarketIndex = 1, MarketBrowse = 1, MarketMine = 1, MarketList = 6, MarketBuy = 6, MarketCancel = 6,
@@ -10779,7 +10779,7 @@ Config.ClientText.CharacterUI = {
 		Armor = "Armor +%d%%" },
 	PetLv = "Lv %d",
 	TitleHead = "Title", TitleAuto = "Auto",
-	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Now", Rebirth = "Rebirth", Rank = "Rank" },
+	Heads = { Stats = "Stats", Traits = "Traits", Effects = "Effects", Rebirth = "Rebirth", Rank = "Rank" },
 	Stat = {
 		Level = "Level", MaxHP = "Max HP", MP = "MP", Speed = "Walk speed", Hit = "Base hit", Crit = "Crit",
 		Class = "Class", Side = "Side",
@@ -10893,7 +10893,7 @@ Config.ClientText.EventHUD = {
 	KaijuChip = "Kaiju %s %s",
 	SirenLeft = "%ds",
 	Sack = "Grudge Sack %s · %ds", -- A23-130: the "(shrinks only in PvP zones)" explanation is gone
-	KaijuSelf = "You're the Kaiju! Last %s", -- A23-130: shorter (was "... to become a legend")
+	KaijuSelf = "You're the Kaiju! %s left", -- A23-130: shorter (was "... to become a legend")
 	Revenge = "Revenge: %s · %s",
 	Luck = "Today's Luck · Rare %s%%", -- A23-18 (events taken part in today, KST day)
 	-- 검수 10/09 (UI clutter review: 'Rare 5%' meant nothing to kids): the chip says the bonus over the base rare chance
@@ -10954,7 +10954,7 @@ Config.ClientText.WorldMap = {
 	ZoneSub = "Lv %d+ · %s",
 	Safe = "Safe",
 	PvP = "PvP",
-	Extreme = "PvP Extreme",
+	Extreme = "Extreme PvP",
 	LegendSafe = "● Safe",
 	LegendPvP = "● PvP",
 	LegendExtreme = "● Extreme",
@@ -11005,7 +11005,7 @@ Config.ClientText.PetWindow = {
 	Empty = "No pets yet.",
 	Level = "Lv %d",
 	Speed = "Walk speed +%d%%",
-	SpeedRest = "Follow: +%d%% speed", -- a resting pet: what following would give (검수 10/10)
+	SpeedRest = "While following: +%d%% speed", -- a resting pet: what following would give (검수 10/10)
 	XP = "%d/%d XP",
 	Max = "MAX",
 	Following = "Following you",
@@ -11023,17 +11023,17 @@ Config.ClientText.QuestBook = {
 	InProgress = "In progress",
 	Available = "Available",
 	Done = "Done",
-	EmptyInProgress = "Nothing to do here right now.",
+	EmptyInProgress = "No quests in progress.",
 	EmptyAvailable = "Nothing new right now.",
 	EmptyDone = "Nothing finished yet.",
 	Claim = "Claim",
-	Reroll = "New",
+	Reroll = "Swap",
 	FirstMission = "First mission",
-	DailyToday = "Daily quests today: %d/%d",
+	DailyToday = "Daily quests: %d/%d",
 	Goose = "The Golden Goose is here!",
 	PumpkinKing = "The Pumpkin King is here!",
 	GhostKing = "The Ghost King is here!",
-	Kaiju = "A kaiju is loose!",
+	Kaiju = "A Kaiju is loose!",
 	War = "Crown War: next crown in %s",
 	Wanted = "Wanted stars: %d",
 	Diary = "King Diary · %d/%d pages",
@@ -11121,7 +11121,7 @@ Config.ClientText.Panels = {
 	RebirthBonusUnderdogF = "+%d%%! (smaller side)",
 	RebirthCurrent = "(your side)",
 	-- A23-14 (user 2026-10-05): rebirth resets the level (and XP) only; gold, weapons, enhancement and items stay
-	RebirthResets = "Resets: only your level (XP too)",
+	RebirthResets = "Resets: level and XP",
 	RebirthKeeps = "Keeps: gold, weapons, enhancements, items, class, Honor/Mischief, rebirth bonus, marks, tickets",
 	RebirthConfirmTitle = "Rebirth",
 	RebirthConfirmBodyF = "Be reborn as %s?\nOnly your level starts over. Gold, weapons and items stay.\nKept: class, Honor/Mischief, rebirth bonus, marks, tickets",
@@ -11144,7 +11144,7 @@ Config.ClientText.Panels = {
 	FreeButton = "Change for Free",
 	TicketButtonF = "Use a Ticket (you have %d)",
 	TicketKeepAll = "Keep everything",
-	TicketBuyHint = "You have 0 · after buying, tap again to change",
+	TicketBuyHint = "You have 0 · buy a ticket, then tap again to switch",
 	LossNone = "You lose nothing",
 	ConfirmChange = "Change",
 	-- class
@@ -11153,9 +11153,9 @@ Config.ClientText.Panels = {
 	ClassCurrent = "Current",
 	ClassHeaderF = "Change to %s",
 	ClassLossLevelF = "Lv %d → Lv 1",
-	ClassLossXPF = "%d XP resets",
+	ClassLossXPF = "Lose %d XP",
 	ClassKeeps = "Gold, weapons, items and rebirth bonus stay",
-	ClassFreeKeepF = "Your level stays before Lv%d", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
+	ClassFreeKeepF = "Under Lv%d: you keep your level", -- A23-14 fallback for Config.Text.ClassFreeKeepLevelF
 	ClassConfirmTitle = "Change Class",
 	ClassConfirmFreeF = "Change to %s?\nFree: %s",
 	ClassConfirmTicketF = "Use 1 Change Ticket to change to %s?\nYour level stays.",
@@ -11173,12 +11173,12 @@ Config.ClientText.Panels = {
 	-- A23-127 (plan 10/13 §1-A #2): while the Forge sells no weapon (WSHOP.Sells) - monsters drop them
 	WeaponNoteDrop = "Monsters drop weapons. Equip yours here for free, or sell them.",
 	WeaponFarDrop = "Come close to the Forge anvil to equip or sell.",
-	WeaponFromF = "Get it: %s", -- (Config.WeaponSource)
+	WeaponFromF = "From: %s", -- (Config.WeaponSource)
 	WeaponLevelF = "Needs Lv %d · Now Lv %d",
 	WeaponCurrentF = "Current weapon: %s",
 	WeaponPriceF = "Price %s gold · Needs Lv %d · Now Lv %d",
-	WeaponEffectF = "Slime in %d basic hits → %d hits",
-	WeaponEffectNowF = "Slime in %d basic hits",
+	WeaponEffectF = "Hits to beat a Slime: %d → %d",
+	WeaponEffectNowF = "Hits to beat a Slime: %d",
 	WeaponGoldF = "You have %s gold (Vault %s + Pouch %s)",
 	WeaponShortF = "You need %s more gold.",
 	WeaponBuyF = "Buy · %s gold",
@@ -11192,15 +11192,15 @@ Config.ClientText.Panels = {
 	WeaponFromSmith = "From the Blacksmith", -- A23-34: tier 1 is a gift (M1_1), never bought
 	WeaponNoSell = "You can only sell weapons you own",
 	WeaponSaleNoteF = "Sells for %s gold (1/10 of the price)",
-	WeaponSaleEquipped = "Sell the weapon in your hand and you switch to your best other weapon (or bare hands).",
+	WeaponSaleEquipped = "Selling your equipped weapon switches you to your best other weapon (or bare hands).",
 	WeaponSellTitle = "Sell Weapon",
 	WeaponSellConfirmF = "Sell %s for %s gold?\nIt leaves your weapon list.",
 	WeaponSellConfirm = "Sell",
 	WeaponUnavailable = "The Forge doesn't sell this weapon.",
-	WeaponInvalid = "We can't read the weapon info. Please open it again in a moment.",
+	WeaponInvalid = "Couldn't load weapon details. Reopen the Forge in a moment.",
 	WeaponChanged = "Your weapons changed. Please check the list again.",
 	WeaponSent = "Checking the trade...",
-	WeaponSlow = "No answer for the trade yet. Check the alerts and tap again.",
+	WeaponSlow = "Trade not confirmed yet. Check your alerts and try again.",
 	WeaponPending = "Checking...",
 	WeaponByeBrowse = "Nothing you like? Take your time!",
 	WeaponByeBuy = "Good choice. Try it out and come back!",
@@ -11289,7 +11289,7 @@ Config.ClientText.SkillBook = {
 	Hits = "Hits %d",
 	Splash = "Blast %d",
 	MageMP = "%d MP per hit",
-	Hit = "Hit x%s",
+	Hit = "Damage x%s",
 	Wait = "%.1f s",
 	Passive = "Passive",
 	FallMarks = "Fall marks x%d: gold +%d%%",
@@ -11330,9 +11330,9 @@ Config.ClientText.HUD = {
 	BullyPenalty = "Bully penalty: no Auto Battle · half XP & drops (%d min)", -- A23-22
 	KaijuQueued = "Kaiju waiting",
 	QuestHeader = "Daily Quests %d/%d", QuestHeaderTouch = "Dailies %d/%d", -- phones: the 150 px block beside the map
-	QuestAllDone = "Dailies done! Bonus quests on",
+	QuestAllDone = "Dailies done! Bonus quests ready",
 	QuestClaimable = " · Claim %d",
-	QuestTouchClaim = "Claim %d quests!",
+	QuestTouchClaim = "Claim rewards (%d)",
 	QuestTouchLine = "%s/%s %s", -- progress first: truncation only cuts the quest text
 	QuestExpand = "▼",
 	QuestCollapse = "▲",
@@ -11345,7 +11345,7 @@ Config.ClientText.HUD = {
 	Claim = "Claim",
 	Reroll = "Swap", -- Gotham has no ↻ glyph (rendered as tofu)
 	RerollTitle = "Swap quest", -- CR-M25 confirm dialog
-	RerollBody = "Your progress will be lost. Swap it?",
+	RerollBody = "Swap this quest and lose its progress?",
 	RerollYes = "Swap",
 	Attack = "Attack",
 	Release = "Skill",
@@ -11410,7 +11410,7 @@ Config.ClientText.BagUI = {
 	Tabs = { Gear = "Gear", Use = "Use", Scroll = "Scrolls", Material = "Materials" },
 	Sorts = { Default = "Newest", Name = "Name", Grade = "Grade", Kind = "Type" },
 	Worn = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", PetGear = "Pet" }, -- one short word per slot (UiSandbox 10/12: "Pet gear" ran into "Ring")
-	Equip = "Equip", Equipped = "Equipped", FromLv = "From Lv %d", InFight = "In a fight", Checking = "Checking…",
+	Equip = "Equip", Equipped = "Equipped", FromLv = "Needs Lv %d", InFight = "In a fight", Checking = "Checking…",
 	Attack = "Attack %s",
 	Power = "Power %s → %s",
 	PowerNow = "Power %s",
@@ -11428,8 +11428,8 @@ Config.ClientText.BagUI = {
 	PickTo = "Pick the weapon to get +%d.",
 	ConfirmEnh = "%s\n+%d → +%d · %d%% chance", -- UiSandbox 10/12: "+0 → +1" no longer breaks in the 200 du column
 	ConfirmMove = "%s +%d →\n%s +%d · %d%% chance",
-	FailDown = "A fail may drop it 1 step.",
-	FailKeep = "Nothing changes on a fail.",
+	FailDown = "If it fails, it may drop by 1.",
+	FailKeep = "If it fails, nothing changes.",
 	SellsFor = "Sells for %s each",
 	SellOne = "Sell 1", -- artisan contract ②: a gathered material at the anvil
 	SellAll = "Sell all",

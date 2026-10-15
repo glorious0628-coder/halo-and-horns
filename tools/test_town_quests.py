@@ -351,7 +351,7 @@ MUTATIONS = [
      'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 220 } },',
      'Evil = { Label = "Draw a mustache on him", Points = 1, Reward = { Potion = "HP", N = 3, Gold = 192 } },'),
     ("S6 for Horns without its gold step", C,
-     '\t\t\t\t\tHorns = { Text = "Hunting gold %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },',
+     '\t\t\t\t\tHorns = { Text = "Gold from monsters %d/%d", Obj = { Type = "EarnGold", Source = "Monster", Count = 80 } } },',
      '\t\t\t\t},'),
     ("the hero statue outside Halo Citadel", C, "Landmarks.HeroStatue = Vector3.new(0, 0, -370)",
      "Landmarks.HeroStatue = Vector3.new(0, 0, -200)"),

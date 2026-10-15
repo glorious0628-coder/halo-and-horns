@@ -217,7 +217,7 @@ local function milestones(player, days, loud)
 		end
 	end
 	if hit then
-		notify(player, table.remove(lines, 1) or string.format(TXT.Days or "%d days collected!", days), "reward", "RankUp")
+		notify(player, table.remove(lines, 1) or string.format(TXT.Days or "%d daily gifts claimed!", days), "reward", "RankUp")
 	end
 	for _, line in lines do notify(player, line, "reward", "None") end
 end

@@ -114,7 +114,7 @@ pick()
 ATTR.DataLoaded = true
 check(pick() == "Character,Pet,Ranking,Skills", "a new player: hero, skills, pet, ranking locked", locked())
 check(shown() == ALL, "... and every tile still on the row", shown())
-check(tile("Character").Lock.Word == "Lv 2" and tile("Skills").Lock.Word == "Lv " .. q and tile("Pet").Lock.Word == "Get pet"
+check(tile("Character").Lock.Word == "Lv 2" and tile("Skills").Lock.Word == "Lv " .. q and tile("Pet").Lock.Word == "Get a pet"
 	and tile("Ranking").Lock.Word == "Story 1", "the small condition words", tostring(tile("Skills").Lock.Word))
 check(not L.TileLocked("Bag") and not L.TileLocked("Map"), "Bag and Map are open", "")
 CLOCK += 5

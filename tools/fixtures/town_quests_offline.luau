@@ -1020,13 +1020,13 @@ runGroup("a23-71 skill quests", function()
 	end
 	-- Codex B1 (최종 검수 10/14): the row names the first trial not done yet, with its own numbers
 	local ra = s0(2, { a = 1 })
-	check(ra and string.find(ra.Text, "Beat slimes with basic attacks", 1, true) == 1 and ra.Progress == 1 and ra.Target == 3,
+	check(ra and string.find(ra.Text, "Beat slimes using only basic attacks", 1, true) == 1 and ra.Progress == 1 and ra.Target == 3,
 		"S0: the basic-attack trial first, in its words, 1/3", show(ra and { ra.Text, ra.Progress, ra.Target }))
 	local r2 = s0(2, { a = 3 })
-	check(r2 and r2.Text == "Hit 2 monsters with one skill · Skills come at Lv5" and r2.Progress == 0 and r2.Target == 1,
-		"S0 at Lv2 (skill trial open): 'Hit 2 monsters with one skill · Skills come at Lv5'", show(r2 and { r2.Text, r2.Progress, r2.Target }))
+	check(r2 and r2.Text == "Hit 2 monsters with one skill · Learn skills at Lv5" and r2.Progress == 0 and r2.Target == 1,
+		"S0 at Lv2 (skill trial open): 'Hit 2 monsters with one skill · Learn skills at Lv5'", show(r2 and { r2.Text, r2.Progress, r2.Target }))
 	local rb = s0(2, { a = 3, b = 1 })
-	check(rb and rb.Text == "Beat a Slime Prince above half HP", "the skill trial already done: the last trial, no tail", rb and rb.Text)
+	check(rb and rb.Text == "Beat a Slime Prince with at least half your HP left", "the skill trial already done: the last trial, no tail", rb and rb.Text)
 	local r5 = s0(5, { a = 3 }, { SkillSlots = 1 })
 	check(r5 and r5.Text == "Hit 2 monsters with one skill", "Lv5 (Q learned): no tail", r5 and r5.Text)
 	local rk = s0(2, { a = 3 }, { SkillSlots = 1 })

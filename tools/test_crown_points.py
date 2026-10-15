@@ -149,7 +149,7 @@ def static() -> tuple[int, list[str]]:
     check("local function fmtScore(v) return HUD.ScoreText(v) end" in hud and "v = math.max(0, math.floor(tonumber(v) or 0))" in hud,
           "A23-198: the HUD shows the war scores as whole numbers (the bar shows the share)")
     cfg = read(SHARED / "Config.luau")
-    check('"Knights earn Honor and the Horn Legion earns Mischief, from fair fights, story choices and hunting' in cfg,
+    check('"Knights earn Honor and the Horn Legion earns Mischief through fair fights, story choices and hunting' in cfg,
           "the Honor help line names hunting")
     return count, failures
 

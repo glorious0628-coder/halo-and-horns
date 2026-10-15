@@ -680,9 +680,9 @@ runGroup("rules", function()
 	try(w, f, "SlimeMeadow:5")
 	local txt = ""
 	for i = before + 1, #w.Notices do
-		if w.Notices[i].Player == f and string.find(w.Notices[i].Text or "", "is full", 1, true) then txt = w.Notices[i].Text end
+		if w.Notices[i].Player == f and string.find(w.Notices[i].Text or "", "limit reached", 1, true) then txt = w.Notices[i].Text end
 	end
-	check(string.find(txt, "Meadow Herb is full", 1, true) ~= nil and not string.find(txt, "Forge", 1, true),
+	check(string.find(txt, "Meadow Herb limit reached", 1, true) ~= nil and not string.find(txt, "Forge", 1, true),
 		"a full bag of herbs says it is full, without the Forge", txt)
 end)
 
