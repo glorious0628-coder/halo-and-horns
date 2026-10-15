@@ -93,7 +93,12 @@ local function usePotion(player, kind)
 			return
 		end
 		local before = humanoid.Health
-		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery)
+		-- A23-194: a Potion pet (Flower Slime) heals a little more (PetService.Bonus: 0 in a PvP zone)
+		local pet = S and S.PetService
+		local okP, more = false, 0
+		if type(pet) == "table" and type(pet.Bonus) == "function" then okP, more = pcall(pet.Bonus, player, "Potion") end
+		local mult = 1 + ((okP and type(more) == "number" and more == more and more > 0) and math.min(more, 0.1) or 0)
+		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery * mult)
 		if humanoid.Health <= before then return end -- a failed/no-op heal consumes neither stock nor the deadline
 	else
 		if st.Mana >= TUNE.MaxMana then

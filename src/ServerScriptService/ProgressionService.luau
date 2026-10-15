@@ -528,6 +528,15 @@ local function onMonsterKilled(player, info)
 	end
 	gold = M.AddCarriedGold(player, gold, "Monster") -- A23-75: what was added (2x Gold / 2x XP), shown below
 	xp = M.AddXP(player, xp, cap, "Monster")
+	-- A23-194: the following pet's tiny kill bonus, from the kill's own base (never x the passes / tonics: source "Pet" is no
+	-- PassBoost gold source), the fraction carried to the next kill; 0 in a PvP zone (PetService.BonusExtra)
+	local pet = S.PetService
+	if type(pet) == "table" and type(pet.BonusExtra) == "function" then
+		local okG, eg = pcall(pet.BonusExtra, player, "KillGold", num(info.Gold))
+		if okG and num(eg) >= 1 then gold += num(M.AddCarriedGold(player, math.floor(eg), "Pet")) end
+		local okX, ex = pcall(pet.BonusExtra, player, "KillXP", num(info.XP))
+		if okX and num(ex) >= 1 then xp += num(M.AddXP(player, math.floor(ex), cap, "Pet")) end
+	end
 	S.PlayerService.AddStat(player, "TotalKills", 1)
 	local pos = info.Position
 	if typeof(pos) ~= "Vector3" then
