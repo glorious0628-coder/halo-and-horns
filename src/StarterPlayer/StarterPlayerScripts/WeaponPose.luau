@@ -44,7 +44,7 @@ local T = {
 	RestEvery = 0.05, -- s between the hold checks
 	ProbeEvery = 2, -- s: Studio's GripProbe print (every frame measured, the worst printed)
 	RestBow = "RestBow", -- the local left-hand weld of a resting bow (A23-187)
-	MemeLook = "MemeLook", MemeKind = "Sword", -- A23-186: the joke weapons' local look (a Model under the Tool), held like a sword
+	MemeLook = "MemeLook", MemeKind = "Meme", -- A23-186: the joke weapons' local look (a Model under the Tool); grip-3: their own row (the old sword hold)
 	Same = 1e-4, -- a motor still holding our last output (CFrame:FuzzyEq): the animation did not write it this frame
 	-- the Motor6Ds of Config.HoldPoses: joint name -> the R15 part it sits in
 	Joints = { RightShoulder = "RightUpperArm", RightElbow = "RightLowerArm", RightWrist = "RightHand",

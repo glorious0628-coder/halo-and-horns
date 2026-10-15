@@ -6847,15 +6847,21 @@ Config.ClassGrips = {
 -- upright in one hand, the foot near the ground (Rest 90 = upright), tilted a little while walking; Bow = hanging from
 -- the LEFT hand, the limbs upright along the body (WeaponPose welds it to LeftGripAttachment while resting)
 Config.WeaponGrips = {
-	Sword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
-	DarkSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },
-	Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },
-	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, 0, 0 }, Hold = "Bow" },
-	Staff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
-	CrookStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
-	FlaskStaff = { Point = 0.45, Rest = { 90, 0, 0 }, Hold = "Staff" },
-	Hammer = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
-	Baton = { Point = 0.3, Rest = { 225, 0, 0 }, Hold = "Side" },
+	-- grip-3 (user 10/15 "직업별 무기 잡는 것 좀 제대로 해줘", Codex build/codex/grip2_codex.md): every class holds its
+	-- weapon at rest (never on the back); the swords up and forward outside the body (SwordReady), the hammer over the
+	-- shoulder (HammerCarry), the baton up-forward like a conductor's (BatonReady). Side stays for the joke weapons (Meme)
+	Sword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },
+	DarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },
+	Meme = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" }, -- the joke weapons (WeaponPose MemeKind), the old sword hold
+	-- grip-3 (HoldTest photos 10/15: the bow hung flat across the side, its string to the body): turned a quarter about
+	-- its own length so the string is behind and the curved limbs in front (Codex grip2)
+	Bow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },
+	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, -90, 0 }, Hold = "Bow" },
+	Staff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" }, -- grip-3 HoldTest: 90 leaned the staff 9 degrees back
+	CrookStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
+	Hammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },
+	Baton = { Point = 0.3, Rest = { 20, 0, 0 }, Hold = "BatonReady" },
 }
 
 -- A23-187: the joints' turns (degrees, X / Y / Z of each Motor6D's own frame) added on top of the walk / idle animation
@@ -6878,17 +6884,38 @@ Config.HoldPoses = {
 		-- RightWrist (HoldTest 10/15, measured: the staff leaned 28 degrees forward and in, its orb before the chest):
 		-- turns it back upright, a little back and out
 		Stand = { RightShoulder = { -8, 0, 8 }, RightElbow = { -20, 0, 0 }, RightWrist = { 37, 0, -11 } },
-		Walk = { RightShoulder = { -8, 0, 10 }, RightElbow = { -16, 0, 0 }, RightWrist = { 34, 0, -12 } },
+		Walk = { RightShoulder = { -8, 0, 10 }, RightElbow = { -16, 0, 0 }, RightWrist = { 17, 0, -12 } }, -- grip-3: 5~10 forward
 		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.98 } },
 	Bow = { Arm = "Left",
 		-- LeftWrist (HoldTest 10/15, measured: the bow leaned 19 degrees in across the body): upright by the left leg
-		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 13, 0, 13 } },
-		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { 12, 0, 14 } },
+		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 8, 0, 13 } },
+		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { -2, 0, 14 } },
 		Run = { LeftShoulder = { 0, 0, -4 }, LeftElbow = { 8, 0, 0 } },
 		Air = { LeftElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95, Free = 0.15 } },
+	-- grip-3 (Codex build/codex/grip2_codex.md start values, then tuned on HoldTest photos): the right hand at the waist
+	-- front, the blade up and forward outside the body; the hammer's head over the right shoulder, the shaft behind; the
+	-- baton up-forward 45 degrees
+	SwordReady = { Arm = "Right",
+		Stand = { RightShoulder = { 10, 0, 14 }, RightElbow = { 30, 0, 0 }, RightWrist = { -10, 0, -14 } },
+		Walk = { RightShoulder = { 12, 0, 18 }, RightElbow = { 35, 0, 0 }, RightWrist = { -27, 0, -10 } },
+		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
+		Air = { RightElbow = { 10, 0, 0 } },
+		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
+	HammerCarry = { Arm = "Right",
+		Stand = { RightShoulder = { 35, 0, 20 }, RightElbow = { 90, 0, 0 }, RightWrist = { -55, 0, -20 } },
+		Walk = { RightShoulder = { 38, 0, 23 }, RightElbow = { 90, 0, 0 }, RightWrist = { -58, 0, -23 } },
+		Run = { RightShoulder = { 0, 0, 2 } },
+		Air = { RightElbow = { 4, 0, 0 } },
+		Damp = { Stand = 0.95, Walk = 0.97, Run = 0.98, Air = 0.98, Lower = 0.98 } },
+	BatonReady = { Arm = "Right",
+		Stand = { RightShoulder = { 10, 0, 12 }, RightElbow = { 25, 0, 0 }, RightWrist = { -10, 0, -12 } },
+		Walk = { RightShoulder = { 15, 0, 16 }, RightElbow = { 30, 0, 0 }, RightWrist = { -30, 0, -10 } },
+		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
+		Air = { RightElbow = { 10, 0, 0 } },
+		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
 }
 -- the move and the attack hand-over (s): Blend = stand <-> walk; In = the rest pose gives way when an attack starts (In
 -- Bow for the bow), Out = it comes back after; WalkAt / RunAt = the ground speed's share of WalkSpeed that counts as walking
@@ -6904,54 +6931,54 @@ Config.HoldMotion = { Blend = 0.16, In = 0.08, InBow = 0.06, Out = 0.18, WalkAt 
 -- proportions follow tierLen) and its grip point sits on the Handle's grip point (Config.WeaponGrips Point)
 Config.WeaponMeshes = {
 	Warrior_Halo = { -- Paladin
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.17 }, -- Weapon_Halo_Paladin_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.147 }, -- Weapon_Halo_Paladin_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.19 }, -- Weapon_Halo_Paladin_T3
+		[1] = { MeshId = "rbxassetid://86159591984113", TextureId = "rbxassetid://113421110964518", Length = 3.0, Pivot = 0.17 }, -- Weapon_Halo_Paladin_T1
+		[2] = { MeshId = "rbxassetid://122531277828089", TextureId = "rbxassetid://118386471395153", Length = 3.5, Pivot = 0.147 }, -- Weapon_Halo_Paladin_T2
+		[3] = { MeshId = "rbxassetid://71099522598243", TextureId = "rbxassetid://111129276667663", Length = 4.0, Pivot = 0.19 }, -- Weapon_Halo_Paladin_T3
 	},
 	Warrior_Horns = { -- Berserker
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.155 }, -- Weapon_Horns_Berserker_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.192 }, -- Weapon_Horns_Berserker_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.172 }, -- Weapon_Horns_Berserker_T3
-		[7] = { MeshId = "", TextureId = "", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7
+		[1] = { MeshId = "rbxassetid://91355529571301", TextureId = "rbxassetid://103477446310121", Length = 3.0, Pivot = 0.155 }, -- Weapon_Horns_Berserker_T1
+		[2] = { MeshId = "rbxassetid://81878150782694", TextureId = "rbxassetid://111883393106083", Length = 3.5, Pivot = 0.192 }, -- Weapon_Horns_Berserker_T2
+		[3] = { MeshId = "rbxassetid://92330575484416", TextureId = "rbxassetid://80780968722032", Length = 4.0, Pivot = 0.172 }, -- Weapon_Horns_Berserker_T3
+		[7] = { MeshId = "rbxassetid://72072766738977", TextureId = "rbxassetid://123814346168925", Length = 6.5, Pivot = 0.17 }, -- Weapon_Horns_Berserker_T7
 	},
 	Warrior_Neutral = { -- Blacksmith
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T3
+		[1] = { MeshId = "rbxassetid://80094041531378", TextureId = "rbxassetid://129135909943173", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T1
+		[2] = { MeshId = "rbxassetid://79219710009283", TextureId = "rbxassetid://91040471408066", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T2
+		[3] = { MeshId = "rbxassetid://111562106569514", TextureId = "rbxassetid://86647169802032", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_Blacksmith_T3
 	},
 	Mage_Halo = { -- LightMage
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T3
+		[1] = { MeshId = "rbxassetid://104823656302314", TextureId = "rbxassetid://82317471191894", Length = 3.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T1
+		[2] = { MeshId = "rbxassetid://125318336810545", TextureId = "rbxassetid://78056760671695", Length = 3.5, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T2
+		[3] = { MeshId = "rbxassetid://122724668870101", TextureId = "rbxassetid://81568978659498", Length = 4.0, Pivot = 0.45 }, -- Weapon_Halo_LightMage_T3
 	},
 	Mage_Horns = { -- DarkMage
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T3
+		[1] = { MeshId = "rbxassetid://115879197737660", TextureId = "rbxassetid://103102209489305", Length = 3.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T1
+		[2] = { MeshId = "rbxassetid://80350617880268", TextureId = "rbxassetid://117768258967879", Length = 3.5, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T2
+		[3] = { MeshId = "rbxassetid://76449571410419", TextureId = "rbxassetid://130050929803024", Length = 4.0, Pivot = 0.45 }, -- Weapon_Horns_DarkMage_T3
 	},
 	Mage_Neutral = { -- Alchemist
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T3
+		[1] = { MeshId = "rbxassetid://96461121498188", TextureId = "rbxassetid://95231869700034", Length = 3.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T1
+		[2] = { MeshId = "rbxassetid://126249546823121", TextureId = "rbxassetid://113168377752694", Length = 3.5, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T2
+		[3] = { MeshId = "rbxassetid://140472036389182", TextureId = "rbxassetid://96028141317503", Length = 4.0, Pivot = 0.45 }, -- Weapon_Neutral_Alchemist_T3
 	},
 	Archer_Halo = { -- Ranger
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T3
+		[1] = { MeshId = "rbxassetid://103065174891351", TextureId = "rbxassetid://118757245665370", Length = 3.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T1
+		[2] = { MeshId = "rbxassetid://76725028902468", TextureId = "rbxassetid://102498357666812", Length = 3.5, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T2
+		[3] = { MeshId = "rbxassetid://70655123902661", TextureId = "rbxassetid://126857700298677", Length = 4.0, Pivot = 0.5 }, -- Weapon_Halo_Ranger_T3
 	},
 	Archer_Horns = { -- ShadowHunter
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T3
+		[1] = { MeshId = "rbxassetid://138849355994171", TextureId = "rbxassetid://106926969314938", Length = 3.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T1
+		[2] = { MeshId = "rbxassetid://109706823612172", TextureId = "rbxassetid://121216732471163", Length = 3.5, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T2
+		[3] = { MeshId = "rbxassetid://106873689195215", TextureId = "rbxassetid://72243612242409", Length = 4.0, Pivot = 0.5 }, -- Weapon_Horns_ShadowHunter_T3
 	},
 	Archer_Neutral = { -- PetTamer
-		[1] = { MeshId = "", TextureId = "", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T1
-		[2] = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T2
-		[3] = { MeshId = "", TextureId = "", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T3
+		[1] = { MeshId = "rbxassetid://75913120190946", TextureId = "rbxassetid://128696216276676", Length = 3.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T1
+		[2] = { MeshId = "rbxassetid://109594504869748", TextureId = "rbxassetid://78809577707291", Length = 3.5, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T2
+		[3] = { MeshId = "rbxassetid://93042628329794", TextureId = "rbxassetid://104958566251935", Length = 4.0, Pivot = 0.3 }, -- Weapon_Neutral_PetTamer_T3
 	},
 	Meme = { -- the Forge's joke weapons (Config.Weapons Meme rows, any class)
-		Pan = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.28 }, -- Weapon_Meme_FryingPan
-		Chicken = { MeshId = "", TextureId = "", Length = 3.5, Pivot = 0.15 }, -- Weapon_Meme_RubberChicken
+		Pan = { MeshId = "rbxassetid://79648371582502", TextureId = "rbxassetid://101642561735654", Length = 3.5, Pivot = 0.28 }, -- Weapon_Meme_FryingPan
+		Chicken = { MeshId = "rbxassetid://117962570056498", TextureId = "rbxassetid://100520320597927", Length = 3.5, Pivot = 0.15 }, -- Weapon_Meme_RubberChicken
 	},
 }
 
