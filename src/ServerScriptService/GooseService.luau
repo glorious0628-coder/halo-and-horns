@@ -901,9 +901,16 @@ local function finish()
 	if judged == "Versus" and result ~= "Tie" then -- A23-14: co-op never gives war points
 		call("WarService", "AddFactionPoints", result, Config.Goose.WinWarPoints)
 	end
-	-- A23-130: no result banner (the top bar and the reward lines say it); GooseEnd = the end visual + the big sound
+	-- A23-130: no result banner; ② (최종 검수 10/14) the tug keeps its result readable like the egg path: GameState
+	-- GooseResult + GooseResultHalo / GooseResultHorns until GooseResultUntil, the same numbers in GooseEnd
+	local tugUntil = Util.Now() + 4
+	setGame("GooseResult", result)
+	setGame("GooseResultHalo", rescue)
+	setGame("GooseResultHorns", poach)
+	setGame("GooseResultUntil", tugUntil)
 	local okSend, sendErr = pcall(function()
-		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop") })
+		Net.Fx(nil, "GooseEnd", { Pos = fxPos, Winner = result, Coop = (judged == "Coop"), Halo = rescue, Horns = poach,
+			Until = tugUntil })
 	end)
 	if not okSend then warnThrottled("send", "goose result broadcast failed: " .. tostring(sendErr)) end
 

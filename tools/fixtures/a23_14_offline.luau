@@ -1239,17 +1239,16 @@ local GT = G.Text
 local function reward(level, faction, won, share)
 	return CONFIG.GooseReward(level, faction, won, false, share)
 end
--- A23-130 (user 2026-10-11): the start is one short "Golden Goose!" banner for 2 s, once, in every mode (no co-op band)
+-- A23-191 (최종 검수 10/14): the goose starts with no line at all (no NotifyAll, no personal toast; the event chip and
+-- the honk say it)
 local function startLine(f)
-	local n, ok = 0, true
-	for _, e in f.All do
-		if e.Text == GT.Start then
-			n += 1
-			ok = ok and e.Kind == "announce" and e.Duration == 2
-		end
-		if string.find(e.Text, "Only ", 1, true) or string.find(e.Text, "landed in the Crossroads", 1, true) then ok = false end
-	end
-	return n == 1 and ok
+	return #f.All == 0 and #f.Notices == 0
+end
+-- ② (최종 검수 10/14): the result stays readable: GameState GooseResult + the final bar until GooseResultUntil
+local function resultKept(f, result, halo, horns)
+	local A = f.GS.Attrs
+	return A.GooseResult == result and A.GooseResultHalo == halo and A.GooseResultHorns == horns
+		and type(A.GooseResultUntil) == "number" and A.GooseResultUntil > f.Now
 end
 
 runGroup("goose-start-line", function()
@@ -1267,7 +1266,7 @@ runGroup("goose-coop", function()
 	local A = f.GS.Attrs
 	check(A.GooseActive == true and A.GooseMode == "Coop" and A.GooseCoopSide == "Halo" and A.GooseCoopTarget == 20
 		and A.GooseCoopPeople == 1, "only Halo on the server: GameState GooseMode Coop / Halo / target 20 / 1 person", show(A))
-	check(startLine(f), "co-op start: one short line for 2 s (A23-130, no co-op band)", show(f.All))
+	check(startLine(f), "co-op start: no line at all (A23-191)", show({ f.All, f.Notices }))
 	check(f:Hit(f.H1, 9, true) == 18, "manual hits pull ManualCount 2 each", A.GooseRescue)
 	f:Tick()
 	check(f:AllText(string.format(GT.CoopFull.Halo, G.MinManualHits)) == 0, "no 'gauge full' line before the target")
@@ -1287,7 +1286,10 @@ runGroup("goose-coop", function()
 		and pay.Info.Level == 1 and pay.Info.Mode == "Coop", "GooseRewarded: the paid player, won, gold / XP as paid, level, Mode Coop",
 		show(pay and pay.Info))
 	check(f.H1.Data.CheerStars == 0, "co-op success gives no cheer star", f.H1.Data.CheerStars)
-	check(f:NoticeTo(f.H1, string.format(GT.CoopReward.Halo, tostring(g), tostring(x))) == 1, "personal co-op reward toast")
+	check(#f.Notices == 0 and #f.All == 0, "no co-op reward toast or line (A23-191: the numbers pop where they live)",
+		show({ f.Notices, f.All }))
+	check(resultKept(f, "Halo", 20, 0), "GameState GooseResult Halo + GooseResultHalo 20 / Horns 0 until GooseResultUntil",
+		show(A))
 	check(fin and fin.Result == "Halo" and fin.Rewarded[f.H1] == 20 and fin.Info and fin.Info.Mode == "Coop" and fin.Info.Success == true
 		and fin.Info.Side == "Halo" and fin.Info.Target == 20, "GooseFinished('Halo', { H1 = 20 }, { Mode Coop, Success })", show(fin))
 	check(f:AllText(GT.CoopResult.Halo) == 0, "no co-op result banner (the reward lines and GooseEnd say it)")
@@ -1296,12 +1298,13 @@ runGroup("goose-coop", function()
 	-- solo Horns: 함께 밀렵, Horns reward shape
 	local h = gooseWorld({ { "R1", "Horns", 4 } })
 	h:Begin()
-	check(h.GS.Attrs.GooseCoopSide == "Horns" and startLine(h), "only Horns: co-op for Horns (함께 밀렵), the same short start line")
+	check(h.GS.Attrs.GooseCoopSide == "Horns" and startLine(h), "only Horns: co-op for Horns (함께 밀렵), no start line either")
 	h:Hit(h.R1, 10, true)
 	local hf = h:End()
 	local rg, rx = reward(4, "Horns", true, 0.7)
 	check(hf.Result == "Horns" and h.Gold[h.R1] == rg and h.XP[h.R1] == rx and #h.War == 0, "Horns co-op success: 70%, no war points",
 		show({ hf.Result, h.Gold[h.R1], rg }))
+	check(resultKept(h, "Horns", 0, 20), "Horns co-op: GameState GooseResult Horns, final bar 0 / 20", show(h.GS.Attrs))
 end)
 
 runGroup("goose-coop-rules", function()
@@ -1330,6 +1333,7 @@ runGroup("goose-coop-rules", function()
 	check(t.H1.Data.CheerStars == 1 and t.H2.Data.CheerStars == 1, "failed co-op gives +1 cheer star each")
 	check(fin.Rewarded[t.H1] == 10 and fin.Rewarded[t.H2] == 8, "both still get goose quest credit (GooseFinished rewarded)", show(fin.Rewarded))
 	check(t:AllText(GT.CoopFail) == 0 and #t.War == 0, "co-op fail: no banner, no war points")
+	check(resultKept(t, "Tie", 18, 0), "co-op fail: GameState GooseResult Tie, final bar 18 / 0", show(t.GS.Attrs))
 	-- 3 manual hits rule: auto hits pull but never pay; 2 manual hits are not enough; exactly 3 are
 	local m = gooseWorld({ { "H1", "Halo", 1 }, { "H2", "Halo", 1 }, { "H3", "Halo", 1 } })
 	m:Begin()
@@ -1340,8 +1344,9 @@ runGroup("goose-coop-rules", function()
 	check(mf.Result == "Halo" and mf.Info.Success == true, "auto hits still fill the co-op gauge", show(mf.Info))
 	check(m.Gold[m.H1] == nil and m.Gold[m.H2] == nil and mf.Rewarded[m.H1] == nil and mf.Rewarded[m.H2] == nil,
 		"fewer than 3 manual hits (2 manual + autos, auto only): no reward, no quest credit", show(mf.Rewarded))
-	check(m:NoticeTo(m.H1, string.format(GT.NeedManual, G.MinManualHits)) == 1 and m:NoticeTo(m.H2, string.format(GT.NeedManual, G.MinManualHits)) == 1,
-		"they are told why (NeedManual)")
+	check(#m.Notices == 0 and m:NoticeTo(m.H1, string.format(GT.NeedManual, G.MinManualHits)) == 0,
+		"no 'need manual hits' toast (A23-191)", show(m.Notices))
+	check(m.GS.Attrs.GooseResult == "Halo", "the kept result says Halo even when some were not paid", show(m.GS.Attrs))
 	check(m.Gold[m.H3] == select(1, reward(1, "Halo", true, 0.7)) and mf.Rewarded[m.H3] ~= nil, "exactly 3 manual hits are paid")
 end)
 
@@ -1355,6 +1360,7 @@ runGroup("goose-modes", function()
 	check(nf and nf.Result == "Tie" and count(nf.Rewarded) == 0 and nf.Info.Mode == "Pending", "Pending event ends as a plain tie",
 		show(nf))
 	check(n:AllText(CONFIG.Story.GooseResult.Tie) == 0 and #n.War == 0, "plain tie: no banner, no war points")
+	check(resultKept(n, "Tie", 0, 0), "plain tie: GameState GooseResult Tie, 0 / 0", show(n.GS.Attrs))
 	-- Pending fixed by the first eligible player mid-event
 	local p = gooseWorld({})
 	p:Begin()
@@ -1362,16 +1368,20 @@ runGroup("goose-modes", function()
 	check(p:Hit(late, 1, true) == 2, "the first eligible hit fixes the mode and counts")
 	check(p.GS.Attrs.GooseMode == "Coop" and p.GS.Attrs.GooseCoopSide == "Halo" and p.GS.Attrs.GooseCoopTarget == 20,
 		"Pending -> co-op for the first eligible faction", show(p.GS.Attrs))
-	check(startLine(p) and #p.All == 1, "A23-130: the mode fixed later adds no second line (the start line was the only one)",
+	check(startLine(p), "A23-191: the mode fixed later adds no line (still none at all)",
 		show(p.All))
 	-- versus: both factions -> the normal tug, 100% / 40%, war points
 	local v = gooseWorld({ { "H1", "Halo", 2 }, { "R1", "Horns", 2 } })
 	v:Begin()
 	check(v.GS.Attrs.GooseMode == "Versus", "both factions present: Versus")
-	check(startLine(v), "versus start: the same short line for 2 s (A23-130, no two-line story text)", show(v.All))
+	check(startLine(v), "versus start: no line either (A23-191)", show({ v.All, v.Notices }))
 	v:Hit(v.H1, 5, true); v:Hit(v.R1, 3, true)
 	local vf = v:End()
 	check(vf.Result == "Halo" and vf.Info.Mode == "Versus", "versus winner by totals", show(vf.Info))
+	check(resultKept(v, "Halo", 10, 6), "versus: GameState GooseResult Halo, final bar 10 / 6 until GooseResultUntil", show(v.GS.Attrs))
+	local ve = v.Fx[#v.Fx]
+	check(ve and ve.Kind == "GooseEnd" and ve.Data.Winner == "Halo" and ve.Data.Halo == 10 and ve.Data.Horns == 6
+		and ve.Data.Until == v.GS.Attrs.GooseResultUntil, "GooseEnd carries the same result numbers", show(ve))
 	check(v.Gold[v.H1] == select(1, reward(2, "Halo", true, nil)) and v.Gold[v.R1] == select(1, reward(2, "Horns", false, nil)),
 		"versus pays 100% / 40%", show({ v.Gold[v.H1], v.Gold[v.R1] }))
 	check(#v.War == 1 and v.War[1][1] == "Halo" and v.War[1][2] == G.WinWarPoints, "versus win gives war points", show(v.War))
@@ -1387,7 +1397,8 @@ runGroup("goose-modes", function()
 	c:Begin()
 	local rival = c:Add("R1", "Horns", 1)
 	check(c:Hit(rival, 3, true) == 0, "a rival who arrives during co-op pulls 0")
-	check(c:NoticeTo(rival, GT.RivalWait.Halo) == 1, "the rival is told once ('다음 거위부터 줄다리기')")
+	check(#c.Notices == 0 and c:NoticeTo(rival, GT.RivalWait.Halo) == 0, "the rival gets no toast (A23-191: the dimmed bar says it)",
+		show(c.Notices))
 	c:Hit(c.H1, 10, true)
 	local cf = c:End()
 	check(cf.Result == "Halo" and cf.Rewarded[rival] == nil and c.Gold[rival] == nil and c.GS.Attrs.GooseCoopTarget == 0,
