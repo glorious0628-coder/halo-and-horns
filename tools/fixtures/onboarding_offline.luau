@@ -430,11 +430,11 @@ do
 		for i = 2, #f.LastList do check(f.LastList[i].Pinned ~= true, context .. " pinned a second row") end
 	end
 	local function gold() return tostring(math.floor(f.Data.CarriedGold + f.Data.BankGold)) end
-	-- the real Config has the guide-finished line off (Nudges.GuideDone, 검수 10/09): this block checks the rule, so turn it on
-	f.Config.Nudges.GuideDone = true
+	-- 최종 검수 10/15: the guide-finished line ('That's all from me!') is deleted with its code: never sent
+	check(T.GuideDone == nil and f.Config.Nudges.GuideDone == nil, "the guide-finished words and switch are gone")
 	local function guideDone()
 		local n = 0
-		for _, message in f.Notices do if message == T.GuideDone then n += 1 end end
+		for _, message in f.Notices do if type(message) == "string" and string.find(message, "That's all from me", 1, true) then n += 1 end end
 		return n
 	end
 	check(iron.MinLevel == 5 and woods.MinLevel == 10, "next-goal fixture expects iron Lv5 and Goblin Woods Lv10")
@@ -508,16 +508,14 @@ do
 	check(guideDone() == 0, "guide-finished toast fired while a goal remained")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 10); f:Publish()
 	check(f.LastList[1].Pinned ~= true and #f.LastList == f.Config.Quests.Slots, "finished guide chain kept a pinned row")
-	check(guideDone() == 1, "guide-finished toast missing or repeated")
-	f:Publish(); f:Publish(); check(guideDone() == 1, "guide-finished toast repeated on unchanged state")
+	check(guideDone() == 0, "the finished guide chain sends no line")
+	f:Publish(); f:Publish(); check(guideDone() == 0, "still no line on unchanged state")
 	f:SaveAndRejoin(); f:Publish()
-	check(f.LastList[1].Pinned ~= true and guideDone() == 1, "rejoin after the finished guide re-pinned or re-toasted")
-	-- Nudges.GuideDone off (the real Config): the chain still ends the same way, with no toast
-	f.Config.Nudges.GuideDone = false
+	check(f.LastList[1].Pinned ~= true and guideDone() == 0, "rejoin after the finished guide: not re-pinned, no line")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 6); f:Publish()
-	check(f.LastList[1].Pinned == true, "GuideDone off: a goal came back at Lv6 (fixture check)")
+	check(f.LastList[1].Pinned == true, "a goal came back at Lv6 (fixture check)")
 	f.Services.PlayerService.SetStat(f.Player, "Level", 10); f:Publish()
-	check(f.LastList[1].Pinned ~= true and guideDone() == 1, "Nudges.GuideDone off: the finished guide sends no toast")
+	check(f.LastList[1].Pinned ~= true and guideDone() == 0, "the chain ends again without a line")
 end
 -- The real QuestService migrates old charged-release quests in both daily and extra slots.
 -- Combat signals below are test doubles; this tests service event handling, not real skill hits.
@@ -586,21 +584,19 @@ for _, kind in { "Daily", "Extra" } do
 	f.Services.CombatService.Released:Fire(f.Player, { Auto = false, MonstersHit = 1 })
 	f:Publish(); check(reloaded.Progress == 4, kind .. " manual hit after reconnect did not count")
 	if kind == "Daily" then
-		-- 검수 10/09 (user: too kind): "Daily quest done! Press [Claim]." is a nudge (Config.Nudges.DailyReady), off in the real Config
+		-- 최종 검수 10/15: "Daily quest done! Press [Claim]." is deleted with its code (the row says Done! / [Claim])
 		local function readyLines()
 			local n = 0
-			for _, message in f.Notices do if message == f.Config.Text.DailyReady then n += 1 end end
+			for _, message in f.Notices do if type(message) == "string" and string.find(message, "Daily quest done", 1, true) then n += 1 end end
 			return n
 		end
-		check(f.Config.Nudges.DailyReady == false, "Nudges.DailyReady is off in the real Config", tostring(f.Config.Nudges.DailyReady))
+		check(f.Config.Nudges.DailyReady == nil and f.Config.Text.DailyReady == nil, "the daily-ready switch and words are gone")
 		for _ = 1, 8 do f:Kill("Slime") end
-		check(f.Data.Quests[2].Progress == 10 and readyLines() == 0, "Nudges.DailyReady off: a finished daily sends no 'Daily quest done' line",
+		check(f.Data.Quests[2].Progress == 10 and readyLines() == 0, "a finished daily sends no 'Daily quest done' line",
 			f.Data.Quests[2].Progress .. " / " .. readyLines())
-		f.Config.Nudges.DailyReady = true
 		f.Services.CombatService.Released:Fire(f.Player, { Auto = false, MonstersHit = 1 })
 		f:Publish()
-		check(reloaded.Progress == 5 and readyLines() == 1, "Nudges.DailyReady on: the line comes once when a daily is finished",
-			reloaded.Progress .. " / " .. readyLines())
+		check(reloaded.Progress == 5 and readyLines() == 0, "the release daily finished: still no line", reloaded.Progress .. " / " .. readyLines())
 	end
 end
 do
