@@ -16,7 +16,7 @@ Usage: HH_MAIN_STUDIO=1 py tools/play_phone_round_photos.py [phone] [844]   (def
 Out: docs/art/verification_2026-10-13/phone_round/<dev>_<name>.png / .json, summary.txt, log.txt
 
 A23-160 ③ (10/13 evening, the private test's first 10 minutes on a phone): `... play_phone_round_photos.py first10
-[phone] [844]` walks the first minutes instead - the opening (Skip), the faction picker, the class picker, the guide's
+[phone] [844] [out=<dir>]` walks the first minutes instead - the opening (Skip), the faction picker, the class picker, the guide's
 welcome, the HUD after the first mission, the Forge, the Potion Shop, the attendance board (Gifts), the Bag, the Lv 5
 moment (the first skill) - same audit per shot. Out: docs/art/verification_2026-10-14/phone_first10/."""
 import base64
@@ -327,6 +327,10 @@ def main():
     first10 = "first10" in sys.argv[1:]
     if first10:
         OUT = OUT_FIRST10
+    # 10/15: out=<dir> (relative to the repo) keeps older evidence - a new dated folder instead of overwriting
+    for a in sys.argv[1:]:
+        if a.startswith("out="):
+            OUT = os.path.join(ROOT, a[4:])
     os.makedirs(OUT, exist_ok=True)
     want = [a for a in sys.argv[1:] if a in DEVICES] or list(DEVICES)
     c = Client()
