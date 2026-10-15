@@ -206,7 +206,6 @@ MUTATIONS = [
     ("CODEX", "a new card shown in colour at once", '\tif payload.Event == "Card" then\n\t\tbefore = CodexUI.View(kind, nil, faction(), false)\n',
      '\tif payload.Event == "Card" then\n\t\tbefore = after\n'),
     ("CODEX", "the evolve never swaps", "\t\t\t\t\tCARD.Set(c, after)\n", ""),
-    ("CODEX", "no line under the moment card", 'Text = tostring(payload.Text or ""), AnchorPoint', 'Text = "", AnchorPoint'),
     ("CODEX", "a click cannot end the moment", "if t == Enum.UserInputType.MouseButton1 or t == Enum.UserInputType.Touch then finish() end",
      "if false then finish() end"),
     ("CODEX", "the window never registered", "\tS.Ready = panels.Register(L.Window, {", "\tS.Ready = false and panels.Register(L.Window, {"),

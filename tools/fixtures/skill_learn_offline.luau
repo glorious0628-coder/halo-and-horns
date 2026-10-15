@@ -57,7 +57,7 @@ local function inst(class, props, kids)
 end
 
 local function run(opts)
-	local W = { Announced = {}, Hints = {}, Played = {}, Toasts = {}, Attr = {}, AttrFns = {}, Now = 100, Reduced = opts.Reduced == true,
+	local W = { Announced = {}, Hints = {}, Played = {}, Toasts = {}, Refused = {}, Attr = {}, AttrFns = {}, Now = 100, Reduced = opts.Reduced == true,
 		Tweens = {}, Delays = {}, FxSounds = {}, SkillReadyOk = true, Settings = { KeyBadges = opts.Badges }, Cards = {},
 		SettingsChanged = signal(), KeysChanged = signal() }
 	local player = { UserId = 7, GetAttribute = function(_, k) return W.Attr[k] end }
@@ -72,6 +72,7 @@ local function run(opts)
 		OnAttr = function(keys, fn) for _, k in keys do W.AttrFns[k] = W.AttrFns[k] or {} table.insert(W.AttrFns[k], fn) end end,
 		Announce = function(text, dur) table.insert(W.Announced, text) end,
 		Toast = function(text) table.insert(W.Toasts, text) end,
+		Refuse = function(target) table.insert(W.Refused, target or false) end,
 		ReducedMotion = function() return W.Reduced end,
 	}
 	local registry = {
@@ -163,9 +164,11 @@ local function copy(t) local c = {} for k, v in t do c[k] = v end return c end
 local SB, W, set, holder = run({ Attr = copy(base) })
 check(holder("Q") ~= nil and holder("Q").Visible == false, "Lv1: no Q button on the screen (A23-71)", holder("Q") and tostring(holder("Q").Visible))
 check(holder("Z").Visible == false and holder("X").Visible == false, "Lv1: no Z / X either", "")
-check(SB.Use("Q") == false and W.Toasts[1] == "Skills come at Lv 5", "a Q press before Lv5: 'Skills come at Lv 5'", W.Toasts[1])
+-- 최종 검수 10/15 (feedback_audit #1): no words - a refusal (the Deny sound; the slot is not on screen to shake)
+check(SB.Use("Q") == false and #W.Refused == 1 and #W.Toasts == 0,
+	"a Q press before Lv5: refused without words (no button on screen yet)", #W.Refused)
 SB.Use("Q")
-check(#W.Toasts == 1, "that toast is not spammed", #W.Toasts)
+check(#W.Refused == 1 and #W.Toasts == 0, "a second press at once: not refused twice", #W.Refused)
 -- 2. Lv5 while playing: the learn moment
 set("Level", 5)
 check(holder("Q").Visible == true, "Lv5: the Q button appears", tostring(holder("Q").Visible))
@@ -223,7 +226,8 @@ do
 	check(q.Visible == true and holdert("Z").Visible == false, "A23-193: Q waiting at the teacher shows (Z stays hidden)", tostring(q.Visible))
 	local lock = q:FindFirstChild("Lock", true)
 	check(lock == nil or lock.Visible == true, "... with its lock", lock and tostring(lock.Visible))
-	check(SBt.Use("Q") == false and #Wt.Toasts == 1, "a press: one line where to learn it, nothing cast", Wt.Toasts[1])
+	check(SBt.Use("Q") == false and #Wt.Toasts == 0 and #Wt.Refused == 1 and Wt.Refused[1] == q,
+		"a press: the locked Q slot refuses (no words), nothing cast", #Wt.Refused)
 	sett("SkillSlots", 1)
 	sett("SkillLearnReady", 0)
 	check(q.Visible == true and q:FindFirstChild("LearnPop") ~= nil and #Wt.Announced == 0, "learned: it pops in (no banner)", "")
