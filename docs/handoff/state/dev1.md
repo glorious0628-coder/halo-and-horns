@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 저녁 — 현재 가지 (새 최종 검수가 인사하면 한 줄로 다시 보낼 것)
+- **dev1-a191 9a29e2cf** (wt_grip): 3cb5ef23 설명 줄 삭제 + 옛 영어 + 9a29e2cf line_balance 휴가 줄. 스윕 41개 다시 돌림: 내 몫 실패 없음. 남은 rc=1(main에도 있음/다른 몫): commission·finisher(GrantItem 패턴)·halloween·craft·loot·gear_slots(PetAcc)·first_ko_king(quiet kill)·ops_safety·lost_found·rank_marks·skeleton_ground(성긴 폴더)·walk_forge_client(HUD 메뉴 반짝임 글, main도), a23_14 = 부하로 600초 초과(main도). tamer_research·weapon_ladder·weapon_first·town_quests 확인 중.
+- **dev1-quest-p1 4f87cb83** (wt_kosweep, dev2-quest-p1 위 + dev1-offer-payload 병합): 6628e52b 묶음 2 화면(안내자·스승 길 GuideNpc, SkillTest 길, 연습대 흔들림, 연습 막대 PracticeTool, 등불 Lamp 깃발, 포즈 고리 + wave/cheer 버튼, StoryScene 반응·StoryFlags 복원, 부탁 창 Difficulty 테두리·★) + 4f87cb83 줍기 스쳐도(5스터드). test_quest_p1_screen 13·10/10. dev2 새 tip 2cab4ba8·main·a191과 충돌 없음.
+- 주의: wt_kosweep 가지는 `git checkout -B … origin/dev2-quest-p1`로 만들어 upstream이 dev2였음 → 지움. push는 항상 `origin 가지:가지`로.
+- 다음: #2 폰 동시 조작(공격 자동 돌기는 이미 있음: HUD L.FaceTarget/Config.AutoFace → 실기 확인만) → 첫 동선 '이게 왜 안 돼?'(닫힌 문·투명 벽 MapBuilder 403행은 서버 = 개발 2와 나눔, PvP 경계 붉게) → #1 실패 원인 → #7 도감 → #11 왕관 기여 → #8 친구 위치.
+
 ## 10/15 늦은 오후 — 부탁 창 보상·핀 가지 맞춤·A23-191 설명 줄 삭제 (최신)
 - **dev1-offer-payload aa19436c (보고함)**: Offer 창 보상 줄 = 서버 Reward {Gold,XP,Items,BagSlots} 먼저(STORY.PayloadReward), 없으면 Config. Offer.Npc 진영 표 {Halo,Horns,Neutral}. offer_ui 10·14/14.
 - **dev1-track3 90b2eb56 (보고함)**: 퀘스트 핀 가지에 main e1f94b52 merge(리베이스 아님, 충돌 = Reroll "Swap" + Pin/Unpin). quest_window 기대값 새 영어(Kaiju/Daily quests/Swap) → 97·46/46.
