@@ -288,7 +288,7 @@ end
 local NOT_ALLOWED = { "Home", "End", "Insert", "Delete", "RightControl", "RightAlt", "LeftSuper", "F13", "Keypad1", "Backspace",
 	"NumLock", "ButtonR2", "Unknown", "f", "", " F" }
 local SETTINGS_DEFAULTS = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-	Cam = "Follow", PvPCards = false, Weather = true, BagWide = false } -- BagWide: A23-32 bag (H-1); Weather: A23-105 (game dev 1); Cam: A23-91 (the console-style Follow is the default again, user 10/09); PvPCards: 검수 10/09 (first PvP zone cards seen); Music: A23-100
+	Cam = "Follow", PvPCards = false, Weather = true, BagWide = false, Pins = {} } -- Pins: 퀘스트 바이블 §15 P1 ③ (pinned quests); BagWide: A23-32 bag (H-1); Weather: A23-105 (game dev 1); Cam: A23-91 (the console-style Follow is the default again, user 10/09); PvPCards: 검수 10/09 (first PvP zone cards seen); Music: A23-100
 local SETTINGS_DEFS = {
 	Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 	Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100 (the background music)
@@ -299,6 +299,7 @@ local SETTINGS_DEFS = {
 	Lang = { Type = "Enum", Options = { "Auto", "ko", "en" } },
 	BagSort = { Type = "Enum", Options = { "Default", "Name", "Grade", "Kind" } }, -- A23-32 (H-1 bag)
 	BagWide = { Type = "Bool" }, -- A23-32 (H-1 bag: narrow / wide)
+	Pins = { Type = "List", Max = 2 }, -- §15 P1 ③: at most 2 pinned quest rows
 	Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-65
 	PvPCards = { Type = "Bool" }, -- 검수 10/09
 	Weather = { Type = "Bool" }, -- A23-105 weather effects
@@ -671,7 +672,7 @@ runGroup("config-contract", function()
 	check(ST.Text.KeyCollision == COLLISION_TEXT, "the collision toast text is the BB2 sentence (English)", ST.Text.KeyCollision)
 	check(type(ST.Text.KeyCollisionEn) == "string" and select(2, string.gsub(ST.Text.KeyCollisionEn, "%%s", "")) == 2,
 		"the English collision toast takes the same two values", ST.Text.KeyCollisionEn)
-	check(ST.MaxBlobKeys == 16, "Config.Settings.MaxBlobKeys = 16", ST.MaxBlobKeys)
+	check(ST.MaxBlobKeys == 17, "Config.Settings.MaxBlobKeys = 17 (Pins, §15 P1 ③)", ST.MaxBlobKeys)
 	check(KB.None == "None" and KB.NoneEn == "None", "unbound label None (English)")
 	-- default map
 	local map, collisions = CONFIG.KeyMap({}, nil)
@@ -828,7 +829,7 @@ runGroup("sanitize", function()
 	local C = CONFIG
 	local S = C.SanitizeSettings
 	local fieldSet = { V = true, Keys = true, Sfx = true, Music = true, Shake = true, DmgNum = true, Tags = true, KeyBadges = true, Lang = true,
-		BagSort = true, Cam = true, PvPCards = true, Weather = true, BagWide = true }
+		BagSort = true, Cam = true, PvPCards = true, Weather = true, BagWide = true, Pins = true }
 	local bads = table.pack(nil, 5, "x", true, {})
 	for i = 1, bads.n do
 		check(deepEq(S(bads[i]), SETTINGS_DEFAULTS), "nil / non-table / empty -> the defaults", tostring(bads[i]))
@@ -1042,7 +1043,7 @@ runGroup("dataservice-settings", function()
 	check(d1 ~= nil and d1.Version == 6, "a v3 save loads as Version 6 (A23-186)", d1 and d1.Version)
 	local d2 = f:Load(502)
 	check(d2 ~= nil and deepEq(d2.Settings, { V = 4, Keys = { Map = "X", Menu = "" }, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "Near",
-		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow", PvPCards = false, Weather = true, BagWide = false }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
+		KeyBadges = false, Lang = "en", BagSort = "Grade", Cam = "Follow", PvPCards = false, Weather = true, BagWide = false, Pins = {} }), "a broken Settings blob is repaired field by field on load", d2 and show(d2.Settings))
 	local d3 = f:Load(503)
 	check(d3 ~= nil and deepEq(d3.Settings, SETTINGS_DEFAULTS), "Settings = a string -> the defaults", d3 and show(d3.Settings))
 	local d4 = f:Load(504)
@@ -1097,10 +1098,10 @@ runGroup("service-remote", function()
 	check(#s.Sent == before, "one nil argument is not 'zero arguments' (refused)")
 	-- blob size
 	local big = { Seq = 1, Sfx = 0.1 }
-	for i = 1, 15 do big["J" .. i] = i end
-	check(count(big) == 17, "fixture: 17-key blob")
+	for i = 1, 16 do big["J" .. i] = i end
+	check(count(big) == 18, "fixture: 18-key blob")
 	s:Call(p, big)
-	check(#s.Sent == before and deepEq(s.Data[p].Settings, snap), "a blob with more than 16 top-level keys is refused")
+	check(#s.Sent == before and deepEq(s.Data[p].Settings, snap), "a blob with more than 17 top-level keys is refused")
 	big.J15 = nil
 	s:Call(p, big)
 	local e = s.Sent[#s.Sent]
@@ -1144,7 +1145,7 @@ runGroup("service-remote", function()
 	s:Call(p, { Seq = 30, Keys = { Attack = "Escape", Map = "X", Menu = "X", Foo = "Y", Bag = string.rep("A", 1000) }, Sfx = 5,
 		Shake = "yes", DmgNum = "Near", Tags = "Near", Lang = string.rep("한", 1000), Foo = 1 })
 	local want = { V = 4, Keys = { Map = "X", Menu = "" }, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "Near", KeyBadges = false,
-		Lang = "Auto", BagSort = "Default", Cam = "Follow", PvPCards = false, Weather = true, BagWide = false }
+		Lang = "Auto", BagSort = "Default", Cam = "Follow", PvPCards = false, Weather = true, BagWide = false, Pins = {} }
 	e = s.Sent[#s.Sent]
 	check(deepEq(s.Data[p].Settings, want), "BB2 test values (Escape, Sfx 5, unknown key, 1000-char string, two actions one key) are cleaned before saving",
 		show(s.Data[p].Settings))
@@ -1533,8 +1534,8 @@ runGroup("settings-client", function()
 	local blob = w.Sends[2].Blob or {}
 	local bk = {}
 	for k in blob do bk[k] = true end
-	check(count(blob) <= 16 and deepEq(bk, { V = true, Keys = true, Sfx = true, Music = true, Shake = true, DmgNum = true, Tags = true, KeyBadges = true,
-		Lang = true, BagSort = true, Cam = true, PvPCards = true, Weather = true, BagWide = true, Seq = true }), "the blob = the sanitized settings + Seq (<= 16 keys)", show(bk))
+	check(count(blob) <= 17 and deepEq(bk, { V = true, Keys = true, Sfx = true, Music = true, Shake = true, DmgNum = true, Tags = true, KeyBadges = true,
+		Lang = true, BagSort = true, Cam = true, PvPCards = true, Weather = true, BagWide = true, Pins = true, Seq = true }), "the blob = the sanitized settings + Seq (<= 17 keys)", show(bk))
 	check(ST.Set("Nope", 1) == false and ST.Set("Seq", 3) == false, "unknown fields are refused")
 	w.Clock:Advance(3)
 	local n = #w.Sends

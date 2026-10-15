@@ -170,7 +170,7 @@ check("Faction: the Halo story", texts(Book.Sections("Faction", ctx()).InProgres
 GATTR.GooseActive, GATTR.PumpkinKingActive, GATTR.KaijuPhase, GATTR.WarRoundEndsAt = true, true, "Siren", NOW + 125
 s = Book.Sections("Event", ctx())
 check("Event: the goose story + the live events (goose, Pumpkin King, kaiju, crown war 2:05)",
-	texts(s.InProgress) == "Chase the goose | The Golden Goose is here! | The Pumpkin King is here! | A kaiju is loose! | Crown War: next crown in 2:05",
+	texts(s.InProgress) == "Chase the goose | The Golden Goose is here! | The Pumpkin King is here! | A Kaiju is loose! | Crown War: next crown in 2:05",
 	texts(s.InProgress))
 GATTR = {}
 check("Event: no live event -> only the goose story", texts(Book.Sections("Event", ctx()).InProgress) == "Chase the goose")
@@ -195,13 +195,19 @@ check("Faction: my wanted stars", texts(Book.Sections("Faction", ctx()).InProgre
 ATTR.WantedStars = 0
 -- 4) Done without a book: the main chain before my main quest, the first mission, today's dailies, this session
 s = Book.Sections("Main", ctx())
+-- 10/15: the main chain is Config's own list (M1_2 is gone) - its quests before M1_3, in order
+local before = {}
+for _, id in Config.StoryQuests.Main do
+	if id == "M1_3" then break end
+	table.insert(before, Config.StoryQuests.Defs[id].Title)
+end
 check("Main done: the first mission and the main chain before M1_3", texts(s.Done) == "First mission | "
-	.. Config.StoryQuests.Defs.M1_1.Title .. " | " .. Config.StoryQuests.Defs.M1_2.Title, texts(s.Done))
+	.. table.concat(before, " | "), texts(s.Done))
 ATTR.TutorialStep = 1
 s = Book.Sections("Main", ctx({ Entries = { row("tutorial", "Tutorial", "Defeat 5 slimes", 2, 5, { Pinned = true }) } }))
 check("Main done: nothing while the first mission runs", #s.Done == 0, texts(s.Done))
 ATTR.TutorialStep = 99
-check("Daily done: today's count", texts(Book.Sections("Daily", ctx()).Done) == "Daily quests today: 1/3")
+check("Daily done: today's count", texts(Book.Sections("Daily", ctx()).Done) == "Daily quests: 1/3")
 s = Book.Sections("Side", ctx({ DoneSession = { { Id = "story:S4", Text = "x", Kind = "Sub" }, { Id = "Kill", Text = "Slimes 5/5", Kind = "Daily" } } }))
 check("Side done: a story finished this session, by its title (not the daily)", texts(s.Done) == Config.StoryQuests.Defs.S4.Title,
 	texts(s.Done))
@@ -213,7 +219,7 @@ check("Available without a book: empty", #Book.Sections("Side", ctx()).Available
 local D = Config.StoryQuests.Defs
 local BOOK = { Available = { { Id = "story:S6", Kind = "Sub", Level = 8, Text = "Lost thing · Opens at Lv 8" }, { Id = "story:S4", Kind = "Sub" },
 	{ Id = "story:H2", Kind = "Sub", Level = 12, Text = "Lantern · Opens at Lv 12" }, { Id = "story:M1_4", Kind = "Main" } },
-	Done = { "story:M1_1", "story:S0", "story:S2" } }
+	Done = { "story:M1_4", "story:S0", "story:S2" } } -- 10/15: a main the guessed chain would never list (M1_1 is)
 local SESSION = { { Id = "story:S3", Kind = "Sub", Text = "x" }, { Id = "Kill", Text = "Slimes 5/5", Kind = "Daily" } }
 s = Book.Sections("Side", ctx({ Book = BOOK, DoneSession = SESSION }))
 check("book: Side available = the server's 'Opens at Lv' words, else the story title", texts(s.Available) == "Lost thing · Opens at Lv 8 | "
@@ -224,10 +230,10 @@ check("book: Faction available = the Halo story", texts(Book.Sections("Faction",
 check("book: Event done = the goose story", texts(Book.Sections("Event", ctx({ Book = BOOK })).Done) == D.S2.Title)
 s = Book.Sections("Main", ctx({ Book = BOOK }))
 check("book: the Main tab has no Available (the chain has no level gate)", #s.Available == 0, texts(s.Available))
-check("book: Main done = the book's mains, then the first mission (no guessed chain)", texts(s.Done) == D.M1_1.Title .. " | First mission",
+check("book: Main done = the book's mains, then the first mission (no guessed chain)", texts(s.Done) == D.M1_4.Title .. " | First mission",
 	texts(s.Done))
 s = Book.Sections("Daily", ctx({ Book = BOOK, DoneSession = SESSION }))
-check("book: Daily done = today's count + the dailies finished this session", texts(s.Done) == "Daily quests today: 1/3 | Slimes 5/5", texts(s.Done))
+check("book: Daily done = today's count + the dailies finished this session", texts(s.Done) == "Daily quests: 1/3 | Slimes 5/5", texts(s.Done))
 
 -- 6) the window
 local REGISTERED, OPENED, CLOSED, CURRENT = {}, {}, 0, nil
@@ -282,13 +288,13 @@ local function bodyRows()
 	for _, c in body.Children do if c.Name == "Quest" or c.Name == "Info" or c.Name == "Done" or c.Name == "Available" then table.insert(out, c) end end
 	return out
 end
-check("Main body: the main quest row + 3 done rows", #bodyRows() == 4, #bodyRows())
+check("Main body: the main quest row + the done rows (the first mission + the main chain before M1_3)", #bodyRows() == 2 + #before, #bodyRows())
 Book.ShowTab("Daily")
 local rows = bodyRows()
 check("Daily tab: two quest rows + today's count", #rows == 3 and rows[1].Name == "Quest", #rows)
 local newBtn, claimBtn = nil, nil
 for _, d in descendants(body) do
-	if d.Name == "Button" and d.Text == "New" then newBtn = d end
+	if d.Name == "Button" and d.Text == Config.ClientText.QuestBook.Reroll then newBtn = d end
 	if d.Name == "Button" and d.Text == "Claim" then claimBtn = d end
 end
 check("Daily rows carry [New] and [Claim]", newBtn ~= nil and claimBtn ~= nil)

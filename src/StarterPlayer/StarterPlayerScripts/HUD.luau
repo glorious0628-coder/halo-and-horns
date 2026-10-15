@@ -2036,8 +2036,77 @@ function L.BuildTracker(root)
 	frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function() L.PlaceTrackerHead() end)
 	-- showing / hiding changes no size: HUD.QuestBlock still has to follow it (이미지 개발 10/09)
 	frame:GetPropertyChangedSignal("Visible"):Connect(function() task.defer(L.PlaceTrackerHead) end)
+	-- 퀘스트 바이블 §15 P1 ③ (최종 검수 10/15): on a PC the quests I pinned in the quest window, one small line each under
+	-- the main line (none by default - the user's "안 나와도 돼"); a press guides there (the one guide = the line I pick)
+	local pins = {}
+	if not IS_TOUCH then
+		for i = 1, L.PinMax do
+			local b = UIKit.StyledLabel({ Name = "Pin" .. i, LayoutOrder = 10 + i, Size = UDim2.new(1, 0, 0, 0),
+				AutomaticSize = Enum.AutomaticSize.Y, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left,
+				Visible = false, ZIndex = 4, Parent = frame }, "Body")
+			local hit = Instance.new("TextButton")
+			hit.Name = "PinHit"
+			hit.BackgroundTransparency, hit.Text, hit.AutoButtonColor = 1, "", false
+			hit.Size = UDim2.fromScale(1, 1)
+			hit.ZIndex = 5
+			hit.Parent = b
+			hit.Activated:Connect(function()
+				local e = pins[i] and pins[i].Entry
+				if e then HUD.QuestGo(e) end
+			end)
+			pins[i] = { Label = b, Entry = nil }
+		end
+	end
 	ui.tracker = { Frame = frame, Band = band, Icon = icon, Title = title, Goal = goal, Nums = nums, Claim = claim,
-		ClaimText = claimText }
+		ClaimText = claimText, Pins = pins }
+end
+
+-- §15 P1 ③: the pins (row keys, Settings "Pins", at most L.PinMax) and their rows among entries (pure on its arguments)
+L.PinMax = 2
+function HUD.PinKey(e)
+	return type(e) == "table" and L.EntryKey(e) or nil
+end
+
+function HUD.Pins()
+	local st = C and C.Settings
+	local ok, list = false, nil
+	if type(st) == "table" and type(st.Get) == "function" then ok, list = pcall(st.Get, "Pins") end
+	return (ok and type(list) == "table") and list or {}
+end
+
+-- the entries' indexes of my pins, in pin order (a pin whose quest left the list is skipped)
+function HUD.PinIndexes(entries, pins)
+	local out = {}
+	for _, key in type(pins) == "table" and pins or {} do
+		for i, e in type(entries) == "table" and entries or {} do
+			if L.EntryKey(e) == key then table.insert(out, i) break end
+		end
+	end
+	return out
+end
+
+-- pin / unpin a row from the quest window: true = pinned now, false = unpinned, nil = full (the press refuses)
+function HUD.TogglePin(e)
+	local key = HUD.PinKey(e)
+	if not key then return nil end
+	local list = HUD.Pins()
+	local at = table.find(list, key)
+	if at then
+		table.remove(list, at)
+	elseif #list >= L.PinMax then
+		return nil
+	else
+		table.insert(list, key)
+	end
+	local st = C and C.Settings
+	if type(st) == "table" and type(st.Set) == "function" then pcall(st.Set, "Pins", list) end
+	if refreshQuests then task.defer(refreshQuests) end
+	return at == nil
+end
+
+function HUD.IsPinned(e)
+	local key = HUD.PinKey(e)
+	return key ~= nil and table.find(HUD.Pins(), key) ~= nil
 end
 
 -- 최종 검수 10/15 (user photo: "이런 내용들 안 나와도 돼. 굳이 다음 퀘스트 뭔지"): the goal chips' tiers 2 'Next' and
@@ -2088,6 +2157,7 @@ function L.LayoutTracker(q)
 	if not IS_TOUCH and R and R.power_line and R.minimap then
 		local need = math.ceil(titleSize * 1.25) + math.ceil(bodySize * 1.2) * 2 + math.ceil(bodySize * 1.35) + T.Gap * 4
 			+ (L.QuestHeadOn() and math.floor(lh * 0.75) or 0) + 8 -- 검수 10/10: no head line, no room for it
+			+ #HUD.Pins() * (math.ceil(bodySize * 1.2) + T.Gap) -- §15 P1 ③: a line per pin
 		local floorY = math.min(R.power_line.Y, (R.portrait and R.portrait.Y) or R.power_line.Y) - 6
 		y = math.max(R.minimap.Y + R.minimap.H + 6, math.min(q.Y, floorY - need))
 	end
@@ -2107,6 +2177,7 @@ function L.LayoutTracker(q)
 	if prog then prog.Size = UDim2.new(1, 0, 0, math.ceil(bodySize * 1.35)) end
 	t.Claim.Size = UDim2.fromOffset(math.floor(bodySize * 4.2), math.ceil(bodySize * 1.3))
 	t.ClaimText.TextSize = math.max(12, math.floor(bodySize * 0.85))
+	for _, pin in t.Pins or {} do pin.Label.TextSize = math.max(12, math.floor(bodySize * 0.85)) end
 	T.Rect = q
 	L.FitGoal()
 	task.defer(L.PlaceTrackerHead)
@@ -4512,7 +4583,10 @@ refreshQuests = function()
 		end
 	end
 	local shown, second = nil, nil
-	if entries[1] and entries[1].Pinned then
+	local pinAt = HUD.PinIndexes(entries, HUD.Pins()) -- §15 P1 ③
+	if IS_TOUCH and pinAt[1] and not (entries[1] and entries[1].Pinned and entries[1].TutorialStep == 0) then
+		shown = pinAt[1] -- a phone shows one line: my pin first
+	elseif entries[1] and entries[1].Pinned then
 		shown = 1
 		second = callIndex or firstClaim or s0 or firstDaily
 		if second == 1 then second = nil end
@@ -4523,6 +4597,27 @@ refreshQuests = function()
 		shown = HUD.NowQuestIndex(entries, nil, function(e)
 			return e.Progress >= e.Target and e.CanClaim and (e.Pinned or e.Kind == "Daily" or e.Kind == "Sub")
 		end) or 1
+	end
+
+	-- §15 P1 ③ (PC): my pins under the main line, never the line already shown, none without pins
+	local tp = ui.tracker and ui.tracker.Pins
+	if tp then
+		local k = 0
+		for _, i in pinAt do
+			if i ~= shown and k < L.PinMax then
+				k += 1
+				local e = entries[i]
+				local p, t = questNums(e)
+				local words = (e.ShortName and e.ShortName ~= "") and e.ShortName or e.Text
+				tp[k].Entry = e
+				tp[k].Label.Text = e.ShowProgress and L.Tx(TXT, "QuestPinLine", words, p, t) or words
+				tp[k].Label.Visible = true
+			end
+		end
+		for j = k + 1, #tp do
+			tp[j].Entry = nil
+			tp[j].Label.Visible = false
+		end
 	end
 
 	-- header: progress, claimable count (turns green so claiming stays 1-2 clicks), expand chevron
@@ -6513,7 +6608,10 @@ function HUD.Start()
 		UserInputService.InputBegan:Connect(onInputBegan)
 		UserInputService.InputEnded:Connect(onInputEnded)
 	end
-	if type(C.Settings) == "table" and type(C.Settings.Changed) == "table" then C.Settings.Changed:Connect(L.RefreshKeys) end
+	if type(C.Settings) == "table" and type(C.Settings.Changed) == "table" then
+		C.Settings.Changed:Connect(L.RefreshKeys)
+		C.Settings.Changed:Connect(function() if refreshQuests then pcall(refreshQuests) end end) -- §15 P1 ③: the pins
+	end
 	L.RefreshKeys()
 	UserInputService.WindowFocusReleased:Connect(clearHolds)
 	-- A23-38: Esc opens Roblox's menu and folds the [메뉴] squares back; so does any press outside them (L.FoldInput)
