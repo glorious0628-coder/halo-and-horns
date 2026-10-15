@@ -585,6 +585,7 @@ local function onStrike(player, ...)
 	if select("#", ...) ~= 3 then return end
 	local sid, i, ms = ...
 	if type(sid) ~= "number" then return end
+	if not Util.RateLimit(player, "CraftStrike", num(Config.RateLimits.CraftStrike, 0.15)) then return end
 	CraftService.Strike(player, sid, i, ms)
 end
 

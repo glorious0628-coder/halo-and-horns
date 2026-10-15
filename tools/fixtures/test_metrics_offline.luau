@@ -353,4 +353,88 @@ runGroup("off", function()
 	check(pend(live).Players == nil and #live.BoundToClose == 0 and #live.Loops == 0 and q ~= nil, "the Live game: nothing counted, no loop", show(pend(live)))
 end)
 
+------------------------------------------------------------------ the rehearsal (최종 검수 10/15, 게시 준비 운영 ①)
+-- A small round played through the REAL TestMetricsService, flushed to its store, then printed as the board's input
+-- (TESTMETRICS_REHEARSAL <json>): tools/test_metrics_board.py --rehearse renders it and checks the tables.
+local function toJson(v)
+	local t = type(v)
+	if t == "number" then
+		if v ~= v or v == math.huge or v == -math.huge then return "null" end
+		if v == math.floor(v) and math.abs(v) < 1e15 then return string.format("%d", v) end
+		return string.format("%.6g", v)
+	elseif t == "string" then
+		return '"' .. string.gsub(v, '[%c"\\]', function(c) return string.format("\\u%04x", string.byte(c)) end) .. '"'
+	elseif t == "boolean" then
+		return v and "true" or "false"
+	elseif t == "table" then
+		local keys = {}
+		for k in v do table.insert(keys, tostring(k)) end
+		table.sort(keys)
+		local parts = {}
+		for _, k in keys do
+			local val = v[k]
+			if val == nil then val = v[tonumber(k)] end
+			table.insert(parts, toJson(k) .. ":" .. toJson(val))
+		end
+		return "{" .. table.concat(parts, ",") .. "}"
+	end
+	return "null"
+end
+
+runGroup("rehearsal", function()
+	local w = metricsWorld()
+	local CM = w.Reg.TelemetryService.ClientMetric
+	local E = w.Reg.ProgressionService.XPEarned
+	local Bought = w.Reg.MonetizationService.PassBought
+	-- 8 new accounts: fast / normal / slow / gave up at the first screen; 2 players from before the test
+	local plan = {
+		{ Side = "Halo", Dev = "Desktop", Lv5 = 200, Weapon = 150, Drop = 380, Claim = 500, Lv10 = 800 },
+		{ Side = "Halo", Dev = "Phone", Lv5 = 280, Weapon = 230, Drop = 470, Claim = 560 },
+		{ Side = "Horns", Dev = "Desktop", Lv5 = 320, Weapon = 200, Drop = 700, Claim = 590, Lv10 = 1000 },
+		{ Side = "Horns", Dev = "Phone", Lv5 = 420, Weapon = 260, Claim = 700 },
+		{ Side = "Neutral", Dev = "Tablet", Lv5 = 610, Weapon = 330, Claim = 900 },
+		{ Side = "Halo", Dev = "Phone", Weapon = 500 },
+		{ Side = nil, Dev = "Phone" }, -- left on the first screen
+		{ Side = nil, Dev = "Desktop", NoIntro = true },
+	}
+	for i, r in plan do
+		local p, d = rookie(w, 100 + i)
+		CM:Fire(p, "Perf", { D = r.Dev, F = (r.Dev == "Phone") and 34 or 58, W = (r.Dev == "Phone") and 17 or 41, M = 900 + 50 * i, Q = 3 })
+		if not r.NoIntro then p:SetAttribute("IntroSeen", true) end
+		if r.Side then p:SetAttribute("Faction", r.Side) end
+		E:Fire(p, 240, "Monster")
+		E:Fire(p, 60, "Quest")
+		local steps = {}
+		for _, key in { "Weapon", "Lv5", "Drop", "Claim", "Lv10" } do
+			if r[key] then table.insert(steps, { key, r[key] }) end
+		end
+		table.sort(steps, function(a, b) return a[2] < b[2] end)
+		for _, s in steps do
+			at(p, s[2])
+			if s[1] == "Weapon" then p:SetAttribute("WeaponOwnedMask", 1)
+			elseif s[1] == "Drop" then p:SetAttribute("WeaponOwnedMask", 3)
+			elseif s[1] == "Lv5" then p:SetAttribute("Level", 5)
+			elseif s[1] == "Claim" then p:SetAttribute("TutorialStep", 99)
+			elseif s[1] == "Lv10" then p:SetAttribute("Level", 10) end
+		end
+		E:Fire(p, 60, "Quest") -- (XP sums are added when an XP event sees the level reached)
+		if i == 1 then -- a pass bought, still working after a rejoin
+			w.Owns[p] = { VIP = true }
+			Bought:Fire(p, "VIP")
+			p, d = rejoin(w, p, d)
+			w.Owns[p] = { VIP = true }
+			w:Advance(25)
+		end
+		local _ = d
+	end
+	veteran(w, 201)
+	veteran(w, 202)
+	check(w.TM.Flush() == true, "rehearsal: the round is written", show(w.DSCalls))
+	local doc = w:Doc()
+	check(doc and doc.Players == 10 and doc.New == 8 and doc.Faction == 6 and doc.Intro == 7,
+		"rehearsal: 10 accounts, 8 new, 7 past the intro, 6 picked a side", show(doc))
+	check(doc and doc.Ten == 3, "rehearsal: 3 finished Lv5 + weapon + claim inside 10 minutes", show(doc and doc.Ten))
+	print("TESTMETRICS_REHEARSAL " .. toJson({ Store = STORE, Round = ROUND, Ok = true, Doc = doc }))
+end)
+
 finish()

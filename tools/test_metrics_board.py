@@ -14,8 +14,11 @@ Ways to get the document:
   --studio-copy   read the "_STUDIO" copy (what Studio Play sessions wrote: a dry run of the whole road before the test).
   --hub FILE.csv  Creator Hub (Analytics > Funnels > Onboarding) numbers: any CSV with a step name and a user count per row
                   (an export, or two columns typed by hand: step,users).
-Usage: py tools/test_metrics_board.py (--studio | --json FILE) [--round PT1] [--studio-copy] [--hub FILE.csv] [--save FILE]
-       [--out FILE.md]
+  --rehearse      (also: no arguments) the rehearsal (최종 검수 10/15): a small round played through the REAL TestMetricsService
+                  offline (tools/fixtures/test_metrics_offline.luau, group "rehearsal"), then this board renders that document
+                  and checks every table and number. Exit 0 = the whole road works; no Studio, network or DataStore.
+Usage: py tools/test_metrics_board.py (--studio | --json FILE | --rehearse) [--round PT1] [--studio-copy] [--hub FILE.csv]
+       [--save FILE] [--out FILE.md]
 """
 from __future__ import annotations
 
@@ -197,6 +200,60 @@ def hub(path: Path) -> list[str]:
     return ["## Creator Hub 온보딩 퍼널 (참고: 하루쯤 늦게 쌓임)"] + table(["단계", "명", "첫 단계 대비"], rows)
 
 
+REHEARSAL_MARK = "TESTMETRICS_REHEARSAL "
+# what the rehearsal round must show (the fixture's plan: 8 new accounts, 2 veterans)
+REHEARSAL_EXPECT = [
+    "계정 10명 (그중 새 계정 8명), 접속 11번.",
+    "| 인트로 끝 | 7 | 88% |",
+    "| 진영 고름 (첫 화면 통과) | 6 | 75% |",
+    "| Lv5 | 4 | 50% | 5 | 5분 |",
+    "| 첫 무기(대장간 T1) | 6 | 75% | 6 | 3분 |",
+    "| 첫 미션 Claim | 3 | 38% | 5 | 9분 |",
+    "| 첫 드롭 무기(Prince T2) | 2 | 25% | 3 | 7분 |",
+    "| 셋 다 (10분 완주) | 3 | 38% |  |  |",
+    "| Lv5 5분 이하 | 2 | 25% | 5분 |",
+    "| Lv10 15분 이하 | 1 | 12% | 13분 |",
+    "| 진영 Halo | 3 |",
+    "| 기기 Phone | 4 |",
+    "| VIP | 1 | 1 | 1 | 0 | 100% |",
+    "| 첫 무기(대장간 T1) 4분 이하 | 3 | 38% | 3분 |",
+    "| Phone | 4 | 34 | 17 | 1138 | 100% |",
+    "| Lv5 | 5 | 240 | 120 | 67% |",
+    "| Lv10 | 2 | 240 | 120 | 67% |",
+]
+
+
+def rehearse() -> int:
+    """runs the metrics fixture (the rehearsal group plays a round through the real TestMetricsService), renders its document
+    with board() and checks the tables; 0 = every expected line is there"""
+    sys.path.insert(0, str(HERE))
+    import tempfile
+    import test_test_metrics as T  # noqa: E402  (its Suite knows the sources, kit and world)
+    suite = T.SUITE
+    binary = HERE.parent / "build/luau_cli_0_741/luau.exe"
+    if not binary.is_file():
+        print("Installed Luau CLI missing; the rehearsal never downloads tools.", file=sys.stderr)
+        return 1
+    sources = {k: p.read_bytes().decode("utf-8-sig").replace("\r\n", "\n") for k, p in suite.files.items()}
+    with tempfile.TemporaryDirectory(prefix="metrics_rehearsal_") as tmp:
+        out = suite.run_one(binary, suite.harness(sources), Path(tmp), "rehearsal.luau")
+    line = next((ln for ln in out["stdout"].splitlines() if ln.startswith(REHEARSAL_MARK)), None)
+    if line is None:
+        print("REHEARSAL_FAIL the fixture printed no round document:\n" + (out["stderr"] or out["stdout"])[-1500:])
+        return 1
+    meta = json.loads(line[len(REHEARSAL_MARK):])
+    text = "\n".join(board(meta))
+    print(text)
+    missing = [e for e in REHEARSAL_EXPECT if e not in text]
+    for section in ("## 첫 화면", "## 10분 완주", "## 합격선", "## 진영·기기", "## 기기 성능", "## 경험치 출처", "## 패스"):
+        if section not in text:
+            missing.append(section)
+    for m in missing:
+        print(f"REHEARSAL_FAIL missing: {m}")
+    print(f"REHEARSAL {'passed' if not missing else 'failed'} expected={len(REHEARSAL_EXPECT) + 7} missing={len(missing)}")
+    return 1 if missing else 0
+
+
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
@@ -205,12 +262,15 @@ def main() -> int:
     src.add_argument("--studio", action="store_true")
     src.add_argument("--json", type=Path)
     src.add_argument("--print-luau", action="store_true")
+    src.add_argument("--rehearse", action="store_true")
     ap.add_argument("--round")
     ap.add_argument("--studio-copy", action="store_true")
     ap.add_argument("--hub", type=Path)
     ap.add_argument("--save", type=Path)
     ap.add_argument("--out", type=Path)
     a = ap.parse_args()
+    if a.rehearse or len(sys.argv) == 1:
+        return rehearse()
     code = reader_luau(a.round, a.studio_copy)
     if a.print_luau:
         print(code)
