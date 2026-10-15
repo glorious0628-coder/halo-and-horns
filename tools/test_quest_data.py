@@ -222,6 +222,44 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
                     add("difficulty-reward-low", i, "Hard pays a scroll / rare material or more gold than Normal")
                 if diff == "Challenge" and tier < 2 and not (reward.get("Title") or reward.get("TitleBy") or reward.get("Pet")):
                     add("difficulty-reward-low", i, "Challenge pays a rare item, a title or a pet")
+            # A23-208 story fields: the situation before the ask, something found on the way, the last words, the last scene, the
+            # next hook (the chain's last quest says Last = true instead)
+            limits = get(tree, "StoryQuests", "StoryLimits") or {}
+            scenes = get(tree, "StoryQuests", "SceneKeys") or {}
+            before = offer.get("Before") if isinstance(offer, dict) else None
+            if not isinstance(before, str) or not before:
+                add("story-before", i, "Offer.Before (the situation, one line before the ask) is needed (A23-208)")
+            elif len(before) > (limits.get("Before") or 70):
+                add("story-length", i, f"Offer.Before {len(before)} characters (phone limit {limits.get('Before') or 70})")
+            finds = [st.get("Find") for st in steps if isinstance(st, dict) and st.get("Find") is not None]
+            if not finds:
+                add("story-find", i, "at least one step has Find (what the player finds on the way, A23-208)")
+            for f in finds:
+                if not isinstance(f, str) or len(f) > (limits.get("Find") or 40):
+                    add("story-length", i, f"Find must be a line of at most {limits.get('Find') or 40} characters: {f!r}")
+            last = steps[-1] if steps and isinstance(steps[-1], dict) else {}
+            if not (last.get("Lines") or last.get("LinesBy")):
+                add("story-end", i, "the last step has the closing words (Lines / LinesBy, A23-208)")
+            if not last.get("Scene"):
+                add("story-scene", i, "the last step has a Scene (what the people do at the end, A23-208)")
+            for st in steps:
+                sc = st.get("Scene") if isinstance(st, dict) else None
+                if sc is not None and sc not in scenes:
+                    add("story-scene", i, f"Scene {sc} is not in StoryQuests.SceneKeys")
+            nxt = d.get("Next")
+            if d.get("Last") is not True:
+                if not isinstance(nxt, dict) or not nxt.get("Id") or not isinstance(nxt.get("Line"), str):
+                    add("story-next", i, "Next = { Id, Line } (the hook to the next quest; the chain's last quest: Last = true)")
+                else:
+                    if len(nxt["Line"]) > (limits.get("NextLine") or 60):
+                        add("story-length", i, f"Next.Line {len(nxt['Line'])} characters (phone limit {limits.get('NextLine') or 60})")
+                    target = defs.get(nxt["Id"])
+                    if not isinstance(target, dict):
+                        add("story-next", i, f"Next.Id {nxt['Id']} is no quest")
+                    else:
+                        treq = target.get("Requires") if isinstance(target.get("Requires"), dict) else {}
+                        if i not in arr(treq.get("Done")) + arr(treq.get("DoneAny")) and nxt["Id"] not in main:
+                            add("story-next", i, f"Next.Id {nxt['Id']} does not wait for {i} (Requires.Done) and is no main")
             if d.get("Type") not in QUEST_TYPES:
                 add("quest-type", i, f"Type {d.get('Type')} is not on the list (bible §3)")
             if not d.get("Title") or not d.get("ShortName"):
@@ -269,14 +307,14 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
 
 # broken copies of the example pack: (name, old, new, the rule that must catch it)
 SELF_TESTS = [
-    ("no Offer", "\t\t\tOffer = { Npc = \"Bright\", Lines = { All = { \"Bright: Please guard", "\t\t\tOffer_ = { Npc = \"Bright\", Lines = { All = { \"Bright: Please guard", "quest-offer"),
+    ("no Offer", "\t\t\tOffer = { Npc = \"Bright\", Before = \"The cart wobbles.", "\t\t\tOffer_ = { Npc = \"Bright\", Before = \"The cart wobbles.", "quest-offer"),
     ("no Type", "Kind = \"Main\", Chapter = 2, Type = \"Escort\",", "Kind = \"Main\", Chapter = 2,", "quest-type"),
     ("a step without a guide", "ShortName = \"To the bridge\", Guide = \"HaloBridge\",", "ShortName = \"To the bridge\",", "step-guide"),
     ("an unknown guide", "Guide = \"HaloBridge\"", "Guide = \"Nowhere\"", "step-guide-unknown"),
     ("an NPC with no body", "{ Text = \"Show Otto the ribbon\", ShortName = \"To Otto\", Npc = \"Otto\"", "{ Text = \"Show Otto the ribbon\", ShortName = \"To Otto\", Npc = \"Ghost\"", "step-npc-body"),
     ("an unknown step type", "Obj = { Type = \"Deliver\" }", "Obj = { Type = \"Teleport\" }", "step-type"),
-    ("a requirement that does not exist", "Requires = { Done = { \"H_Band\" }, Level = 4 }", "Requires = { Done = { \"H_Nope\" }, Level = 4 }", "requires-unknown"),
-    ("a requirement cycle", "Requires = { Done = { \"H_Band\" }, Level = 4 }", "Requires = { Done = { \"HX_Ribbon\" }, Level = 4 }", "requires-cycle"),
+    ("a requirement that does not exist", "Requires = { Done = { \"H_Band\", \"HX_Guard\" }, Level = 4 }", "Requires = { Done = { \"H_Nope\", \"HX_Guard\" }, Level = 4 }", "requires-unknown"),
+    ("a requirement cycle", "Requires = { Done = { \"H_Band\", \"HX_Guard\" }, Level = 4 }", "Requires = { Done = { \"HX_Ribbon\", \"HX_Guard\" }, Level = 4 }", "requires-cycle"),
     ("an unknown reward key", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Gems = 5 }", "reward-key"),
     ("a stat for sale", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Attack = 5 }", "reward-stat"),
     ("a sub not in Subs", "Subs = { \"HX_Ribbon\", \"HX_DailyLamp\" }", "Subs = { \"HX_DailyLamp\" }", "sub-unlisted"),
@@ -285,6 +323,13 @@ SELF_TESTS = [
     ("an easy quest that pays a scroll", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Item = \"Enh70\", N = 1 }", "difficulty-reward"),
     ("an easy quest with a title", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Title = \"Helper\" }", "difficulty-reward"),
     ("a hard quest that pays like an easy one", "Reward = { Item = \"Enh70\", N = 1 }", "Reward = { GoldN = 40 }", "difficulty-reward-low"),
+    ("no situation line", "Offer = { Npc = \"Bright\", Before = \"The cart wobbles. The bridge planks creak.\",", "Offer = { Npc = \"Bright\",", "story-before"),
+    ("a long situation line", "Before = \"The cart wobbles. The bridge planks creak.\",", "Before = \"The cart wobbles. The bridge planks creak. Everyone in town is watching the cart now.\",", "story-length"),
+    ("nothing found on the way", "Find = \"A tiny sock is stuck on the wheel!\",", "", "story-find"),
+    ("no last scene", "Scene = \"Wave\",", "", "story-scene"),
+    ("an unknown scene", "Scene = \"Wave\",", "Scene = \"Dab\",", "story-scene"),
+    ("no next hook", "Next = { Id = \"HX_Ribbon\", Line = \"Bright: Oh! My ribbon got crumpled on the cart...\" },", "", "story-next"),
+    ("a hook to a quest that does not wait", "Next = { Id = \"HX_Ribbon\"", "Next = { Id = \"HX_DailyLamp\"", "story-next"),
     ("two mains of one type in a row", "Kind = \"Main\", Chapter = 2, Type = \"Escort\"", "Kind = \"Main\", Chapter = 2, Type = \"Choice\"", "chain-type"),
 ]
 

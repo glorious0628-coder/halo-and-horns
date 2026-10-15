@@ -41,6 +41,7 @@ return {
 | `Reward` | | `Gold`/`XP`(사냥 환산 단위), `GoldN`(정액), `XPBar`(레벨 비율), `Item`+`N`, `Potion`+`N`, `BagSlots`, `Title`/`TitleBy`. **스탯 판매 키 = 실패**(A23-75). 금액이 정해지지 않았으면 비움(바이블 §3) |
 | `Claim` | | true = 끝나면 [받기] |
 | `Repeat` | | `"Daily"` = 매일 부탁(아래 6) |
+| `Next`, `Last` | ✔(둘 중 하나) | 다음 고리(3-2) / 줄의 마지막이면 `Last = true` |
 
 ### 3-1. 난이도와 보상 (A23-207, 검사 = `tools/test_quest_data.py`)
 | 난이도 | 아이템(최고 등급) | Gold/XP(사냥 단위) | GoldN | XPBar | 칭호·펫 | 최소 |
@@ -51,6 +52,19 @@ return {
 | Challenge | 희귀 아이템(문 크리스탈·왕관 보석·왕실 젤리…)까지 | 제한 없음 | 제한 없음 | 제한 없음 | ✔ | 희귀 아이템·칭호·펫 중 하나 |
 
 '쉬운데 보상 큼'(Easy가 주문서·칭호, 상한 넘는 골드)과 '어려운데 보상 작음'은 검사가 실패시킴. 등급표 = `ITEM_TIER`(시험 파일). 화면: 부탁 창 보상 아이콘 테두리 색·별 수(개발 1).
+
+### 3-2. 이야기 칸 (A23-208: '가져와/잡아와' 말고 촘촘하게·감정 있게) — 묶음 퀘스트 필수, 옛 Config 퀘스트는 아직 면제
+| 칸 | 어디 | 뜻 | 길이(폰, 영어) |
+|---|---|---|---|
+| `Offer.Before` | 퀘스트 | 사정 — 부탁 말 앞 한 줄(왜 부탁하는지, 지금 무슨 일인지) | ≤ 70자 |
+| 단계 `Find` | 단계 1개 이상 | 하는 중 발견 — 그 단계가 시작될 때 그 NPC/장소 위 짧은 말풍선 | ≤ 40자 |
+| 마지막 단계 `Lines` / `LinesBy` | 마지막 단계 | 끝 대사 (선택별 다르게 가능) | 줄마다 기존 길이 규칙 |
+| 단계 `Scene` | 마지막 단계 필수(다른 단계 선택) | 끝 장면·몸짓 — `Config.StoryQuests.SceneKeys` 중 하나(Wave, Hop, Laugh, Bow, Cheer, Nod, Sparkle, Spin, Hug, Clap) | — |
+| `Next = { Id, Line }` | 퀘스트 | 다음 고리 — 다음 퀘스트 id(그 퀘스트의 Requires.Done에 이 id가 있거나 본편 줄) + 끝 대화 마지막 예고 한 줄. 줄의 마지막 퀘스트는 `Last = true` | Line ≤ 60자 |
+
+서버: Find = 그 단계가 열릴 때(수락 포함) Fx `StoryScene { Id, Key = "Find", Value = "단계 번호" }`, Scene = 그 단계가 끝날 때 Fx `StoryScene { Id, Key = "Scene", Value = 장면 }`. 저장 없음(다시 봐도 보상 0). Before·Next 줄은 화면이 Config에서 읽음.
+
+화면(개발 1): **Before** = 부탁 창 맨 위 작은 기울임 한 줄(폰 18px 기준 2줄 안), 그 아래 부탁 대사. **Find** = 그 단계 `Npc` 머리 위(없으면 `Guide` 자리 물건 위) 말풍선 4초, 2줄 안, 배너·토스트 아님. **Scene** = 그 NPC(마지막 단계 Npc)가 몸짓 + 둥근 반짝임(빛살 무늬 X). **Next.Line** = 끝 대화 카드 마지막 줄(말한 사람 이름 붙은 그대로), 그리고 Next.Id 부탁 NPC의 '!'가 처음 나타날 때 한 번 통통.
 
 ## 4. 단계(Step) 필드
 - `Text`(%d/%d 진행 숫자 가능), `ShortName`, **`Guide`(장소 키) 또는 `Npc`(NpcId) 필수**(그 자리 카드 `Panel` + Npc 없음만 예외).

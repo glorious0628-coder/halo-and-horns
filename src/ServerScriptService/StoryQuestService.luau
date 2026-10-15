@@ -41,6 +41,7 @@ local SQ = Config.StoryQuests
 local TXT = SQ.Text
 local DEFS = SQ.Defs
 local TUT_DONE = Config.Tutorial.Steps.Done -- 99
+local findScene -- A23-208 (defined next to advance)
 local MAIN_INDEX = {}
 for i, id in SQ.Main do MAIN_INDEX[id] = i end
 local TICK = 1
@@ -696,6 +697,13 @@ local function flagBySide(player, data, id, flag, side)
 	setFlag(player, data, id, flag.Key or id, flag[side])
 end
 
+-- A23-208: a step's Find (what the player finds as the step starts: a short bubble over its NPC / place, never a toast):
+-- Fx StoryScene { Id, Key = "Find", Value = "<step number>" } (the client reads the words from Config)
+function findScene(player, id, track)
+	local step = stepOf(player, DEFS[id], track.St)
+	if step and type(step.Find) == "string" then scene(player, id, "Find", tostring(track.St)) end
+end
+
 -- the active step reached its goal: next step (saved first), or the quest is finished / waits for [받기]
 local function advance(player, data, id, track)
 	local def = DEFS[id]
@@ -710,6 +718,8 @@ local function advance(player, data, id, track)
 		end
 		setFlag(player, data, id, doneStep.SetFlag.Key, value)
 	end
+	-- A23-208: Scene = what the people do when this step is done (Fx StoryScene Key "Scene", Value = the scene; nothing saved)
+	if doneStep and type(doneStep.Scene) == "string" then scene(player, id, "Scene", doneStep.Scene) end
 	if panels[player] then panels[player][id .. ":" .. tostring(track.St)] = nil end
 	StoryQuestService.StepDone:Fire(player, id, track.St)
 	track.P, track.T = 0, {}
@@ -722,6 +732,7 @@ local function advance(player, data, id, track)
 		giveStepItem(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
+		findScene(player, id, track) -- A23-208: what the player finds as this step starts
 		-- P1 ⑤: a Learn step opened: the teacher may teach now (SkillLearnReady follows at once)
 		local now = stepOf(player, def, track.St)
 		local skills = S.SkillService
@@ -1093,6 +1104,7 @@ local function refresh(player)
 			-- A23-130: no Start line (the new row, its marker and the QuestNew sound announce the quest)
 			changed = true
 			openStep(player, id, st.Main)
+			findScene(player, id, st.Main) -- A23-208
 		end
 	end
 	for _, id in SQ.Subs do
@@ -1749,7 +1761,10 @@ local function answerOffer(player, data, id, action)
 	if type(def.Offer.AcceptScene) == "string" then scene(player, id, def.Offer.AcceptScene, npc) end
 	refresh(player)
 	local tr = (st.Main.Id == id) and st.Main or st.Subs[id]
-	if tr and not tr.Claim then openStep(player, id, tr, true) end
+	if tr and not tr.Claim then
+		openStep(player, id, tr, true)
+		findScene(player, id, tr) -- A23-208: the first step's Find
+	end
 	return true
 end
 

@@ -4645,6 +4645,12 @@ Config.StoryQuests.TimingPass = 3 -- good taps of TimingTries to pass
 -- A23-205 (user 10/15): the daily repeat requests (Defs with Repeat = "Daily", at most 12 kinds): a player takes at most this many a
 -- KST day (their own picks; one done already pays), then the other askers' '!' dims. Read by the repeat engine (next step)
 Config.StoryQuests.RepeatDailyMax = 5
+-- A23-208 (user 10/15, story fields; docs/design/quest_data_contract_2026-10-15.md §4-1): a step's Scene (what the people do when
+-- it is done: Fx StoryScene Key "Scene") is one of these (game dev 1 plays each one; a new one = a new row here first)
+Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,
+	Spin = true, Hug = true, Clap = true }
+-- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
+Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
 Config.StoryQuests.TimingTries = 5
 Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
 -- P1 ⑧ (bible §13-3): the paths of the short chases and escorts (Obj Type "Chase" / "Escort", Path = a key here): waypoints in

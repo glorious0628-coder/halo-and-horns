@@ -576,6 +576,10 @@ MUTATIONS = [
     ("P1: a lost runner runs on", ST, "\t\t\t\t\tm.Dist, m.State, m.LostSince = cum[math.max(1, idx)], \"Lost\", nil -- back to the last waypoint, waits\n", ""),
     ("P1: a runner never caught", ST, "\t\tif away <= num(obj.Catch, 8) then\n\t\t\tm.State = \"Done\"", "\t\tif false then\n\t\t\tm.State = \"Done\""),
     ("P1: the mover never cleared", ST, "\t\tif player:GetAttribute(\"StoryMover\") ~= \"\" and player:GetAttribute(\"StoryMover\") ~= nil then player:SetAttribute(\"StoryMover\", \"\") end\n", ""),
+    # --- A23-208 story fields
+    ("A23-208: no Find bubble", ST, "\tif step and type(step.Find) == \"string\" then scene(player, id, \"Find\", tostring(track.St)) end\n", ""),
+    ("A23-208: no Find on accept", ST, "\t\tfindScene(player, id, tr) -- A23-208: the first step's Find\n", ""),
+    ("A23-208: no end Scene", ST, "\tif doneStep and type(doneStep.Scene) == \"string\" then scene(player, id, \"Scene\", doneStep.Scene) end\n", ""),
     ("P1: the Lv5 test before Lv5", C, "\t\t\tRequires = { Level = 5 },\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks", "\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks"),
 ]
 
