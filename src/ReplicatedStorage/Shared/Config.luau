@@ -8912,6 +8912,14 @@ Config.Analytics.Funnels = {
 }
 -- A23-113 #2: story quests whose steps are a funnel's steps (quest id -> funnel name; step i done = Steps[i]; StoryQuestService.StepDone)
 Config.Analytics.QuestFunnels = { KO1 = "FirstKO" }
+-- quest P1 ⑨ (bible §13 / §15 ⑨): the first 30 minutes measured. QuestAccept (value = minutes of play, fields = quest id, faction)
+-- when one of these is accepted, QuestDecline (1, quest id), QuestMiniMiss (1, "Match" | "Timing", quest id) and once per account
+-- MinutesToFirstSkill (minutes of play, faction) when the Lv5 test's Learn step passes
+Config.Analytics.QuestTimes = {
+	Accept = { M1_1 = true, M1_3 = true, M1_4 = true, H_Basics = true, R_Basics = true, N_Basics = true, H_Band = true,
+		R_Band = true, Lunch1 = true, N0 = true, N0A = true, N0T = true },
+	FirstSkill = { Quest = "M1_3", Step = 4, Event = "MinutesToFirstSkill" },
+}
 -- A23-113 #2: minutes of play (data.PlaytimeSeconds) it took to reach Level (the custom event MinutesToLv5, once per account,
 -- when the level is reached; field 1 = the faction)
 Config.Analytics.TimeToLevel = { Level = 5, Event = "MinutesToLv5" }

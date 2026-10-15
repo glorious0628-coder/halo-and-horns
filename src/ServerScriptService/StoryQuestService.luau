@@ -34,6 +34,7 @@ StoryQuestService.Picked = Util.Signal.new()
 StoryQuestService.StepDone = Util.Signal.new()
 StoryQuestService.Accepted = Util.Signal.new() -- A23-199 (player, id): an offered quest was accepted at its NPC
 StoryQuestService.Declined = Util.Signal.new() -- A23-199 (player, id): declined (nothing saved; asked again next talk)
+StoryQuestService.MiniMiss = Util.Signal.new() -- P1 ⑨ (player, id, "Match" | "Timing"): a wrong shape / a failed timing
 local S = nil
 local TAG = "StoryQuestService"
 local SQ = Config.StoryQuests
@@ -1617,6 +1618,7 @@ local function answerMini(player, data, id, tr, step, action, option)
 			advance(player, data, id, tr)
 		else
 			pcall(Net.Fx, player, "MatchMiss", { Id = id, Pick = pick })
+			StoryQuestService.MiniMiss:Fire(player, id, "Match")
 		end
 		return
 	end
@@ -1631,6 +1633,7 @@ local function answerMini(player, data, id, tr, step, action, option)
 	else
 		p.At = os.clock() -- the next try waits its own time again
 		pcall(Net.Fx, player, "TimingMiss", { Id = id })
+		StoryQuestService.MiniMiss:Fire(player, id, "Timing")
 	end
 end
 
