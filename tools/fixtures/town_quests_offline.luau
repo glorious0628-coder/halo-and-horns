@@ -2611,4 +2611,97 @@ runGroup("a23-113 the five Halo people's own reaction lines", function()
 	N.Bright.Rank.Halo = savedRank
 end)
 
+------------------------------------------------------------------ A23-199 (최종 검수 10/15): an NPC asks -> [Accept] / [Decline];
+-- the server checks a pickup (the place) and a delivery (the NPC); every quest step shows where to go
+runGroup("a23-199 offer, pickup, deliver", function()
+	local w = townWorld({ Prompts = true })
+	local panels = panelsOf(w)
+	local SQ = w.Config.StoryQuests
+	SQ.Landmarks.TestBox = vec(500, 0, 500)
+	SQ.Defs.TOFFER = { Kind = "Sub", Title = "Test", ShortName = "Test", Speaker = "Tiny",
+		Offer = { Npc = "TestKid", Lines = { All = { "Kid: Can you find my box?" } } },
+		Steps = {
+			{ Text = "Find the box", Guide = "TestBox", Obj = { Type = "Pickup", Spot = "TestBox", Radius = 8 } },
+			{ Text = "Bring it to Tiny", Guide = "Crossroads", Npc = "TestKid", Obj = { Type = "Deliver" } },
+		},
+		Reward = { GoldN = 7 } }
+	table.insert(SQ.Subs, "TOFFER")
+	w:Npc("TestKid", vec(0, 0, 0))
+	local p, d = joinAfterM23(w, 9901, "Halo", { Pos = vec(2, 0, 2) })
+	check(w:Track(d, "TOFFER") == nil and p:GetAttribute("StoryOffers") ~= nil
+		and string.find(p:GetAttribute("StoryOffers"), "TestKid", 1, true) ~= nil,
+		"an Offer quest is not taken by itself; StoryOffers names Tiny (her '!')", show({ w:Track(d, "TOFFER"), p:GetAttribute("StoryOffers") }))
+	local before = #panels
+	check(w.Story.TalkToNpc(p, "TestKid") == "Offer:TOFFER" and #panels == before + 1 and panels[#panels].Kind == "Offer"
+		and panels[#panels].Arg.Id == "TOFFER" and panels[#panels].Arg.Npc == "TestKid",
+		"talking to Tiny: OpenPanel 'Offer' { Id, Npc } ([Accept] / [Decline])", show(panels[#panels] and panels[#panels].Arg))
+	w:Act(p, "TOFFER", "Decline")
+	check(w:Track(d, "TOFFER") == nil and d.Story.Done.TOFFER == nil, "Decline: nothing saved", show(d.Story.Subs.TOFFER))
+	check(w.Story.TalkToNpc(p, "TestKid") == "Offer:TOFFER", "... and the next talk asks again", "")
+	w:MoveTo(p, vec(80, 0, 0))
+	w:Act(p, "TOFFER", "Accept")
+	check(w:Track(d, "TOFFER") == nil, "Accept 80 studs from Tiny: refused", show(w:Track(d, "TOFFER")))
+	w:MoveTo(p, vec(2, 0, 2))
+	w:Act(p, "TOFFER", "Accept")
+	local tr = w:Track(d, "TOFFER")
+	check(tr ~= nil and tr.St == 1, "Accept next to Tiny: the quest starts (saved)", show(tr))
+	w.Story.Refresh(p)
+	check(string.find(p:GetAttribute("StoryOffers") or "", "TOFFER", 1, true) == nil
+		and string.find(p:GetAttribute("StoryOffers") or "", "TestKid", 1, true) == nil, "taken: Tiny offers it no more", p:GetAttribute("StoryOffers"))
+	w:Act(p, "TOFFER", "Accept")
+	check(w:Track(d, "TOFFER").St == 1, "a second Accept changes nothing", show(w:Track(d, "TOFFER")))
+	-- the pickup: the server checks the open step and the place
+	w:Act(p, "TOFFER", "Deliver")
+	check(w:Track(d, "TOFFER").St == 1, "Deliver before the pickup: nothing", show(w:Track(d, "TOFFER")))
+	w:MoveTo(p, vec(530, 0, 500))
+	w:Act(p, "TOFFER", "Pickup")
+	check(w:Track(d, "TOFFER").St == 1, "Pickup 30 studs from the box: refused", show(w:Track(d, "TOFFER")))
+	w:MoveTo(p, vec(504, 0, 500))
+	w:Act(p, "TOFFER", "Pickup")
+	check(w:Track(d, "TOFFER").St == 2, "Pickup at the box: picked up (the Deliver step = carrying it)", show(w:Track(d, "TOFFER")))
+	w:Act(p, "TOFFER", "Pickup")
+	check(w:Track(d, "TOFFER").St == 2, "a second Pickup changes nothing", show(w:Track(d, "TOFFER")))
+	-- the delivery: at Tiny (a talk hands it over), far from her refused
+	w:Act(p, "TOFFER", "Deliver")
+	check(w:Track(d, "TOFFER").St == 2 and d.Story.Done.TOFFER == nil, "Deliver far from Tiny: refused", show(w:Track(d, "TOFFER")))
+	w:MoveTo(p, vec(2, 0, 2))
+	local bank = d.BankGold or 0
+	check(w.Story.TalkToNpc(p, "TestKid") == "TOFFER" and d.Story.Done.TOFFER == true and (d.BankGold or 0) == bank + 7,
+		"talking to Tiny with the box: delivered, the quest ends (+7 gold)", show({ d.Story.Done.TOFFER, (d.BankGold or 0) - bank }))
+	check(w.Story.TalkToNpc(p, "TestKid") == nil, "done: Tiny has nothing more", "")
+	-- an Offer quest of another side / not met is never offered
+	local q, dq = joinAfterM23(w, 9902, "Horns", { Pos = vec(2, 0, 2) })
+	SQ.Defs.TOFFER.Factions = { Halo = true }
+	w.Story.Refresh(q)
+	check(w.Story.TalkToNpc(q, "TestKid") == nil and w:Track(dq, "TOFFER") == nil, "a Halo-only offer is not made to a Horns player", "")
+	w:Act(q, "TOFFER", "Accept")
+	check(w:Track(dq, "TOFFER") == nil, "... and its Accept is refused", show(w:Track(dq, "TOFFER")))
+	SQ.Defs.TOFFER = nil
+	table.remove(SQ.Subs, table.find(SQ.Subs, "TOFFER"))
+end)
+
+-- A23-199: every quest step shows where to go: a Guide, or an Npc (the client guides to that NPC), except a card that
+-- opens right where the player stands (Panel without Npc). KNOWN = today's steps without one (the quest redesign fixes them;
+-- the list may only shrink)
+runGroup("a23-199 every step has a guide", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local KNOWN = { -- 10/15: 33 steps
+		"EG01.1", "EG02.1", "EG03.1", "EG04.1", "EG14.1", "GW4.1", "GW8.1", "M2_1.1", "M2_4.1", "M2_5.1", "M2_7.1", "M3_5.1", "M3_6.1", "M3_7.1", "M3_8.1", "N0.1", "N0.2", "N0A.1", "N0A.2", "N0T.1", "N0T.2", "N1.1", "N2.1", "N4.1", "R3.2", "R6.2", "R7.2", "S2.1", "S3.1", "S4.1", "S4.2", "SK1.1", "SK2.3" }
+	local known = {}
+	for _, k in KNOWN do known[k] = true end
+	local missing, fixed = {}, {}
+	for id, def in C.StoryQuests.Defs do
+		for i, step in type(def.Steps) == "table" and def.Steps or {} do
+			local ok = type(step.Guide) == "string" or type(step.Npc) == "string" or (step.Panel == true and step.Npc == nil)
+			local key = id .. "." .. i
+			if not ok and not known[key] then table.insert(missing, key) end
+			if ok and known[key] then table.insert(fixed, key) end
+		end
+	end
+	table.sort(missing)
+	table.sort(fixed)
+	check(#missing == 0, "every new quest step has a Guide or an Npc (A23-199)", table.concat(missing, ", "))
+	check(#fixed == 0, "a step on the KNOWN list got its guide: take it off the list", table.concat(fixed, ", "))
+end)
+
 finish()
