@@ -1,0 +1,325 @@
+"""Quest data checks (최종 검수 10/15; contract docs/design/quest_data_contract_2026-10-15.md).
+
+Loads Config.luau + every quest data pack in src/ReplicatedStorage/Shared/Quests/*.luau the way the game does
+(Config.AddQuests, name order) with the stub engine of tools/test_story_text.py and the installed Luau CLI, then checks:
+
+  all quests (old Config ones too)      ids and lists agree (Main / Subs / Defs / Kind), Requires ids exist and never form a
+                                        cycle, step Obj.Type is a known one, an Offer NPC has a body (TownNpcs Story id),
+                                        Reward keys and items are known, no reward ever sells a stat
+  pack quests (the strict contract)     Type (the main action) from the list, Title + ShortName, an Offer (NPC + lines) for
+                                        every sub and main, every step has a Guide or an Npc, Count steps count, consecutive
+                                        main quests of one side's chain never share a Type, a Variant covers every step
+  repeat requests (A23-205 / A23-206)   Config.StoryQuests.RepeatDailyMax = 5, at most 12 kinds, each pays a different kind
+                                        of reward (no Codex progress, no stat), bound to the character
+
+The example pack tools/fixtures/quest_pack_example.luau is loaded on top: it must pass, and each broken copy of it in
+SELF_TESTS must be caught (the checker's own mutations). Text rules (lengths, words) stay in tools/test_story_text.py, which
+loads the same packs.
+
+Usage: py tools/test_quest_data.py [--src path/to/src] [--luau luau.exe]
+"""
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+import tempfile
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tools"))
+import test_story_text as ST  # noqa: E402  (its loader + stub engine)
+
+EXAMPLE = ROOT / "tools/fixtures/quest_pack_example.luau"
+MARK = "QUESTDATA"
+
+STEP_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "Trials", "WarPoints", "EarnGold", "WarChest", "Goose",
+              "Gather", "Craft", "SellMat", "Talk", "Choice", "State", "Event", "Level", "Enter", "Near", "Pickup", "Deliver",
+              "Practice", "Emote", "Match", "Timing", "Learn", "Skip"}
+COUNT_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "WarPoints", "EarnGold", "WarChest", "Goose", "Gather",
+               "Craft", "SellMat"}
+# bible §3 '유형은 주로 하는 행동': the main action of a quest (Type)
+QUEST_TYPES = {"Combat", "Skill", "Gather", "Craft", "Sell", "Investigate", "Recover", "Deliver", "Repair", "Install", "Escort",
+               "Rescue", "Defend", "Claim", "Boast", "Prank", "Command", "Lure", "Tame", "Choice", "Display", "Test", "Visit"}
+REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "BagSlots", "Title", "TitleBy", "EquipCrafted"}
+STAT_WORDS = re.compile(r"(?i)\b(attack|atk|defen[cs]e|def|maxhp|power|stat|crit|speed)\b")
+REPEAT_MAX_KINDS = 12
+GUIDE_EXTRA = {"Bag", "OwnTown", "Blacksmith", "Crossroads", "HaloBridge", "HornsBridge", "Fountain"}
+
+
+def arr(v) -> list:
+    """a Luau array from the tree (dict with int keys, or a list) as a list"""
+    if isinstance(v, list):
+        return v
+    if isinstance(v, dict):
+        keys = sorted(k for k in v if isinstance(k, int) or (isinstance(k, str) and k.isdigit()))
+        return [v[k] for k in keys]
+    return []
+
+
+def get(d, *path):
+    for p in path:
+        if not isinstance(d, dict):
+            return None
+        d = d.get(p, d.get(str(p)) if isinstance(p, int) else None)
+    return d
+
+
+def load(luau: Path, src: Path, work: Path, name: str, extra: list[tuple[str, str]] | None = None):
+    source = (src / ST.CONFIG_REL).read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    packs = ST.quest_packs(src) + (extra or [])
+    return ST.load_config(luau, source, work, name, packs)
+
+
+def pack_ids(packs: list[tuple[str, str]]) -> set[str]:
+    """quest ids a pack defines (read from its Defs table by name: '\\tId = {' lines inside Defs)"""
+    ids: set[str] = set()
+    for _, text in packs:
+        m = re.search(r"\n\tDefs = \{\n(.*?)\n\t\},?\n", text, re.S)
+        if m:
+            ids.update(re.findall(r"^\t\t([A-Za-z_][\w]*) = \{", m.group(1), re.M))
+    return ids
+
+
+def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
+    """(rule, where, text) of every problem"""
+    out: list[tuple[str, str, str]] = []
+    sq = tree.get("StoryQuests") or {}
+    defs = sq.get("Defs") or {}
+    main, subs = arr(sq.get("Main")), arr(sq.get("Subs"))
+    landmarks = set((sq.get("Landmarks") or {}).keys())
+    zones = set((tree.get("Zones") or {}).keys())
+    bodies = {e.get("Story") for e in arr(get(tree, "TownNpcs", "List")) if isinstance(e, dict) and e.get("Story")}
+    items = set((get(tree, "Loot", "Items") or {}).keys()) | {"HP", "MP"}
+    guides = landmarks | zones | GUIDE_EXTRA | set((get(tree, "StoryQuests", "AnvilSpots") or {}).keys())
+
+    def add(rule, where, text):
+        out.append((rule, where, text))
+
+    # ---- lists and kinds
+    for i in main:
+        if i not in defs:
+            add("main-missing", i, "listed in Main, no def")
+        elif get(defs, i, "Kind") != "Main":
+            add("main-kind", i, "in Main but Kind is not Main")
+    for i in subs:
+        if i not in defs:
+            add("sub-missing", i, "listed in Subs, no def")
+        elif get(defs, i, "Kind") != "Sub":
+            add("sub-kind", i, "in Subs but Kind is not Sub")
+    for i, d in defs.items():
+        kind = d.get("Kind") if isinstance(d, dict) else None
+        if kind == "Main" and i not in main and i in strict:
+            add("main-unlisted", i, "Kind Main, not in Main")
+        if kind == "Sub" and i not in subs and i in strict:
+            add("sub-unlisted", i, "Kind Sub, not in Subs")
+    # ---- requirements: ids exist, no cycle
+    graph: dict[str, list[str]] = {}
+    for i, d in defs.items():
+        req = d.get("Requires") if isinstance(d, dict) else None
+        if not isinstance(req, dict):
+            continue
+        needs = arr(req.get("Done")) + arr(req.get("DoneAny"))
+        for n in needs + arr(req.get("NotDone")):
+            if n not in defs:
+                add("requires-unknown", i, f"Requires names {n}, no such quest")
+        pick = req.get("Pick")
+        if isinstance(pick, dict) and pick.get("Id") not in defs:
+            add("requires-unknown", i, f"Requires.Pick names {pick.get('Id')}")
+        graph[i] = [n for n in arr(req.get("Done")) if n in defs]
+    state: dict[str, int] = {}
+
+    def visit(n, stack):
+        if state.get(n) == 1:
+            add("requires-cycle", n, " -> ".join(stack + [n]))
+            return
+        if state.get(n) == 2:
+            return
+        state[n] = 1
+        for m in graph.get(n, []):
+            visit(m, stack + [n])
+        state[n] = 2
+    for n in list(graph):
+        visit(n, [])
+    # ---- steps, offers, rewards
+    for i, d in defs.items():
+        if not isinstance(d, dict):
+            continue
+        is_pack = i in strict
+        steps = arr(d.get("Steps"))
+        if not steps:
+            add("steps-empty", i, "no steps")
+        for si, st in enumerate(steps, 1):
+            variants = [st] + [st[f] for f in ("Halo", "Horns", "Neutral") if isinstance(st.get(f), dict)]
+            for v in variants:
+                obj = v.get("Obj") if isinstance(v.get("Obj"), dict) else st.get("Obj")
+                t = obj.get("Type") if isinstance(obj, dict) else None
+                if t not in STEP_TYPES:
+                    add("step-type", f"{i}.{si}", f"unknown Obj.Type {t}")
+                if is_pack:
+                    if t in COUNT_TYPES and not (isinstance(obj.get("Count"), int) and obj.get("Count") > 0) and t != "Trials":
+                        add("step-count", f"{i}.{si}", f"{t} needs a whole Count > 0")
+                    guide, npc = v.get("Guide", st.get("Guide")), v.get("Npc", st.get("Npc"))
+                    card = (v.get("Panel", st.get("Panel")) is True) and npc is None
+                    if not guide and not npc and not card:
+                        add("step-guide", f"{i}.{si}", "no Guide or Npc (A23-199)")
+                    if guide and guide not in guides:
+                        add("step-guide-unknown", f"{i}.{si}", f"Guide {guide} is no landmark / zone / guide spot")
+                    if npc and npc not in bodies:
+                        add("step-npc-body", f"{i}.{si}", f"Npc {npc} has no body (TownNpcs Story)")
+                    if not v.get("Text") and not st.get("Text"):
+                        add("step-text", f"{i}.{si}", "no Text")
+        offer = d.get("Offer")
+        if isinstance(offer, dict):
+            npcs = offer.get("Npc")
+            for n in (npcs.values() if isinstance(npcs, dict) else [npcs]):
+                if n is not None and n not in bodies:
+                    add("offer-npc-body", i, f"Offer NPC {n} has no body (TownNpcs Story)")
+        reward = d.get("Reward")
+        if isinstance(reward, dict):
+            for k in reward:
+                if k not in REWARD_KEYS:
+                    add("reward-key", i, f"Reward.{k} is not a known reward")
+            if reward.get("Item") is not None and reward.get("Item") not in items:
+                add("reward-item", i, f"Reward.Item {reward.get('Item')} is no item")
+            if any(STAT_WORDS.search(str(k)) for k in reward):
+                add("reward-stat", i, "a reward sells a stat (A23-75)")
+        if is_pack:
+            if d.get("Type") not in QUEST_TYPES:
+                add("quest-type", i, f"Type {d.get('Type')} is not on the list (bible §3)")
+            if not d.get("Title") or not d.get("ShortName"):
+                add("quest-title", i, "Title and ShortName are needed")
+            if not isinstance(offer, dict) or offer.get("Npc") is None or not offer.get("Lines"):
+                add("quest-offer", i, "every quest is asked by an NPC: Offer = { Npc, Lines } (rule 1)")
+    # ---- one side's main chain: consecutive mains never share a Type
+    for side in ("Halo", "Horns", "Neutral"):
+        prev = None
+        for i in main:
+            d = defs.get(i)
+            if not isinstance(d, dict):
+                continue
+            fs = d.get("Factions")
+            if isinstance(fs, dict) and not fs.get(side):
+                continue
+            t = d.get("Type")
+            if t and prev and t == prev[1] and (i in strict or prev[0] in strict):
+                add("chain-type", f"{side}:{prev[0]}->{i}", f"two {t} quests in a row (bible §3)")
+            prev = (i, t) if t else None
+    # ---- repeat requests (A23-205 / A23-206)
+    repeats = [i for i, d in defs.items() if isinstance(d, dict) and d.get("Repeat") is not None]
+    if get(tree, "StoryQuests", "RepeatDailyMax") != 5:
+        add("repeat-max", "StoryQuests.RepeatDailyMax", "must be 5 (A23-205)")
+    if len(repeats) > REPEAT_MAX_KINDS:
+        add("repeat-kinds", "Repeat", f"{len(repeats)} repeat requests (at most {REPEAT_MAX_KINDS})")
+    seen: dict[str, str] = {}
+    for i in repeats:
+        d = defs[i]
+        if d.get("Repeat") != "Daily":
+            add("repeat-kind", i, "Repeat must be \"Daily\"")
+        r = d.get("Reward") if isinstance(d.get("Reward"), dict) else {}
+        if not r:
+            add("repeat-reward", i, "a repeat request pays something (A23-206)")
+            continue
+        sig = r.get("Item") or r.get("Potion") or ("Gold" if r.get("Gold") or r.get("GoldN") else "XP")
+        if sig in seen:
+            add("repeat-reward-same", i, f"pays {sig} like {seen[sig]} (A23-206: every repeat a different kind)")
+        seen[sig] = i
+        if "Codex" in str(r):
+            add("repeat-reward-codex", i, "no codex progress as a reward (A23-206)")
+    # (A23-206 bound reward items: checked here once LootService keeps bound counts - save v7, the next step)
+    return out
+
+
+# broken copies of the example pack: (name, old, new, the rule that must catch it)
+SELF_TESTS = [
+    ("no Offer", "\t\t\tOffer = { Npc = \"Bright\", Lines = { All = { \"Bright: Please guard", "\t\t\tOffer_ = { Npc = \"Bright\", Lines = { All = { \"Bright: Please guard", "quest-offer"),
+    ("no Type", "Kind = \"Main\", Chapter = 2, Type = \"Escort\",", "Kind = \"Main\", Chapter = 2,", "quest-type"),
+    ("a step without a guide", "ShortName = \"To the bridge\", Guide = \"HaloBridge\",", "ShortName = \"To the bridge\",", "step-guide"),
+    ("an unknown guide", "Guide = \"HaloBridge\"", "Guide = \"Nowhere\"", "step-guide-unknown"),
+    ("an NPC with no body", "{ Text = \"Show Otto the ribbon\", ShortName = \"To Otto\", Npc = \"Otto\"", "{ Text = \"Show Otto the ribbon\", ShortName = \"To Otto\", Npc = \"Ghost\"", "step-npc-body"),
+    ("an unknown step type", "Obj = { Type = \"Deliver\" }", "Obj = { Type = \"Teleport\" }", "step-type"),
+    ("a requirement that does not exist", "Requires = { Done = { \"H_Band\" }, Level = 4 }", "Requires = { Done = { \"H_Nope\" }, Level = 4 }", "requires-unknown"),
+    ("a requirement cycle", "Requires = { Done = { \"H_Band\" }, Level = 4 }", "Requires = { Done = { \"HX_Ribbon\" }, Level = 4 }", "requires-cycle"),
+    ("an unknown reward key", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Gems = 5 }", "reward-key"),
+    ("a stat for sale", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Attack = 5 }", "reward-stat"),
+    ("a sub not in Subs", "Subs = { \"HX_Ribbon\", \"HX_DailyLamp\" }", "Subs = { \"HX_DailyLamp\" }", "sub-unlisted"),
+    ("a repeat that is not daily", "Repeat = \"Daily\"", "Repeat = \"Weekly\"", "repeat-kind"),
+    ("two mains of one type in a row", "Kind = \"Main\", Chapter = 2, Type = \"Escort\"", "Kind = \"Main\", Chapter = 2, Type = \"Choice\"", "chain-type"),
+]
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--src", type=Path, default=ROOT / "src")
+    ap.add_argument("--luau", type=Path, default=ROOT / "build/luau_cli_0_741/luau.exe")
+    args = ap.parse_args()
+    src = args.src.resolve()
+    real = ST.quest_packs(src)
+    example = EXAMPLE.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
+    failed = 0
+    with tempfile.TemporaryDirectory(prefix="quest_data_") as tmp:
+        work = Path(tmp)
+        tree, err = load(args.luau, src, work, "real")
+        if tree is None:
+            print(f"{MARK}_FAILED Config + packs did not load: {err}")
+            return 1
+        strict = pack_ids(real)
+        problems = check(tree, strict)
+        hard = [p for p in problems if p[2] and (p[1].split(".")[0].split(":")[-1] in strict or p[0] in
+                ("main-missing", "sub-missing", "main-kind", "sub-kind", "requires-unknown", "requires-cycle", "step-type",
+                 "offer-npc-body", "reward-key", "reward-item", "reward-stat", "repeat-max", "repeat-kinds", "bound"))]
+        print(f"packs: {len(real)} ({', '.join(n for n, _ in real) or 'none yet'}); quests checked: "
+              f"{len(tree['StoryQuests']['Defs'])}; strict (pack) quests: {len(strict)}")
+        for rule, where, text in hard:
+            print(f"CHECK_FAIL {rule} :: {where} :: {text}")
+        failed += len(hard)
+        # the example pack passes
+        ex_tree, ex_err = load(args.luau, src, work, "example", [("Example", example)])
+        if ex_tree is None:
+            print(f"CHECK_FAIL example :: the example pack did not load :: {ex_err}")
+            failed += 1
+        else:
+            ex_strict = strict | pack_ids([("Example", example)])
+            ex = [p for p in check(ex_tree, ex_strict) if p[1].split(".")[0].split(":")[-1].split("->")[-1] in ex_strict
+                  or p[0] in ("chain-type", "repeat-reward-same", "repeat-max", "bound")]
+            for rule, where, text in ex:
+                print(f"CHECK_FAIL example :: {rule} :: {where} :: {text}")
+            failed += len(ex)
+            if not ex:
+                print("CHECK_OK the example pack passes every check")
+        # each broken copy is caught
+        caught = 0
+        for i, (name, old, new, rule) in enumerate(SELF_TESTS):
+            if example.count(old) != 1:
+                print(f"MUTATION NOT APPLIED {name} (pattern matched {example.count(old)} times)")
+                failed += 1
+                continue
+            bad = example.replace(old, new, 1)
+            b_tree, b_err = load(args.luau, src, work, f"bad{i}", [("Example", bad)])
+            if b_tree is None:
+                ok = rule == "load"
+                print(("MUTATION caught  " if ok else "MUTATION MISSED ") + f"{name} (load error: {b_err})")
+                caught += 1 if ok else 0
+                failed += 0 if ok else 1
+                continue
+            rules = {p[0] for p in check(b_tree, strict | pack_ids([("Example", bad)]))}
+            if rule in rules:
+                caught += 1
+                print(f"MUTATION caught  {name}")
+            else:
+                failed += 1
+                print(f"MUTATION MISSED {name} (wanted {rule}; got {sorted(rules)})")
+        print(f"MUTATIONS caught={caught}/{len(SELF_TESTS)}")
+        # a duplicate id across packs is refused at load (Config.AddQuests)
+        d_tree, d_err = load(args.luau, src, work, "dup", [("Example", example), ("Example2", example)])
+        if d_tree is None and "defined already" in (d_err or ""):
+            print("CHECK_OK a quest id defined twice stops the load (never overwritten)")
+        else:
+            print("CHECK_FAIL a quest id defined twice must stop the load")
+            failed += 1
+    print(f"{MARK} {'passed' if failed == 0 else 'failed'} problems={failed}")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

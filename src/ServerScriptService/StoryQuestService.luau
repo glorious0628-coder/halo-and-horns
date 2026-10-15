@@ -862,9 +862,12 @@ local function learned(data, slot)
 end
 
 -- the first main of the chain not done yet (nil = the chain is finished)
-local function nextMain(st)
+-- (quest data packs: a main quest with Factions belongs to those sides' chains only; the other sides skip it)
+local function nextMain(st, player)
+	local f = player and faction(player) or nil
 	for _, id in SQ.Main do
-		if not st.Done[id] and DEFS[id] then return id end
+		local def = DEFS[id]
+		if not st.Done[id] and def and (type(def.Factions) ~= "table" or f == nil or def.Factions[f] == true) then return id end
 	end
 	return nil
 end
@@ -910,7 +913,7 @@ local function refresh(player)
 	local offers = {} -- A23-199: npc id -> true while it has a quest to offer this player
 	-- main chain starts after the first mission is claimed
 	if st.Main.Id == "" and num(data.TutorialStep) == TUT_DONE and data.ClassChosen == true then
-		local id = nextMain(st)
+		local id = nextMain(st, player)
 		local def = id and DEFS[id]
 		local npc = def and offerNpc(player, def)
 		if def and type(def.Offer) == "table" and npc and npcBody(npc) then
@@ -963,6 +966,8 @@ local function refresh(player)
 			elseif obj.Type == "Level" then
 				done = levelReached(data, obj)
 				if not done then changed = true end -- the row shows "(지금 LvN)"
+			elseif obj.Type == "Skip" then
+				done = true -- quest packs: a side's version of a shared quest that has one step less passes it at once
 			elseif obj.Type == "Learn" then
 				done = learned(data, obj.Slot) -- P1 ①-2: the teacher taught it (an old save that has it passes at once)
 			elseif obj.Type == "Enter" then
@@ -1490,7 +1495,7 @@ local function offerable(player, data, id)
 	local st = story(data)
 	if def == nil or type(def.Offer) ~= "table" or st.Done[id] or not npcBody(offerNpc(player, def)) then return false end
 	if def.Kind == "Main" then
-		return st.Main.Id == "" and nextMain(st) == id and num(data.TutorialStep) == TUT_DONE and requirementsMet(player, data, def)
+		return st.Main.Id == "" and nextMain(st, player) == id and num(data.TutorialStep) == TUT_DONE and requirementsMet(player, data, def)
 	end
 	return def.Kind == "Sub" and st.Subs[id] == nil and requirementsMet(player, data, def)
 end
@@ -1498,7 +1503,7 @@ end
 -- the quests npcId offers this player now: the next main first, then in Subs order
 local function offersOf(player, data, npcId)
 	local out = {}
-	local main = nextMain(story(data))
+	local main = nextMain(story(data), player)
 	if main and offerNpc(player, DEFS[main]) == npcId and offerable(player, data, main) then table.insert(out, main) end
 	for _, id in SQ.Subs do
 		local def = DEFS[id]

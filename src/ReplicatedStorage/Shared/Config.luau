@@ -3456,7 +3456,7 @@ Config.StoryQuests = {
 		-- quest bible v3 H01 / R01 / N01 (P1 ③): Otto ASKS after the first weapon ([Accept] / [Decline]); nothing counts before
 		-- the Accept. Each side asks in its own words; the steps stay
 		M1_1 = {
-			Kind = "Main", Chapter = 1, Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
+			Kind = "Main", Chapter = 1, Type = "Combat", Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			Offer = { Npc = "Otto", Lines = {
 				Halo = { "Otto: Please free the shiny band from that slime." },
 				Horns = { "Otto: Please grab the shiny band from that slime." },
@@ -3479,7 +3479,7 @@ Config.StoryQuests = {
 		-- Horns: Rose's snack-prank parcel to Tiny; artisans: something of their own craft for Tiny), then back to the teacher, who
 		-- teaches the first skill there (Config.Skills.Learn.Gate: Q waits for this quest's Learn step). Old saves: Story.Schema 3
 		M1_3 = {
-			Kind = "Main", Chapter = 1, Title = "The Teacher's Test", ShortName = "Lv5 test",
+			Kind = "Main", Chapter = 1, Type = "Test", Title = "The Teacher's Test", ShortName = "Lv5 test",
 			Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" }, Lines = {
 				Halo = { "Sir Gleam: Beat four slimes, then return our neighbor's bag." },
 				Horns = { "Rose: Beat four slimes, then take Tiny this snack prank." },
@@ -3510,7 +3510,7 @@ Config.StoryQuests = {
 		-- Lamp = Common | Mine, Fx StoryScene; nobody else's lamp changes), then the townsperson reacts. Claim and the reward stay.
 		-- Old saves on the old steps start at the lamp (Story.Schema 4)
 		M1_4 = {
-			Kind = "Main", Chapter = 1, Title = "A Light for the Lamp", ShortName = "The lamp", Claim = true,
+			Kind = "Main", Chapter = 1, Type = "Choice", Title = "A Light for the Lamp", ShortName = "The lamp", Claim = true,
 			Offer = { Npc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" }, Lines = {
 				Halo = { "Bright: Please try your dust in this lamp." },
 				Horns = { "Rose: Please show us what that dust can do." },
@@ -4636,6 +4636,9 @@ Config.StoryQuests.PracticeFacing = 0.3
 -- "Timing" { Id }: five taps on CraftView's practice ring, StoryAction(Id, "Timing", "Good/Tries")). Shape = one of the six the
 -- client draws without art (Ring, Disc, Square, Diamond, Cross, Bars); a set's three never share a shape or a colour
 Config.StoryQuests.TimingPass = 3 -- good taps of TimingTries to pass
+-- A23-205 (user 10/15): the daily repeat requests (Defs with Repeat = "Daily", at most 12 kinds): a player takes at most this many a
+-- KST day (their own picks; one done already pays), then the other askers' '!' dims. Read by the repeat engine (next step)
+Config.StoryQuests.RepeatDailyMax = 5
 Config.StoryQuests.TimingTries = 5
 Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
 Config.QuestShapes = {
@@ -11635,5 +11638,86 @@ Config.ClientText.BagUI = {
 	SellWhere = "Sell it at the Forge's anvil.",
 	From = "From: %s",
 }
+
+----------------------------------------------------------------- quest data modules (최종 검수 10/15; docs/design/quest_data_contract_2026-10-15.md)
+-- The whole quest bible is written as data packs in Shared/Quests (one ModuleScript per side + chapter: Halo_Ch2, Horns_Ch2,
+-- Artisan_Ch2, Common_Web ...). Each returns a pack table; Config.AddQuests merges it here at load (module name order), so every
+-- reader keeps reading Config.StoryQuests. A pack:
+--   Faction = "Halo" | "Horns" | "Neutral" | nil  (the side its Variants are for)
+--   Defs = { [id] = def }            new quests (an id already defined = an error: never overwrite a quest)
+--   Subs = { id, ... }               appended to StoryQuests.Subs (offer order)
+--   Main = { { After = id | nil, Ids = { id, ... } }, ... }   main quests put into StoryQuests.Main after `After` (nil = the end);
+--                                    a main quest with Factions is skipped by the other sides (StoryQuestService nextMain)
+--   Variants = { [shared id] = { Steps = { [i] = step }, Offer = { Npc = "X", Lines = { ... } } } }
+--                                    this side's own version of a shared quest (M2_2 ...): each step becomes the step's
+--                                    [Faction] override (stepOf), the offer NPC / lines this side's. A side needs the same number
+--                                    of steps as the base quest (a step the side does not need: Obj = { Type = "Skip" })
+--   Landmarks / Speakers / Portraits = { [key] = value }   added (an existing key = an error)
+--   Npcs = { TownNpcs.List entries }  new temporary bodies
+local function questError(name, text)
+	error("quest pack " .. tostring(name) .. ": " .. text, 0)
+end
+
+function Config.AddQuests(pack, name)
+	local SQ = Config.StoryQuests
+	if type(pack) ~= "table" then questError(name, "not a table") end
+	for id, def in type(pack.Defs) == "table" and pack.Defs or {} do
+		if SQ.Defs[id] ~= nil then questError(name, "quest id " .. tostring(id) .. " is defined already") end
+		SQ.Defs[id] = def
+	end
+	for _, id in type(pack.Subs) == "table" and pack.Subs or {} do
+		if table.find(SQ.Subs, id) then questError(name, "sub " .. tostring(id) .. " is listed already") end
+		table.insert(SQ.Subs, id)
+	end
+	for _, block in type(pack.Main) == "table" and pack.Main or {} do
+		local at = block.After and table.find(SQ.Main, block.After) or #SQ.Main
+		if block.After and not at then questError(name, "Main.After " .. tostring(block.After) .. " is not a main quest") end
+		for i, id in type(block.Ids) == "table" and block.Ids or {} do
+			if table.find(SQ.Main, id) then questError(name, "main " .. tostring(id) .. " is listed already") end
+			table.insert(SQ.Main, at + i, id)
+		end
+	end
+	local side = pack.Faction
+	for id, var in type(pack.Variants) == "table" and pack.Variants or {} do
+		local def = SQ.Defs[id]
+		if type(def) ~= "table" then questError(name, "variant of an unknown quest " .. tostring(id)) end
+		if side ~= "Halo" and side ~= "Horns" and side ~= "Neutral" then questError(name, "a variant pack needs Faction") end
+		for i, step in type(var.Steps) == "table" and var.Steps or {} do
+			if type(def.Steps[i]) ~= "table" then questError(name, id .. " has no step " .. tostring(i)) end
+			def.Steps[i][side] = step
+		end
+		if type(var.Offer) == "table" then
+			def.Offer = def.Offer or { Lines = {} }
+			if type(def.Offer.Npc) ~= "table" then
+				local shared = def.Offer.Npc
+				def.Offer.Npc = { Halo = shared, Horns = shared, Neutral = shared }
+			end
+			def.Offer.Npc[side] = var.Offer.Npc or def.Offer.Npc[side]
+			def.Offer.Lines = def.Offer.Lines or {}
+			local lines = type(var.Offer.Lines) == "table" and (var.Offer.Lines.All or var.Offer.Lines[side]) or nil
+			if lines then def.Offer.Lines[side] = lines end
+		end
+	end
+	for _, field in { "Landmarks", "Speakers", "Portraits" } do
+		for key, value in type(pack[field]) == "table" and pack[field] or {} do
+			if SQ[field][key] ~= nil then questError(name, field .. "." .. tostring(key) .. " exists already") end
+			SQ[field][key] = value
+		end
+	end
+	for _, entry in type(pack.Npcs) == "table" and pack.Npcs or {} do table.insert(Config.TownNpcs.List, entry) end
+end
+
+-- the packs in Shared/Quests, in name order (offline tests without the folder load none; their own harness may call AddQuests)
+do
+	local okFolder, folder = pcall(function() return script.Parent:FindFirstChild("Quests") end)
+	if okFolder and folder then
+		local mods = {}
+		for _, m in folder:GetChildren() do
+			if m:IsA("ModuleScript") then table.insert(mods, m) end
+		end
+		table.sort(mods, function(a, b) return a.Name < b.Name end)
+		for _, m in mods do Config.AddQuests(require(m), m.Name) end
+	end
+end
 
 return Config

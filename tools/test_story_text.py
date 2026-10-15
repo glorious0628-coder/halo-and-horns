@@ -85,6 +85,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 MARK = "STORYTEXT"
 CONFIG_REL = Path("ReplicatedStorage/Shared/Config.luau")
+QUESTS_REL = Path("ReplicatedStorage/Shared/Quests") # quest data packs: checked as part of the Config tree, not as code
 GLOSSARY = ROOT / "docs/design/glossary_en_2026-10-06.md"
 
 HANGUL_RE = re.compile(r"[ᄀ-ᇿ㄰-㆏가-힣]")
@@ -326,6 +327,16 @@ if not fn then print(MARK .. "_LOADERR " .. tostring(err)) return end
 setfenv(fn, env)
 local ok, Config = pcall(fn)
 if not ok or type(Config) ~= "table" then print(MARK .. "_LOADERR " .. tostring(Config)) return end
+-- the quest data packs (Shared/Quests, name order), merged like the game's Config loader does
+for _, p in QUEST_PACKS do
+	local pf, perr = loadstring(p[2], "=" .. p[1])
+	if not pf then print(MARK .. "_LOADERR " .. p[1] .. ": " .. tostring(perr)) return end
+	setfenv(pf, env)
+	local okP, pack = pcall(pf)
+	if not okP then print(MARK .. "_LOADERR " .. p[1] .. ": " .. tostring(pack)) return end
+	local okA, aerr = pcall(Config.AddQuests, pack, p[1])
+	if not okA then print(MARK .. "_LOADERR " .. tostring(aerr)) return end
+end
 
 local seen = {}
 local count = 0
@@ -386,9 +397,21 @@ class Ref:
         self.path = path
 
 
-def load_config(luau: Path, source: str, workdir: Path, name: str) -> tuple[dict | None, str]:
-    """Runs Config in the stub environment; returns (tree, error). Tables are dicts, shared tables are Ref."""
-    harness = (f"local CONFIG_SOURCE = {long_literal(source)}\nlocal MARK = \"{MARK}\"\n" + HARNESS)
+def quest_packs(src: Path) -> list[tuple[str, str]]:
+    """the quest data packs (src/ReplicatedStorage/Shared/Quests/*.luau) in name order: (module name, source)"""
+    folder = src / QUESTS_REL
+    if not folder.is_dir():
+        return []
+    return [(p.stem, p.read_text(encoding="utf-8-sig").replace("\r\n", "\n")) for p in sorted(folder.glob("*.luau"))]
+
+
+def load_config(luau: Path, source: str, workdir: Path, name: str,
+                packs: list[tuple[str, str]] | None = None) -> tuple[dict | None, str]:
+    """Runs Config in the stub environment (+ the quest packs, merged by Config.AddQuests); returns (tree, error). Tables
+    are dicts, shared tables are Ref."""
+    plist = "{" + ", ".join("{" + long_literal(n) + ", " + long_literal(src_) + "}" for n, src_ in (packs or [])) + "}"
+    harness = (f"local CONFIG_SOURCE = {long_literal(source)}\nlocal QUEST_PACKS = {plist}\nlocal MARK = \"{MARK}\"\n"
+               + HARNESS)
     path = workdir / f"{name}.luau"
     path.write_text(harness, encoding="utf-8")
     proc = subprocess.run([str(luau), str(path)], capture_output=True, timeout=300)
@@ -733,7 +756,7 @@ class Checker:
         self.files: dict[str, list[Tok]] = {}
         for p in sorted(src.rglob("*.luau")):
             rel = p.relative_to(src).as_posix()
-            if p.relative_to(src) == CONFIG_REL:
+            if p.relative_to(src) == CONFIG_REL or QUESTS_REL in p.relative_to(src).parents:
                 continue
             self.files[rel] = lex(p.read_text(encoding="utf-8-sig").replace("\r\n", "\n"))
         self.callsites = self._format_callsites()
@@ -1348,7 +1371,7 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="story_text_") as tmp:
         work = Path(tmp)
-        tree, err = load_config(args.luau, source, work, "main")
+        tree, err = load_config(args.luau, source, work, "main", quest_packs(src))
         if tree is None:
             print(f"{MARK}_FAILED Config did not load: {err}")
             if args.out:
@@ -1363,7 +1386,7 @@ def main() -> int:
             def work_one(index_mut):
                 index, (name, rule, mpath, statement) = index_mut
                 msrc = mutate(source, statement)
-                mtree, merr = load_config(args.luau, msrc, work, f"mutant_{index:02d}")
+                mtree, merr = load_config(args.luau, msrc, work, f"mutant_{index:02d}", quest_packs(src))
                 if mtree is None:
                     return {"mutation": name, "caught": False, "note": "mutant Config did not load: " + merr[:300]}
                 new = [f for f in checker.run(mtree, msrc) if (f["rule"], f["path"]) not in base_keys]
