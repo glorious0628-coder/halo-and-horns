@@ -32,9 +32,9 @@ local function check(name, ok, detail)
 	if not ok then fails += 1 end
 end
 local r = STORY.TimingResult({ "Perfect", "Great", "Good", "Miss", "Miss" })
-check("Good or better counted, 5 tries", r.Good == 3 and r.Tries == 5, r.Good)
-check("all missed: 0", STORY.TimingResult({ "Miss", "Miss", "Miss", "Miss", "Miss" }).Good == 0)
-check("nothing: 0, never an error", STORY.TimingResult(nil).Good == 0)
+check("Good or better counted, 5 tries, as a string (the remote takes strings)", r == "3/5", r)
+check("all missed: 0/5", STORY.TimingResult({ "Miss", "Miss", "Miss", "Miss", "Miss" }) == "0/5")
+check("nothing: 0/5, never an error", STORY.TimingResult(nil) == "0/5")
 print(fails == 0 and "MT_PURE_OK" or "MT_PURE_FAILED")
 """
 
@@ -57,11 +57,11 @@ def statics(s: dict) -> list[tuple[str, bool]]:
          and "if type(s.OnDone) == \"function\" then pcall(s.OnDone, table.clone(S.Grades)) end" in cv),
         ("only a practice session reports", "OnDone = practice == true and type(onDone) == \"function\" and onDone or nil" in cv),
         ("Match: target + three options, a pick goes to the server once", "if i > 3 then break end" in match
-         and 'fire("StoryAction", arg.Id, "Match", i)' in match and "if STORY.MatchWait then return end" in match),
-        ("shapes by form too, not colour alone", all(k in shape for k in ('"Ring"', '"Disc"', '"Square"', '"Diamond"', '"Cross"'))),
+         and 'fire("StoryAction", arg.Id, "Match", tostring(i))' in match and "if STORY.MatchWait then return end" in match),
+        ("shapes by form too, not colour alone", all(k in shape for k in ('"Ring"', '"Knot"', '"Disc"', '"Square"', '"Diamond"', '"Cross"', '"Bars"'))),
         ("hit closes, miss shakes the pick",
          'if kind == "MatchHit" then\n\t\tif currentId == "Match" then Panels.Close() end\n\t\treturn\n\tend' in on and "pcall(UIKit.Refuse, b)" in on),
-        ("the answer is heard", 'if kind == "MatchHit" or kind == "MatchMiss" then pcall(STORY.OnMatch, kind, data) end' in p),
+        ("the answer is heard", 'if kind == "MatchHit" or kind == "MatchMiss" or kind == "TimingMiss" then pcall(STORY.OnMatch, kind, data) end' in p),
     ]
 
 
