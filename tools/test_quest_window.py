@@ -160,10 +160,9 @@ def main():
          "\tif e.More and e.Story and type(e.Id) == \"string\" and not throttled(\"claim\", 0.35) then\n\t\tfire(\"ClaimQuest\", e.Id)\n" in hud),
         ("the HUD tells the window when its quests change", "pcall(function() HUD.QuestsChanged:Fire() end)" in hud
          and "HUD.QuestsChanged = Util.Signal.new()" in hud),
-        ("Help shows the keys tip again (the controls topic + a Key settings button -> Settings / Keys)",
-         'if type(help.KeysTip) == "string" then table.insert(lines, help.KeysTip) end' in settings_ui
-         and 'button(kit, row1, help.KeysButton, 200, function() kit.Open("Settings", { Tab = "Keys" }) end)' in settings_ui
-         and 'KeysTip = "Tip: You can change your keys in Settings!"' in config),
+        ("Help keeps the Key settings button -> Settings / Keys, and the keys tip line is gone (A23-191: no tip lines)",
+         'button(kit, row1, help.KeysButton, 200, function() kit.Open("Settings", { Tab = "Keys" }) end)' in settings_ui
+         and "KeysTip" not in settings_ui and "Tip: You can change your keys" not in config),
     ]
     for name, good in static:
         print(("STATIC_OK " if good else "STATIC_FAILURE ") + name)
