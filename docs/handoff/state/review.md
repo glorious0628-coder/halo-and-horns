@@ -395,3 +395,10 @@
 - GPT: r1(build/codex/story_emotion_r1.md) → Claude 비평 → r2(story_emotion_r2.md: peak 15개, 1장 빛·뿔·장인 데이터 초안, 매일 12종) → 기술 질문 3개 개발 2에. r3 = 게임 전체 스토리(입력 build/codex/story_world_claude_draft.md, 프롬프트 story_world_r3_prompt.md, 결과 story_world_r3.md) 도는 중.
 - 개발 1 클리어됨: 큐 = Nudges false 스위치 UI 코드 삭제 → A23-208 화면(dev2-story-fields 498ae457) → 영어 덤프 몫 → #2 남은 것.
 - 개발 2 대기 중 가지: dev2-after-p1 50b8d91c(M1_4 한 줄) → dev2-story-fields 498ae457(이야기 칸 엔진·검사) — 원래 실패 비교 끝나면 한 번에.
+
+## 10/15 밤 (최종 검수) — 스토리 결정 + 병합 묶음
+- **사용자 결정:** A23-209 왕관 깬 것 = Captain Clatter의 서툰 실수(GPT r3 B안), 해골 = 원래 해골인 만화 주민, 오프닝 2·3줄 변경. A23-210 사람과 몬스터는 원래 공존 → 왕관이 깨지며 가루로 소동, 싸움 = 소동 멈추기(GPT r4). 상의 기록 build/codex/story_emotion_r1·r2, story_world_claude_draft, story_world_r3·r4.
+- **병합(main 4adf6069까지, 전부 merge_chain 시험 통과):** party 08e9ac2e(+party-fix a~d 결정: 모드 없는 Kill = 예전처럼 기여자 전원, BossHitGap 3초, 파티 보스 왕관 = 진영마다 한 번, 보스 퀘스트 = 보상 자격자 전원) · story-fields 498ae457 · story-more 905f5b89(On=Self·진영별 Next·BeforeBy) · escort-event 0c1bf0a1 · dev1 nudges-cut aff7935e·story-screen f7761733·forge-lines b52a7bcd · ops-rehearsal d584eedd·f3735b05(숫자판 --rehearse, rollback_save.py, remote_limits 66/66, save_bump, erase_user.py + docs/ops/data_erasure.md, 배지 docs/design/badges_2026-10-15.md) · easy-words 80dcdcbc(Pet Gear) · **ch1-story 77c1f395(1장 이야기 데이터·오프닝 자막·M3_3/M3_8 대본)**.
+- 모험단 G0 = 10/20 뒤. 개발 2 다음: M1_1 옛 Finish 삭제 → Tutorial 이야기 칸 엔진 크기 → 매일 12종 보상표 초안(내가 확정). 개발 1: 폰 진영·직업 카드 결과 보고 대기, 그다음 1장 화면 사진(폰 잘림).
+- 메인 Studio = ed7d03e7까지 sync됨(그 뒤 병합분 안 들어감). 다음 sync·사진 = 10/16 게시판 전에 메인 반영 1.
+- 사용자 몫(10/16 게시판): Save As → Alt+P, 배지 7개 Creator Hub에서 만들기(badges_2026-10-15.md), Env place id.
