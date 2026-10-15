@@ -566,7 +566,7 @@ Config.Classes = {
 		-- A23-39: the artisan guild's Archer is the pet tamer (same Archer numbers; the baby slime fights, Config.Tamer)
 		Names = { Halo = "Ranger", Horns = "Shadow Hunter", Neutral = "Pet Tamer", None = "Archer" },
 		Desc = "Quick shots hit two foes at once. Quick feet, too!",
-		PickLine = "Shoot two foes at once from afar", -- addendum A7-4
+		PickLine = "Shoot two foes at once from far away", -- addendum A7-4
 		Weapon = "Bow",
 		HealthMult = 1.0, Damage = 0.55, SwingInterval = 0.5,
 		Pattern = "Multi", -- the Targets nearest valid targets within Range
@@ -8182,7 +8182,7 @@ Config.Text = {
 	GraduateStart = "Sprout Shield ends in 60 s!", -- A23-18
 	GraduateEnd = "Now you can fight the other sides!",
 	BoldStrong = "Stronger foe! Points ×2",
-	BoldWeak = "Weaker foe: points halved.",
+	BoldWeak = "Weaker foe: points cut in half.",
 	BountyGain = "Got a %s gold bounty! Honor +%d",
 	BountyAnnounce = "[Knights of Light] %s got a %s gold bounty!", -- BB37: AnnounceService.PublicName(p, true)
 	-- BB37 (검수): a hidden knight is already "A member of the Knights of Light", so no "[Knights of Light]" prefix
@@ -8701,8 +8701,8 @@ Config.Tamer = {
 	},
 	-- the class card / picker lines for the tamer (Config.ClassCard)
 	Card = {
-		Desc = "Your Baby Slime pet fights for you! It headbutts enemies from afar.",
-		DescEn = "Your Baby Slime pet fights for you! It headbutts enemies from afar.",
+		Desc = "Your Baby Slime pet fights for you! It headbutts enemies from far away.",
+		DescEn = "Your Baby Slime pet fights for you! It headbutts enemies from far away.",
 		PickLine = "Your pet bonks foes one by one",
 		PickLineEn = "Your pet bonks foes one by one",
 		Stats = { "HP ×1.0", "ATK ×0.55 (2x attack speed)", "Pet hits 2 foes at 30 studs · Move +10%" },
@@ -9645,7 +9645,7 @@ end
 Config.PrivateServer = {
 	RewardMult = 0.5,
 	HalfSources = { Event = true, War = true, Bounty = true },
-	Text = "Rewards are halved in private servers",
+	Text = "Rewards are cut in half in private servers",
 }
 
 ----------------------------------------------------------------- A23-87 ranged kinds switch (검수 10/09)
@@ -11015,7 +11015,7 @@ Config.ClientText.CharacterUI = {
 	Tabs = { Gear = "Gear", Stats = "Stats" },
 	Power = "Power",
 	LevelClass = "Lv %d · %s",
-	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
+	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Gear" },
 	Weapons = "Weapons", Back = "Back", NoWeapons = "No weapons yet.",
 	Equip = "Equip", Equipped = "Equipped", FromLv = "Needs Lv %d", InFight = "In a fight", Checking = "Checking…",
 	Attack = "Attack %s",
@@ -11121,7 +11121,7 @@ Config.ClientText.MarketWindow = {
 	Hours = "%dh %02dm",
 }
 Config.ClientText.GearSlots = {
-	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
+	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Gear" },
 	PetLv = "Lv %d",
 }
 
@@ -11285,7 +11285,7 @@ Config.ClientText.ClassPicker = {
 	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
 	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
 	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
-	Tag = { Warrior = "Smash up close!", Mage = "Blast from afar!", Archer = "Two arrows, fast!" },
+	Tag = { Warrior = "Smash up close!", Mage = "Blast from far away!", Archer = "Two arrows, fast!" },
 	Wait = "One moment...",
 	Recommend = "Best for beginners",
 	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come

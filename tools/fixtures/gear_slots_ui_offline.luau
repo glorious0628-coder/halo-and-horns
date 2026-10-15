@@ -210,7 +210,7 @@ for id, xy in want do
 	check(c ~= nil and x == xy[1] and y == xy[2] and c.Size.X.Offset == 64 and c.Size.Y.Offset == 64, "Build: Cell_" .. id .. " at " .. xy[1] .. "," .. xy[2], tostring(x) .. "," .. tostring(y))
 end
 check(count(frame, "^Cell_") == 6 and count(frame, "^Cap_") == 6, "Build: six cells and six captions")
-local words = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" }
+local words = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Gear" }
 for id, word in words do
 	local c = cap(frame, id)
 	local x, y = nil, nil

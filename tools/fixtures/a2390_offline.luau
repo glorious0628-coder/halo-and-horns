@@ -33,7 +33,7 @@ runGroup("config", function()
 		"Captain Clatter's fallback spot is in the pit", show(cl))
 	local P = C.PrivateServer
 	check(P.RewardMult == 0.5 and P.HalfSources.Event and P.HalfSources.War and P.HalfSources.Bounty
-		and not P.HalfSources.Monster and not P.HalfSources.Quest and P.Text == "Rewards are halved in private servers",
+		and not P.HalfSources.Monster and not P.HalfSources.Quest and P.Text == "Rewards are cut in half in private servers",
 		"private servers: goose / war / bounty x0.5 (not hunting / quests), the shop line", show(P))
 end)
 
