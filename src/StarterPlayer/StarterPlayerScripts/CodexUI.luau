@@ -204,6 +204,52 @@ function CodexUI.Tilt(x, y)
 	return x, y
 end
 
+-- A23-195 card pictures (pure): an id as "rbxassetid://N", or nil for an empty one
+function CodexUI.ArtId(v)
+	if type(v) == "number" and v > 0 then return "rbxassetid://" .. tostring(math.floor(v)) end
+	if type(v) ~= "string" or v == "" then return nil end
+	if string.match(v, "^%d+$") then return "rbxassetid://" .. v end
+	return v
+end
+
+local function art() return type(codex().Art) == "table" and codex().Art or {} end
+
+-- the kind's 3 poses { Base, Cool, Silly } (an empty side = Base), or nil while it has no Base picture (the 3D model)
+function CodexUI.Poses(kind)
+	local all = type(art().Poses) == "table" and art().Poses or {}
+	local p = type(all[kind]) == "table" and all[kind] or nil
+	local base = p and CodexUI.ArtId(p.Base) or nil
+	if not base then return nil end
+	return { Base = base, Cool = CodexUI.ArtId(p.Cool) or base, Silly = CodexUI.ArtId(p.Silly) or base }
+end
+
+-- the card frame of the kind: Boss for a field boss, else its page's zone (Config.Codex.Pages), else its def.Zone; nil = none
+function CodexUI.FrameOf(kind)
+	local frames = type(art().Frames) == "table" and art().Frames or {}
+	local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[kind] or nil
+	if type(def) == "table" and def.Boss == true then return CodexUI.ArtId(frames.Boss) end
+	for _, page in type(codex().Pages) == "table" and codex().Pages or {} do
+		for _, k in type(page.Kinds) == "table" and page.Kinds or {} do
+			if k == kind then return CodexUI.ArtId(frames[page.Id]) end
+		end
+	end
+	return type(def) == "table" and CodexUI.ArtId(frames[def.Zone]) or nil
+end
+
+-- how much of each pose shows at a tilt x (-1..1): base, cool, silly (they add to 1; the side pose grows smoothly from
+-- Blend.From to Blend.To of |x| on its side, CoolSide = the side of Cool)
+function CodexUI.PoseWeights(x)
+	x = math.clamp(tonumber(x) or 0, -1, 1)
+	local b = type(art().Blend) == "table" and art().Blend or {}
+	local from, to = tonumber(b.From) or 0.2, tonumber(b.To) or 0.75
+	local t = math.clamp((math.abs(x) - from) / math.max(1e-3, to - from), 0, 1)
+	local w = t * t * (3 - 2 * t)
+	local coolSide = (tonumber(art().CoolSide) or 1) >= 0 and 1 or -1
+	if w <= 0 then return 1, 0, 0 end
+	if x * coolSide > 0 then return 1 - w, w, 0 end
+	return 1 - w, 0, w
+end
+
 -- how a CodexUp event shows (pure): "Reveal" (a new card / Gold Foil), "Evolve" (Silver / Gold Holo), "Popup" (a page
 -- done / every card Gold Holo) or nil (not ours)
 function CodexUI.MomentOf(event)
@@ -409,6 +455,28 @@ function CARD.New(parent, size, z)
 	c.Icon.Visible = false
 	c.Icon.ZIndex = z + 1
 	c.Icon.Parent = view
+	-- A23-195: the 3 pose pictures (Config.Codex.Art.Poses; the tilt blends them, CARD.Apply) in the 3D window's place,
+	-- and the zone's card frame under everything on the face (Art.Frames)
+	c.Poses = {}
+	for i, name in { "Base", "Cool", "Silly" } do
+		local p = Instance.new("ImageLabel")
+		p.Name = "Pose" .. name
+		p.BackgroundTransparency = 1
+		p.ScaleType = Enum.ScaleType.Fit
+		p.Size = UDim2.fromScale(1, 1)
+		p.Visible = false
+		p.ZIndex = z + 1 + (i > 1 and 1 or 0)
+		p.Parent = view
+		c.Poses[name] = p
+	end
+	c.ZoneFrame = Instance.new("ImageLabel")
+	c.ZoneFrame.Name = "ZoneFrame"
+	c.ZoneFrame.BackgroundTransparency = 1
+	c.ZoneFrame.ScaleType = Enum.ScaleType.Stretch
+	c.ZoneFrame.Size = UDim2.fromScale(1, 1)
+	c.ZoneFrame.Visible = false
+	c.ZoneFrame.ZIndex = z
+	c.ZoneFrame.Parent = c.FrontPlate
 	c.Q = text({ Name = "Unknown", Text = tx("Unknown"), Size = UDim2.fromScale(1, 1), TextScaled = true, MaxTextSize = 64,
 		Title = true, ZIndex = z + 2, Visible = false, Parent = view }, true)
 	-- the sheen (a soft band that follows the tilt; Silver / Holo / Foil) and the round sparkles
@@ -479,7 +547,16 @@ end
 function CARD.Mount(c, kind)
 	for _, ch in c.World:GetChildren() do pcall(function() ch:Destroy() end) end
 	c.Model, c.Kind = nil, kind
-	local m = MODEL.Get(kind)
+	-- A23-195: the pose pictures when the kind has them (no 3D model then), the zone's frame when there is one
+	c.PoseSet = CodexUI.Poses(kind)
+	for name, p in c.Poses do
+		p.Image = c.PoseSet and c.PoseSet[name] or ""
+		p.Visible = c.PoseSet ~= nil
+	end
+	local frame = CodexUI.FrameOf(kind)
+	c.ZoneFrame.Image = frame or ""
+	c.ZoneFrame.Visible = frame ~= nil
+	local m = (not c.PoseSet) and MODEL.Get(kind) or nil
 	if m then
 		m.Parent = c.World
 		local ok, cf, size = pcall(function() return m:GetBoundingBox() end)
@@ -490,11 +567,11 @@ function CARD.Mount(c, kind)
 		c.Front = (okP and typeof(pivot) == "CFrame") and pivot.LookVector or Vector3.new(0, 0, -1)
 		c.Model = m
 	end
-	local icon = (not m) and call("ArtId", "IconMon" .. tostring(kind)) or nil
+	local icon = (not m and not c.PoseSet) and call("ArtId", "IconMon" .. tostring(kind)) or nil
 	c.Icon.Image = icon or ""
 	c.Icon.Visible = icon ~= nil
-	c.Q.Visible = m == nil and icon == nil
-	CARD.Aim(c)
+	c.Q.Visible = m == nil and icon == nil and c.PoseSet == nil
+	CARD.Apply(c)
 end
 
 -- the camera round the monster for the tilt (x = mouse right turns the card's right side away, y = mouse down)
@@ -510,9 +587,23 @@ function CARD.Aim(c)
 	c.Camera.CFrame = CFrame.lookAt(c.Center + dir * dist, c.Center)
 end
 
--- the tilt on screen: the camera, a small roll and the sheen's band
+-- the pose pictures for the tilt: base / cool / silly blended (CodexUI.PoseWeights), black while the card is not met
+function CARD.Pose(c)
+	if not c.PoseSet then return end
+	local wb, wc, ws = CodexUI.PoseWeights(c.Tilt.X)
+	local known = not (c.View and c.View.Known == false)
+	for name, w in { Base = wb, Cool = wc, Silly = ws } do
+		local p = c.Poses[name]
+		p.ImageTransparency = 1 - w
+		p.Visible = w > 0.001
+		p.ImageColor3 = known and L.Lit or L.Silhouette
+	end
+end
+
+-- the tilt on screen: the camera (or the pose pictures), a small roll and the sheen's band
 function CARD.Apply(c)
 	CARD.Aim(c)
+	CARD.Pose(c)
 	c.FaceFrame.Rotation = c.Tilt.X * L.Tilt.Roll
 	c.SheenGrad.Offset = Vector2.new(c.Tilt.X * L.Tilt.Sheen, c.Tilt.Y * L.Tilt.Sheen * 0.5)
 end
@@ -520,7 +611,7 @@ end
 -- draws a View (CodexUI.View) on the card
 function CARD.Set(c, v)
 	c.View = v
-	if c.Kind ~= v.Kind or not c.Model then CARD.Mount(c, v.Kind) end -- (no model yet: look again)
+	if c.Kind ~= v.Kind or (not c.Model and not c.PoseSet) then CARD.Mount(c, v.Kind) end -- (no model yet: look again)
 	local rim = rimOf(v.Look)
 	c.FrontRim.Color, c.BackRim.Color = rim, rim
 	c.ViewFrame.ImageColor3 = v.Known and L.Lit or L.Silhouette

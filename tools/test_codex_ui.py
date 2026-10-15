@@ -138,6 +138,14 @@ def run(src: dict) -> tuple[int, int, str]:
 
 
 MUTATIONS = [
+    # A23-195 (10/15): the card pictures
+    ("CODEX", "pose pictures ignored (always the 3D model)", "\tc.PoseSet = CodexUI.Poses(kind)\n", "\tc.PoseSet = nil\n"),
+    ("CODEX", "the tilt never changes the pose", "\tCARD.Aim(c)\n\tCARD.Pose(c)\n", "\tCARD.Aim(c)\n"),
+    ("CODEX", "cool and silly swapped", "\tif x * coolSide > 0 then return 1 - w, w, 0 end\n", "\tif x * coolSide < 0 then return 1 - w, w, 0 end\n"),
+    ("CODEX", "a hard switch instead of a blend", "\tlocal w = t * t * (3 - 2 * t)\n", "\tlocal w = t > 0 and 1 or 0\n"),
+    ("CODEX", "an empty side stays empty", "Silly = CodexUI.ArtId(p.Silly) or base", "Silly = CodexUI.ArtId(p.Silly)"),
+    ("CODEX", "a boss gets its zone's frame", "\tif type(def) == \"table\" and def.Boss == true then return CodexUI.ArtId(frames.Boss) end\n", ""),
+    ("CODEX", "an unmet card's pose in colour", "\t\tp.ImageColor3 = known and L.Lit or L.Silhouette\n", "\t\tp.ImageColor3 = L.Lit\n"),
     ("CODEX", "the saved stage trusted over the kills", "if e and type(Config.CodexStage) == \"function\" then stage = math.max(stage, Config.CodexStage(kind, kills)) end",
      ""),
     ("CODEX", "a boss gets a Gold Foil card", "local canGold = type(Config.CodexCanGold) ~= \"function\" or Config.CodexCanGold(kind)",
