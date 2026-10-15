@@ -5843,6 +5843,22 @@ local function onInputEnded(input)
 	end
 end
 
+-- 최종 검수 10/15 (the textbook: "폰 버튼 터치 범위 넓게"): a phone thumb that lands just off the attack disc still
+-- attacks - within Slack x its radius of its centre, on no other button (the touch reached the world: gameProcessed
+-- false), so the ring buttons around it keep their own taps
+L.NearMiss = { Slack = 1.3 }
+
+-- (pure) is a screen point within slack x the radius of a round button (its absolute rect)?
+function HUD.NearMiss(absPos, absSize, point, slack)
+	if typeof(absPos) ~= "Vector2" or typeof(absSize) ~= "Vector2" or typeof(point) ~= "Vector2" and typeof(point) ~= "Vector3" then
+		return false
+	end
+	local r = math.min(absSize.X, absSize.Y) / 2
+	if r <= 0 then return false end
+	local cx, cy = absPos.X + absSize.X / 2, absPos.Y + absSize.Y / 2
+	return math.sqrt((point.X - cx) ^ 2 + (point.Y - cy) ^ 2) <= r * (tonumber(slack) or 1)
+end
+
 local function bindButtonInput()
 	ui.attack.InputBegan:Connect(function(input)
 		if not isPressInput(input) or input.UserInputState ~= Enum.UserInputState.Begin then return end
@@ -5857,6 +5873,11 @@ local function bindButtonInput()
 				stopHold(input)
 			end
 		end)
+	end)
+	UserInputService.TouchStarted:Connect(function(input, gameProcessed)
+		if gameProcessed or not ui.attack or not ui.attack.Visible or not inputAllowed() then return end
+		if not HUD.NearMiss(ui.attack.AbsolutePosition, ui.attack.AbsoluteSize, input.Position, L.NearMiss.Slack) then return end
+		startHold(input) -- its end: onInputEnded (Touch -> stopHold(input))
 	end)
 	ui.release.InputBegan:Connect(function(input)
 		if not isPressInput(input) or input.UserInputState ~= Enum.UserInputState.Begin then return end

@@ -281,6 +281,121 @@ function ZoneLook.Current()
 	return S.Preview or S.Zone, S.Sky
 end
 
+------------------------------------------------------------------ the PvP edge
+-- 최종 검수 10/15 (the textbook, 'why does this not work?' + GPT 2B): a PvP place shows itself before I walk in - its
+-- edge stands as a soft red curtain while I am outside it and within Near studs (Goblin Woods = the whole zone
+-- PvP = true, the Crown Pit = SkeletonRuins.PvPArea). No words, no rays; the Artisan Guild (no PvP) sees nothing.
+-- Client-only parts in workspace.PvPEdges (no collision, no query), built per edge piece on first approach, each piece
+-- on the ground under it.
+ZoneLook.EDGE = { Folder = "PvPEdges", Near = 45, Piece = 12, Height = 7, Thick = 0.3, Alpha = 0.62,
+	Color = Color3.fromRGB(232, 64, 64), Every = 0.3 }
+
+-- (pure) the PvP rectangles: { { Key, Center, Size } } from Config.Zones (PvP = true) and their PvPArea, season zones
+-- only while the season is on
+function ZoneLook.PvPRects()
+	local out = {}
+	for _, id in type(Config.ZoneOrder) == "table" and Config.ZoneOrder or {} do
+		local z = Config.Zones[id]
+		if type(z) == "table" and (z.Season == nil or (type(Config.SeasonOn) == "function" and Config.SeasonOn(z.Season))) then
+			if z.PvP == true then table.insert(out, { Key = id, Center = z.Center, Size = z.Size }) end
+			local a = z.PvPArea
+			if type(a) == "table" and typeof(a.Center) == "Vector3" and typeof(a.Size) == "Vector3" then
+				table.insert(out, { Key = id .. ":Area", Center = a.Center, Size = a.Size })
+			end
+		end
+	end
+	return out
+end
+
+-- (pure) how far pos is outside a rectangle (studs, on the ground plane; 0 or less = inside)
+function ZoneLook.OutsideBy(rect, pos)
+	local dx = math.abs(pos.X - rect.Center.X) - rect.Size.X / 2
+	local dz = math.abs(pos.Z - rect.Center.Z) - rect.Size.Z / 2
+	if dx <= 0 and dz <= 0 then return math.max(dx, dz) end
+	return math.sqrt(math.max(dx, 0) ^ 2 + math.max(dz, 0) ^ 2)
+end
+
+-- (pure) the rectangles whose edge shows for me now: outside, within Near, a side that fights (not the Guild)
+function ZoneLook.EdgesFor(pos, faction, rects)
+	local out = {}
+	if typeof(pos) ~= "Vector3" or faction == "Neutral" or faction == nil or faction == "" then return out end
+	for _, r in type(rects) == "table" and rects or {} do
+		local d = ZoneLook.OutsideBy(r, pos)
+		if d > 0 and d <= ZoneLook.EDGE.Near then out[r.Key] = true end
+	end
+	return out
+end
+
+local function groundY(x, z)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local ignore = {}
+	local f = workspace:FindFirstChild(ZoneLook.EDGE.Folder)
+	if f then table.insert(ignore, f) end
+	if LocalPlayer.Character then table.insert(ignore, LocalPlayer.Character) end
+	params.FilterDescendantsInstances = ignore
+	local hit = workspace:Raycast(Vector3.new(x, 400, z), Vector3.new(0, -800, 0), params)
+	return hit and hit.Position.Y or 0
+end
+
+-- one rectangle's curtain: pieces along its four sides, each standing on the ground under it
+local function buildEdge(rect, folder)
+	local E = ZoneLook.EDGE
+	local m = Instance.new("Model")
+	m.Name = "Edge_" .. rect.Key
+	local hx, hz = rect.Size.X / 2, rect.Size.Z / 2
+	local sides = {
+		{ A = Vector3.new(-hx, 0, -hz), B = Vector3.new(hx, 0, -hz) }, { A = Vector3.new(hx, 0, -hz), B = Vector3.new(hx, 0, hz) },
+		{ A = Vector3.new(hx, 0, hz), B = Vector3.new(-hx, 0, hz) }, { A = Vector3.new(-hx, 0, hz), B = Vector3.new(-hx, 0, -hz) },
+	}
+	for _, s in sides do
+		local len = (s.B - s.A).Magnitude
+		local n = math.max(1, math.ceil(len / E.Piece))
+		local dir = (s.B - s.A).Unit
+		for i = 1, n do
+			local mid = rect.Center + s.A + dir * ((i - 0.5) * len / n)
+			local p = Instance.new("Part")
+			p.Name = "Piece"
+			-- the piece's length runs along the side (its Z axis = dir), its foot half a stud into the ground
+			local at = Vector3.new(mid.X, groundY(mid.X, mid.Z) + E.Height / 2 - 0.5, mid.Z)
+			p.Size = Vector3.new(E.Thick, E.Height, len / n + 0.05)
+			p.CFrame = CFrame.lookAt(at, at + dir)
+			p.Color, p.Material, p.Transparency = E.Color, Enum.Material.Neon, 1
+			p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+			p.Parent = m
+		end
+	end
+	m.Parent = folder
+	return m
+end
+
+-- one pass: the curtains I am near show (soft), the others hide
+function ZoneLook.RefreshEdges()
+	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+	local rects = ZoneLook.PvPRects()
+	local want = ZoneLook.EdgesFor(root and root.Position, LocalPlayer:GetAttribute("Faction"), rects)
+	local folder = workspace:FindFirstChild(ZoneLook.EDGE.Folder)
+	if next(want) == nil and not folder then return 0 end
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = ZoneLook.EDGE.Folder
+		folder.Parent = workspace
+	end
+	local shown = 0
+	for _, r in rects do
+		local m = folder:FindFirstChild("Edge_" .. r.Key)
+		if want[r.Key] and not m then m = buildEdge(r, folder) end
+		if m then
+			local alpha = want[r.Key] and ZoneLook.EDGE.Alpha or 1
+			for _, p in m:GetChildren() do
+				if p:IsA("BasePart") and p.Transparency ~= alpha then p.Transparency = alpha end
+			end
+			if want[r.Key] then shown += 1 end
+		end
+	end
+	return shown
+end
+
 function ZoneLook.Init() end
 
 function ZoneLook.Start()
@@ -351,6 +466,13 @@ function ZoneLook.Start()
 			if not ok then Util.Warn("ZoneLook", tostring(err)) end
 		end)
 		pcall(onNight)
+	end)
+	task.spawn(function()
+		while true do
+			local ok, err = pcall(ZoneLook.RefreshEdges)
+			if not ok then Util.Warn("ZoneLook", "edges: " .. tostring(err)) end
+			task.wait(ZoneLook.EDGE.Every)
+		end
 	end)
 	print("[ZoneLook] started")
 end
