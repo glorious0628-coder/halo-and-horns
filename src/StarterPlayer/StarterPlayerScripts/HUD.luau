@@ -4122,6 +4122,8 @@ local function parseQuests()
 				TutorialStep = finite(e.TutorialStep, -1),
 				NextGoal = e.NextGoal == true,
 				GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil, -- A23-48: which next goal (QuestTarget.IronGold)
+				-- quest P1 ②: the first mission's guide / teacher (its NpcId): the row walks there, the talk opens the lines
+				GuideNpc = (type(e.GuideNpc) == "string" and e.GuideNpc ~= "") and e.GuideNpc or nil,
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
@@ -5439,6 +5441,23 @@ end
 -- story rows: a talk / choice step reopens its dialogue; otherwise travel + the guide beam to where it happens
 -- = Config.StoryQuests.Landmarks.SlimePond, 3 studs up (QuestTarget pondSpot; tools/test_map_v2.py keeps them equal)
 local STORY_SPOT = { SlimePond = Vector3.new(290, 3, 150) }
+-- the way to a story NPC's body (QuestTarget.StoryNpc): from another zone the Travel window + the zone guide, a walk away
+-- the guide to the NPC itself; false = no body in the world
+function L.NpcWalk(id, zone, panels)
+	local qt = C and C.QuestTarget
+	local npc = type(id) == "string" and type(qt) == "table" and type(qt.StoryNpc) == "function" and qt.StoryNpc(id) or nil
+	if not npc then return false end
+	local npcZone = Config.ZoneAt(npc.Position).Id
+	local name = Config.StoryQuests.Speakers and Config.StoryQuests.Speakers[id] or id
+	if npcZone ~= zone and not (L.ForgeWalk[zone] and L.ForgeWalk[npcZone]) then
+		if panels and panels.Open then panels.Open("Travel") end
+		showGuide(findTravelTarget(npcZone), tostring(name), "zone:" .. npcZone, 30)
+	else
+		showGuide(npc, tostring(name), "story", 30)
+	end
+	return true
+end
+
 function L.StoryTap(st, zone, panels)
 	if st.Panel then
 		-- 빛 마을 점검 #1 / #30: a talk through a town NPC that stands in the world: far from her the tap guides there
@@ -5449,14 +5468,7 @@ function L.StoryTap(st, zone, panels)
 		local char = LocalPlayer.Character
 		local root = char and char:FindFirstChild("HumanoidRootPart")
 		if npc and root and Util.FlatDistance(root.Position, npc.Position) > (tonumber(Config.StoryQuests.NpcRange) or 16) then
-			local npcZone = Config.ZoneAt(npc.Position).Id
-			local name = Config.StoryQuests.Speakers and Config.StoryQuests.Speakers[st.Npc] or st.Npc
-			if npcZone ~= zone and not (L.ForgeWalk[zone] and L.ForgeWalk[npcZone]) then
-				if panels and panels.Open then panels.Open("Travel") end
-				showGuide(findTravelTarget(npcZone), tostring(name), "zone:" .. npcZone, 30)
-			else
-				showGuide(npc, tostring(name), "story", 30)
-			end
+			L.NpcWalk(st.Npc, zone, panels)
 			return
 		end
 		-- B15: my own tap: the server's reply opens the page even mid-fight (auto opens wait for a calm moment)
@@ -5604,6 +5616,13 @@ function L.PinnedTap(e, r)
 	local panels = C and C.Panels
 	if e.Story then
 		L.StoryTap(e.Story, zone, panels)
+		return
+	end
+	-- quest P1 ②: "Talk to Hallie" / "Meet Sir Gleam at the town gate" - the tap only shows the way (the talk opens it)
+	if e.GuideNpc and L.NpcWalk(e.GuideNpc, zone, panels) then return end
+	-- quest P1 ⑤ / A23-193: "Take Sir Gleam's test" / "Learn a skill" -> the way to my side's teacher
+	if step == 99 and e.NextGoal and (e.GoalKind == "SkillTest" or e.GoalKind == "SkillLearn")
+		and L.NpcWalk(attr("SkillTeacher", ""), zone, panels) then
 		return
 	end
 	if step == 0 then

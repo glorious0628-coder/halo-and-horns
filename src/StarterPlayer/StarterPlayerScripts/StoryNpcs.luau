@@ -16,6 +16,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
 local Util = require(Shared:WaitForChild("Util"))
+local Net = require(Shared:WaitForChild("Net"))
 
 local StoryNpcs = {}
 local C = nil
@@ -172,6 +173,561 @@ function StoryNpcs.Mark(model)
 	return bb
 end
 
+-- A23-199: the things to pick up of my open Pickup steps, only while that step is open: a small box on the ground at
+-- the spot, a soft light and round sparkles (no rays), a "Pick up" prompt -> StoryAction(Id, "Pickup"); a step that
+-- closed takes its box away. Client-only parts in workspace.StoryPickups (no collision, no query)
+-- Brush = studs: walking this close picks it up without a press (최종 검수 10/15, the textbook: "줍기는 스쳐도 성공"; the
+-- server still checks its own Radius), Again = s before the same thing is asked for again
+T.Pickup = { Folder = "StoryPickups", Size = Vector3.new(1.4, 0.9, 1.1), Lift = 0.45, Range = 9, Hold = 0, Brush = 5, Again = 1.5,
+	Color = Color3.fromRGB(196, 140, 84), Lid = Color3.fromRGB(235, 95, 85), Light = Color3.fromRGB(255, 225, 150) }
+
+local function groundAt(pos)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local ignore = {}
+	local folder = workspace:FindFirstChild(T.Pickup.Folder)
+	if folder then table.insert(ignore, folder) end
+	local me = game:GetService("Players").LocalPlayer
+	if me and me.Character then table.insert(ignore, me.Character) end
+	params.FilterDescendantsInstances = ignore
+	local hit = workspace:Raycast(Vector3.new(pos.X, pos.Y + 200, pos.Z), Vector3.new(0, -400, 0), params)
+	return hit and hit.Position.Y or pos.Y
+end
+
+------------------------------------------------------------------ quest P1 world (게임성 개발 2 contract, screen part 3~6)
+-- docs/design/quest_p1_server_contract_2026-10-15.md: the dummy of a Practice step (it wobbles when a swing lands near
+-- it), the borrowed practice tool in a bare hand (player attribute PracticeTool), the town lamp of M1_4, the pose spot of
+-- an Emote step with its two buttons, and the scenes (Fx StoryScene) with the ones that stay (attribute StoryFlags).
+-- All client-only parts in workspace.StoryProps: no collision, no query, no art, round glows only (no rays).
+T.World = {
+	Folder = "StoryProps",
+	Dummy = { Post = Color3.fromRGB(122, 84, 52), Body = Color3.fromRGB(214, 178, 120), Band = Color3.fromRGB(196, 62, 58),
+		Height = 4.4, Wobble = 14, Time = 0.45, Pad = 1.5 },
+	Tool = { Name = "HH_PracticeTool", Size = Vector3.new(0.28, 2.8, 0.28), Color = Color3.fromRGB(176, 128, 78),
+		Grip = { 0, -0.15, -1.25, -90 } }, -- the stick from the hand: x, y, z (studs), the tip forward (degrees about X)
+	Ring = { Size = 7, Color = Color3.fromRGB(255, 214, 72), Alpha = 0.45 },
+	Lamp = { Height = 6.5, Pole = Color3.fromRGB(70, 66, 74), Glass = Color3.fromRGB(235, 232, 220),
+		Common = Color3.fromRGB(255, 214, 120), Mine = Color3.fromRGB(196, 150, 255), Range = 18 },
+	Emote = { Gui = "StoryEmoteGui", W = 150, H = 54, Gap = 14, Lift = 214 },
+	Hop = { Height = 1.2, Time = 0.32 },
+	Crown = { Name = "HH_PaperCrown", Color = Color3.fromRGB(250, 236, 190), Size = Vector3.new(1.3, 0.45, 1.3) },
+	Band = { Name = "HH_Band", Color = Color3.fromRGB(255, 120, 150) },
+	MyLight = { Name = "HH_MyLight", Size = 0.5, Offset = Vector3.new(1.6, 2.2, 0) },
+	-- who reacts in each scene (the anchored town bodies hop; Value = the pick), the lamp NPC by side
+	Who = { Bag = "Folk1", Prank = "Tiny", Class = "Tiny", Smith = "Tiny", Alch = "Tiny", Tame = "Tiny", Crown = "Smokey",
+		Band = "Bright" },
+	LampNpc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" },
+	LampSpot = { Halo = "LampH", Horns = "LampR", Neutral = "LampN" },
+}
+local WS = { Tools = {}, Dummies = {}, EmoteFor = nil, Busy = {}, Brushed = {} }
+
+-- (pure) my rows' open steps that happen at a place -> { { Id, Type, Spot, Pos, Radius, Allowed } }: Pickup / Practice /
+-- Emote (Obj.Spot) and the lamp of a step that leads to a Lamp* spot (Obj.Spot or Guide); my side's override first
+function StoryNpcs.Spots(entries, faction)
+	local sq = type(Config.StoryQuests) == "table" and Config.StoryQuests or {}
+	local defs = type(sq.Defs) == "table" and sq.Defs or {}
+	local marks = type(sq.Landmarks) == "table" and sq.Landmarks or {}
+	local out, seen = {}, {}
+	for _, e in type(entries) == "table" and entries or {} do
+		local st = type(e) == "table" and e.Story or nil
+		local def = type(st) == "table" and type(st.Id) == "string" and defs[st.Id] or nil
+		local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(st.St) or 0] or nil
+		if type(step) == "table" and not seen[st.Id] then
+			local over = type(faction) == "string" and step[faction] or nil
+			over = type(over) == "table" and over or {}
+			local obj = (type(over.Obj) == "table" and over.Obj) or step.Obj
+			obj = type(obj) == "table" and obj or {}
+			local t = obj.Type
+			local key = obj.Spot
+			if t ~= "Pickup" and t ~= "Practice" and t ~= "Emote" then
+				local g = over.Guide or step.Guide
+				local lamp = (type(key) == "string" and key) or (type(g) == "string" and g) or ""
+				if string.sub(lamp, 1, 4) == "Lamp" then t, key = "Lamp", lamp else t = nil end
+			end
+			if t and type(key) == "string" and typeof(marks[key]) == "Vector3" then
+				seen[st.Id] = true
+				table.insert(out, { Id = st.Id, Type = t, Spot = key, Pos = marks[key],
+					Radius = tonumber(obj.Radius) or (t == "Emote" and 10 or 8), Allowed = type(obj.Allowed) == "table" and obj.Allowed or nil })
+			end
+		end
+	end
+	return out
+end
+
+-- (pure) the attribute StoryFlags "Crown=Paper,Lamp=Mine" -> { Crown = "Paper", Lamp = "Mine" }
+function StoryNpcs.FlagsOf(text)
+	local out = {}
+	if type(text) ~= "string" then return out end
+	for k, v in string.gmatch(text, "([%w_]+)=([%w_]+)") do out[k] = v end
+	return out
+end
+
+-- (pure) the Pickup step I brush past (within Brush of its spot, never farther than its Radius), else nil
+function StoryNpcs.BrushPickup(spots, pos)
+	if typeof(pos) ~= "Vector3" then return nil end
+	for _, s in type(spots) == "table" and spots or {} do
+		if s.Type == "Pickup" and Util.FlatDistance(pos, s.Pos) <= math.min(T.Pickup.Brush, s.Radius) then return s end
+	end
+	return nil
+end
+
+-- (pure) the Emote step whose spot I stand at, else nil
+function StoryNpcs.EmoteAt(spots, pos)
+	if typeof(pos) ~= "Vector3" then return nil end
+	for _, s in type(spots) == "table" and spots or {} do
+		if s.Type == "Emote" and Util.FlatDistance(pos, s.Pos) <= s.Radius then return s end
+	end
+	return nil
+end
+
+-- (pure) the emote names an Emote step takes, in a fixed order (wave = Good first)
+function StoryNpcs.EmoteNames(spot)
+	local out = {}
+	for name in type(spot) == "table" and type(spot.Allowed) == "table" and spot.Allowed or {} do table.insert(out, name) end
+	table.sort(out, function(a, b) return (spot.Allowed[a] == "Good" and 0 or 1) < (spot.Allowed[b] == "Good" and 0 or 1)
+		or ((spot.Allowed[a] == "Good") == (spot.Allowed[b] == "Good") and a < b) end)
+	return out
+end
+
+local function bare(p)
+	p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+	return p
+end
+
+local function block(name, size, color, cf, parent, shape)
+	local p = bare(Instance.new("Part"))
+	p.Name, p.Size, p.Color, p.Material, p.CFrame = name, size, color, Enum.Material.SmoothPlastic, cf
+	if shape then p.Shape = shape end
+	p.Parent = parent
+	return p
+end
+
+local function sparkle(parent, color, rate)
+	local e = Instance.new("ParticleEmitter")
+	e.Name = "Sparkle"
+	e.Color = ColorSequence.new(color)
+	e.LightEmission, e.Rate = 0.8, rate or 6
+	e.Lifetime = NumberRange.new(0.6, 1.1)
+	e.Speed = NumberRange.new(0.5, 1.5)
+	e.SpreadAngle = Vector2.new(180, 180)
+	e.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.25), NumberSequenceKeypoint.new(1, 0) })
+	e.Parent = parent
+	return e
+end
+
+local function burst(at, color, n)
+	if typeof(at) ~= "Vector3" then return end
+	local folder = workspace:FindFirstChild(T.World.Folder) or workspace
+	local p = block("Burst", Vector3.new(0.2, 0.2, 0.2), color, CFrame.new(at), folder)
+	p.Transparency = 1
+	local e = sparkle(p, color, 0)
+	e.Speed = NumberRange.new(2, 5)
+	e:Emit(n or 18)
+	game:GetService("Debris"):AddItem(p, 2)
+end
+
+local function propFolder()
+	local f = workspace:FindFirstChild(T.World.Folder)
+	if not f then
+		f = Instance.new("Folder")
+		f.Name = T.World.Folder
+		f.Parent = workspace
+	end
+	return f
+end
+
+-- the practice dummy: a post, a straw body with a red band, a round head; its base is its pivot (it wobbles about it)
+local function makeDummy(s)
+	local D = T.World.Dummy
+	local m = Instance.new("Model")
+	local y = groundAt(s.Pos)
+	local base = CFrame.new(s.Pos.X, y, s.Pos.Z)
+	local post = block("Post", Vector3.new(0.35, D.Height, 0.35), D.Post, base * CFrame.new(0, D.Height / 2, 0), m)
+	block("Body", Vector3.new(1.6, 2, 0.9), D.Body, base * CFrame.new(0, D.Height * 0.62, 0), m)
+	block("Band", Vector3.new(1.65, 0.3, 0.95), D.Band, base * CFrame.new(0, D.Height * 0.62, 0), m)
+	block("Arms", Vector3.new(3, 0.35, 0.35), D.Post, base * CFrame.new(0, D.Height * 0.72, 0), m)
+	block("Head", Vector3.new(1.1, 1.1, 1.1), D.Body, base * CFrame.new(0, D.Height + 0.45, 0), m, Enum.PartType.Ball)
+	m.PrimaryPart = post
+	m:SetAttribute("Base", base)
+	return m
+end
+
+-- one wobble: tipped away and back, about its base (the Swing Fx's contact moment)
+function StoryNpcs.Wobble(m)
+	if WS.Busy[m] or not (m and m.Parent) then return false end
+	local base = m:GetAttribute("Base")
+	if typeof(base) ~= "CFrame" then return false end
+	WS.Busy[m] = true
+	local pivot = m:GetPivot()
+	local rel = base:Inverse() * pivot
+	local D = T.World.Dummy
+	task.spawn(function()
+		local t0 = os.clock()
+		while os.clock() - t0 < D.Time and m.Parent do
+			local k = (os.clock() - t0) / D.Time
+			local a = math.sin(k * math.pi * 3) * (1 - k) * math.rad(D.Wobble)
+			m:PivotTo(base * CFrame.Angles(a, 0, a * 0.4) * rel)
+			task.wait()
+		end
+		if m.Parent then m:PivotTo(pivot) end
+		WS.Busy[m] = nil
+	end)
+	return true
+end
+
+-- the town lamp: a pole and a round glass; lit = a warm (Common) or my own violet (Mine) light
+local function makeLamp(s)
+	local L = T.World.Lamp
+	local m = Instance.new("Model")
+	local base = CFrame.new(s.Pos.X, groundAt(s.Pos), s.Pos.Z)
+	block("Pole", Vector3.new(0.4, L.Height, 0.4), L.Pole, base * CFrame.new(0, L.Height / 2, 0), m)
+	local glass = block("Glass", Vector3.new(1.4, 1.4, 1.4), L.Glass, base * CFrame.new(0, L.Height + 0.5, 0), m, Enum.PartType.Ball)
+	glass.Material = Enum.Material.Glass
+	glass.Transparency = 0.2
+	local light = Instance.new("PointLight")
+	light.Name = "Light"
+	light.Range, light.Brightness, light.Enabled = L.Range, 1.6, false
+	light.Parent = glass
+	m.PrimaryPart = glass
+	return m
+end
+
+local function lightLamp(m, value)
+	local glass = m and m:FindFirstChild("Glass")
+	local light = glass and glass:FindFirstChild("Light")
+	if not light then return end
+	local L = T.World.Lamp
+	local col = value == "Mine" and L.Mine or value == "Common" and L.Common or nil
+	light.Enabled = col ~= nil
+	if col then
+		light.Color = col
+		glass.Color = col
+		glass.Material = Enum.Material.Neon
+	end
+end
+
+-- the pose spot: a soft gold ring on the ground (round, never rays)
+local function makeRing(s)
+	local R = T.World.Ring
+	local m = Instance.new("Model")
+	local disc = block("Ring", Vector3.new(0.15, R.Size, R.Size), R.Color,
+		CFrame.new(s.Pos.X, groundAt(s.Pos) + 0.08, s.Pos.Z) * CFrame.Angles(0, 0, math.rad(90)), m, Enum.PartType.Cylinder)
+	disc.Material, disc.Transparency = Enum.Material.Neon, R.Alpha
+	sparkle(disc, R.Color, 3)
+	m.PrimaryPart = disc
+	return m
+end
+
+local MAKE = { Practice = makeDummy, Lamp = makeLamp, Emote = makeRing }
+
+-- the props follow my open steps (made once per step and kind, removed when it closes); my side's lamp stays while the
+-- Lamp flag is set (it keeps its light)
+function StoryNpcs.DrawProps(spots, flags, faction)
+	local want = {}
+	for _, s in type(spots) == "table" and spots or {} do
+		if MAKE[s.Type] then want[s.Id .. ":" .. s.Type] = s end
+	end
+	local lampKey = T.World.LampSpot[faction or ""]
+	local marks = type(Config.StoryQuests.Landmarks) == "table" and Config.StoryQuests.Landmarks or {}
+	if flags and flags.Lamp and lampKey and typeof(marks[lampKey]) == "Vector3" and not want["Lamp:Lamp"] then
+		local own = false
+		for _, s in want do if s.Type == "Lamp" then own = true end end
+		if not own then want["Lamp:Lamp"] = { Id = "Lamp", Type = "Lamp", Spot = lampKey, Pos = marks[lampKey] } end
+	end
+	local folder = workspace:FindFirstChild(T.World.Folder)
+	if next(want) == nil and not folder then return 0 end
+	folder = folder or propFolder()
+	for _, m in folder:GetChildren() do
+		local key = m:GetAttribute("PropKey")
+		if key ~= nil then
+			if not want[key] then m:Destroy() else want[key] = false end
+		end
+	end
+	for key, s in want do
+		if s then
+			local m = MAKE[s.Type](s)
+			m.Name = "Prop_" .. key
+			m:SetAttribute("PropKey", key)
+			m:SetAttribute("PropType", s.Type)
+			m.Parent = folder
+		end
+	end
+	local n = 0
+	for _, m in folder:GetChildren() do
+		if m:GetAttribute("PropType") == "Lamp" then lightLamp(m, flags and flags.Lamp) end
+		if m:GetAttribute("PropKey") ~= nil then n += 1 end
+	end
+	return n
+end
+
+-- the Swing Fx (anyone's): a swing whose reach touches a dummy makes it wobble at the contact moment
+function StoryNpcs.OnSwing(data)
+	local folder = workspace:FindFirstChild(T.World.Folder)
+	if not folder or type(data) ~= "table" or typeof(data.Pos) ~= "Vector3" then return 0 end
+	local reach = (tonumber(data.Radius) or 4) + T.World.Dummy.Pad
+	local n = 0
+	for _, m in folder:GetChildren() do
+		local base = m:GetAttribute("Base")
+		if m:GetAttribute("PropType") == "Practice" and typeof(base) == "CFrame" and Util.FlatDistance(data.Pos, base.Position) <= reach then
+			n += 1
+			task.delay(math.max(0, tonumber(data.ContactDelay) or 0.1), function() StoryNpcs.Wobble(m) end)
+		end
+	end
+	return n
+end
+
+-- the borrowed practice tool: a wooden stick in the right hand of each player whose PracticeTool is set and who holds
+-- no weapon (A23-34: bare-handed); taken away when it is cleared
+function StoryNpcs.DrawTools()
+	local TL = T.World.Tool
+	local n = 0
+	for _, p in game:GetService("Players"):GetPlayers() do
+		local char = p.Character
+		local id = p:GetAttribute("PracticeTool")
+		local hand = char and (char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm"))
+		local old = char and char:FindFirstChild(TL.Name)
+		local want = type(id) == "string" and id ~= "" and hand ~= nil and char:FindFirstChildOfClass("Tool") == nil
+		if not want then
+			if old then old:Destroy() end
+		elseif not old then
+			local stick = Instance.new("Part")
+			stick.Name, stick.Size, stick.Color, stick.Material = TL.Name, TL.Size, TL.Color, Enum.Material.Wood
+			stick.Anchored, stick.CanCollide, stick.CanQuery, stick.CanTouch, stick.Massless = false, false, false, false, true
+			local g = TL.Grip
+			stick.CFrame = hand.CFrame * CFrame.new(g[1], g[2], g[3]) * CFrame.Angles(math.rad(g[4]), 0, 0)
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0, weld.Part1 = hand, stick
+			weld.Parent = stick
+			stick.Parent = char
+			n += 1
+		else
+			n += 1
+		end
+	end
+	return n
+end
+
+-- the emote buttons of the Emote step I stand at (two art buttons over the skill row; my side's look by the pick:
+-- wave = Good, cheer = Evil). A press plays the free Roblox emote and tells the server the name.
+local function emoteGui()
+	local me = game:GetService("Players").LocalPlayer
+	local pg = me and me:FindFirstChildOfClass("PlayerGui")
+	if not pg then return nil end
+	local gui = pg:FindFirstChild(T.World.Emote.Gui)
+	if gui then return gui end
+	gui = Instance.new("ScreenGui")
+	gui.Name = T.World.Emote.Gui
+	gui.ResetOnSpawn = false
+	gui.Enabled = false
+	gui.Parent = pg
+	local row = Instance.new("Frame")
+	row.Name = "Row"
+	row.BackgroundTransparency = 1
+	row.AnchorPoint = Vector2.new(0.5, 1)
+	row.Position = UDim2.new(0.5, 0, 1, -T.World.Emote.Lift)
+	row.Size = UDim2.fromOffset(T.World.Emote.W * 2 + T.World.Emote.Gap, T.World.Emote.H)
+	row.Parent = gui
+	local list = Instance.new("UIListLayout")
+	list.FillDirection = Enum.FillDirection.Horizontal
+	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	list.Padding = UDim.new(0, T.World.Emote.Gap)
+	list.Parent = row
+	return gui
+end
+
+function StoryNpcs.PlayEmote(name)
+	local me = game:GetService("Players").LocalPlayer
+	local animate = me and me.Character and me.Character:FindFirstChild("Animate")
+	local play = animate and animate:FindFirstChild("PlayEmote")
+	if play and play:IsA("BindableFunction") then
+		local ok, done = pcall(function() return play:Invoke(name) end)
+		return ok and done == true
+	end
+	return false
+end
+
+function StoryNpcs.SendEmote(id, name)
+	if WS.SentAt and os.clock() - WS.SentAt < 1 then return false end
+	WS.SentAt = os.clock()
+	pcall(StoryNpcs.PlayEmote, name)
+	local ok, remote = pcall(function() return game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):FindFirstChild("StoryAction") end)
+	if ok and remote then remote:FireServer(id, "Emote", name) end
+	return true
+end
+
+function StoryNpcs.DrawEmote(spot)
+	local key = spot and (spot.Id .. "|" .. table.concat(StoryNpcs.EmoteNames(spot), ",")) or nil
+	if key == WS.EmoteFor then return key ~= nil end
+	WS.EmoteFor = key
+	local gui = emoteGui()
+	if not gui then return false end
+	local row = gui:FindFirstChild("Row")
+	for _, ch in row:GetChildren() do
+		if ch:IsA("GuiButton") then ch:Destroy() end
+	end
+	gui.Enabled = spot ~= nil
+	if not spot then return false end
+	local ui = C and C.UIKit
+	local words = type(Config.StoryQuests.Text) == "table" and Config.StoryQuests.Text or {}
+	for i, name in StoryNpcs.EmoteNames(spot) do
+		local text = words["Emote" .. string.upper(string.sub(name, 1, 1)) .. string.sub(name, 2)] or name
+		local art = spot.Allowed[name] == "Good" and "BtnKind" or "BtnSneaky"
+		local props = { Name = "Emote_" .. name, Text = text, TextSize = 20, LayoutOrder = i,
+			Size = UDim2.fromOffset(T.World.Emote.W, T.World.Emote.H) }
+		local b = nil
+		if type(ui) == "table" and type(ui.ArtTextButton) == "function" then
+			b = ui.ArtTextButton(art, props, function() StoryNpcs.SendEmote(spot.Id, name) end)
+		else
+			b = Instance.new("TextButton")
+			for k, v in props do b[k] = v end
+			b.Activated:Connect(function() StoryNpcs.SendEmote(spot.Id, name) end)
+		end
+		b.Parent = row
+	end
+	return true
+end
+
+-- a town body by NpcId (the StoryNpc tag)
+function StoryNpcs.Body(id)
+	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
+	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
+	if not ok then return nil end
+	for _, m in list do
+		if typeof(m) == "Instance" and m:IsA("Model") and m:GetAttribute("NpcId") == id and m:IsDescendantOf(workspace) then return m end
+	end
+	return nil
+end
+
+-- an anchored town body hops (n times) with a round burst over its head; lunge = a step forward and back (the demo swing)
+function StoryNpcs.Hop(id, n, lunge)
+	local m = StoryNpcs.Body(id)
+	if not m or WS.Busy[m] then return false end
+	WS.Busy[m] = true
+	local home = m:GetPivot()
+	local H = T.World.Hop
+	task.spawn(function()
+		for _ = 1, math.max(1, n or 1) do
+			local t0 = os.clock()
+			while os.clock() - t0 < H.Time and m.Parent do
+				local k = (os.clock() - t0) / H.Time
+				local off = lunge and CFrame.new(0, 0, -math.sin(k * math.pi) * 1.5) or CFrame.new(0, math.sin(k * math.pi) * H.Height, 0)
+				m:PivotTo(home * off)
+				task.wait()
+			end
+		end
+		if m.Parent then m:PivotTo(home) end
+		WS.Busy[m] = nil
+	end)
+	local head = m:FindFirstChild("Head")
+	burst(head and head.Position + Vector3.new(0, 1.5, 0) or home.Position, T.Gold, 14)
+	return true
+end
+
+-- the looks that stay from my flags: the paper crown on my head (Crown=Paper), Bright's band (Band=Show), my own small
+-- light by my shoulder (Lamp=Mine); the lamp itself is DrawProps'
+function StoryNpcs.ApplyFlags(flags)
+	flags = type(flags) == "table" and flags or {}
+	local me = game:GetService("Players").LocalPlayer
+	local char = me and me.Character
+	local head = char and char:FindFirstChild("Head")
+	local WC, WB, WL = T.World.Crown, T.World.Band, T.World.MyLight
+	if head then
+		local crown = char:FindFirstChild(WC.Name)
+		if flags.Crown == "Paper" and not crown then
+			crown = Instance.new("Part")
+			crown.Name, crown.Size, crown.Color, crown.Material = WC.Name, WC.Size, WC.Color, Enum.Material.SmoothPlastic
+			crown.Shape = Enum.PartType.Cylinder
+			crown.Anchored, crown.CanCollide, crown.CanQuery, crown.CanTouch, crown.Massless = false, false, false, false, true
+			crown.CFrame = head.CFrame * CFrame.new(0, head.Size.Y / 2 + WC.Size.X / 2 - 0.1, 0) * CFrame.Angles(0, 0, math.rad(90))
+			local w = Instance.new("WeldConstraint")
+			w.Part0, w.Part1 = head, crown
+			w.Parent = crown
+			crown.Parent = char
+		elseif flags.Crown ~= "Paper" and crown then
+			crown:Destroy()
+		end
+		local orb = char:FindFirstChild(WL.Name)
+		if flags.Lamp == "Mine" and not orb then
+			orb = Instance.new("Part")
+			orb.Name, orb.Shape, orb.Size, orb.Color = WL.Name, Enum.PartType.Ball, Vector3.one * WL.Size, T.World.Lamp.Mine
+			orb.Material, orb.Transparency = Enum.Material.Neon, 0.15
+			orb.Anchored, orb.CanCollide, orb.CanQuery, orb.CanTouch, orb.Massless = false, false, false, false, true
+			orb.CFrame = head.CFrame * CFrame.new(WL.Offset)
+			local light = Instance.new("PointLight")
+			light.Color, light.Range, light.Brightness = T.World.Lamp.Mine, 8, 1
+			light.Parent = orb
+			local w = Instance.new("WeldConstraint")
+			w.Part0, w.Part1 = head, orb
+			w.Parent = orb
+			orb.Parent = char
+		elseif flags.Lamp ~= "Mine" and orb then
+			orb:Destroy()
+		end
+	end
+	local bright = StoryNpcs.Body(T.World.Who.Band)
+	local hand = bright and (bright:FindFirstChild("LeftHand") or bright:FindFirstChild("Left Arm"))
+	if hand then
+		local band = bright:FindFirstChild(WB.Name)
+		if flags.Band == "Show" and not band then
+			band = block(WB.Name, Vector3.new(hand.Size.X + 0.12, 0.25, hand.Size.Z + 0.12), WB.Color, hand.CFrame * CFrame.new(0, hand.Size.Y * 0.3, 0), bright)
+			band.Material = Enum.Material.Neon
+		elseif flags.Band ~= "Show" and band then
+			band:Destroy()
+		end
+	end
+end
+
+-- Fx StoryScene { Id, Key, Value }: the moment a pick is written (never a reward). Demo = the teacher's one swing.
+function StoryNpcs.Scene(data)
+	if type(data) ~= "table" or type(data.Key) ~= "string" then return false end
+	local key, value = data.Key, data.Value
+	local me = game:GetService("Players").LocalPlayer
+	local root = me and me.Character and me.Character:FindFirstChild("HumanoidRootPart")
+	if key == "Demo" then
+		return StoryNpcs.Hop(tostring(value or ""), 1, true)
+	elseif key == "Help" then
+		return StoryNpcs.Hop(T.World.Who[value] or "Tiny", value == "Bag" and 1 or 2)
+	elseif key == "Crown" then
+		if value == "Paper" then StoryNpcs.Hop(T.World.Who.Crown, 2) end -- Rose laughs at the paper crown
+		if root then burst(root.Position + Vector3.new(0, 3, 0), T.Gold, 16) end
+		return true
+	elseif key == "Band" then
+		return StoryNpcs.Hop(T.World.Who.Band, value == "Hide" and 1 or 2)
+	elseif key == "Lamp" then
+		local f = me and me:GetAttribute("Faction")
+		local folder = workspace:FindFirstChild(T.World.Folder)
+		for _, m in folder and folder:GetChildren() or {} do
+			if m:GetAttribute("PropType") == "Lamp" then
+				lightLamp(m, value)
+				local glass = m:FindFirstChild("Glass")
+				if glass then burst(glass.Position, value == "Mine" and T.World.Lamp.Mine or T.World.Lamp.Common, 22) end
+			end
+		end
+		if value == "Common" then StoryNpcs.Hop("Folk1", 1) end -- the neighbours wave
+		StoryNpcs.Hop(T.World.LampNpc[f or ""] or "Bright", 1)
+		return true
+	end
+	return false
+end
+
+-- one pass of the world pieces (Refresh calls it)
+function StoryNpcs.RefreshWorld(entries, me)
+	local spots = StoryNpcs.Spots(entries, me:GetAttribute("Faction"))
+	local flags = StoryNpcs.FlagsOf(me:GetAttribute("StoryFlags"))
+	pcall(StoryNpcs.DrawProps, spots, flags, me:GetAttribute("Faction"))
+	pcall(StoryNpcs.DrawTools)
+	pcall(StoryNpcs.ApplyFlags, flags)
+	local root = me.Character and me.Character:FindFirstChild("HumanoidRootPart")
+	pcall(StoryNpcs.DrawEmote, StoryNpcs.EmoteAt(spots, root and root.Position))
+	-- walking over a thing to pick up takes it (once per Again s; the server checks the step and the distance)
+	local brush = StoryNpcs.BrushPickup(spots, root and root.Position)
+	if brush and os.clock() - (WS.Brushed[brush.Id] or -math.huge) >= T.Pickup.Again then
+		WS.Brushed[brush.Id] = os.clock()
+		local ok, remote = pcall(function() return game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):FindFirstChild("StoryAction") end)
+		if ok and remote then remote:FireServer(brush.Id, "Pickup") end
+	end
+end
+
 -- one pass: the "!" and the Talk prompt of each story NPC follow my rows
 function StoryNpcs.Refresh()
 	local hud = C and C.HUD
@@ -195,6 +751,7 @@ function StoryNpcs.Refresh()
 		marks = StoryNpcs.Marks(entries, StoryNpcs.Offers(me:GetAttribute("StoryOffers")),
 			(type(teacher) == "string" and teacher ~= "" and ready > slots) and teacher or nil)
 		pcall(StoryNpcs.DrawPickups, StoryNpcs.Pickups(entries, me:GetAttribute("Faction")))
+		pcall(StoryNpcs.RefreshWorld, entries, me) -- quest P1: dummies, practice tools, the lamp, the pose spot, saved looks
 	end
 	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
 	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
@@ -213,25 +770,6 @@ function StoryNpcs.Refresh()
 			end
 		end
 	end
-end
-
--- A23-199: the things to pick up of my open Pickup steps, only while that step is open: a small box on the ground at
--- the spot, a soft light and round sparkles (no rays), a "Pick up" prompt -> StoryAction(Id, "Pickup"); a step that
--- closed takes its box away. Client-only parts in workspace.StoryPickups (no collision, no query)
-T.Pickup = { Folder = "StoryPickups", Size = Vector3.new(1.4, 0.9, 1.1), Lift = 0.45, Range = 9, Hold = 0,
-	Color = Color3.fromRGB(196, 140, 84), Lid = Color3.fromRGB(235, 95, 85), Light = Color3.fromRGB(255, 225, 150) }
-
-local function groundAt(pos)
-	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Exclude
-	local ignore = {}
-	local folder = workspace:FindFirstChild(T.Pickup.Folder)
-	if folder then table.insert(ignore, folder) end
-	local me = game:GetService("Players").LocalPlayer
-	if me and me.Character then table.insert(ignore, me.Character) end
-	params.FilterDescendantsInstances = ignore
-	local hit = workspace:Raycast(Vector3.new(pos.X, pos.Y + 200, pos.Z), Vector3.new(0, -400, 0), params)
-	return hit and hit.Position.Y or pos.Y
 end
 
 local function makePickup(p)
@@ -334,6 +872,17 @@ function StoryNpcs.Start()
 	pcall(function()
 		game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt)
 			if not StoryNpcs.OnPickup(prompt) then StoryNpcs.OnPrompt(prompt) end
+		end)
+	end)
+	-- quest P1: a swing near a dummy wobbles it; a scene plays the moment a pick is written
+	pcall(function()
+		Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
+			if kind == "Swing" then
+				pcall(StoryNpcs.OnSwing, data)
+			elseif kind == "StoryScene" then
+				pcall(StoryNpcs.Scene, data)
+				task.defer(function() pcall(StoryNpcs.Refresh) end)
+			end
 		end)
 	end)
 	-- a quest list change shows / hides at once (the pass above catches NPCs that arrive later)

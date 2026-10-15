@@ -3266,8 +3266,18 @@ function STORY.PayloadReward(r)
 	return out
 end
 
--- the reward row: each icon with its number ("+N", numbers only)
-function STORY.RewardRow(parent, list)
+-- A23-207 (pure): a Difficulty -> { Color, Stars } by the weapon grade rule (Config.StoryQuests.DifficultyGrade ->
+-- Config.WeaponGrades); nil = no difficulty (then the plain row)
+function STORY.DifficultyLook(diff)
+	local map = type(Config.StoryQuests.DifficultyGrade) == "table" and Config.StoryQuests.DifficultyGrade or {}
+	local g = type(diff) == "string" and type(Config.WeaponGrades) == "table" and Config.WeaponGrades[map[diff] or ""] or nil
+	if type(g) ~= "table" or typeof(g.Color) ~= "Color3" then return nil end
+	return { Color = g.Color, Stars = math.max(1, math.floor(tonumber(g.Stars) or 1)) }
+end
+
+-- the reward row: each icon with its number ("+N", numbers only); look = STORY.DifficultyLook: each icon framed in its
+-- colour and its stars after the last one
+function STORY.RewardRow(parent, list, look)
 	if #list == 0 or not UIKit or type(UIKit.ItemIcon) ~= "function" then return nil end
 	local row = addRow(parent, STORY.Reward.H, STORY.Reward.Gap)
 	row.Name = "OfferReward"
@@ -3287,6 +3297,12 @@ function STORY.RewardRow(parent, list)
 		if icon then
 			icon.LayoutOrder = 1
 			icon.Parent = cell
+			if look then
+				local rim = Instance.new("UIStroke")
+				rim.Name = "Difficulty"
+				rim.Color, rim.Thickness, rim.ApplyStrokeMode = look.Color, 3, Enum.ApplyStrokeMode.Border
+				rim.Parent = icon
+			end
 		end
 		local num = addText(cell, "+" .. Util.FormatInt(r.N), { Name = "N", Size = 20, Color = theme.Gold,
 			Width = UDim2.new(0, 0, 0, STORY.Reward.H) })
@@ -3294,6 +3310,13 @@ function STORY.RewardRow(parent, list)
 		num.TextWrapped = false
 		num.LayoutOrder = 2
 		cell.Parent = row
+	end
+	if look then
+		local stars = addText(row, string.rep("★", look.Stars), { Name = "DifficultyStars", Size = 20, Color = look.Color,
+			Width = UDim2.new(0, 0, 0, STORY.Reward.H) })
+		stars.AutomaticSize = Enum.AutomaticSize.X
+		stars.TextWrapped = false
+		stars.LayoutOrder = #list + 1
 	end
 	return row
 end
@@ -3460,7 +3483,8 @@ BUILDERS.Offer = function(parent)
 	TYPE.Tap(typing, line)
 	local pageLabel = addText(talk, "", { Name = "OfferPage", Size = 15, Color = theme.SubText, Align = align })
 	-- §15 P1 ①: what helping pays - the server's own numbers when it sends them, else Config's at my level
-	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)))
+	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)),
+		STORY.DifficultyLook(def.Difficulty)) -- A23-207: harder = its colour and stars
 	local actions = addRow(parent, 64, 10)
 	local last = function() return page >= #v.Lines end
 	local update

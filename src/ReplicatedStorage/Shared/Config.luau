@@ -3337,6 +3337,7 @@ Config.StoryQuests = {
 		Later = "Later",
 		-- A23-199: an NPC's request (the Offer window) and a thing to pick up (a Pickup step's prompt)
 		OfferAccept = "Sure!", OfferDecline = "Not now", Pickup = "Pick up",
+		EmoteCheer = "Cheer!", EmoteWave = "Wave", -- quest P1 ⑥: an Emote step's buttons at its spot (Emote + the name)
 		Title = "%s · %s",
 		ChoiceGold = "+%s gold", -- E6: a pick's own reward line ("+Enhance Scroll 70%" / "+HP Potion ×3 · +60 gold")
 		LeanGood = "Your shard leaned to the light.", -- E5: a 0-point pick (no score)
@@ -4707,6 +4708,9 @@ Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
 -- P1 ⑦ the lamps of the first chapter's ending (a placed StoryLandmark model with the same Spot moves them)
 Config.StoryQuests.Landmarks.LampH = Vector3.new(30, 0, -440)
 Config.StoryQuests.Landmarks.LampR = Vector3.new(-30, 0, 440)
+-- A23-207: a request's Difficulty shows as its reward icons' frame colour and stars, by the weapon grade rule
+-- (Config.WeaponGrades: Easy = Common 1 star ... Challenge = Epic 4 stars); no words (A23-191)
+Config.StoryQuests.DifficultyGrade = { Easy = "Common", Normal = "Fine", Hard = "Rare", Challenge = "Epic" }
 Config.StoryQuests.Landmarks.LampN = Vector3.new(-20, 0, -20)
 for _, e in Config.TownNpcs.List do
 	if e.Id == "Folk1" then
