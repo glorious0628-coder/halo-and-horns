@@ -10260,6 +10260,30 @@ Config.Codex = {
 	-- 최종 검수 10/13: the 3D card models the codex window draws (게임성 개발 1): ReplicatedStorage[ModelFolder][kind], copied at
 	-- the server's start from ServerStorage.CustomModels by MonsterService's rule (the kind's own model, else its ModelFrom)
 	ModelFolder = "CodexModels",
+	-- A23-195 (user 10/15): the card picture in layers - a card frame per zone (Frames: the meadow / woods / ruins pages,
+	-- Boss = the field bosses' gold one; the name plate and the top-left circle where the card draws them now) under the
+	-- monster's 3 see-through pose pictures (Poses[kind]: Base = the middle, Cool = tilted to the CoolSide, Silly = the
+	-- other side; the tilt blends them softly between Blend.From and Blend.To of |tilt|), the holo sheen / sparkles on top
+	-- (code). An id is "rbxassetid://N" (or N). Empty = today's look: no Base = the 3D model; no Cool / Silly = Base;
+	-- no frame = the PanelCard plate. Pictures: 최종 검수 (design order)
+	Art = {
+		Frames = { SlimeMeadow = "", GoblinWoods = "", SkeletonRuins = "", Boss = "" },
+		Poses = {
+			Slime = { Base = "", Cool = "", Silly = "" },
+			FlowerSlime = { Base = "", Cool = "", Silly = "" },
+			BigSlime = { Base = "", Cool = "", Silly = "" },
+			SlimeKing = { Base = "", Cool = "", Silly = "" },
+			Goblin = { Base = "", Cool = "", Silly = "" },
+			SlingshotGoblin = { Base = "", Cool = "", Silly = "" },
+			GoblinBrute = { Base = "", Cool = "", Silly = "" },
+			Skeleton = { Base = "", Cool = "", Silly = "" },
+			SkeletonArcher = { Base = "", Cool = "", Silly = "" },
+			SkeletonKnight = { Base = "", Cool = "", Silly = "" },
+			CaptainClatter = { Base = "", Cool = "", Silly = "" },
+		},
+		CoolSide = 1, -- tilt X > 0 (the mouse on the card's right) = Cool, < 0 = Silly
+		Blend = { From = 0.2, To = 0.75 },
+	},
 	Text = {
 		Name = "Monster Codex",
 		Card = "New card: %s!", -- (the monster's Short name)
