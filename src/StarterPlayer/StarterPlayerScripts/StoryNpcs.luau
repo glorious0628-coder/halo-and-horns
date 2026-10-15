@@ -28,6 +28,10 @@ local T = {
 	MarkLift = 2.4, -- studs over the head
 	MarkDistance = 90, -- studs: the "!" shows within this distance
 	Gold = Color3.fromRGB(255, 214, 72),
+	-- 퀘스트 바이블 §15 P1 ② (10/15): '!' = something to start / do here, '?' = something to hand in here (wins over
+	-- '!'); the main story's mark is gold with a star behind it (told apart by shape too, not by colour alone), the
+	-- others white
+	White = Color3.fromRGB(245, 245, 250), Done = "?", StarArt = "Star", StarScale = 1.25,
 }
 -- 검수 10/10 (main Play: seven "!" stacked under Bright): the mark is found ON the model (its child StoryNpcMark), never
 -- in a weak table - a weak-keyed Instance entry is dropped once Lua holds no reference, so every pass made a new one
@@ -76,6 +80,48 @@ function StoryNpcs.Pickups(entries, faction)
 	return out
 end
 
+-- 퀘스트 바이블 §15 P1 ② (pure): each NPC's mark from my rows and requests -> { [npcId] = { Text = "!" | "?", Main } }.
+-- A row through her whose open step finishes the quest there (its last step, or a Deliver) = "?"; any other step
+-- through her = "!"; a request for me (StoryOffers) = "!"; a skill waiting at the teacher = "!" (main: it is the growth
+-- path). "?" wins over "!", Main over side
+function StoryNpcs.Marks(entries, offers, teacher)
+	local defs = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Defs) == "table" and Config.StoryQuests.Defs or {}
+	local out = {}
+	local function put(id, done, main)
+		if type(id) ~= "string" or id == "" then return end
+		local m = out[id] or { Text = T.MarkText, Main = false }
+		if done then m.Text = T.Done end
+		if main then m.Main = true end
+		out[id] = m
+	end
+	for _, e in type(entries) == "table" and entries or {} do
+		local st = type(e) == "table" and e.Story or nil
+		if type(st) == "table" and type(st.Npc) == "string" and st.Npc ~= "" then
+			local def = type(st.Id) == "string" and defs[st.Id] or nil
+			local steps = type(def) == "table" and type(def.Steps) == "table" and def.Steps or {}
+			local n = tonumber(st.St) or 0
+			local step = steps[n]
+			local obj = type(step) == "table" and step.Obj or nil
+			local done = (n >= #steps and #steps > 0) or (type(obj) == "table" and obj.Type == "Deliver")
+			put(st.Npc, done, e.Kind == "Main")
+		end
+	end
+	for id in type(offers) == "table" and offers or {} do put(id, false, false) end
+	if type(teacher) == "string" then put(teacher, false, true) end
+	return out
+end
+
+-- the mark's look: its sign, gold + star for the main story, white otherwise
+function StoryNpcs.Paint(bb, mark)
+	local label = bb and bb:FindFirstChild("Mark")
+	if not (label and mark) then return end
+	if label.Text ~= mark.Text then label.Text = mark.Text end
+	local col = mark.Main and T.Gold or T.White
+	if label.TextColor3 ~= col then label.TextColor3 = col end
+	local star = bb:FindFirstChild("Star")
+	if star then star.Visible = mark.Main == true end
+end
+
 -- the model's one "!" (made once; extra copies from older passes are removed)
 function StoryNpcs.Mark(model)
 	local bb = nil
@@ -115,7 +161,13 @@ function StoryNpcs.Mark(model)
 	label.TextScaled = true
 	label.TextColor3 = T.Gold
 	label.TextStrokeTransparency = 0.2
+	label.ZIndex = 2
 	label.Parent = bb
+	-- the main story's star behind the sign (approved art "Star"; none = the gold sign alone)
+	local star = type(ui) == "table" and type(ui.ArtImage) == "function" and ui.ArtImage(T.StarArt, { Name = "Star",
+		AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(T.StarScale, T.StarScale),
+		ImageColor3 = T.Gold, ImageTransparency = 0.25, ZIndex = 1, Visible = false }) or nil
+	if star then star.Parent = bb end
 	bb.Parent = model
 	return bb
 end
@@ -133,12 +185,15 @@ function StoryNpcs.Refresh()
 	-- attributes SkillLearnReady > SkillSlots, SkillTeacher = the NpcId), so the "!" shows and the Talk press reaches
 	-- SkillService.TryLearn
 	local me = game:GetService("Players").LocalPlayer
+	local marks = {}
 	if me then
 		local teacher = me:GetAttribute("SkillTeacher")
 		local ready, slots = tonumber(me:GetAttribute("SkillLearnReady")) or 0, tonumber(me:GetAttribute("SkillSlots")) or 0
 		if type(teacher) == "string" and teacher ~= "" and ready > slots then called[teacher] = true end
 		-- A23-199: an NPC with a request for me shows the "!" and her Talk prompt (the press opens the Offer window)
 		for id in StoryNpcs.Offers(me:GetAttribute("StoryOffers")) do called[id] = true end
+		marks = StoryNpcs.Marks(entries, StoryNpcs.Offers(me:GetAttribute("StoryOffers")),
+			(type(teacher) == "string" and teacher ~= "" and ready > slots) and teacher or nil)
 		pcall(StoryNpcs.DrawPickups, StoryNpcs.Pickups(entries, me:GetAttribute("Faction")))
 	end
 	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
@@ -149,7 +204,10 @@ function StoryNpcs.Refresh()
 			local id = model:GetAttribute("NpcId")
 			local on = type(id) == "string" and called[id] == true
 			local bb = StoryNpcs.Mark(model)
-			if bb then bb.Enabled = on end
+			if bb then
+				bb.Enabled = on
+				if on then StoryNpcs.Paint(bb, marks[id] or { Text = T.MarkText, Main = false }) end
+			end
 			for _, d in model:GetDescendants() do
 				if d:IsA("ProximityPrompt") and d:GetAttribute("StoryNpcId") ~= nil and d.Enabled ~= on then d.Enabled = on end
 			end
