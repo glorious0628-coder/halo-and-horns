@@ -664,13 +664,15 @@ end)
 
 ------------------------------------------------------------------ 장인 ② the guild's first quests (N0 / N0b / N4)
 runGroup("artisan quests", function()
-	local w = townWorld({ Npcs = false, Hooks = function(world, reg)
+	local w = townWorld({ Hooks = function(world, reg) -- (P1 ④: the NPC bodies on: Otto asks)
 		reg.GatherService = { Gathered = world.Util.Signal.new() }
 		reg.CraftService = { Crafted = world.Util.Signal.new() }
 	end })
 	local C, R = w.Config, w.Registry
 	local D = C.StoryQuests.Defs
-	check(D.N0 and D.N0.Factions.Neutral and D.N0.Requires.TutorialDone and table.find(D.N0.Requires.Feature, "Gathering")
+	check(D.N0 and D.N0.Factions.Neutral and D.N0.Requires.TutorialDone and D.N0.Requires.Level == 3 and D.N0.Offer.Npc == "Otto"
+		and D.N0.Steps[2].Obj.Type == "Match" and D.N0A.Steps[2].Obj.Type == "Match" and D.N0T.Steps[2].Obj.Type == "Match"
+		and table.find(D.N0.Requires.Feature, "Gathering")
 		and table.find(D.N0.Requires.Feature, "Crafting") and D.N0.Reward.GoldN == 150 and D.N0.Reward.EquipCrafted == true,
 		"Config N0: Neutral, from the first mission, Gathering + Crafting, 150 gold + the crafted weapon in hand", show(D.N0 and D.N0.Requires))
 	check(D.N0b and D.N0b.Requires.Done == nil and table.concat(D.N0b.Requires.DoneAny, ",") == "N0,N0A,N0T"
@@ -685,14 +687,37 @@ runGroup("artisan quests", function()
 		and C.Craft.Recipes.T1.Mats.Jelly == nil, "Config N0 / N0A / N0T by class (same title, 150 gold); AP1 / T1 = 3 herbs", "")
 	check(C.Craft.Recipes.W1 == nil and C.Craft.Recipes.W2.Mats.Herb == 3 and C.Craft.Recipes.W2.Mats.CopperOre == 2
 		and C.Craft.Recipes.W2.Mats.Jelly == nil, "no W1 recipe; W2 = N0's harvest only (3 herbs + 2 copper)", show(C.Craft.Recipes.W2))
+	-- P1 ④: Otto asks (his body by the anvil); the order tag is matched at him before the craft
+	local OTTO = vec(40, 0, 50)
+	w:Npc("Otto", OTTO)
+	local panels = {}
+	do -- (panelsOf is defined further down the file)
+		local op = w.Net.Get("OpenPanel")
+		local base = op.FireClient
+		op.FireClient = function(self, pl, kind, arg)
+			table.insert(panels, { P = pl, Kind = kind, Arg = arg })
+			return base(self, pl, kind, arg)
+		end
+	end
 	local function join(id, faction, extra, class)
 		local data = { TutorialStep = 99, WeaponTier = 1, WeaponOwnedMask = 1,
 			Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } }
 		for k, v in extra or {} do data[k] = v end
-		local p, d = w:Join(id, { Faction = faction, Class = class or "Warrior", Level = 3, Data = data })
+		local p, d = w:Join(id, { Faction = faction, Class = class or "Warrior", Level = 3, Data = data, Pos = OTTO + vec(2, 0, 0) })
 		w.Story.Refresh(p)
 		w:Flush()
+		for _, qid in { "N0", "N0A", "N0T" } do
+			if string.find(p:GetAttribute("StoryOffers") or "", "Otto", 1, true) and d.Story.Subs[qid] == nil and not d.Story.Done[qid] then
+				w:Act(p, qid, "Accept")
+			end
+		end
 		return p, d
+	end
+	-- the order tag: Otto's talk opens the Match panel, the right shape moves on to the craft
+	local function tag(p, qid)
+		w.Story.TalkToNpc(p, "Otto")
+		local arg = panels[#panels].Arg
+		w:Act(p, qid, "Match", tostring(table.find(arg.Options, arg.Target)))
 	end
 	-- switches off (as shipped): no N0 for anybody
 	local _, d0 = join(1801, "Neutral")
@@ -716,7 +741,12 @@ runGroup("artisan quests", function()
 	G:Fire(p, "Herb", 5, "HerbBush")
 	w:Flush()
 	tr = w:Track(d, "N0")
-	check(tr and tr.St == 2, "3 herbs + 2 copper: the craft step", show(tr))
+	check(tr and tr.St == 2, "3 herbs + 2 copper: Tiny's order tag", show(tr))
+	R.CraftService.Crafted:Fire(p, "W2", 1)
+	w:Flush()
+	check(w:Track(d, "N0").St == 2, "a craft before the tag counts nothing", show(w:Track(d, "N0")))
+	tag(p, "N0")
+	check(w:Track(d, "N0").St == 3, "the right tag: the craft step", show(w:Track(d, "N0")))
 	-- the craft: the weapon made (a spare W2 +1) goes into the hand, + 150 gold
 	w.Loot.AddSpare(p, 2, 1)
 	local bank, n0 = d.BankGold or 0, #w.Notices
@@ -752,7 +782,9 @@ runGroup("artisan quests", function()
 			show(w:Track(da, qid)))
 		G:Fire(a, "Herb", 1, "HerbBush")
 		w:Flush()
-		check(w:Track(da, qid) and w:Track(da, qid).St == 2, cls .. ": 3 herbs -> the craft step", show(w:Track(da, qid)))
+		check(w:Track(da, qid) and w:Track(da, qid).St == 2, cls .. ": 3 herbs -> the order tag", show(w:Track(da, qid)))
+		tag(a, qid)
+		check(w:Track(da, qid) and w:Track(da, qid).St == 3, cls .. ": the tag matched -> the craft step", show(w:Track(da, qid)))
 		local bk = da.BankGold or 0
 		R.CraftService.Crafted:Fire(a, rid, 0)
 		w:Flush()
@@ -768,10 +800,19 @@ runGroup("artisan quests", function()
 	local q, e = join(1805, "Neutral", { WeaponTier = 3, WeaponOwnedMask = 5, Level = 5 })
 	G:Fire(q, "Herb", 3, "HerbBush")
 	G:Fire(q, "CopperOre", 2, "CopperRock")
+	w:Flush()
+	tag(q, "N0")
 	w.Loot.AddSpare(q, 2, 0)
 	R.CraftService.Crafted:Fire(q, "W2", 0)
 	w:Flush()
 	check(e.Story.Done.N0 == true and e.WeaponTier == 3 and (e.Spares["2:0"] or 0) == 1, "holding Iron: the W2 stays a spare", show({ e.WeaponTier, e.Spares }))
+	-- P1 ④ (Schema 5): an old save on N0's craft step moves past the new tag step; one still harvesting stays
+	local _, oc = w:Join(1820, { Faction = "Neutral", Class = "Warrior", Level = 3, Data = { TutorialStep = 99, Story = { Main = { Id = "" },
+		Subs = { N0 = { St = 2, P = 0, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
+	local _, oh = w:Join(1821, { Faction = "Neutral", Class = "Mage", Level = 3, Data = { TutorialStep = 99, Story = { Main = { Id = "" },
+		Subs = { N0A = { St = 1, P = 2, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
+	check(oc.Story.Subs.N0.St == 3 and oh.Story.Subs.N0A.St == 1 and oh.Story.Subs.N0A.P == 2 and oc.Story.Schema == 5,
+		"old N0 saves: on the craft -> the craft (3); still harvesting -> unchanged (Schema 5)", show({ oc.Story.Subs.N0, oh.Story.Subs.N0A }))
 	-- N4: after N2, two crafts, then the Crossroads
 	d.Story.Done.N2 = true
 	w.Story.Refresh(p)
@@ -3141,7 +3182,7 @@ runGroup("p1 lamp and scenes", function()
 	-- an old save on the old M1_4 (the report) goes to the lamp; one waiting for [Claim] keeps waiting (Schema 4)
 	local o, od = hero(9953, "Halo", nil, { Id = "M1_4", St = 2, P = 0, T = {}, Claim = false })
 	local c, cd = hero(9954, "Halo", nil, { Id = "M1_4", St = 2, P = 0, T = {}, Claim = true })
-	check(od.Story.Main.St == 1 and cd.Story.Main.St == 2 and cd.Story.Main.Claim == true and od.Story.Schema == 4,
+	check(od.Story.Main.St == 1 and cd.Story.Main.St == 2 and cd.Story.Main.Claim == true and od.Story.Schema >= 4,
 		"old M1_4 saves: to the lamp; a finished one still waits for [Claim]", show({ od.Story.Main, cd.Story.Main }))
 	-- the Lv5 test's help leaves its scene: Halo the bag (the neighbour waves), the artisan's own craft (the wheel / the potion / the treat)
 	local T3 = SQ.Defs.M1_3.Steps[3]
@@ -3163,7 +3204,7 @@ end)
 runGroup("a23-199 every step has a guide", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local KNOWN = { -- 10/15: 33 steps
-		"EG01.1", "EG02.1", "EG03.1", "EG04.1", "EG14.1", "GW4.1", "GW8.1", "M2_1.1", "M2_4.1", "M2_5.1", "M2_7.1", "M3_5.1", "M3_6.1", "M3_7.1", "M3_8.1", "N0.1", "N0.2", "N0A.1", "N0A.2", "N0T.1", "N0T.2", "N1.1", "N2.1", "N4.1", "R3.2", "R6.2", "R7.2", "S2.1", "S3.1", "S4.1", "S4.2", "SK1.1", "SK2.3" }
+		"EG01.1", "EG02.1", "EG03.1", "EG04.1", "EG14.1", "GW4.1", "GW8.1", "M2_1.1", "M2_4.1", "M2_5.1", "M2_7.1", "M3_5.1", "M3_6.1", "M3_7.1", "M3_8.1", "N0.1", "N0A.1", "N0T.1", "N1.1", "N2.1", "N4.1", "R3.2", "R6.2", "R7.2", "S2.1", "S3.1", "S4.1", "S4.2", "SK1.1", "SK2.3" }
 	local known = {}
 	for _, k in KNOWN do known[k] = true end
 	local missing, fixed = {}, {}

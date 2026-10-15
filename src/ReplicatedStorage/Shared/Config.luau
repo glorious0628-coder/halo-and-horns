@@ -3788,34 +3788,43 @@ Config.StoryQuests = {
 		-- 3 herbs -> AP1), N0T the pet tamer (Archer: 3 herbs -> T1); same title and 150 gold
 		N0 = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
+			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
+			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
 			Start = "Kit: Pick herbs, mine copper, then make something!",
 			Steps = {
 				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
 					{ Key = "a", Type = "Gather", Item = "Herb", Count = 3 },
 					{ Key = "b", Type = "Gather", Item = "CopperOre", Count = 2 },
 				} } },
-				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
+					Obj = { Type = "Match", Target = "Knot", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
 			},
 			Reward = { GoldN = 150, EquipCrafted = true },
 		},
 		N0A = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
+			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
+			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
 			Start = "Kit: Pick herbs, then brew something!",
 			Steps = {
 				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
-				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
+					Obj = { Type = "Match", Target = "Gem", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
 			},
 			Reward = { GoldN = 150 },
 		},
 		N0T = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
+			Requires = { TutorialDone = true, Level = 3, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
+			Offer = { Npc = "Otto", Lines = { All = { "Otto: Please gather the materials for Tiny's order." } } },
 			Start = "Kit: Pick herbs, then make pet treats!",
 			Steps = {
 				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
-				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+				{ Text = "Match Tiny's order tag", ShortName = "Order tag", Npc = "Otto",
+					Obj = { Type = "Match", Target = "Patch", Wrong = { "Seal", "Tag" } } }, -- P1 ④ (bible N03: the order box)
+				{ Text = "Make something %d/%d", Guide = "Blacksmith", Obj = { Type = "Craft", Count = 1 } },
 			},
 			Reward = { GoldN = 150 },
 		},

@@ -554,6 +554,12 @@ MUTATIONS = [
      "\t\t\t\t\t\tNeutral = { A = \"Light the town lamp\", B = \"Light my work lamp\" } },"),
     ("P1: the lamp picks have no side", ST, "\tCommon = \"Good\", Mine = \"Evil\" } -- P1 ⑦ M1_4's lamp", "\tCommon_ = \"Good\" } -- P1 ⑦ M1_4's lamp"),
     ("P1: the bag leaves no scene", C, "\t\t\t\t\tSetFlag = { Key = \"Help\", Value = \"Bag\" }, -- P1 ⑦", "\t\t\t\t\t-- P1 ⑦"),
+    # --- quest P1 ④
+    ("P1: old N0 saves not moved", ST, "\t\t\tif type(tr) == \"table\" and math.floor(num(tr.St, 1)) >= 2 then tr.St = math.floor(num(tr.St, 1)) + 1 end\n", ""),
+    ("P1: the order tag gone", C, "\t\t\t\t\tObj = { Type = \"Match\", Target = \"Knot\", Wrong = { \"Seal\", \"Tag\" } } }, -- P1 ④ (bible N03: the order box)\n",
+     "\t\t\t\t\tObj = { Type = \"Talk\" } }, -- P1 ④ (bible N03: the order box)\n"),
+    ("P1: N0 before Lv3", C, "\t\t\tRequires = { TutorialDone = true, Level = 3, Feature = { \"Gathering\", \"Crafting\" }, Classes = { Warrior = true } },",
+     "\t\t\tRequires = { TutorialDone = true, Feature = { \"Gathering\", \"Crafting\" }, Classes = { Warrior = true } },"),
     ("P1: the Lv5 test before Lv5", C, "\t\t\tRequires = { Level = 5 },\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks", "\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks"),
 ]
 

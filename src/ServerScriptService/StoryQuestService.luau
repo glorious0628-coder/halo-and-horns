@@ -153,6 +153,15 @@ local function migrate(st)
 		if st.Main.Id == "M1_4" and st.Main.Claim ~= true then st.Main.St, st.Main.P, st.Main.T = 1, 0, {} end
 		st.Schema = 4
 	end
+	-- P1 ④ (Schema 5): the artisans' first order got a Match step (Tiny's order tag) before its craft: a track on the craft
+	-- moves one on (the harvest stays as it was)
+	if num(st.Schema, 1) < 5 then
+		for _, id in { "N0", "N0A", "N0T" } do
+			local tr = st.Subs[id]
+			if type(tr) == "table" and math.floor(num(tr.St, 1)) >= 2 then tr.St = math.floor(num(tr.St, 1)) + 1 end
+		end
+		st.Schema = 5
+	end
 end
 
 -- drop unknown ids / bad numbers (fillDefaults only fills the top level)
