@@ -110,7 +110,10 @@ end
 -- A23-71 learn moment tuning
 -- SoundDelay (sound_gaps A9): the learn sound comes this long after the level-up chime of the same level
 -- A23-191 (user 10/14): no banner, no "Press Q" line, no keys tip card - the button pops in and the sound plays
-local LEARN = { Pop = 0.35, TellGap = 0.35, TellAt = -math.huge, SoundDelay = 1.1, TeachLines = 2, TeachGap = 2.2 }
+local LEARN = { Pop = 0.35, TellGap = 0.35, TellAt = -math.huge, SoundDelay = 1.1, TeachLines = 2, TeachGap = 2.2,
+	-- 최종 검수 10/15 (feedback_audit #3): the teacher's hand -> a small gold light flies to my weapon -> the slot opens
+	Light = { Time = 0.7, Arc = 3, Size = 0.6, Color = Color3.fromRGB(255, 214, 90) }, ArriveAt = -math.huge,
+	Rim = { Times = 2, Time = 0.18, Color = Color3.fromRGB(255, 214, 90) }, Listen = 0.12 }
 
 ----------------------------------------------------------------- state
 local S = {
@@ -655,16 +658,84 @@ end
 function LEARN.Show(b, st)
 	local slot = b.Slot
 	-- A23-191: no "New skill!" banner (the button pops in)
-	-- the button pops in (no bounce with 'Screen shake' off)
+	-- the button pops in (no bounce with 'Screen shake' off); while the teacher's light is still flying (LEARN.Orb) it
+	-- waits small until the light reaches me, then pops with a gold rim flash
+	-- (the server raises SkillSlots just before its Fx "SkillLearned": the slot waits LEARN.Listen s for the light to start)
 	local reduced = type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
+	local scale = nil
 	if not reduced then
-		local scale = b.Holder:FindFirstChild("LearnPop") or Instance.new("UIScale")
+		scale = b.Holder:FindFirstChild("LearnPop") or Instance.new("UIScale")
 		scale.Name = "LearnPop"
 		scale.Scale = 0.2
 		scale.Parent = b.Holder
-		TweenService:Create(scale, TweenInfo.new(LEARN.Pop, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
 	end
-	task.delay(LEARN.SoundDelay, LEARN.Sound)
+	task.delay(LEARN.Listen, function()
+		local wait = math.max(0, LEARN.ArriveAt - os.clock())
+		task.delay(wait, function()
+			if scale and scale.Parent then
+				TweenService:Create(scale, TweenInfo.new(LEARN.Pop, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+			end
+			if b.Holder.Parent then LEARN.Flash(b.Holder) end
+		end)
+		task.delay(wait + LEARN.SoundDelay, LEARN.Sound)
+	end)
+end
+
+-- the new slot's rim flashes gold twice (a stroke of its own, gone after)
+function LEARN.Flash(holder)
+	local R = LEARN.Rim
+	local rim = Instance.new("UIStroke")
+	rim.Name = "LearnRim"
+	rim.Color, rim.Thickness, rim.Transparency = R.Color, 3, 1
+	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	rim.Parent = holder
+	TweenService:Create(rim, TweenInfo.new(R.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, R.Times * 2 - 1, true),
+		{ Transparency = 0 }):Play()
+	task.delay(R.Time * R.Times * 2 + 0.05, function() rim:Destroy() end)
+end
+
+-- (pure) the light's place at share k (0..1) of its flight from a to b: a straight line lifted by an arc in the middle
+function LEARN.OrbAt(a, b, k, arc)
+	k = math.clamp(k, 0, 1)
+	return a:Lerp(b, k) + Vector3.new(0, 4 * (arc or 0) * k * (1 - k), 0)
+end
+
+-- a small gold light from the teacher's right hand to my weapon (or my right hand), client-only, gone on arrival with a
+-- puff of sparkles; the slot's pop waits for it (LEARN.ArriveAt)
+function LEARN.Orb(body)
+	local O = LEARN.Light
+	local from = body and (body:FindFirstChild("RightHand") or body.PrimaryPart or body:FindFirstChild("HumanoidRootPart"))
+	local char = LocalPlayer.Character
+	local wm = char and char:FindFirstChild("WeaponModel")
+	local to = (wm and wm:FindFirstChild("Handle")) or (char and (char:FindFirstChild("RightHand") or char:FindFirstChild("HumanoidRootPart")))
+	if not (from and from:IsA("BasePart") and to and to:IsA("BasePart")) then return false end
+	LEARN.ArriveAt = os.clock() + O.Time
+	local ball = Instance.new("Part")
+	ball.Name = "LearnLight"
+	ball.Shape = Enum.PartType.Ball
+	ball.Size = Vector3.new(O.Size, O.Size, O.Size)
+	ball.Material, ball.Color = Enum.Material.Neon, O.Color
+	ball.Anchored, ball.CanCollide, ball.CanQuery, ball.CanTouch, ball.CastShadow = true, false, false, false, false
+	ball.CFrame = CFrame.new(from.Position)
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = O.Color, 6, 2
+	light.Parent = ball
+	ball.Parent = workspace
+	local t0 = os.clock()
+	local conn
+	conn = RunService.RenderStepped:Connect(function()
+		local k = (os.clock() - t0) / O.Time
+		if k >= 1 or not to.Parent then
+			conn:Disconnect()
+			local at = to.Parent and to.Position or ball.Position
+			ball:Destroy()
+			local sfx = C and C.SkillFx
+			if type(sfx) == "table" and type(sfx.Ring) == "function" then pcall(sfx.Ring, at) end
+			return
+		end
+		ball.CFrame = CFrame.new(LEARN.OrbAt(from.Position, to.Position, k, O.Arc))
+	end)
+	return true
 end
 
 -- the SkillLearn sound (PowerUp until its file is uploaded)
@@ -738,6 +809,7 @@ function LEARN.Teach(data)
 	local root = body.PrimaryPart or body:FindFirstChild("HumanoidRootPart")
 	local sfx = C and C.SkillFx
 	if root and type(sfx) == "table" and type(sfx.Ring) == "function" then pcall(sfx.Ring, root.Position - Vector3.new(0, 2.5, 0)) end
+	pcall(LEARN.Orb, body) -- feedback_audit #3: the light flies to my weapon, then the slot opens
 end
 
 ----------------------------------------------------------------- public API

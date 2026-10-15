@@ -495,7 +495,7 @@ MUTATIONS = [
     ("CONFIG", "the sword back on the old side hold", '\tSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },'),
     ("CONFIG", "the rest blade tip up and back (the old 10/14 rest)", '\tDarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 }, Hold = "SwordReady" },'),
     ("CONFIG", "a staff resting level", '\tStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Rest = { 0, 0, 0 }, Hold = "Staff" },'),
-    ("CONFIG", "a weapon without a resting hold", '\tBaton = { Point = 0.3, Rest = { 20, 0, 0 }, Hold = "BatonReady" },', '\tBaton = { Point = 0.3 },'),
+    ("CONFIG", "a weapon without a resting hold", '\tBaton = { Point = 0.3, Rest = { -38, 0, 0 }, Hold = "BatonReady" },', '\tBaton = { Point = 0.3 },'),
     ("CONFIG", "the rest mode ignored", '\tif mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end\n', ""),
     ("CONFIG", "the staff at the old 43%", '\tStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.43, Rest = { 81, 0, 0 }, Hold = "Staff" },'),
     ("CONFIG", "the hammer held at its head", '\tHammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },', '\tHammer = { Point = 0.7, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },'),

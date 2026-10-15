@@ -4354,12 +4354,27 @@ handlers.LevelUp = function(data)
 	local own = isOwn(data)
 	local pos = eventPos(data)
 	if pos and nearCamera(pos) then
-		pillar(pos, 40, 4, COLOR_PILLAR, 1.0)
-		burst(pos, COLOR_PILLAR, 25, { Size = 0.7, SpeedMin = 6, SpeedMax = 14, Acceleration = Vector3.new(0, 8, 0), LightEmission = 1 })
+		if own then
+			-- 최종 검수 10/15 (feedback_audit #2: one moment): a gold ring of light at my feet, then stars round my body;
+			-- the HUD's level badge and the power number move at the same time (HUD.LevelUpMoment)
+			ring(pos, 6, COLOR_GOLD, { Grow = 0.3, Fade = 0.6, Transparency = 0.2 })
+			task.delay(0.15, function()
+				burst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30, { Size = 0.6, SpeedMin = 4, SpeedMax = 9, LifeMin = 0.5,
+					LifeMax = 0.9, Acceleration = Vector3.new(0, 6, 0), LightEmission = 1 })
+			end)
+		else
+			pillar(pos, 40, 4, COLOR_PILLAR, 1.0)
+			burst(pos, COLOR_PILLAR, 25, { Size = 0.7, SpeedMin = 6, SpeedMax = 14, Acceleration = Vector3.new(0, 8, 0), LightEmission = 1 })
+		end
 	end
 	local level = asNum(data.Level, nil)
 	if own and level then
 		announceLevelUp(level)
+		local hud = C and C.HUD
+		if type(hud) == "table" and type(hud.LevelUpMoment) == "function" then
+			pcall(hud.LevelUpMoment, { Level = level, From = asNum(data.From, nil), PowerFrom = asNum(data.PowerFrom, nil),
+				PowerTo = asNum(data.PowerTo, nil) })
+		end
 	end
 end
 

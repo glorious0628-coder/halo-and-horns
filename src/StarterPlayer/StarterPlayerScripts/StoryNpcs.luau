@@ -6,7 +6,9 @@
 --   Talk prompt shows only then (Enabled set on this client only), so a press never lands on "nothing to say".
 --   The townsfolk (tag TownFolk) get nothing here. The marker / the row tap that lead to her are QuestTarget / HUD.
 -- No new art: a text "!" in the UIKit font with a dark outline (round, never rays).
+-- A23-199: an NPC with a request (attribute StoryOffers) gets the "!" too; a Pickup step's thing lies at its spot.
 -- Public API: StoryNpcs.Init(C), StoryNpcs.Start(), StoryNpcs.Called(entries) -> { [npcId] = true } (pure),
+-- StoryNpcs.Offers(text) / StoryNpcs.Pickups(entries, faction) (pure), StoryNpcs.DrawPickups(list), StoryNpcs.OnPickup(prompt),
 -- StoryNpcs.OnPrompt(prompt) -> bool (a Talk prompt press: Panels.ExpectStory), StoryNpcs.Refresh() (one pass now),
 -- StoryNpcs.Mark(model) -> its one "!" BillboardGui (made once, reused).
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -26,6 +28,10 @@ local T = {
 	MarkLift = 2.4, -- studs over the head
 	MarkDistance = 90, -- studs: the "!" shows within this distance
 	Gold = Color3.fromRGB(255, 214, 72),
+	-- 퀘스트 바이블 §15 P1 ② (10/15): '!' = something to start / do here, '?' = something to hand in here (wins over
+	-- '!'); the main story's mark is gold with a star behind it (told apart by shape too, not by colour alone), the
+	-- others white
+	White = Color3.fromRGB(245, 245, 250), Done = "?", StarArt = "Star", StarScale = 1.25,
 }
 -- 검수 10/10 (main Play: seven "!" stacked under Bright): the mark is found ON the model (its child StoryNpcMark), never
 -- in a weak table - a weak-keyed Instance entry is dropped once Lua holds no reference, so every pass made a new one
@@ -39,6 +45,81 @@ function StoryNpcs.Called(entries)
 		if type(st) == "table" and type(st.Npc) == "string" and st.Npc ~= "" then out[st.Npc] = true end
 	end
 	return out
+end
+
+-- A23-199 (개발 2 quest_offer_server_2026-10-15): the NPCs that have a request for me (attribute StoryOffers = their ids,
+-- comma separated, "" = none) -> { [npcId] = true } (pure)
+function StoryNpcs.Offers(text)
+	local out = {}
+	if type(text) ~= "string" then return out end
+	for id in string.gmatch(text, "[^,%s]+") do out[id] = true end
+	return out
+end
+
+-- A23-199 (pure): my rows' open Pickup steps -> { { Id, Spot, Pos, Radius } } (the step of each Story row, my side's
+-- override first; the spot from Config.StoryQuests.Landmarks)
+function StoryNpcs.Pickups(entries, faction)
+	local sq = type(Config.StoryQuests) == "table" and Config.StoryQuests or {}
+	local defs = type(sq.Defs) == "table" and sq.Defs or {}
+	local marks = type(sq.Landmarks) == "table" and sq.Landmarks or {}
+	local out, seen = {}, {}
+	for _, e in type(entries) == "table" and entries or {} do
+		local st = type(e) == "table" and e.Story or nil
+		local def = type(st) == "table" and type(st.Id) == "string" and defs[st.Id] or nil
+		local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(st.St) or 0] or nil
+		if type(step) == "table" then
+			local over = type(faction) == "string" and step[faction] or nil
+			local obj = (type(over) == "table" and type(over.Obj) == "table" and over.Obj) or step.Obj
+			if type(obj) == "table" and obj.Type == "Pickup" and type(obj.Spot) == "string" and typeof(marks[obj.Spot]) == "Vector3"
+				and not seen[st.Id] then
+				seen[st.Id] = true
+				table.insert(out, { Id = st.Id, Spot = obj.Spot, Pos = marks[obj.Spot], Radius = tonumber(obj.Radius) or 8 })
+			end
+		end
+	end
+	return out
+end
+
+-- 퀘스트 바이블 §15 P1 ② (pure): each NPC's mark from my rows and requests -> { [npcId] = { Text = "!" | "?", Main } }.
+-- A row through her whose open step finishes the quest there (its last step, or a Deliver) = "?"; any other step
+-- through her = "!"; a request for me (StoryOffers) = "!"; a skill waiting at the teacher = "!" (main: it is the growth
+-- path). "?" wins over "!", Main over side
+function StoryNpcs.Marks(entries, offers, teacher)
+	local defs = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Defs) == "table" and Config.StoryQuests.Defs or {}
+	local out = {}
+	local function put(id, done, main)
+		if type(id) ~= "string" or id == "" then return end
+		local m = out[id] or { Text = T.MarkText, Main = false }
+		if done then m.Text = T.Done end
+		if main then m.Main = true end
+		out[id] = m
+	end
+	for _, e in type(entries) == "table" and entries or {} do
+		local st = type(e) == "table" and e.Story or nil
+		if type(st) == "table" and type(st.Npc) == "string" and st.Npc ~= "" then
+			local def = type(st.Id) == "string" and defs[st.Id] or nil
+			local steps = type(def) == "table" and type(def.Steps) == "table" and def.Steps or {}
+			local n = tonumber(st.St) or 0
+			local step = steps[n]
+			local obj = type(step) == "table" and step.Obj or nil
+			local done = (n >= #steps and #steps > 0) or (type(obj) == "table" and obj.Type == "Deliver")
+			put(st.Npc, done, e.Kind == "Main")
+		end
+	end
+	for id in type(offers) == "table" and offers or {} do put(id, false, false) end
+	if type(teacher) == "string" then put(teacher, false, true) end
+	return out
+end
+
+-- the mark's look: its sign, gold + star for the main story, white otherwise
+function StoryNpcs.Paint(bb, mark)
+	local label = bb and bb:FindFirstChild("Mark")
+	if not (label and mark) then return end
+	if label.Text ~= mark.Text then label.Text = mark.Text end
+	local col = mark.Main and T.Gold or T.White
+	if label.TextColor3 ~= col then label.TextColor3 = col end
+	local star = bb:FindFirstChild("Star")
+	if star then star.Visible = mark.Main == true end
 end
 
 -- the model's one "!" (made once; extra copies from older passes are removed)
@@ -80,7 +161,13 @@ function StoryNpcs.Mark(model)
 	label.TextScaled = true
 	label.TextColor3 = T.Gold
 	label.TextStrokeTransparency = 0.2
+	label.ZIndex = 2
 	label.Parent = bb
+	-- the main story's star behind the sign (approved art "Star"; none = the gold sign alone)
+	local star = type(ui) == "table" and type(ui.ArtImage) == "function" and ui.ArtImage(T.StarArt, { Name = "Star",
+		AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.fromScale(T.StarScale, T.StarScale),
+		ImageColor3 = T.Gold, ImageTransparency = 0.25, ZIndex = 1, Visible = false }) or nil
+	if star then star.Parent = bb end
 	bb.Parent = model
 	return bb
 end
@@ -98,10 +185,16 @@ function StoryNpcs.Refresh()
 	-- attributes SkillLearnReady > SkillSlots, SkillTeacher = the NpcId), so the "!" shows and the Talk press reaches
 	-- SkillService.TryLearn
 	local me = game:GetService("Players").LocalPlayer
+	local marks = {}
 	if me then
 		local teacher = me:GetAttribute("SkillTeacher")
 		local ready, slots = tonumber(me:GetAttribute("SkillLearnReady")) or 0, tonumber(me:GetAttribute("SkillSlots")) or 0
 		if type(teacher) == "string" and teacher ~= "" and ready > slots then called[teacher] = true end
+		-- A23-199: an NPC with a request for me shows the "!" and her Talk prompt (the press opens the Offer window)
+		for id in StoryNpcs.Offers(me:GetAttribute("StoryOffers")) do called[id] = true end
+		marks = StoryNpcs.Marks(entries, StoryNpcs.Offers(me:GetAttribute("StoryOffers")),
+			(type(teacher) == "string" and teacher ~= "" and ready > slots) and teacher or nil)
+		pcall(StoryNpcs.DrawPickups, StoryNpcs.Pickups(entries, me:GetAttribute("Faction")))
 	end
 	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
 	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
@@ -111,12 +204,106 @@ function StoryNpcs.Refresh()
 			local id = model:GetAttribute("NpcId")
 			local on = type(id) == "string" and called[id] == true
 			local bb = StoryNpcs.Mark(model)
-			if bb then bb.Enabled = on end
+			if bb then
+				bb.Enabled = on
+				if on then StoryNpcs.Paint(bb, marks[id] or { Text = T.MarkText, Main = false }) end
+			end
 			for _, d in model:GetDescendants() do
 				if d:IsA("ProximityPrompt") and d:GetAttribute("StoryNpcId") ~= nil and d.Enabled ~= on then d.Enabled = on end
 			end
 		end
 	end
+end
+
+-- A23-199: the things to pick up of my open Pickup steps, only while that step is open: a small box on the ground at
+-- the spot, a soft light and round sparkles (no rays), a "Pick up" prompt -> StoryAction(Id, "Pickup"); a step that
+-- closed takes its box away. Client-only parts in workspace.StoryPickups (no collision, no query)
+T.Pickup = { Folder = "StoryPickups", Size = Vector3.new(1.4, 0.9, 1.1), Lift = 0.45, Range = 9, Hold = 0,
+	Color = Color3.fromRGB(196, 140, 84), Lid = Color3.fromRGB(235, 95, 85), Light = Color3.fromRGB(255, 225, 150) }
+
+local function groundAt(pos)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local ignore = {}
+	local folder = workspace:FindFirstChild(T.Pickup.Folder)
+	if folder then table.insert(ignore, folder) end
+	local me = game:GetService("Players").LocalPlayer
+	if me and me.Character then table.insert(ignore, me.Character) end
+	params.FilterDescendantsInstances = ignore
+	local hit = workspace:Raycast(Vector3.new(pos.X, pos.Y + 200, pos.Z), Vector3.new(0, -400, 0), params)
+	return hit and hit.Position.Y or pos.Y
+end
+
+local function makePickup(p)
+	local P = T.Pickup
+	local m = Instance.new("Model")
+	m.Name = "Pickup_" .. p.Id
+	m:SetAttribute("StoryId", p.Id)
+	local y = groundAt(p.Pos) + P.Lift
+	local box = Instance.new("Part")
+	box.Name = "Box"
+	box.Size, box.Color, box.Material = P.Size, P.Color, Enum.Material.SmoothPlastic
+	box.CFrame = CFrame.new(p.Pos.X, y, p.Pos.Z)
+	box.Anchored, box.CanCollide, box.CanQuery, box.CanTouch, box.CastShadow = true, false, false, false, false
+	box.Parent = m
+	local lid = Instance.new("Part")
+	lid.Name = "Lid"
+	lid.Size = Vector3.new(P.Size.X + 0.08, 0.22, P.Size.Z + 0.08)
+	lid.Color, lid.Material = P.Lid, Enum.Material.SmoothPlastic
+	lid.CFrame = box.CFrame * CFrame.new(0, P.Size.Y / 2 + 0.11, 0)
+	lid.Anchored, lid.CanCollide, lid.CanQuery, lid.CanTouch, lid.CastShadow = true, false, false, false, false
+	lid.Parent = m
+	local light = Instance.new("PointLight")
+	light.Color, light.Range, light.Brightness = P.Light, 8, 1.2
+	light.Parent = box
+	local spark = Instance.new("ParticleEmitter")
+	spark.Name = "Sparkle"
+	spark.Color = ColorSequence.new(P.Light)
+	spark.LightEmission, spark.Rate = 0.8, 6
+	spark.Lifetime = NumberRange.new(0.6, 1.1)
+	spark.Speed = NumberRange.new(0.5, 1.5)
+	spark.SpreadAngle = Vector2.new(180, 180)
+	spark.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.25), NumberSequenceKeypoint.new(1, 0) })
+	spark.Parent = lid
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "PickupPrompt"
+	local words = type(Config.StoryQuests.Text) == "table" and Config.StoryQuests.Text.Pickup or "Pick up"
+	prompt.ActionText, prompt.ObjectText = words, ""
+	prompt.MaxActivationDistance = math.min(P.Range, p.Radius + 1)
+	prompt.HoldDuration = P.Hold
+	prompt.RequiresLineOfSight = false
+	prompt:SetAttribute("StoryPickup", p.Id)
+	prompt.Parent = box
+	m.PrimaryPart = box
+	return m
+end
+
+-- the boxes follow the open Pickup steps (made once per step, removed when it closes)
+function StoryNpcs.DrawPickups(list)
+	local folder = workspace:FindFirstChild(T.Pickup.Folder)
+	if #list == 0 and not folder then return 0 end
+	if not folder then
+		folder = Instance.new("Folder")
+		folder.Name = T.Pickup.Folder
+		folder.Parent = workspace
+	end
+	local want = {}
+	for _, p in list do want[p.Id] = p end
+	for _, m in folder:GetChildren() do
+		local id = m:GetAttribute("StoryId")
+		if not want[id] then m:Destroy() else want[id] = nil end
+	end
+	for _, p in want do makePickup(p).Parent = folder end
+	return #folder:GetChildren()
+end
+
+-- a press on a box's prompt asks the server (it checks the step and the distance)
+function StoryNpcs.OnPickup(prompt)
+	local id = typeof(prompt) == "Instance" and prompt:GetAttribute("StoryPickup") or nil
+	if type(id) ~= "string" then return false end
+	local ok, remote = pcall(function() return game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):FindFirstChild("StoryAction") end)
+	if ok and remote then remote:FireServer(id, "Pickup") end
+	return true
 end
 
 -- 검수 10/10 (NPC review): a press on a story NPC's Talk prompt asked for this page, so the server's reply opens even
@@ -145,7 +332,9 @@ function StoryNpcs.Start()
 		end
 	end)
 	pcall(function()
-		game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt) StoryNpcs.OnPrompt(prompt) end)
+		game:GetService("ProximityPromptService").PromptTriggered:Connect(function(prompt)
+			if not StoryNpcs.OnPickup(prompt) then StoryNpcs.OnPrompt(prompt) end
+		end)
 	end)
 	-- a quest list change shows / hides at once (the pass above catches NPCs that arrive later)
 	local hud = C and C.HUD

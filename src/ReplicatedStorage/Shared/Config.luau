@@ -3320,6 +3320,8 @@ Config.StoryQuests = {
 		Next = "Next",
 		Ok = "Got it",
 		Later = "Later",
+		-- A23-199: an NPC's request (the Offer window) and a thing to pick up (a Pickup step's prompt)
+		OfferAccept = "Sure!", OfferDecline = "Not now", Pickup = "Pick up",
 		Title = "%s · %s",
 		ChoiceGold = "+%s gold", -- E6: a pick's own reward line ("+Enhance Scroll 70%" / "+HP Potion ×3 · +60 gold")
 		LeanGood = "Your shard leaned to the light.", -- E5: a 0-point pick (no score)
@@ -6878,7 +6880,9 @@ Config.WeaponGrips = {
 	CrookStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
 	FlaskStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
 	Hammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },
-	Baton = { Point = 0.3, Rest = { 20, 0, 0 }, Hold = "BatonReady" },
+	-- grip-4 (main photos 10/15: the baton held low by the hip): the hand at the chest, the tip up and forward 45 (HoldTest:
+	-- 44 standing, 46..51 walking)
+	Baton = { Point = 0.3, Rest = { -38, 0, 0 }, Hold = "BatonReady" },
 }
 
 -- A23-187: the joints' turns (degrees, X / Y / Z of each Motor6D's own frame) added on top of the walk / idle animation
@@ -6906,9 +6910,10 @@ Config.HoldPoses = {
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.98 } },
 	Bow = { Arm = "Left",
-		-- LeftWrist (HoldTest 10/15, measured: the bow leaned 19 degrees in across the body): upright by the left leg
-		Stand = { LeftShoulder = { 0, 0, -10 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 8, 0, 13 } },
-		Walk = { LeftShoulder = { 0, 0, -14 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { -2, 0, 14 } },
+		-- LeftWrist (HoldTest 10/15, measured: the bow leaned 19 degrees in across the body): upright by the left leg;
+		-- grip-4 (main photos: the bow hid behind the body): the arm further out (shoulder Z -22 / -24), the wrist keeps it upright
+		Stand = { LeftShoulder = { 0, 0, -22 }, LeftElbow = { -8, 0, 0 }, LeftWrist = { 8, 0, 21 } },
+		Walk = { LeftShoulder = { 0, 0, -24 }, LeftElbow = { -6, 0, 0 }, LeftWrist = { -2, 0, 29 } },
 		Run = { LeftShoulder = { 0, 0, -4 }, LeftElbow = { 8, 0, 0 } },
 		Air = { LeftElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95, Free = 0.15 } },
@@ -6928,8 +6933,8 @@ Config.HoldPoses = {
 		Air = { RightElbow = { 4, 0, 0 } },
 		Damp = { Stand = 0.95, Walk = 0.97, Run = 0.98, Air = 0.98, Lower = 0.98 } },
 	BatonReady = { Arm = "Right",
-		Stand = { RightShoulder = { 10, 0, 12 }, RightElbow = { 25, 0, 0 }, RightWrist = { -10, 0, -12 } },
-		Walk = { RightShoulder = { 15, 0, 16 }, RightElbow = { 30, 0, 0 }, RightWrist = { -30, 0, -10 } },
+		Stand = { RightShoulder = { 40, 0, 12 }, RightElbow = { 55, 0, 0 }, RightWrist = { -10, 0, -12 } },
+		Walk = { RightShoulder = { 42, 0, 16 }, RightElbow = { 58, 0, 0 }, RightWrist = { -30, 0, -10 } },
 		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },

@@ -193,17 +193,27 @@ local function factionColor(id)
 	return Color3.fromRGB(200, 200, 200)
 end
 
+-- 최종 검수 10/15 (Korean client photo: 'Paladin / Light Mage / Ranger' and 'Warrior / Mage / Archer' stayed English):
+-- the class names are translated by their English text (UIKit.TrWord, like the quest lines) before they are drawn
+local function trName(s)
+	if type(UIKit) == "table" and type(UIKit.TrWord) == "function" then
+		local ok, out = pcall(UIKit.TrWord, s)
+		if ok and type(out) == "string" and out ~= "" then return out end
+	end
+	return s
+end
+
 local function className(classId, factionId)
 	local c = Config.Classes[classId] or Config.Classes.Warrior
 	if factionId == "Neutral" and (type(c.Names) ~= "table" or c.Names.Neutral == nil) then
-		return NEUTRAL_CLASS_NAMES[classId] or Config.ClassName(classId, "None")
+		return trName(NEUTRAL_CLASS_NAMES[classId] or Config.ClassName(classId, "None"))
 	end
-	return Config.ClassName(classId, factionId)
+	return trName(Config.ClassName(classId, factionId))
 end
 
 local function genericClassName(classId)
 	local c = Config.Classes[classId] or Config.Classes.Warrior
-	return (type(c.Names) == "table" and c.Names.None) or classId
+	return trName((type(c.Names) == "table" and c.Names.None) or classId)
 end
 
 local function pickLine(classId)

@@ -175,8 +175,11 @@ check(holder("Q").Visible == true, "Lv5: the Q button appears", tostring(holder(
 check(#W.Announced == 0, "A23-191: no 'New skill!' banner", W.Announced[1])
 check(#W.Hints == 0, "검수 10/09: no line on the new button at once", #W.Hints)
 check(#W.Played == 0, "the learn sound waits for the level-up chime", table.concat(W.Played, ","))
+-- feedback_audit #3 (10/15): the slot first listens a moment for the teacher's light (Fx SkillLearned), then pops
+check(runDelays(W, 0.1, 0.15) == 1, "the slot waits 0.12 s for the teacher's light", #W.Delays)
 check(runDelays(W, 1.0, 1.2) == 1, "the learn sound comes about 1.1 s after the level up (sound_gaps A9)", #W.Delays)
 check(W.Played[1] == "SkillLearn" and W.Played[2] == "PowerUp", "the SkillLearn sound (PowerUp until its file exists)", table.concat(W.Played, ","))
+runDelays(W, 0, 0.01) -- the pop itself (no light flying here: at once after the listen)
 local popped = false
 for _, t in W.Tweens do
 	if t.Inst.Name == "LearnPop" and not t.Inst.Destroyed and type(t.Before) == "number" and t.Before < 0.5 and t.Goal.Scale == 1 then popped = true end
