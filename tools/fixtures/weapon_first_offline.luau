@@ -566,8 +566,15 @@ runGroup("p1 guide and teacher", function()
 	check(step(p) == 0, "[Accept] far from Hallie: refused", step(p))
 	rootOf(p).Position = vec(-14, 3, -426)
 	check(w.Story.TalkToNpc(p, "Hallie") == "Welcome" and w:Panels(p, "Welcome") == 1, "next to Hallie: her lines open", "")
+	local tfx = #w.Fx
 	w:Accept(p)
 	check(step(p) == T.Steps.Teacher and d.TutorialStep == 4, "[Accept] next to Hallie: step Teacher (4), not the Forge yet", step(p))
+	-- A23-208 the first mission's story: the Teacher step starts with its Find (Fx StoryScene Id "Tutorial", the step's name)
+	local tsc = w:FxFor(p, "StoryScene", tfx)
+	check(#tsc == 1 and tsc[1].Data.Id == "Tutorial" and tsc[1].Data.Key == "Find" and tsc[1].Data.Value == "Teacher"
+		and type(T.Story.Steps.Teacher.Find.Halo) == "string" and #T.Story.Before.Halo <= 70,
+		"A23-208: [Accept] = the Teacher step's Find (Tutorial)", show(tsc[1] and tsc[1].Data))
+	tfx = #w.Fx
 	row = w:Rows(p)[1] or {}
 	check(row.TutorialStep == 4 and row.GuideNpc == "Gleam" and row.Text == string.format(T.Text.Teacher, "Sir Gleam")
 		and row.ShortName == string.format(T.ShortNames.Teacher, "Sir Gleam"),
@@ -582,6 +589,12 @@ runGroup("p1 guide and teacher", function()
 	local said = w.Story.TalkToNpc(p, "Gleam")
 	check(said == "Offer:H_Basics" and step(p) == T.Steps.Forge and d.Story.First.TeacherMet == true and w:Panels(p, "Offer", n0) == 1,
 		"the talk to Sir Gleam: met (saved), the Forge step, and his lesson offered in the same talk", show({ said, step(p) }))
+	local keys = {}
+	for _, f in w:FxFor(p, "StoryScene", tfx) do
+		if f.Data.Id == "Tutorial" then table.insert(keys, f.Data.Key .. "=" .. tostring(f.Data.Value) .. "@" .. tostring(f.Data.St)) end
+	end
+	check(table.concat(keys, ",") == "Scene=Wave@Teacher,Find=Forge@Forge", "A23-208: met = Sir Gleam's wave, then the Forge step's Find",
+		table.concat(keys, ","))
 	w:Remote(p, "StoryAction", "H_Basics", "Decline")
 	check(d.Story.Subs.H_Basics == nil and step(p) == T.Steps.Forge, "Decline the lesson: nothing saved, the Forge goes on", "")
 	local fx0 = #w.Fx

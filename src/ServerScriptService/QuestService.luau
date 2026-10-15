@@ -523,9 +523,36 @@ local function getTutorialKills(data)
 	return math.clamp(math.floor(num(data and data.TutorialKills)), 0, TUT_TARGET)
 end
 
+-- A23-208 (최종 검수 10/15): the first mission's story (Config.Tutorial.Story): the left step's Scene, then the new step's
+-- Find, as Fx StoryScene { Id = "Tutorial", Key, Value, St = the step's name } (the client reads the words from Config)
+function TEACH.Story(player, old, new)
+	local story = TUT_CFG.Story
+	if type(story) ~= "table" or type(story.Steps) ~= "table" or old == new then return end
+	local f = getFaction(player)
+	local function nameOf(n)
+		for k, v in TUT_CFG.Steps do
+			if v == n then return k end
+		end
+		return nil
+	end
+	local function fire(key, value, st)
+		local ok, err = pcall(Net.Fx, player, "StoryScene", { Id = "Tutorial", Key = key, Value = value, St = st })
+		if not ok then Util.Warn(TAG, "tutorial scene: " .. tostring(err)) end
+	end
+	local oldName, newName = nameOf(old), nameOf(new)
+	local left = oldName and story.Steps[oldName]
+	local scene = type(left) == "table" and type(left.Scene) == "table" and left.Scene[f] or nil
+	if type(scene) == "string" then fire("Scene", scene, oldName) end
+	local came = newName and story.Steps[newName]
+	local find = type(came) == "table" and type(came.Find) == "table" and came.Find[f] or nil
+	if type(find) == "string" then fire("Find", newName, newName) end
+end
+
 local function setStep(player, step)
 	if not getData(player) then return end
+	local old = getStep(player)
 	S.PlayerService.SetStat(player, "TutorialStep", step)
+	pcall(TEACH.Story, player, old, step)
 	dirty[player] = true -- step 0/1 guidance is published too, even before there is a kill quest
 	-- defensive mirror in case TutorialStep is missing from Config.Data.Mirrored
 	if player:GetAttribute("TutorialStep") ~= step then
