@@ -1668,8 +1668,7 @@ local function killRecord(rec)
 	if not isPersonal and S and S.QuestCreditService then
 		local paidList = {}
 		for _, e in eligible do table.insert(paidList, e.Player) end
-		for _, p in minors do table.insert(paidList, p) end
-		local okC, c, extras = pcall(S.QuestCreditService.Judge, rec, pos, paidList, firstP)
+		local okC, c, extras = pcall(S.QuestCreditService.Judge, rec, pos, paidList, firstP, minors)
 		if okC and type(c) == "table" then
 			credit, creditExtras = c, type(extras) == "table" and extras or {}
 		elseif not okC then
@@ -1679,7 +1678,13 @@ local function killRecord(rec)
 	local function creditOf(p)
 		local c = credit and credit[p]
 		if not c then return nil end
-		return { Personal = c.Personal == true, Shared = c.Shared == true }
+		return { Personal = c.Personal == true, Shared = c.Shared == true, Any = c.Any == true }
+	end
+	-- 최종 검수 10/15 c: a party boss adds to each side's pool once
+	local bossPools = {}
+	if credit and type(S.QuestCreditService.BossPools) == "function" then
+		local okP, pools = pcall(S.QuestCreditService.BossPools, credit, eligible, firstP, info.WarPoints)
+		if okP and type(pools) == "table" then bossPools = pools end
 	end
 	rec._contributors, rec._hits, rec._dmg, rec._share, rec._manualAt, rec._firstAt = {}, {}, {}, {}, {}, {}
 	for _, e in eligible do
@@ -1696,6 +1701,7 @@ local function killRecord(rec)
 		i.First = e.Player == firstP -- A23-181
 		i.Credit = creditOf(e.Player) -- A23-201 (nil = the old rules)
 		i.PartyBoss = credit ~= nil and credit[e.Player] ~= nil and credit[e.Player].PartyBoss == true or nil -- A23-204
+		i.PartyBossPool = i.PartyBoss and (bossPools[e.Player] or 0) or nil -- 최종 검수 10/15 c
 		MonsterService.MonsterKilled:Fire(e.Player, i)
 	end
 	-- the free riders' small share (MinorShare of XP / gold only; LootService rolls nothing for info.Minor)

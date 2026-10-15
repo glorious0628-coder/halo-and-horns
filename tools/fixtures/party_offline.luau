@@ -295,7 +295,8 @@ runGroup("credit outside a party", function()
 	local cr, extras = Q.Judge(r, KILL, { a, b, c }, a)
 	check(cr and cr[a].Personal and cr[a].Shared, "the first hitter: personal + shared", show(cr and cr[a]))
 	check(cr[b].Personal == false and cr[b].Shared == true, "another hitter outside a party: shared only (no personal credit)", show(cr[b]))
-	check(cr[c].Shared == false and cr[c].Personal == false, "a hitter 120 studs away: nothing", show(cr[c]))
+	check(cr[c].Shared == false and cr[c].Personal == false and cr[c].Any == true, "a hitter 120 studs away: no joint / personal credit, paid = Any", show(cr[c]))
+	check(cr[b].Any == true, "a paid later hitter: Any (a step with no mode counts, 최종 검수 10/15 a)", show(cr[b]))
 	check(#extras == 0, "no extras", #extras)
 	check(Q.Judge(r, KILL, { a, b }, a) == nil, "once per spawn: a second Judge answers nothing", "")
 	-- the window: last hit 16 s ago
@@ -319,7 +320,13 @@ runGroup("credit outside a party", function()
 	Q.Hit(r4, a)
 	Q.Hit(r4, b)
 	local cr4, ex4 = Q.Judge(r4, KILL, { a }, a)
-	check(#ex4 == 1 and ex4[1] == b and cr4[b].Shared and not cr4[b].Personal, "an unpaid real hitter: an extra with shared credit", show(cr4[b]))
+	check(#ex4 == 1 and ex4[1] == b and cr4[b].Shared and not cr4[b].Personal and not cr4[b].Any, "an unpaid real hitter: an extra with shared credit only", show(cr4[b]))
+	-- a minor (paid a small share) counts for a step with no mode, as before
+	local r5 = mob({ Id = 5 })
+	Q.Hit(r5, a)
+	Q.Hit(r5, b)
+	local cr5 = Q.Judge(r5, KILL, { a }, a, { b })
+	check(cr5[b] and cr5[b].Any == true and cr5[b].Personal == false, "a minor: Any, no personal credit", show(cr5[b]))
 end)
 
 runGroup("credit inside a party", function()
@@ -412,50 +419,72 @@ end)
 runGroup("boss credit", function()
 	local w = partyWorld()
 	local Q = w.Credit
-	local a, b, c, d = hero(w, 1, "Halo", 0), hero(w, 2, "Horns", 10), hero(w, 3, "Halo", 20), hero(w, 4, "Horns", 30)
-	check(join(w, a, b), "a party of a (Halo) and b (Horns)", "")
+	local a, b, c, d, e = hero(w, 1, "Halo", 0), hero(w, 2, "Horns", 10), hero(w, 3, "Halo", 20), hero(w, 4, "Horns", 30), hero(w, 5, "Halo", 40)
+	check(join(w, a, b) and join(w, a, c), "a party of a (Halo), b (Horns), c (Halo)", "")
 	local r = mob({ Boss = true })
 	Q.Hit(r, a) -- a: one hit only
 	Q.Hit(r, b)
 	Q.Hit(r, c)
 	Q.Hit(r, d)
+	Q.Hit(r, e)
 	w:Advance(1)
 	Q.Hit(r, c) -- c: 2 hits 1 s apart = 1 counted
 	w:Advance(2)
 	Q.Hit(r, b) -- b: 2 hits 3 s apart
 	Q.Hit(r, d)
-	local cr = Q.Judge(r, KILL, { a, b, c, d }, a)
-	check(cr[a].Personal == false and cr[a].Shared == false, "a boss: one hit is no credit, first hitter or not", show(cr[a]))
-	check(cr[c].Shared == false, "two hits 1 s apart count as one", show(cr[c]))
-	check(cr[b].Personal and cr[b].Shared and cr[b].PartyBoss, "two hits 3 s apart in a party: credit + PartyBoss", show(cr[b]))
-	check(cr[d].Personal and cr[d].Shared and cr[d].PartyBoss == false, "a real hitter outside a party: credit, no PartyBoss", show(cr[d]))
+	Q.Hit(r, e) -- e: hits but the reward does not pay e (under the bar)
+	w:Advance(30) -- 최종 검수 10/15 d: 30 s since the last hit (drinking, reviving) does not matter for a paid boss hitter
+	moveTo(d, 300)
+	local cr, extras = Q.Judge(r, KILL, { a, b, c, d }, a, { e })
+	check(cr[a].Personal and cr[a].Shared and cr[a].Any, "a boss: every paid hitter gets credit (d), one hit or not", show(cr[a]))
+	check(cr[d].Personal and cr[d].Shared and cr[d].PartyBoss == false, "a paid hitter 30 s and 300 studs away, no party: credit, no PartyBoss", show(cr[d]))
+	check(cr[e] ~= nil and not cr[e].Personal and not cr[e].Shared and not cr[e].Any and #extras == 0,
+		"a boss hitter the reward does not pay (a minor): nothing, no extra", show(cr[e]))
+	check(cr[b].PartyBoss == true, "two hits 3 s apart in a party: PartyBoss", show(cr[b]))
+	check(cr[a].PartyBoss == false, "one hit in a party: no PartyBoss", show(cr[a]))
+	check(cr[c].PartyBoss == false, "two hits 1 s apart count as one: no PartyBoss", show(cr[c]))
+	-- c: each side's pool once (the first hitter's side has it already)
+	local f, g, h = hero(w, 6, "Horns", 5), hero(w, 7, "Halo", 6), hero(w, 8, "Horns", 7)
+	local credit = { [a] = { PartyBoss = true }, [b] = { PartyBoss = true }, [f] = { PartyBoss = true }, [g] = { PartyBoss = true },
+		[h] = { PartyBoss = false } }
+	local elig = { { Player = b, Faction = "Horns" }, { Player = a, Faction = "Halo" }, { Player = f, Faction = "Horns" },
+		{ Player = g, Faction = "Halo" }, { Player = h, Faction = "Horns" } }
+	local pools = Q.BossPools(credit, elig, a, 1)
+	check(pools[b] == 1 and pools[f] == 0, "a party boss: the other side's pool once (its first member 1, the next 0)", show(pools))
+	check(pools[g] == 0 and pools[a] == nil, "the first hitter's side: no second pool share", show(pools))
+	check(pools[h] == nil, "no PartyBoss: no pool line", show(pools))
 end)
 
 ------------------------------------------------------------------ quest steps read the credit
 runGroup("quest steps", function()
 	local w = partyWorld()
 	local p = hero(w, 1, "Halo", 0)
-	local personal = { Type = "Kill", Kind = "Slime", Count = 5 }
+	local plain = { Type = "Kill", Kind = "Slime", Count = 5 }
+	local strict = { Type = "Kill", Kind = "Slime", Count = 5, Credit = "Personal" }
 	local joint = { Type = "Kill", Kind = "Slime", Count = 5, Credit = "Shared" }
-	local function amount(obj, credit)
-		return w.Story.EventAmount(p, obj, { Kind = "Kill", Info = { Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 1, Credit = credit } })
+	local function amount(obj, credit, more)
+		local info = { Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 1, Credit = credit, SkillHit = false }
+		for k, v in more or {} do info[k] = v end
+		return w.Story.EventAmount(p, obj, { Kind = "Kill", Info = info })
 	end
-	check(amount(personal, nil) == 1 and amount(joint, nil) == 1, "no Credit (old callers, personal monsters): counts as before", "")
-	check(amount(personal, { Personal = true, Shared = true }) == 1 and amount(joint, { Personal = true, Shared = true }) == 1, "credited both ways: counts", "")
-	check(amount(personal, { Personal = false, Shared = true }) == 0, "a personal step: no personal credit = 0", "")
-	check(amount(joint, { Personal = false, Shared = true }) == 1, "a joint step: shared credit = 1", "")
-	check(amount(joint, { Personal = true, Shared = false }) == 0, "a joint step: a member who never hit = 0", "")
+	check(amount(plain, nil) == 1 and amount(strict, nil) == 1 and amount(joint, nil) == 1, "no Credit (old callers, personal monsters): counts as before", "")
+	local all = { Personal = true, Shared = true, Any = true }
+	check(amount(plain, all) == 1 and amount(strict, all) == 1 and amount(joint, all) == 1, "credited every way: counts", "")
+	-- 최종 검수 10/15 a: a step with no mode = as before (every paid player), a strict one = first hitter + hitting parties
+	local later = { Personal = false, Shared = true, Any = true } -- a later hitter outside a party, paid
+	check(amount(plain, later) == 1, "a plain step: a paid later hitter counts (as before, no '잡았는데 안 셈')", "")
+	check(amount(strict, later) == 0, "a strict personal step: a later hitter outside a party = 0", "")
+	check(amount(joint, later) == 1, "a joint step: shared credit = 1", "")
+	local proxyC = { Personal = true, Shared = false, Any = true } -- a party member who never hit
+	check(amount(joint, proxyC) == 0, "a joint step: a member who never hit = 0", "")
+	check(amount(plain, { Personal = false, Shared = true, Any = false }) == 0, "a plain step: an unpaid real hitter = 0 (as before)", "")
 	-- docs §1-2: how-to-kill steps are the player's own; a quest-only (proxy) kill never fills them
-	local function proxy(obj, quest)
-		return w.Story.EventAmount(p, obj, { Kind = "Kill", Info = { Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = 0,
-			Credit = { Personal = true, Shared = false }, QuestOnly = quest, SkillHit = false } })
-	end
 	local basic = { Type = "BasicKill", Kind = "Slime", Count = 5 }
-	check(proxy(basic, nil) == 1 and proxy(basic, true) == 0, "a basic-swing step: own kill 1, a party member's kill 0", "")
-	check(proxy(personal, true) == 1, "a plain kill step: a party member's kill counts", "")
+	check(amount(basic, proxyC) == 1 and amount(basic, proxyC, { QuestOnly = true }) == 0, "a basic-swing step: own kill 1, a party member's kill 0", "")
+	check(amount(plain, proxyC, { QuestOnly = true }) == 1, "a plain kill step: a party member's kill counts", "")
 	local crown = { Type = "WarPoints", Count = 15 }
-	check(amount(crown, { Personal = false, Shared = true }) == 0 and amount(crown, { Personal = true, Shared = false }) == 1,
-		"a crown step is a personal step too", "")
+	check(amount(crown, { Personal = false, Shared = true, Any = false }) == 0 and amount(crown, later) == 1,
+		"a crown step has no mode: every paid player", "")
 end)
 
 ------------------------------------------------------------------ crown units and hunt honor
@@ -465,7 +494,8 @@ runGroup("crown and honor", function()
 	local a, b, c = hero(w, 1, "Halo", 0), hero(w, 2, "Horns", 10), hero(w, 3, "Halo", 20)
 	local function fire(p, o)
 		w.Reg.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", WarPoints = C.War.MonsterPoints,
-			WarShare = o.Share or C.War.MonsterPoints, First = o.First, PartyBoss = o.PartyBoss, Credit = o.Credit })
+			WarShare = o.Share or C.War.MonsterPoints, First = o.First, PartyBoss = o.PartyBoss, Credit = o.Credit,
+			PartyBossPool = o.Pool })
 	end
 	-- a normal monster: still the first hitter's (A23-181), whatever the quest credit says
 	fire(a, { First = true, Credit = { Personal = true, Shared = true } })
@@ -475,7 +505,7 @@ runGroup("crown and honor", function()
 	local da, db = w.Data[a], w.Data[b]
 	check((da.HuntFame or 0) == 1 and (db.HuntFame or 0) == 0, "normal monster: hunt honor to the first hitter only", show({ da.HuntFame, db.HuntFame }))
 	-- a party boss: each real hitter in a party gets the units for their own side; hunt honor stays first-hitter
-	fire(b, { First = false, PartyBoss = true, Share = 0.5 })
+	fire(b, { First = false, PartyBoss = true, Share = 0.5, Pool = 0 })
 	check(w.War.GetKillUnits(b) == C.War.MonsterPoints and (db.HuntFame or 0) == 0, "party boss: a Horns member gets Horns' crown units, no hunt honor",
 		show({ w.War.GetKillUnits(b), db.HuntFame }))
 	fire(c, { First = false })

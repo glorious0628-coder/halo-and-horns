@@ -7,15 +7,20 @@
 --     CountedAt, Party, Snap }; a hit counts toward Counted only Config.Party.BossHitGap s after the last counted one.
 --     Party / Snap = the hitter's party at that hit and its members' membership stamps (PartyService.JoinSeq).
 --   * A REAL hitter at the kill: last hit within CreditWindow s, standing in the monster's zone within CreditRange studs of
---     the kill; a boss (Def.Boss) also needs Counted >= BossMinHits.
+--     the kill.
 --   * Shared (joint quests, obj.Credit = "Shared"): every real hitter.
+--   * Any (a step with no Credit mode, 최종 검수 10/15 a = the doc's 'unclassified = as before'): every player the kill
+--     pays (MonsterKilled, minors too) + the Personal party proxies below. A strict personal step = obj.Credit "Personal".
 --   * Personal (every other quest): the kill's first hitter (MonsterService's info.First, A23-181) and, for EVERY party
 --     with a real hitter (docs §1-2 case 2: not only the first hitter's party), the members who are real hitters or stand
 --     near (zone + CreditRange, alive, own action within ActiveWindow) and were in that party with the same membership at
 --     its member's real hit and still at the kill (an invite after the hit, or leave + join again, credits nothing).
---     Outside a party: the first hitter only. A boss: every real hitter (both flags).
---   * PartyBoss (A23-204): a real hitter of a boss who is in a party -> WarService gives that player's own side the crown
---     units (hunt honor and normal monsters stay first-hitter, A23-181).
+--     Outside a party: the first hitter only.
+--   * A boss (최종 검수 10/15 d): every player its reward pays (paid, not the minors) gets every flag, whatever the 15 s
+--     window (drinking / reviving); nobody else.
+--   * PartyBoss (A23-204): a paid boss hitter in a party with Counted >= BossMinHits (hits BossHitGap s apart) -> that
+--     player's crown units; BossPools gives each side's pool the kill ONCE (최종 검수 10/15 c: the first hitter's side has
+--     it already, another side once through one of its members), hunt honor and normal monsters stay first-hitter.
 --   * Once per spawn: Judge answers once per record (rec._creditDone) and empties the ledger.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -104,9 +109,10 @@ function QuestCreditService.Hit(rec, player)
 	end
 end
 
--- the kill's quest credit: (credit map [Player] = { Personal, Shared, PartyBoss }, extras = credited players not in `paid`)
--- or nil when this record was judged already. paid = the players MonsterKilled fires for; firstP = info.First's player.
-function QuestCreditService.Judge(rec, pos, paid, firstP)
+-- the kill's quest credit: (credit map [Player] = { Personal, Shared, Any, PartyBoss }, extras = credited players not paid)
+-- or nil when this record was judged already. paid = the players the kill pays in full (MonsterKilled), minors = the free
+-- riders paid a small share (MonsterKilled with info.Minor); firstP = info.First's player.
+function QuestCreditService.Judge(rec, pos, paid, firstP, minors)
 	if type(rec) ~= "table" or rec._creditDone == true then return nil, {} end
 	rec._creditDone = true
 	local ledger = type(rec._credit) == "table" and rec._credit or {}
@@ -118,8 +124,13 @@ function QuestCreditService.Judge(rec, pos, paid, firstP)
 	local function real(p)
 		local e = ledger[p]
 		if type(e) ~= "table" or now - num(e.Last, -math.huge) > window then return false end
-		if boss and num(e.Counted) < minHits then return false end
 		return nearKill(rec, p, pos)
+	end
+	-- [Player] = true paid in full, false = a minor (a small share)
+	local isPaid = {}
+	for _, p in type(paid) == "table" and paid or {} do isPaid[p] = true end
+	for _, p in type(minors) == "table" and minors or {} do
+		if isPaid[p] == nil then isPaid[p] = false end
 	end
 	-- still in that party with the stamp it had at the hit
 	local function same(p, party, snap)
@@ -140,21 +151,25 @@ function QuestCreditService.Judge(rec, pos, paid, firstP)
 	end
 	local out, extras = {}, {}
 	local function judge(p)
-		local r = real(p)
-		local c = { Shared = r, Personal = false, PartyBoss = false }
 		if boss then
-			c.Personal = r
-			c.PartyBoss = r and partyOf(p) ~= nil
-		elseif p == firstP then
+			local pay = isPaid[p] == true
+			local e = ledger[p]
+			local hits = type(e) == "table" and num(e.Counted) or 0
+			return { Shared = pay, Personal = pay, Any = pay, PartyBoss = pay and hits >= minHits and partyOf(p) ~= nil }
+		end
+		local r = real(p)
+		local c = { Shared = r, Personal = false, Any = false, PartyBoss = false }
+		if p == firstP then
 			c.Personal = true -- A23-181: the first hitter's kill (as today)
 		else
 			local mine = partyOf(p)
 			local set = mine and hitParties[mine] or nil
 			if set and set[p] then c.Personal = r or (nearKill(rec, p, pos) and activeAlive(p)) end
 		end
+		c.Any = c.Personal or isPaid[p] ~= nil
 		return c
 	end
-	for _, p in paid do
+	for p in isPaid do
 		if typeof(p) == "Instance" and out[p] == nil then out[p] = judge(p) end
 	end
 	-- real hitters the kill does not pay (under its damage bar), and the members of every party that hit it
@@ -166,13 +181,36 @@ function QuestCreditService.Judge(rec, pos, paid, firstP)
 	for _, p in others do
 		if out[p] == nil and typeof(p) == "Instance" and p.Parent ~= nil then
 			local c = judge(p)
-			if c.Personal or c.Shared then
+			if c.Personal or c.Shared or c.Any then
 				out[p] = c
 				table.insert(extras, p)
 			end
 		end
 	end
 	return out, extras
+end
+
+-- 최종 검수 10/15 c: the faction pool share of each PartyBoss player of a boss kill: the first hitter's side has the whole
+-- kill already (WarService First), every other side gets it once (its first PartyBoss member in `eligible` order, the rest 0).
+-- credit = Judge's map, eligible = { { Player, Faction } } (MonsterService), points = the kill's WarPoints. -> [Player] = pool
+function QuestCreditService.BossPools(credit, eligible, firstP, points)
+	local pools, done = {}, {}
+	if type(credit) ~= "table" or type(eligible) ~= "table" then return pools end
+	for _, e in eligible do
+		if e.Player == firstP then done[e.Faction] = true end
+	end
+	for _, e in eligible do
+		local c = credit[e.Player]
+		if type(c) == "table" and c.PartyBoss == true and e.Player ~= firstP then
+			if done[e.Faction] then
+				pools[e.Player] = 0
+			else
+				done[e.Faction] = true
+				pools[e.Player] = num(points)
+			end
+		end
+	end
+	return pools
 end
 
 function QuestCreditService.Init(registry)

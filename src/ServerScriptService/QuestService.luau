@@ -1431,8 +1431,8 @@ end
 local function onMonsterKilled(player, info)
 	if type(info) ~= "table" then return end
 	if info.Practice == true then return end -- A23-110: the retry King (a practice King) counts for no daily job
-	-- A23-201: daily jobs are personal quests: a kill with info.Credit counts only for the first hitter (+ that one's party)
-	if type(info.Credit) == "table" and info.Credit.Personal ~= true then return end
+	-- A23-201 (최종 검수 10/15 a): daily jobs have no Credit mode = as before: every player the kill pays, + party proxies
+	if type(info.Credit) == "table" and info.Credit.Any ~= true then return end
 	local data = getData(player)
 	if not data then return end
 	local step = getStep(player)

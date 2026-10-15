@@ -76,19 +76,25 @@ MUTATIONS = [
     ("no credit window", Q, "if type(e) ~= \"table\" or now - num(e.Last, -math.huge) > window then return false end",
      "if type(e) ~= \"table\" then return false end"),
     ("no credit range", Q, "return ok and type(d) == \"number\" and d <= num(P.CreditRange, 80)", "return true"),
-    ("a boss on one hit", Q, "\t\tif boss and num(e.Counted) < minHits then return false end\n", ""),
+    ("party boss on one hit", Q, "PartyBoss = pay and hits >= minHits and partyOf(p) ~= nil", "PartyBoss = pay and partyOf(p) ~= nil"),
+    ("boss credit by the 15 s window", Q, "\t\t\tlocal pay = isPaid[p] == true\n", "\t\t\tlocal pay = isPaid[p] == true and real(p)\n"),
+    ("boss credit for minors", Q, "\t\t\tlocal pay = isPaid[p] == true\n", "\t\t\tlocal pay = isPaid[p] ~= nil\n"),
+    ("untagged steps strict", Q, "\t\tc.Any = c.Personal or isPaid[p] ~= nil\n", "\t\tc.Any = c.Personal\n"),
+    ("untagged steps read personal", ST, "obj.Credit == \"Personal\" and \"Personal\" or \"Any\"", "\"Personal\""),
+    ("pool twice for a side", Q, "\t\t\tif done[e.Faction] then\n", "\t\t\tif false then\n"),
+    ("first hitter's side pooled again", Q, "\t\tif e.Player == firstP then done[e.Faction] = true end\n", ""),
     ("boss hits without a gap", Q, "if now - e.CountedAt >= num(P.BossHitGap, 3) then", "if true then"),
     ("judged twice", Q, "if type(rec) ~= \"table\" or rec._creditDone == true then return nil, {} end",
      "if type(rec) ~= \"table\" then return nil, {} end"),
     ("AFK party riders", Q, "return ok and type(at) == \"number\" and os.clock() - at <= num(P.ActiveWindow, 30)", "return true"),
     ("knocked-out riders", Q, "\tif not hum or num(hum.Health) <= 0 then return false end\n", ""),
-    ("party boss for loners", Q, "c.PartyBoss = r and partyOf(p) ~= nil", "c.PartyBoss = r"),
+    ("party boss for loners", Q, "PartyBoss = pay and hits >= minHits and partyOf(p) ~= nil", "PartyBoss = pay and hits >= minHits"),
     ("another zone credited", Q, "\tif rec.Owner == nil and rec.ZoneId ~= nil and zoneOf(p) ~= rec.ZoneId then return false end\n", ""),
     ("no extras", Q, "\t\t\t\ttable.insert(extras, p)\n", ""),
     # --- StoryQuestService / WarService
     ("quest steps ignore the credit", ST,
-     "\t\tif type(info.Credit) == \"table\" and info.Credit[obj.Credit == \"Shared\" and \"Shared\" or \"Personal\"] ~= true then return 0 end\n", ""),
-    ("joint steps read personal credit", ST, "info.Credit[obj.Credit == \"Shared\" and \"Shared\" or \"Personal\"]", "info.Credit[\"Personal\"]"),
+     "\t\tif type(info.Credit) == \"table\" and info.Credit[mode] ~= true then return 0 end\n", ""),
+    ("joint steps read personal credit", ST, "local mode = obj.Credit == \"Shared\" and \"Shared\" or", "local mode = obj.Credit == \"Shared\" and \"Any\" or"),
     ("no party boss crown", W, "\t\t\t\telseif info.PartyBoss == true then\n", "\t\t\t\telseif false then\n"),
 ]
 
@@ -115,15 +121,16 @@ def static() -> tuple[int, list[str]]:
     mon = strip_comments(read(SSS / "MonsterService.luau"))
     check("MonsterService.QuestKill = Util.Signal.new()" in mon, "MonsterService.QuestKill exists")
     check("pcall(S.QuestCreditService.Hit, record, player)" in mon, "DamageMonster feeds the credit ledger (pcall)")
-    check("pcall(S.QuestCreditService.Judge, rec, pos, paidList, firstP)" in mon and "if not isPersonal and S and S.QuestCreditService then" in mon,
+    check("pcall(S.QuestCreditService.Judge, rec, pos, paidList, firstP, minors)" in mon and "if not isPersonal and S and S.QuestCreditService then" in mon,
           "killRecord asks Judge for shared monsters only (personal ones keep the old rules)")
     check("i.Credit = creditOf(e.Player)" in mon and "i.Credit = creditOf(p)" in mon and "MonsterService.QuestKill:Fire(p, i)" in mon,
           "MonsterKilled carries info.Credit; credited players the kill does not pay get QuestKill")
-    check("credit[e.Player].PartyBoss == true" in mon, "MonsterKilled carries info.PartyBoss")
+    check("credit[e.Player].PartyBoss == true" in mon and "i.PartyBossPool = i.PartyBoss and (bossPools[e.Player] or 0) or nil" in mon,
+          "MonsterKilled carries info.PartyBoss + PartyBossPool (each side's pool once)")
     check(mon.count("MonsterKilled:Fire(") == 2, "MonsterKilled still fires once per paid player + free riders (QuestKill pays nothing)")
     quest = strip_comments(read(SSS / "QuestService.luau"))
-    check("if type(info.Credit) == \"table\" and info.Credit.Personal ~= true then return end" in quest and "S.MonsterService.QuestKill" in quest,
-          "daily jobs: personal credit only, QuestKill counted")
+    check("if type(info.Credit) == \"table\" and info.Credit.Any ~= true then return end" in quest and "S.MonsterService.QuestKill" in quest,
+          "daily jobs: no Credit mode = every paid player (Any), QuestKill counted")
     board = strip_comments(read(SSS / "BoardService.luau"))
     check("S.MonsterService.QuestKill" in board, "BoardService counts QuestKill (EventAmount reads the credit)")
     story = strip_comments(read(SSS / "StoryQuestService.luau"))

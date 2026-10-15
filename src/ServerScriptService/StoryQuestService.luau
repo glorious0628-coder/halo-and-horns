@@ -403,8 +403,10 @@ local function eventAmount(player, obj, ev)
 		-- a personal monster never counts, except for a step that asks for exactly that (KO1's rematch Personal = true)
 		if (info.Personal == true) ~= (obj.Personal == true) then return 0 end
 		-- A23-201 (QuestCreditService): a kill with info.Credit counts only where it credits this player: a joint step
-		-- (obj.Credit "Shared") = every real hitter, every other step = the first hitter (+ that one's party near it)
-		if type(info.Credit) == "table" and info.Credit[obj.Credit == "Shared" and "Shared" or "Personal"] ~= true then return 0 end
+		-- (obj.Credit "Shared") = every real hitter, a strict personal step (obj.Credit "Personal") = the first hitter (+ the
+		-- parties that hit it), a step with no mode (최종 검수 10/15 a) = as before: every player the kill pays (+ party proxies)
+		local mode = obj.Credit == "Shared" and "Shared" or obj.Credit == "Personal" and "Personal" or "Any"
+		if type(info.Credit) == "table" and info.Credit[mode] ~= true then return 0 end
 		-- A23-135: a crown step counts the kill's units (1, golden 5), not the whole points (100 units = 1; final review
 		-- 10/13: a whole-point step stalled the main line)
 		if t == "WarPoints" then return math.max(0, num(info.WarPoints)) end
@@ -2070,7 +2072,7 @@ function StoryQuestService.Start()
 			if type(info) == "table" and type(info.Credit) == "table" and typeof(player) == "Instance" and player:IsA("Player") then
 				feed(player, { Kind = "Kill", Info = info })
 				-- P1 ⑧: a party member's kill near my escort counts for its event too (a personal-credit kill only)
-				if info.Credit.Personal == true then
+				if info.Credit.Any == true then
 					local ok, err = pcall(MOVER.Kill, player, info)
 					if not ok then Util.Warn(TAG, "mover kill: " .. tostring(err)) end
 				end
