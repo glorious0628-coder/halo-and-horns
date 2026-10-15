@@ -367,7 +367,9 @@ local function drawRow(kit, parent, row)
 	list.SortOrder = Enum.SortOrder.LayoutOrder
 	list.Padding = UDim.new(0, 8)
 	list.Parent = f
-	local buttons = (row.CanClaim and 1 or 0) + (row.CanReroll and 1 or 0)
+	-- 퀘스트 바이블 §15 P1 ③: a quest row (not the main story: it always shows) can be pinned to the HUD, at most 2
+	local canPin = row.Kind == "Quest" and type(row.Entry) == "table" and row.Entry.Kind ~= "Main" and not S.Preview
+	local buttons = (row.CanClaim and 1 or 0) + (row.CanReroll and 1 or 0) + (canPin and 1 or 0)
 	local reserve = buttons * (T.BtnW + 8) + (row.Nums and 64 or 0)
 	local color = row.Kind == "Done" and kit.Theme.SubText or kit.Theme.Text
 	label(kit, f, rowWords(row.Text), T.RowText, color, 1, UDim2.new(1, -reserve, 0, 0))
@@ -381,6 +383,22 @@ local function drawRow(kit, parent, row)
 			hudCall("QuestClaim", row.Entry)
 		end)
 		b.LayoutOrder = 3
+	end
+	if canPin then
+		local pinned = hudCall("IsPinned", row.Entry) == true
+		local b
+		b = kit.Button(f, pinned and T.Text.Unpin or T.Text.Pin, pinned and kit.Theme.Gold or kit.Palette.Button,
+			UDim2.fromOffset(T.BtnW, T.BtnH), function()
+				local res = hudCall("TogglePin", row.Entry)
+				if res == nil then
+					local ui = C and C.UIKit
+					if type(ui) == "table" and type(ui.Refuse) == "function" then pcall(ui.Refuse, b) end -- two pins already
+					return
+				end
+				task.defer(QuestBook.Redraw)
+			end)
+		b.Name = "Pin"
+		b.LayoutOrder = 5
 	end
 	if row.CanReroll then
 		local b = kit.Button(f, T.Text.Reroll, kit.Palette.Button, UDim2.fromOffset(T.BtnW, T.BtnH), function()
@@ -431,6 +449,11 @@ end
 
 local makeTabs -- (below: the tab buttons of the visible tabs)
 
+-- the open window drawn again (a pin changed)
+function QuestBook.Redraw()
+	if VIEW.Body then pcall(QuestBook.DrawBody) end
+end
+
 local function drawBody()
 	local kit, body = VIEW.Kit, VIEW.Body
 	if not (kit and body) then return end
@@ -448,6 +471,7 @@ local function drawBody()
 	section(kit, body, T.Text.Done, sec.Done, T.Text.EmptyDone)
 	paintTabs()
 end
+QuestBook.DrawBody = drawBody
 
 function QuestBook.ShowTab(id)
 	if not table.find(tabs(), id) then return end

@@ -217,7 +217,7 @@ Config.Data = {
 		-- once (SanitizeSettings); a Follow picked after that is kept. A23-91 (user 10/09 "콘솔 게임처럼"): the console-style
 		-- Follow is the default again; Settings V4: a save from before V4 gets Cam = Follow once, a Free picked from V4 stays
 		Settings = { V = 4, Keys = {}, Sfx = 1, Music = 1, Shake = true, DmgNum = "All", Tags = "All", KeyBadges = false, Lang = "Auto", BagSort = "Default",
-			Cam = "Follow", PvPCards = false, Weather = true, BagWide = false },
+			Cam = "Follow", PvPCards = false, Weather = true, BagWide = false, Pins = {} },
 		-- P6 / BB38 (TelemetryService, analytics only): { Funnel = { [step name] = true }, FirstDeath = true, Sessions = n }
 		Telemetry = {},
 		-- CR-M4: anti-collusion pair cooldowns kept in the session-locked save so they follow the player across servers
@@ -5591,7 +5591,7 @@ Config.Settings = {
 	-- the default again - a blob saved before V4 gets Cam = Follow once (V3 turned everybody to Free a day ago; only a
 	-- day of own Free picks is lost), a Free picked from V4 on stays
 	Version = 4,
-	MaxBlobKeys = 16, -- top-level keys of one SetSettings blob (V, Keys, the twelve values incl. Music / Weather / BagWide, Seq = 15)
+	MaxBlobKeys = 17, -- top-level keys of one SetSettings blob (V, Keys, the thirteen values incl. Music / Weather / BagWide / Pins, Seq = 16)
 	Defs = {
 		Sfx = { Type = "Number", Min = 0, Max = 1, Step = 0.1 },
 		Music = { Type = "Number", Min = 0, Max = 1, Step = 0.1 }, -- A23-100: the background music (Audio "Music" group)
@@ -5609,12 +5609,16 @@ Config.Settings = {
 		Cam = { Type = "Enum", Options = { "Follow", "Free" } }, -- A23-91: Follow = the console-style camera turns behind me while I walk (the default again since user 10/09; Free = Roblox's own)
 		-- 검수 10/09 (system review ②): the first-PvP-zone cards were seen (FirstSteps; not a row in the Settings window)
 		PvPCards = { Type = "Bool" },
+		-- 퀘스트 바이블 §15 P1 ③ (최종 검수 10/15): the quests I pinned in the quest window (their row keys, at most Max,
+		-- each a short id) - the HUD shows them under the main line on a PC (none by default), one line on a phone
+		Pins = { Type = "List", Max = 2, Len = 64 },
 	},
 	-- A23-179 / A23-146: no Language row (Roblox's auto translation is on, no Korean mode); a saved Lang value is only ignored
 	Order = { "Sfx", "Music", "Shake", "Weather", "KeyBadges", "DmgNum", "Tags", "BagSort", "Cam" },
 	Text = {
 		Sfx = "Sound effects", SfxEn = "Sound effects",
 		Music = "Music", MusicEn = "Music",
+		Pins = "Pinned quests", PinsEn = "Pinned quests", -- §15 P1 ③ (not a Settings row: the quest window's pins)
 		Shake = "Screen shake", ShakeEn = "Screen shake",
 		Weather = "Weather effects", WeatherEn = "Weather effects",
 		DmgNum = "Damage numbers", DmgNumEn = "Damage numbers",
@@ -5894,6 +5898,16 @@ function Config.SanitizeSettings(t)
 			if type(v) ~= "boolean" then v = d end
 		elseif def.Type == "Enum" then
 			if type(v) ~= "string" or not table.find(def.Options, v) then v = d end
+		elseif def.Type == "List" then
+			-- §15 P1 ③: up to Max different short strings (printable, no control bytes), else none
+			local list = {}
+			for _, x in type(v) == "table" and v or {} do
+				if #list >= def.Max then break end
+				if type(x) == "string" and #x > 0 and #x <= def.Len and not string.find(x, "[%c]") and not table.find(list, x) then
+					table.insert(list, x)
+				end
+			end
+			v = list
 		else
 			v = d
 		end
@@ -11028,6 +11042,7 @@ Config.ClientText.QuestBook = {
 	EmptyDone = "Nothing finished yet.",
 	Claim = "Claim",
 	Reroll = "New",
+	Pin = "Pin", Unpin = "Unpin", -- §15 P1 ③: show / hide the quest under the HUD's main line (at most 2)
 	FirstMission = "First mission",
 	DailyToday = "Daily quests today: %d/%d",
 	Goose = "The Golden Goose is here!",
@@ -11380,6 +11395,7 @@ Config.ClientText.HUD = {
 	TileSoon = "Coming soon!", -- a row tile whose window is not built yet (검수 2026-10-07: all six tiles on screen)
 	-- A23-40 quest lines (no plate): "3/5" after the text, the claim chip, the fold-out list toggle
 	QuestLineNums = "%s/%s",
+	QuestPinLine = "%s (%s/%s)", -- §15 P1 ③: a pinned quest's small line under the main one (name, progress)
 	QuestLineSummary = "Daily Quests %d/%d",
 	QuestOpenList = "▼",
 	QuestCloseList = "▲",
