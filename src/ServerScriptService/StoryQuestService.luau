@@ -636,6 +636,8 @@ local function requirementsMet(player, data, def)
 	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
 		and not Config.FeatureOn("NeutralFaction") then return false end
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
+	-- 최종 검수 10/15: Classes = only these classes (the artisan's first harvest per class: N0 / N0A / N0T)
+	if type(req.Classes) == "table" and not (data.ClassChosen == true and req.Classes[data.Class] == true) then return false end
 	-- C-5 (게임성 개발 2): Feature = the quest waits for its Config.Features switch (the market quests)
 	if type(req.Feature) == "string" and not Config.FeatureOn(req.Feature) then return false end
 	for _, f in type(req.Feature) == "table" and req.Feature or {} do -- 장인 ②: every switch of a list
@@ -668,6 +670,14 @@ local function requirementsMet(player, data, def)
 	end
 	for _, need in req.Done or {} do
 		if not st.Done[need] then return false end
+	end
+	-- 최종 검수 10/15: DoneAny = at least one of these is done (N0b after any class's N0)
+	if type(req.DoneAny) == "table" then
+		local any = false
+		for _, id in req.DoneAny do
+			if st.Done[id] then any = true end
+		end
+		if not any then return false end
 	end
 	-- E1: Requires.Pick = { Id, Is }: Is "Good" / "Evil" = that side of the saved pick (Purify / A count as Good), else the
 	-- exact pick

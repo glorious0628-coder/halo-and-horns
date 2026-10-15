@@ -57,8 +57,9 @@ runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local T = C.Tutorial
 	local ladder = T.Ladder
-	check(#ladder.Hooks == 3 and ladder.Hooks[1].Kind == "Commission" and ladder.Hooks[2].Kind == "Clatter" and ladder.Hooks[3].Kind == "Crystal",
-		"hooks in order: golden weapon, Captain Clatter, crystal weapon", show(ladder.Hooks))
+	check(#ladder.Hooks == 4 and ladder.Hooks[1].Kind == "Craft" and ladder.Hooks[2].Kind == "Commission" and ladder.Hooks[3].Kind == "Clatter"
+		and ladder.Hooks[4].Kind == "Crystal",
+		"hooks in order: an artisan's new craft (최종 검수 10/15), golden weapon, Captain Clatter, crystal weapon", show(ladder.Hooks))
 	for _, h in ladder.Hooks do
 		check(not C.FeatureOn(h.Feature), h.Kind .. ": switched off until its feature exists", tostring(C.Features[h.Feature]))
 		check(type(T.ShortNames[h.Kind]) == "string" and #T.ShortNames[h.Kind] <= 14, h.Kind .. ": a short name <= 14", tostring(T.ShortNames[h.Kind]))

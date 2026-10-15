@@ -183,6 +183,16 @@ MUTATIONS = [
     ("remote: no start rate limit", R, "\tif not Util.RateLimit(player, \"CraftStart\", num(Config.RateLimits.CraftStart, 3)) then return end\n", ""),
     ("remote: a two-argument Finish taken", R, "\tif select(\"#\", ...) ~= 1 then return end\n\tlocal sid = ...\n", "\tlocal sid = ...\n"),
     ("remote: a text strike id taken", R, "\tlocal sid, i, ms = ...\n\tif type(sid) ~= \"number\" then return end\n", "\tlocal sid, i, ms = ...\n\tsid = tonumber(sid) or sid\n"),
+    # 최종 검수 10/15: the craft goal row (CraftService.NextGoal)
+    ("goal: a made recipe again", R, "r.Role == role and num(made[id]) <= 0 and lv >= num(r.Lv, 1)", "r.Role == role and lv >= num(r.Lv, 1)"),
+    ("goal: any role's recipe", R, "if r and r.Role == role and num(made[id])", "if r and num(made[id])"),
+    ("goal: gold ignored", R, " and gold >= num(r.Gold) and hasMats(data, r) then", " and hasMats(data, r) then"),
+    ("goal: materials ignored", R, " and gold >= num(r.Gold) and hasMats(data, r) then", " and gold >= num(r.Gold) then"),
+    ("goal: research ignored", R, "\t\t\t\tready = ok and num(pts) >= num(r.Research)\n", ""),
+    ("goal: the switch ignored", R, "\tif not on() or type(data) ~= \"table\" then return nil end\n\tlocal role = roleOf(data)\n\tif not role then return nil end\n\tlocal c = type(data.Craft)",
+     "\tif type(data) ~= \"table\" then return nil end\n\tlocal role = roleOf(data)\n\tif not role then return nil end\n\tlocal c = type(data.Craft)"),
+    ("goal: the hook missing", C, "\t\t\t{ Kind = \"Craft\", Service = \"CraftService\", Feature = \"Crafting\" },\n", ""),
+    ("goal: the line says the role, not the station", R, "return string.format(T.Goal, station), \"Craft\"", "return string.format(T.Goal, role), \"Craft\""),
 ]
 
 

@@ -3129,7 +3129,7 @@ Config.Tutorial = {
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
 		Commission = "Weapon order", Commission4 = "Golden weapon", Commission5 = "Crystal weapon", Commission6 = "Spirit weapon",
-		Clatter = "Capt. Clatter", Crystal = "Crystal weapon" }, -- A23-86 F ladder rows
+		Clatter = "Capt. Clatter", Crystal = "Crystal weapon", Craft = "Craft" }, -- A23-86 F ladder rows (Craft: 최종 검수 10/15)
 	-- A23-86 F (content_beyond_10min): the next-goal ladder once the early goals (iron weapon, first skills, the woods) are
 	-- done and no story row is pinned. Hooks, in order: a feature row asks its service for its line (S[Service].NextGoal(
 	-- player, data) -> text or nil) and only while Config.Features[Feature] is on (the features are not built yet, so the
@@ -3137,6 +3137,8 @@ Config.Tutorial = {
 	-- no purchase or 2x button near it (A23-79).
 	Ladder = {
 		Hooks = {
+			-- 최종 검수 10/15: an artisan who can make a new thing of their role now (CraftService.NextGoal), first
+			{ Kind = "Craft", Service = "CraftService", Feature = "Crafting" },
 			{ Kind = "Commission", Service = "CommissionService", Feature = "Commission" },
 			{ Kind = "Clatter", Service = "ClatterService", Feature = "Clatter" },
 			{ Kind = "Crystal", Service = "CrystalService", Feature = "Crystal" },
@@ -3283,7 +3285,7 @@ Config.StoryQuests = {
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
 	-- user 2026-10-06: basic weapons are simply bought at the blacksmith (no "buy the iron weapon" quest); rare gear
 	-- comes from quests, the crafter and monster drops
-	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
+	Subs = { "S0", "Lunch1", "Pet1", "S1", "S2", "S3", "S4", "N0", "N0A", "N0T", "N0b", "N1", "N2", "H1", "R1", "N3", "N4", "Pip1", -- quest_volume §3-2 (A23-56) below:
 		"S6", "XR1", "H2", "R5", "GW1", "H3", "R3", "GW2", "GW3", "H5", "R6", "GW4", "GW5", "GW6", "GW7", "H6", "R7", "GW8",
 		"SK1", "SK2", -- SKL-3: the practice subs of a new skill
 		"WB1", -- A23-86 Call of the Woods: the lantern on the woods bridge
@@ -3701,10 +3703,12 @@ Config.StoryQuests = {
 		-- 장인 ② (artisan_min_server_2026-10-14 ①, 게임성 개발 2): the guild's first ten minutes - pick, make, sell. Neutral only,
 		-- offered while the guild (NeutralFaction) and the quest's Feature switches are on. Gather / Craft / SellMat count
 		-- GatherService.Gathered, CraftService.Crafted and LootService.MaterialSold. N0 ends with 150 gold and the crafted
-		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only
+		-- weapon in hand (Reward.EquipCrafted: LootService.EquipBestSpare); W2 is made from N0's harvest only.
+		-- 최종 검수 10/15: one N0 per artisan class (Requires.Classes): N0 the blacksmith (Warrior), N0A the alchemist (Mage:
+		-- 3 herbs -> AP1), N0T the pet tamer (Archer: 3 herbs -> T1); same title and 150 gold
 		N0 = {
 			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" } },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Warrior = true } },
 			Start = "Kit: Pick herbs, mine copper, then make something!",
 			Steps = {
 				{ Text = "Harvest %d/2", Obj = { Type = "Trials", List = {
@@ -3715,9 +3719,29 @@ Config.StoryQuests = {
 			},
 			Reward = { GoldN = 150, EquipCrafted = true },
 		},
+		N0A = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Mage = true } },
+			Start = "Kit: Pick herbs, then brew something!",
+			Steps = {
+				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150 },
+		},
+		N0T = {
+			Kind = "Sub", Title = "First Harvest", ShortName = "First harvest", Speaker = "Guild", Factions = { Neutral = true },
+			Requires = { TutorialDone = true, Feature = { "Gathering", "Crafting" }, Classes = { Archer = true } },
+			Start = "Kit: Pick herbs, then make pet treats!",
+			Steps = {
+				{ Text = "Pick herbs %d/%d", Obj = { Type = "Gather", Item = "Herb", Count = 3 } },
+				{ Text = "Make something %d/%d", Obj = { Type = "Craft", Count = 1 } },
+			},
+			Reward = { GoldN = 150 },
+		},
 		N0b = {
 			Kind = "Sub", Title = "Sell to the Smith", ShortName = "Sell harvest", Speaker = "Guild", Factions = { Neutral = true },
-			Requires = { Done = { "N0" }, Feature = "Gathering" },
+			Requires = { DoneAny = { "N0", "N0A", "N0T" }, Feature = "Gathering" }, -- 최종 검수 10/15: any class's first harvest
 			Start = "Kit: Extra herbs? Otto pays gold for them!",
 			Steps = { { Text = "Sell harvest at the Forge %d/%d", Guide = "Blacksmith", Obj = { Type = "SellMat", Count = 5 } } },
 			Reward = { GoldN = 30 },
@@ -9563,7 +9587,8 @@ Config.Craft = {
 		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
 		-- 장인 ⑤ (A23-178, 최종 검수 10/14): the alchemist's first-minutes goods from the meadow's harvest and slimes. Kind
 		-- "Potion" = Potion "HP" / "MP" (the potion stock, Config.PotionStockKey; N + the hammer's +N, never past the cap)
-		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 2, Jelly = 3 }, XP = 8 },
+		-- 최종 검수 10/15: AP1 / T1 = herbs only (the alchemist's / tamer's N0 harvest, no hunting before the first craft)
+		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 8 },
 		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
 		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 5, CopperOre = 3 }, XP = 20 },
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
@@ -9571,7 +9596,7 @@ Config.Craft = {
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
 		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
 		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
-		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Jelly = 5, Herb = 2 }, XP = 10 },
+		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 10 },
 		-- ⑥ gear (docs/design/gear_slots_2026-10-12.md §4; 게임성 검수 OK 10/12; Config.Gear has the numbers). Kind Gear pays
 		-- into data.Gear.Own["<Slot>:T:P"] (T = Tier, P = the hammer's +N). Smith: armor + ring (Lv 8 / 16 / 24: iron, silver,
 		-- moon crystal + the monster materials of the same zones); the tamer: pet armor + pet accessory (Lv 5 / 12 / 20:
@@ -9602,6 +9627,7 @@ Config.Craft = {
 		NeedResearch = "Research this monster more first.", -- a summon before its research stage
 		Prompt = "Craft", -- the workbench prompt (ActionKey)
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
+		Goal = "Make something new at the %s", -- 최종 검수 10/15: the next-goal craft row (CraftService.NextGoal; the station)
 	},
 }
 -- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly

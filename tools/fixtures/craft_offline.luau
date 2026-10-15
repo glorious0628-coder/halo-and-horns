@@ -577,10 +577,10 @@ runGroup("alchemist goods", function()
 	end })
 	local C0 = w.Config
 	local K0 = C0.Craft.Recipes
-	check(K0.AP1.Role == "Alch" and K0.AP1.Kind == "Potion" and K0.AP1.Potion == "HP" and K0.AP1.N == 2 and K0.AP1.Mats.Herb == 2
-		and K0.AP1.Mats.Jelly == 3 and K0.AP2.Potion == "MP" and K0.AS1.Kind == "Item" and K0.AS1.Item == "Enh70"
+	check(K0.AP1.Role == "Alch" and K0.AP1.Kind == "Potion" and K0.AP1.Potion == "HP" and K0.AP1.N == 2 and K0.AP1.Mats.Herb == 3
+		and K0.AP1.Mats.Jelly == nil and K0.AP2.Potion == "MP" and K0.AS1.Kind == "Item" and K0.AS1.Item == "Enh70"
 		and K0.AS1.Mats.Herb == 5 and K0.AS1.Mats.CopperOre == 3 and K0.AS1.Lv == 3,
-		"Config: HP / MP potions and the 70% scroll from the meadow's harvest and slimes (Alch)", show({ K0.AP1, K0.AS1 }))
+		"Config: HP potions from 3 herbs (최종 검수 10/15), MP potions and the 70% scroll (Alch)", show({ K0.AP1, K0.AS1 }))
 	check(w.C.RecipeOn("AP1") ~= nil and w.C.RecipeOn("AS1") ~= nil and w.C.RecipeOn("APX") == nil,
 		"a Potion recipe is on only for a real potion (HP / MP)", "")
 	local stock = { Herb = 40, Jelly = 20, CopperOre = 10, Petal = 10 }
@@ -591,11 +591,11 @@ runGroup("alchemist goods", function()
 	local res = last(fired(w, "CraftResult", p))
 	check(res and res.Kind == "Potion" and res.Potion == "HP" and (d[hp] or 0) == before + 2 + res.Plus and p:GetAttribute(hp) == d[hp],
 		"AP1: 2 HP potions + the hammer's +N into the stock (attribute too); CraftResult says Potion HP", show({ res, d[hp] }))
-	check(d.Items.Herb == 38 and d.Items.Jelly == 17, "its materials went at the start (2 herbs, 3 jelly)", show(d.Items))
+	check(d.Items.Herb == 37 and d.Items.Jelly == 20, "its materials went at the start (3 herbs, no jelly)", show(d.Items))
 	-- the cap: no start when N + 2 would pass it
 	w:Advance(61)
 	d[hp] = C0.Vitals.PotionInventoryCap - 3
-	check(w.C.TryStart(p, "AP1") == "full" and d.Items.Herb == 38, "near the potion cap: full, nothing taken", show(d.Items))
+	check(w.C.TryStart(p, "AP1") == "full" and d.Items.Herb == 37, "near the potion cap: full, nothing taken", show(d.Items))
 	d[hp] = 0
 	-- the scroll waits for craft Lv3
 	check(w.C.TryStart(p, "AS1") == "level", "the 70% scroll needs alchemy Lv3", "")
@@ -603,7 +603,7 @@ runGroup("alchemist goods", function()
 	local enh = d.Items.Enh70 or 0
 	startAndHammer(w, p, HONEST, { Recipe = "AS1" })
 	local res2 = last(fired(w, "CraftResult", p))
-	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 33 and d.Items.CopperOre == 7,
+	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 32 and d.Items.CopperOre == 7,
 		"AS1 at Lv3: 70% scrolls (1 + the hammer's +N) from 5 herbs + 3 copper", show({ res2, d.Items }))
 	-- a blacksmith cannot make them
 	local s = smith(w, 12, { Items = deepCopy(stock) })
@@ -869,8 +869,8 @@ runGroup("tamer", function()
 	check(S1 and S1.Role == "Tame" and S1.Kind == "Pet" and S1.Species == "BabySlime" and S1.Family == "Slime" and S1.Research == C.Research.Stages[2]
 		and S1.Spd[1] == 5 and S1.Spd[2] == 8 and S1.Gold == 100 and S1.Mats.Jelly == 30 and S1.Mats.SlimeCore == 5 and S1.Lv == 1 and S1.XP == 40,
 		"S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4)", show(S1))
-	check(T1 and T1.Role == "Tame" and T1.Kind == "Item" and T1.Item == "PetTreat" and T1.N == 3 and T1.Mats.Jelly == 5 and T1.Mats.Herb == 2
-		and T1.Mats.Petal == nil, "T1: Jelly 5 + Herb 2 (gathered, 게임성 검수 10/12) -> 3 Pet Treats (+ the hammer's +N)", show(T1))
+	check(T1 and T1.Role == "Tame" and T1.Kind == "Item" and T1.Item == "PetTreat" and T1.N == 3 and T1.Mats.Jelly == nil and T1.Mats.Herb == 3
+		and T1.Mats.Petal == nil, "T1: Herb 3 (gathered only, 최종 검수 10/15) -> 3 Pet Treats (+ the hammer's +N)", show(T1))
 	local it = C.Loot.Items.PetTreat
 	local inOrder = false
 	for _, id in C.Loot.Order do if id == "PetTreat" then inOrder = true end end
@@ -958,11 +958,79 @@ runGroup("tamer", function()
 	local t = tamerWorld()
 	local r, dr = smith(t, 5, nil, "Archer")
 	check(t.C.TryStart(r, "T1") == "mats", "no herbs: NeedMats", "")
-	dr.Items.Herb = 2
+	dr.Items.Herb = 3
 	local st = t.C.TryStart(r, "T1")
-	check(st == "ok" and (dr.Items.Herb or 0) == 0, "T1 starts with 2 herbs (no research needed)", tostring(st) .. " " .. tostring(dr.Items.Herb))
+	check(st == "ok" and (dr.Items.Herb or 0) == 0, "T1 starts with 3 herbs (no research needed)", tostring(st) .. " " .. tostring(dr.Items.Herb))
 	hammer(t, r, HONEST)
 	check(dr.Items.PetTreat == 5 and dr.Craft.Tame.XP == 10, "3 + 2 = 5 Pet Treats, 10 craft XP", tostring(dr.Items.PetTreat))
+end)
+
+------------------------------------------------------------------ 최종 검수 10/15: the tamer's gear made end to end + the craft goal row
+runGroup("tamer gear", function()
+	local w = tamerWorld({ EditConfig = function(c) c.Features.Gear = true end })
+	check(w.C.RecipeOn("PA1") ~= nil and w.C.RecipeOn("PC1") ~= nil and w.C.RecipeOn("PA3") ~= nil and w.C.RecipeOn("PC3") ~= nil,
+		"the gear switch on: PA1-3 / PC1-3 are on", "")
+	local p, d = smith(w, 1, { Craft = { Tame = { Lv = 5, XP = 0 }, Made = {} } }, "Archer")
+	d.Items.Herb = 20
+	local jelly, cores, herbs, gold = d.Items.Jelly, d.Items.SlimeCore, d.Items.Herb, d.BankGold
+	check(w.C.TryStart(p, "PA1") == "ok" and d.Items.Jelly == jelly - 20 and d.Items.Herb == herbs - 4 and d.Items.SlimeCore == cores - 4
+		and d.BankGold == gold - 150, "PA1 at tamer Lv5: Jelly 20, Herb 4, Slime Core 4, 150 gold taken", show({ d.Items.Jelly, d.Items.Herb }))
+	hammer(w, p, HONEST)
+	check(type(d.Gear) == "table" and d.Gear.Own["PetArmor:1:2"] == 1 and d.Craft.Pend == nil and d.Craft.Made.PA1 == 1,
+		"pet armor +2 into data.Gear.Own['PetArmor:1:2'], Made.PA1 = 1", show(d.Gear and d.Gear.Own))
+	w:Advance(61)
+	check(w.C.TryStart(p, "PC1") == "ok", "PC1 starts (Petal 10, Herb 3, Jelly 12, 120 gold)", "")
+	hammer(w, p, HONEST)
+	check(d.Gear.Own["PetAcc:1:2"] == 1 and d.Craft.Made.PC1 == 1 and last(fired(w, "CraftResult", p)).Kind == "Gear",
+		"pet accessory +2 into 'PetAcc:1:2'; CraftResult Kind Gear", show(d.Gear.Own))
+	w:Advance(61)
+	check(w.C.TryStart(p, "PA2") == "level", "PA2 needs tamer Lv12: refused at Lv" .. tostring(d.Craft.Tame.Lv), "")
+	local s = smith(w, 2)
+	check(w.C.TryStart(s, "PA1") == "role", "a blacksmith cannot make pet armor", "")
+	local off = tamerWorld()
+	local q = smith(off, 3, { Craft = { Tame = { Lv = 5, XP = 0 }, Made = {} } }, "Archer")
+	check(off.C.RecipeOn("PA1") == nil and off.C.TryStart(q, "PA1") == "recipe", "the gear switch off: PA1 is off", "")
+end)
+
+runGroup("craft goal", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local hooks = C.Tutorial.Ladder.Hooks
+	check(hooks[1].Kind == "Craft" and hooks[1].Service == "CraftService" and hooks[1].Feature == "Crafting"
+		and type(C.Craft.Text.Goal) == "string" and C.Tutorial.ShortNames.Craft == "Craft",
+		"the ladder's first hook = Craft (CraftService, Crafting); Craft.Text.Goal, ShortNames.Craft", show(hooks[1]))
+	local function line(station) return string.format(C.Craft.Text.Goal, station) end
+	local w = tamerWorld()
+	local p, d = smith(w, 1, nil, "Archer")
+	d.Items = { Herb = 3 }
+	local text, kind = w.C.NextGoal(p, d)
+	check(text == line("Research Table") and kind == "Craft", "a tamer with T1's things, never made: 'Make something new at the Research Table'",
+		tostring(text))
+	d.Craft = { Made = { T1 = 1 } }
+	check(w.C.NextGoal(p, d) == nil, "T1 made once already, nothing else ready: no line", "")
+	d.Items = { Jelly = 40, SlimeCore = 6 }
+	w.Pts.Slime = 149
+	check(w.C.NextGoal(p, d) == nil, "S1's things but 149 research: no line", "")
+	w.Pts.Slime = 150
+	check(w.C.NextGoal(p, d) == line("Research Table"), "150 research: the summon is a new thing to make", "")
+	d.Items = { Jelly = 29, SlimeCore = 6 }
+	check(w.C.NextGoal(p, d) == nil, "29 jelly (S1 needs 30): no line", "")
+	d.Items = { Jelly = 40, SlimeCore = 6 }
+	d.BankGold = 50
+	check(w.C.NextGoal(p, d) == nil, "50 gold (S1 costs 100): no line", "")
+	local s, ds = smith(w, 2)
+	ds.Items = { Herb = 3, CopperOre = 2 }
+	check(w.C.NextGoal(s, ds) == line("Anvil"), "a blacksmith with W2's harvest: the Anvil", "")
+	local a, da = smith(w, 3, nil, "Mage")
+	da.Items = { Herb = 3 }
+	check(w.C.NextGoal(a, da) == line("Cauldron"), "an alchemist with AP1's things: the Cauldron", "")
+	local h, dh = smith(w, 4, nil, "Warrior", "Halo")
+	dh.Items = { Herb = 3, CopperOre = 2 }
+	check(w.C.NextGoal(h, dh) == nil, "a Halo warrior is no artisan: no line", "")
+	local off = cWorld({ Off = true })
+	local o, dof = smith(off, 5)
+	dof.Items = { Herb = 3, CopperOre = 2 }
+	check(off.C.NextGoal(o, dof) == nil, "Crafting off: no line", "")
+	check(d.Craft.Tame == nil, "NextGoal writes nothing into the save", show(d.Craft))
 end)
 
 ------------------------------------------------------------------ ⑦ fame and rank (artisan_fame_2026-10-12.md)
