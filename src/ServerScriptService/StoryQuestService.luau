@@ -108,6 +108,29 @@ local function story(data)
 	return st
 end
 
+-- A23-205 (user 10/15): the daily repeat requests (Defs with Repeat = "Daily"). data.Story.Daily = { Day = KST day index, Taken =
+-- { [id] = true } accepted today, Done = { [id] = true } finished today } - a new KST day starts it empty (the requests come back)
+local function isRepeat(def)
+	return type(def) == "table" and def.Repeat == "Daily"
+end
+
+local function dailyOf(st)
+	local day = Config.DayIndex(os.time())
+	local d = st.Daily
+	if type(d) ~= "table" or d.Day ~= day or type(d.Taken) ~= "table" or type(d.Done) ~= "table" then
+		d = { Day = day, Taken = {}, Done = {} }
+		st.Daily = d
+	end
+	return d
+end
+
+-- how many repeat requests were accepted today; full = the day's RepeatDailyMax is reached
+local function dailyFull(st)
+	local n = 0
+	for _ in dailyOf(st).Taken do n += 1 end
+	return n >= math.floor(num(SQ.RepeatDailyMax, 5))
+end
+
 -- A23-64 ① (zone_check_halo #39): a quest whose pick the townsfolk remember (listed in Config.TownReact.Order)
 local function isTownPick(id)
 	local R = Config.TownReact
@@ -507,8 +530,8 @@ end
 local function complete(player, data, id)
 	local st = story(data)
 	local def = DEFS[id]
-	-- saved first: the quest can never be finished (or paid) twice
-	st.Done[id] = true
+	-- saved first: the quest can never be finished (or paid) twice (A23-205: a daily repeat is done for today)
+	if isRepeat(def) then dailyOf(st).Done[id] = true else st.Done[id] = true end
 	if st.Main.Id == id then st.Main = { Id = "" } end
 	st.Subs[id] = nil
 	local msg = payReward(player, def) or string.format(TXT.Done, def.Title)
@@ -911,6 +934,7 @@ local function refresh(player)
 		end
 	end
 	local offers = {} -- A23-199: npc id -> true while it has a quest to offer this player
+	local dims = {} -- A23-205: npc id -> true while it only has daily repeats left and today's are all taken
 	-- main chain starts after the first mission is claimed
 	if st.Main.Id == "" and num(data.TutorialStep) == TUT_DONE and data.ClassChosen == true then
 		local id = nextMain(st, player)
@@ -933,7 +957,13 @@ local function refresh(player)
 			-- A23-199: offered, not taken: the NPC asks ([Accept] / [Decline], StoryAction); nothing is saved until Accept.
 			-- P1 ①-1: only while that NPC has a body in this world
 			local npc = offerNpc(player, def)
-			if npc and npcBody(npc) and requirementsMet(player, data, def) then offers[npc] = true end
+			if npc and npcBody(npc) and requirementsMet(player, data, def) then
+				if not isRepeat(def) then
+					offers[npc] = true
+				elseif not dailyOf(st).Done[id] then -- A23-205: today's 5 taken = the asker's '!' dims (StoryOffersDim)
+					if dailyFull(st) then dims[npc] = true else offers[npc] = true end
+				end
+			end
 		elseif def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
 			if def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once
@@ -952,6 +982,14 @@ local function refresh(player)
 	table.sort(npcs)
 	local offerAttr = table.concat(npcs, ",")
 	if player:GetAttribute("StoryOffers") ~= offerAttr then player:SetAttribute("StoryOffers", offerAttr) end
+	-- A23-205: the askers whose daily repeats wait for tomorrow (game dev 1 draws a dim '!', no words): StoryOffersDim
+	local dimList = {}
+	for npc in dims do
+		if not offers[npc] then table.insert(dimList, npc) end
+	end
+	table.sort(dimList)
+	local dimAttr = table.concat(dimList, ",")
+	if player:GetAttribute("StoryOffersDim") ~= dimAttr then player:SetAttribute("StoryOffersDim", dimAttr) end
 	-- state-driven steps
 	for _, t in tracks(data) do
 		local def, tr = DEFS[t.Id], t.Track
@@ -1497,6 +1535,7 @@ local function offerable(player, data, id)
 	if def.Kind == "Main" then
 		return st.Main.Id == "" and nextMain(st, player) == id and num(data.TutorialStep) == TUT_DONE and requirementsMet(player, data, def)
 	end
+	if isRepeat(def) and (dailyOf(st).Done[id] or dailyFull(st)) then return false end -- A23-205
 	return def.Kind == "Sub" and st.Subs[id] == nil and requirementsMet(player, data, def)
 end
 
@@ -1523,11 +1562,9 @@ local function rewardPreview(player, def)
 	if num(r.XP) > 0 then x = select(2, Config.HuntValue(level, r.XP)) end
 	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
 	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
-	local out = {}
-	if g > 0 then out.Gold = math.floor(g) end
-	if x > 0 then out.XP = math.floor(x) end
-	if type(r.Item) == "string" then out.Items = { { Id = r.Item, N = math.max(1, math.floor(num(r.N, 1))) } } end
-	if num(r.BagSlots) > 0 then out.BagSlots = math.floor(r.BagSlots) end
+	local list = type(r.Item) == "string" and { { Id = r.Item, N = math.max(1, math.floor(num(r.N, 1))) } } or nil
+	local out = { Gold = g > 0 and math.floor(g) or nil, XP = x > 0 and math.floor(x) or nil, Items = list,
+		BagSlots = num(r.BagSlots) > 0 and math.floor(r.BagSlots) or nil }
 	return next(out) ~= nil and out or nil
 end
 
@@ -1544,6 +1581,7 @@ local function answerOffer(player, data, id, action)
 	end
 	local st = story(data)
 	local track = { St = 1, P = 0, T = {}, Claim = false }
+	if isRepeat(def) then dailyOf(st).Taken[id] = true end -- A23-205: one of today's RepeatDailyMax
 	if def.Kind == "Main" then st.Main = { Id = id, St = 1, P = 0, T = {}, Claim = false } else st.Subs[id] = track end
 	dirty(player)
 	StoryQuestService.Accepted:Fire(player, id)

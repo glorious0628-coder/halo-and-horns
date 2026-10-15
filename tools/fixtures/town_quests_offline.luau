@@ -3198,6 +3198,58 @@ runGroup("p1 lamp and scenes", function()
 		"a tamer (Archer) gives Tiny the treat: Help = Tame (the baby slime scene)", show({ nd.Story.Flags, scenes(n, fx2) }))
 end)
 
+------------------------------------------------------------------ A23-205 (user 10/15): daily repeat requests - at most RepeatDailyMax (5) accepted a KST
+-- day (the player picks), done = done for today, the askers' '!' dims once today's are taken, a new day brings them back
+runGroup("daily repeat requests", function()
+	local w = townWorld({ Prompts = true })
+	local SQ = w.Config.StoryQuests
+	check(SQ.RepeatDailyMax == 5, "Config: RepeatDailyMax = 5", SQ.RepeatDailyMax)
+	local KID = vec(0, 0, 0)
+	w:Npc("TKidD", KID)
+	w:Npc("TKidE", vec(6, 0, 0))
+	local ids = {}
+	for i = 1, 7 do
+		local id = "TRP" .. i
+		SQ.Defs[id] = { Kind = "Sub", Repeat = "Daily", Title = "Rep " .. i, ShortName = "Rep " .. i,
+			Offer = { Npc = i <= 6 and "TKidD" or "TKidE", Lines = { All = { "Kid: Again?" } } },
+			Steps = { { Text = "Talk", Npc = i <= 6 and "TKidD" or "TKidE", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "ok" } } } },
+			Reward = { GoldN = 3 } }
+		table.insert(SQ.Subs, id)
+		table.insert(ids, id)
+	end
+	local p, d = joinAfterM23(w, 9961, "Halo", { Pos = KID + vec(2, 0, 0) })
+	local function offers() return p:GetAttribute("StoryOffers") or "" end
+	local function dims() return p:GetAttribute("StoryOffersDim") or "" end
+	check(string.find(offers(), "TKidD", 1, true) ~= nil and dims() == "", "a new day: the repeat askers ask", offers())
+	for i = 1, 5 do w:Act(p, ids[i], "Accept") end
+	w.Story.Refresh(p)
+	local taken = 0
+	for i = 1, 5 do if w:Track(d, ids[i]) then taken += 1 end end
+	check(taken == 5, "5 accepted", taken)
+	w:Act(p, ids[6], "Accept")
+	check(w:Track(d, ids[6]) == nil, "the 6th the same day: refused (RepeatDailyMax 5)", show(w:Track(d, ids[6])))
+	check(string.find(offers(), "TKidE", 1, true) == nil and string.find(dims(), "TKidE", 1, true) ~= nil,
+		"today's 5 taken: TKidE's '!' dims (StoryOffersDim), not offered", show({ offers(), dims() }))
+	-- finishing one pays and it is done for today only (never Done forever)
+	local bank = d.BankGold or 0
+	w:Act(p, ids[1], "Talk")
+	check(d.Story.Done[ids[1]] == nil and d.Story.Daily.Done[ids[1]] == true and (d.BankGold or 0) == bank + 3 and w:Track(d, ids[1]) == nil,
+		"one done: paid, done for today (Story.Daily), not Done forever", show(d.Story.Daily))
+	w:Act(p, ids[1], "Accept")
+	check(w:Track(d, ids[1]) == nil, "the same request again today: refused", "")
+	-- a new KST day: the count and the done list start again; a request still open stays
+	w:Advance(86400)
+	w.Story.Refresh(p)
+	check(string.find(offers(), "TKidD", 1, true) ~= nil and string.find(offers(), "TKidE", 1, true) ~= nil and dims() == ""
+		and w:Track(d, ids[2]) ~= nil, "the next day: both ask again; yesterday's open one is still open", show({ offers(), dims() }))
+	w:Act(p, ids[1], "Accept")
+	check(w:Track(d, ids[1]) ~= nil, "yesterday's done request can be taken again", "")
+	for _, id in ids do
+		SQ.Defs[id] = nil
+		table.remove(SQ.Subs, table.find(SQ.Subs, id))
+	end
+end)
+
 -- A23-199: every quest step shows where to go: a Guide, or an Npc (the client guides to that NPC), except a card that
 -- opens right where the player stands (Panel without Npc). KNOWN = today's steps without one (the quest redesign fixes them;
 -- the list may only shrink)

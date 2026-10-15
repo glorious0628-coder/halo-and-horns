@@ -198,6 +198,10 @@ Config.Data = {
 		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
 		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first Slime Prince scroll)
 		Items = {},
+		-- A23-206 (user 10/15): how many of each Items[id] are bound to this character (quest / daily request / teacher test /
+		-- web-end rewards): never listed on the market or sold; using one takes the bound ones first. An additive field (no
+		-- version bump: an old save has none bound = every item free, as before)
+		ItemsBound = {},
 		WeaponEnhance = {},
 		LootFlags = {},
 		HideAnnounceName = false, -- P5: server-wide chat announcements show "<faction> 한 명" instead of my name
@@ -6449,6 +6453,7 @@ Config.Loot = {
 		-- artisan min ② (docs/design/artisan_min_server_2026-10-14.md): one gathered / crafted material at a time (SellItem)
 		SellItemDone = "Sold %d %s! Gold +%s", -- (n, item name, gold)
 		SellItemNone = "You don't have that many.",
+		SellBound = "Quest rewards can't be sold.", -- A23-206: the bound ones (the free ones of the same item still sell)
 	},
 }
 -- 2-A ⑤ Config.Loot.WeaponPity: { ["T<tier>"] = luck so far } (additive save field, no version step; LootService repairs it)
@@ -10831,6 +10836,7 @@ Config.Market = {
 		Off = "The market is closed.",
 		Own = "That's your own listing.",
 		NoItem = "You don't have that.",
+		Bound = "Quest rewards can't be traded.", -- A23-206: only the free ones of an item may be listed
 		CantSell = "You can't sell that.",
 		InHand = "Unequip it first.",
 	},
@@ -11654,11 +11660,11 @@ Config.ClientText.BagUI = {
 --                                    of steps as the base quest (a step the side does not need: Obj = { Type = "Skip" })
 --   Landmarks / Speakers / Portraits = { [key] = value }   added (an existing key = an error)
 --   Npcs = { TownNpcs.List entries }  new temporary bodies
-local function questError(name, text)
-	error("quest pack " .. tostring(name) .. ": " .. text, 0)
-end
-
 function Config.AddQuests(pack, name)
+	-- (no top-level local here: Config sits near the 200-locals limit)
+	local function questError(_, text)
+		error("quest pack " .. tostring(name) .. ": " .. text, 0)
+	end
 	local SQ = Config.StoryQuests
 	if type(pack) ~= "table" then questError(name, "not a table") end
 	for id, def in type(pack.Defs) == "table" and pack.Defs or {} do

@@ -560,6 +560,13 @@ MUTATIONS = [
      "\t\t\t\t\tObj = { Type = \"Talk\" } }, -- P1 ④ (bible N03: the order box)\n"),
     ("P1: N0 before Lv3", C, "\t\t\tRequires = { TutorialDone = true, Level = 3, Feature = { \"Gathering\", \"Crafting\" }, Classes = { Warrior = true } },",
      "\t\t\tRequires = { TutorialDone = true, Feature = { \"Gathering\", \"Crafting\" }, Classes = { Warrior = true } },"),
+    # --- A23-205 daily repeat requests
+    ("A23-205: no daily cap", ST, "\treturn n >= math.floor(num(SQ.RepeatDailyMax, 5))\n", "\treturn false\n"),
+    ("A23-205: a repeat done forever", ST, "if isRepeat(def) then dailyOf(st).Done[id] = true else st.Done[id] = true end", "st.Done[id] = true"),
+    ("A23-205: a repeat again the same day", ST, "\tif isRepeat(def) and (dailyOf(st).Done[id] or dailyFull(st)) then return false end -- A23-205\n", "\tif isRepeat(def) and dailyFull(st) then return false end -- A23-205\n"),
+    ("A23-205: accepts not counted", ST, "\tif isRepeat(def) then dailyOf(st).Taken[id] = true end -- A23-205: one of today's RepeatDailyMax\n", ""),
+    ("A23-205: no new day", ST, "\tif type(d) ~= \"table\" or d.Day ~= day or type(d.Taken) ~= \"table\" or type(d.Done) ~= \"table\" then", "\tif type(d) ~= \"table\" or type(d.Taken) ~= \"table\" or type(d.Done) ~= \"table\" then"),
+    ("A23-205: no dim '!'", ST, "if player:GetAttribute(\"StoryOffersDim\") ~= dimAttr then player:SetAttribute(\"StoryOffersDim\", dimAttr) end", ""),
     ("P1: the Lv5 test before Lv5", C, "\t\t\tRequires = { Level = 5 },\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks", "\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks"),
 ]
 

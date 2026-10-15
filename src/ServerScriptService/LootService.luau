@@ -89,6 +89,8 @@ local function owns(data, tier)
 end
 
 ------------------------------------------------------------------ data
+local BOUND = {} -- A23-206 bound reward counts (its functions are below, next to addItem)
+
 local function sanitize(data)
 	local items = {}
 	if type(data.Items) == "table" then
@@ -102,6 +104,15 @@ local function sanitize(data)
 		end
 	end
 	data.Items = items
+	-- A23-206: bound counts - known shape only, never more than held
+	local bound = {}
+	if type(data.ItemsBound) == "table" then
+		for id, n in data.ItemsBound do
+			local c = type(id) == "string" and math.min(math.floor(num(n)), math.floor(num(items[id]))) or 0
+			if c > 0 then bound[id] = c end
+		end
+	end
+	data.ItemsBound = bound
 	local enh = {}
 	local old = type(data.WeaponEnhance) == "table" and data.WeaponEnhance or {}
 	for tier = 1, Config.MaxWeaponTier do
@@ -121,7 +132,7 @@ end
 
 local function ensureTables(data)
 	if type(data.Items) ~= "table" or type(data.WeaponEnhance) ~= "table" or type(data.LootFlags) ~= "table"
-		or type(data.WeaponPity) ~= "table" then
+		or type(data.WeaponPity) ~= "table" or type(data.ItemsBound) ~= "table" then
 		sanitize(data)
 	end
 end
@@ -166,7 +177,13 @@ local function inventoryPayload(data)
 	end
 	-- C1: spare weapons { ["T:P"] = n } (a repaired copy; additive field, the bag lists them)
 	local spares = Config.SanitizeSpares and Config.SanitizeSpares(data.Spares) or {}
-	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq, Spares = spares }
+	-- A23-206: how many of each are bound (the bag's small lock; game dev 1)
+	local bound = {}
+	for id in items do
+		local b = BOUND.Of(data, id)
+		if b > 0 then bound[id] = b end
+	end
+	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq, Spares = spares, Bound = bound }
 end
 
 local function pushInventory(player)
@@ -194,7 +211,25 @@ local function publish(player, data)
 	end)
 end
 
-local function addItem(player, data, id, n, anySlot)
+-- A23-206 (user 10/15): bound to the character - quest rewards (GrantItem source "Reward"). Of = how many of the held ones
+-- are bound (never more than held), Free = the rest (what the market / the Forge may take). Using items takes the bound ones
+-- first (Used, after the count went down)
+function BOUND.Of(data, id)
+	local b = type(data.ItemsBound) == "table" and math.floor(num(data.ItemsBound[id])) or 0
+	return math.clamp(b, 0, math.floor(num(data.Items[id])))
+end
+function BOUND.Set(data, id, n)
+	if type(data.ItemsBound) ~= "table" then data.ItemsBound = {} end
+	data.ItemsBound[id] = n > 0 and math.floor(n) or nil
+end
+function BOUND.Free(data, id)
+	return math.max(0, math.floor(num(data.Items[id])) - BOUND.Of(data, id))
+end
+function BOUND.Used(data, id, n, before)
+	BOUND.Set(data, id, math.min(math.max(0, before - n), math.floor(num(data.Items[id]))))
+end
+
+local function addItem(player, data, id, n, anySlot, bound)
 	local def = LOOT.Items[id]
 	if not def or n <= 0 then return 0 end
 	local have = math.floor(num(data.Items[id]))
@@ -214,15 +249,20 @@ local function addItem(player, data, id, n, anySlot)
 		fullNotice(player, id, string.format(fmt, def.Name, LOOT.ItemCap))
 	end
 	if given <= 0 then return 0 end
+	local boundBefore = BOUND.Of(data, id)
 	data.Items[id] = have + given
+	if bound then BOUND.Set(data, id, boundBefore + given) end -- A23-206: a quest reward is bound
 	Config.NoteGained(data, id) -- A23-32 '얻은 순'
 	return given
 end
 
+-- one item used (a scroll): the bound ones first (A23-206)
 local function takeItem(data, id)
 	local have = math.floor(num(data.Items[id]))
 	if have < 1 then return false end
+	local before = BOUND.Of(data, id)
 	data.Items[id] = have > 1 and have - 1 or nil
+	BOUND.Used(data, id, 1, before)
 	return true
 end
 
@@ -435,23 +475,40 @@ function LootService.GrantItem(player, id, n, source)
 		return #gained
 	end
 	if not LOOT.Items[id] then return 0 end
-	local given = addItem(player, data, id, n, source == "Reward")
+	-- A23-206: a quest / story reward ("Reward") is bound to the character
+	local given = addItem(player, data, id, n, source == "Reward", source == "Reward")
 	if given > 0 then publish(player, data) end
 	return given
 end
 
 -- A23-79 (게임성 개발 3, the candy jar): take `n` (1..ItemCap) of one Config.Loot.Items id; false = not enough (nothing
--- taken). The bag push follows like after a drop.
-function LootService.TakeItem(player, id, n)
+-- taken). The bag push follows like after a drop. A23-206: mode "Trade" (the market) takes free ones only (bound ones never
+-- leave the character); any other use takes the bound ones first
+function LootService.TakeItem(player, id, n, mode)
 	local data = getData(player)
 	n = math.floor(num(n))
 	if not data or type(id) ~= "string" or not LOOT.Items[id] or n < 1 or n > LOOT.ItemCap then return false end
 	ensureTables(data)
 	local have = math.floor(num(data.Items[id]))
 	if have < n then return false end
+	local before = BOUND.Of(data, id)
+	if mode == "Trade" and have - before < n then return false end
 	data.Items[id] = have > n and have - n or nil
+	if mode == "Trade" then
+		BOUND.Set(data, id, math.min(before, math.floor(num(data.Items[id]))))
+	else
+		BOUND.Used(data, id, n, before)
+	end
 	publish(player, data)
 	return true
+end
+
+-- A23-206: (free, bound) of one item for another service (the market's own checks)
+function LootService.Bound(player, id)
+	local data = getData(player)
+	if not data or type(id) ~= "string" then return 0, 0 end
+	ensureTables(data)
+	return BOUND.Free(data, id), BOUND.Of(data, id)
 end
 
 -- one roll for one contributor of one kill
@@ -740,10 +797,13 @@ local function onSellMaterials(player, ...)
 		-- "Gather") stay for the artisans (sold one at a time later from the bag: SellItem)
 		if def and def.Source ~= nil then def = nil end
 		if def and def.Kind == "Material" then
-			local c = math.floor(num(n))
-			count += c
-			gold += c * def.Sell
-			data.Items[id] = nil -- removed before paying: a repeated request cannot pay twice
+			local bound = BOUND.Of(data, id) -- A23-206: bound ones stay
+			local c = math.floor(num(n)) - bound
+			if c > 0 then
+				count += c
+				gold += c * def.Sell
+				data.Items[id] = bound > 0 and bound or nil -- removed before paying: a repeated request cannot pay twice
+			end
 		end
 	end
 	if count <= 0 then notify(player, TXT.SellNothing, "info"); return end
@@ -769,7 +829,11 @@ local function onSellItem(player, ...)
 	ensureTables(data)
 	local have = math.floor(num(data.Items[id]))
 	if have < n then notify(player, TXT.SellItemNone, "bad"); return end
+	-- A23-206: only the free ones sell
+	if BOUND.Free(data, id) < n then notify(player, TXT.SellBound or TXT.SellItemNone, "bad"); return end
+	local before = BOUND.Of(data, id)
 	data.Items[id] = have - n > 0 and have - n or nil
+	BOUND.Set(data, id, math.min(before, math.floor(num(data.Items[id]))))
 	local gold = n * math.floor(num(def.Sell))
 	publish(player, data)
 	S.ProgressionService.AddCarriedGold(player, gold, "Sale")
