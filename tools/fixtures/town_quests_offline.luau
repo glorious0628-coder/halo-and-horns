@@ -3267,6 +3267,21 @@ runGroup("p1 chase and escort", function()
 		Steps = { { Text = "Catch the runner", Guide = "SlimePond", Obj = { Type = "Chase", Path = "TPath", Speed = 10, Catch = 8, Lose = 60, LoseSeconds = 4 } } } }
 	table.insert(SQ.Subs, "TESC")
 	table.insert(SQ.Subs, "TCHS")
+	-- the event's own monsters (MonsterService.SpawnEvent / RemoveEvent doubles)
+	local spawned, removed, farNext = {}, {}, false
+	local MS = w.Registry.MonsterService
+	MS.SpawnEvent = function(kind, opts)
+		local at = farNext and vec(500, 0, 500) or opts.Near + vec(3, 0, 0)
+		farNext = false
+		local rec = { Kind = kind, Opts = opts, Alive = true, Event = true, Root = { Position = at } }
+		table.insert(spawned, rec)
+		return rec
+	end
+	MS.RemoveEvent = function(rec)
+		removed[rec] = true
+		rec.Alive = false
+		return true
+	end
 	local p, d = joinAfterM23(w, 9971, "Halo", { Pos = vec(2, 0, 0) })
 	w.Story.DebugSub(p, "TESC", 1)
 	local function tick(n) for _ = 1, n or 1 do w:Advance(1); w.Story.Refresh(p) end end
@@ -3302,6 +3317,22 @@ runGroup("p1 chase and escort", function()
 	end
 	check(p:GetAttribute("StoryMoverState") == "Event" and p:GetAttribute("StoryMoverPos").Z <= 20.5, "at 75%: the event (it stops)", show({ p:GetAttribute("StoryMoverState"), p:GetAttribute("StoryMoverPos") }))
 	local at = p:GetAttribute("StoryMoverPos")
+	-- 개발 2 10/15: the event brings its own slimes (zone event monsters near the mover, topped up, gone when it is over)
+	check(#spawned == 2 and spawned[1].Kind == "Slime" and spawned[1].Opts.Radius <= 15 and (spawned[1].Opts.Near - at).Magnitude < 1,
+		"the event spawns its 2 slimes near the cart", show(#spawned))
+	spawned[1].Alive = false -- someone else beat it: no kill for me, it comes back
+	tick(2)
+	check(#spawned == 3, "one beaten by someone else: topped up to the kills still needed", show(#spawned))
+	farNext = true
+	spawned[2].Alive = false
+	tick(2)
+	check(#spawned == 4 and removed[spawned[4]] == true, "a spawn far from the cart goes home at once", show(#spawned))
+	for _, rec in spawned do rec.Alive = false end
+	tick(2)
+	check(#spawned == 6, "both beaten by others: two more (6 spawns now)", show(#spawned))
+	spawned[5].Alive = false
+	tick(3)
+	check(#spawned == 6, "at most 3 x Count spawns per event (no farming)", show(#spawned))
 	local function slime(where)
 		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
 			Position = where, WarPoints = 0 })
@@ -3315,6 +3346,7 @@ runGroup("p1 chase and escort", function()
 	slime(at + vec(-5, 0, 0))
 	tick(1)
 	check(w:Track(d, "TESC").T.e == 1, "2 slimes near it: the event is over (saved once)", show(w:Track(d, "TESC")))
+	check(removed[spawned[6]] == true, "the event over: its slimes still alive go home", "")
 	local bank = d.BankGold or 0
 	for _ = 1, 4 do
 		w:MoveTo(p, p:GetAttribute("StoryMoverPos") + vec(2, 0, 0))
@@ -3340,6 +3372,7 @@ runGroup("p1 chase and escort", function()
 	qtick(1)
 	check(dq.Story.Done.TCHS == true and q:GetAttribute("StoryMover") == "", "reaching it: caught (done)", show(dq.Story.Done.TCHS))
 	SQ.Paths.TPath = nil
+	MS.SpawnEvent, MS.RemoveEvent = nil, nil
 	for _, id in { "TESC", "TCHS" } do
 		SQ.Defs[id] = nil
 		table.remove(SQ.Subs, table.find(SQ.Subs, id))

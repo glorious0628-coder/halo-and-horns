@@ -904,6 +904,10 @@ end
 --   Escort { Path, Speed = 8, Near = 20, Event = { At = 0..1, Kind, Count, Radius = 40 } }: moves only while the player is within
 --   Near; at Event.At it stops until Count monsters (Kind, any when nil) are beaten within Radius of it (the event, once); every
 --   waypoint passed is saved (track P), so a rejoin or a quit goes on from the last one. Done at the path's end.
+--   The event brings its own attackers (개발 2 10/15, so a quiet path never stalls): Kind monsters as zone event monsters
+--   (MonsterService.SpawnEvent near the mover, normal rewards), topped up every 2 s to the kills still needed (one killed by
+--   someone else comes back), a spawn that landed outside Radius goes home at once, at most 3 x Count per event; the ones
+--   still alive go home when the event is over, the step ends or the player leaves (MOVER.Clear / MOVER.Drop).
 --   Chase { Path, Speed = 10, Head = 15, Catch = 8, Lose = 60, LoseSeconds = 6 }: starts Head studs ahead and runs at Speed (waits at the end); the player within
 --   Catch = caught (done); more than Lose behind for LoseSeconds = lost: it goes back to the last waypoint and waits for the
 --   player (no failure, try again at once)
@@ -972,6 +976,9 @@ function MOVER.Step(player, id, tr, obj)
 				tr.T.e = 1 -- the event, once (saved)
 				saved = true
 				m.State = "Move"
+				MOVER.Clear(m)
+			else
+				MOVER.TopUp(m, ev, pos)
 			end
 		elseif away <= num(obj.Near, 20) then
 			local nextDist = m.Dist + num(obj.Speed, 8) * dt
@@ -1013,11 +1020,63 @@ function MOVER.Step(player, id, tr, obj)
 		MOVER.Shown[player] = true
 		MOVER.Publish(player, id, obj.Type, pos, done and "Done" or m.State)
 	end
-	if done then mine[key] = nil end
+	if done then
+		MOVER.Clear(m)
+		mine[key] = nil
+	end
 	return done, saved
 end
 
 MOVER.Shown = {} -- [Player] = true once a mover was published this refresh
+
+-- the event's own attackers around the waiting mover at `at` (see the header): top up to the kills still needed
+function MOVER.TopUp(m, ev, at)
+	local ms = S.MonsterService
+	if type(ev.Kind) ~= "string" or type(ms) ~= "table" or type(ms.SpawnEvent) ~= "function" then return end
+	local count = math.max(1, math.floor(num(ev.Count, 1)))
+	local alive = {}
+	for _, rec in m.Spawned or {} do
+		if type(rec) == "table" and rec.Alive then table.insert(alive, rec) end
+	end
+	m.Spawned = alive
+	local now = os.clock()
+	if num(m.NextSpawn) > now then return end
+	m.NextSpawn = now + 2
+	local radius = num(ev.Radius, 40)
+	for _ = 1, count - m.Kills - #alive do
+		if num(m.SpawnedN) >= 3 * count then return end -- no farming: at most 3 x Count per event
+		m.SpawnedN = num(m.SpawnedN) + 1
+		local ok, rec = pcall(ms.SpawnEvent, ev.Kind, { Near = at, Radius = math.min(radius * 0.5, 15) })
+		if ok and type(rec) == "table" then
+			local root = rec.Root
+			local okD, d = pcall(function() return Util.FlatDistance(root.Position, at) end)
+			if okD and type(d) == "number" and d <= radius then
+				table.insert(m.Spawned, rec)
+			elseif type(ms.RemoveEvent) == "function" then
+				pcall(ms.RemoveEvent, rec, false, true) -- landed far away (another zone's spawn point): home at once
+			end
+		elseif not ok then
+			Util.Warn(TAG, "escort event spawn: " .. tostring(rec))
+		end
+	end
+end
+
+-- the event's attackers still alive go home (leaving, no kill)
+function MOVER.Clear(m)
+	local ms = S.MonsterService
+	for _, rec in m.Spawned or {} do
+		if type(rec) == "table" and rec.Alive and type(ms) == "table" and type(ms.RemoveEvent) == "function" then
+			pcall(ms.RemoveEvent, rec, true, true)
+		end
+	end
+	m.Spawned = {}
+end
+
+-- every live mover of the player is gone (no Chase / Escort step open, or the player left)
+function MOVER.Drop(player)
+	for _, m in MOVER.Live[player] or {} do MOVER.Clear(m) end
+	MOVER.Live[player] = nil
+end
 
 -- an Escort event's kills (near the waiting mover)
 function MOVER.Kill(player, info)
@@ -1234,7 +1293,7 @@ local function refresh(player)
 		if step and type(step.Obj) == "table" and (step.Obj.Type == "Escort" or step.Obj.Type == "Chase") then moving = true end
 	end
 	if not moving then
-		MOVER.Live[player] = nil
+		MOVER.Drop(player)
 		if player:GetAttribute("StoryMover") ~= "" and player:GetAttribute("StoryMover") ~= nil then player:SetAttribute("StoryMover", "") end
 	end
 	-- user 2026-10-05: no window or waiting choice card ever pauses auto combat ("아이템 열어도 그대로 자동 전투"),
@@ -2195,7 +2254,7 @@ function StoryQuestService.Start()
 				if p.Parent == nil then panels[p] = nil end -- P1 ④ open panels of players who left
 			end
 			for p in MOVER.Live do
-				if p.Parent == nil then MOVER.Live[p] = nil end -- P1 ⑧ movers of players who left
+				if p.Parent == nil then MOVER.Drop(p) end -- P1 ⑧ movers of players who left (their attackers go home)
 			end
 		end
 	end)
