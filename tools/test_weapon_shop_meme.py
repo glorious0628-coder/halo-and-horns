@@ -109,14 +109,15 @@ def cut(text: str, start: str, end: str) -> str:
 
 
 def statics(src: dict) -> list[tuple[str, bool]]:
-    p, w, fx = src["PANELS"], src["WP"], src["FX"]
+    p, w, fx, cfg = src["PANELS"], src["WP"], src["FX"], src["CONFIG"]
     return [
         ("the Forge window lists WSHOP.CatalogTiers() and each joke row shows its line",
          "\tfor _, tier in WSHOP.CatalogTiers() do\n" in p and 'Meme = WSHOP.IsMeme(tier) and addText(row,' in p
          and "or (selectedTier > cap and not table.find(WSHOP.CatalogTiers(), selectedTier)) then" in p),
-        ("WeaponPose: a joke weapon gets the code look and the sword hold (rest + pose)",
+        # grip-3 (10/15): the joke weapons keep the OLD side hold on their own row (Config.WeaponGrips.Meme)
+        ("WeaponPose: a joke weapon gets the code look and its own (old side) hold (rest + pose)",
          "\t\t\tpcall(WeaponPose.MemeLook, tool, meme)\n" in w and "\t\t\tif meme then kind = T.MemeKind end\n" in w
-         and 'MemeKind = "Sword"' in w and "and T.MemeKind\n\t\t\tor tool:GetAttribute(\"Kind\")" in w),
+         and 'MemeKind = "Meme"' in w and 'Meme = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },' in cfg and "and T.MemeKind\n\t\t\tor tool:GetAttribute(\"Kind\")" in w),
         ("Fx Swing plays a joke hit (sound once, particle per hit; empty ids = nothing)",
          "\tif data.Meme ~= nil then pcall(Feel.memeHits, data.Meme, hits) end" in fx
          and 'if n == 1 and type(def.SoundId) == "string" and def.SoundId ~= "" then' in fx
