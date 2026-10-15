@@ -3165,23 +3165,23 @@ Config.Tutorial = {
 	Welcome = { -- existing approved faction/class portrait; no world NPC is spawned by this dialogue
 		Halo = {
 			Name = "Hallie", Title = "Guide of Light",
-			Lines = { -- page 1 = the mission card (검수 2026-10-07), page 2 = the catchphrase; two pages only (A23-99: less hand-holding)
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+			Lines = { -- 사용자 10/15: page 1 = the guide's own hello (catchphrase), page 2 = the mission (the Forge); two pages only (A23-99)
 				"Hallie here! Now you know my name. Welcome to the Knights!",
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
+				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 	},
