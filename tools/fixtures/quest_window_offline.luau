@@ -465,5 +465,36 @@ do
 	REGISTERED.Journal.Cleanup()
 end
 
+-- 최종 검수 10/15 (Korean client: 'Go to Otto's Forge in the Crossroads' stayed English in the list): a row's words go
+-- through UIKit.TrWord before drawing (whole sentence first, then the pieces of a "words · tail" row)
+do
+	local KO = { ["Talk to the fountain"] = "분수와 이야기해요", ["Hunt slimes"] = "슬라임 사냥", ["at the meadow"] = "초원에서" }
+	local function fakeTr(x) return KO[x] or x end
+	check("row words: a whole sentence is translated", Book.RowWords("Talk to the fountain", fakeTr) == "분수와 이야기해요")
+	check("row words: a 'words · tail' row piece by piece", Book.RowWords("Hunt slimes · at the meadow", fakeTr) == "슬라임 사냥 · 초원에서",
+		tostring(Book.RowWords("Hunt slimes · at the meadow", fakeTr)))
+	check("row words: unknown words stay English", Book.RowWords("Collect 60 gold", fakeTr) == "Collect 60 gold")
+	check("row words: no translator = unchanged", Book.RowWords("Talk to the fountain", nil) == "Talk to the fountain")
+	check("row words: a throwing translator = unchanged", Book.RowWords("Talk to the fountain", function() error("x") end) == "Talk to the fountain")
+	REGISTERED.Journal.Cleanup()
+	ENTRIES = { MAIN }
+	Book.Init({ Panels = PANELS, HUD = HUDD, UIKit = { ArtId = function() return nil end, TrWord = fakeTr } })
+	local P7 = inst("Frame")
+	REGISTERED.Journal.Build(P7, KIT, { Tab = "Main" })
+	local drawn = nil
+	local function walk(o)
+		for _, c in o.Children do
+			if c.Name == "Quest" then
+				for _, l in c.Children do if l.Text and l.Text ~= "" and drawn == nil then drawn = l.Text end end
+			end
+			walk(c)
+		end
+	end
+	walk(P7)
+	check("the drawn quest row shows the translated words", drawn == "분수와 이야기해요", tostring(drawn))
+	REGISTERED.Journal.Cleanup()
+	Book.Init({ Panels = PANELS, HUD = HUDD })
+end
+
 print(("QUEST_BOOK_SUMMARY checks=%d failed=%d"):format(checks, failed))
 if failed == 0 then print("QUEST_BOOK_OFFLINE_OK") end

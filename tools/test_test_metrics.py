@@ -34,6 +34,14 @@ MUTATIONS = [
     ("GPT ④: no DropWeapon", "METRICS_SOURCE", "\tDropWeapon = function(p, d) return num(attr(p, d, \"WeaponOwnedMask\")) >= 2 end,\n", ""),
     ("Codex B6: quest XP counted as hunting", "METRICS_SOURCE", "if source == \"Monster\" then x.H = num(x.H) + n else x.O = num(x.O) + n end",
      "x.H = num(x.H) + n"),
+    # 최종 검수 10/15 (A23-162): per-device perf sums
+    ("perf: only new accounts", "METRICS_SOURCE", "\tperfSample(dev, arg)\n\tif rec.N ~= true or rec.D then return end",
+     "\tif rec.N ~= true or rec.D then return end\n\tperfSample(dev, arg)"),
+    ("perf: no sums", "METRICS_SOURCE", "\tperfSample(dev, arg)\n", ""),
+    ("perf: Low ignores Config", "METRICS_SOURCE", "if w < num(P.Low, 20) then", "if w < 10 then"),
+    ("perf: bands shifted", "METRICS_SOURCE", "(f < 45 and \"Under45\" or \"Smooth\")", "(f < 60 and \"Under45\" or \"Smooth\")"),
+    ("perf: a sample without numbers counts", "METRICS_SOURCE", "\tif f < 0 or w < 0 or m < 0 then return end\n", ""),
+    ("perf: memory not summed", "METRICS_SOURCE", "\tbump(row, \"M\", math.floor(m))\n", ""),
     # --- config
     ("the board is off", C, "Config.TestMetrics = {\n\tEnabled = true,", "Config.TestMetrics = {\n\tEnabled = false,"),
     ("fresh means 10 minutes", C, "\tFreshSeconds = 120,\n", "\tFreshSeconds = 600,\n"),
@@ -87,8 +95,8 @@ MUTATIONS = [
      "\trec.P[key] = math.max(1, math.floor(num(rec.J)))"),
     ("the check runs at once", TM, "task.delay(math.max(1, num(M.KeptDelay, 20)), function()", "task.delay(0, function()"),
     # --- devices
-    ("any device", TM, "\tif not table.find(devices, dev) then return end\n", ""),
-    ("every sample", TM, "if rec.N ~= true or rec.D or type(dev) ~= \"string\" then return end", "if rec.N ~= true or type(dev) ~= \"string\" then return end"),
+    ("any device", TM, "if type(dev) ~= \"string\" or not table.find(devices, dev) then return end", "if type(dev) ~= \"string\" then return end"),
+    ("every sample", TM, "\tif rec.N ~= true or rec.D then return end\n\trec.D = true", "\tif rec.N ~= true then return end\n\trec.D = true"),
     # --- the document
     ("Studio writes the live store", TM, "\t\tif RunService:IsStudio() then name ..= \"_STUDIO\" end\n", ""),
     ("the key is not the round", TM, "pcall(st.UpdateAsync, st, tostring(M.Round or \"PT1\"), function(old)", "pcall(st.UpdateAsync, st, \"All\", function(old)"),
@@ -149,6 +157,8 @@ def static() -> tuple[int, list[str]]:
     text = board.read_text(encoding="utf-8") if board.exists() else ""
     check("Config.TestMetrics" in text and "Config.StoreName" in text and "_STUDIO" in text,
           "tools/test_metrics_board.py reads Config.TestMetrics' store (Config.StoreName; --studio-copy = _STUDIO)")
+    check(all(f'"{k}"' in text for k in ("Perf", "Low", "Under20", "Under30", "Under45", "Smooth")),
+          "tools/test_metrics_board.py shows the per-device Perf sums (최종 검수 10/15)")
     return count, failures
 
 
@@ -163,7 +173,7 @@ SUITE = Suite(
              "seen this round), New (fresh saves: no intro, Lv1, no kill, under FreshSeconds), Joins, Intro / Faction / Side "
              "(new accounts' first screen), Min[Lv5|Lv10|Weapon|Claim][minute of play] (once per account; Weapon = a tier 2+ "
              "bit, Claim = TutorialStep 99; minute capped at MaxMinute), Ten (Lv5 + Weapon + Claim all before minute "
-             "TenMinutes), Device (the first Perf sample's device), Pass[key] = { Bought, Back (a later join, KeptDelay s after "
+             "TenMinutes), Device (the first Perf sample's device), Perf[device] = { N, F, W, M sums, Low, Under20/30/45, Smooth } of every sample, Pass[key] = { Bought, Back (a later join, KeptDelay s after "
              "it), Kept (HasPass true then) }. The account record is data.Telemetry.Test (additive; another round's starts over). "
              "Flush every FlushSeconds (x0.5..1.5) and at the close: UpdateAsync merge (numbers added); a failed write keeps the sums.",
     limitations="Real DataStore limits are not simulated (one UpdateAsync a minute per server is far under them). The Studio "

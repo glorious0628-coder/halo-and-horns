@@ -66,8 +66,6 @@ MUTATIONS = [
      "pcall(ranking.MarkHideChanged, player)", "local _ = ranking"),
     ("MarkHideChanged error not caught", "ANNOUNCE_SOURCE",
      "pcall(ranking.MarkHideChanged, player)", "ranking.MarkHideChanged(player)"),
-    ("Most Wanted back to the raw name", "PVP_SOURCE",
-     'fmt("MostWanted", publicName(p, true),', 'fmt("MostWanted", Util.PlayerDisplayName(p),'),
     ("board wanted rows back to the raw name", "PVP_SOURCE",
      "table.insert(wanted, { P = p, Name = publicName(p), Bounty", "table.insert(wanted, { P = p, Name = Util.PlayerDisplayName(p), Bounty"),
     ("board wanted rows with honorific", "PVP_SOURCE",
@@ -82,8 +80,6 @@ MUTATIONS = [
      "\treturn nil\nend"),
     ("RebirthAnnounce adds its own honorific (doubled)", "CONFIG_SOURCE",
      'RebirthAnnounce = "%s was reborn! (Rebirth #%d)"', 'RebirthAnnounce = "%s~h was reborn! (Rebirth #%d)"'),
-    ("MostWanted drops the name", "CONFIG_SOURCE",
-     'MostWanted = "Most Wanted: %s', 'MostWanted = "Most Wanted: %.0sA player'),
     ("HiddenName without 'A member of the'", "CONFIG_SOURCE", 'HiddenName = "A member of the %s", HiddenNameEn', 'HiddenName = "%s", HiddenNameEn'),
     # BB12
     ("power column reads the level", "PLAYER_SOURCE",
@@ -125,7 +121,7 @@ def static() -> tuple[int, list[str]]:
     sites = {
         # A23-130 (server text verdicts 2026-10-11): the bounty brag, GrudgeAvengedAll, RebirthAnnounce and RareAnnounce
         # NotifyAll lines are off; their services keep the publicName helper (checked below) for the next server-wide line
-        "PvPService.luau": [r'fmt\("MostWanted", publicName\(p, true\)', r"wanted, \{ P = p, Name = publicName\(p\)"],
+        "PvPService.luau": [r"wanted, \{ P = p, Name = publicName\(p\)"],  # A23-191: the MostWanted line is gone
         "GrudgeService.luau": [],
         "ProgressionService.luau": [],
         "GooseService.luau": [],

@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 — 스윕 새 실패·퀘스트 창 번역·폰 첫 10분 (최종 검수 지시 1~3)
+- **fix/sweep-1015 47682e87** (wt_kosweep, origin/main 위, 보고함): 79abb70e test_town_npcs = 오토 스승(A23-193) 반영(182/182) · 47682e87 QuestBook.RowWords = 목록 줄을 UIKit.TrWord로 번역(통째 → ' · ' 조각), quest_window 97·46/46.
+- 스윕 판정: costume_physics·skin_binding 은퇴, halloween·place_english·skeleton_ground 성긴 worktree 파일 없음, metrics_board 인자 필요 = 거짓. ranking 488/488(돌연변이 없이). **a23_14 7개 실패 = 개발 2 몫**(f3b67a9c 거위 알림 삭제 뒤 기대값) → 개발 2에 알림. audio는 다시 도는 중.
+- 폰: tools/play_phone_round_photos.py에 out=<dir> 추가(main 8a7a41d). 10/14 12:05 폰 사진은 옛판(출석 Claim·거위 칩 시간은 이미 고쳐짐). 메인 반영 1에게 `first10 out=docs/art/verification_2026-10-15/phone_first10` 새 사진 부탁(최종 검수 경유) → 오면 그걸로 고칠 목록.
+
 ## 10/15 밤 늦게 — 첫 사냥 힌트·T2 체감·Hero 스탯 화면 (push, 최신; 세션 clear 전)
 - **dev1-first-hunt-hint 4681edff** (7번째 묶음): Config.Nudges.AttackHint = true + AttackHunt { M1_1 1단계, M1_2; Range 10; Idle 5 }, FirstSteps HINT.Hunting(퀘스트 줄 Story.St), 공격하면 그 세션엔 끝(HINT.Hit). test_first_steps 60·34/34.
 - **dev1-t2-feel 14e46874**: HUD.WeaponUpLine 'Power A → B · Slime: N hits → M hits'(Config.Power.Text.WeaponUp, SwingHitsToKill), L.TierChanged → L.Pow.TierFrom → 다음 정산 토스트. test_weapon_up_line 7·4/4. (L.Pow 표는 한 줄 유지: test_first_weapon이 그 줄을 자름.)

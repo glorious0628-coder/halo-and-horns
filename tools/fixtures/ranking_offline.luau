@@ -1662,8 +1662,9 @@ runGroup("bb37-lines", function()
 	w:KaijuTick(C0.Kaiju.SirenSeconds)
 	check(w.GameState:GetAttribute("KaijuPhase") == "Active", "the kaiju is active")
 	local started = false
-	for _, n in w.All do if n.Text == string.format(C0.Story.KaijuStart, hiddenName) then started = true end end
-	check(started, "the start line uses the hidden name")
+	for _, n in w.All do if has(n.Text, "is here!") then started = true end end
+	check(not started and w.GameState:GetAttribute("KaijuName") == hiddenName,
+		"no server-wide start line (A23-191); KaijuName keeps the hidden name", w.GameState:GetAttribute("KaijuName"))
 	w:Advance(1)
 	w.Remotes.SetAnnounceName.OnServerEvent:Fire(p, false)
 	check(w.GameState:GetAttribute("KaijuName") == "P201", "showing it again during the event re-publishes too")

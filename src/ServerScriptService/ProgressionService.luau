@@ -503,11 +503,7 @@ function M.TryRebirth(player, factionId)
 	Net.Fx(nil, "Rebirth", { UserId = player.UserId, Rebirths = newRebirths, Pos = pos, Mark = mark })
 	-- sound_gaps C1: the Rebirth sound (Fx "Rebirth") comes after the beta; never QuestDone
 	Net.Notify(player, string.format(Config.Text.RebirthDone, math.floor(bonus * 100 + 0.5)), "reward", nil, "None")
-	if mark == "Fall" then
-		Net.Notify(player, string.format(Config.Story.Fall), "announce")
-	elseif mark == "Redeem" then
-		Net.Notify(player, string.format(Config.Story.Redeem), "announce")
-	end
+	-- A23-191 (최종 검수 10/15): no Fall / Redeem banner (the Rebirth Fx carries the Mark)
 	-- A23-130: no server-wide "was reborn" banner (RebirthAnnounce); the Rebirth Fx shows it to everyone near
 	M.Rebirthed:Fire(player, newRebirths, { From = old, To = factionId, Bonus = bonus, Mark = mark })
 	return true, nil
