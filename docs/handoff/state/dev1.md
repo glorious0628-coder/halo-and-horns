@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## ▶ 클리어 뒤 할 일 (최종 검수 local_cb4b05f8… 10/15 밤, 이 순서)
+1. **Config.Nudges false 스위치 UI 코드째 삭제** (사용자 규칙: 싫다 한 UI는 종류째 삭제, 스위치 X): 지금 false인 것만 — DailiesOpened·QuestHead·WarIntro·GooseSub·AttackHint·ShopFarewell·ZoneStoryLine·SackLore·HuntSlimes·GuideLabel·GuideBeam. 그린 코드 + Config 줄 지우고 정적 검사로 못 박기. **켜져 쓰는 길 안내(A23-199 퀘스트 길 표시, PadGlow·TravelPulse)는 건드리지 말 것** — GuideBeam/GuideLabel이 같은 코드를 쓰면 꺼진 경로만. 서버 3개(GuideDone·EnteredSafe·DailyReady)는 개발 2 파일 → 이름만 개발 2에 넘김. (keystip 82f59fd9 + phone2 b6723a3c는 최종 검수가 병합 시험 중.)
+2. **A23-208 이야기 칸 화면** — 개발 2 가지 dev2-story-fields 498ae457 위에 화면 가지, 규격 docs/design/quest_data_contract_2026-10-15.md §3-2: ① Offer.Before = 부탁 창 맨 위 작은 기울임 한 줄(폰 18px 2줄 안, ≤70자) ② 단계 Find = Fx StoryScene{Key="Find", Value=단계 번호} → 그 단계 Npc 머리 위(없으면 Guide 자리 물건 위) 말풍선 4초·2줄(≤40자, 글 = Config 단계 Find; 토스트·배너 X) ③ 단계 Scene = Fx StoryScene{Key="Scene", Value=Wave/Hop/Laugh/Bow/Cheer/Nod/Sparkle/Spin/Hug/Clap(Config.StoryQuests.SceneKeys)} → 그 Npc 몸짓 + 둥근 반짝임(StoryNpcs.Scene/Hop 재사용, 몸 고정이라 이동) ④ 퀘스트 Next={Id,Line}: Line = 끝 대화 카드 마지막 줄(≤60자), Next.Id 부탁 NPC '!' 처음 뜰 때 한 번 통통. 보고에 폰 글자 잘림 사진 포함.
+3. **영어 덤프 몫** (docs/art/verification_2026-10-15/en_first10 + en_windows, main ed7d03e7): ① 폰 진영·직업 카드 글 11~12px + 잘림 13개(phone_f10_02·03: 'Knights of Light', Perk 줄, 'Join this side!') ② 대장간 창 설명 줄 삭제(844_f10_07_forge: 빨간 'Come close to the Forge anvil to buy.', 'Not sold. Quest reward.', 'First weapon · free to re-equip · can't be sold'; 'Hits to beat a Slime 5→3' 숫자는 둠) ③ phone_f10_02 인트로 가운데 아래 하얀 네모(플레이어 앞 흰 판, 원인 모름) 확인 ④ en_windows에서 Travel·Ranking 창 'did not open'(도구 문제일 수도) ⑤ english_words.json 단어 쉬운 영어인지 훑기(글은 Config 표에서만).
+4. **#2 남은 것**: 폰 실제 확인(화면 사용 신청 → 최종 검수), 닫힌 문 판자·투명 벽 → 울타리(MapBuilder 서버 = 개발 2와 나눔) → #1 → #7 → #11 → #8 (아래 '클리어 전' 절).
+
 ## 10/15 밤 — 세션 클리어 전 (최신; 새 최종 검수 = local_cb4b05f8…, 옛 '(옛)'엔 보내지 말 것)
 - 병합됨(main ed7d03e7): dev1-a191 9a29e2cf, dev1-quest-p1 4f87cb83(+dev2-quest-p1).
 - **dev1-keystip 82f59fd9 (보고함)**: Config.Nudges KeysTip 줄 삭제 + test_keys_settings 정적 검사(KeysTip 어디에도 없음) + skill_learn 픽스처 정리.
