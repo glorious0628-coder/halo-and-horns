@@ -1571,6 +1571,7 @@ Config.WarInfo = {
 		Time = "Next crown in %s",
 		NoRound = "A new round starts soon.",
 		Score = "%s %s : %s %s", -- (Halo's name, its points, Horns' points, Horns' name)
+		Mine = "My points: %d", -- 최종 검수 10/15 #11: my whole personal points this round (attribute WarPoints)
 	},
 }
 Config.War = {

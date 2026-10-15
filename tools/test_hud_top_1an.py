@@ -58,6 +58,10 @@ for _, row in { { false, 0.8, 360, 52.5, 24, 6, 40 }, { true, 0.75, 320, 50.7, 2
 end
 local t1, s1 = HUD.WarInfoLines(1000 + 534, 1000, 12, 9)
 check(t1 == "Next crown in 8:54" and s1 == "Halo 12 : 9 Horns", "war window: time left + both scores", t1 .. " | " .. s1)
+local _, _, m1 = HUD.WarInfoLines(1000 + 534, 1000, 12, 9, 3)
+check(m1 == "My points: 3", "war window (#11): my real whole points this round", tostring(m1))
+local _, _, m0 = HUD.WarInfoLines(1000, 1000, 0, 0, nil)
+check(m0 == "My points: 0", "war window: no points yet = 0, never a fraction", tostring(m0))
 local t2 = HUD.WarInfoLines(0, 1000, 0, 0)
 check(t2 == Config.WarInfo.Text.NoRound, "war window: no round -> NoRound, never a clock", t2)
 
@@ -145,7 +149,7 @@ def run(src: dict) -> tuple[int, int, str]:
                "local Config = { Factions = { Halo = { Name = 'Halo' }, Horns = { Name = 'Horns' } } }\n"
                + block(c, "Config.WarInfo = {", "\n}\n") + "\n" + wartop + "\n")
     parts = [cut(h, "function HUD.WarGeometry(w, h, s, touch)"), cut(h, "function HUD.ChipPlan("),
-             cut(h, "function HUD.WarInfoLines(endsAt, now, halo, horns)"), cut(e, "function V2.PickEvent(cands, current)")]
+             cut(h, "function HUD.WarInfoLines(endsAt, now, halo, horns, mine)"), cut(e, "function V2.PickEvent(cands, current)")]
     code = prelude + "\n".join(parts) + FIXTURE
     with tempfile.TemporaryDirectory() as d:
         p = Path(d) / "hud_top_1an.luau"
