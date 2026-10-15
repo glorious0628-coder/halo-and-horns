@@ -402,3 +402,11 @@
 - 모험단 G0 = 10/20 뒤. 개발 2 다음: M1_1 옛 Finish 삭제 → Tutorial 이야기 칸 엔진 크기 → 매일 12종 보상표 초안(내가 확정). 개발 1: 폰 진영·직업 카드 결과 보고 대기, 그다음 1장 화면 사진(폰 잘림).
 - 메인 Studio = ed7d03e7까지 sync됨(그 뒤 병합분 안 들어감). 다음 sync·사진 = 10/16 게시판 전에 메인 반영 1.
 - 사용자 몫(10/16 게시판): Save As → Alt+P, 배지 7개 Creator Hub에서 만들기(badges_2026-10-15.md), Env place id.
+
+## 10/15 밤 끝 (최종 검수) — 사용자 "정리, 내일 아침 다시" — 다음 나는 여기부터
+- main 45fbdb32. 오늘 밤 추가 병합: dev1 wall-edges·fail-spot·codex-where·crown-mine·friend-mark·phone-cards·story-screen 3db67d7c, dev2 nudges-cut 8fe721cd·ch1-story·ch1-finish c9a2762a(첫 임무 이야기 칸, M1_1 원격 카드 삭제).
+- 메인 Studio: 21:14 Studio 자동 업데이트로 창 전부 닫힘(사용자 다른 게임 aqua-sparkle 창 포함 — 사용자에게 알림, 자동 복구 확인 권함). 캡처 막힘 원인 = 업데이트 전 Studio(메모리 studio-capture-hang-update). 사용자가 다시 염 → a1d06f69 sync + first10 사진 docs/art/verification_2026-10-15/main_a1d06f69/, 콘솔 오류 0. 45fbdb32 sync는 메인 반영 1 마무리 중.
+- 사진에서 본 것 → 개발 1 내일: 오프닝 자막 2 카메라가 조각상 안(흐림), 폰 'Blast from far away!' 잘림 → 'Blast from far!', 폰 HUD PowerLine·'N' 잘림. 그다음 Tutorial 이야기 화면, PhoneTest 폰 사진(1장 말풍선·Before).
+- 개발 2 내일: 매일 12종 정의(GPT 검토 반영 보상 확정: DH2 HP1·DH3 Oak4·DH1 Enh70·DR3 MP1·DR2 Jelly10·DR1 Move70·DN3 Treat3·DN1 Herb10·DN2 Glowcap8·DC1 Copper3·DC2 Guard2·DC3 Moon8, 골드 GoldN 30/60/100/200, Hard 과제 실제로 어렵게) + 소품·Pip(임시 기본 NPC) 배치 목록 → 메인 반영 1이 파트로 놓음 + 제작 스위치 확인.
+- GPT 상의 남은 것: 디자인 쪽은 아직 시작 안 함(사용자 역할 지정: 퀘스트·게임성(스토리 포함)·디자인 GPT 상의). 2~5장 데이터는 1장 화면 확인 뒤.
+- 10/16 게시판: 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P (+ 배지 7개 docs/design/badges_2026-10-15.md, Env place id).
