@@ -45,7 +45,7 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer",
+		Story = "IconNews", Offer = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer",
 			Character = "IconCharacter" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 	RailGap = 8, RailMinRoom = 300, -- du: the window stops this far above the HUD icon row, if it keeps this much height
@@ -3176,6 +3176,84 @@ BUILDERS.Story = function(parent)
 	return update
 end
 
+-- A23-199 (개발 2 docs/design/quest_offer_server_2026-10-15.md): an NPC asks me for help (OpenPanel "Offer" { Id, Npc }):
+-- her lines (Defs[Id].Offer.Lines: my side's, else All) page by page like a story talk, then [Sure!] / [Not now] ->
+-- StoryAction(Id, "Accept" / "Decline"). A talk with her face, not an explanation window (A23-191)
+function STORY.OfferDef()
+	local arg = REG.Arg
+	local defs = Config.StoryQuests and Config.StoryQuests.Defs
+	local def = type(arg) == "table" and type(arg.Id) == "string" and type(defs) == "table" and defs[arg.Id] or nil
+	if type(def) ~= "table" or type(def.Offer) ~= "table" then return nil, arg end
+	return def, arg
+end
+
+-- (pure) who asks: the Offer's Npc (the payload's first), her speaker name (Config.StoryQuests.Speakers) and the lines
+-- for my side
+function STORY.OfferView(def, npc, f)
+	local offer = type(def) == "table" and type(def.Offer) == "table" and def.Offer or {}
+	local who = (type(npc) == "string" and npc ~= "") and npc or offer.Npc
+	local names = type(Config.StoryQuests.Speakers) == "table" and Config.StoryQuests.Speakers or {}
+	local src = type(offer.Lines) == "table" and offer.Lines or {}
+	local lines = (type(src[f]) == "table" and src[f]) or (type(src.All) == "table" and src.All) or {}
+	return { Npc = who, Name = names[who] or tostring(who or ""), Lines = lines, Title = def and def.Title or "" }
+end
+
+function STORY.OfferTitle()
+	local def, arg = STORY.OfferDef()
+	if not def then return "" end
+	local v = STORY.OfferView(def, type(arg) == "table" and arg.Npc or nil, myFaction())
+	return string.format(Config.StoryQuests.Text.Title, v.Name, v.Title)
+end
+
+BUILDERS.Offer = function(parent)
+	local def, arg = STORY.OfferDef()
+	if not def then
+		addText(parent, "", {})
+		return nil
+	end
+	local v = STORY.OfferView(def, arg.Npc, myFaction())
+	local TXT = Config.StoryQuests.Text
+	local page = 1
+	local talk, align = STORY.Talk(parent, v.Npc)
+	local line = addText(talk, "", { Name = "OfferLine", Size = 22, Align = align })
+	local typing = {}
+	TYPE.Tap(typing, line)
+	local pageLabel = addText(talk, "", { Name = "OfferPage", Size = 15, Color = theme.SubText, Align = align })
+	local actions = addRow(parent, 64, 10)
+	local last = function() return page >= #v.Lines end
+	local update
+	local function answer(what)
+		if TYPE.Finish(typing) then return end -- a tap while her line types only finishes it
+		STORY.ForceUntil = os.clock() + STORY.ForceSeconds -- an accepted Panel step opens at once
+		fire("StoryAction", arg.Id, what)
+		Panels.Close()
+	end
+	local nextBtn = makeButton(actions, TXT.Next, PALETTE.Button, UDim2.new(1 / 3, -7, 0, 60), function()
+		if TYPE.Finish(typing) then return end
+		if not last() then page += 1; update() end
+	end)
+	nextBtn.Name = "OfferNext"
+	local yes = makeButton(actions, TXT.OfferAccept, PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
+		if last() then answer("Accept") end
+	end)
+	yes.Name = "OfferAccept"
+	local no = makeButton(actions, TXT.OfferDecline, PALETTE.Button, UDim2.new(0.5, -5, 0, 60), function()
+		if last() then answer("Decline") end
+	end)
+	no.Name = "OfferDecline"
+	update = function()
+		if currentId ~= "Offer" or not line.Parent then return end
+		TYPE.Show(typing, line, tostring(v.Lines[page] or ""), v.Npc, page)
+		pageLabel.Text = #v.Lines > 1 and string.format("%d / %d", page, #v.Lines) or ""
+		nextBtn.Visible = not last()
+		for _, b in { yes, no } do
+			b.Visible = last()
+			setEnabled(b, last())
+		end
+	end
+	return update
+end
+
 -- A23-6 / beta 3: potion shop at the temporary default NPC (Crossroads). Blacksmith-style screen: price, my gold,
 -- stock, 1 / 5 bottles, the server's answer (stock / gold attributes) and why a purchase failed (server toasts).
 local POTION = Config.ClientText.PanelsPotion -- the words: Config.ClientText.PanelsPotion (moved 10/14)
@@ -3338,6 +3416,7 @@ local function render(keep)
 	if backTo and backButton:IsA("TextButton") then backButton.Text = "← " .. REG.Title(backTo) end
 	FRAME.SetIcon(currentId)
 	if currentId == "Story" then titleLabel.Text = STORY.Title() end
+	if currentId == "Offer" then titleLabel.Text = STORY.OfferTitle() end
 	local ok, result = pcall(BUILDERS[currentId], fixed and REG.Fixed or content)
 	if not ok then
 		Util.Warn(TAG, "failed to build " .. tostring(currentId) .. ": " .. tostring(result))
