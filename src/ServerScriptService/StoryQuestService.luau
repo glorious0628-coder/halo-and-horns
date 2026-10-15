@@ -28,6 +28,8 @@ StoryQuestService.Picked = Util.Signal.new()
 -- A23-113 #2 (게임성 개발 3): (player, quest id, step) a step of a story quest is done, in order, just before the next one opens
 -- (or the quest ends); TelemetryService turns the steps of Config.Analytics.QuestFunnels quests into funnel steps
 StoryQuestService.StepDone = Util.Signal.new()
+StoryQuestService.Accepted = Util.Signal.new() -- A23-199 (player, id): an offered quest was accepted at its NPC
+StoryQuestService.Declined = Util.Signal.new() -- A23-199 (player, id): declined (nothing saved; asked again next talk)
 local S = nil
 local TAG = "StoryQuestService"
 local SQ = Config.StoryQuests
@@ -738,9 +740,13 @@ local function refresh(player)
 			end
 		end
 	end
+	local offers = {} -- A23-199: npc id -> true while it has a quest to offer this player
 	for _, id in SQ.Subs do
 		local def = DEFS[id]
-		if def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
+		if def and type(def.Offer) == "table" and not st.Done[id] and not st.Subs[id] then
+			-- A23-199: offered, not taken: the NPC asks ([Accept] / [Decline], StoryAction); nothing is saved until Accept
+			if type(def.Offer.Npc) == "string" and requirementsMet(player, data, def) then offers[def.Offer.Npc] = true end
+		elseif def and not st.Done[id] and not st.Subs[id] and requirementsMet(player, data, def) then
 			st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
 			if def.Pop then openStep(player, id, st.Subs[id]) end -- A23-70: the card opens by itself, once
 			changed = true
@@ -752,6 +758,12 @@ local function refresh(player)
 			changed = true
 		end
 	end
+	-- A23-199: the NPCs with a quest to offer me (game dev 1 draws their "!"): attribute StoryOffers = "Tiny,Bright" (sorted)
+	local npcs = {}
+	for npc in offers do table.insert(npcs, npc) end
+	table.sort(npcs)
+	local offerAttr = table.concat(npcs, ",")
+	if player:GetAttribute("StoryOffers") ~= offerAttr then player:SetAttribute("StoryOffers", offerAttr) end
 	-- state-driven steps
 	for _, t in tracks(data) do
 		local def, tr = DEFS[t.Id], t.Track
@@ -1244,6 +1256,53 @@ local function changedMind(player, st, obj, pick)
 	st.LastSide = side -- A23-130: saved only, no ChangedGood / ChangedEvil line
 end
 
+-- A23-199: the quest `id` this player may be offered now (a sub with Offer, not taken, not done, its requirements met)
+local function offerable(player, data, id)
+	local def = DEFS[id]
+	local st = story(data)
+	return def ~= nil and def.Kind == "Sub" and type(def.Offer) == "table" and not st.Done[id] and st.Subs[id] == nil
+		and requirementsMet(player, data, def)
+end
+
+-- the quests npcId offers this player now, in Subs order
+local function offersOf(player, data, npcId)
+	local out = {}
+	for _, id in SQ.Subs do
+		local def = DEFS[id]
+		if def and type(def.Offer) == "table" and def.Offer.Npc == npcId and offerable(player, data, id) then table.insert(out, id) end
+	end
+	return out
+end
+
+-- A23-199: [Accept] / [Decline] of an offered quest at its NPC. Accept = the track starts (saved) and its first step opens;
+-- Decline = nothing is saved (the NPC asks again at the next talk). True when it was a valid answer.
+local function answerOffer(player, data, id, action)
+	if action ~= "Accept" and action ~= "Decline" then return false end
+	if not offerable(player, data, id) or not npcNear(player, DEFS[id].Offer.Npc) then return false end
+	if action == "Decline" then
+		StoryQuestService.Declined:Fire(player, id)
+		return true
+	end
+	local st = story(data)
+	st.Subs[id] = { St = 1, P = 0, T = {}, Claim = false }
+	dirty(player)
+	StoryQuestService.Accepted:Fire(player, id)
+	refresh(player)
+	local tr = st.Subs[id]
+	if tr and not tr.Claim then openStep(player, id, tr, true) end
+	return true
+end
+
+-- A23-199: a Pickup step = the player picks the thing up at Landmarks[Spot] (StoryAction "Pickup"): the server checks the
+-- step is the open one and the player stands within Radius (default 8) of the spot. A Deliver step = handed to its Npc
+-- (StoryAction "Deliver" or a talk to that NPC), the player within NpcRange. Being on the Deliver step after the Pickup is
+-- the "carrying it" state (saved with the track)
+local function pickupOk(player, obj)
+	local spot = landmark(obj.Spot)
+	local root = Util.GetRoot(player)
+	return spot ~= nil and root ~= nil and Util.FlatDistance(root.Position, spot) <= num(obj.Radius, 8)
+end
+
 local function onStoryAction(player, id, action, option, ...)
 	if select("#", ...) ~= 0 then return end
 	if type(id) ~= "string" or type(action) ~= "string" or (option ~= nil and type(option) ~= "string") then return end
@@ -1254,9 +1313,22 @@ local function onStoryAction(player, id, action, option, ...)
 	if not def or not data then return end
 	local st = story(data)
 	local tr = (st.Main.Id == id) and st.Main or st.Subs[id]
+	if not tr and (action == "Accept" or action == "Decline") then
+		answerOffer(player, data, id, action) -- A23-199
+		return
+	end
 	if not tr or tr.Claim then return end
 	local step = stepOf(player, def, tr.St)
-	if not step or not step.Panel then return end
+	if not step then return end
+	-- A23-199: a pickup / a delivery (no Panel needed), checked here: the open step, the place, the NPC
+	if action == "Pickup" and step.Obj.Type == "Pickup" then
+		if pickupOk(player, step.Obj) then advance(player, data, id, tr) end
+		return
+	elseif action == "Deliver" and step.Obj.Type == "Deliver" then
+		if npcNear(player, step.Obj.Npc or step.Npc) then advance(player, data, id, tr) end
+		return
+	end
+	if not step.Panel then return end
 	if step.Npc and not npcNear(player, step.Npc) then return end -- A23-46: talked through the NPC, standing next to it
 	local obj = step.Obj
 	if action == "Open" then
@@ -1361,10 +1433,25 @@ function StoryQuestService.TalkToNpc(player, npcId)
 		local id, tr = entry[1], entry[2]
 		local def = DEFS[id]
 		local step = def and not tr.Claim and stepOf(player, def, tr.St) or nil
+		-- A23-199: a Deliver step at this NPC without a Panel is handed over by the talk itself
+		if step and step.Panel ~= true and step.Obj.Type == "Deliver" and (step.Obj.Npc or step.Npc) == npcId
+			and npcNear(player, npcId) then
+			advance(player, data, id, tr)
+			return id
+		end
 		if step and step.Panel == true and step.Npc == npcId and npcNear(player, npcId) then
 			openStep(player, id, tr, true)
 			return id
 		end
+	end
+	-- A23-199: nothing open with this NPC: the first quest it offers -> OpenPanel "Offer" { Id, Npc } ([Accept] / [Decline];
+	-- the lines are Config.StoryQuests.Defs[Id].Offer.Lines)
+	local offered = offersOf(player, data, npcId)
+	if offered[1] and npcNear(player, npcId) then
+		pcall(function()
+			Net.Get("OpenPanel"):FireClient(player, "Offer", { Id = offered[1], Npc = npcId })
+		end)
+		return "Offer:" .. offered[1]
 	end
 	return nil
 end
