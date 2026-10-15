@@ -92,9 +92,9 @@ runGroup("quest texts", function()
 		end
 		check(named >= n, id .. ": its Slime Prince step says 'Slime Prince'", show(steps))
 	end
-	-- 최종 검수 10/15: M1_2 ("one more Prince") is gone; its braided-band line closes M1_1
-	check(DEFS.M1_2 == nil and string.find(DEFS.M1_1.Finish, "braided band", 1, true) ~= nil,
-		"M1_2 gone; M1_1 ends with the braided band", tostring(DEFS.M1_1.Finish))
+	-- 최종 검수 10/15: M1_2 ("one more Prince") is gone; M1_1 ends with the band found, in the player's own words
+	check(DEFS.M1_2 == nil and DEFS.M1_1.Finish == nil and string.find(DEFS.M1_1.Steps[2].Find or "", "two colors", 1, true) ~= nil,
+		"M1_2 gone; M1_1 ends with the two-colour band (my own words, no Otto card)", tostring(DEFS.M1_1.Steps[2].Find))
 	local s0 = princeSteps("S0")[1][2]
 	check(string.find(s0.Start or "", "A Slime Prince swallowed a shard!", 1, true) ~= nil, "S0: a Slime Prince swallowed the shard",
 		tostring(s0.Start))
@@ -107,7 +107,6 @@ runGroup("quest texts", function()
 end)
 
 runGroup("the family (A23-84 / A23-85)", function()
-	check(string.find(DEFS.M1_1.Finish, "Otto: Big brothers", 1, true) ~= nil, "M1_1: Otto's big-brother line", DEFS.M1_1.Finish)
 	local odd = {}
 	for _, e in strings() do
 		if string.find(e.Text, "Slime Prince", 1, true) then

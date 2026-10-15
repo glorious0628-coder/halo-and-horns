@@ -145,8 +145,7 @@ runGroup("the five names", function()
 	end
 	check(SQ.Speakers.Smith == "Otto" and SQ.Speakers.Guild == "Kit" and SQ.Speakers.Potion == "Fizzby",
 		"speakers: Otto / Kit / Fizzby", show({ SQ.Speakers.Smith, SQ.Speakers.Guild, SQ.Speakers.Potion }))
-	check(string.find(SQ.Defs.M1_1.Finish, "Otto: Clang, clang… done. Cocoa time.\n", 1, true) == 1, "M1_1: Otto's catchphrase line first",
-		SQ.Defs.M1_1.Finish)
+	check(SQ.Defs.M1_1.Finish == nil, "M1_1: no far-away Otto card (최종 검수 10/15: it ends with my own words)", tostring(SQ.Defs.M1_1.Finish))
 	check(string.sub(SQ.Defs.N1.Start, 1, 5) == "Kit: " and string.sub(SQ.Defs.N2.Start, 1, 5) == "Kit: ", "N1 / N2: Kit speaks",
 		show({ SQ.Defs.N1.Start, SQ.Defs.N2.Start }))
 	local T = SQ.Text

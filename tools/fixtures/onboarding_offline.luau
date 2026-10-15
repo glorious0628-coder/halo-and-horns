@@ -247,7 +247,11 @@ do
 	check(f.Data.TutorialStep == 3 and f.LastList[1].TutorialStep == 3 and f.LastList[1].Text == TT.Forge
 		and f.LastList[1].ShortName == SN.Forge and f.LastList[1].CanClaim == false and f.LastList[1].ShowProgress == false,
 		"A23-74: a bare-handed accept pins the Forge row (step 3, 'To the Forge', not claimable)")
-	check(#f.FxLog == 0 and #f.Travels == 0, "A23-88: a bare-handed accept starts no trip (no Fx Travel, nobody moved)")
+	local travelFx = 0
+	for _, e in f.FxLog do
+		if type(e) ~= "table" or (e.Kind or e[1] or e.Name) ~= "StoryScene" then travelFx += 1 end -- (A23-208: the Forge step's Find bubble may come)
+	end
+	check(travelFx == 0 and #f.Travels == 0, "A23-88: a bare-handed accept starts no trip (no Fx Travel, nobody moved)")
 	f:Claim(); check(f.Data.BankGold == 0 and f.Data.TutorialStep == 3, "A23-74: the Forge row pays nothing")
 	check(#f.Travels == 0 and f.Data.TutorialStep == 3, "A23-88: nobody moved, still step 3")
 	f:ZoneTo("SlimeMeadow"); f:Kill()
@@ -866,7 +870,9 @@ do
 	local w = fixture(); w:Choose(); w:Publish()
 	local wBefore = #w.Delayed
 	w:Accept(); w:Publish()
-	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore and #w.FxLog == 0 and w.Player:GetAttribute("MoveLockUntil") == nil
+	local wFx = 0
+	for _, e in w.FxLog do if e.Kind ~= "StoryScene" then wFx += 1 end end -- (A23-208: the Forge step's Find bubble may come)
+	check(w.Data.TutorialStep == 3 and #w.Delayed == wBefore and wFx == 0 and w.Player:GetAttribute("MoveLockUntil") == nil
 		and w.LastList[1].Text == T.Text.Forge, "A23-88: the Forge step: 'Go to Otto's Forge', no trip, no lock")
 	local folded, open = 0, 0
 	for _, row in w.LastList do
@@ -879,7 +885,10 @@ do
 		end
 	end
 	check(folded == w.Config.Quests.Slots and open == 0, "A23-68 #4: before the first mission is done every other row is folded")
-	check(w.Quest.ForgeGift(w.Player) == true and w.Data.TutorialStep == 99 and w.Data.BankGold == 150 and #w.FxLog == 0 and #w.Delayed == wBefore,
+	local gifted = w.Quest.ForgeGift(w.Player)
+	wFx = 0
+	for _, e in w.FxLog do if e.Kind ~= "StoryScene" then wFx += 1 end end -- (A23-208: Otto's Nod scene may come)
+	check(gifted == true and w.Data.TutorialStep == 99 and w.Data.BankGold == 150 and wFx == 0 and #w.Delayed == wBefore,
 		"A23-188: the gift = the mission done (+150), no meadow trip")
 	w:Publish()
 	local unfolded = 0

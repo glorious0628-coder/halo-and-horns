@@ -3110,6 +3110,29 @@ Config.Tutorial = {
 	-- Teacher) before the Forge; the artisans' teacher is Otto at the Forge itself. A guide / teacher with no body in this
 	-- world = the old way (the row tap opens the guide's lines, no teacher step)
 	Guides = { Halo = "Hallie", Horns = "Magpie", Neutral = "Kit" },
+	-- A23-208 (최종 검수 10/15, r2 H00 / R00 / N00): the first mission's story fields, by step NAME (Steps above) and side.
+	-- Before = the situation over the guide's lines; a step's Find = its bubble as it starts (the step's NPC: Teacher = the
+	-- teacher, Forge = Otto), Scene = what that NPC does when it is done, Lines = Otto's words at the gift (the last step);
+	-- Next = the hook to M1_1. QuestService fires Fx StoryScene { Id = "Tutorial", Key = "Find" / "Scene", Value, St = the
+	-- step name }; the client reads the words here
+	Story = {
+		Before = { Halo = "Sir Gleam can't see my wave behind that big shield.",
+			Horns = "Rose has been practicing your welcome all morning.",
+			Neutral = "Otto cleared a spot for your first tool." },
+		Steps = {
+			Teacher = { Find = { Halo = "Oh! Hello! I can see you now.", Horns = "Ahem! Welcome, captain!" },
+				Scene = { Halo = "Wave", Horns = "Cheer" } },
+			Forge = { Find = { Halo = "Ah, there you are!", Horns = "Rose sent a captain, did she?",
+					Neutral = "There you are. This spot is yours." },
+				Lines = { Halo = { "Otto: Your first weapon. I saved this one for you." },
+					Horns = { "Otto: One weapon for one very grand captain." },
+					Neutral = { "Otto: Your first tool. I'll be here if you need me." } },
+				Scene = { Halo = "Nod", Horns = "Bow", Neutral = "Nod" } },
+		},
+		Next = { Halo = { Id = "M1_1", Line = "That Slime Prince has a shiny band in his belly." },
+			Horns = { Id = "M1_1", Line = "That prince has a band stuck in his belly." },
+			Neutral = { Id = "M1_1", Line = "A slime swallowed a band. Can you believe it?" } },
+	},
 	Monster = "Slime",
 	MonsterHP = 10,
 	Golden = true,
@@ -3475,7 +3498,8 @@ Config.StoryQuests = {
 			Next = { Halo = { Id = "H_Band", Line = "Bright has a ribbon like this." },
 				Horns = { Id = "R_Band", Line = "Rose has to see this pose." },
 				Neutral = { Id = "M1_3", Line = "Otto has a test for me at level 5." } },
-			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!\nDust spills out! …And a braided band? Gold and purple.",
+			-- 최종 검수 10/15 (A23-191 / A23-208): no far-away card from Otto; the quest ends on the spot with the player's own
+			-- words (step 2's Lines: the two-colour band found)
 			-- 최종 검수 10/15 (user: a second Slime Prince right after the scroll felt like a repeat): M1_2 "one more Prince" is
 			-- gone; its line (Bright's bracelet clue) closes M1_1 above, then M1_3 (the first skill). A save on M1_2 goes on to
 			-- M1_3 at the join (an unknown main id is dropped; the chain starts at the first one not done)
