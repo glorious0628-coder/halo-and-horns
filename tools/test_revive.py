@@ -29,6 +29,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 C, R, M, N, P = "CONFIG_SOURCE", "REVIVE_SOURCE", "MAIN_SOURCE", "NET_SOURCE", "PLAYER_SOURCE"
 MUTATIONS = [
+    # feedback_audit #8 (최종 검수 10/15): the helper's side of a revive
+    ("no ReviveDone to the helper", R, "\tpcall(Net.Fx, helper, \"ReviveDone\", { Target = target.UserId })\n", ""),
+    ("the helper gets Revived (its death screen)", R, "\tpcall(Net.Fx, helper, \"ReviveDone\", { Target = target.UserId })\n",
+     "\tpcall(Net.Fx, helper, \"Revived\", { Target = target.UserId })\n"),
     # the KO
     ("a prompt with nobody near", R, "\tif not friendNear(player, side, pos) then return end\n", ""),
     ("a foe counts as a friend near", R, "if other ~= player and sideOf(other) == side and alive(other)", "if other ~= player and alive(other)"),

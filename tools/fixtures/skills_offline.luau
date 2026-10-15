@@ -288,8 +288,9 @@ runGroup("teacher", function()
 	local un = w:FxOf("SkillUnlocked", f0)
 	check(p:GetAttribute("SkillSlots") == 1 and d.SkillSlots == 1 and p:GetAttribute("SkillLearnReady") == 0
 		and p:GetAttribute("SkillTeacher") == "" and #learned == 1 and learned[1].Data.Teacher == "Gleam"
-		and learned[1].Data.Slots[1] == "Q" and #learned[1].Data.Slots == 1 and #un == 1 and un[1].Data.Slot == "Q",
-		"learned: SkillSlots 1 saved, Fx SkillLearned { Slots Q, Teacher Gleam } + SkillUnlocked Q", show({ a(p), #learned, #un }))
+		and learned[1].Data.Slots[1] == "Q" and #learned[1].Data.Slots == 1 and #un == 0,
+		"learned: SkillSlots 1 saved, ONE Fx SkillLearned { Slots Q, Teacher Gleam } (feedback_audit #3: no SkillUnlocked too)",
+		show({ a(p), #learned, #un }))
 	check(w.Skills.TryLearn(p, "Gleam") == false and #w:FxOf("SkillLearned", f0) == 1, "a second talk teaches nothing more", "")
 	w:Advance(3.5)
 	w:Use(p, "Q")

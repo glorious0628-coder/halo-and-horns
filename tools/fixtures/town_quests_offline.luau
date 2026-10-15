@@ -257,6 +257,11 @@ runGroup("h1-good", function()
 	local choice = nil
 	for i = fx0 + 1, #w.Fx do if w.Fx[i].Kind == "Choice" and w.Fx[i].Player == p then choice = w.Fx[i].Data end end
 	check(choice and choice.Option == "Good", "the pick sends Fx Choice { Option = 'Good' } (Purify sound)", show(choice))
+	local _, rk0 = w.Config.GetTitle("Halo", honor, 0)
+	local _, rk1 = w.Config.GetTitle("Halo", honor + 1, 0)
+	check(choice and choice.Stat == "Honor" and choice.Before == honor and choice.After == honor + 1 and choice.RankFrom == rk0
+		and choice.RankTo == rk1, "feedback_audit #7: Fx Choice carries Honor before / after and the rank before / after (sent after the points)",
+		show(choice))
 	check(d.Story.Pick.H1 == "Good" and (d.Honor or 0) == honor + 1, "A: Pick 'Good', honor +1", show({ d.Story.Pick.H1, d.Honor }))
 	check((d.Items.Enh70 or 0) == enh + 1 and (d.HPPotionCount or 0) == hp, "A: one 70% scroll (no potions)",
 		show({ d.Items.Enh70, d.HPPotionCount }))

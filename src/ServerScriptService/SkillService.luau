@@ -944,7 +944,7 @@ function SkillService.TryLearn(player, npcId)
 	local pos, root = LEARN.Body(teacher), Util.GetRoot(player)
 	if not pos or not root or Util.FlatDistance(root.Position, pos) > num(K.Learn.Range, 16) then return false end
 	LEARN.Mirror(player, 0, nil)
-	raise(player, have, want, true)
+	raise(player, have, want, false) -- feedback_audit #3: the lesson is ONE Fx (SkillLearned below), no SkillUnlocked too
 	local order, slots = K.Order or { "Q", "Z", "X" }, {}
 	for i = have + 1, want do table.insert(slots, order[i]) end
 	local ok, err = pcall(Net.Fx, player, "SkillLearned", { Slots = slots, Teacher = teacher })

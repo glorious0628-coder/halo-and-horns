@@ -286,7 +286,7 @@ local function equipIfBare(player, data, tier)
 	if math.floor(num(data.WeaponTier, 0)) ~= 0 or not Config.WeaponUsable(tier, level) then return nil end
 	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals builds the model; WeaponEnhance follows
 	publish(player, data)
-	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
+	pcall(Net.Fx, player, "Upgrade", { Tier = tier, Source = "Gift" }) -- feedback_audit #6
 	-- A23-69: Config.CombatPowerOf with only the weapon swapped (the level and the stat points are the player's)
 	return Config.CombatPowerOf(player, 0, 0), Config.CombatPowerOf(player, tier, enhanceOf(data, tier))
 end
@@ -343,7 +343,7 @@ local function grantFirstDrop(player, data, tier, gained, plain, equip)
 	if better then
 		S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals builds the model; WeaponEnhance follows
 		publish(player, data)
-		pcall(Net.Fx, player, "Upgrade", { Tier = tier })
+		pcall(Net.Fx, player, "Upgrade", { Tier = tier, Source = "Drop" }) -- feedback_audit #6
 	end
 	local line = better and (equip or TXT.FirstDropEquip) or (plain or TXT.FirstDropWeapon)
 	notify(player, string.format(line, name), "reward", better and "None" or "Equip")
@@ -724,7 +724,7 @@ local function onEquipWeapon(player, tier, ...)
 	S.PlayerService.SetStat(player, "WeaponTier", tier) -- CharacterVisuals rebuilds the model; WeaponEnhance follows
 	S.PlayerService.MarkActive(player)
 	-- A23-130: no "%s equipped!" line (the Bag row and the model show it); Fx Upgrade plays the Equip sound
-	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
+	pcall(Net.Fx, player, "Upgrade", { Tier = tier, Source = "Equip" }) -- feedback_audit #6
 end
 
 local function onSellMaterials(player, ...)
@@ -1083,7 +1083,7 @@ function LootService.EquipBestSpare(player)
 	end
 	if not best or LootService.UnpackSpare(player, best, bestPlus) ~= true then return nil end
 	S.PlayerService.SetStat(player, "WeaponTier", best)
-	Net.Fx(player, "Upgrade", { Tier = best })
+	Net.Fx(player, "Upgrade", { Tier = best, Source = "Craft" }) -- feedback_audit #6: a crafted weapon into the hand
 	publish(player, data)
 	return best
 end

@@ -134,7 +134,7 @@ local function onCommission(player, ...)
 	S.PlayerService.MarkActive(player)
 	local name = weaponName(player, tier)
 	notify(player, string.format(TXT.Done, name), "reward", "Equip")
-	pcall(Net.Fx, player, "Upgrade", { Tier = tier })
+	pcall(Net.Fx, player, "Upgrade", { Tier = tier, Source = "Commission" }) -- feedback_audit #6
 	pcall(Net.Fx, player, "Commission", { Tier = tier, Name = name })
 	local t = S.TelemetryService
 	if type(t) == "table" and type(t.Custom) == "function" then pcall(t.Custom, player, "Commission", 1, "T" .. tier) end

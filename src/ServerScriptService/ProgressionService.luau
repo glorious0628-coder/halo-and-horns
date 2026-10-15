@@ -223,6 +223,14 @@ function M.AddXP(player, amount, cap, source)
 		xp = math.min(xp, full)
 	end
 
+	-- feedback_audit #2 (최종 검수 10/15): the power before / after this level-up, for the LevelUp Fx (the CombatPower
+	-- attribute follows a frame later, JusticeService)
+	local powerFrom, powerTo = nil, nil
+	if level > startLevel then
+		local okA, a = pcall(Config.CombatPowerOf, player, nil, nil, startLevel)
+		local okB, b = pcall(Config.CombatPowerOf, player, nil, nil, level)
+		if okA and okB and type(a) == "number" and type(b) == "number" then powerFrom, powerTo = math.floor(a), math.floor(b) end
+	end
 	if level ~= data.Level then
 		S.PlayerService.SetStat(player, "Level", level)
 	end
@@ -232,10 +240,14 @@ function M.AddXP(player, amount, cap, source)
 		-- CR-M16: no full heal mid-fight (e.g. claiming a finished daily during PvP) or as an active kaiju
 		local fullHeal = not S.CombatService.IsInCombat(player) and getKaijuState(player) ~= "Active"
 		S.PlayerService.RefreshCharacter(player, fullHeal)
-		-- CR-L23: the LevelUp Fx already shows the level-up announcement on the owner's screen (no extra toast)
+		-- CR-L23: the LevelUp Fx already shows the level-up announcement on the owner's screen (no extra toast). Sent after the
+		-- new level and the refreshed character (MaxHealth); From / PowerFrom / PowerTo = what changed (feedback_audit #2)
 		Net.Fx(nil, "LevelUp", {
 			UserId = player.UserId,
 			Level = level,
+			From = startLevel,
+			PowerFrom = powerFrom,
+			PowerTo = powerTo,
 			Pos = rootPosition(player) or Vector3.zero,
 		})
 		M.LeveledUp:Fire(player, level)
