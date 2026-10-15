@@ -143,6 +143,20 @@ def board(meta: dict) -> list[str]:
         lines.append("## 진영·기기 (새 계정)")
         lines += table(["무엇", "명"], [[f"진영 {k}", int(v)] for k, v in sorted(side.items())]
                        + [[f"기기 {k}", int(v)] for k, v in sorted(dev.items())])
+    perf = doc.get("Perf") or {}
+    if perf:  # 최종 검수 10/15 (A23-162): every Perf sample (all accounts, every 2 min window) per device
+        lines.append("## 기기 성능 (모든 샘플, 2분마다)")
+        rows = []
+        for k in sorted(perf):
+            r = perf[k] or {}
+            n = int(r.get("N") or 0)
+            if n <= 0:
+                continue
+            avg = lambda key: f"{float(r.get(key) or 0) / n:.0f}"
+            rows.append([k, n, avg("F"), avg("W"), avg("M"), pct(r.get("Low") or 0, n), pct(r.get("Under20") or 0, n),
+                         pct(r.get("Under30") or 0, n), pct(r.get("Under45") or 0, n), pct(r.get("Smooth") or 0, n)])
+        lines += table(["기기", "샘플", "평균 FPS", "가장 낮은 초 FPS", "메모리 MB", "끊김(낮은 초 <20)",
+                        "FPS <20", "20~29", "30~44", "45+"], rows)
     xp = doc.get("XP") or {}
     if xp:  # Codex B6: how much of the way to Lv5 / Lv10 came from hunting vs quests / dailies (new accounts)
         lines.append("## 경험치 출처 (새 계정, 그 레벨까지)")
