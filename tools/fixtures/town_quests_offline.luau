@@ -612,8 +612,8 @@ runGroup("clues", function()
 		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",
 			line)
 	end
-	check(SQ.Defs.M1_2 == nil and string.find(SQ.Defs.M1_1.Finish, "braided band", 1, true) ~= nil,
-		"the braided band closes M1_1 (10/15: no M1_2)", SQ.Defs.M1_1.Finish)
+	check(SQ.Defs.M1_2 == nil and SQ.Defs.M1_1.Finish == nil and SQ.Defs.M1_1.Steps[2].Lines.Halo[1] == "Got the band! That knot is still holding.",
+		"the band closes M1_1 in my own words (10/15: no M1_2, no Otto card)", tostring(SQ.Defs.M1_1.Finish))
 	check(string.find(SQ.Defs.M2_3.Finish or "", "Two kids", 1, true) ~= nil, "M2_3: two kids run off", SQ.Defs.M2_3.Finish)
 	check(string.find(SQ.Defs.H1.Clue or "", "wristband", 1, true) ~= nil and string.find(SQ.Defs.R1.Clue or "", "wristband", 1, true) ~= nil,
 		"H1 / R1: the wristband toasts", show({ SQ.Defs.H1.Clue, SQ.Defs.R1.Clue }))

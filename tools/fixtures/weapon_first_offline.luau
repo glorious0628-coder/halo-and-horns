@@ -586,9 +586,12 @@ runGroup("p1 guide and teacher", function()
 	check(d.Story.Subs.H_Basics == nil and step(p) == T.Steps.Forge, "Decline the lesson: nothing saved, the Forge goes on", "")
 	local fx0 = #w.Fx
 	w:Remote(p, "StoryAction", "H_Basics", "Accept")
-	local demo = w:FxFor(p, "StoryScene", fx0)
-	check(d.Story.Subs.H_Basics ~= nil and #demo == 1 and demo[1].Data.Key == "Demo" and demo[1].Data.Value == "Gleam",
-		"Accept the lesson: it starts + the teacher's demo scene", show(demo[1] and demo[1].Data))
+	local demo, find = {}, {}
+	for _, f in w:FxFor(p, "StoryScene", fx0) do -- (A23-208: the first step's Find bubble comes with it)
+		table.insert(f.Data.Key == "Find" and find or demo, f)
+	end
+	check(d.Story.Subs.H_Basics ~= nil and #demo == 1 and demo[1].Data.Key == "Demo" and demo[1].Data.Value == "Gleam" and #find == 1,
+		"Accept the lesson: it starts + the teacher's demo scene (+ the first step's Find)", show(demo[1] and demo[1].Data))
 	w.Story.Refresh(p)
 	check(p:GetAttribute("PracticeTool") == "H_Basics", "the borrowed practice tool while the dummy step is open", p:GetAttribute("PracticeTool"))
 	local dummy = SQ.Landmarks.PracticeH

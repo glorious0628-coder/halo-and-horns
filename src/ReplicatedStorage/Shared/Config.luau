@@ -3475,7 +3475,8 @@ Config.StoryQuests = {
 			Next = { Halo = { Id = "H_Band", Line = "Bright has a ribbon like this." },
 				Horns = { Id = "R_Band", Line = "Rose has to see this pose." },
 				Neutral = { Id = "M1_3", Line = "Otto has a test for me at level 5." } },
-			Finish = "Otto: Clang, clang… done. Cocoa time.\nOtto: That's Crown Shard dust! The Slime Princes ate the most of it.\nOtto: Big brothers always grab the biggest bite!\nDust spills out! …And a braided band? Gold and purple.",
+			-- 최종 검수 10/15 (A23-191 / A23-208): no far-away card from Otto; the quest ends on the spot with the player's own
+			-- words (step 2's Lines: the two-colour band found)
 			-- 최종 검수 10/15 (user: a second Slime Prince right after the scroll felt like a repeat): M1_2 "one more Prince" is
 			-- gone; its line (Bright's bracelet clue) closes M1_1 above, then M1_3 (the first skill). A save on M1_2 goes on to
 			-- M1_3 at the join (an unknown main id is dropped; the chain starts at the first one not done)
