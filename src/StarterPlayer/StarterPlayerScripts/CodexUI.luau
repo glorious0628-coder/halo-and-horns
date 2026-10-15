@@ -150,10 +150,15 @@ function CodexUI.View(kind, card, faction, foil)
 	v.StageName = v.Foil and tostring(text.Foil or "") or (known and tostring(stages[stage] or "") or "")
 	v.Name = known and tostring(def.Name or kind) or tx("Unknown")
 	v.Short = known and tostring(def.Short or def.Name or kind) or tx("Unknown")
-	v.KillsText = known and tx("Kills", Util.FormatInt(kills)) or tx("NotMet")
+	local zones = type(Config.Zones) == "table" and Config.Zones or {}
+	local zone = type(def.Zone) == "string" and zones[def.Zone] or nil
+	local zoneName = tostring(type(zone) == "table" and zone.Name or def.Zone or "")
+	-- 최종 검수 10/15 #7 (the next card to collect was not readable): a card not met says where it lives ("Found in:
+	-- Squishy Meadow") and its first goal ("Card at 1") on its front; nothing known about the zone = "Not met yet"
+	v.KillsText = known and tx("Kills", Util.FormatInt(kills)) or (zoneName ~= "" and tx("Where", zoneName) or tx("NotMet"))
 	local steps = type(Config.CodexSteps) == "function" and Config.CodexSteps(kind) or {}
 	if not known then
-		v.NextText = ""
+		v.NextText = steps[1] and tx("NextAt", tostring(stages[1] or ""), Util.FormatInt(steps[1])) or ""
 	elseif stage >= #steps then
 		v.NextText = tx("Top")
 	else
@@ -162,9 +167,7 @@ function CodexUI.View(kind, card, faction, foil)
 	local side = (faction == "Halo" or faction == "Horns") and faction or "Neutral"
 	local lore = type(codex().Lore) == "table" and codex().Lore[kind] or nil
 	v.Lore = (known and type(lore) == "table") and tostring(lore[side] or lore.Neutral or "") or ""
-	local zones = type(Config.Zones) == "table" and Config.Zones or {}
-	local zone = type(def.Zone) == "string" and zones[def.Zone] or nil
-	v.Where = known and tx("Where", tostring(type(zone) == "table" and zone.Name or def.Zone or "")) or ""
+	v.Where = known and tx("Where", zoneName) or ""
 	v.Drops = known and CodexUI.Drops(kind) or {}
 	v.DropsText = #v.Drops > 0 and tx("Drops", table.concat(v.Drops, " · ")) or ""
 	v.FirstText = known and tx("First", CodexUI.Date(e and e.First)) or ""
