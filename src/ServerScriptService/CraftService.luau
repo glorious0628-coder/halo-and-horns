@@ -536,6 +536,37 @@ function CraftService.Session(player)
 	return ST.Open[player]
 end
 
+-- 최종 검수 10/15 (the pet tamer like the smith and the alchemist): the next-goal ladder's craft row (Config.Tutorial.Ladder,
+-- QuestService). An artisan who could make a recipe of their role right now (the recipe on, craft level, materials, gold,
+-- research for a summon) that they never made (data.Craft.Made) -> Config.Craft.Text.Goal with their station's name.
+-- Reads only (no save field is made); nil = nothing to say.
+function CraftService.NextGoal(player, data)
+	if not on() or type(data) ~= "table" then return nil end
+	local role = roleOf(data)
+	if not role then return nil end
+	local c = type(data.Craft) == "table" and data.Craft or {}
+	local made = type(c.Made) == "table" and c.Made or {}
+	local lv = math.floor(num(type(c[role]) == "table" and c[role].Lv, 1))
+	local gold = math.max(0, num(data.CarriedGold)) + math.max(0, num(data.BankGold))
+	for id in K().Recipes do
+		local r = CraftService.RecipeOn(id)
+		if r and r.Role == role and num(made[id]) <= 0 and lv >= num(r.Lv, 1) and gold >= num(r.Gold) and hasMats(data, r) then
+			local ready = true
+			if r.Kind == "Pet" then
+				local ok, pts = pcall(S.TamerService.Points, player, r.Family)
+				ready = ok and num(pts) >= num(r.Research)
+			end
+			if ready then
+				local T = K().Text
+				local station = type(T.Stations) == "table" and T.Stations[role] or nil
+				if type(T.Goal) == "string" and type(station) == "string" then return string.format(T.Goal, station), "Craft" end
+				return nil
+			end
+		end
+	end
+	return nil
+end
+
 ------------------------------------------------------------------ remotes
 local function onStart(player, ...)
 	if select("#", ...) ~= 1 then return end
