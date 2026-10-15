@@ -349,8 +349,10 @@ check(Config.Codex.ServerToast == false, "Config.Codex.ServerToast is off (the l
 ------------------------------------------------------------------ pure parts
 local t0 = os.time({ year = 2026, month = 10, day = 13, hour = 12 })
 local v = CodexUI.View("Slime", nil, "Halo")
-check(v.Known == false and v.Stage == 0 and v.Look == "None" and v.Name == "???" and v.KillsText == "Not met yet"
-	and v.Lore == "" and v.NextText == "" and v.DropsText == "", "a card not met: ???, no story, no drops", v.Name)
+-- 최종 검수 10/15 #7: a card not met says where it lives and its first goal (still no name, story or drops)
+check(v.Known == false and v.Stage == 0 and v.Look == "None" and v.Name == "???" and v.KillsText == "Found in: Squishy Meadow"
+	and v.Lore == "" and v.NextText == "Card at 1" and v.DropsText == "" and v.Where == "",
+	"a card not met: ???, where it lives + 'Card at 1', no story, no drops", tostring(v.KillsText) .. " | " .. tostring(v.NextText))
 v = CodexUI.View("Slime", { Kills = 1, Golden = 0, Stage = 1, First = t0 }, "Halo")
 check(v.Known and v.StageName == "Card" and v.Look == "Card" and v.Name == "Shard Slime" and v.KillsText == "Defeated: 1"
 	and v.NextText == "Silver at 100", "Slime, 1 kill: Card, its name, 'Silver at 100'", v.NextText)
