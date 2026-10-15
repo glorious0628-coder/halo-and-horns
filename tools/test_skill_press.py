@@ -33,7 +33,7 @@ MUTATIONS = [
     ("a long cooldown still sends", '\tif (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then return false, "Cooldown" end\n', ""),
     ("the buffer at 0.35 s blocks too", "if (tonumber(st.Left) or 0) > (tonumber(buffer) or T.PressBuffer) then",
      "if (tonumber(st.Left) or 0) >= (tonumber(buffer) or T.PressBuffer) then"),
-    ("Use ignores the gate", "\tif not SkillBar.Gate(st, pressBuffer()) then return false end\n", ""),
+    ("Use ignores the gate", "\tif not ok then\n\t\tSkillBar.ShowWhy(slot, why)\n\t\treturn false\n\tend\n", ""),
     ("the sack ignored", 'num("SackGold", 0) > 0 or ', ""),
     ("the egg ignored", "\n\t\t\tor num(\"EggCarry\", 0) > 0", ""),
     ("every skill is a Hop", 'Hop = def ~= nil and def.Shape == "Hop",', "Hop = true,"),
