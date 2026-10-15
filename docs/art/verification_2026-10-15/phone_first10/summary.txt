@@ -1,0 +1,188 @@
+phone_f10_01_intro: cut 0, small 0, off 0, overlap 0, tiny 0
+phone_f10_02_faction: cut 0, small 0, off 0, overlap 0, tiny 0
+phone_f10_03_class: cut 0, small 5, off 0, overlap 0, tiny 15
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ClassName = 'Paladin' 12 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.DescClip.Desc = 'Smash up close!' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ChooseLabel = 'Pick!' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.GenericChip.Text = 'Warrior' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.RecommendBadge.Text = 'Best for beginners' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ClassName = 'Light Mage' 12 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.DescClip.Desc = 'Blast from afar!' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ChooseLabel = 'Pick!' 11 px
+phone_f10_04_welcome: cut 1, small 2, off 2, overlap 5, tiny 15
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.StatusChips.Protected.Text = 'Revive Shield' 16 px
+phone_f10_05_first_mission: cut 2, small 1, off 2, overlap 0, tiny 15
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    cut: MainGui.MiniMap.North.N = 'N' [34, 60, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+phone_f10_06_hud: cut 2, small 2, off 5, overlap 0, tiny 15
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    cut: MainGui.MiniMap.North.N = 'N' [34, 60, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+phone_f10_07_forge: cut 1, small 2, off 48, overlap 5, tiny 43
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+phone_f10_08_potions: cut 1, small 2, off 5, overlap 9, tiny 19
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+phone_f10_09_gifts: cut 1, small 3, off 5, overlap 4, tiny 29
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+phone_f10_10_bag: cut 1, small 8, off 5, overlap 3, tiny 17
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [245, 174, 71, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+phone_f10_11_lv5: cut 1, small 2, off 5, overlap 1, tiny 11
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · 전투력 46' [245, 174, 80, 12]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '5' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '218/218' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · 전투력 46' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_01_intro: cut 0, small 0, off 0, overlap 0, tiny 0
+844_f10_02_faction: cut 0, small 0, off 0, overlap 0, tiny 0
+844_f10_03_class: cut 0, small 3, off 0, overlap 0, tiny 15
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ClassName = 'Paladin' 14 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.DescClip.Desc = 'Smash up close!' 13 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.ChooseLabel = 'Pick!' 12 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.GenericChip.Text = 'Warrior' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Warrior.RecommendBadge.Text = 'Best for beginners' 11 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ClassName = 'Light Mage' 14 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.DescClip.Desc = 'Blast from afar!' 13 px
+    tiny: MainGui.ClassPicker.Cards.Card_Mage.ChooseLabel = 'Pick!' 12 px
+844_f10_04_welcome: cut 1, small 2, off 2, overlap 2, tiny 17
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.StatusChips.Protected.Text = 'Revive Shield' 16 px
+844_f10_05_first_mission: cut 2, small 1, off 2, overlap 0, tiny 17
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    cut: MainGui.MiniMap.North.N = 'N' [36, 71, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_06_hud: cut 3, small 2, off 5, overlap 0, tiny 18
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    cut: MainGui.EventStrip.GooseChip.NewTag.Text = 'NEW!' [416, 71, 55, 13]
+    cut: MainGui.MiniMap.North.N = 'N' [36, 71, 15, 15]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_07_forge: cut 1, small 2, off 45, overlap 4, tiny 45
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_08_potions: cut 1, small 2, off 5, overlap 8, tiny 21
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_09_gifts: cut 1, small 3, off 5, overlap 1, tiny 31
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_10_bag: cut 1, small 8, off 5, overlap 1, tiny 19
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' [274, 218, 71, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '1' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '156/156' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 1 · 전투력 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
+    tiny: MainGui.HUD.QuestTracker.Goal = '교차로 마을의 오토 대장간으로 가요.' 15 px
+844_f10_11_lv5: cut 2, small 2, off 5, overlap 1, tiny 14
+    cut: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · 전투력 46' [274, 218, 80, 13]
+    cut: MainGui.HUD.Stats.PowerLine.Pouch = '· 주머니 0' [357, 218, 49, 13]
+    tiny: MainGui.HUD.Stats.Portrait.LevelBadge.Face.Level = '5' 11 px
+    tiny: MainGui.HUD.Stats.HPBar.Text = '218/218' 12 px
+    tiny: MainGui.HUD.Stats.MPBar.Text = '100/100' 12 px
+    tiny: MainGui.HUD.Stats.PowerLine.Power = 'Lv 5 · 전투력 46' 16 px
+    tiny: MainGui.HUD.Stats.PowerLine.Pouch = '· 주머니 0' 16 px
+    tiny: MainGui.HUD.StatusChips.Zone.Text = 'Safe Zone' 16 px
+    tiny: MainGui.HUD.StatusChips.Boost.Text = '2x XP · Gold' 16 px
+    tiny: MainGui.HUD.StatusChips.Rookie.Text = 'Sprout Shield' 16 px
