@@ -89,7 +89,7 @@ def statics(s: dict) -> list[tuple[str, bool]]:
         ("its title is 'Name · Title' and its icon the story one", 'if currentId == "Offer" then titleLabel.Text = STORY.OfferTitle() end' in pan
          and 'Offer = "IconNews"' in pan),
         ("the Offer window shows what helping pays (icons, numbers)",
-         'STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)))' in offer),
+         'STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)),' in offer),
         ("the words are in Config", 'OfferAccept = "Sure!", OfferDecline = "Not now", Pickup = "Pick up",' in cfg),
         ("a Pickup step: my side's override first, the Landmarks spot",
          'obj.Type == "Pickup"' in pick and "type(over) == \"table\" and type(over.Obj) == \"table\" and over.Obj" in pick
@@ -113,7 +113,7 @@ MUTATIONS = [
     ("PANELS", "the buttons from the first page", "\t\tfor _, b in { yes, no } do\n\t\t\tb.Visible = last()", "\t\tfor _, b in { yes, no } do\n\t\t\tb.Visible = true"),
     ("PANELS", "All before my side", "(type(src[f]) == \"table\" and src[f]) or (type(src.All) == \"table\" and src.All) or {}",
      "(type(src.All) == \"table\" and src.All) or {}"),
-    ("PANELS", "no reward row", '	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)))', '	local _ = 0'),
+    ("PANELS", "no reward row", '	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)),\n\t\tSTORY.DifficultyLook(def.Difficulty))', '	local _ = 0'),
     ("PANELS", "the payload preview ignored", 'STORY.PayloadReward(arg.Reward) or STORY.RewardPreview', 'STORY.RewardPreview'),
     ("PANELS", "a side table as a name", '\tif type(who) == "table" then who = who[f] or who.Neutral end\n', ''),
     ("PANELS", "exact gold forgotten", "\tif n(reward.GoldN) > 0 then g += math.floor(n(reward.GoldN)) end\n", ""),

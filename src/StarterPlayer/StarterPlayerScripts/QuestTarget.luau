@@ -623,6 +623,15 @@ local function placeFor(entry, myZone, faction, pos)
 	if type(entry.Story) == "table" then return storyEntry(entry.Story, myZone, faction, pos) end
 	if entry.Pinned ~= true then return nil end
 	local step = num(entry.TutorialStep, -1)
+	-- quest P1 ②: the first mission's guide / teacher with a body (GuideNpc) -> that NPC (a trip to its zone from elsewhere)
+	if type(entry.GuideNpc) == "string" and entry.GuideNpc ~= "" then
+		local body = QuestTarget.StoryNpc(entry.GuideNpc)
+		local z = body and type(Config.ZoneAt) == "function" and Config.ZoneAt(body.Position) or nil
+		local zone = type(z) == "table" and z.Id or nil
+		local name = type(STORY.Speakers) == "table" and STORY.Speakers[entry.GuideNpc] or entry.GuideNpc
+		if body and zone == myZone then return pack(body, "npc:" .. entry.GuideNpc, tostring(name), zone, false) end
+		if body and zone then return pack(QuestTarget.Travel(zone, myZone, pos), "zone:" .. zone, zoneName(zone), zone, true) end
+	end
 	-- A23-74 weapon first: the Forge step points at the anvil (the Crossroads from elsewhere), whatever
 	-- BlacksmithVisited says (an early visit before [Accept] already set it)
 	if step == K.ForgeStep then
@@ -634,7 +643,7 @@ local function placeFor(entry, myZone, faction, pos)
 	end
 	if step ~= K.DoneStep then return nil end
 	-- A23-193: "Learn a skill: meet <teacher>" (GoalKind SkillLearn) -> the teacher (a trip to its town from elsewhere)
-	if entry.NextGoal == true and entry.GoalKind == "SkillLearn" then
+	if entry.NextGoal == true and (entry.GoalKind == "SkillLearn" or entry.GoalKind == "SkillTest") then -- P1 ⑤: the test too
 		local body, zone = QuestTarget.Teacher()
 		zone = zone or (type(Config.HomeZoneId) == "function" and Config.HomeZoneId(faction)) or K.Town
 		local name = type(Config.SkillTeacherName) == "function" and Config.SkillTeacherName(faction) or ""
