@@ -5,7 +5,7 @@
 2. **질문**: M1_4가 등불로 바뀌며 옛 '안내자 보고' 대사(영웅 동상·용암 틈 설명, "More shards are out there. What will you do with the next one?")가 빠짐 — 옮길 곳(예: 1장 끝 안내자 한마디 / 도감 / 삭제)?
 3. 이미 보낸 것: dev2-en-apply d8a47d89, dev2-mut-fix 584e2629 (옛 최종 검수가 병합했는지 확인 필요).
 
-- **10/15 밤 (최신)**: 병합됨 = party-fix 08e9ac2e·story-fields·story-more 905f5b89(main fcee99b6). 새 보고 = **dev2-escort-event 0c1bf0a1**(호위 이벤트가 자기 몬스터 부름, ../wt_escort). 최종 검수에 물음: 모험단 G0 지금 시작할지, 10/20 뒤로 미룰지. 대기 = 1장 데이터(사용자 스토리 답 뒤, build/codex/story_emotion_r2.md §2 + 매일 12종). 개발 1에 화면 ⑤⑥⑦(On=Self, QuestBefore, QuestNext) 보냄. 스크래치 도구: sweep.py, only_mut.py <wt> <tools/test_x.py> <이름 접두>(세션마다 다시). 지워도 되는 worktree: ../wt_swbase ../wt_swmerge ../wt_story ../wt_party.
+- **10/15 밤 (최신)**: 게시 준비 운영(gameplay_plan 6번) 서버 몫 = **dev2-ops-rehearsal f3735b05**(../wt_ops2) 최종 검수에 병합 요청: ① 숫자판 리허설(test_metrics_board.py --rehearse, 인자 없이도) ② tools/rollback_save.py(+test) ③ tools/test_remote_limits.py + CraftStrike 제한 ④ tools/test_save_bump.py + Beta 리허설 절차 ⑤ tools/erase_user.py(+test, docs/ops/data_erasure.md) ⑥ 배지 7개 주석. 남음 = ⑦ 출시 알림 보내기(키·11/09). 이전: escort-event 0c1bf0a1 병합됨, 모험단 G0 = 10/20 뒤. 대기 = 1장 데이터(사용자 스토리 답 뒤). 개발 1에 화면 ⑤⑥⑦ 보냄. 스크래치 도구: sweep.py, only_mut.py(세션마다 다시). 지워도 되는 worktree: ../wt_swbase ../wt_swmerge ../wt_story ../wt_party ../wt_escort. 주의: `git -C Game worktree add ... wt_x`는 Game 안에 만듦 → 항상 Game에서 `../wt_x`; sparse 패턴은 MSYS_NO_PATHCONV=1.
 - **A23-208 이야기 칸 dev2-story-fields 498ae457**: 화면 몫(①Offer.Before ②Find 말풍선 ③Scene 몸짓 ④Next 줄·'!' 통통)은 개발 1이 받음(10/15 밤). 개발 1 세션 클리어 → 새 개발 1이 state/dev1.md 맨 위 ①~④로 이음. 내 쪽 할 일 없음, 화면 가지 나오면 서버 신호 맞는지만 확인.
 
 ## 가지 dev2-quest-p1 (worktree ../wt_p1) 내용
