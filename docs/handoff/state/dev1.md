@@ -8,7 +8,9 @@
 - **dev1-easy-words 80dcdcbc** (wt_kosweep): afar→far away, halved→cut in half, Pet Acc→Pet Gear.
 - **dev1-phone-cards 1d952866** (wt_dev1b): 폰에서 진영 카드 아래 3줄 숨김 + 혜택 좁으면 문구 한 줄 → 잘림 13→0(실측). 사진 main 7ef952f phone_cards/. 3③ 흰 네모 = 오프닝 하얀 조각(임시판, 손 안 댐).
 - 시험 Studio: build/PhoneTest_1015.rbxlx 복사본 + scratchpad phone_cards.py(start/probe/shot/stop, STUDIO_ID). 화면 사용은 최종 검수 '전달함, 시작' 뒤.
-- **다음**: 4번(닫힌 문 판자·투명 벽 울타리 → #1 → #7 → #11 → #8).
+- 4번 끝(10/15 밤): dev1-wall-edges·dev1-fail-spot(main 병합), dev1-codex-where **c672eb17**(빈 카드 앞면 = 지역 이름 + 'Card at 1'), dev1-crown-mine 5d751602(방패 톡 + 전쟁 창 My points), dev1-friend-mark 6db57610(먼 친구 머리 위 점). 문 판자 보류(최종 검수 동의).
+- 폰 확인(10/15 밤, PhoneTest): 이야기 말풍선 40줄 잘림 0, 부탁 창 Before 한 줄, 전쟁 창 OK. 사진 phone_cards/p3~p5. MCP screen_capture는 BillboardGui를 안 찍음(값으로 확인). wt_dev1b = dev1-check-all(로컬 합친 판, push 안 함).
+- **다음**: 최종 검수 다음 지시 / 메인 반영 1 메인 사진 결과 반영.
 - 습관: Bash 헤레독 안 `\\t`·`\b`가 바뀜 → 패치 스크립트는 Write로 파일 만들어 실행. 일부 시험 파일은 CRLF.
 
 ## ▶ 클리어 뒤 할 일 (최종 검수 local_cb4b05f8… 10/15 밤, 이 순서)
