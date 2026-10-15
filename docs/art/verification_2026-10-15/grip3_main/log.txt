@@ -1,0 +1,38 @@
+fresh on
+loaded: DataLoaded=true Faction=None Class=Warrior ClassChosen=false Level=1 WeaponTier=0
+fired ChooseFaction
+fired ChooseClass
+chosen: DataLoaded=true Faction=Halo Class=Warrior ClassChosen=true Level=1 WeaponTier=0
+fired AcceptTutorial
+gear: Level=ok WeaponOwnedMask=ok
+probe on
+plaza
+== Warrior_Horns: Faction=ok Class=ok
+fired EquipWeapon
+state: DataLoaded=true Faction=Horns Class=Warrior ClassChosen=true Level=30 WeaponTier=3
+tool: class=Tool isTool=true kind=DarkSword handle=true len=1.20 grip=(0.00,0.00,0.00) rightGrip=true
+probe: [WeaponPose] probe Warrior_Horns DarkSword frames=122 | Right* dHand=0.07(max 0.07) dGrip=0.00(max 0.00) axis=30(max 30) fore=71(71..71) point=0.50 | Left dHand=4.01(max 4.01) dGrip=4.08(max 4.08) axis=60(max 68) fore=37(26..65)
+probe: [WeaponPose] probe Warrior_Horns DarkSword frames=121 | Right* dHand=0.07(max 0.07) dGrip=0.00(max 0.00) axis=30(max 30) fore=71(71..71) point=0.50 | Left dHand=3.57(max 4.07) dGrip=3.64(max 4.16) axis=50(max 68) fore=42(27..47)
+anchored on
+pos -3.696232318878174, 3.7468838691711426, -22.9656982421875
+user_Warrior_Horns_T3_stand_side: RightHand@torso=(1.81,-0.61,-0.93) RightUpperArm dir=(0.24,-0.96,-0.17) RightLowerArm dir=(0.20,-0.73,-0.65) handleAxis@torso=(-0.07,0.86,-0.50) bowGrip=false
+saved user_Warrior_Horns_T3_stand_side
+fired Swing
+user_Warrior_Horns_attack0: RightHand@torso=(2.06,1.28,-0.15) RightUpperArm dir=(0.38,0.32,-0.87) RightLowerArm dir=(0.36,0.92,-0.13) handleAxis@torso=(0.12,0.84,0.53) bowGrip=false
+saved user_Warrior_Horns_attack0
+user_Warrior_Horns_attack1: RightHand@torso=(1.80,-0.65,-0.90) RightUpperArm dir=(0.22,-0.96,-0.16) RightLowerArm dir=(0.20,-0.74,-0.64) handleAxis@torso=(-0.04,0.86,-0.50) bowGrip=false
+saved user_Warrior_Horns_attack1
+user_Warrior_Horns_attack2: RightHand@torso=(1.80,-0.65,-0.90) RightUpperArm dir=(0.22,-0.96,-0.16) RightLowerArm dir=(0.20,-0.74,-0.64) handleAxis@torso=(-0.04,0.86,-0.50) bowGrip=false
+saved user_Warrior_Horns_attack2
+user_Warrior_Horns_attack3: RightHand@torso=(1.80,-0.65,-0.90) RightUpperArm dir=(0.22,-0.96,-0.16) RightLowerArm dir=(0.20,-0.74,-0.64) handleAxis@torso=(-0.04,0.86,-0.50) bowGrip=false
+saved user_Warrior_Horns_attack3
+reset
+fired EquipWeapon
+user_Warrior_Horns_T2_stand_side: RightHand@torso=(1.80,-0.65,-0.90) RightUpperArm dir=(0.22,-0.96,-0.16) RightLowerArm dir=(0.20,-0.74,-0.64) handleAxis@torso=(-0.04,0.86,-0.50) bowGrip=false
+saved user_Warrior_Horns_T2_stand_side
+reset
+anchored off
+plaza
+console: [ServerErrorService] started
+play stopped
+fresh kept on
