@@ -11048,7 +11048,7 @@ Config.ClientText.CharacterUI = {
 	Tabs = { Gear = "Gear", Stats = "Stats" },
 	Power = "Power",
 	LevelClass = "Lv %d · %s",
-	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
+	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Gear" },
 	Weapons = "Weapons", Back = "Back", NoWeapons = "No weapons yet.",
 	Equip = "Equip", Equipped = "Equipped", FromLv = "Needs Lv %d", InFight = "In a fight", Checking = "Checking…",
 	Attack = "Attack %s",
@@ -11154,7 +11154,7 @@ Config.ClientText.MarketWindow = {
 	Hours = "%dh %02dm",
 }
 Config.ClientText.GearSlots = {
-	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Acc" },
+	Slots = { Weapon = "Weapon", Armor = "Armor", Ring = "Ring", Pet = "Pet", PetArmor = "Pet Armor", PetAcc = "Pet Gear" },
 	PetLv = "Lv %d",
 }
 
