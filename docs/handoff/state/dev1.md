@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 늦은 오후 — 부탁 창 보상·핀 가지 맞춤·A23-191 설명 줄 삭제 (최신)
+- **dev1-offer-payload aa19436c (보고함)**: Offer 창 보상 줄 = 서버 Reward {Gold,XP,Items,BagSlots} 먼저(STORY.PayloadReward), 없으면 Config. Offer.Npc 진영 표 {Halo,Horns,Neutral}. offer_ui 10·14/14.
+- **dev1-track3 90b2eb56 (보고함)**: 퀘스트 핀 가지에 main e1f94b52 merge(리베이스 아님, 충돌 = Reroll "Swap" + Pin/Unpin). quest_window 기대값 새 영어(Kaiju/Daily quests/Swap) → 97·46/46.
+- **dev1-a191 (wt_grip, 커밋 전, 시험 중)**: 설명 줄 삭제 = 전쟁 창 Note, MarkLore·MenuAltarHint, 지도 HintMouse/HintTouch(hintLabel·HintText 통째), ClassPicker 아래 메모·Outfit 메모·ClassChangeRuleF·ClassHint, FactionPicker 제단 메모, WeaponLocation·WeaponNote(Drop), 출석 Note, JarNote, VacationNoteF, Finisher HintFull/Zero/Neutral(Full = 버튼 흐림 ChoiceCardUI.Dim), ChoiceHintNeutral(STORY.Hint 길드 = nil), Help KeysTip·ClientText KeysTip/Go, D0 'Look in your Quests window', Ranking Ineligible/Private(안 그려짐), 밈 줄 'Just for fun!', 휴가 "That's okay!" 삭제. 옛 영어: 오프닝 다시보기 토스트 → UIKit.Refuse, From Lv → Needs Lv(Panels+Config), 'If it fails, nothing changes.', 'Keep looted gold', SellNone = Config 문장과 같게. 고친 시험: story_client, keys_settings, choice_card_ui(Dim 확인 추가), finisher, a23_14, character_ui. wt_grip 성긴 체크아웃이라 docs/design 파일 2개 손으로 꺼냄(codex·hud_layout 시험용, 커밋 안 함).
+- main에도 원래 깨진 것(내 몫 아님): commission, finisher(일부), halloween, rank_marks, lost_found, ops_safety.
+- **다음 큐(최종 검수 10/15)**: 묶음 2 화면(개발 2 P1 ⑤~⑨) → #2 폰 동시 조작(이동·카메라·공격·스킬·물약 엄지 두 개) + 공격 '통역사'(누르면 가까운 몬스터 쪽으로 살짝 돌기, 폰 버튼 터치 범위 넓게, 줍기 스쳐도 성공) + 첫 동선 '이게 왜 안 돼?'(닫힌 문 판자·자물쇠, 투명 벽 → 보이는 울타리, 칠 것 같은 물건 반응, PvP 경계 들어가기 전 붉게) → #1 실패 원인 그 자리(MP 막대·대상 테두리·칸 테두리) → #7 도감 빈 카드 획득처·진척 → #11 왕관 막대 내 실제 누적 기여 → #8 친구 위치(머리 위 표시 + 지도 점). 근거: docs/design/game_feel_talk_2026-10-15.md, docs/design/ref/video_textbook_2026-10-15.md.
+
 ## 10/15 — 스윕 새 실패·퀘스트 창 번역·폰 첫 10분 (최종 검수 지시 1~3)
 - **fix/sweep-1015 47682e87** (wt_kosweep, origin/main 위, 보고함): 79abb70e test_town_npcs = 오토 스승(A23-193) 반영(182/182) · 47682e87 QuestBook.RowWords = 목록 줄을 UIKit.TrWord로 번역(통째 → ' · ' 조각), quest_window 97·46/46.
 - 스윕 판정: costume_physics·skin_binding 은퇴, halloween·place_english·skeleton_ground 성긴 worktree 파일 없음, metrics_board 인자 필요 = 거짓. ranking 488/488(돌연변이 없이). **a23_14 7개 실패 = 개발 2 몫**(f3b67a9c 거위 알림 삭제 뒤 기대값) → 개발 2에 알림. audio는 다시 도는 중.
