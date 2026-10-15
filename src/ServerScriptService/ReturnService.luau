@@ -6,7 +6,7 @@
 --      next goal is the pinned quest row (QuestService.PinnedRow). And "Welcome back! Next: … [Go]" (Fx "WelcomeBack"
 --      { Next, Zone }) once when a player comes back after Config.Return.WelcomeAfter s away (data.LastLogoutTime).
 --   #2 the "My Way" name from the player's own good / evil story picks (attribute MyWay = the display name, "" = none
---      yet; the client shows its 2 s line on a change) and the 8 Roblox badges (BadgeService:AwardBadge; Config.Badges
+--      yet; the client shows its 2 s line on a change) and the 7 Roblox badges (BadgeService:AwardBadge; Config.Badges
 --      ids, 0 = the badge is not made yet -> skipped, awarded later at a join).
 --   #5 the notification opt-in moment: after the day's dailies (the card's OptIn flag) or after the first King Diary
 --      page (Fx "OptInMoment" { Why }), once (data.Return.OptIn), never in the first 10 minutes or right after a KO /
@@ -545,7 +545,7 @@ local function award(player, key, id)
 	task.spawn(function()
 		local svc = game:GetService("BadgeService")
 		-- 검수 review 2026-10-08: only a real award counts. AwardBadge answers false for a badge that is off / a wrong id
-		-- (the user makes the 8 badges by hand at publishing) - and false or an error for one the player already has, so
+		-- (the user makes the 7 badges by hand at publishing) - and false or an error for one the player already has, so
 		-- either asks UserHasBadgeAsync once before it goes the retry way
 		local ok, res = pcall(svc.AwardBadge, svc, userId, id)
 		local got = ok and res == true

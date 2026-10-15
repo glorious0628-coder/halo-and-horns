@@ -38,7 +38,7 @@
 - [ ] Beta·Live는 **빈 저장소에서 시작**(검수 기본값 — 시험 때 얻은 후광·뿔·골드가 실제 게임에 섞이지 않게). 옛 시험 저장을 옮기려면 사용자가 따로 정한다.
 
 ## 다시 오게 만들기(A23-79) — 게시 때 사용자
-- [ ] Roblox 배지 8개 만들기(하루 5개 무료 → 이틀에 나눔), 나온 배지 ID를 Config에 붙여 넣기.
+- [ ] Roblox 배지 7개 만들기(하루 5개 무료 → 이틀에 나눔), 나온 배지 ID를 `Config.Badges.Ids`(ChoseSide·FirstSlime·LostLunchbox·Stronger·FirstSkill·ShardChoice·Rank2)에 붙여 넣기 — 0인 칸은 수여를 안 물어봄.
   - 배지 그림: `art/ui/Badge*.png`(이미지 생성 2, 512 원형 — 고른 것: Chose a Side A·First Slime A·Lost Lunchbox A·Stronger! B·First Skill A·Shard Choice A·Rank 2 A·Halloween 2026 A, 시트 art/review/s2/badges_private_sheet.jpg). **A23-119(10/11): 호박밭·유령 숲이 숨어서 'Halloween 2026' 배지는 지금 만들지 않아도 된다**(배지 7개면 된다; `Config.Badges.Ids.Halloween2026`은 0 그대로 = 안 물어봄. 철을 다시 켜는 날 만든다 — `docs/design/halloween_hidden_2026-10-11.md`). 개인 서버·게임 패스 그림 = `art/ui/PassIcon*.png`.
 - [ ] (11/09 업데이트 때) Experience Notifications 문구 틀 + Open Cloud 키(Secrets) — 키는 채팅에 붙여 넣지 않기.
 
@@ -48,6 +48,8 @@
 
 ## 출시 날 운영 한 장(시스템 점검 더하기 8, 2026-10-09) — 사용자가 한 번씩
 - [ ] **한 사람 저장 되돌리기**(10/15, 개발 2): 시험 중 한 사람 저장이 깨졌을 때(골드·아이템이 사라짐 등) — 그 사람이 게임에서 나간 뒤 메인 반영 1이 게임 Studio(Edit 모드)에서 `HH_MAIN_STUDIO=1 py tools/rollback_save.py <userId>`(판 목록) → `--to <판>`(백업 + 미리보기) → `--to <판> --yes`(되돌림). 백업은 docs/art/verification_2026-10-06/save_backups/, 다시 되돌리기 = 출력된 `--to <이전 판>`. 접속 중(살아 있는 서버 잠금)이면 거절. 오프라인 시험 `py tools/test_rollback_save.py`.
+- [ ] **저장 판 올림 리허설**(10/15, 개발 2; 다음 판 올림 = 모험단 v7 때): Beta 장소에서 ① 새 판 서버로 시험 계정 접속·저장 → ② 옛 판 서버(이전 게시본)로 같은 계정 접속 = 'LoadFailed'로 튕겨야 정상, 그 계정 저장은 그대로(`tools/rollback_save.py <id>` 판 목록에서 새 판이 최신인지 확인) → ③ 새 판 서버로 다시 접속 = 그대로 열림. 코드 쪽 준비 확인은 `py tools/test_save_bump.py`(판 번호마다 이관 단계·거절 경비·오프라인 증거).
+- [ ] **삭제 요청이 오면**: `docs/ops/data_erasure.md`.
 - [ ] **되돌리기 연습 1번**(게시하기 전 Beta 장소에서): `docs/ops/launch_day_runbook_2026-10-09.md` §2의 다섯 칸(화면 이름·시간·새 필드가 남는지)을 적는다 — 결과가 "새 필드가 사라짐"이면 S0 되돌리기는 위험하니 스위치로 끄는 길을 먼저 쓴다(검수에게 알림).
 - [ ] **문제 등급표 S0~S3**(같은 문서 §1)를 한 번 읽는다. 돈·저장은 늘 S0, 스위치(`PassSales`/`Halloween`/`CrownWar`/`Goose`)가 첫 행동.
 - [ ] **시간별 점검표**(같은 문서 §3): 출시 T-60분 ~ T+24시간. `Errors live`와 `Health live`는 Studio Play 중 명령창(§0).
