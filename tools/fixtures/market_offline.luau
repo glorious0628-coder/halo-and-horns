@@ -386,7 +386,7 @@ runGroup("list failures", function()
 	listJelly(w, p)
 	check(next(d.Market.Out) == nil and d.Items.Jelly == 30 and d.Market.Lists == 0 and next(ledgerRows(w)) == nil,
 		"the save fails: undone, nothing public", show(d.Market))
-	check(notes(w, p, n0) == "The market is resting.", "Resting", notes(w, p, n0))
+	check(notes(w, p, n0) == "The market is closed for now.", "Resting", notes(w, p, n0))
 	w.SaveFail = false
 	-- the ledger write errors and the read says nothing landed: the things come back
 	w.Fail[w.LedgerName .. ":Update"] = 1
@@ -557,7 +557,7 @@ runGroup("buy refusals", function()
 	bd.Items = {}
 	bd.Items.Jelly = 1
 	bd.Level = 4
-	check(try(buyer, b, id, 5) == "You can buy from Lv 5.", "Lv4", "")
+	check(try(buyer, b, id, 5) == "Reach Lv 5 to buy.", "Lv4", "")
 	bd.Level = 12
 	-- a weapon tier I own
 	a:Remote("MarketList", s, "W", "4:2", 1, 5000)
@@ -594,7 +594,7 @@ runGroup("pair and day limits", function()
 	check(bd.Items.Jelly == 3 and bd.Market.P14 == 3, "3 from one seller", show(bd.Market))
 	local n = #b.Notices
 	b:Remote("MarketBuy", buyer, ids[4], 6)
-	check(notes(b, buyer, n) == "Too many trades with them today." and bd.Items.Jelly == 3, "the 4th from the same seller: PairLimit", notes(b, buyer, n))
+	check(notes(b, buyer, n) == "Too many trades with this player today." and bd.Items.Jelly == 3, "the 4th from the same seller: PairLimit", notes(b, buyer, n))
 	b:ToDay(1)
 	a:ToDay(1)
 	b:Remote("MarketBuy", buyer, ids[4], 6)
@@ -641,7 +641,7 @@ runGroup("buy failures", function()
 	local n = #b.Notices
 	b:Remote("MarketBuy", buyer, id1, 5)
 	check(bd.BankGold == 1000 and next(bd.Market.In) == nil and bd.Market.Buys == 0 and ledgerOf(a, id1).St == "Open"
-		and notes(b, buyer, n) == "The market is resting.", "the save fails: the gold back, the listing open", show(bd.Market))
+		and notes(b, buyer, n) == "The market is closed for now.", "the save fails: the gold back, the listing open", show(bd.Market))
 	b.SaveFail = false
 	-- the write lands, then errors: the read says Sold to me -> delivered
 	b.LedgerAfterError = 1
@@ -999,7 +999,7 @@ runGroup("weapons", function()
 	local n = #a.Notices
 	a.Gap = 1.1
 	a:Remote("PackWeapon", s, 3)
-	check(notes(a, s, n) == "Put it away first." and bit32.btest(sd.WeaponOwnedMask, 4), "the weapon in hand: no", notes(a, s, n))
+	check(notes(a, s, n) == "Unequip it first." and bit32.btest(sd.WeaponOwnedMask, 4), "the weapon in hand: no", notes(a, s, n))
 	a:Remote("PackWeapon", s, 1)
 	a:Remote("PackWeapon", s, 4)
 	check(sd.Spares["4:4"] == 1 and not bit32.btest(sd.WeaponOwnedMask, 8) and sd.WeaponEnhance[4] == 0 and bit32.btest(sd.WeaponOwnedMask, 1),

@@ -45,7 +45,7 @@ local FRAME = {
 	Icons = { Menu = "IconSettings", Travel = "IconTravel", Class = "IconClassChange", Rebirth = "IconRebirth",
 		Altar = "IconAltar", Items = "IconBag", WeaponShop = "IconHammer", PotionShop = "IconPotionHP", Shop = "IconCoin",
 		Vacation = "IconVacation", Settings = "IconSettings", Help = "IconHelp", News = "IconNews", Welcome = "IconNews",
-		Story = "IconNews", Offer = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer",
+		Story = "IconNews", Offer = "IconNews", Match = "IconNews", Diary = "IconDiary", Skills = "IconSkills", Bag = "IconBag", Craft = "IconHammer",
 			Character = "IconCharacter" },
 	Fit = { H = nil, Queued = false }, -- the last content height the window was fitted to (du)
 	RailGap = 8, RailMinRoom = 300, -- du: the window stops this far above the HUD icon row, if it keeps this much height
@@ -2965,6 +2965,8 @@ end
 -- row shows STORY.Text.Row* with a gentle pulse, and tapping that row (HUD → Panels.ExpectStory + StoryAction "Open")
 -- opens it even mid-fight. "Fight" = PvP combat tag, dead, or my own attack / hurt Fx within CalmSeconds.
 local STORY = { Arg = nil, Pending = nil, ForceUntil = 0, ForceSeconds = 4, CalmSeconds = 4, Toasted = nil,
+	Reward = { H = 34, Gap = 18 }, -- §15 P1 ①: the Offer window's reward icons (du)
+	Match = { Target = 120, Option = 96, Gap = 22, Lead = 0.8 }, -- §15 P1 ④: the shape match (du); Lead = s before the first ring
 	Face = { Size = 104, Short = 68, Gap = 12 }, -- portrait width (px): PC / short phone screens (height < 520)
 	Text = {
 		RowShard = "Your shard is talking", -- A23-130: shorter (was "... — tap to see")
@@ -3223,6 +3225,200 @@ function STORY.OfferView(def, npc, f)
 	return { Npc = who, Name = names[who] or tostring(who or ""), Lines = lines, Title = def and def.Title or "" }
 end
 
+-- 퀘스트 바이블 §15 P1 ① (10/15): what a request pays, shown under her lines as icons and numbers (pure): the server's
+-- own sums at my level (StoryQuestService.payReward: Gold / XP = minutes of Config.HuntValue, GoldN = exact gold, XPBar =
+-- a share of my level's bar), an item reward by its icon (+N), bag slots by the bag icon. -> { { Icon, N } }
+function STORY.RewardPreview(reward, level)
+	local out = {}
+	if type(reward) ~= "table" then return out end
+	level = math.max(1, math.floor(tonumber(level) or 1))
+	local function n(v) return tonumber(v) or 0 end
+	local g, x = 0, 0
+	if n(reward.Gold) > 0 and type(Config.HuntValue) == "function" then g = select(1, Config.HuntValue(level, reward.Gold)) end
+	if n(reward.XP) > 0 and type(Config.HuntValue) == "function" then x = select(2, Config.HuntValue(level, reward.XP)) end
+	if n(reward.GoldN) > 0 then g += math.floor(n(reward.GoldN)) end
+	if n(reward.XPBar) > 0 and type(Config.XPToNext) == "function" then x += math.floor(Config.XPToNext(level) * n(reward.XPBar)) end
+	if g > 0 then table.insert(out, { Icon = "IconCoin", N = g }) end
+	if x > 0 then table.insert(out, { Icon = "IconExp", N = x }) end
+	if type(reward.Item) == "string" and reward.Item ~= "" then
+		table.insert(out, { Icon = reward.Item, N = math.max(1, math.floor(n(reward.N))) })
+	end
+	if n(reward.BagSlots) > 0 then table.insert(out, { Icon = "IconBag", N = math.floor(n(reward.BagSlots)) }) end
+	return out
+end
+
+-- the reward row: each icon with its number ("+N", numbers only)
+function STORY.RewardRow(parent, list)
+	if #list == 0 or not UIKit or type(UIKit.ItemIcon) ~= "function" then return nil end
+	local row = addRow(parent, STORY.Reward.H, STORY.Reward.Gap)
+	row.Name = "OfferReward"
+	for i, r in list do
+		local cell = Instance.new("Frame")
+		cell.Name = "Reward" .. i
+		cell.BackgroundTransparency = 1
+		cell.Size = UDim2.fromOffset(0, STORY.Reward.H)
+		cell.AutomaticSize = Enum.AutomaticSize.X
+		cell.LayoutOrder = i
+		local list2 = Instance.new("UIListLayout")
+		list2.FillDirection = Enum.FillDirection.Horizontal
+		list2.VerticalAlignment = Enum.VerticalAlignment.Center
+		list2.Padding = UDim.new(0, 4)
+		list2.Parent = cell
+		local icon = UIKit.ItemIcon(r.Icon, { Name = "Icon", Size = UDim2.fromOffset(STORY.Reward.H, STORY.Reward.H) })
+		if icon then
+			icon.LayoutOrder = 1
+			icon.Parent = cell
+		end
+		local num = addText(cell, "+" .. Util.FormatInt(r.N), { Name = "N", Size = 20, Color = theme.Gold,
+			Width = UDim2.new(0, 0, 0, STORY.Reward.H) })
+		num.AutomaticSize = Enum.AutomaticSize.X
+		num.TextWrapped = false
+		num.LayoutOrder = 2
+		cell.Parent = row
+	end
+	return row
+end
+
+-- 퀘스트 바이블 §15 P1 ④ (게임성 개발 2's step Obj "Timing" / "Match"): the anvil's ring screen for a quest's
+-- workbench (5 strikes, wide windows, nothing lost on a miss) -> StoryAction(Id, "Timing", { Good, Tries })
+function STORY.TimingResult(grades)
+	local good = 0
+	for _, g in type(grades) == "table" and grades or {} do
+		if g == "Good" or g == "Great" or g == "Perfect" then good += 1 end
+	end
+	-- 개발 2 10/15: the remote takes strings only - "good/tries"
+	return string.format("%d/%d", good, 5)
+end
+
+function STORY.Timing(arg)
+	if type(arg) ~= "table" or type(arg.Id) ~= "string" then return false end
+	local view = C and C.CraftView
+	if type(view) ~= "table" or type(view.Begin) ~= "function" then return false end
+	local ok, now = pcall(function() return workspace:GetServerTimeNow() end)
+	return view.Begin({ Id = "quest:" .. arg.Id, StartAt = (ok and now or 0) + STORY.Match.Lead }, true, function(grades)
+		fire("StoryAction", arg.Id, "Timing", STORY.TimingResult(grades))
+	end)
+end
+
+-- the shape match (OpenPanel "Match" { Id, Target, Options = { 3 ids } }): the target big, three to pick from - each a
+-- different Shape AND colour (Config.QuestShapes[id] = { Shape, Color }; not by colour alone) -> StoryAction(Id,
+-- "Match", n); the server says Fx "MatchHit" (the window closes with a sparkle) or "MatchMiss" { Pick } (that one
+-- shakes, pick again; nothing lost)
+function STORY.ShapeDef(id)
+	local all = type(Config.QuestShapes) == "table" and Config.QuestShapes or {}
+	local d = all[id]
+	return type(d) == "table" and d or { Shape = "Ring", Color = theme.Gold }
+end
+
+-- one shape drawn without art in a square holder: Ring / Knot / Disc / Square / Diamond / Cross / Bars (else Ring)
+function STORY.DrawShape(holder, id)
+	local d = STORY.ShapeDef(id)
+	local col = typeof(d.Color) == "Color3" and d.Color or theme.Gold
+	local function part(name, size, pos, rot, round)
+		local f = Instance.new("Frame")
+		f.Name = name
+		f.AnchorPoint = Vector2.new(0.5, 0.5)
+		f.Position = pos or UDim2.fromScale(0.5, 0.5)
+		f.Size = size
+		f.Rotation = rot or 0
+		f.BackgroundColor3 = col
+		f.BorderSizePixel = 0
+		f.ZIndex = (tonumber(holder.ZIndex) or 1) + 1
+		if round then
+			local c = Instance.new("UICorner")
+			c.CornerRadius = UDim.new(0.5, 0)
+			c.Parent = f
+		end
+		f.Parent = holder
+		return f
+	end
+	local kind = d.Shape
+	if kind == "Ring" then
+		local r = part("Ring", UDim2.fromScale(0.7, 0.7), nil, 0, true)
+		r.BackgroundTransparency = 1
+		local st = Instance.new("UIStroke")
+		st.Color, st.Thickness, st.ApplyStrokeMode = col, 8, Enum.ApplyStrokeMode.Border
+		st.Parent = r
+	elseif kind == "Disc" then
+		part("Disc", UDim2.fromScale(0.7, 0.7), nil, 0, true)
+	elseif kind == "Square" then
+		part("Square", UDim2.fromScale(0.6, 0.6))
+	elseif kind == "Diamond" then
+		part("Diamond", UDim2.fromScale(0.52, 0.52), nil, 45)
+	elseif kind == "Knot" then -- two rings linked (개발 2's Config.QuestShapes)
+		for i, x in { 0.38, 0.62 } do
+			local r = part("Loop" .. i, UDim2.fromScale(0.46, 0.46), UDim2.fromScale(x, 0.5), 0, true)
+			r.BackgroundTransparency = 1
+			local st = Instance.new("UIStroke")
+			st.Color, st.Thickness, st.ApplyStrokeMode = col, 6, Enum.ApplyStrokeMode.Border
+			st.Parent = r
+		end
+	elseif kind == "Cross" then
+		part("CrossA", UDim2.fromScale(0.7, 0.18))
+		part("CrossB", UDim2.fromScale(0.18, 0.7))
+	elseif kind == "Bars" then
+		for i = 1, 3 do part("Bar" .. i, UDim2.fromScale(0.16, 0.62), UDim2.fromScale(0.25 * i, 0.5)) end
+	else -- an unknown shape: a ring (never nothing)
+		local r = part("Ring", UDim2.fromScale(0.7, 0.7), nil, 0, true)
+		r.BackgroundTransparency = 1
+		local st = Instance.new("UIStroke")
+		st.Color, st.Thickness, st.ApplyStrokeMode = col, 8, Enum.ApplyStrokeMode.Border
+		st.Parent = r
+	end
+	return holder
+end
+
+BUILDERS.Match = function(parent)
+	local arg = REG.Arg
+	if type(arg) ~= "table" or type(arg.Id) ~= "string" or type(arg.Options) ~= "table" then
+		addText(parent, "", {})
+		return nil
+	end
+	local M = STORY.Match
+	local top = addRow(parent, M.Target, 0)
+	top.Name = "MatchTarget"
+	local target = Instance.new("Frame")
+	target.Name = "Target"
+	target.BackgroundTransparency = 1
+	target.Size = UDim2.fromOffset(M.Target, M.Target)
+	target.Parent = top
+	STORY.DrawShape(target, arg.Target)
+	local row = addRow(parent, M.Option + 12, M.Gap)
+	row.Name = "MatchOptions"
+	STORY.MatchButtons = {}
+	for i, id in arg.Options do
+		if i > 3 then break end
+		local b = makeButton(row, "", PALETTE.Button, UDim2.fromOffset(M.Option, M.Option), function()
+			if STORY.MatchWait then return end
+			STORY.MatchWait = { Id = arg.Id, Pick = i }
+			fire("StoryAction", arg.Id, "Match", tostring(i)) -- 개발 2 10/15: strings only ("1".."3")
+		end)
+		b.Name = "Option" .. i
+		STORY.DrawShape(b, id)
+		STORY.MatchButtons[i] = b
+	end
+	STORY.MatchWait = nil
+	return nil
+end
+
+-- the server's answer to a pick
+function STORY.OnMatch(kind, data)
+	if type(data) ~= "table" then return end
+	local wait = STORY.MatchWait
+	STORY.MatchWait = nil
+	if kind == "MatchHit" then
+		if currentId == "Match" then Panels.Close() end
+		return
+	end
+	if kind == "TimingMiss" then -- not enough good strikes: the refusal sound (talk to her again to retry, nothing lost)
+		if UIKit and type(UIKit.Refuse) == "function" then pcall(UIKit.Refuse, nil) end
+		return
+	end
+	local pick = tonumber(data.Pick) or (wait and wait.Pick)
+	local b = pick and STORY.MatchButtons and STORY.MatchButtons[pick]
+	if b and b.Parent and UIKit and type(UIKit.Refuse) == "function" then pcall(UIKit.Refuse, b) end
+end
+
 function STORY.OfferTitle()
 	local def, arg = STORY.OfferDef()
 	if not def then return "" end
@@ -3244,6 +3440,7 @@ BUILDERS.Offer = function(parent)
 	local typing = {}
 	TYPE.Tap(typing, line)
 	local pageLabel = addText(talk, "", { Name = "OfferPage", Size = 15, Color = theme.SubText, Align = align })
+	STORY.RewardRow(parent, STORY.RewardPreview(def.Reward, attr("Level", 1))) -- §15 P1 ①: what helping pays
 	local actions = addRow(parent, 64, 10)
 	local last = function() return page >= #v.Lines end
 	local update
@@ -3577,6 +3774,11 @@ end
 function Panels.Open(id, arg)
 	local fromMenu = pendingFromMenu
 	pendingFromMenu = false
+	-- 퀘스트 바이블 §15 P1 ④: a quest's workbench timing is the anvil's ring screen (CraftView, a local session)
+	if id == "Timing" then
+		STORY.Timing(arg)
+		return
+	end
 	if type(id) ~= "string" or BUILDERS[id] == nil then
 		Util.Warn(TAG, "unknown panel id: " .. tostring(id))
 		return
@@ -3818,6 +4020,10 @@ function Panels.Start()
 		local ok, err = pcall(function()
 			Net.Get("OpenPanel").OnClientEvent:Connect(function(panelId, arg)
 				if type(panelId) == "string" then Panels.Open(panelId, arg) end
+			end)
+			-- §15 P1 ④: the shape match's answer
+			Net.Get("Fx").OnClientEvent:Connect(function(kind, data)
+				if kind == "MatchHit" or kind == "MatchMiss" or kind == "TimingMiss" then pcall(STORY.OnMatch, kind, data) end
 			end)
 		end)
 		if not ok then Util.Warn(TAG, "OpenPanel hookup failed: " .. tostring(err)) end

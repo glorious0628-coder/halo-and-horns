@@ -107,8 +107,8 @@ runGroup("config", function()
 	local gw4 = C.StoryQuests.Defs.GW4.Steps[1].Obj
 	-- final review 10/13: the crown steps count monsters (kill units), so they always finish and show their progress
 	check(m21.Type == "WarPoints" and m21.Count == 15 and gw4.Type == "WarPoints" and gw4.Count == 100, "M2_1 15 monsters, GW4 100", show({ m21, gw4 }))
-	check(string.find(C.StoryQuests.Defs.M2_1.Steps[1].Text, "Monsters", 1, true) ~= nil
-		and string.find(C.StoryQuests.Defs.GW4.Steps[1].Text, "Monsters", 1, true) ~= nil, "the step lines say monsters",
+	check(string.find(string.lower(C.StoryQuests.Defs.M2_1.Steps[1].Text), "monsters", 1, true) ~= nil
+		and string.find(string.lower(C.StoryQuests.Defs.GW4.Steps[1].Text), "monsters", 1, true) ~= nil, "the step lines say monsters",
 		show({ C.StoryQuests.Defs.M2_1.Steps[1].Text, C.StoryQuests.Defs.GW4.Steps[1].Text }))
 	check(not string.find(C.StoryQuests.Defs.M2_1.Start, "Each monster you beat = 1 point", 1, true)
 		and string.find(C.StoryQuests.Defs.M2_1.Start, "100 monsters", 1, true) ~= nil, "M2_1's start line says 100 monsters", C.StoryQuests.Defs.M2_1.Start)

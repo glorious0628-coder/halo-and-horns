@@ -71,8 +71,8 @@ MUTATIONS = [
     ("the PvP cap counts a KO that scored nothing", W,
      "\t\t\t\tif points > 0 and WarService.AddPoints(killer, points, nil, \"PvP\") then hunt.KOs[killer.UserId] = kos + 1 end\n",
      "\t\t\t\thunt.KOs[killer.UserId] = kos + 1\n\t\t\t\tif points > 0 then WarService.AddPoints(killer, points, nil, \"PvP\") end\n"),
-    ("AddPoints answers false after adding", W, "\tWarService.PersonalAdded:Fire(player, n, type(source) == \"string\" and source or \"Other\")\n\treturn true\n",
-     "\tWarService.PersonalAdded:Fire(player, n, type(source) == \"string\" and source or \"Other\")\n\treturn false\n"),
+    ("AddPoints answers false after adding", W, "\tWarService.PersonalAdded:Fire(player, n, type(source) == \"string\" and source or \"Other\")\n\tcrownFx(player, n, type(source) == \"string\" and source or \"Other\")\n\treturn true\n",
+     "\tWarService.PersonalAdded:Fire(player, n, type(source) == \"string\" and source or \"Other\")\n\tcrownFx(player, n, type(source) == \"string\" and source or \"Other\")\n\treturn false\n"),
     ("the PvP cap is off", W, "\t\t\t\tif kos >= (tonumber(Config.War.PvPKOMaxPerRound) or 3) then return end\n", ""),
     ("a side switch keeps the units", W, "\t\t\t\tif type(data) == \"table\" then data.CrownUnits = 0 end\n", ""),
     ("Neutral scores kills", W, "\tif not WAR_FACTIONS[f] then return end\n\tlocal data = S.PlayerService.GetData(player)",
@@ -149,7 +149,7 @@ def static() -> tuple[int, list[str]]:
     check("local function fmtScore(v) return HUD.ScoreText(v) end" in hud and "v = math.max(0, math.floor(tonumber(v) or 0))" in hud,
           "A23-198: the HUD shows the war scores as whole numbers (the bar shows the share)")
     cfg = read(SHARED / "Config.luau")
-    check('"Knights earn Honor and the Horn Legion earns Mischief, from fair fights, story choices and hunting' in cfg,
+    check('"Knights earn Honor and the Horn Legion earns Mischief through fair fights, story choices and hunting' in cfg,
           "the Honor help line names hunting")
     return count, failures
 

@@ -159,7 +159,7 @@ local q = rowOf(SkillBook.Rows(ctx()), "Q")
 check(q.Name == "Halo Slam", "Halo Warrior Q is Halo Slam", q.Name)
 check(q.FactionLine == W.QZHalo, "Halo Q has the QZHalo line", q.FactionLine)
 check(string.find(q.Numbers, "Costs 20 MP", 1, true) and string.find(q.Numbers, "3 s cooldown", 1, true)
-	and string.find(q.Numbers, "Area 9", 1, true) and string.find(q.Numbers, "Hit x6", 1, true) ~= nil,
+	and string.find(q.Numbers, "Area 9", 1, true) and string.find(q.Numbers, "Damage x6", 1, true) ~= nil,
 	"Q numbers: MP 20 · 3 s · area 9 · x6", q.Numbers)
 q = rowOf(SkillBook.Rows(ctx({ Class = "Mage", Faction = "Horns" })), "Q")
 check(q.Name == "Purple Pop" and q.FactionLine == W.QZHorns, "Horns Mage Q is Purple Pop with the QZHorns line", q.Name)

@@ -128,8 +128,8 @@ MUTATIONS = [
     ("text: herbs sold at the Forge", C, 'Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Artisans craft with it." }', 'Name = "Meadow Herb", Sell = 1, Color = Color3.fromRGB(140, 210, 255), Icon = "IconMeadowHerb", Source = "Gather", Desc = "Sell it at the Forge." }'),
     # (A23-130 made ItemFull itself the short line, so dropping the ItemFullKeep switch is no longer visible; the mutation
     # puts the Forge back into ItemFullKeep instead)
-    ("text: the full line sends to the Forge", C, 'ItemFullKeep = "%s is full (max %d).",',
-     'ItemFullKeep = "%s is full (max %d). Sell it at the Forge.",'),
+    ("text: the full line sends to the Forge", C, 'ItemFullKeep = "%s limit reached (max %d).",',
+     'ItemFullKeep = "%s limit reached (max %d). Sell it at the Forge.",'),
     # --- LootService.GrantItems
     ("grant: 100 at once", L, "\t\tif type(id) == \"string\" and n >= 1 and n <= 99 then\n", "\t\tif type(id) == \"string\" and n >= 1 then\n"),
     # (no 'n >= 1 removed' mutation: addItem gives 0 for n <= 0, so it is equivalent)

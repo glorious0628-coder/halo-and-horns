@@ -575,7 +575,7 @@ runGroup("Go to friend", function()
 		.. "normal channel and its rules)", show(trip and { trip.Dest, trip.Instant }))
 	check(go(stranger) == nil, "not a Roblox friend: nothing", "")
 	local n = #w:NoticesFor(me)
-	check(go(woodsFriend) == nil and w:NoticesFor(me)[n + 1] == "Your friend is in a PvP zone. Come at Lv 15!",
+	check(go(woodsFriend) == nil and w:NoticesFor(me)[n + 1] == "Your friend is in a PvP zone. You can join at Lv 15!",
 		"a sprout and a friend in the PvP woods: never sent there", tostring(w:NoticesFor(me)[n + 1]))
 	n = #w:NoticesFor(me)
 	check(go(hornsFriend) == nil and w:NoticesFor(me)[n + 1] == "Your friend is in the other side's town.",
@@ -878,12 +878,12 @@ runGroup("A23-167 welcome back: Returned, Days, news", function()
 	check(p:GetAttribute("Returned") == true, "7 hours away: Returned = true (the guide's line)", tostring(p:GetAttribute("Returned")))
 	w2:Advance(4)
 	local f = welcomeOf(w2, p)
-	check(f and f.News == "While you were away, crown wars won: Halo 3, Horns 1" and f.Days == 0 and f.Next ~= nil,
+	check(f and f.News == "Crown war wins while you were away: Halo 3, Horns 1" and f.Days == 0 and f.Next ~= nil,
 		"the welcome-back card: News (my side first), Days 0, Next as before", show(f))
 	local h = hero(w2, 2, { Data = { Faction = "Horns", LastLogoutTime = NOON - 3 * 86400 } })
 	w2:Advance(4)
 	f = welcomeOf(w2, h)
-	check(f and f.News == "While you were away, crown wars won: Horns 1, Halo 3" and f.Days == 3,
+	check(f and f.News == "Crown war wins while you were away: Horns 1, Halo 3" and f.Days == 3,
 		"a Horns player 3 days away: Horns first, Days 3", show(f))
 	check(newsGets(w2) == 1, "two returners within ReadGap: one read", newsGets(w2))
 	-- this server's counts not written yet count too
@@ -891,7 +891,7 @@ runGroup("A23-167 welcome back: Returned, Days, news", function()
 	local k = hero(w2, 3, { Data = { LastLogoutTime = NOON - 7 * 3600 } })
 	w2:Advance(4)
 	f = welcomeOf(w2, k)
-	check(f and f.News == "While you were away, crown wars won: Halo 3, Horns 2", "this server's unwritten win counts too", show(f))
+	check(f and f.News == "Crown war wins while you were away: Halo 3, Horns 2", "this server's unwritten win counts too", show(f))
 	-- not a return: no attribute, no card
 	local n = hero(w2, 4, { Data = { LastLogoutTime = NOON } })
 	w2:Advance(4)
