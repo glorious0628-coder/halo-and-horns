@@ -3022,6 +3022,24 @@ function STORY.Lines(step, f, var)
 	return (type(src) == "table" and (src[f] or src.All)) or {}
 end
 
+-- A23-208 (pure; docs/design/quest_data_contract_2026-10-15.md §3-2): the last step's card ends with the hook to the
+-- next quest (def.Next.Line, its speaker's name as written) - a new list, the step's own lines untouched
+function STORY.WithNext(lines, def, st)
+	local nx = type(def) == "table" and def.Next or nil
+	local n = type(def) == "table" and type(def.Steps) == "table" and #def.Steps or 0
+	if type(nx) ~= "table" or type(nx.Line) ~= "string" or nx.Line == "" or tonumber(st) ~= n or n == 0 then return lines end
+	local out = table.clone(lines)
+	table.insert(out, nx.Line)
+	return out
+end
+
+-- A23-208 (pure): the Offer's situation line (Offer.Before: one line before her ask; a side table = mine, else All)
+function STORY.Before(def, f)
+	local b = type(def) == "table" and type(def.Offer) == "table" and def.Offer.Before or nil
+	if type(b) == "table" then b = b[f] or b.All end
+	return (type(b) == "string" and b ~= "") and b or nil
+end
+
 -- the line under the two choice buttons (what a pick does, before picking). A23-58: a pick against my side lowers my
 -- own score (Halo: Honor +Good / -Evil, Horns: Infamy -Good / +Evil); E5: two 0-point picks only lean the shard
 -- have = my own side's points now (Halo: Honor, Horns: Infamy; nil = unknown -> the plain hint). Round 3 #5
@@ -3124,7 +3142,7 @@ BUILDERS.Story = function(parent)
 	local f = myFaction()
 	local over = step[f]
 	local obj = (type(over) == "table" and over.Obj) or step.Obj
-	local lines = STORY.Lines(step, f, arg.Var)
+	local lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St) -- A23-208: + the hook to the next quest
 	local TXT = Config.StoryQuests.Text
 	local page = 1
 	local voice = def.Speaker or (f == "Neutral" and "Guild" or f) -- no speaker = my faction's guide
@@ -3152,6 +3170,12 @@ BUILDERS.Story = function(parent)
 			fire("StoryAction", arg.Id, "Talk")
 		else
 			fire("StoryAction", arg.Id, "Choose", option)
+		end
+		-- A23-208: after the hook (#lines > the step's own), the next asker hops once when her "!" shows
+		local npcs = C and C.StoryNpcs
+		if #lines > #STORY.Lines(step, f, arg.Var) and type(def.Next) == "table" and type(npcs) == "table"
+			and type(npcs.ExpectNext) == "function" then
+			pcall(npcs.ExpectNext, def.Next.Id)
 		end
 		Panels.Close()
 	end
@@ -3472,6 +3496,13 @@ BUILDERS.Offer = function(parent)
 	local v = STORY.OfferView(def, arg.Npc, myFaction())
 	local TXT = Config.StoryQuests.Text
 	local page = 1
+	-- A23-208: what is going on, one small italic line over her ask (phones: 2 lines at 18 px, Before <= 70 characters)
+	local before = STORY.Before(def, myFaction())
+	if before then
+		local b = addText(parent, before, { Name = "OfferBefore", Size = 18, Color = theme.SubText })
+		local face = b.FontFace
+		b.FontFace = Font.new(face.Family, face.Weight, Enum.FontStyle.Italic)
+	end
 	local talk, align = STORY.Talk(parent, v.Npc)
 	local line = addText(talk, "", { Name = "OfferLine", Size = 22, Align = align })
 	local typing = {}

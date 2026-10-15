@@ -706,8 +706,225 @@ function StoryNpcs.Scene(data)
 		if value == "Common" then StoryNpcs.Hop("Folk1", 1) end -- the neighbours wave
 		StoryNpcs.Hop(T.World.LampNpc[f or ""] or "Bright", 1)
 		return true
+	elseif key == "Find" then -- A23-208: what I find as a step starts (Value = the step number)
+		return StoryNpcs.Find(data.Id, value, me and me:GetAttribute("Faction"))
+	elseif key == "Scene" then -- A23-208: what the people do as a step is done (Value = a Config.StoryQuests.SceneKeys key)
+		return StoryNpcs.PlayScene(data.Id, value, me and me:GetAttribute("Faction"))
 	end
 	return false
+end
+
+------------------------------------------------------------------ A23-208 story fields (screen part)
+-- docs/design/quest_data_contract_2026-10-15.md §3-2 (개발 2 dev2-story-fields): a step's Find = a short bubble over that
+-- step's NPC (no NPC: over its Guide place) for Find.Seconds, two lines at most - never a toast or a banner; a step's
+-- Scene = that NPC's move + a round sparkle (no rays); Next = after the last card the next asker's "!" hops once, the
+-- first time it shows. The Offer window's Before line and the last card's Next.Line are Panels' (STORY.Before /
+-- STORY.WithNext). Bubble art = the approved 9-slice BarkBubble (512 x 190, tail bottom-left), kept at its aspect.
+T.Story = {
+	Find = { Seconds = 4, W = 280, Aspect = 512 / 190, TextPx = 18, Lift = 1.6, Spot = 3, Distance = 120, TailX = 0.068 },
+	NextFor = 900, -- s the next asker's one hop waits for her "!"
+	-- each move: N times Time s; Off(k) = the offset from home at k = 0..1 (Hip = studs from the pivot down to the bend)
+	Hip = 1,
+	Moves = {
+		Hop = { N = 1, Time = 0.32, Up = 1.2 },
+		Cheer = { N = 2, Time = 0.3, Up = 1.5 },
+		Clap = { N = 3, Time = 0.16, Up = 0.3 },
+		Laugh = { N = 3, Time = 0.2, Up = 0.35, Lean = 8 },
+		Bow = { N = 1, Time = 0.9, Lean = -30 },
+		Nod = { N = 2, Time = 0.35, Lean = -12 },
+		Hug = { N = 1, Time = 1, Lean = -10, Step = 0.8 },
+		Wave = { N = 2, Time = 0.45, Roll = 10 },
+		Spin = { N = 1, Time = 0.8, Turn = 360 },
+		Sparkle = { N = 0, Time = 0 },
+	},
+}
+
+-- (pure) step n of quest id for my side: the side table over the base fields (Config merges a pack's Variants the
+-- same way) -> step, def
+function StoryNpcs.StepFor(id, n, faction)
+	local defs = type(Config.StoryQuests) == "table" and type(Config.StoryQuests.Defs) == "table" and Config.StoryQuests.Defs or {}
+	local def = type(id) == "string" and defs[id] or nil
+	local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(n) or 0] or nil
+	if type(step) ~= "table" then return nil, def end
+	local over = type(faction) == "string" and step[faction] or nil
+	if type(over) ~= "table" then return step, def end
+	local out = table.clone(step)
+	for k, v in over do out[k] = v end
+	return out, def
+end
+
+-- (pure) who plays a Scene: the step of that quest whose Scene it is (the last one first), else the last step's Npc,
+-- else the asker (Offer.Npc, by side) / the quest's Speaker
+function StoryNpcs.SceneNpc(id, scene, faction)
+	local _, def = StoryNpcs.StepFor(id, 1, faction)
+	if type(def) ~= "table" then return nil end
+	local n = type(def.Steps) == "table" and #def.Steps or 0
+	local lastNpc = nil
+	for i = n, 1, -1 do
+		local step = StoryNpcs.StepFor(id, i, faction)
+		if type(step) == "table" and type(step.Npc) == "string" then
+			lastNpc = lastNpc or step.Npc
+			if step.Scene == scene then return step.Npc end
+		end
+	end
+	if lastNpc then return lastNpc end
+	local who = type(def.Offer) == "table" and def.Offer.Npc or nil
+	if type(who) == "table" then who = who[faction] or who.Neutral end
+	if type(who) == "string" then return who end
+	return type(def.Speaker) == "string" and def.Speaker or nil
+end
+
+-- (pure) the one who asks for quest id (her "!" hops after the hook to it): the Offer's Npc by side, else the first
+-- step's Npc
+function StoryNpcs.AskerOf(id, faction)
+	local first, def = StoryNpcs.StepFor(id, 1, faction)
+	local who = type(def) == "table" and type(def.Offer) == "table" and def.Offer.Npc or nil
+	if type(who) == "table" then who = who[faction] or who.Neutral end
+	if type(who) == "string" and who ~= "" then return who end
+	return type(first) == "table" and type(first.Npc) == "string" and first.Npc or nil
+end
+
+-- the Find bubble on adornee (a head or an attachment): BarkBubble art, the words inside its text box; one at a time
+-- per adornee, gone after Find.Seconds
+function StoryNpcs.Bubble(adornee, text)
+	local F = T.Story.Find
+	local UIKit = C and C.UIKit
+	local old = adornee:FindFirstChild("StoryFindBubble")
+	if old then old:Destroy() end
+	local w, h = F.W, math.floor(F.W / F.Aspect + 0.5)
+	local bb = Instance.new("BillboardGui")
+	bb.Name = "StoryFindBubble"
+	bb.Adornee = adornee
+	bb.AlwaysOnTop = true
+	bb.LightInfluence = 0
+	bb.MaxDistance = F.Distance
+	bb.Size = UDim2.fromOffset(w, h)
+	bb.StudsOffset = Vector3.new(0, adornee:IsA("BasePart") and F.Lift or 0, 0)
+	bb.SizeOffset = Vector2.new(0.5 - F.TailX, 0.5) -- the tail (bottom-left) sits on the head
+	local frame
+	if type(UIKit) == "table" and type(UIKit.ArtFrame) == "function" then
+		frame = UIKit.ArtFrame("BarkBubble", { Name = "Bubble", Size = UDim2.fromScale(1, 1) },
+			{ Color = Color3.new(1, 1, 1), CornerRadius = UDim.new(0.3, 0) })
+	else
+		frame = Instance.new("Frame")
+		frame.Name, frame.Size, frame.BackgroundColor3 = "Bubble", UDim2.fromScale(1, 1), Color3.new(1, 1, 1)
+	end
+	frame.Parent = bb
+	local rect = { 0.077, 0.181, 0.844, 0.448 }
+	local art = type(Config.UIArt) == "table" and type(Config.UIArt.Parts) == "table" and Config.UIArt.Parts.BarkBubble or nil
+	if type(art) == "table" and type(art.TextRect) == "table" and #art.TextRect == 4 then rect = art.TextRect end
+	local props = { Name = "Words", Text = text, TextSize = F.TextPx, TextWrapped = true, ZIndex = 3,
+		Position = UDim2.fromScale(rect[1], rect[2]), Size = UDim2.fromScale(rect[3], rect[4]),
+		TextXAlignment = Enum.TextXAlignment.Center, TextYAlignment = Enum.TextYAlignment.Center, Parent = frame }
+	local label
+	if type(UIKit) == "table" and type(UIKit.StyledLabel) == "function" then
+		label = UIKit.StyledLabel(props, "Body", true)
+	else
+		label = Instance.new("TextLabel")
+		for k, v in props do if k ~= "Parent" then label[k] = v end end
+		label.BackgroundTransparency, label.Parent = 1, frame
+	end
+	label.TextSize = F.TextPx
+	local scale = Instance.new("UIScale")
+	scale.Parent = frame
+	local still = type(UIKit) == "table" and type(UIKit.ReducedMotion) == "function" and UIKit.ReducedMotion()
+	if not still then
+		scale.Scale = 0.6
+		game:GetService("TweenService"):Create(scale, TweenInfo.new(0.22, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	end
+	bb.Parent = adornee
+	task.delay(F.Seconds, function()
+		if not bb.Parent then return end
+		if not still then
+			game:GetService("TweenService"):Create(scale, TweenInfo.new(0.15), { Scale = 0.7 }):Play()
+			task.wait(0.15)
+		end
+		bb:Destroy()
+	end)
+	return bb
+end
+
+-- Fx StoryScene Find: the words of step n (Config, my side) over its NPC's head, else over its Guide / Obj.Spot place
+function StoryNpcs.Find(id, n, faction)
+	local step = StoryNpcs.StepFor(id, n, faction)
+	local text = type(step) == "table" and step.Find or nil
+	if type(text) ~= "string" or text == "" then return false end
+	local body = type(step.Npc) == "string" and StoryNpcs.Body(step.Npc) or nil
+	local head = body and body:FindFirstChild("Head")
+	if head and head:IsA("BasePart") then return StoryNpcs.Bubble(head, text) ~= nil end
+	local qt = C and C.QuestTarget
+	local obj = type(step.Obj) == "table" and step.Obj or {}
+	local pos = nil
+	for _, key in { step.Guide, obj.Spot } do
+		if pos == nil and type(key) == "string" and type(qt) == "table" and type(qt.StorySpot) == "function" then
+			local ok, p = pcall(qt.StorySpot, key)
+			if ok and typeof(p) == "Vector3" then pos = p end
+		end
+	end
+	if pos == nil then return false end
+	local a = Instance.new("Attachment")
+	a.Name = "HH_StoryFindSpot"
+	a.Parent = workspace.Terrain
+	a.WorldPosition = pos + Vector3.new(0, T.Story.Find.Spot, 0)
+	game:GetService("Debris"):AddItem(a, T.Story.Find.Seconds + 1)
+	return StoryNpcs.Bubble(a, text) ~= nil
+end
+
+-- (pure) a move's offset from home at k (0..1)
+function StoryNpcs.MoveOffset(kind, k)
+	local M = T.Story.Moves[kind]
+	if type(M) ~= "table" then return CFrame.identity end
+	local s = math.sin(k * math.pi)
+	local cf = CFrame.new(0, (M.Up or 0) * s, -(M.Step or 0) * s)
+	if M.Lean then
+		local hip = CFrame.new(0, -T.Story.Hip, 0)
+		cf = cf * hip * CFrame.Angles(math.rad(M.Lean) * s, 0, 0) * hip:Inverse()
+	end
+	if M.Roll then cf = cf * CFrame.Angles(0, 0, math.rad(M.Roll) * math.sin(k * math.pi * 2)) end
+	if M.Turn then cf = cf * CFrame.Angles(0, math.rad(M.Turn) * (1 - math.cos(k * math.pi)) / 2, 0) end
+	return cf
+end
+
+-- Fx StoryScene Scene: the NPC plays the move (anchored town bodies move on this client only) + a round sparkle over
+-- her head; no body near = the sparkle over me
+function StoryNpcs.PlayScene(id, scene, faction)
+	local SK = type(Config.StoryQuests) == "table" and Config.StoryQuests.SceneKeys or nil
+	if type(scene) ~= "string" or not (type(SK) == "table" and SK[scene]) then return false end
+	local M = T.Story.Moves[scene] or T.Story.Moves.Sparkle
+	local npc = StoryNpcs.SceneNpc(id, scene, faction)
+	local m = type(npc) == "string" and StoryNpcs.Body(npc) or nil
+	if not m then
+		local me = game:GetService("Players").LocalPlayer
+		local root = me and me.Character and me.Character:FindFirstChild("HumanoidRootPart")
+		if root then burst(root.Position + Vector3.new(0, 3, 0), T.Gold, 16) end
+		return root ~= nil
+	end
+	local head = m:FindFirstChild("Head")
+	local home = m:GetPivot()
+	burst(head and head.Position + Vector3.new(0, 1.5, 0) or home.Position, T.Gold, scene == "Sparkle" and 26 or 16)
+	if M.N <= 0 or WS.Busy[m] then return true end
+	WS.Busy[m] = true
+	task.spawn(function()
+		for _ = 1, M.N do
+			local t0 = os.clock()
+			while os.clock() - t0 < M.Time and m.Parent do
+				m:PivotTo(home * StoryNpcs.MoveOffset(scene, (os.clock() - t0) / M.Time))
+				task.wait()
+			end
+		end
+		if m.Parent then m:PivotTo(home) end
+		WS.Busy[m] = nil
+	end)
+	return true
+end
+
+-- Panels' last card with a Next hook was answered: the asker of quest id hops once when her "!" shows (NextFor s)
+function StoryNpcs.ExpectNext(id)
+	local me = game:GetService("Players").LocalPlayer
+	local npc = StoryNpcs.AskerOf(id, me and me:GetAttribute("Faction"))
+	if type(npc) ~= "string" then return false end
+	S.Next = { Npc = npc, Until = os.clock() + T.Story.NextFor }
+	return true
 end
 
 -- one pass of the world pieces (Refresh calls it)
@@ -752,6 +969,14 @@ function StoryNpcs.Refresh()
 			(type(teacher) == "string" and teacher ~= "" and ready > slots) and teacher or nil)
 		pcall(StoryNpcs.DrawPickups, StoryNpcs.Pickups(entries, me:GetAttribute("Faction")))
 		pcall(StoryNpcs.RefreshWorld, entries, me) -- quest P1: dummies, practice tools, the lamp, the pose spot, saved looks
+		-- A23-208: the next asker's "!" shows after the hook to her quest: she hops once (waits while her body is away)
+		local nx = S.Next
+		if nx and os.clock() > nx.Until then
+			S.Next = nil
+		elseif nx and called[nx.Npc] and StoryNpcs.Body(nx.Npc) then
+			S.Next = nil
+			StoryNpcs.Hop(nx.Npc, 1)
+		end
 	end
 	local tag = type(Config.StoryQuests) == "table" and Config.StoryQuests.NpcTag or "StoryNpc"
 	local ok, list = pcall(function() return game:GetService("CollectionService"):GetTagged(tag) end)
