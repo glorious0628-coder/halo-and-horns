@@ -5,7 +5,7 @@
 2. **질문**: M1_4가 등불로 바뀌며 옛 '안내자 보고' 대사(영웅 동상·용암 틈 설명, "More shards are out there. What will you do with the next one?")가 빠짐 — 옮길 곳(예: 1장 끝 안내자 한마디 / 도감 / 삭제)?
 3. 이미 보낸 것: dev2-en-apply d8a47d89, dev2-mut-fix 584e2629 (옛 최종 검수가 병합했는지 확인 필요).
 
-- **파티 반박 검토 → dev2-party-fix d3114432 (최종 검수에 보고, worktree ../wt_party 성긴 체크아웃)**: api/party2 17819828 위. 개인 인정 = 때린 모든 파티(문서 사례 2), PartyService.JoinSeq 가입 시점(epoch) 스냅샷, QuestOnly는 Basic/Auto/SafeKill 0, QuestKill → MOVER.Kill. test_party 36/36. 결정 대기: CreditMode 없는 단계 기본값·BossHitGap 3초 vs 문서 1초·파티 보스 풀 두 번·보스 15초. 원래 실패 26개 비교는 못 함(세션 바뀜).
+- **10/15 밤 (최신)**: 파티 dev2-party-fix **08e9ac2e**(최종 검수 결정 a~d 반영, 스윕 새로 깨진 것 0 → 병합 요청함; ../wt_party). 이야기 칸 더하기 dev2-story-more **905f5b89**(story-fields 위: On="Self", 진영 Next/Before = Config.QuestNext/QuestBefore, Offer.BeforeBy; ../wt_story) → 최종 검수 보고, 개발 1에 화면 ⑤⑥⑦ 보냄. 다음 = 1장 데이터 옮기기(build/codex/story_emotion_r2.md §2, 사용자 스토리 결정 뒤). 스윕 도구 = 스크래치 sweep.py(세션마다 다시), 스윕 worktree ../wt_swbase ../wt_swmerge(지워도 됨).
 - **A23-208 이야기 칸 dev2-story-fields 498ae457**: 화면 몫(①Offer.Before ②Find 말풍선 ③Scene 몸짓 ④Next 줄·'!' 통통)은 개발 1이 받음(10/15 밤). 개발 1 세션 클리어 → 새 개발 1이 state/dev1.md 맨 위 ①~④로 이음. 내 쪽 할 일 없음, 화면 가지 나오면 서버 신호 맞는지만 확인.
 
 ## 가지 dev2-quest-p1 (worktree ../wt_p1) 내용
