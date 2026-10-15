@@ -269,7 +269,7 @@ SUITE = Suite(
              "day's last daily claim / a war round I scored in after 15 min of play (one war card in 30 min), 120 s apart, "
              "waits out a fight; Fx WelcomeBack { Next, Zone } 4 s after a join 6 h+ after the last leave (first mission "
              "done); attribute MyWay from the story picks (2+ picks, a fifth = Balance Walker, Halo True Knight / Rebel "
-             "Angel, Horns Proud Rascal / Soft-Hearted Devil, Neutral none); 8 badges via BadgeService (id 0 never asked, "
+             "Angel, Horns Proud Rascal / Soft-Hearted Devil, Neutral none); 7 badges via BadgeService (id 0 never asked, "
              "saved once, failures retried after 300 s, caught up at join); the opt-in moment once (10 min played, 60 s "
              "after a KO / failed scroll / purchase prompt, 'cannot' again after 30 days, a shown prompt -> the asked "
              "DataStore list); invite joins from LaunchData (digits, not mine, the first kept) + PlayedTogether at 10 "
