@@ -1,5 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/15 밤 (클리어 뒤 새 세션) — 1·2·3② 끝, 보고함
+- **dev1-nudges-cut aff7935e** (wt_kosweep): 꺼둔 클라 Nudges 11개 + 그림 코드 삭제(HUD.Hint 체계, QuestHead 줄, 길 Beam·이름표, TugSub, SackLore, WSHOP.Farewell…). test_nudges_gone 117·8/8. 스윕 72개 새 실패 0(attendance_ui·first_weapon_client·walk_forge_client·loot·halloween·a23_14 = main도). 옛 가지 dev1-first-hunt-hint 4681edff와 부딪힘(버릴 것). 서버 4개(GuideDone·DailyReady·EnteredSafe·WeaponUsableNow)는 개발 2에 넘김.
+- **dev1-story-screen f7761733** (wt_grip, dev2-story-fields + main fcee99b6): Before(Config.QuestBefore)·Find 말풍선(BarkBubble 4초, St, On=Self)·Scene 몸짓(SceneKeys 10개)·끝 줄 Config.QuestNext + 다음 부탁 NPC 통통. test_story_fields_screen 34·12/12. 폰 사진 = 실제 묶음 데이터 들어온 뒤.
+- **dev1-forge-lines b52a7bcd** (wt_dev1c): 대장간 창 설명 줄 3개 삭제(WSHOP.Far 신호).
+- 3④ Travel·Ranking 'did not open' = 도구 문제(구독 전용 / Panels 창 아님). 3⑤ 쉬운 영어 후보(afar, Regen, Lifesteal, Acc, halved, Crownforged, Citadel, Mythic) 최종 검수 답 대기.
+- **다음**: 3① 폰 진영·직업 카드(FactionPicker 폰 배치, 실기 확인 필요) → 3③ 인트로 흰 네모(Studio) → 4번.
+- 습관: Bash 헤레독 안 `\\t`·`\b`가 바뀜 → 패치 스크립트는 Write로 파일 만들어 실행. 일부 시험 파일은 CRLF.
+
 ## ▶ 클리어 뒤 할 일 (최종 검수 local_cb4b05f8… 10/15 밤, 이 순서)
 1. **Config.Nudges false 스위치 UI 코드째 삭제** (사용자 규칙: 싫다 한 UI는 종류째 삭제, 스위치 X): 지금 false인 것만 — DailiesOpened·QuestHead·WarIntro·GooseSub·AttackHint·ShopFarewell·ZoneStoryLine·SackLore·HuntSlimes·GuideLabel·GuideBeam. 그린 코드 + Config 줄 지우고 정적 검사로 못 박기. **켜져 쓰는 길 안내(A23-199 퀘스트 길 표시, PadGlow·TravelPulse)는 건드리지 말 것** — GuideBeam/GuideLabel이 같은 코드를 쓰면 꺼진 경로만. 서버 3개(GuideDone·EnteredSafe·DailyReady)는 개발 2 파일 → 이름만 개발 2에 넘김. (keystip 82f59fd9 + phone2 b6723a3c는 최종 검수가 병합 시험 중.)
 2. **A23-208 이야기 칸 화면** — 개발 2 가지 dev2-story-fields 498ae457 위에 화면 가지, 규격 docs/design/quest_data_contract_2026-10-15.md §3-2: ① Offer.Before = 부탁 창 맨 위 작은 기울임 한 줄(폰 18px 2줄 안, ≤70자) ② 단계 Find = Fx StoryScene{Key="Find", Value=단계 번호} → 그 단계 Npc 머리 위(없으면 Guide 자리 물건 위) 말풍선 4초·2줄(≤40자, 글 = Config 단계 Find; 토스트·배너 X) ③ 단계 Scene = Fx StoryScene{Key="Scene", Value=Wave/Hop/Laugh/Bow/Cheer/Nod/Sparkle/Spin/Hug/Clap(Config.StoryQuests.SceneKeys)} → 그 Npc 몸짓 + 둥근 반짝임(StoryNpcs.Scene/Hop 재사용, 몸 고정이라 이동) ④ 퀘스트 Next={Id,Line}: Line = 끝 대화 카드 마지막 줄(≤60자), Next.Id 부탁 NPC '!' 처음 뜰 때 한 번 통통. 보고에 폰 글자 잘림 사진 포함.
