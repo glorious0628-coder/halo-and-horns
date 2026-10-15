@@ -146,7 +146,8 @@ def static() -> tuple[int, list[str]]:
     check("Config.War.ChestMinPoints" in ret, "ReturnService's war card still reads ChestMinPoints (whole personal points)")
     hud = read(ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau")
     check('TXT.MyWar' not in hud and 'MyWar =' not in hud, "A23-130: no 'My pts' under the war bar (my points are in the war window)")
-    check('return string.format("%g", math.floor(v * 100 + 0.5) / 100)' in hud, "the HUD shows the war scores with two decimals")
+    check("local function fmtScore(v) return HUD.ScoreText(v) end" in hud and "v = math.max(0, math.floor(tonumber(v) or 0))" in hud,
+          "A23-198: the HUD shows the war scores as whole numbers (the bar shows the share)")
     cfg = read(SHARED / "Config.luau")
     check('"Knights earn Honor and the Horn Legion earns Mischief, from fair fights, story choices and hunting' in cfg,
           "the Honor help line names hunting")
