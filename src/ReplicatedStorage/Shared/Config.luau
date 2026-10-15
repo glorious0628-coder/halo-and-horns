@@ -6497,7 +6497,6 @@ Config.Nudges = {
 	ZoneStoryLine = false, -- Config.StoryLines toasts at a zone unlock (Fx level up)
 	SackLore = false, -- "Stolen gold carries a grudge ..." at the first sack arrow (EventHUD)
 	HuntSlimes = false, -- "Hunt slimes and big slimes for XP." (HUD meadow guide)
-	KeysTip = false, -- the keys tip card after the first skill (SkillBar LEARN.Tip)
 	GuideLabel = false, -- 검수 10/09: the floating name chip over the guide target / pad ("First weapon"; HUD showGuide)
 	GuideBeam = false, -- 검수 10/09 (user): the gold line on the ground to the target (HUD showGuide); A23-88 too
 	-- A23-88 (검수 10/09, no lines / words): after the first weapon (TutorialStep Guide) the meadow travel pad itself glows
