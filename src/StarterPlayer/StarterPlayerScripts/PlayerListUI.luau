@@ -322,14 +322,17 @@ local function newRow(i)
 		PlayerListUI.ShowPick()
 	end
 	local partyWord = Config.ClientText.Party and Config.ClientText.Party.Invite or nil
-	local actions = { { TXT.Friend, "PromptSendFriendRequest", "Good" }, { TXT.Block, "PromptBlockPlayer", "Bad" } }
-	if partyWord then table.insert(actions, 1, { partyWord, "PartyInvite", "Good" }) end
-	for i, a in actions do
+	local share = partyWord and 1 / 3 or 0.5
+	if partyWord and type(k.Button) == "function" then
+		local pb = k.Button({ Name = "PartyInvite", Text = partyWord, TextSize = T.HeaderText,
+			Color = themeColor("Good", Color3.fromRGB(60, 62, 85)), Size = UDim2.new(share, -4, 1, 0), LayoutOrder = 0, ZIndex = 6,
+			Parent = rec.Actions }, function() partyInvite() end)
+		if pb then pb.Name = "PartyInvite" end
+	end
+	for i, a in { { TXT.Friend, "PromptSendFriendRequest", "Good" }, { TXT.Block, "PromptBlockPlayer", "Bad" } } do
 		local b = type(k.Button) == "function" and k.Button({ Name = a[2], Text = a[1], TextSize = T.HeaderText,
-			Color = themeColor(a[3], Color3.fromRGB(60, 62, 85)), Size = UDim2.new(1 / #actions, -4, 1, 0), LayoutOrder = i, ZIndex = 6,
-			Parent = rec.Actions }, function()
-				if a[2] == "PartyInvite" then partyInvite() else prompt(a[2]) end
-			end) or nil
+			Color = themeColor(a[3], Color3.fromRGB(60, 62, 85)), Size = UDim2.new(share, -4, 1, 0), LayoutOrder = i, ZIndex = 6,
+			Parent = rec.Actions }, function() prompt(a[2]) end) or nil
 		if b then b.Name = a[2] end
 	end
 	rec.Pick.Activated:Connect(function()

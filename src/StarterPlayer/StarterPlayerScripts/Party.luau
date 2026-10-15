@@ -127,11 +127,12 @@ local function build()
 			Name = "Side", Size = UDim2.new(0, L.Strip, 1, 0), BorderSizePixel = 0, ZIndex = L.Z + 1, Parent = row,
 		}, { { "UICorner", { CornerRadius = UDim.new(0, 3) } } })
 		local name = k.Create("TextLabel", {
-			Name = "PlayerName", AutoLocalize = false, BackgroundTransparency = 1, Position = UDim2.fromOffset(L.Strip + 6, 2),
+			Name = "PlayerName", BackgroundTransparency = 1, Position = UDim2.fromOffset(L.Strip + 6, 2),
 			Size = UDim2.new(1, -(L.Strip + 10), 0, L.RowH - L.BarH - 8), TextSize = L.NameSize, Text = "",
 			TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd,
 			TextColor3 = themeColor("Text", Color3.new(1, 1, 1)), ZIndex = L.Z + 1, Parent = row,
 		})
+		if type(k.NoTranslate) == "function" then k.NoTranslate(name) end -- A23-179: a player's name stays as it is
 		local back = k.Create("Frame", {
 			Name = "HPBack", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, L.Strip + 6, 1, -4),
 			Size = UDim2.new(1, -(L.Strip + 10), 0, L.BarH), BorderSizePixel = 0, BackgroundColor3 = Color3.fromRGB(20, 20, 26),
@@ -210,10 +211,11 @@ local function showCard(id, fromId, ttl)
 		}, { CornerRadius = UDim.new(0, 12) })
 		ui.card.Parent = gui
 		ui.cardName = k.Create("TextLabel", {
-			Name = "From", AutoLocalize = false, BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 8),
+			Name = "From", BackgroundTransparency = 1, Position = UDim2.fromOffset(12, 8),
 			Size = UDim2.new(1, -24, 0, 26), TextSize = 18, Text = "", TextTruncate = Enum.TextTruncate.AtEnd,
 			TextColor3 = themeColor("Text", Color3.new(1, 1, 1)), ZIndex = L.Z + 6, Parent = ui.card,
 		})
+		if type(k.NoTranslate) == "function" then k.NoTranslate(ui.cardName) end -- A23-179: the inviter's name as it is
 		if type(k.Button) == "function" then
 			local join = k.Button({ Name = "Join", Text = TXT.Join or "", TextSize = L.BtnSize, AnchorPoint = Vector2.new(0, 1),
 				Position = UDim2.new(0, 12, 1, -10), Size = UDim2.new(0.5, -18, 0, 34), Color = themeColor("Good", Color3.fromRGB(60, 140, 80)),
