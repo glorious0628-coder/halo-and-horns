@@ -325,6 +325,8 @@ local function finish()
 	if s.Practice then
 		local _, plus = CraftMini.Score(S.Grades)
 		CraftView.OnResult({ Id = s.Id, Plus = plus, Practice = true })
+		-- 퀘스트 바이블 §15 P1 ④: a quest's workbench timing gets its strikes back (Panels "Timing")
+		if type(s.OnDone) == "function" then pcall(s.OnDone, table.clone(S.Grades)) end
 	else
 		fire("CraftFinish", s.Id)
 	end
@@ -403,7 +405,7 @@ function CraftView.OnResult(payload)
 end
 
 -- a session from the server (or the Studio practice): the screen opens on it
-function CraftView.Begin(session, practice)
+function CraftView.Begin(session, practice, onDone)
 	if type(session) ~= "table" then return false end
 	local startAt = tonumber(session.StartAt)
 	if not startAt or startAt ~= startAt then return false end
@@ -414,7 +416,8 @@ function CraftView.Begin(session, practice)
 		local ok, open = pcall(panels.IsOpen)
 		if ok and open then pcall(panels.Close) end
 	end
-	S.Session = { Id = session.Id, StartAt = startAt, Practice = practice == true }
+	S.Session = { Id = session.Id, StartAt = startAt, Practice = practice == true,
+		OnDone = practice == true and type(onDone) == "function" and onDone or nil }
 	S.Grades, S.Sent, S.Finished, S.ResultAt = {}, {}, nil, nil
 	if not build() then
 		S.Session = nil
