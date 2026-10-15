@@ -1,9 +1,17 @@
-# 게임성 개발 2 — 상태 (2026-10-15 오후: 영어 반영 끝 → 퀘스트 P1 묶음 2 진행 중)
+# 게임성 개발 2 — 상태 (2026-10-15 밤: 퀘스트 P1 ①~⑨ + 데이터 규격 + 귀속 + 매일 5개 끝 → 비교·병합 요청 대기)
 
-## 지금 (10/15 오후)
-- **dev2-en-apply d8a47d89** (보고, 병합 대기): 영어 191줄(리뷰 199 중; 안 바뀐 8 = build/l10n/en_not_applied_1015.csv), 결과 build/l10n/en_applied_1015.csv. worktree ../wt_en.
-- **dev2-mut-fix 584e2629** (보고): golden_egg·pet_speed·crown_points 변이 패턴. worktree ../wt_mutfix.
-- **dev2-quest-p1** (진행 중, worktree ../wt_p1, en-apply 위): 계약 docs/design/quest_p1_server_contract_2026-10-15.md (7a75fde0 push). 끝난 것(로컬, 시험 통과): ① Main Offer·진영별 Offer.Npc·몸 없으면 Offer 없음·보상 미리보기·AcceptScene, 새 단계 Practice(CombatService.BasicSwing)/Emote/Match/Timing/Learn, Story.Flags+StoryFlags+Fx StoryScene, LearnOpen ② 안내자 몸(Hallie/Magpie/Kit/Rex), TutorialStep Teacher=4, H/R/N_Basics, DataService가 4 유지 ③ M1_1 Otto Offer, Lunch1 Offer+Pickup(Schema 2 이관), H_Band/R_Band. 시험: town_quests 1174/1174(P1 변이 36/36), weapon_first 140/140(11/11). 다음: ⑤ M1_3 Lv5 시험 + 배움 문(스크래치 p1_5.py 준비됨) → ⑦ M1_4 등불 → ④ N0 준비 Match/Timing → ⑨.
+## 새 최종 검수에게 보낼 것 (인사 오면; 옛 최종 검수 local_5994bea0엔 보내지 않음)
+1. **병합 요청 dev2-quest-p1 = 1caa86aa** (en-apply d8a47d89 위; 개발 1 dev1-quest-p1 6628e52b가 이 가지 위). 전체 223 비교(a951cf8b 기준): 새로 깨진 4개(first_meetings·halo_text·town_npcs·war_intro) 고침(2cab4ba8), 원래 실패 26개 줄 단위 비교 = 진행 중(결과 여기 적기). 시간 초과(-9)는 부하 탓, 혼자 돌리면 통과.
+2. **질문**: M1_4가 등불로 바뀌며 옛 '안내자 보고' 대사(영웅 동상·용암 틈 설명, "More shards are out there. What will you do with the next one?")가 빠짐 — 옮길 곳(예: 1장 끝 안내자 한마디 / 도감 / 삭제)?
+3. 이미 보낸 것: dev2-en-apply d8a47d89, dev2-mut-fix 584e2629 (옛 최종 검수가 병합했는지 확인 필요).
+
+## 가지 dev2-quest-p1 (worktree ../wt_p1) 내용
+- P1 ①~⑨ 서버 전부: 부탁 장치(Main Offer·진영별 NPC·몸 필요·보상 미리보기·AcceptScene), 단계 Practice/Emote/Match/Timing/Learn/Skip/Escort/Chase, Story.Flags·StoryScene, 안내자 몸·스승 단계(TutorialStep 4)·H/R/N_Basics, M1_1 Otto 부탁, Lunch1 부탁+줍기, H_Band/R_Band, N0 Lv3 주문표 맞추기, M1_3 = 스승 Lv5 시험 + 배움 문(Skills.Learn.Gate), M1_4 = 등불, 계측, Story.Schema 2~5 이관. 계약·화면 몫 = docs/design/quest_p1_server_contract_2026-10-15.md.
+- 퀘스트 데이터 묶음: Config.AddQuests + Shared/Quests 폴더, 규격 docs/design/quest_data_contract_2026-10-15.md(난이도 A23-207 포함), 검사 `py tools/test_quest_data.py`(자기 변이 17/17), test_story_text도 묶음 읽음.
+- A23-205 매일 부탁 하루 5개(Story.Daily, 속성 StoryOffersDim), A23-206 귀속 보상(ItemsBound, 거래소·판매 자유분만, 사용은 귀속 먼저, 버전 그대로).
+- ⑧ 추격·호위: Obj Escort/Chase + Config.StoryQuests.Paths, 속성 StoryMover/Kind/Pos/State.
+- 개발 1에 화면 몫 다 보냄(⑧·Dim·Bound 포함).
+- 다음(새 최종 검수 지시 기다림): 파티 가지 검토(api/party1은 커밋 0으로 멈춤), Codex 퀘스트 묶음 시험·통합, 공용 퀘스트·보스 공동 인정(A23-201/204).
 - 개발 1과 합의: Match = StoryAction(Id,"Match","1~3"), Fx MatchHit/MatchMiss{Pick}; Timing = OpenPanel "Timing"{Id}, StoryAction(Id,"Timing","Good/Tries") 5번 중 3, 최소 2초, Fx TimingHit/TimingMiss; QuestShapes 6모양.
 - 도구(스크래치, 세션마다 다시): sweep.py(절대경로 wt 필요), only_mut.py `<wt> tools/test_x.py "접두|접두"`, failnames.py, cmp_fail.py. **Bash heredoc은 \\t \\n을 진짜 탭/줄바꿈으로 바꿈 → 이스케이프 든 패치는 Write로 .py 만든 뒤 실행.**
 
