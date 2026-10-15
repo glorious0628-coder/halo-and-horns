@@ -3346,6 +3346,42 @@ runGroup("p1 chase and escort", function()
 	end
 end)
 
+------------------------------------------------------------------ A23-208 story fields: a step's Find (a bubble as it starts) and Scene (as it is done) reach the
+-- client as Fx StoryScene (the words stay in Config); nothing is saved for them
+runGroup("story fields", function()
+	local w = townWorld({ Prompts = true })
+	local SQ = w.Config.StoryQuests
+	check(SQ.SceneKeys.Wave and SQ.SceneKeys.Hop and SQ.StoryLimits.Before == 70 and SQ.StoryLimits.Find == 40 and SQ.StoryLimits.NextLine == 60,
+		"Config: SceneKeys, phone limits 70 / 40 / 60", show(SQ.StoryLimits))
+	w:Npc("TKidS", vec(0, 0, 0))
+	SQ.Defs.TSF = { Kind = "Sub", Title = "Story", ShortName = "Story",
+		Offer = { Npc = "TKidS", Before = "The kid looks worried.", Lines = { All = { "Kid: Help?" } } },
+		Steps = { { Text = "Talk", Npc = "TKidS", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "a" } }, Find = "A note!", Scene = "Nod" },
+			{ Text = "Talk again", Npc = "TKidS", Panel = true, Obj = { Type = "Talk" }, Lines = { All = { "b" } }, Find = "Another note!", Scene = "Hop" } },
+		Next = { Id = "M2_1", Line = "Kid: See you!" } }
+	table.insert(SQ.Subs, "TSF")
+	local p, d = joinAfterM23(w, 9981, "Halo", { Pos = vec(2, 0, 0) })
+	local function scenes(from)
+		local out = {}
+		for i = (from or 0) + 1, #w.Fx do
+			local f = w.Fx[i]
+			if f.Kind == "StoryScene" and f.Player == p then table.insert(out, f.Data.Key .. "=" .. tostring(f.Data.Value)) end
+		end
+		return table.concat(out, ",")
+	end
+	local fx0 = #w.Fx
+	w:Act(p, "TSF", "Accept")
+	check(scenes(fx0) == "Find=1", "Accept: the first step's Find (Fx StoryScene Find = step 1)", scenes(fx0))
+	local fx1 = #w.Fx
+	w:Act(p, "TSF", "Talk")
+	check(scenes(fx1) == "Scene=Nod,Find=2", "step 1 done: its Scene, then step 2's Find", scenes(fx1))
+	local fx2 = #w.Fx
+	w:Act(p, "TSF", "Talk")
+	check(scenes(fx2) == "Scene=Hop" and d.Story.Done.TSF == true, "the last step done: its Scene; the quest ends", scenes(fx2))
+	SQ.Defs.TSF = nil
+	table.remove(SQ.Subs, table.find(SQ.Subs, "TSF"))
+end)
+
 -- A23-199: every quest step shows where to go: a Guide, or an Npc (the client guides to that NPC), except a card that
 -- opens right where the player stands (Panel without Npc). KNOWN = today's steps without one (the quest redesign fixes them;
 -- the list may only shrink)

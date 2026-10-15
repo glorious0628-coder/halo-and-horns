@@ -3539,13 +3539,17 @@ Config.StoryQuests = {
 				{ Text = "Back to Bright", ShortName = "Back to Bright", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "Bright: Look at that!" } },
 					LinesBy = { From = "M1_4",
-						Good = { Halo = { "Bright: Look! Everyone is waving at you!" }, Horns = { "Rose: The whole town is glowing! Not bad, boss." },
-							Neutral = { "Tiny: Everyone's gathering round the lamp!" } },
-						Evil = { Halo = { "Bright: So shiny! …I'm covering my eyes, hee hee." }, Horns = { "Rose: Your shadow looks so silly! HA!" },
-							Neutral = { "Tiny: Your tools are sparkling!" } },
-						A = { All = { "Tiny: Everyone's gathering round the lamp!" } },
-						B = { All = { "Tiny: Your tools are sparkling!" } },
-						Default = { All = { "Bright: Look at that!" } } },
+						-- 최종 검수 10/15: the guide's one question closes chapter 1 (the one goal: crown shards -> halo / horns), in this card
+						Good = { Halo = { "Bright: Look! Everyone is waving at you!", "Hallie: More shards are out there. What will you do with the next one?" },
+							Horns = { "Rose: The whole town is glowing! Not bad, boss.", "Magpie: More shards are out there. What will you do with the next one?" },
+							Neutral = { "Tiny: Everyone's gathering round the lamp!", "Kit: More shards are out there. What will you do with the next one?" } },
+						Evil = { Halo = { "Bright: So shiny! …I'm covering my eyes, hee hee.", "Hallie: More shards are out there. What will you do with the next one?" },
+							Horns = { "Rose: Your shadow looks so silly! HA!", "Magpie: More shards are out there. What will you do with the next one?" },
+							Neutral = { "Tiny: Your tools are sparkling!", "Kit: More shards are out there. What will you do with the next one?" } },
+						A = { All = { "Tiny: Everyone's gathering round the lamp!", "Kit: More shards are out there. What will you do with the next one?" } },
+						B = { All = { "Tiny: Your tools are sparkling!", "Kit: More shards are out there. What will you do with the next one?" } },
+						Default = { Halo = { "Bright: Look at that!", "Hallie: More shards are out there. What will you do with the next one?" }, Horns = { "Rose: Look at that!", "Magpie: More shards are out there. What will you do with the next one?" },
+							Neutral = { "Tiny: Look at that!", "Kit: More shards are out there. What will you do with the next one?" } } },
 					Horns = { Text = "Back to Rose", ShortName = "Back to Rose", Npc = "Smokey" },
 					Neutral = { Text = "Back to Tiny", ShortName = "Back to Tiny", Npc = "Tiny" } },
 			},
@@ -4641,6 +4645,12 @@ Config.StoryQuests.TimingPass = 3 -- good taps of TimingTries to pass
 -- A23-205 (user 10/15): the daily repeat requests (Defs with Repeat = "Daily", at most 12 kinds): a player takes at most this many a
 -- KST day (their own picks; one done already pays), then the other askers' '!' dims. Read by the repeat engine (next step)
 Config.StoryQuests.RepeatDailyMax = 5
+-- A23-208 (user 10/15, story fields; docs/design/quest_data_contract_2026-10-15.md §4-1): a step's Scene (what the people do when
+-- it is done: Fx StoryScene Key "Scene") is one of these (game dev 1 plays each one; a new one = a new row here first)
+Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,
+	Spin = true, Hug = true, Clap = true }
+-- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
+Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
 Config.StoryQuests.TimingTries = 5
 Config.StoryQuests.TimingMinSeconds = 2 -- an answer sooner than this after the panel opened is not believed
 -- P1 ⑧ (bible §13-3): the paths of the short chases and escorts (Obj Type "Chase" / "Escort", Path = a key here): waypoints in
