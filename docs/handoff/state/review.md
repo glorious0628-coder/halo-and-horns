@@ -447,3 +447,4 @@
 ## 10/16 밤 늦게 (새 계정 최종 검수) — 세션 다시 엶
 - 새 Claude 계정에서 최종 검수(Opus 5.5) 시작 → `new_account_2026-10-16.md` §2대로 메인 반영 1(Sonnet medium)·게임성 개발 1(Opus high)·게임성 개발 2(Opus high)·게임 플레이(Opus medium) 4개를 start_session으로 엶(id는 list_sessions로).
 - **회의실 https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1 = 옛 계정 것 → 새 계정에서 404**(watch·db 읽기 둘 다 안 됨). 새로 만들지 사용자에게 물음. 원본 `build/review_kit_1015/council.html`.
+- **새 회의실(10/16 밤, 사용자 "새로 만들어 줘"):** https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (db·user·comments·assets, 원본 `build/review_kit_1015/council_1016.html`). 목소리 4개: user·claude·gpt·api(API Opus, 10/22까지 GPT 대신). 글 = collection `chat` {who,text,img?,alt?,ts 실제 ms}, 첫 글 d1016_01. 옛 대화는 옛 계정 페이지에만 남음.

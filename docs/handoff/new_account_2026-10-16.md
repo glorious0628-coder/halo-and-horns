@@ -7,7 +7,7 @@
 1. 읽기(끝까지): `AGENTS.md` → 이 파일 → `docs/handoff/review_memory_2026-10-15.md`(앞 최종 검수 기억) → `C:\Users\glori\.claude\projects\C--Users-glori-Documents-Roblox-Game\memory\MEMORY.md`(자동으로 안 뜨면 직접 열기; 사용자 성향·규칙 줄마다 파일 있음) → `docs/handoff/state/review.md` 맨 아래 **'10/16 밤'** 절 → `docs/SPEC_ADDENDUM.md` 맨 위 A23-223~208 → `docs/handoff/role_prompts/00_review.md`(10/15 시작 글 — '하는 일'만 지금도 맞음, 그 안의 '맨 먼저 할 일' 목록은 다 끝난 기록).
 2. `get_session self`로 내 id 확인. 모델·노력: 나 = **Opus 5.5 high**.
 3. 아래 §2의 4개를 `start_session`(initiation `user_asked` — 사용자가 만들라고 함, context `fresh`, `use_worktree: false` = 이 공유 폴더; 개발 1·2는 늘 하던 대로 자기 git worktree를 직접 만들어 씀)으로 하나씩 시작. `prompt` = §2 글 그대로 + 맨 끝에 "최종 검수 id = <내 id>". `background` = §2 위 공통 배경.
-4. 회의실 `https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1` 지켜보기(ArtifactComments; 글은 ArtifactData collection "chat", 다음 doc id = d1016_52, ts = 1792200000000 + 번호×1000).
+4. 회의실 `https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi` 지켜보기(ArtifactComments; 글은 ArtifactData collection "chat", 새 계정 페이지(10/16 밤 새로 만듦, 옛 계정 4hhw… 페이지는 새 계정에서 404); 다음 doc id = d1016_02부터, ts = 실제 ms(`date +%s%3N`)).
 5. 사용자에게 한국어 5줄 이하: 세션 4개 만듦 · 지금 상태 · 다음 할 일.
 
 ## 2. 4개 세션 시작 글
