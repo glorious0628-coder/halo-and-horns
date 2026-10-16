@@ -40,17 +40,21 @@ local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil
 -- shot 1 (검수 2026-10-07: seen from straight below the crown was only an orange ring): a front three-quarter view,
 -- 25 deg below the crown and 30 deg to its left, pushing in slowly; the crown's front (-Z, the glowing crack) faces it
 local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30), From = 330, To = 255 }
--- A23-212 (user 10/16 "처음부터 범인이 누구인지 밝히고"): shot 1 = the crown wobbles, Captain Clatter clamps it still, it
--- cracks, he jumps back and reaches out to hold it. 0-won stand-in (the opening is a placeholder): his codex copy
--- (ReplicatedStorage.CodexModels.CaptainClatter = the borrowed Skeleton Knight) + a part crown on a pedestal + a part
--- clamp, Up studs over the sky crown (the broken landmark stays below the frame). Times in s from the shot's start:
--- Wobble until ClampAt, the clamp moves in (ClampAt .. ClampIn) and shuts (Shut s), Crack at CrackAt, the halves drift
--- Gap studs apart over Drift s; Reach = his upper arms' turn (degrees, bone axes) when he reaches out
-local SCENE = { Up = 140, CrownR = 3.2, Segs = 10, Wobble = 9, WobbleRate = 7, PedestalH = 5, ClatterH = 12, Stand = 7.5,
-	ClampAt = 1.5, ClampIn = 2.2, Shut = 0.3, CrackAt = 3.0, Drift = 1.4, Gap = 5, Hop = 0.9, Back = 1.5, ReachIn = 0.35,
+-- A23-212 (user 10/16 "처음부터 범인이 누구인지 밝히고"): shot 1 = Captain Clatter checks the crown with his clamp, head
+-- tilted (he wants it perfectly straight), it starts to wobble, he clamps it still, it cracks, he hops back and reaches out
+-- with empty hands to hold it - a clumsy mistake, never a bad heart (A23-209). 0-won stand-in (the opening is a
+-- placeholder): Clatter, the crown on its pedestal and the clamp are local parts, Up studs over the sky crown (the
+-- broken landmark stays below the frame). 최종 검수 10/16: no sword - the borrowed Skeleton Knight mesh holds one and read as
+-- "a dark knight cut the crown", so his opening body is parts (bone head, orange captain's helmet, navy coat, empty
+-- hands). Times in s from the shot's start: the head tilts (Check) until WobbleAt, the crown wobbles until the clamp is
+-- on, the clamp moves in (ClampAt .. ClampIn) and shuts (Shut s), Crack at CrackAt, the halves drift Gap studs apart
+-- over Drift s, his arms reach out over ReachIn s
+local SCENE = { Up = 140, CrownR = 3.2, Segs = 10, Wobble = 9, WobbleRate = 7, PedestalH = 5, Stand = 6.5, Check = 14,
+	WobbleAt = 1.0, ClampAt = 1.6, ClampIn = 2.3, Shut = 0.3, CrackAt = 3.0, Drift = 1.4, Gap = 5, Hop = 0.9, Back = 1.5,
+	ReachIn = 0.35, ArmLen = 2.8, Shoulder = Vector3.new(1.55, 6.3, 0),
 	Gold = Color3.fromRGB(255, 214, 90), Jewel = Color3.fromRGB(120, 200, 255), Steel = Color3.fromRGB(125, 130, 140),
-	Stone = Color3.fromRGB(240, 232, 214), White = Color3.fromRGB(255, 250, 225), Model = "CaptainClatter",
-	Reach = { L_Upperarm = Vector3.new(-75, 0, 0), R_Upperarm = Vector3.new(-75, 0, 0) }, Length = 6 }
+	Stone = Color3.fromRGB(240, 232, 214), White = Color3.fromRGB(255, 250, 225), Bone = Color3.fromRGB(246, 240, 226),
+	Coat = Color3.fromRGB(44, 54, 96), Helmet = Color3.fromRGB(214, 98, 46), Eye = Color3.fromRGB(40, 30, 60), Length = 6 }
 local SKIP_GRACE = 1.5 -- seconds after the start when skip input is ignored
 
 local function needsFirstIntro()
@@ -265,46 +269,66 @@ function SCENE.Crown(at)
 	return halves
 end
 
--- his codex copy, ClatterH tall, feet on y = floor, at x / z of `at`, facing `toward` (nil when not there)
-function SCENE.Clatter(at, floor, toward)
-	local folder = ReplicatedStorage:FindFirstChild((Config.Codex and Config.Codex.ModelFolder) or "CodexModels")
-	local src = folder and folder:FindFirstChild(SCENE.Model)
-	if not src then return nil end
-	local ok, m = pcall(function() return src:Clone() end)
-	if not ok or not m or not m:IsA("Model") then return nil end
-	m.Name = "IntroClatter"
-	m.Parent = state.Folder
-	pcall(function()
-		local _, size = m:GetBoundingBox()
-		if size.Y > 0.1 then m:ScaleTo(m:GetScale() * SCENE.ClatterH / size.Y) end
-	end)
-	-- PhoneTest 10/16: the codex copy's front is its pivot's +Z (it stood with its back to the crown) -> turned half round
-	local base = CFrame.lookAt(Vector3.new(at.X, floor, at.Z), Vector3.new(toward.X, floor, toward.Z)) * CFrame.Angles(0, math.pi, 0)
-	m:PivotTo(base)
-	local cf, size = m:GetBoundingBox()
-	m:PivotTo(base + Vector3.new(0, floor - (cf.Position.Y - size.Y / 2), 0)) -- feet on the floor
-	return m
+-- his part body (A23-212 stand-in, no weapon): parts placed each frame from his root (feet, facing the crown = -Z)
+function SCENE.Clatter()
+	local K = SCENE
+	local function part(name, shape, size, color)
+		return fxPart({ Name = name, Shape = shape or Enum.PartType.Block, Size = size, Color = color,
+			Material = Enum.Material.SmoothPlastic })
+	end
+	local c = {
+		Legs = { part("LegL", nil, Vector3.new(0.9, 3.4, 0.9), K.Bone), part("LegR", nil, Vector3.new(0.9, 3.4, 0.9), K.Bone) },
+		Body = part("Coat", nil, Vector3.new(2.6, 3.2, 1.6), K.Coat),
+		Belt = part("Belt", nil, Vector3.new(2.7, 0.4, 1.7), K.Gold),
+		Head = part("Skull", Enum.PartType.Ball, Vector3.new(2.8, 2.8, 2.8), K.Bone),
+		Eyes = { part("EyeL", Enum.PartType.Ball, Vector3.new(0.6, 0.6, 0.6), K.Eye), part("EyeR", Enum.PartType.Ball, Vector3.new(0.6, 0.6, 0.6), K.Eye) },
+		Helmet = part("Helmet", Enum.PartType.Cylinder, Vector3.new(1.0, 3.3, 3.3), K.Helmet),
+		Badge = part("Badge", nil, Vector3.new(0.7, 0.8, 0.2), K.Gold),
+		Arms = { part("ArmL", nil, Vector3.new(0.6, 0.6, K.ArmLen), K.Coat), part("ArmR", nil, Vector3.new(0.6, 0.6, K.ArmLen), K.Coat) },
+		Hands = { part("HandL", Enum.PartType.Ball, Vector3.new(0.8, 0.8, 0.8), K.Bone), part("HandR", Enum.PartType.Ball, Vector3.new(0.8, 0.8, 0.8), K.Bone) },
+	}
+	return c
+end
+
+-- his pose: root = feet (facing -Z), head = the head's tilt / nod, aims[i] = where hand i reaches (world)
+function SCENE.PlaceClatter(c, root, head, aims)
+	local K = SCENE
+	c.Legs[1].CFrame = root * CFrame.new(-0.6, 1.7, 0)
+	c.Legs[2].CFrame = root * CFrame.new(0.6, 1.7, 0)
+	c.Body.CFrame = root * CFrame.new(0, 5.0, 0)
+	c.Belt.CFrame = root * CFrame.new(0, 3.9, 0)
+	local h = root * CFrame.new(0, 8.0, 0) * head
+	c.Head.CFrame = h
+	c.Eyes[1].CFrame = h * CFrame.new(-0.55, 0.15, -1.15)
+	c.Eyes[2].CFrame = h * CFrame.new(0.55, 0.15, -1.15)
+	c.Helmet.CFrame = h * CFrame.new(0, 0.95, 0) * CFrame.Angles(0, 0, math.rad(90))
+	c.Badge.CFrame = h * CFrame.new(0, 1.0, -1.65)
+	for i, side in { -1, 1 } do
+		local sh = (root * CFrame.new(side * K.Shoulder.X, K.Shoulder.Y, K.Shoulder.Z)).Position
+		local aim = aims[i]
+		local dir = aim - sh
+		if dir.Magnitude < 0.1 then dir = (root.LookVector * 0.3 - root.UpVector) end
+		local arm = CFrame.lookAt(sh, sh + dir.Unit)
+		c.Arms[i].CFrame = arm * CFrame.new(0, 0, -K.ArmLen / 2)
+		c.Hands[i].CFrame = arm * CFrame.new(0, 0, -K.ArmLen)
+	end
 end
 
 -- the whole set around the ring's centre `at` -> { Halves, Clatter, Home, Jaws, Bar, Mid, ... }
 function SCENE.Build(at)
-	local s = { At = at, Floor = at.Y - SCENE.PedestalH, Bones = {}, Cracked = false }
+	local s = { At = at, Floor = at.Y - SCENE.PedestalH, Cracked = false }
 	fxPart({ Name = "Floor", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, 26, 26), Color = SCENE.Stone,
 		Material = Enum.Material.SmoothPlastic, CFrame = CFrame.new(at.X - 3, s.Floor - 0.5, at.Z) * CFrame.Angles(0, 0, math.rad(90)) })
 	fxPart({ Name = "Pedestal", Size = Vector3.new(3, SCENE.PedestalH - 0.55, 3), Color = SCENE.Stone,
 		Material = Enum.Material.SmoothPlastic, Position = Vector3.new(at.X, s.Floor + (SCENE.PedestalH - 0.55) / 2, at.Z) })
 	s.Halves = SCENE.Crown(at)
-	s.Clatter = SCENE.Clatter(at - Vector3.new(SCENE.Stand, 0, 0), s.Floor, at)
-	if s.Clatter then
-		s.Home = s.Clatter:GetPivot()
-		for _, d in s.Clatter:GetDescendants() do
-			if d:IsA("Bone") and SCENE.Reach[d.Name] then s.Bones[d.Name] = d end
-		end
-	end
-	-- the clamp: a bar from his hands to two steel jaws that close on the ring's near side
-	s.Hold = at - Vector3.new(SCENE.Stand - 2.5, -0.3, 0)
+	s.Clatter = SCENE.Clatter()
+	local feet = Vector3.new(at.X - SCENE.Stand, s.Floor, at.Z)
+	s.Home = CFrame.lookAt(feet, Vector3.new(at.X, s.Floor, at.Z)) -- -Z = toward the crown
+	-- the clamp: a bar from his right hand to two steel jaws that close on the ring's near side
+	s.Hold = at - Vector3.new(SCENE.Stand - 3.2, -0.3, 0)
 	s.Grip = at - Vector3.new(SCENE.CrownR, 0, 0)
-	s.Bar = fxPart({ Name = "ClampBar", Size = Vector3.new(2.4, 0.3, 0.3), Color = SCENE.Steel, Material = Enum.Material.Metal })
+	s.Bar = fxPart({ Name = "ClampBar", Size = Vector3.new(0.3, 0.3, 1), Color = SCENE.Steel, Material = Enum.Material.Metal })
 	s.Jaws = {
 		fxPart({ Name = "Jaw", Size = Vector3.new(0.5, 0.35, 0.9), Color = SCENE.Steel, Material = Enum.Material.Metal }),
 		fxPart({ Name = "Jaw", Size = Vector3.new(0.5, 0.35, 0.9), Color = SCENE.Steel, Material = Enum.Material.Metal }),
@@ -316,12 +340,12 @@ end
 -- the set at t s into the shot
 function SCENE.Pose(s, t)
 	local K = SCENE
-	-- the crown wobbles (stronger at first), the clamp stills it
+	-- the crown stands still while he checks it, then wobbles (stronger at first) until the clamp stills it
 	local w = 0
-	if t < K.ClampIn then
-		w = K.Wobble * math.sin(t * K.WobbleRate) * math.min(1, t / 1.2)
-	elseif t < K.ClampIn + K.Shut then
-		w = K.Wobble * math.sin(K.ClampIn * K.WobbleRate) * (1 - (t - K.ClampIn) / K.Shut)
+	if t >= K.WobbleAt and t < K.ClampIn then
+		w = K.Wobble * math.sin((t - K.WobbleAt) * K.WobbleRate) * math.min(1, (t - K.WobbleAt) / 0.6)
+	elseif t >= K.ClampIn and t < K.ClampIn + K.Shut then
+		w = K.Wobble * math.sin((K.ClampIn - K.WobbleAt) * K.WobbleRate) * (1 - (t - K.ClampIn) / K.Shut)
 	end
 	local drift = t >= K.CrackAt and math.clamp((t - K.CrackAt) / K.Drift, 0, 1) or 0
 	for i, half in s.Halves do
@@ -329,7 +353,7 @@ function SCENE.Pose(s, t)
 		half:PivotTo(CFrame.new(s.At + Vector3.new(side * drift * K.Gap / 2, -drift * 0.8, 0))
 			* CFrame.Angles(0, 0, math.rad(w - side * drift * 14)))
 	end
-	-- the clamp: in his hands, then onto the ring, the jaws shut
+	-- the clamp: in his hand, then onto the ring, the jaws shut; after the crack it stays on the left half
 	local move = math.clamp((t - K.ClampAt) / (K.ClampIn - K.ClampAt), 0, 1)
 	local shut = math.clamp((t - K.ClampIn) / K.Shut, 0, 1)
 	local jawAt = s.Hold:Lerp(s.Grip, move)
@@ -337,23 +361,29 @@ function SCENE.Pose(s, t)
 	local open = 0.65 - 0.45 * shut
 	s.Jaws[1].CFrame = CFrame.new(jawAt + Vector3.new(0, open, 0))
 	s.Jaws[2].CFrame = CFrame.new(jawAt - Vector3.new(0, open, 0))
-	s.Bar.CFrame = CFrame.new(jawAt - Vector3.new(1.3, 0, 0))
-	-- CRACK: the light flashes round, he hops back and reaches out to hold it
+	-- CRACK: the light flashes round, he hops back and reaches out with empty hands to hold it
 	if t >= K.CrackAt and not s.Cracked then
 		s.Cracked = true
 		burst(s.At, K.White, 40)
 	end
-	local m = s.Clatter
-	if m and m.Parent and s.Home then
-		local back = math.clamp((t - K.CrackAt - 0.1) / 0.35, 0, 1)
-		local hop = math.sin(math.pi * back) * K.Hop
-		m:PivotTo(s.Home * CFrame.new(0, hop, -back * K.Back) * CFrame.Angles(math.rad(-6 * back), 0, 0)) -- back = away from it
-		local reach = math.clamp((t - K.CrackAt - 0.15) / K.ReachIn, 0, 1)
-		for name, bone in s.Bones do
-			local a = K.Reach[name] * reach
-			bone.Transform = CFrame.Angles(math.rad(a.X), math.rad(a.Y), math.rad(a.Z))
-		end
-	end
+	local back = math.clamp((t - K.CrackAt - 0.1) / 0.35, 0, 1)
+	local root = s.Home * CFrame.new(0, math.sin(math.pi * back) * K.Hop, back * K.Back) -- +Z = away from the crown
+	local reach = math.clamp((t - K.CrackAt - 0.15) / K.ReachIn, 0, 1)
+	-- the head: tilted side to side while he checks it is straight, then on the crown; up in surprise at the crack
+	local tilt = t < K.WobbleAt and math.sin(t * 5) * K.Check or 0
+	local head = CFrame.Angles(math.rad(-8 + 22 * back), 0, math.rad(tilt))
+	local holdHand = root * CFrame.new(1.0, 5.4, -2.6)
+	local hand = (t < K.CrackAt) and (jawAt - Vector3.new(1.1, 0, 0)) or nil -- the right hand holds the bar until the crack
+	local restL = (root * CFrame.new(-1.9, 3.6, -0.6)).Position
+	local toCrown = s.At + Vector3.new(0, 0.6, 0)
+	local aimL = restL:Lerp(toCrown + Vector3.new(0, 0, -1.2), reach)
+	local aimR = hand or holdHand.Position:Lerp(toCrown + Vector3.new(0, 0, 1.2), reach)
+	if s.Clatter then SCENE.PlaceClatter(s.Clatter, root, head, { aimL, aimR }) end
+	-- the bar: from his right hand to the jaws while he holds it, then left on the jaws alone
+	local from = (hand and s.Clatter) and s.Clatter.Hands[2].Position or (jawAt - Vector3.new(0.9, 0, 0))
+	local len = math.max(0.3, (jawAt - from).Magnitude)
+	s.Bar.Size = Vector3.new(0.3, 0.3, len)
+	s.Bar.CFrame = CFrame.lookAt(from, jawAt) * CFrame.new(0, 0, -len / 2)
 end
 
 local function run(token)

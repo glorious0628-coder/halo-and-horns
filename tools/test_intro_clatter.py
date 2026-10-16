@@ -26,18 +26,22 @@ OUT = ROOT / "docs/art/verification_2026-10-16/offline_intro_clatter_2026-10-16.
 
 NEEDLES = [
     ("shot 1 builds the set over the sky crown", ["local okSet, set = pcall(SCENE.Build, crown + Vector3.new(0, SCENE.Up, 0))"]),
-    ("Clatter = his codex copy", ['Model = "CaptainClatter"', "local src = folder and folder:FindFirstChild(SCENE.Model)"]),
+    ("Clatter = a part body (no borrowed knight mesh, no sword)", ["s.Clatter = SCENE.Clatter()",
+        'Helmet = part("Helmet", Enum.PartType.Cylinder']),
+    ("he checks the crown first, head tilted, before it wobbles", ["local tilt = t < K.WobbleAt and math.sin(t * 5) * K.Check or 0"]),
     ("the old crown shot stays as the fallback", ["\telse\n\t\tlocal c = CROWN_SHOT\n"]),
     ("subtitle 1 at 0.4 s", ["if not said and t >= 0.4 then"]),
     ("skip stops the scene", ["\t\t\tif state.Token ~= token then return end\n"]),
-    ("the crown wobbles until the clamp is on", ["\tif t < K.ClampIn then\n\t\tw = K.Wobble * math.sin(t * K.WobbleRate)"]),
+    ("the crown wobbles from WobbleAt until the clamp is on", ["\tif t >= K.WobbleAt and t < K.ClampIn then\n\t\tw = K.Wobble"]),
     ("the clamp moves in, then shuts", ["local move = math.clamp((t - K.ClampAt) / (K.ClampIn - K.ClampAt), 0, 1)",
                                         "local shut = math.clamp((t - K.ClampIn) / K.Shut, 0, 1)"]),
     ("CRACK once, then the halves drift apart", ["if t >= K.CrackAt and not s.Cracked then",
                                                  "local drift = t >= K.CrackAt and math.clamp((t - K.CrackAt) / K.Drift, 0, 1) or 0"]),
     ("after the crack he hops back and reaches out", ["local back = math.clamp((t - K.CrackAt - 0.1) / 0.35, 0, 1)",
                                                       "local reach = math.clamp((t - K.CrackAt - 0.15) / K.ReachIn, 0, 1)",
-                                                      "bone.Transform = CFrame.Angles("]),
+                                                      "local aimL = restL:Lerp(toCrown + Vector3.new(0, 0, -1.2), reach)"]),
+    ("only the clamp is in his hand, and only until the crack (then empty hands)", [
+        "local hand = (t < K.CrackAt) and (jawAt - Vector3.new(1.1, 0, 0)) or nil"]),
 ]
 
 
@@ -56,23 +60,28 @@ def run(src: str) -> tuple[int, int, list[str]]:
     a = src.find("\nlocal SCENE = {")
     body = src[a:src.find("\n", src.find("Length = ", a))] if a >= 0 else ""
     num = {k: float(v) for k, v in re.findall(r"(\w+) = ([\d.]+)[,\s]", body)}
-    check("beats in order: clamp starts < clamp on < crack < shot end",
-          0 < num.get("ClampAt", 0) < num.get("ClampIn", 0) < num.get("ClampIn", 0) + num.get("Shut", 9) <= num.get("CrackAt", 0)
+    check("beats in order: check < wobble < clamp starts < clamp on < crack < shot end",
+          0 < num.get("WobbleAt", 0) < num.get("ClampAt", 0) < num.get("ClampIn", 0) < num.get("ClampIn", 0) + num.get("Shut", 9) <= num.get("CrackAt", 0)
           < num.get("Length", 0), num)
     check("the shot is as long as the old one (6 s)", num.get("Length") == 6, num.get("Length"))
     scene = src[src.find("\nlocal SCENE = {"):src.find("\nlocal function run(token)")]
     check("0 won: no asset ids in the scene", "rbxassetid" not in scene and "rbxasset://" not in scene, "")
+    check("no weapon in the scene (최종 검수 10/16: a sword read as cutting the crown)",
+          not re.search(r"sword|blade|CodexModels|Tool", scene, re.I), "")
     return checks, failed, lines
 
 
 MUTATIONS = [
     ("no set (always the old shot)", "local okSet, set = pcall(SCENE.Build,", "local okSet, set = false, nil --"),
     ("crack before the clamp", "CrackAt = 3.0,", "CrackAt = 1.0,"),
-    ("the crown keeps wobbling", "\tif t < K.ClampIn then\n\t\tw = K.Wobble", "\tif t < 99 then\n\t\tw = K.Wobble"),
+    ("the crown keeps wobbling", "\tif t >= K.WobbleAt and t < K.ClampIn then\n\t\tw = K.Wobble", "\tif t < 99 then\n\t\tw = K.Wobble"),
     ("he reaches before the crack", "local reach = math.clamp((t - K.CrackAt - 0.15) / K.ReachIn, 0, 1)",
      "local reach = math.clamp(t / K.ReachIn, 0, 1)"),
+    ("he keeps the clamp after the crack", "local hand = (t < K.CrackAt) and", "local hand = (t < 99) and"),
+    ("no head tilt", "math.sin(t * 5) * K.Check or 0", "0 or 0"),
+    ("the knight mesh back", "\ts.Clatter = SCENE.Clatter()\n", "\ts.Clatter = SCENE.Clatter() -- CodexModels\n"),
     ("skip does not stop it", "\t\t\tif state.Token ~= token then return end\n", "\t\t\tif false then return end\n"),
-    ("a paid asset", 'Model = "CaptainClatter",', 'Model = "CaptainClatter", Img = "rbxassetid://1",'),
+    ("a paid asset", "Length = 6 }", 'Length = 6, Img = "rbxassetid://1" }'),
     ("no subtitle", "if not said and t >= 0.4 then", "if not said and t >= 99 then"),
 ]
 
