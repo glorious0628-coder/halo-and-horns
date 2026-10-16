@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 6 — 자세 각도 가지 (최신)
+## 10/16 밤 7 — 가지 dev1-hold-angles 74d57d4b (최신)
+- 들어간 것: 지팡이 팔꿈치 80·Rest 15, 칼 걷기 손목 +2, 마법사 겨누기(staffPose) 제거 + 공격 손목 +28/+42(시전 때 앞 ~30°), A23-223 활 등에·칼 허리에(Config.WeaponStow, WeaponPose.StowStep/StowApply, Fx.Glint, 5초), Studio 전용 조정 고리(Dev1Tune HoldPoses/WeaponGrips/WeaponStow, Dev1Clips). 시험 hold_pose2 43·14/14, tool_grip 369/0, weapon_motion 269 등.
+- 결정(최종 검수): 활 = A안(B X), 마법사 공격 = 겨누기 버림. 남음: 활 A 위 끝 바깥 5~15°(지금 안쪽 15), 걷기 안쪽 기울기(칼 17·지팡이 16), 빛 Q 지팡이-머리 겹침, 뿔 Q 공격 안 나감(장면 확인).
+- ▶ 다음: 화면 신청함(약 9분) → `py build/dev1_tools/tune3_1016.py`(등·허리 위치 고르기, 활 옆 기울기, 마법사 전체 구간) → 값 Config에 → 병합 요청. 도구 tune1016/tune2_1016/tune3_1016.py(git 밖), 오프라인 손목 훑기 = test_weapon_motion STAFF_LEAN 출력.
+
+## 10/16 밤 6 — 자세 각도 가지
 - #1·#5(dev1-grip-centre) **main 병합됨 f6af22e6**.
 - 가지 **dev1-hold-angles 3f8fa49f** (worktree ../Game-dev1grip): 지팡이 팔꿈치 80·Rest 15(서기 7°, 위팔 틈 0.7), 칼 걷기 손목 +2(앞 26°), WeaponPose.TuneStep(Studio 전용 Dev1Tune 자세 조정). 사진·값 docs/art/verification_2026-10-16/hold_tune/(sheets, tune.json). 도구 build/dev1_tools/tune1016.py.
 - 게임 플레이 3판(docs/review/playtest/2026-10-16_r3.md) 큐: ① 빛 첫 화면 카메라가 계단을 봄(몸은 할리 쪽 0°, 할리는 목표 칸 뒤 반쯤 가림; 뿔은 Magpie 봄) → 첫 스폰 때 카메라를 캐릭터 등 뒤로 ② 마법사 공격 순간 지팡이 위쪽이 머리 뒤·얼굴 선 지나고 끝 늘어짐(13_zoom) → #6에 포함 ③ 대장간 앞 땅 글 'Forge'·'Altar of Fate' 겹침 ④ 2배 칩 = A23-221 ⑦대로.
