@@ -105,8 +105,8 @@ def static() -> tuple[int, list[str]]:
     monster = read(SSS / "MonsterService.luau")
     dm = function_block(monster, "function MonsterService.DamageMonster(")
     check(dm.count("Moment:Fire") == 1, "DamageMonster fires one moment")
-    check(monster.count("Moment:Fire") == 4,
-          "MonsterService fires exactly four moments (Hit, aiStep Spot, personal Spot, A23-87 flower pop Spot)")
+    check(monster.count("Moment:Fire") == 5,
+          "MonsterService fires exactly five moments (Hit, aiStep Spot, personal Spot, A23-87 flower pop Spot, A23-212 Beaten)")
     config = read(SHARED / "Config.luau")
     check(config.count("\nConfig.Barks = {") == 1, "one Config.Barks table")
     return count, failures
