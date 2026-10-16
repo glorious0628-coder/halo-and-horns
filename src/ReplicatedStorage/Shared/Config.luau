@@ -3365,6 +3365,8 @@ Config.StoryQuests = {
 		NewTitle = "New title: %s!", -- E3 (a stat-free title)
 		SkillLater = "%s · Learn skills at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
 		SkillLearnFirst = "%s · Learn it from %s first", -- A23-193: the same row while the skill waits at the teacher
+		-- A23-199 for the main chain (최종 검수 10/16 ①): the pinned row while the next main waits at its asker (%s = the name)
+		OfferTalk = "Talk to %s", OfferTalkShort = "To %s",
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a Slime Prince (A23-84)

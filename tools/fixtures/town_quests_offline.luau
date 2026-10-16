@@ -2872,18 +2872,27 @@ runGroup("p1 core", function()
 	local m, dm = w:Join(9913, { Faction = "Halo", Class = "Warrior", Level = 2, Pos = vec(2, 0, 2),
 		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 	w.Story.Refresh(m)
-	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) == nil,
-		"an offered main below its level: not started, not offered", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
+	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) == nil
+		and w.Story.MainRow(m, dm) == nil,
+		"an offered main below its level: not started, not offered, no row", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
 	dm.Level = 3
 	m:SetAttribute("Level", 3)
 	w.Story.Refresh(m)
 	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) ~= nil,
 		"at its level: not started by itself, its NPC offers it", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
+	-- 최종 검수 10/16 ①: the pinned row points at the asker while the main waits ("Talk to <name>", Story.Npc, Offer)
+	local wrow = w.Story.MainRow(m, dm)
+	check(type(wrow) == "table" and wrow.Pinned == true and wrow.Id == "story:TP1M" and wrow.Story.Npc == "TKidM"
+		and wrow.Story.Offer == true and wrow.Text == string.format(SQ.Text.OfferTalk, "TKidM") and wrow.CanClaim == false,
+		"the waiting main's pinned row: 'Talk to <asker>', guides to that NPC (Story.Npc), not claimable", show(wrow))
 	check(w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M", "the talk offers the main", "")
 	w:Act(m, "TP1M", "Decline")
-	check(dm.Story.Main.Id == "", "Decline: nothing saved", show(dm.Story.Main))
+	check(dm.Story.Main.Id == "" and w.Story.MainRow(m, dm) ~= nil and w.Story.MainRow(m, dm).Story.Npc == "TKidM"
+		and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) ~= nil and w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M",
+		"Decline = later: nothing saved, the row and the '!' stay, the next talk asks again", show(dm.Story.Main))
 	w:Act(m, "TP1M", "Accept")
-	check(dm.Story.Main.Id == "TP1M" and dm.Story.Main.St == 1, "Accept: the main runs", show(dm.Story.Main))
+	check(dm.Story.Main.Id == "TP1M" and dm.Story.Main.St == 1 and w.Story.MainRow(m, dm).Story.Offer == nil,
+		"Accept: the main runs (its own step row now)", show(dm.Story.Main))
 	local m2, dm2 = w:Join(9914, { Faction = "Halo", Class = "Warrior", Level = 3, Pos = vec(2, 0, 2),
 		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 	SQ.Defs.TP1M.Offer.Npc = "TNobody"
