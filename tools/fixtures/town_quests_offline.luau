@@ -3511,7 +3511,7 @@ runGroup("A23-218 scene setup", function()
 	local r = sc.Apply(p, "OfferM1_3")
 	check(string.sub(r, 1, 3) == "ok:" and d.Level == 5 and d.TutorialStep == 99 and d.Story.Done.M1_1 == true
 		and d.Story.First.TeacherMet == true and log.Faction[1] == "Halo" and #log.Moved == 1
-		and (log.Moved[1] - vec(20, 0, -440)).Magnitude < 10 and string.find(r, "talk Gleam", 1, true) ~= nil,
+		and math.abs((log.Moved[1] - vec(20, 4, -440)).Magnitude - 5) < 0.01 and string.find(r, "talk Gleam", 1, true) ~= nil,
 		"OfferM1_3: Lv5, the first mission done, M1_1 done, TeacherMet, beside Gleam, the talk asked", r)
 	-- Calm: 3 slimes + a prince held near, the King Slime; Kill = the nearest one, a real DamageMonster
 	r = sc.Apply(p, "Calm")
@@ -3526,7 +3526,8 @@ runGroup("A23-218 scene setup", function()
 	check(log.War[1] and log.War[1][1] == 3 and log.War[1][2] == 7 and log.War[1][3] == 3, "WarEnd: the round ends in 3 s at 7 : 3", show(log.War[1]))
 	r = sc.Apply(p, '{"Main":"M2_3:2","Items":{"Enh70":2},"Gold":500,"At":"30,-12"}')
 	check(string.sub(r, 1, 3) == "ok:" and d.Story.Main.Id == "M2_3" and d.Story.Main.St == 2 and (d.Items.Enh70 or 0) >= 2
-		and log.Gold[#log.Gold] == 500 and (log.Moved[#log.Moved] - vec(34, 4, -8)).Magnitude < 1, "a JSON spec: main M2_3 step 2, items, gold, a place", r)
+		and log.Gold[#log.Gold] == 500 and (log.Moved[#log.Moved] - vec(30 - 30 / 32.31 * 5, 4, -12 + 12 / 32.31 * 5)).Magnitude < 0.1,
+		"a JSON spec: main M2_3 step 2, items, gold, a place (5 studs toward the Crossroads middle)", r)
 	check(string.find(sc.Apply(p, '{"Main":"KO1:1"}'), "no main quest", 1, true) ~= nil, "a sub id as Main is refused", "")
 	local names = 0
 	for _ in sc.PRESETS do names += 1 end

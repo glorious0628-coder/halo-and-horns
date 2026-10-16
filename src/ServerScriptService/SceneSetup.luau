@@ -103,15 +103,22 @@ local function placeOf(at)
 	return nil, "unknown place " .. tostring(at)
 end
 
--- stands the player beside `pos` (4 studs off, on the ground under it)
+-- stands the player 5 studs from `pos` (toward the Crossroads middle: in front of the anvil / a body, never behind it) on
+-- the floor just under that spot (the ray starts 8 studs above it, so a roof over the Forge is never the floor; game dev 1
+-- 10/16: the old 200-stud ray could land 23 studs off), facing `pos`
 local function moveTo(player, pos)
 	local char = player.Character
 	if not char then return "no character" end
+	local mid = Config.Zones.Crossroads.Center
+	local dx, dz = mid.X - pos.X, mid.Z - pos.Z
+	local len = math.sqrt(dx * dx + dz * dz)
+	if len < 1 then dx, dz, len = 0, 1, 1 end
+	local spot = Vector3.new(pos.X + dx / len * 5, pos.Y, pos.Z + dz / len * 5)
 	local params = RaycastParams.new()
 	params.FilterType = Enum.RaycastFilterType.Exclude
 	params.FilterDescendantsInstances = { char }
-	local hit = workspace:Raycast(pos + Vector3.new(4, 200, 4), Vector3.new(0, -400, 0), params)
-	local ground = hit and hit.Position or (pos + Vector3.new(4, 0, 4))
+	local hit = workspace:Raycast(spot + Vector3.new(0, 8, 0), Vector3.new(0, -30, 0), params)
+	local ground = hit and hit.Position or spot
 	char:PivotTo(CFrame.lookAt(ground + Vector3.new(0, 4, 0), Vector3.new(pos.X, ground.Y + 4, pos.Z)))
 	return nil
 end
