@@ -6,21 +6,26 @@
 -- (Offer.BeforeBy). Props (boxes, name tags, chairs ...) stand at the Landmarks below: 0-won part skeletons tagged
 -- StoryLandmark, placed by 메인 반영 1 (list: docs/design/daily_props_2026-10-15.md). Pip has a temporary default body.
 
--- the rewards in ONE place (최종 검수 10/15: GPT's economy pass may change the numbers; the kinds stay all different)
+-- the rewards in ONE place (최종 검수 10/16 fixed table, from build/codex/daily_rewards_r1.md: Easy 1 potion so Easy never
+-- beats Normal, Normal/Hard materials in craft-sized bundles, DR1 = Move70; gold = GoldN, a fixed amount - Gold is hunt units)
 local R = {
-	DH2 = { Potion = "HP", N = 3, GoldN = 30 }, -- Easy
-	DH3 = { Item = "OakLog", N = 3, GoldN = 60 }, -- Normal
+	DH2 = { Potion = "HP", N = 1, GoldN = 30 }, -- Easy
+	DH3 = { Item = "OakLog", N = 4, GoldN = 60 }, -- Normal
 	DH1 = { Item = "Enh70", N = 1, GoldN = 100 }, -- Hard
-	DR3 = { Potion = "MP", N = 3, GoldN = 30 }, -- Easy
-	DR2 = { Item = "Jelly", N = 3, GoldN = 60 }, -- Normal
-	DR1 = { Item = "Move30", N = 1, GoldN = 100 }, -- Hard
-	DN3 = { Item = "PetTreat", N = 2, GoldN = 30 }, -- Easy
-	DN1 = { Item = "Herb", N = 5, GoldN = 60 }, -- Normal
-	DN2 = { Item = "Glowcap", N = 2, GoldN = 100 }, -- Hard
+	DR3 = { Potion = "MP", N = 1, GoldN = 30 }, -- Easy
+	DR2 = { Item = "Jelly", N = 10, GoldN = 60 }, -- Normal
+	DR1 = { Item = "Move70", N = 1, GoldN = 100 }, -- Hard
+	DN3 = { Item = "PetTreat", N = 3, GoldN = 30 }, -- Easy
+	DN1 = { Item = "Herb", N = 10, GoldN = 60 }, -- Normal
+	DN2 = { Item = "Glowcap", N = 8, GoldN = 100 }, -- Hard
 	DC1 = { Item = "CopperOre", N = 3, GoldN = 60 }, -- Normal
-	DC2 = { Item = "GuardTonic", N = 1, GoldN = 100 }, -- Hard
-	DC3 = { Item = "MoonCrystal", N = 1, GoldN = 200 }, -- Challenge (a cosmetic piece once it exists)
+	DC2 = { Item = "GuardTonic", N = 2, GoldN = 100 }, -- Hard
+	DC3 = { Item = "MoonCrystal", N = 8, GoldN = 200 }, -- Challenge (a cosmetic piece once it exists)
 }
+
+-- Hard is really harder (최종 검수 10/16): Hard hunts = 6 slimes + 3 samples (Normal DN1 = 3 + 2), Hard / Challenge
+-- repairs = three timing panels at the object after a long walk for the parts
+local HARD_KILLS = 6
 
 -- the last step: the asker's card with the small choice (Flag key = the quest id; Neutral players pick A / B)
 local function choice(npc, line, good, evil, flagGood, flagEvil, id, scene, text, short)
@@ -79,15 +84,15 @@ return {
 					Shared = "Your sealed envelopes still hold! These new ones need glue.",
 					Mine = "Your stamp is on every letter I sent! More need glue today.",
 					Default = "My new letters need glue. The slimes keep bouncing on it." },
-				Lines = { All = { "Bright: Will you beat three slimes and bring two glue samples?" } } },
+				Lines = { All = { "Bright: Will you beat six slimes and bring three glue samples?" } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true,
 			Steps = {
-				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x3", Guide = "SlimeMeadow",
-					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 3 }, On = "Self",
+				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x6", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = HARD_KILLS }, On = "Self",
 					Find = "Off my glue, you bouncy things!" },
 				{ Text = "Pick up the glue samples", ShortName = "Glue", Guide = "DH1Glue",
-					Obj = { Type = "Pickup", Spot = "DH1Glue", Radius = 8 }, On = "Self", Find = "Two sticky samples. Perfect!" },
+					Obj = { Type = "Pickup", Spot = "DH1Glue", Radius = 8 }, On = "Self", Find = "Three sticky samples. Perfect!" },
 				choice("Bright", "Bright: Seal the envelopes for everyone, or add your stamp?", "Seal them for everyone",
 					"Press my stamp on", "Shared", "Mine", "DH1", "Nod", "Back to Bright", "Bright"),
 			},
@@ -141,15 +146,15 @@ return {
 					Duet = "Our bell still rings softly. The new pads are pillows again!",
 					Solo = "Your solo still echoes! The slimes took the new pads too.",
 					Default = "My bell needs soft pads. The slimes use them as pillows." },
-				Lines = { All = { "Rascal Rex: Beat three slimes and grab two soft pads?" } } },
+				Lines = { All = { "Rascal Rex: Beat six slimes and grab three soft pads?" } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true,
 			Steps = {
-				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x3", Guide = "SlimeMeadow",
-					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 3 }, On = "Self",
+				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x6", Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = HARD_KILLS }, On = "Self",
 					Find = "Hey! Those pads aren't pillows!" },
 				{ Text = "Pick up the soft pads", ShortName = "Soft pads", Guide = "DR1Pads",
-					Obj = { Type = "Pickup", Spot = "DR1Pads", Radius = 8 }, On = "Self", Find = "Two squishy pads. Got them." },
+					Obj = { Type = "Pickup", Spot = "DR1Pads", Radius = 8 }, On = "Self", Find = "Three squishy pads. Got them." },
 				choice("Rex", "Rascal Rex: Soft pads! A quiet duet, or my big solo?", "Play it together", "Your big solo",
 					"Duet", "Solo", "DR1", "Clap", "Back to Rascal Rex", "Rascal Rex"),
 			},
@@ -204,14 +209,20 @@ return {
 					Shared = "Your shared cart still rolls! This one needs a handle too.",
 					Signed = "Your signed handle still holds! This cart needs one too.",
 					Default = "This old cart needs a better handle. Can you fix it?" },
-				Lines = { All = { "Otto: Can you fix the two handle grooves on this cart?" } } },
+				Lines = { All = { "Otto: Bring hard wood from the far meadow and fix the three grooves?" } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true,
 			Steps = {
 				{ Text = "Go to the old cart", ShortName = "Old cart", Guide = "DN2Cart",
 					Obj = { Type = "Near", Spot = "DN2Cart", Radius = 10 }, On = "Self", Find = "A cart with a wobbly handle." },
-				{ Text = "Fix the handle grooves", ShortName = "Fix it", Guide = "DN2Cart",
-					Obj = { Type = "Timing" }, On = "Self", Find = "Tap, tap... steady now." },
+				{ Text = "Get hard wood by the woods", ShortName = "Hard wood", Guide = "DN2Wood",
+					Obj = { Type = "Pickup", Spot = "DN2Wood", Radius = 8 }, On = "Self", Find = "Good hard wood. Back to the cart!" },
+				{ Text = "Fix the first groove", ShortName = "Groove 1", Guide = "DN2Cart",
+					Obj = { Type = "Timing", Spot = "DN2Cart" }, On = "Self", Find = "Tap, tap... steady now." },
+				{ Text = "Fix the second groove", ShortName = "Groove 2", Guide = "DN2Cart",
+					Obj = { Type = "Timing", Spot = "DN2Cart" }, On = "Self" },
+				{ Text = "Fix the last groove", ShortName = "Groove 3", Guide = "DN2Cart",
+					Obj = { Type = "Timing", Spot = "DN2Cart" }, On = "Self" },
 				choice("Kit", "Kit: Nice fix! Share the cart, or sign the handle?", "Share the cart", "Sign the handle",
 					"Shared", "Signed", "DN2", "Spin", "Show Kit", "Kit"),
 			},
@@ -266,14 +277,20 @@ return {
 					Shared = "Our record stand still works! New pages need room again.",
 					Signed = "Your name is still on the stand! New pages need room.",
 					Default = "The old stand is fine. These new pages need more room." },
-				Lines = { All = { "Pip: Will you fit two new rests on the record stand?" } } },
+				Lines = { All = { "Pip: Find three rests deep in the ruins and fit them on the record stand?" } } },
 			Requires = { Done = { "M1_4" }, Level = 25 },
 			Last = true,
 			Steps = {
 				{ Text = "Go to the record stand in the ruins", ShortName = "Record stand", Guide = "DC3Stand",
 					Obj = { Type = "Near", Spot = "DC3Stand", Radius = 10 }, On = "Self", Find = "An old stand. Still steady." },
-				{ Text = "Fit the two new rests", ShortName = "Fit rests", Guide = "DC3Stand",
-					Obj = { Type = "Timing" }, On = "Self", Find = "Two new rests. Easy does it." },
+				{ Text = "Find the old rests deep in the ruins", ShortName = "Old rests", Guide = "DC3Rests",
+					Obj = { Type = "Pickup", Spot = "DC3Rests", Radius = 8 }, On = "Self", Find = "Three old rests. Heavy!" },
+				{ Text = "Fit the first rest", ShortName = "Rest 1", Guide = "DC3Stand",
+					Obj = { Type = "Timing", Spot = "DC3Stand" }, On = "Self", Find = "Easy does it." },
+				{ Text = "Fit the second rest", ShortName = "Rest 2", Guide = "DC3Stand",
+					Obj = { Type = "Timing", Spot = "DC3Stand" }, On = "Self" },
+				{ Text = "Fit the last rest", ShortName = "Rest 3", Guide = "DC3Stand",
+					Obj = { Type = "Timing", Spot = "DC3Stand" }, On = "Self" },
 				choice("Pip", "Pip: One shared record, or your name on the stand?", "Share the record", "Sign the stand",
 					"Shared", "Signed", "DC3", "Nod", "Back to Pip", "Pip"),
 			},
@@ -288,8 +305,9 @@ return {
 		DR3Chairs = Vector3.new(36, 0, 440), DR3Seats = Vector3.new(56, 0, 428), DR2Box = Vector3.new(-44, 0, 400),
 		DR1Pads = Vector3.new(176, 0, -44),
 		DN3Bowls = Vector3.new(18, 0, 22), DN3Spot = Vector3.new(8, 0, 34), DN1Seals = Vector3.new(212, 0, -20),
-		DN2Cart = Vector3.new(28, 0, 62),
+		DN2Cart = Vector3.new(28, 0, 62), DN2Wood = Vector3.new(640, 0, 80), -- the wood: the meadow's far end, ~610 studs out
 		DC1Box = Vector3.new(54, 0, 38), DC2Barrels = Vector3.new(764, 0, 28), DC3Stand = Vector3.new(1292, 0, 40),
+		DC3Rests = Vector3.new(1580, 0, 120), -- deep in the ruins, ~310 studs past the stand
 	},
 	-- Pip (story_depth §4, chapter 3's goblin friend): a temporary default Roblox-style body at the woods' edge (the shop NPCs'
 	-- temporary rule) until an approved look
