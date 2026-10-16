@@ -138,6 +138,42 @@ function WeaponPose.Step(dt)
 		local ok, err = pcall(WeaponPose.ProbeStep, me, os.clock())
 		if not ok then Util.Warn(TAG, "probe failed: " .. tostring(err)) end
 	end
+	if RunService:IsStudio() then
+		local okT, errT = pcall(WeaponPose.TuneStep)
+		if not okT then Util.Warn(TAG, "tune failed: " .. tostring(errT)) end
+	end
+end
+
+-- hold-angles (grip_check_2026-10-16 #2 #4, STUDIO ONLY, this client only): workspace attribute Dev1Tune = a JSON
+-- { HoldPoses = { [hold] = row }, WeaponGrips = { [kind] = { Rest = {x, y, z}, ... } } } laid over the Config rows while
+-- it is set (a HoldPoses row is replaced whole, a WeaponGrips row field by field); cleared = the Config rows again. Lets a
+-- test Play try pose values without a restart; never read outside Studio
+local TUNE = { Last = nil, Orig = nil }
+function WeaponPose.TuneStep()
+	local raw = workspace:GetAttribute("Dev1Tune")
+	if raw == TUNE.Last then return end
+	TUNE.Last = raw
+	local function copy(t)
+		if type(t) ~= "table" then return t end
+		local out = {}
+		for k, v in t do out[k] = copy(v) end
+		return out
+	end
+	if not TUNE.Orig then TUNE.Orig = { HoldPoses = copy(Config.HoldPoses), WeaponGrips = copy(Config.WeaponGrips) } end
+	for _, name in { "HoldPoses", "WeaponGrips" } do
+		local live, orig = Config[name], TUNE.Orig[name]
+		for k in live do if orig[k] == nil then live[k] = nil end end
+		for k, v in orig do live[k] = copy(v) end
+	end
+	if type(raw) ~= "string" or raw == "" then return end
+	local t = game:GetService("HttpService"):JSONDecode(raw)
+	for k, row in type(t.HoldPoses) == "table" and t.HoldPoses or {} do Config.HoldPoses[k] = row end
+	for k, row in type(t.WeaponGrips) == "table" and t.WeaponGrips or {} do
+		local live = Config.WeaponGrips[k]
+		if type(live) == "table" and type(row) == "table" then
+			for f, v in row do live[f] = v end
+		end
+	end
 end
 
 -- A23-186 (pure): the joke weapon a player holds (their WeaponTier = a Config.Weapons row with Meme) -> its key or nil

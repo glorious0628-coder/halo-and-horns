@@ -264,8 +264,17 @@ do
 		local held = hand * att * Config.WeaponGrip(kind, 1.2):Inverse()
 		check(held.UpVector:Dot(cf.UpVector) < 0.9, kind .. ": the attack hold (plain grip) is not the rest turn")
 	end
-	local staff = (hand * att * Config.WeaponGrip("Staff", 3, "Rest"):Inverse()).UpVector
-	check(staff.Y > 0.95, "a staff rests upright in the hanging hand", staff.Y)
+	-- hold-angles (10/16 grip_check #4): the staff stands up from the bent elbow (HoldPoses Staff RightElbow 80) and a small
+	-- turn in the fist, not a turn that sets it upright in a hanging hand (that laid it along the forearm, on the arm);
+	-- the test Play measured 7 degrees off upright, 0.7 studs from the upper arm (docs/art/verification_2026-10-16/hold_tune)
+	local okStaff = true
+	for _, k in { "Staff", "CrookStaff", "FlaskStaff" } do
+		local r = Config.WeaponGrips[k].Rest
+		okStaff = okStaff and r[1] == 15 and r[2] == 0 and r[3] == 0
+	end
+	local staffPose = Config.HoldPoses.Staff
+	check(okStaff and staffPose.Stand.RightElbow[1] >= 70 and staffPose.Stand.RightElbow[1] <= 100,
+		"a staff rests upright from the bent elbow (Rest 15, elbow 70..100)", staffPose.Stand.RightElbow[1])
 	local holds = true
 	for kind, row in Config.WeaponGrips do
 		if type(row.Rest) ~= "table" or type(row.Hold) ~= "string" or type(Config.HoldPoses[row.Hold]) ~= "table" then holds = false end
@@ -498,10 +507,10 @@ MUTATIONS = [
     ("CONFIG", "the dark sword at 0.6", '\tDarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tDarkSword = { Point = 0.6, Rest = { 30, 0, 0 }, Hold = "SwordReady" },'),
     ("CONFIG", "the sword back on the old side hold", '\tSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },'),
     ("CONFIG", "the rest blade tip up and back (the old 10/14 rest)", '\tDarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 }, Hold = "SwordReady" },'),
-    ("CONFIG", "a staff resting level", '\tStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Rest = { 0, 0, 0 }, Hold = "Staff" },'),
+    ("CONFIG", "hold-angles: the staff turned upright in a hanging hand again", '\tStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },'),
     ("CONFIG", "a weapon without a resting hold", '\tBaton = { Point = 0.3, Rest = { -38, 0, 0 }, Hold = "BatonReady" },', '\tBaton = { Point = 0.3 },'),
     ("CONFIG", "the rest mode ignored", '\tif mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end\n', ""),
-    ("CONFIG", "the staff at the old 43%", '\tStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.43, Rest = { 81, 0, 0 }, Hold = "Staff" },'),
+    ("CONFIG", "the staff at the old 43%", '\tStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.43, Rest = { 15, 0, 0 }, Hold = "Staff" },'),
     ("CONFIG", "the hammer held at its head", '\tHammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },', '\tHammer = { Point = 0.7, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },'),
     ("CONFIG", "the bow flat across the side again", 'Bow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },', 'Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },'),
     ("CONFIG", "the joke weapons take the sword's new hold", 'Meme = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', 'Meme = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },'),

@@ -220,7 +220,8 @@ do
     end
     -- grip-3: the sword's hold (SwordReady) adds its own shoulder turn on top of the damped 40 degrees
     local sp = Config.HoldPoses[WeaponPose.HoldOf("Sword")]
-    local wantX = 40 * (1 - sp.Damp.Stand) + sp.Stand.RightShoulder[1]
+    -- (the rig moves at 8 studs/s = the Walk row after 20 frames; hold-angles 10/16: Walk and Stand differ now)
+    local wantX = 40 * (1 - sp.Damp.Walk) + sp.Walk.RightShoulder[1]
     ok(math.abs(xOf(ac.Transform) - wantX) < 1.5 and math.abs(xOf(m.RightShoulder.Transform)) < 1e-9,
         "an upgraded avatar: the AnimationConstraint gets the damped pose, the off Motor6D is left alone", xOf(ac.Transform) .. " vs " .. wantX)
 end

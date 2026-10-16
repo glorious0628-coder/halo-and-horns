@@ -7253,9 +7253,12 @@ Config.WeaponGrips = {
 	-- its own length so the string is behind and the curved limbs in front (Codex grip2)
 	Bow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },
 	ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, -90, 0 }, Hold = "Bow" },
-	Staff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" }, -- grip-3 HoldTest: 90 leaned the staff 9 degrees back
-	CrookStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
-	FlaskStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },
+	-- hold-angles (10/16 grip_check #4, build/codex/grip_r1.md: the elbow bent, not the staff turned in the fist): with the
+	-- forearm forward the staff stands up from a small turn (tuned in the test Play: 7 degrees off upright, 0.7 studs from
+	-- the upper arm, the hand at the low chest, the elbow 80; was 81 here = the staff along a hanging forearm, on the arm)
+	Staff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
+	CrookStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
 	Hammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },
 	-- grip-4 (main photos 10/15: the baton held low by the hip): the hand at the chest, the tip up and forward 45 (HoldTest:
 	-- 44 standing, 46..51 walking)
@@ -7279,13 +7282,13 @@ Config.HoldPoses = {
 		Air = { RightElbow = { 10, 0, 0 } },
 		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
 	Staff = { Arm = "Right",
-		-- RightWrist (HoldTest 10/15, measured: the staff leaned 28 degrees forward and in, its orb before the chest):
-		-- turns it back upright, a little back and out
-		Stand = { RightShoulder = { -8, 0, 8 }, RightElbow = { -20, 0, 0 }, RightWrist = { 37, 0, -11 } },
-		Walk = { RightShoulder = { -8, 0, 10 }, RightElbow = { -16, 0, 0 }, RightWrist = { 17, 0, -12 } }, -- grip-3: 5~10 forward
+		-- hold-angles (10/16, grip_r1: the hand at the navel..low chest, the elbow 70..100, a gap to the arm): the forearm
+		-- forward (elbow 80), the staff in front of the body (walking: 16 degrees, 0.6 studs from the arm - the next round)
+		Stand = { RightShoulder = { 0, 0, 8 }, RightElbow = { 80, 0, 0 }, RightWrist = { 0, 0, 0 } },
+		Walk = { RightShoulder = { 0, 0, 10 }, RightElbow = { 80, 0, 0 }, RightWrist = { 0, 0, 0 } },
 		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
 		Air = { RightElbow = { 10, 0, 0 } },
-		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.98 } },
+		Damp = { Stand = 0.85, Walk = 0.95, Run = 0.95, Air = 0.97, Lower = 0.98 } },
 	Bow = { Arm = "Left",
 		-- LeftWrist (HoldTest 10/15, measured: the bow leaned 19 degrees in across the body): upright by the left leg;
 		-- grip-4 (main photos: the bow hid behind the body): the arm further out (shoulder Z -22 / -24), the wrist keeps it upright
@@ -7299,10 +7302,12 @@ Config.HoldPoses = {
 	-- baton up-forward 45 degrees
 	SwordReady = { Arm = "Right",
 		Stand = { RightShoulder = { 10, 0, 14 }, RightElbow = { 30, 0, 0 }, RightWrist = { -10, 0, -14 } },
-		Walk = { RightShoulder = { 12, 0, 18 }, RightElbow = { 35, 0, 0 }, RightWrist = { -27, 0, -10 } },
+		-- hold-angles (10/16 grip_check #2, grip_r1 30 +-10 walking too): the old walk wrist (-27) threw the blade 48 degrees
+		-- forward; the standing arm with the wrist at +2 walks at 26 forward (17 in - the next round), swing 10
+		Walk = { RightShoulder = { 10, 0, 16 }, RightElbow = { 30, 0, 0 }, RightWrist = { 2, 0, -14 } },
 		Run = { RightShoulder = { 0, 0, 4 }, RightElbow = { 8, 0, 0 } },
 		Air = { RightElbow = { 10, 0, 0 } },
-		Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },
+		Damp = { Stand = 0.85, Walk = 0.95, Run = 0.95, Air = 0.97, Lower = 0.98 } },
 	HammerCarry = { Arm = "Right",
 		Stand = { RightShoulder = { 35, 0, 20 }, RightElbow = { 90, 0, 0 }, RightWrist = { -55, 0, -20 } },
 		Walk = { RightShoulder = { 38, 0, 23 }, RightElbow = { 90, 0, 0 }, RightWrist = { -58, 0, -23 } },
