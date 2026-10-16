@@ -6,21 +6,24 @@
 -- (Offer.BeforeBy). Props (boxes, name tags, chairs ...) stand at the Landmarks below: 0-won part skeletons tagged
 -- StoryLandmark, placed by 메인 반영 1 (list: docs/design/daily_props_2026-10-15.md). Pip has a temporary default body.
 
--- the rewards in ONE place (최종 검수 10/16 fixed table, from build/codex/daily_rewards_r1.md: Easy 1 potion so Easy never
--- beats Normal, Normal/Hard materials in craft-sized bundles, DR1 = Move70; gold = GoldN, a fixed amount - Gold is hunt units)
+-- the rewards in ONE place: SPEC A23-215 (user 10/16) = twelve DIFFERENT bundles, build/codex/artisan_switch_r1.md §3 (no
+-- material the side cannot use while the artisan switches are off). Items = { { Id, N } } (potions too, StoryQuestService
+-- rewardItems; quest items are bound, A23-206). Gold = GoldN, a fixed amount (Gold is hunt units). The artisans' three keep
+-- their materials: they show only with the guild (NeutralFaction) on. DC3's title comes once (TitleService: a held title is
+-- not given again), then the scrolls only
 local R = {
-	DH2 = { Potion = "HP", N = 1, GoldN = 30 }, -- Easy
-	DH3 = { Item = "OakLog", N = 4, GoldN = 60 }, -- Normal
-	DH1 = { Item = "Enh70", N = 1, GoldN = 100 }, -- Hard
-	DR3 = { Potion = "MP", N = 1, GoldN = 30 }, -- Easy
-	DR2 = { Item = "Jelly", N = 10, GoldN = 60 }, -- Normal
-	DR1 = { Item = "Move70", N = 1, GoldN = 100 }, -- Hard
-	DN3 = { Item = "PetTreat", N = 3, GoldN = 30 }, -- Easy
-	DN1 = { Item = "Herb", N = 10, GoldN = 60 }, -- Normal
-	DN2 = { Item = "Glowcap", N = 8, GoldN = 100 }, -- Hard
-	DC1 = { Item = "CopperOre", N = 3, GoldN = 60 }, -- Normal
-	DC2 = { Item = "GuardTonic", N = 2, GoldN = 100 }, -- Hard
-	DC3 = { Item = "MoonCrystal", N = 8, GoldN = 200 }, -- Challenge (a cosmetic piece once it exists)
+	DH2 = { Potion = "HP", N = 1, GoldN = 30 }, -- Easy: a heal
+	DH3 = { Items = { { Id = "HP", N = 2 }, { Id = "MP", N = 1 } }, GoldN = 60 }, -- Normal: travel supplies
+	DH1 = { Item = "Enh70", N = 1, GoldN = 100 }, -- Hard: an upgrade try
+	DR3 = { Potion = "MP", N = 1, GoldN = 30 }, -- Easy: mana
+	DR2 = { Items = { { Id = "MP", N = 2 }, { Id = "HP", N = 1 } }, GoldN = 60 }, -- Normal: skill supplies
+	DR1 = { Item = "Move70", N = 1, GoldN = 100 }, -- Hard: useful once a weapon has a + to move
+	DN3 = { Item = "PetTreat", N = 3, GoldN = 30 }, -- Easy (the guild on)
+	DN1 = { Item = "Herb", N = 10, GoldN = 60 }, -- Normal (the guild on)
+	DN2 = { Item = "Glowcap", N = 8, GoldN = 100 }, -- Hard (the guild on)
+	DC1 = { XPBar = 0.03, GoldN = 60 }, -- Normal: 3% of the current level's bar
+	DC2 = { Items = { { Id = "Enh70", N = 1 }, { Id = "HP", N = 2 } }, GoldN = 100 }, -- Hard: the woods' fight costs more
+	DC3 = { Items = { { Id = "Enh30", N = 1 }, { Id = "Enh70", N = 1 } }, Title = "RecordKeeper", GoldN = 200 }, -- Challenge
 }
 
 -- how many, in ONE place (user 10/16 via 최종 검수: "슬라임 6마리 너무 적지 않아? 50마리에 표본 5개"): Kill = monsters to

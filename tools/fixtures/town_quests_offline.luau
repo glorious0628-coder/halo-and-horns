@@ -3290,16 +3290,32 @@ runGroup("the daily pack", function()
 	local C, SQ = w.Config, w.Config.StoryQuests
 	local pack = execute("Daily", DAILY_SOURCE, nativeEnv())
 	C.AddQuests(pack, "Daily")
+	-- A23-215 (user 10/16): twelve different bundles (kinds AND counts; DC1 = an XP share; DC3 adds a first-finish title)
+	local function sig(r)
+		local parts = {}
+		if r.Item or r.Potion then table.insert(parts, tostring(r.Item or r.Potion) .. "x" .. tostring(r.N or 1)) end
+		for _, row in r.Items or {} do table.insert(parts, tostring(row.Id) .. "x" .. tostring(row.N or 1)) end
+		table.sort(parts)
+		local out = table.concat(parts, "+")
+		if out == "" then out = r.XPBar and "XPBar" or "" end
+		return out
+	end
 	local kinds, n = {}, 0
 	for _, id in pack.Subs do
 		local def = SQ.Defs[id]
 		local r = def.Reward
-		local kind = r.Item or r.Potion
-		check(def.Repeat == "Daily" and def.Last == true and kind ~= nil and kinds[kind] == nil, id .. ": a daily, its own reward kind", show(r))
+		local kind = sig(r)
+		check(def.Repeat == "Daily" and def.Last == true and kind ~= "" and kinds[kind] == nil, id .. ": a daily, its own reward bundle", show(r))
 		kinds[kind] = true
 		n += 1
 	end
 	check(n == 12 and SQ.RepeatDailyMax == 5, "12 dailies, 5 a day", n)
+	local R = function(id) return SQ.Defs[id].Reward end
+	check(sig(R("DH3")) == "HPx2+MPx1" and sig(R("DR2")) == "HPx1+MPx2" and R("DC1").XPBar == 0.03 and sig(R("DC2")) == "Enh70x1+HPx2"
+		and sig(R("DC3")) == "Enh30x1+Enh70x1" and R("DC3").Title == "RecordKeeper" and C.TitleDefs.RecordKeeper ~= nil
+		and R("DH1").Item == "Enh70" and R("DR1").Item == "Move70",
+		"A23-215 bundles: DH3 HP2+MP1, DR2 MP2+HP1, DC1 3% XP, DC2 Enh70+HP2, DC3 Enh30+Enh70 + the Record Keeper title",
+		show({ sig(R("DH3")), sig(R("DR2")), sig(R("DC2")), sig(R("DC3")) }))
 	local BRIGHT = vec(18, 0, -424)
 	w:Npc("Bright", BRIGHT)
 	w:Npc("Gleam", vec(-10, 0, -372))
