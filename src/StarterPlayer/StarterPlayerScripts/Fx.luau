@@ -1310,9 +1310,17 @@ local WOBBLE = { State = {}, Range = 140, StartedAt = os.clock(), FloatBob = 0.2
 	-- most HopMax studs (HopRatio of the body), puff a little dust on landing and sit Sink studs into the ground
 	Shadows = {}, ShadowRays = 0.15, ShadowRings = { { 0.62, 0.5 }, { 0.82, 0.68 }, { 1.0, 0.84 } },
 	ShadowColor = Color3.fromRGB(18, 22, 16), HopRatio = 0.15, HopMax = 0.6, Sink = 0.1, DustRange = 70,
-	-- A23-74 (user 2026-10-07): a killed slime's puddle holds DeathHold s, then shrinks to 0.2 in DeathShrink s, opaque
-	-- (= MonsterService DEATH_DESTROY - DEATH_SHRINK - 0.1 and DEATH_SHRINK; the server leaves a slime body to us)
-	DeathHold = 0.75, DeathShrink = 0.3 }
+	-- A23-211 (user 10/16 "죽는 모션이 아니라, 뭔가 편안해지는 느낌으로 사라지면"): a beaten monster (anchored root, not
+	-- Leaving) never falls or splats: (1) the shard dust pops out of it (round sparkles, Pop), (2) it relaxes - one soft
+	-- hop (Hop s, HopRatio of its height, at most HopMax studs), a slime a little smaller (Shrink), a soft light fill
+	-- (Soft, from SoftAt over SoftIn, down to SoftFill), (3) from FadeAt it fades away with a few round sparkles rising
+	-- (Rise), gone by Gone of its time. Time = the model's CalmTime attribute (server) or Time. Kings: King Slime
+	-- bounces Bounces times like a drop of water, Captain Clatter salutes (Bow) and sits down (Sit of his height).
+	-- Times are shares of the calm time. This client only; the drops and the kill itself are the server's
+	Calm = { Time = 1.0, Pop = 14, PopColor = Color3.fromRGB(255, 236, 170), Hop = 0.35, HopRatio = 0.12, HopMax = 1.0,
+		Shrink = 0.88, Soft = Color3.fromRGB(255, 246, 225), SoftAt = 0.1, SoftIn = 0.3, SoftFill = 0.55, FadeAt = 0.4,
+		Gone = 0.92, Rise = 8, Kings = { SlimeKing = "Bounce", CaptainClatter = "Salute" }, Bounces = 3, Bow = 20, Sit = 0.35 },
+	Calming = {} }
 
 -- the blob shadow of one monster: { Parts = { discs }, D = diameter, Faint = ghost, Y = ground, NextRay }
 function WOBBLE.shadowFor(model, st)
@@ -1427,6 +1435,86 @@ function WOBBLE.rest(st)
 	if st.Mesh and st.Base then st.Mesh.Size = st.Base end
 end
 
+-- A23-211: one frame of a beaten monster's calm fade (WOBBLE.Calm); st = its WOBBLE state (nil for rigged ones)
+function WOBBLE.calm(model, root, st, camPos)
+	local K = WOBBLE.Calm
+	local c = WOBBLE.Calming[model]
+	if c == false then return end
+	if not c then
+		if (root.Position - camPos).Magnitude > WOBBLE.Range then
+			WOBBLE.Calming[model] = false -- beaten far away: nothing to show
+			return
+		end
+		local h, rh = monsterSize(model)
+		local kind = model:GetAttribute("MonsterKind")
+		c = { T0 = os.clock(), H = h, Joint = visualJoint(model), Way = K.Kings[type(kind) == "string" and kind or ""],
+			Time = math.clamp(asNum(model:GetAttribute("CalmTime"), K.Time), 0.6, 3), Parts = {} }
+		for _, d in model:GetDescendants() do
+			if (d:IsA("BasePart") and d.Transparency < 1) or d:IsA("Decal") then table.insert(c.Parts, d) end
+		end
+		c.Mid = root.Position + Vector3.new(0, h / 2 - rh, 0)
+		WOBBLE.Calming[model] = c
+		model.AncestryChanged:Connect(function(_, parent)
+			if parent == nil then WOBBLE.Calming[model] = nil end
+		end)
+		-- (1) the shard dust pops out: round sparkles, a little up and out, no rays, nothing falls
+		burst(c.Mid, K.PopColor, K.Pop, { Size = 0.45, EndSize = 0, LightEmission = 0.8, LifeMin = 0.5, LifeMax = 0.9,
+			SpeedMin = 2, SpeedMax = 5, Spread = Vector2.new(60, 60), Acceleration = Vector3.new(0, 3, 0), Drag = 3 })
+		local hl = Instance.new("Highlight")
+		hl.Name = "CalmSoft"
+		hl.FillColor = K.Soft
+		hl.FillTransparency = 1
+		hl.OutlineTransparency = 1
+		hl.DepthMode = Enum.HighlightDepthMode.Occluded
+		hl.Adornee = model
+		hl.Parent = model
+		c.Soft = hl
+	end
+	local T = c.Time
+	local t = os.clock() - c.T0
+	-- (2) relax: one soft hop (King Slime: a few water-drop bounces; Clatter: a bow, then he sits down)
+	local hopH = math.min(c.H * K.HopRatio, K.HopMax)
+	local up, tilt, k = 0, 0, 1
+	if c.Way == "Bounce" then
+		local span = K.FadeAt * T * 1.5
+		local u = math.clamp(t / span, 0, 1)
+		up = math.abs(math.sin(math.pi * K.Bounces * u)) * hopH * (1 - u)
+		k = 1 - (1 - K.Shrink) * u
+	elseif c.Way == "Salute" then
+		local bow = math.clamp(t / (0.35 * T), 0, 1)
+		tilt = math.sin(math.pi * bow) * K.Bow
+		up = -c.H * K.Sit * math.clamp((t - 0.35 * T) / (0.25 * T), 0, 1) -- down = sitting
+	else
+		local u = math.clamp(t / (K.Hop * T), 0, 1)
+		up = math.sin(math.pi * u) * hopH
+		k = 1 - (1 - K.Shrink) * u
+	end
+	local half = 0
+	if st and st.Slime and st.Mesh and st.Base and st.Mesh.Parent then
+		st.Mesh.Size = st.Base * k
+		half = st.Base.Y * 0.5
+	end
+	local joint = c.Joint
+	if joint and joint.Parent then
+		local base = (st and st.Float) and WOBBLE.lift(st.Float) or CFrame.identity
+		joint.C1 = base * CFrame.new(0, -(up + (k - 1) * half), 0) * CFrame.Angles(math.rad(tilt), 0, 0)
+	end
+	-- (3) soft light, then a fade with a few round sparkles rising; fully gone before the server removes the body
+	local fade = math.clamp((t - K.FadeAt * T) / math.max(0.05, (K.Gone - K.FadeAt) * T), 0, 1)
+	if fade > 0 and not c.Rose then
+		c.Rose = true
+		burst(c.Mid, K.Soft, K.Rise, { Size = 0.35, EndSize = 0, LightEmission = 0.8, LifeMin = 0.6, LifeMax = 1.0,
+			SpeedMin = 1, SpeedMax = 3, Spread = Vector2.new(25, 25), Acceleration = Vector3.new(0, 4, 0), Drag = 2 })
+	end
+	if c.Soft and c.Soft.Parent then
+		local soft = 1 - (1 - K.SoftFill) * math.clamp((t - K.SoftAt * T) / (K.SoftIn * T), 0, 1)
+		c.Soft.FillTransparency = math.max(soft, fade)
+	end
+	for _, p in c.Parts do
+		if p.Parent then p.LocalTransparencyModifier = fade end
+	end
+end
+
 function WOBBLE.step(dt)
 	local cam = workspace.CurrentCamera
 	local folder = workspace:FindFirstChild("Monsters")
@@ -1444,34 +1532,21 @@ function WOBBLE.step(dt)
 		else
 			WOBBLE.dropShadow(model)
 		end
+		if sroot and sroot.Anchored and not foreign and model:GetAttribute("Leaving") ~= true then
+			-- A23-211: beaten = relax and fade (after this frame's WOBBLE pass below)
+			task.defer(function()
+				local okC, errC = pcall(WOBBLE.calm, model, sroot, WOBBLE.State[model], camPos)
+				if not okC then warnThrottled("calm fade failed: " .. tostring(errC)) end
+			end)
+		end
 		local mm = C and C.MonsterMotion
 		if st and mm and type(mm.IsRigged) == "function" and mm.IsRigged(model) then
 			WOBBLE.rest(st) -- a rigged monster moves its own bones (MonsterMotion); no extra wobble on top
 			st = nil
 		end
 		if st and st.Joint.Parent and st.Root.Parent then
-			if st.Root.Anchored and st.Slime and st.Active and st.Mesh and st.Base and not st.Splat
-				and model:GetAttribute("Leaving") ~= true then
-				-- dying slime: splat flat, hold, then the puddle shrinks away on the floor, opaque (an event monster that
-				-- goes home undefeated is "Leaving": it rests and floats away instead). A23-74: the server no longer
-				-- resizes / fades a slime body, whose replicated size used to stand the splat back up see-through.
-				st.Splat = true
-				local splat = Vector3.new(st.Base.X * 1.45, st.Base.Y * 0.35, st.Base.Z * 1.45)
-				TweenService:Create(st.Mesh, TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-					{ Size = splat }):Play()
-				st.Joint.C1 = CFrame.new(0, st.Base.Y * 0.32, 0)
-				local mesh, joint, baseY = st.Mesh, st.Joint, st.Base.Y
-				task.delay(WOBBLE.DeathHold, function()
-					pcall(function()
-						if not mesh.Parent or not joint.Parent then return end
-						local info = TweenInfo.new(WOBBLE.DeathShrink, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-						TweenService:Create(mesh, info, { Size = splat * 0.2 }):Play()
-						-- bottom stays on the floor: 0.32 + 0.35 / 2 = 0.46 + 0.07 / 2 (heights in Base.Y)
-						TweenService:Create(joint, info, { C1 = CFrame.new(0, baseY * 0.46, 0) }):Play()
-					end)
-				end)
-			elseif st.Root.Anchored or (st.Root.Position - camPos).Magnitude > WOBBLE.Range then
-				if not st.Splat then WOBBLE.rest(st) end
+			if st.Root.Anchored or (st.Root.Position - camPos).Magnitude > WOBBLE.Range then
+				WOBBLE.rest(st) -- a beaten one relaxes in WOBBLE.calm below (an event monster going home floats away)
 			else
 				st.Active = true
 				local v = st.Root.AssemblyLinearVelocity
@@ -1643,7 +1718,7 @@ local function recoilMonstersAt(positions, strength)
 	local ownRoot = getOwnRoot()
 	for model, st in monsterMotion do
 		local root = monsterRoot(model)
-		-- an anchored root is dying (MonsterService deathPop): the killing hit plays only the death pop
+		-- an anchored root is beaten (MonsterService): it only relaxes and fades (A23-211, WOBBLE.calm)
 		if root and not root.Anchored and not st.Hidden then
 			local rp = root.Position
 			for _, p in positions do

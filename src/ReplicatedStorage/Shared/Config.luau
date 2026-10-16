@@ -6789,9 +6789,6 @@ Config.Audio = {
 		HitArrowHeavy = "rbxassetid://111127770916206",
 		HitArrowCrit = "rbxassetid://83876322718434",
 		-- 검수 10/10: monster death sounds by kind (소리 15차 86cd4a69, slimes first)
-		DieSlime = "rbxassetid://105660948835844",
-		DieBigSlime = "rbxassetid://135159844685749",
-		DieFlowerSlime = "rbxassetid://108731319971001",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -6890,10 +6887,6 @@ Config.Audio = {
 		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		-- 검수 10/10: a monster kind's own death sound takes KillPop's place (Config.Audio.DeathByKind; same caps)
-		DieSlime = { File = "DieSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieBigSlime = { File = "DieBigSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieFlowerSlime = { File = "DieFlowerSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
@@ -6998,9 +6991,6 @@ Config.Audio = {
 	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
 	-- bare hands, the pet and a class not listed keep the material hits
 	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
-	-- 검수 10/10: my kill's sound by the monster kind (the Reward packet's Kind, else the monster at its Pos); a kind not
-	-- listed or not uploaded keeps KillPop (goblin, skeleton, pumpkin, ghost follow in their zone turns)
-	DeathByKind = { Slime = "DieSlime", BigSlime = "DieBigSlime", FlowerSlime = "DieFlowerSlime" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
