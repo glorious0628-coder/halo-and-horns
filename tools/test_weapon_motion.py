@@ -686,7 +686,13 @@ for _,data in FIXTURES do
                     local main=equipped:FindFirstChild("Tip")
                     local origin=equipped:FindFirstChild("AttackMuzzle",true).WorldPosition
                     local direction=(target-origin).Unit
-                    check(main.CFrame.UpVector:Dot(direction)>.999999,data.name..": actual staff/cast target axis")
+                    -- hold-angles (최종 검수 10/16): no tip aim any more (it swung the staff over the head); at the cast
+                    -- the staff leans 15..45 forward toward the target (grip_r1 20..40 + a margin), its top in front
+                    local flat=Vector3.new(direction.X,0,direction.Z).Unit
+                    local up=main.CFrame.UpVector
+                    local lean=math.deg(math.atan2(up:Dot(flat),up.Y))
+                    print("STAFF_LEAN "..data.name.." "..string.format("%.1f",lean))
+                    check(lean>=15 and lean<=45,data.name..": the staff leans 15..45 forward at the cast ("..string.format("%.1f",lean)..")")
                     local shaft=equipped:FindFirstChild("Handle") -- A23-150 7: the staff's shaft is its Handle
                     -- grip-centre (10/16): the fist's centre (the hand part's own centre) on the shaft, not its grip attachment
                     local grip=shaft.CFrame:PointToObjectSpace(st.Char:FindFirstChild("RightHand").CFrame.Position)
@@ -774,7 +780,7 @@ def main():
     motion = source[source.index("local MOTION = {"):source.index("-- A14-4 combat feel: functions")]
     names = ["same", "ease", "compileClips", "sample", "jointParts", "restoreJoint", "findJoints", "actorState", "attackContext", "validAttack",
              "after", "handPoint", "muzzle", "jointFrames", "rotationBetween", "armGeometry", "solveArm",
-             "archerPhase", "archerPose", "staffPose", "launchWeapon", "launchArrow", "guardEffect", "clearWeaponMotion", "weaponMotion", "play", "stepChar", "drop", "attackTime", "playAttack"]
+             "archerPhase", "archerPose", "launchWeapon", "launchArrow", "guardEffect", "clearWeaponMotion", "weaponMotion", "play", "stepChar", "drop", "attackTime", "playAttack"]
     # Additional geometry helpers are taken from source, rather than mirrored in the test.
     if "function Feel.bowAim(" in source:
         names.insert(names.index("archerPose"), "bowAim")

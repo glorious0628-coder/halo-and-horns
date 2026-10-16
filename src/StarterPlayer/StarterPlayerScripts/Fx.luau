@@ -266,18 +266,18 @@ local MOTION = {
 		} },
 		MageSwing = { Len = 0.68, Keys = { -- left palm gathers; right wrist points the staff tip forward
 			{ 0, "Out", {} },
-			{ 0.1, "Out", { Waist = { 8, -14, -3 }, Neck = { -3, 8, 0 }, RightShoulder = { 28, -8, 14 }, RightElbow = { 38, 0, 0 }, RightWrist = { -60, 0, 8 }, LeftShoulder = { 60, 5, -18 }, LeftElbow = { 48, 0, 0 }, LeftWrist = { -70, 0, -15 } } },
-			{ 0.19, "InOut", { Waist = { 12, -18, -4 }, Neck = { -4, 12, 0 }, RightShoulder = { 34, -8, 12 }, RightElbow = { 40, 0, 0 }, RightWrist = { -72, 0, 8 }, LeftShoulder = { 78, 8, -22 }, LeftElbow = { 42, 0, 0 }, LeftWrist = { -85, 0, -12 } } },
-			{ 0.24, "In", { Waist = { -9, 10, 4 }, Neck = { 4, -6, 0 }, RightShoulder = { 38, 0, -8 }, RightElbow = { 4, 0, 0 }, RightWrist = { -125, 0, -4 }, LeftShoulder = { 64, 0, -32 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -65, 0, -12 } } },
-			{ 0.36, "Out", { Waist = { -6, 8, 3 }, Neck = { 3, -4, 0 }, RightShoulder = { 34, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -115, 0, -2 }, LeftShoulder = { 42, 0, -26 }, LeftElbow = { 22, 0, 0 } } },
-			{ 0.5, "InOut", { Waist = { 0, 3, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { -35, 0, 0 }, LeftShoulder = { 15, 0, -8 } } },
+			{ 0.1, "Out", { Waist = { 8, -14, -3 }, Neck = { -3, 8, 0 }, RightShoulder = { 28, -8, 14 }, RightElbow = { 38, 0, 0 }, RightWrist = { 28, 0, 8 }, LeftShoulder = { 60, 5, -18 }, LeftElbow = { 48, 0, 0 }, LeftWrist = { -70, 0, -15 } } },
+			{ 0.19, "InOut", { Waist = { 12, -18, -4 }, Neck = { -4, 12, 0 }, RightShoulder = { 34, -8, 12 }, RightElbow = { 40, 0, 0 }, RightWrist = { 28, 0, 8 }, LeftShoulder = { 78, 8, -22 }, LeftElbow = { 42, 0, 0 }, LeftWrist = { -85, 0, -12 } } },
+			{ 0.24, "In", { Waist = { -9, 10, 4 }, Neck = { 4, -6, 0 }, RightShoulder = { 38, 0, -8 }, RightElbow = { 4, 0, 0 }, RightWrist = { 28, 0, -4 }, LeftShoulder = { 64, 0, -32 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -65, 0, -12 } } },
+			{ 0.36, "Out", { Waist = { -6, 8, 3 }, Neck = { 3, -4, 0 }, RightShoulder = { 34, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { 28, 0, -2 }, LeftShoulder = { 42, 0, -26 }, LeftElbow = { 22, 0, 0 } } },
+			{ 0.5, "InOut", { Waist = { 0, 3, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { 15, 0, 0 }, LeftShoulder = { 15, 0, -8 } } },
 			{ 0.68, "InOut", {} },
 		} },
 		MageRelease = { Len = 0.75, Keys = { -- left hand calls the meteor; right staff thrust meets its impact
 			{ 0, "Out", {} },
-			{ 0.15, "Out", { Waist = { 12, -12, 0 }, Neck = { 12, 8, 0 }, RightShoulder = { 30, -8, 16 }, RightElbow = { 40, 0, 0 }, RightWrist = { -65, 0, 8 }, LeftShoulder = { 86, 0, -24 }, LeftElbow = { 42, 0, 0 }, LeftWrist = { -92, 0, -12 } } },
-			{ 0.33, "InOut", { Waist = { 16, -18, 0 }, Neck = { 16, 12, 0 }, RightShoulder = { 36, -8, 18 }, RightElbow = { 38, 0, 0 }, RightWrist = { -72, 0, 8 }, LeftShoulder = { 116, 0, -28 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -95, 0, -12 } } },
-			{ 0.35, "In", { Waist = { -22, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 38, 0, 8 }, RightElbow = { 4, 0, 0 }, RightWrist = { -125, 0, 0 }, LeftShoulder = { 75, 0, -8 }, LeftElbow = { 0, 0, 0 }, LeftWrist = { -65, 0, 0 } } },
+			{ 0.15, "Out", { Waist = { 12, -12, 0 }, Neck = { 12, 8, 0 }, RightShoulder = { 30, -8, 16 }, RightElbow = { 40, 0, 0 }, RightWrist = { 42, 0, 8 }, LeftShoulder = { 86, 0, -24 }, LeftElbow = { 42, 0, 0 }, LeftWrist = { -92, 0, -12 } } },
+			{ 0.33, "InOut", { Waist = { 16, -18, 0 }, Neck = { 16, 12, 0 }, RightShoulder = { 36, -8, 18 }, RightElbow = { 38, 0, 0 }, RightWrist = { 42, 0, 8 }, LeftShoulder = { 116, 0, -28 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -95, 0, -12 } } },
+			{ 0.35, "In", { Waist = { -22, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 38, 0, 8 }, RightElbow = { 4, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 75, 0, -8 }, LeftElbow = { 0, 0, 0 }, LeftWrist = { -65, 0, 0 } } },
 			{ 0.55, "Out", { Waist = { -16, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 68, 0, 8 }, RightElbow = { 5, 0, 0 }, LeftShoulder = { 68, 0, -8 }, LeftElbow = { 5, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
@@ -301,12 +301,12 @@ local MOTION = {
 			{ 0.7, "InOut", {} },
 		} },
 		-- the Dark Mage's Purple Pop: crouched, the left palm sweeping low, then lifting something up on
-		-- RELEASE_CONTACT.Mage (staffPose aims the tip at the pool)
+		-- RELEASE_CONTACT.Mage (hold-angles 10/16: no tip aim; the wrist leans the staff about 30 forward, the magic from the orb)
 		DarkMageRelease = { Len = 0.75, Keys = {
 			{ 0, "Out", {} },
-			{ 0.2, "Out", { Waist = { -20, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 30, 0, 10 }, RightElbow = { 40, 0, 0 }, RightWrist = { -40, 0, 0 }, LeftShoulder = { 40, 0, -20 }, LeftElbow = { 30, 0, 0 }, LeftWrist = { -60, 0, 0 } } },
-			{ 0.33, "InOut", { Waist = { -24, 4, 0 }, Neck = { 8, 0, 0 }, RightShoulder = { 26, 0, 10 }, RightElbow = { 44, 0, 0 }, RightWrist = { -44, 0, 0 }, LeftShoulder = { 30, 0, -24 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -70, 0, 0 } } },
-			{ 0.35, "In", { Waist = { 10, 0, 0 }, Neck = { 10, 0, 0 }, RightShoulder = { 50, 0, 6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -90, 0, 0 }, LeftShoulder = { 120, 0, -20 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -30, 0, 0 } } },
+			{ 0.2, "Out", { Waist = { -20, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 30, 0, 10 }, RightElbow = { 40, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 40, 0, -20 }, LeftElbow = { 30, 0, 0 }, LeftWrist = { -60, 0, 0 } } },
+			{ 0.33, "InOut", { Waist = { -24, 4, 0 }, Neck = { 8, 0, 0 }, RightShoulder = { 26, 0, 10 }, RightElbow = { 44, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 30, 0, -24 }, LeftElbow = { 24, 0, 0 }, LeftWrist = { -70, 0, 0 } } },
+			{ 0.35, "In", { Waist = { 10, 0, 0 }, Neck = { 10, 0, 0 }, RightShoulder = { 50, 0, 6 }, RightElbow = { 10, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 120, 0, -20 }, LeftElbow = { 10, 0, 0 }, LeftWrist = { -30, 0, 0 } } },
 			{ 0.55, "Out", { Waist = { 6, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 50, 0, 6 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 100, 0, -16 }, LeftElbow = { 20, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
@@ -429,14 +429,14 @@ local MOTION = {
 			{ 0.68, "InOut", {} },
 		} },
 		-- A23-108: the Light Mage's cast - the left palm pushes the light forward while the staff tip points (the right
-		-- wrist is still solved onto the target by Feel.staffPose); the same cast time as MageSwing (CAST_DELAY 0.24)
+		-- wrist +28 leans it about 30 forward at the cast, hold-angles 10/16: no tip aim); the same cast time as MageSwing (CAST_DELAY 0.24)
 		LightMageSwing = { Len = 0.68, Keys = {
 			{ 0, "Out", {} },
-			{ 0.1, "Out", { Waist = { 6, -10, 0 }, Neck = { -2, 6, 0 }, RightShoulder = { 30, -6, 12 }, RightElbow = { 36, 0, 0 }, RightWrist = { -62, 0, 6 }, LeftShoulder = { 48, 6, -26 }, LeftElbow = { 92, 0, 0 }, LeftWrist = { -40, 0, -10 } } },
-			{ 0.19, "InOut", { Waist = { 10, -14, 0 }, Neck = { -3, 9, 0 }, RightShoulder = { 34, -6, 12 }, RightElbow = { 38, 0, 0 }, RightWrist = { -72, 0, 6 }, LeftShoulder = { 56, 6, -30 }, LeftElbow = { 100, 0, 0 }, LeftWrist = { -55, 0, -10 } } },
-			{ 0.24, "In", { Waist = { -8, 8, 0 }, Neck = { 4, -5, 0 }, RightShoulder = { 40, 0, -6 }, RightElbow = { 6, 0, 0 }, RightWrist = { -122, 0, -4 }, LeftShoulder = { 88, 0, -8 }, LeftElbow = { 8, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
-			{ 0.36, "Out", { Waist = { -6, 6, 0 }, Neck = { 3, -3, 0 }, RightShoulder = { 36, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { -112, 0, -2 }, LeftShoulder = { 80, 0, -8 }, LeftElbow = { 14, 0, 0 }, LeftWrist = { -70, 0, 0 } } },
-			{ 0.5, "InOut", { Waist = { 0, 2, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { -35, 0, 0 }, LeftShoulder = { 30, 0, -12 }, LeftElbow = { 50, 0, 0 } } },
+			{ 0.1, "Out", { Waist = { 6, -10, 0 }, Neck = { -2, 6, 0 }, RightShoulder = { 30, -6, 12 }, RightElbow = { 36, 0, 0 }, RightWrist = { 28, 0, 6 }, LeftShoulder = { 48, 6, -26 }, LeftElbow = { 92, 0, 0 }, LeftWrist = { -40, 0, -10 } } },
+			{ 0.19, "InOut", { Waist = { 10, -14, 0 }, Neck = { -3, 9, 0 }, RightShoulder = { 34, -6, 12 }, RightElbow = { 38, 0, 0 }, RightWrist = { 28, 0, 6 }, LeftShoulder = { 56, 6, -30 }, LeftElbow = { 100, 0, 0 }, LeftWrist = { -55, 0, -10 } } },
+			{ 0.24, "In", { Waist = { -8, 8, 0 }, Neck = { 4, -5, 0 }, RightShoulder = { 40, 0, -6 }, RightElbow = { 6, 0, 0 }, RightWrist = { 28, 0, -4 }, LeftShoulder = { 88, 0, -8 }, LeftElbow = { 8, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.36, "Out", { Waist = { -6, 6, 0 }, Neck = { 3, -3, 0 }, RightShoulder = { 36, 0, -6 }, RightElbow = { 10, 0, 0 }, RightWrist = { 28, 0, -2 }, LeftShoulder = { 80, 0, -8 }, LeftElbow = { 14, 0, 0 }, LeftWrist = { -70, 0, 0 } } },
+			{ 0.5, "InOut", { Waist = { 0, 2, 0 }, RightShoulder = { 18, 0, 0 }, RightElbow = { 18, 0, 0 }, RightWrist = { 15, 0, 0 }, LeftShoulder = { 30, 0, -12 }, LeftElbow = { 50, 0, 0 } } },
 			{ 0.68, "InOut", {} },
 		} },
 		-- A23-108 ⑤ Q (Shockwave) for the Paladin: the sword raised high over the head in the right hand (A23-128 one-hand
@@ -453,9 +453,9 @@ local MOTION = {
 		-- toward the target on RELEASE_CONTACT.Mage / RELEASE_LAUNCH.Mage (0.35); the left palm opens up then forward
 		LightMageRelease = { Len = 0.75, Keys = {
 			{ 0, "Out", {} },
-			{ 0.15, "Out", { Waist = { 14, -6, 0 }, Neck = { 18, 4, 0 }, RightShoulder = { 150, -6, 18 }, RightElbow = { 30, 0, 0 }, RightWrist = { -30, 0, 0 }, LeftShoulder = { 70, 0, -30 }, LeftElbow = { 60, 0, 0 }, LeftWrist = { -60, 0, -10 } } },
-			{ 0.33, "InOut", { Waist = { 18, -8, 0 }, Neck = { 22, 6, 0 }, RightShoulder = { 168, -6, 16 }, RightElbow = { 18, 0, 0 }, RightWrist = { -24, 0, 0 }, LeftShoulder = { 96, 0, -26 }, LeftElbow = { 40, 0, 0 }, LeftWrist = { -70, 0, -10 } } },
-			{ 0.35, "In", { Waist = { -18, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 44, 0, 6 }, RightElbow = { 4, 0, 0 }, RightWrist = { -120, 0, 0 }, LeftShoulder = { 84, 0, -8 }, LeftElbow = { 6, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
+			{ 0.15, "Out", { Waist = { 14, -6, 0 }, Neck = { 18, 4, 0 }, RightShoulder = { 150, -6, 18 }, RightElbow = { 30, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 70, 0, -30 }, LeftElbow = { 60, 0, 0 }, LeftWrist = { -60, 0, -10 } } },
+			{ 0.33, "InOut", { Waist = { 18, -8, 0 }, Neck = { 22, 6, 0 }, RightShoulder = { 168, -6, 16 }, RightElbow = { 18, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 96, 0, -26 }, LeftElbow = { 40, 0, 0 }, LeftWrist = { -70, 0, -10 } } },
+			{ 0.35, "In", { Waist = { -18, 0, 0 }, Neck = { 6, 0, 0 }, RightShoulder = { 44, 0, 6 }, RightElbow = { 4, 0, 0 }, RightWrist = { 42, 0, 0 }, LeftShoulder = { 84, 0, -8 }, LeftElbow = { 6, 0, 0 }, LeftWrist = { -80, 0, 0 } } },
 			{ 0.55, "Out", { Waist = { -14, 0, 0 }, Neck = { 5, 0, 0 }, RightShoulder = { 60, 0, 6 }, RightElbow = { 6, 0, 0 }, LeftShoulder = { 64, 0, -8 }, LeftElbow = { 8, 0, 0 } } },
 			{ 0.75, "InOut", {} },
 		} },
@@ -2921,43 +2921,6 @@ function Feel.archerPose(st, attack, bases, outputs)
 	end
 end
 
--- Retain the approved gather/thrust arm motion. At cast, solve the right wrist from its actual
--- grip/muzzle frame so the staff axis and the projectile share the packet target line.
-function Feel.staffPose(st, attack, bases, outputs)
-	local ctx = st.AttackContext
-	if not ctx or ctx.Class ~= "Mage" or not Feel.validAttack(ctx) or not st.AttackTarget then return end
-	local weapon = st.Char:FindFirstChild("WeaponModel")
-	local muzzle = weapon and weapon:GetAttribute("Class") == "Mage" and weapon:GetAttribute("HandMuzzle")
-	local arm, waist = Feel.armGeometry(st, "Right"), Feel.jointFrames(st.Joints.Waist)
-	if typeof(muzzle) ~= "CFrame" or not arm or not waist then return end
-	local torso = waist.P0.CFrame * waist.C0 * (outputs.Waist or bases.Waist or CFrame.identity) * waist.C1:Inverse()
-	local upper = torso * arm.Shoulder.C0 * (outputs.RightShoulder or bases.RightShoulder or CFrame.identity) * arm.Shoulder.C1:Inverse()
-	local lower = upper * arm.Elbow.C0 * (outputs.RightElbow or bases.RightElbow or CFrame.identity) * arm.Elbow.C1:Inverse()
-	local hand = lower * arm.Wrist.C0 * (outputs.RightWrist or bases.RightWrist or CFrame.identity) * arm.Wrist.C1:Inverse()
-	local pivot = (lower * arm.Wrist.C0).Position
-	local delta = st.AttackTarget - pivot
-	local axis = muzzle.UpVector
-	local offset = muzzle.Position - arm.Wrist.C1.Position
-	local along = offset:Dot(axis)
-	local cross = offset - axis * along
-	if delta.Magnitude <= cross.Magnitude + 0.05 then return end
-	local forward = math.sqrt(math.max(0, delta:Dot(delta) - cross:Dot(cross)))
-	-- A target inside the physical staff cannot be reached by extending the shaft forward; keep
-	-- the existing gesture and actual tip origin rather than inventing shorter weapon geometry.
-	if forward <= along + 0.05 then return end
-	local root = st.Char:FindFirstChild("HumanoidRootPart")
-	local pole = root and root.CFrame.RightVector or Vector3.xAxis
-	local localTarget = cross + axis * forward
-	local rotation = Feel.rotationBetween(hand.Rotation:VectorToWorldSpace(localTarget), delta, pole) * hand.Rotation
-	local goal = CFrame.new(pivot - rotation:VectorToWorldSpace(arm.Wrist.C1.Position)) * rotation
-	local solved = (lower * arm.Wrist.C0):Inverse() * goal * arm.Wrist.C1
-	local time = attack.T / math.max(0.01, attack.Rate)
-	local launch = (attack.LaunchT or MOTION.CAST_DELAY) / math.max(0.01, attack.Rate)
-	local weight = math.min(Feel.ease("InOut", math.clamp((time - launch + 0.075) / 0.075, 0, 1)),
-		Feel.ease("InOut", math.clamp((attack.Clip.Len - attack.T) / (0.11 * attack.Rate), 0, 1)))
-	outputs.RightWrist = (outputs.RightWrist or bases.RightWrist or CFrame.identity):Lerp(solved, weight)
-end
-
 -- Delay to the packet's launch frame, then read attachments after the Transform physics batch.
 -- Class/character replacement and a newer attack invalidate this one-frame callback too.
 function Feel.launchWeapon(ctx, seconds, callback)
@@ -3218,9 +3181,8 @@ function Feel.stepChar(st, dt, now)
 	Feel.bowHand(st, attack ~= nil and attack.Clip ~= nil and plain and st.AttackContext.Class == "Archer")
 	if attack and attack.Clip and plain and st.AttackContext.Class == "Archer" then
 		Feel.archerPose(st, attack, bases, outputs)
-	elseif attack and attack.Clip and plain and st.AttackContext.Class == "Mage" then
-		Feel.staffPose(st, attack, bases, outputs)
-	end
+	end -- hold-angles (최종 검수 10/16): the staff no longer turns its tip onto the target (it swung over the head);
+	-- the clip leans it 20..40 forward and the magic leaves the orb (Feel.muzzle) for the target
 	local blendW = st.BlendFrom and math.clamp((now - st.BlendAt) / MOTION.CUT_BLEND, 0, 1) or 1
 	if blendW < 1 then
 		for joint, out in outputs do
@@ -3267,10 +3229,32 @@ function Feel.attackTime(classId, which, style)
 	return which == "Release" and math.min(MOTION.RELEASE_ANIM_TIME, fit) or fit
 end
 
+-- hold-angles (10/16, STUDIO ONLY, this client only): workspace attribute Dev1Clips = a JSON { [clip name] = { Len, Keys } }
+-- (MOTION.CLIPS rows) laid over MOTION.CLIPS while set, recompiled; cleared = the shipped clips. For tuning in a test Play
+Feel.ClipTune = { Last = nil, Orig = {} }
+function Feel.tuneClips()
+	local CLIPTUNE = Feel.ClipTune
+	local raw = workspace:GetAttribute("Dev1Clips")
+	if raw == CLIPTUNE.Last then return end
+	CLIPTUNE.Last = raw
+	for name, def in CLIPTUNE.Orig do MOTION.CLIPS[name] = def end
+	table.clear(CLIPTUNE.Orig)
+	if type(raw) == "string" and raw ~= "" then
+		for name, def in game:GetService("HttpService"):JSONDecode(raw) do
+			if MOTION.CLIPS[name] and type(def) == "table" and type(def.Keys) == "table" then
+				CLIPTUNE.Orig[name] = MOTION.CLIPS[name]
+				MOTION.CLIPS[name] = def
+			end
+		end
+	end
+	Feel.compileClips()
+end
+
 -- class Swing / Release clip on a character, sped up to fit maxTime. true when the clip plays (or a running release
 -- must not be cut short by a swing); false -> the caller may use the stock animation
 function Feel.playAttack(char, classId, which, maxTime, data)
 	if typeof(char) ~= "Instance" then return false end
+	pcall(function() if RunService:IsStudio() then Feel.tuneClips() end end)
 	local context = Feel.attackContext(data)
 	if not context or context.Char ~= char then return false end
 	local style = type(data.Style) == "string" and MOTION.STYLE_CLIPS[data.Style] and data.Style or nil
@@ -4793,6 +4777,15 @@ function MOTION.ShakeAllowed()
 	if MOTION.Pref("Shake", true) == false then return false end
 	local ok, reduced = pcall(function() return game:GetService("GuiService").ReducedMotionEnabled end)
 	return not (ok and reduced == true)
+end
+
+-- A23-223: a small glint (a weapon stowed / drawn: WeaponPose.StowApply, own character only)
+function Fx.Glint(pos)
+	if typeof(pos) ~= "Vector3" or not nearCamera(pos) then return end
+	burst(pos, ColorSequence.new(WHITE, COLOR_GOLD), 8, {
+		Size = 0.3, SpeedMin = 2, SpeedMax = 5, LifeMin = 0.15, LifeMax = 0.3, LightEmission = 1,
+		Acceleration = Vector3.zero, Drag = 4,
+	})
 end
 
 function Fx.PlaySound(name)

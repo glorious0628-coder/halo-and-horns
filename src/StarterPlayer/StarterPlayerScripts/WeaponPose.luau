@@ -44,6 +44,7 @@ local T = {
 	RestEvery = 0.05, -- s between the hold checks
 	ProbeEvery = 2, -- s: Studio's GripProbe print (every frame measured, the worst printed)
 	RestBow = "RestBow", -- the local left-hand weld of a resting bow (A23-187)
+	StowWeld = "StowWeld", -- A23-223: the local torso weld of a stowed bow / sword
 	MemeLook = "MemeLook", MemeKind = "Meme", -- A23-186: the joke weapons' local look (a Model under the Tool); grip-3: their own row (the old sword hold)
 	Same = 1e-4, -- a motor still holding our last output (CFrame:FuzzyEq): the animation did not write it this frame
 	-- the Motor6Ds of Config.HoldPoses: joint name -> the R15 part it sits in
@@ -54,6 +55,7 @@ local T = {
 		LeftShoulder = "UpperTorso", LeftElbow = "LeftUpperArm", LeftWrist = "LeftLowerArm" },
 }
 local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0,
+	Stow = setmetatable({}, { __mode = "k" }), -- character -> { Last = the last attack seen, On = stowed now, Tool }
 	Wrote = setmetatable({}, { __mode = "k" }), -- motor -> { Out = what we wrote, Base = the animation's value under it }
 	Char = setmetatable({}, { __mode = "k" }), -- character -> { R = the rest share 0..1, W = the walk blend 0..1 }
 	Joint = setmetatable({}, { __mode = "k" }) } -- character -> { [joint name] = the Motor6D / AnimationConstraint }
@@ -137,6 +139,46 @@ function WeaponPose.Step(dt)
 	if RunService:IsStudio() and me and me:GetAttribute("GripProbe") == true then
 		local ok, err = pcall(WeaponPose.ProbeStep, me, os.clock())
 		if not ok then Util.Warn(TAG, "probe failed: " .. tostring(err)) end
+	end
+	if RunService:IsStudio() then
+		local okT, errT = pcall(WeaponPose.TuneStep)
+		if not okT then Util.Warn(TAG, "tune failed: " .. tostring(errT)) end
+	end
+end
+
+-- hold-angles (grip_check_2026-10-16 #2 #4, STUDIO ONLY, this client only): workspace attribute Dev1Tune = a JSON
+-- { HoldPoses = { [hold] = row }, WeaponGrips = { [kind] = { Rest = {x, y, z}, ... } } } laid over the Config rows while
+-- it is set (a HoldPoses row is replaced whole, a WeaponGrips row field by field); cleared = the Config rows again. Lets a
+-- test Play try pose values without a restart; never read outside Studio
+local TUNE = { Last = nil, Orig = nil }
+function WeaponPose.TuneStep()
+	local raw = workspace:GetAttribute("Dev1Tune")
+	if raw == TUNE.Last then return end
+	TUNE.Last = raw
+	local function copy(t)
+		if type(t) ~= "table" then return t end
+		local out = {}
+		for k, v in t do out[k] = copy(v) end
+		return out
+	end
+	if not TUNE.Orig then
+		TUNE.Orig = { HoldPoses = copy(Config.HoldPoses), WeaponGrips = copy(Config.WeaponGrips), WeaponStow = copy(Config.WeaponStow) }
+	end
+	for _, name in { "HoldPoses", "WeaponGrips", "WeaponStow" } do
+		local live, orig = Config[name], TUNE.Orig[name]
+		for k in live do if orig[k] == nil then live[k] = nil end end
+		for k, v in orig do live[k] = copy(v) end
+	end
+	if type(raw) ~= "string" or raw == "" then return end
+	local t = game:GetService("HttpService"):JSONDecode(raw)
+	for k, row in type(t.HoldPoses) == "table" and t.HoldPoses or {} do Config.HoldPoses[k] = row end
+	for k, row in type(t.WeaponStow) == "table" and t.WeaponStow or {} do Config.WeaponStow[k] = row end
+	for _, st in S.Stow do st.On = nil end -- re-place a stowed weapon with the new values
+	for k, row in type(t.WeaponGrips) == "table" and t.WeaponGrips or {} do
+		local live = Config.WeaponGrips[k]
+		if type(live) == "table" and type(row) == "table" then
+			for f, v in row do live[f] = v end
+		end
 	end
 end
 
@@ -295,6 +337,79 @@ local function fxAttacking(char)
 	return ok and v == true
 end
 
+-- A23-223 (pure): where a weapon kind stows out of a fight ("Back" / "Hip") or nil (it stays in the hand)
+function WeaponPose.StowOf(kind)
+	local W = Config.WeaponStow
+	if type(W) ~= "table" or W.On ~= true or type(W.Kinds) ~= "table" then return nil end
+	local where = type(kind) == "string" and W.Kinds[kind] or nil
+	return type(where) == "string" and type(W[where]) == "table" and where or nil
+end
+
+-- A23-223: the stowed weapon on (stow = true: the torso weld on, the engine's right grip and the bow's rest weld off) or
+-- back in the hand (the torso weld off; a sword's right grip on again, a bow's left weld is BowRest's). The own character
+-- hears Config.WeaponStow.Sound and sees a small glint at the weapon when it changes
+function WeaponPose.StowApply(char, tool, handle, where, stow)
+	local W = Config.WeaponStow
+	local row = W[where]
+	local part = char:FindFirstChild(row.Part)
+	if not part then return end
+	local weld = handle:FindFirstChild(T.StowWeld)
+	local hand = char:FindFirstChild("RightHand")
+	local grip = hand and hand:FindFirstChild("RightGrip")
+	local left = char:FindFirstChild("LeftHand")
+	local restBow = left and left:FindFirstChild(T.RestBow)
+	if stow then
+		if not (weld and weld:IsA("Weld")) then
+			weld = Instance.new("Weld")
+			weld.Name = T.StowWeld
+			weld.Parent = handle
+		end
+		local h = part.Size / 2
+		local pos, turn = row.Pos or {}, row.Turn or {}
+		weld.Part0, weld.Part1 = part, handle
+		weld.C0 = CFrame.new((tonumber(pos[1]) or 0) * h.X, (tonumber(pos[2]) or 0) * h.Y, (tonumber(pos[3]) or 0) * h.Z)
+			* CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
+		weld.C1 = CFrame.identity
+		if grip and grip:IsA("JointInstance") and grip.Part1 == handle and grip.Enabled then grip.Enabled = false end
+		if restBow and restBow:IsA("JointInstance") and restBow.Enabled then restBow.Enabled = false end
+		if not weld.Enabled then weld.Enabled = true end
+	else
+		if weld and weld:IsA("JointInstance") then weld.Enabled = false end
+		if where == "Hip" and grip and grip:IsA("JointInstance") and grip.Part1 == handle and not grip.Enabled then grip.Enabled = true end
+	end
+	if char == (Players.LocalPlayer and Players.LocalPlayer.Character) then
+		local audio = C and C.Audio
+		if type(audio) == "table" and type(audio.Play) == "function" and type(W.Sound) == "string" then pcall(audio.Play, W.Sound) end
+		local fx = C and C.Fx
+		if type(fx) == "table" and type(fx.Glint) == "function" then pcall(fx.Glint, handle.Position) end
+	end
+end
+
+-- A23-223: stow / unstow one character's weapon (attacking = an Fx attack clip plays on it now); true while stowed
+function WeaponPose.StowStep(char, tool, kind, attacking, now)
+	local where = WeaponPose.StowOf(kind)
+	local handle = tool:FindFirstChild("Handle")
+	local st = S.Stow[char]
+	if not st or st.Tool ~= tool then
+		st = { Last = -math.huge, On = false, Tool = tool }
+		S.Stow[char] = st
+	end
+	if attacking then st.Last = now end
+	if not (handle and handle:IsA("BasePart")) then return false end
+	if not where then
+		-- (stowing switched off while the weapon was put away: back to the hand)
+		if st.On and st.Where then WeaponPose.StowApply(char, tool, handle, st.Where, false) end
+		st.On = false
+		return false
+	end
+	local want = not attacking and now - st.Last >= (tonumber(Config.WeaponStow.HandSeconds) or 5)
+	if want ~= st.On then
+		st.On, st.Where = want, where
+		WeaponPose.StowApply(char, tool, handle, where, want)
+	end
+	return st.On
+end
+
 -- every RestEvery s: each character's held sword rests (toolnone ~0, Grip Rest) or holds (toolnone 1, plain Grip)
 function WeaponPose.RestStep(now)
 	if now - S.RestAt < T.RestEvery then return end
@@ -308,8 +423,11 @@ function WeaponPose.RestStep(now)
 			local meme = WeaponPose.MemeOf(tonumber(p:GetAttribute("WeaponTier")))
 			pcall(WeaponPose.MemeLook, tool, meme)
 			if meme then kind = T.MemeKind end
-			local want = WeaponPose.Want(kind, fxAttacking(char))
+			local attacking = fxAttacking(char)
+			local want = WeaponPose.Want(kind, attacking)
 			local handle = tool:FindFirstChild("Handle")
+			local okS, stowed = pcall(WeaponPose.StowStep, char, tool, kind, attacking, now)
+			stowed = okS and stowed == true
 			if want and handle and handle:IsA("BasePart") then
 				local rest = want == "Rest"
 				-- hold-pose-2 (Codex ③): toolnone stays down while a hold weapon is held - rest AND attack (the attack clips
@@ -318,7 +436,7 @@ function WeaponPose.RestStep(now)
 					if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end
 				end
 				-- the grip's Rest <-> Turn goes with the pose's clock (PoseStep); the bow's left weld here
-				if WeaponPose.HoldOf(kind) == "Bow" then
+				if WeaponPose.HoldOf(kind) == "Bow" and not stowed then
 					local hand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
 					WeaponPose.BowRest(char, tool, handle, hand and hand:FindFirstChild("RightGrip"), rest)
 				end
@@ -425,6 +543,9 @@ function WeaponPose.PoseStep(dt)
 			S.Char[char] = st
 		end
 		local attacking = fxAttacking(char)
+		-- A23-223: an attack takes a stowed weapon to the hand this frame; while it is stowed the arms are the animation's
+		local okS, stowed = pcall(WeaponPose.StowStep, char, tool, kind, attacking, os.clock())
+		if okS and stowed then continue end
 		st.R = WeaponPose.Approach(st.R, attacking and 0 or 1, dt, attacking and (hold == "Bow" and HM.InBow or HM.In) or HM.Out)
 		local share = WeaponPose.Smooth(st.R)
 		local hum = char:FindFirstChildOfClass("Humanoid")
