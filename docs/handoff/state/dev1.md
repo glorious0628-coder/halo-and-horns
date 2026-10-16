@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 4 — 0·1번 끝, 보고함 (최신)
+## 10/16 밤 5 — 무기 #1·#5 고침 가지 (최신)
+- 가지 **dev1-grip-centre 9e85b7ee** (worktree ../Game-dev1grip, sparse src/tools): 엔진 값 = 사용자 아바타 손 0.38×0.58×0.45, RightGripAttachment가 손 가운데에서 손잡이 방향 0.26·옆 0.11 떨어져 주먹이 날밑에 감. Config.WeaponGrip(kind, len, mode, centre) + CharacterVisuals GripCentre 속성 + WeaponPose 쥐기 → 주먹 가운데 = 쥐는 점(엔진 다시 잼 0.000). 시험 11개 통과(tool_grip 1 실패 = main에도 있는 것). 값 docs/art/verification_2026-10-16/grip_probe/.
+- ▶ 다음: 최종 검수 '전달함, 시작' 오면 다시 찍기 — PhoneTest 열기 → **가지 코드로 sync**(cd ../Game-dev1grip; STUDIO_ID=… py tools/sync_to_studio.py) → `py build/dev1_tools/grip1016.py --out grip_check_fix --keep`(빛·뿔, 선물 창 닫기·걷는 중 재기·이어찍기 들어감) → 전/후 앞·옆 시트 → 최종 검수. 그 뒤 #2·#3·#4·#6(각도·몸 뚫기, build/codex/grip_r1.md 기준표).
+
+## 10/16 밤 4 — 0·1번 끝, 보고함
 - 0번 2장 누름 확인 **통과**(빛·뿔): M1_4 끝(퀘스트 줄 받기) → 부탁자 '!'·'Talk to Bright/Rose' 줄 → The Crown in the Sky 수락 = M2_1 / Tiny M2_3 수락 → 분수에서 Tiny 말풍선(Npc_Tiny.Head, 빛 'Bright tied mine. I tied hers.', 뿔 'Bright kept my bad knot!') → 분수 선택 / Tiny M2_4 수락 → 몬스터 8~10마리 → St2 → Clatter 'I'll carry my tools. You lead.' + HH_ClatterScene + First.ClatterTools 저장. 로그 docs/art/verification_2026-10-16/ch2_flow/.
   관찰: Tiny 첫 G = 'Lost & Found' 이야기 창, 두 번째 G에 M2_3 부탁 창. 뿔 Rose는 순간이동 직후 첫 G에 창 안 뜸(두 번 재현, 두 번째 G는 됨; 빛 Bright는 첫 G에 뜸).
 - 1번 무기 점검: 목록 docs/review/grip_check_2026-10-16.md(고치기 전), 시트 docs/art/verification_2026-10-16/grip_check/sheets/. 핵심 = 3D 칼 메시가 Handle 위에 어긋나 주먹이 날밑에 박힘. 뿔 사진은 Daily Gifts 창에 가려 다시 찍기 필요. 도구 build/dev1_tools/{h1016,ch2_1016,grip1016}.py(git 밖).
