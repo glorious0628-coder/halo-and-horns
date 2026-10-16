@@ -49,6 +49,9 @@ GATE = ('\tif pvp and type(pvp.AreFriends) == "function" and pvp.AreFriends(atta
         '\t\treturn 0\n\tend\n')
 
 MUTATIONS = [
+    ("A23-216: the kaiju loses its whole pouch again", K, "math.floor((carried + escrowGold) * (tonumber(Config.Kaiju.DefeatLossRate) or 0.1))", "(carried + escrowGold)"),
+    ("A23-216: no level cap on the kaiju loss", K, "\t\t\tmath.max(0, math.floor(capPerLevel * level)))\n", "\t\t\tmath.huge)\n"),
+    ("A23-203: the kaiju stomp outside the red zones", K, "if call(\"ZoneService\", \"IsPvPZone\", v) == true and call(\"ZoneService\", \"IsPvPZone\", p) == true then", "if true then"),
     # --- PvPService.CanAttack
     ("A23-203: a combat tag carries PvP into the safe land", P, "\treturn S.ZoneService.IsPvPZone(p) == true\n",
      "\treturn S.ZoneService.IsPvPZone(p) or (not S.ZoneService.IsTown(p) and S.CombatService.IsInCombat(p))\n"),

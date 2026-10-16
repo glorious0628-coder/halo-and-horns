@@ -1467,12 +1467,12 @@ Config.PvP = {
 	PowerRatioMin = 0.8,
 	PowerRatioMax = 1.5,
 	CombatTagTime = 15, -- PvP damage within this window credits the KO and blocks travel/switch/class change
-	PlunderRate = 0.20, -- Horns KO Halo: take 20% of (carried - safe floor) into the grudge sack
+	PlunderRate = 0.05, -- Horns KO Halo: take 5% of (carried - safe floor) into the grudge sack (A23-216, user 10/16: was 20%)
 	PlunderCapPerLevel = 100, -- max stolen per KO = victim level * 100
 	SafeFloorPerLevel = 10, -- never-stealable carried gold = victim level * 10
 	BountyPerLevelStar = 15, -- bounty = 15 * level * stars (minted)
-	VillainLossOnBountyKO = 0.25, -- Wanted Horns KO'd by Halo lose 25% of remaining carried gold
-	VillainLossOnWantedPvEDeath = 0.25, -- Wanted Horns dying without a PvP killer
+	VillainLossOnBountyKO = 0.05, -- Wanted Horns KO'd by Halo lose 5% of remaining carried gold (A23-216: was 25%)
+	VillainLossOnWantedPvEDeath = 0.05, -- Wanted Horns dying without a PvP killer (A23-216: was 25%)
 	MaxStars = 5,
 	StarDecaySeconds = 120,
 	StarDamageBonus = 0.05,
@@ -1538,7 +1538,10 @@ Config.Kaiju = {
 	StompInterval = 4,
 	StompRadius = 15,
 	StompPct = 0.06, -- of each stomped Halo player's MaxHealth (never rookies, never Protected, never in towns)
-	BountyPoolMult = 3, -- reward pool = 3 x current bounty + the kaiju's carried gold
+	BountyPoolMult = 3, -- reward pool = 3 x current bounty + the kaiju's lost gold (DefeatLossRate)
+	-- A23-216 (user 10/16): a defeated kaiju loses at most this share of its pouch, capped at level x PvP.PlunderCapPerLevel;
+	-- the rest stays its own (was: the whole pouch taken, the part over the cap destroyed)
+	DefeatLossRate = 0.10,
 	DamageShare = 0.5, -- 50% of the pool split by damage share, the rest split equally among participants
 	SurviveBankMult = 1.5, -- survived: carried gold x1.5 moved to the bank
 	ShieldSeconds = 10, -- spawn-protection-style shield after the event
@@ -1585,7 +1588,7 @@ Config.War = {
 	SiegeTarget = 1.5, -- per-capita points needed when only one faction is online
 	ChestMinPoints = 1, -- personal points this round needed for a chest
 	WinnerChestPerLevel = 100,
-	LoserChestPerLevel = 30,
+	LoserChestPerLevel = 50, -- A23-216 (user 10/16): the losing / drawn side smiles too (was 30)
 	BlessingGold = 0.25,
 	BlessingXP = 0.25,
 	Tick = 1,

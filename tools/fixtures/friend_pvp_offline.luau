@@ -362,9 +362,9 @@ runGroup("kaiju stomp", function()
 	check(hp(f) == 100 and hp(e) == 100 - dmg, "a stomp in a PvP zone: the friend 0, the stranger the stomp",
 		show({ hp(f), hp(e), dmg }))
 	check(w.Combat.GetLastPvPAttacker(e) == k and w.Combat.GetLastPvPAttacker(f) == nil, "the stranger's stomp credits the kaiju; the friend's nothing")
-	w.PvPZone = false -- outside PvP zones the stomp passes no attacker (environmental): the stomp itself skips friends
+	w.PvPZone = false -- A23-203 / A23-218: outside the red zones the stomp hurts nobody
 	w:KaijuTick(KJ.StompInterval)
-	check(hp(f) == 100 and hp(e) == 100 - 2 * dmg, "a stomp outside PvP zones: the friend 0 (no attacker passed), the stranger hit",
+	check(hp(f) == 100 and hp(e) == 100 - dmg, "a stomp outside PvP zones (A23-203): nobody hurt, the stranger neither",
 		show({ hp(f), hp(e) }))
 end)
 
@@ -467,6 +467,35 @@ runGroup("safe land (A23-203)", function()
 	red[a] = true
 	check(select(1, w.PvP.CanAttack(a, c)) == false and select(1, w.PvP.CanAttack(c, a)) == false,
 		"one inside, one outside (still tagged): no hit either way", "")
+end)
+
+------------------------------------------------------------------ A23-216 (user 10/16): a defeated kaiju keeps most of its pouch
+-- (loses at most Config.Kaiju.DefeatLossRate of it, capped at level x PvP.PlunderCapPerLevel; that loss feeds the raid pool)
+runGroup("kaiju defeat loss (A23-216)", function()
+	local function defeat(level, carried)
+		local w = rankWorld({ Kaiju = true })
+		w.AllowWarn = { "missing", "zoom" }
+		local ws = w:Env().workspace
+		ws.Raycast = function() return nil end
+		ws.FindFirstChild = function() return nil end
+		local k = w:Join(201, "Horns", { Carried = carried, Level = level })
+		k.CameraMaxZoomDistance = 30
+		local h = w:Join(101, "Halo")
+		w:RunSpawned()
+		w.PvP.DebugSetStars(k, KJ.StarsNeeded)
+		w:KaijuTick()
+		w:KaijuTick(KJ.SirenSeconds)
+		local K = w.Registry.KaijuService
+		local active = K.GetState(k) == "Active"
+		K.HandleKaijuDeath(k, h)
+		w:Flush()
+		return active, w.Data[k].CarriedGold, w.Data[k].Level
+	end
+	check(KJ.DefeatLossRate == 0.10 and C0.PvP.PlunderCapPerLevel == 100, "the rule's numbers: 10%, level x 100", "")
+	local a1, left1, lv1 = defeat(20, 3000)
+	check(a1 and left1 == 3000 - 300, "Lv20 with 3,000: loses 10% (300), keeps 2,700", show({ a1, left1, lv1 }))
+	local a2, left2, lv2 = defeat(3, 5000)
+	check(a2 and left2 == 5000 - 3 * 100, "Lv3 with 5,000: 10% (500) capped at Lv x 100 = 300, keeps 4,700", show({ a2, left2, lv2 }))
 end)
 
 finish()
