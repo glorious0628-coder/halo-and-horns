@@ -160,6 +160,9 @@ local MOTION = {
 	-- Release remember where their hits will show and the pain reaction waits for that moment (HURT_SYNC_MAX cap)
 	HURT_SYNC_WAIT = 0.05, -- s to let the Swing / Release Fx of the same server frame arrive first
 	HURT_SYNC_MAX = 0.6,
+	-- 손맛 ③⑤ (PhoneTest 10/16: +G showed 15-50 ms before the arrow / orb's damage number): a kill's reward and calm
+	-- start this long after its hit shows
+	HIT_AFTER = 0.08,
 	PENDING_MAX = 24, PENDING_DIST = 4, -- remembered hit slots (ring buffer), studs a monster may be off its hit point
 	-- pain stickers (GPT art Emo*, code fallback below): pooled BillboardGuis in PlayerGui, one per monster at a time
 	-- stickers sit BESIDE the head (screen right), never over the HP bar / nametag above it, and rise only a little
@@ -1463,7 +1466,8 @@ function WOBBLE.calm(model, root, st, camPos)
 	-- after HURT_SYNC_WAIT for the Swing Fx of the same server frame), then relaxes
 	if not c.T0 then
 		if os.clock() - c.Seen < MOTION.HURT_SYNC_WAIT then return end
-		c.T0 = os.clock() + Feel.pendingDelay(root.Position)
+		local left = Feel.pendingDelay(root.Position)
+		c.T0 = os.clock() + (left > 0.02 and left + MOTION.HIT_AFTER or 0)
 	end
 	local T = c.Time
 	local t = os.clock() - c.T0
@@ -3700,14 +3704,15 @@ function Feel.afterHit(pos, fn)
 	end
 	later(MOTION.HURT_SYNC_WAIT, function()
 		local left = Feel.pendingDelay(pos)
-		if left > 0.02 then later(left, fn) else fn() end
+		if left > 0.02 then later(left + MOTION.HIT_AFTER, fn) else fn() end
 	end)
 end
 
 -- (Audio) seconds until the hit remembered near pos shows; 0 = none
 function Fx.HitWait(pos)
 	if typeof(pos) ~= "Vector3" then return 0 end
-	return Feel.pendingDelay(pos)
+	local left = Feel.pendingDelay(pos)
+	return left > 0.02 and left + MOTION.HIT_AFTER or 0
 end
 
 -- pain sticker + a quick squash flinch (not while it attacks / winds up, and not right after my own directional recoil)

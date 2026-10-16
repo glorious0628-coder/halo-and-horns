@@ -58,12 +58,13 @@ PRESENT = [
     ("FX", "the rising sparkles come once", ["if fade > 0 and not c.Rose then"]),
     ("MM", "a beaten rigged monster stays calm (Idle)", ['want = "Idle" -- beaten (A23-211']),
     ("FX", "손맛 ③⑤: the calm waits until the killing hit shows (contact / arrival)", [
-        "\t\tif os.clock() - c.Seen < MOTION.HURT_SYNC_WAIT then return end\n\t\tc.T0 = os.clock() + Feel.pendingDelay(root.Position)\n",
+        "\t\tif os.clock() - c.Seen < MOTION.HURT_SYNC_WAIT then return end\n\t\tlocal left = Feel.pendingDelay(root.Position)\n",
+        "c.T0 = os.clock() + (left > 0.02 and left + MOTION.HIT_AFTER or 0)",
         "\tif t < 0 then return end\n\tif not c.Popped then\n"]),
     ("FX", "손맛 ③⑤: a kill's +G / +XP and drops show after the killing hit", [
         "Feel.afterHit(asVec(type(data) == \"table\" and data.Pos or nil), function() Feel.rewardNow(data) end)",
         "Feel.afterHit(asVec(type(data) == \"table\" and data.Pos or nil), function() Feel.lootNow(data) end)",
-        "\t\tlocal left = Feel.pendingDelay(pos)\n\t\tif left > 0.02 then later(left, fn) else fn() end\n"]),
+        "\t\tlocal left = Feel.pendingDelay(pos)\n\t\tif left > 0.02 then later(left + MOTION.HIT_AFTER, fn) else fn() end\n"]),
     ("AUDIO", "손맛 ③⑤: a kill's pop and coins wait for the killing hit too", [
         "local ok, wait = pcall(fx.HitWait, pos)", "playAll(ok and type(wait) == \"number\" and wait or 0)"]),
     ("AUDIO", "the kill still pops", ['\t\tadd(out, "KillPop", 0)\n']),
@@ -125,7 +126,7 @@ MUTATIONS = [
     ("FX", "Clatter does not sit", "up = -c.H * K.Sit *", "up = 0 * K.Sit *"),
     ("FX", "too slow for the server", "Gone = 0.92,", "Gone = 1.4,"),
     ("FX", "a ray texture", "\t\tc.Soft = hl\n", "\t\tc.Soft = hl\n\t\thl:SetAttribute(\"Texture\", \"rays\")\n"),
-    ("FX", "the calm starts at the kill again (no wait for the hit)", "c.T0 = os.clock() + Feel.pendingDelay(root.Position)", "c.T0 = os.clock()"),
+    ("FX", "the calm starts at the kill again (no wait for the hit)", "c.T0 = os.clock() + (left > 0.02 and left + MOTION.HIT_AFTER or 0)", "c.T0 = os.clock()"),
     ("FX", "the reward shows at the kill again", "function() Feel.rewardNow(data) end)", "function() end) Feel.rewardNow(data)"),
     ("AUDIO", "the kill's coins at the kill again", "playAll(ok and type(wait) == \"number\" and wait or 0)", "playAll(0)"),
     ("CONFIG", "a Die sound back", "\t\tKillPop = { File = \"KillPop\",", "\t\tDieSlime = {},\n\t\tKillPop = { File = \"KillPop\","),
