@@ -3285,7 +3285,8 @@ function STORY.PayloadReward(r)
 	if n(r.XP) > 0 then table.insert(out, { Icon = "IconExp", N = n(r.XP) }) end
 	for _, it in type(r.Items) == "table" and r.Items or {} do
 		if type(it) == "table" and type(it.Id) == "string" and it.Id ~= "" then
-			table.insert(out, { Icon = it.Id, N = math.max(1, n(it.N)) })
+			-- dev2-reward-items (10/16): an item row may carry its icon key (potions: IconPotionHP / MP; the Id "HP" has none)
+			table.insert(out, { Icon = (type(it.Icon) == "string" and it.Icon ~= "") and it.Icon or it.Id, N = math.max(1, n(it.N)) })
 		end
 	end
 	if n(r.BagSlots) > 0 then table.insert(out, { Icon = "IconBag", N = n(r.BagSlots) }) end
