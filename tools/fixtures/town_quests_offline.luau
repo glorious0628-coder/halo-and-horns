@@ -605,8 +605,11 @@ runGroup("clues", function()
 	local C, SQ = C0, SQ0
 	check(SQ.Speakers.Kids == "Bright & Rose" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
 		and SQ.Landmarks.KidsBench.Z == 18, "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)", show(SQ.Landmarks.KidsBench))
-	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[1], "They say", 1, true) == 1
-		and #C.Story.Premise == 3 and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 rumor lines, 3 premise lines, the ask",
+	-- A23-212 (user 10/16): the culprit is told from the start - Captain Clatter, by mistake (no "They say" rumor any more)
+	check(#C.Story.OpeningRumor == 3 and C.Story.OpeningRumor[1] == "Captain Clatter broke the Crown of Balance."
+		and #C.Story.Premise == 3 and string.find(C.Story.Premise[1], "Captain Clatter broke the Crown", 1, true) == 1
+		and C.ClientText.Intro.Lines[1] == "Captain Clatter broke the Crown of Balance."
+		and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 lines, 3 premise lines naming Clatter, the ask",
 		show({ C.Story.OpeningRumor, C.Story.OpeningAsk }))
 	for _, line in C.Story.Premise do
 		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",
@@ -3465,6 +3468,74 @@ runGroup("a23-199 every step has a guide", function()
 	table.sort(fixed)
 	check(#missing == 0, "every new quest step has a Guide or an Npc (A23-199)", table.concat(missing, ", "))
 	check(#fixed == 0, "a step on the KNOWN list got its guide: take it off the list", table.concat(fixed, ", "))
+end)
+
+------------------------------------------------------------------ A23-212 (user 10/16): Captain Clatter's three first-10-minute scenes
+-- (ClatterScenes.luau): each once per character, that player only, on the path they already walk; Fx StoryScene { Id = "Clatter" }
+runGroup("A23-212 clatter scenes", function()
+	local w = townWorld()
+	w.Services.ServerStorage = { FindFirstChild = function() return nil end } -- no boss model here: the scenes still fire
+	local cs = w:Load("ClatterScenes", CLATTER_SOURCE)
+	cs.Init(w.Registry)
+	cs.Start()
+	local K = w.Config.StoryQuests.Clatter
+	local function stepOf(id, t)
+		for i, st in w.Config.StoryQuests.Defs[id].Steps do if st.Obj and st.Obj.Type == t then return i end end
+		return nil
+	end
+	check(K.Enabled == true and K.Scenes.Hat.After.Quest == "M1_1" and stepOf("M1_1", "Kill") == 1 and stepOf("M1_3", "Learn") ~= nil,
+		"the scenes follow M1_1's prince kill and M1_3's Learn step (they exist in the chain)", show({ stepOf("M1_1", "Kill"), stepOf("M1_3", "Learn") }))
+	for key, sc in K.Scenes do
+		check(type(sc.Line) == "string" and #sc.Line <= 50 and type(sc.Move) == "string", key .. ": one short line and a move", sc.Line)
+	end
+	local function scenes(pl)
+		local out = {}
+		for _, f in w.Fx do if f.Kind == "StoryScene" and f.Player == pl and f.Data.Id == "Clatter" then table.insert(out, f.Data) end end
+		return out
+	end
+	local hallie = w:Npc("Hallie", vec(-16, 0, -428))
+	local p, d = w:Join(9601, { Faction = "Halo", Tutorial = 0, Pos = vec(-16, 0, -400) }) -- 28 studs from Hallie
+	local q = w:Join(9602, { Faction = "Halo", Tutorial = 0, Pos = vec(-16, 0, -420) })
+	check(#scenes(p) == 0, "waiting at the guide: no scene yet", "")
+	p:SetAttribute("TutorialStep", 4)
+	w:Flush()
+	local s = scenes(p)
+	local dx, dz = s[1] and s[1].Pos.X - hallie.Position.X or 99, s[1] and s[1].Pos.Z - hallie.Position.Z or 99
+	check(#s == 1 and s[1].Key == "Sorry" and s[1].Value == "Clatter" and d.Story.First.ClatterSorry == true
+		and math.sqrt(dx * dx + dz * dz) < 10 and s[1].Look ~= nil,
+		"the guide's [Accept] (TutorialStep 0 -> 4): Sorry, beside Hallie, saved", show(s[1]))
+	check(#scenes(q) == 0, "... seen by that player only", "")
+	p:SetAttribute("TutorialStep", 3)
+	p:SetAttribute("TutorialStep", 0)
+	p:SetAttribute("TutorialStep", 1)
+	w:Flush()
+	check(#scenes(p) == 1, "once per character: a later step change never repeats it", #scenes(p))
+	w.Story.StepDone:Fire(p, "M1_1", 1)
+	w:Flush()
+	s = scenes(p)
+	check(#s == 2 and s[2].Key == "Hat" and d.Story.First.ClatterHat == true, "the first Slime Prince beaten (M1_1 step 1): Hat", show(s[2]))
+	w.Story.StepDone:Fire(p, "M1_1", 1)
+	w.Story.StepDone:Fire(p, "M1_1", 2)
+	w.Story.StepDone:Fire(p, "M1_3", 1)
+	w:Flush()
+	check(#scenes(p) == 2, "Hat once; other steps play nothing", #scenes(p))
+	w.Story.StepDone:Fire(p, "M1_3", stepOf("M1_3", "Learn"))
+	w:Flush()
+	s = scenes(p)
+	check(#s == 3 and s[3].Key == "Carry" and d.Story.First.ClatterCarry == true, "the first skill learned (M1_3's Learn step): Carry", show(s[3]))
+	-- a returning player past the guide (step 4 at the join) gets no Sorry
+	local r = w:Join(9603, { Faction = "Horns", Tutorial = 4 })
+	r:SetAttribute("TutorialStep", 99)
+	w:Flush()
+	check(#scenes(r) == 0, "joined past the guide (step 4 -> 99): no Sorry", #scenes(r))
+	-- switched off: nothing
+	K.Enabled = false
+	local o, od = w:Join(9604, { Faction = "Halo", Tutorial = 0 })
+	o:SetAttribute("TutorialStep", 4)
+	w.Story.StepDone:Fire(o, "M1_1", 1)
+	w:Flush()
+	check(#scenes(o) == 0 and od.Story.First.ClatterSorry == nil, "Clatter.Enabled = false: no scene, nothing saved", #scenes(o))
+	K.Enabled = true
 end)
 
 finish()

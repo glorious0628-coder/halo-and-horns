@@ -18,12 +18,14 @@ from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindi
 FILES = dict(UNARMED_FILES)
 FILES["FACTION_SOURCE"] = SSS / "FactionService.luau"
 FILES["PROGRESSION_SOURCE"] = SSS / "ProgressionService.luau"
+FILES["CLATTER_SOURCE"] = SSS / "ClatterScenes.luau"  # A23-212
 C, ST, L, F, PR = "CONFIG_SOURCE", "STORY_SOURCE", "LOOT_SOURCE", "FACTION_SOURCE", "PROGRESSION_SOURCE"
 U = "UTIL_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = unarmed_bindings(sources)
+    out["CLATTER_SOURCE"] = sources["CLATTER_SOURCE"]  # A23-212
     faction = sources[F]
     out["FACTION_EXTRACT"] = (
         "local Config, Util, S, FactionService, nearAltar = ...\nlocal TAG = \"FactionService\"\n"
@@ -589,6 +591,13 @@ MUTATIONS = [
     ("④: Reward.Items ignored", ST, "\t\tif type(row) == \"table\" then add(row.Id, row.N) end\n", ""),
     ("④: only the first reward item paid", ST, "\tfor _, row in rewardItems(def.Reward) do\n", "\tfor _, row in { rewardItems(def.Reward)[1] } do\n"),
     ("④: a potion in the preview without its art key", ST, "\t\trow.Icon = type(q) == \"table\" and q.Icon or nil\n", ""),
+    # A23-212 (user 10/16): Captain Clatter's three first-10-minute scenes (ClatterScenes.luau)
+    ("A23-212: a scene every time", "CLATTER_SOURCE", "\tif data.Story.First[first] == true then return false end\n", ""),
+    ("A23-212: Sorry on any step change", "CLATTER_SOURCE", "if was == Config.Tutorial.Steps.Kill and now ~= was", "if now ~= was"),
+    ("A23-212: the scene to everyone", "CLATTER_SOURCE", "pcall(Net.Fx, player, \"StoryScene\"", "pcall(Net.FxAll or Net.Fx, nil, \"StoryScene\""),
+    ("A23-212: any step plays Hat", "CLATTER_SOURCE", "after.Quest == id and after.Type == t then", "after.Quest == id then"),
+    ("A23-212: Sorry by the player, not the guide", "CLATTER_SOURCE", "local base = (key == \"Sorry\" and guideRoot(player)) or root", "local base = root"),
+    ("A23-212: the switch ignored", "CLATTER_SOURCE", "\treturn type(K) == \"table\" and K.Enabled == true and type(K.Scenes) == \"table\"", "\treturn type(K) == \"table\" and type(K.Scenes) == \"table\""),
 ]
 
 
