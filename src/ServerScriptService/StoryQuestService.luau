@@ -1562,10 +1562,26 @@ local function rowFor(player, data, id, track)
 	}
 end
 
--- the pinned main row (nil when no main is active)
+-- the pinned main row (nil when no main is active). A23-199 for the main chain (최종 검수 10/16 ①): while the next main waits at
+-- its asker (an Offer whose NPC has a body, its requirements met: the asker's '!' in StoryOffers), the pinned row says
+-- "Talk to <asker>" and guides there (Story.Npc, Story.Offer = true; nothing is saved until [Accept]); [Decline] leaves it
+-- here, the next talk asks again
 function StoryQuestService.MainRow(player, data)
 	local st = story(data)
-	if st.Main.Id == "" or not DEFS[st.Main.Id] then return nil end
+	if st.Main.Id == "" then
+		local id = num(data.TutorialStep) == TUT_DONE and nextMain(st, player) or nil
+		local def = id and DEFS[id]
+		local npc = def and offerNpc(player, def)
+		if not (def and type(def.Offer) == "table" and npc and npcBody(npc) and requirementsMet(player, data, def)) then return nil end
+		local name = SQ.Speakers[npc] or npc
+		return {
+			Id = "story:" .. id, Kind = "Main", Pinned = true, TutorialStep = TUT_DONE,
+			Text = string.format(TXT.OfferTalk, name), Progress = 0, Target = 1,
+			ShortName = string.format(TXT.OfferTalkShort, name), RewardGold = 0, RewardXP = 0, CanClaim = false, ShowProgress = false,
+			Story = { Id = id, St = 1, Npc = npc, Offer = true },
+		}
+	end
+	if not DEFS[st.Main.Id] then return nil end
 	return rowFor(player, data, st.Main.Id, st.Main)
 end
 
