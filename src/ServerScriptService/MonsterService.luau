@@ -1567,6 +1567,7 @@ local function killRecord(rec)
 	rec.HP = 0
 	records[rec.Id] = nil
 	updateBar(rec)
+	MonsterService.Moment:Fire(rec, "Beaten") -- A23-212: a boss's last line as it calms down (BarkService)
 	if rec.Quiet == true then
 		-- A23-110: a quiet personal monster (FirstKOService's King) pays nothing and counts nowhere; its service hears it
 		rec._contributors, rec._hits, rec._dmg, rec._share = {}, {}, {}, {}
