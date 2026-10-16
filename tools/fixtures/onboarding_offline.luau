@@ -62,6 +62,9 @@ local function fixture(saved, opts)
 		Character = { Name = "Body1" }, FxLog = {}, Travels = {}, TravelOk = true, Marks = {} }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
+	-- A23-222: a new save starts with 1000 gold in the bank; these checks count the rewards from an empty purse
+	-- (opts.RealBank keeps the 1000, the 'A23-222' block below)
+	if not (opts and opts.RealBank) then config.Data.Defaults.BankGold = 0 end
 	-- A23-74: the forge trip lands at the Crossroads spawn here (no Vector3 / CFrame doubles; test_weapon_first checks
 	-- the spot in front of the anvil)
 	config.Tutorial.Forge.Landing = "Spawn"
@@ -272,6 +275,17 @@ do
 	f:Claim(); check(f.Data.BankGold == 150, "A23-188: a [Claim] after it pays nothing more")
 	check(#f.Spawned == 0 and f.Data.TutorialKills == 0, "a personal town slime was spawned/credited")
 	f:ZoneTo("SlimeMeadow"); f:Kill(); check(f.Data.TutorialKills == 0 and f.Data.TutorialStep == 99, "A23-188: no '5 slimes' hunt after it")
+end
+-- A23-222 (user 10/16 "기본 1000 코인을 주자."): the real Config: a brand-new save has 1000 in the bank, nothing carried,
+-- and the first mission's 150 comes on top
+do
+	check(execute(CONFIG_SOURCE, configEnv).Data.Defaults.BankGold == 1000, "A23-222: Config.Data.Defaults.BankGold is 1000")
+	local f = fixture(nil, { RealBank = true })
+	check(f.Data.BankGold == 1000 and (f.Data.CarriedGold or 0) == 0, "A23-222: a brand-new save starts with 1000 in the bank, 0 carried",
+		tostring(f.Data.BankGold) .. " / " .. tostring(f.Data.CarriedGold))
+	f:Choose(); f:Publish(); f:Arm()
+	f:Accept(); f:Publish()
+	check(f.Data.TutorialStep == 99 and f.Data.BankGold == 1150, "A23-222: the first mission's 150 on top (1150)", tostring(f.Data.BankGold))
 end
 do
 	local f = fixture(saved(0, 0)); f.Zone = "SlimeMeadow"; f:Kill()

@@ -2561,6 +2561,9 @@ runGroup("shop", function()
 	-- gameplay plan 2026-10-13 1-A #2: the Forge ships with Buy = false (group "shop: no weapon sold" below); these checks are
 	-- the buy path for when it is switched back on
 	C.WeaponShop.Buy = true
+	-- A23-222: tiers 2 and 3 are sold only after their first drop (group "shop: first drop first" below); here both dropped
+	f.Data.LootFlags = f.Data.LootFlags or {}
+	f.Data.LootFlags.FirstWeapon, f.Data.LootFlags.FirstKingWeapon = true, true
 	local function attempt(tier)
 		f.Notices = {}
 		local gold = f.Data.CarriedGold + f.Data.BankGold
@@ -2625,6 +2628,67 @@ runGroup("shop: no weapon sold", function()
 				show({ spent, f.Data.WeaponTier }))
 		end
 	end
+end)
+
+runGroup("shop: first drop first", function()
+	-- A23-222 (user 10/16): the Forge sells tier 2 only after the first Slime Prince drop (LootFlags.FirstWeapon) and tier 3
+	-- only after the first King Slime drop (LootFlags.FirstKingWeapon); a refusal = one 'info' line, no gold; an owned tier
+	-- and the joke weapons are never held back
+	local f = fixture()
+	local C = f.Config
+	check(type(C.WeaponShop.OpenAfterDrop) == "table" and C.WeaponShop.OpenAfterDrop[2] == "FirstWeapon"
+		and C.WeaponShop.OpenAfterDrop[3] == "FirstKingWeapon", "shipped: OpenAfterDrop { [2] = FirstWeapon, [3] = FirstKingWeapon }",
+		show(C.WeaponShop.OpenAfterDrop))
+	f:Set("CarriedGold", 5000)
+	f:Set("Level", 5)
+	f:Set("WeaponOwnedMask", 1)
+	f.Data.LootFlags = f.Data.LootFlags or {}
+	f.Data.LootFlags.FirstWeapon, f.Data.LootFlags.FirstKingWeapon = nil, nil
+	local function attempt(tier)
+		f.Notices = {}
+		local gold = f.Data.CarriedGold + f.Data.BankGold
+		f:ShopBuy(tier)
+		return gold - (f.Data.CarriedGold + f.Data.BankGold)
+	end
+	local function lineKind()
+		for _, e in f.Notices do if e.Text == C.Text.WeaponDropFirst then return e.Kind end end
+		return nil
+	end
+	for _, tier in { 2, 3 } do
+		local spent = attempt(tier)
+		check(spent == 0 and f.Data.WeaponOwnedMask == 1 and f.Data.WeaponTier == 1 and lineKind() == "info",
+			"tier " .. tier .. " before its first drop: refused ('Find this one on a monster first!', info), no gold",
+			show({ spent, f.Data.WeaponOwnedMask, f.Notices }))
+	end
+	check(C.WeaponForgeOpen(f.Data, 2) == false and C.WeaponForgeOpen(f.Data, 3) == false and C.WeaponForgeOpen(f.Data, 1) == true
+		and C.WeaponForgeOpen(f.Data, 10) == true and C.WeaponForgeOpen(nil, 2) == false and C.WeaponForgeOpen(nil, 1) == true,
+		"WeaponForgeOpen: 2 and 3 closed before the drops, tier 1 / joke weapons open, no save = closed when held back")
+	-- the Prince's first drop opens tier 2 only
+	f.Data.LootFlags.FirstWeapon = true
+	local spent = attempt(3)
+	check(spent == 0 and not bit32.btest(f.Data.WeaponOwnedMask, 4) and lineKind() == "info", "tier 3 still closed after the Prince's drop",
+		show({ spent, f.Data.WeaponOwnedMask }))
+	spent = attempt(2)
+	check(spent == C.Weapons[2].Price and bit32.btest(f.Data.WeaponOwnedMask, 2) and f.Data.WeaponTier == 2 and lineKind() == nil,
+		"tier 2 sold after the Prince's first drop", show({ spent, f.Data.WeaponOwnedMask, f.Data.WeaponTier }))
+	-- the King's first drop opens tier 3
+	f.Data.LootFlags.FirstKingWeapon = true
+	spent = attempt(3)
+	check(spent == C.Weapons[3].Price and bit32.btest(f.Data.WeaponOwnedMask, 4) and f.Data.WeaponTier == 3,
+		"tier 3 sold after the King's first drop", show({ spent, f.Data.WeaponOwnedMask, f.Data.WeaponTier }))
+	-- an owned tier with no flag (an old save, a trade) equips for free
+	local g = fixture()
+	g:Set("CarriedGold", 5000)
+	g:Set("Level", 5)
+	g:Set("WeaponOwnedMask", tierMask(1, 3))
+	g.Data.LootFlags = g.Data.LootFlags or {}
+	g.Data.LootFlags.FirstWeapon, g.Data.LootFlags.FirstKingWeapon = nil, nil
+	g.Notices = {}
+	local gold = g.Data.CarriedGold + g.Data.BankGold
+	g:ShopBuy(3)
+	check(g.Data.WeaponTier == 3 and gold == g.Data.CarriedGold + g.Data.BankGold and g:Noticed(C.Text.WeaponDropFirst) == 0,
+		"an owned tier 3 without the King flag equips for free", show({ g.Data.WeaponTier, g.Notices }))
+	check(C.WeaponForgeOpen(g.Data, 3) == true and C.WeaponForgeOpen(g.Data, 2) == false, "WeaponForgeOpen: an owned tier counts as open")
 end)
 
 ------------------------------------------------------------------ 6b. A23-28 weapon level rule (auto-fit on a level drop, one notice per level-up crossing)

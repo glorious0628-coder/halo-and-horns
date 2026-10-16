@@ -578,49 +578,35 @@ runGroup("the King off", function()
 	check(w:Track(sd, ID) ~= nil and w:Track(sd, ID).St == 6, "a FirstKOKing table without Enabled: on (the rematch row waits)", show(sd.Story.Main))
 end)
 
------------------------------------------------------------------- 4. the gold top-up (the engine's TopUpGold on the test-only sub KOT)
+------------------------------------------------------------------ 4. no gold top-up any more (A23-222: a new save starts with 1000 gold)
+-- (user 10/16 "그러면 돈이 모자라면 채워줄 필요 없자넝"): the engine no longer reads a step's TopUpGold; the test-only sub KOT
+-- still carries TopUpGold = 50 on its step 2, so a top-up coming back shows here
 runGroup("top-up", function()
 	local w = koWorld({ TestSub = true })
 	local uid = 1300
 	local function done2() return { M1_1 = true, M1_2 = true } end
-	local function arriveAt2(name, carried, bank, wantN)
+	local function arriveAt2(name, carried, bank)
 		uid += 1
 		local p, d = joinKO(w, uid, "Halo", { Carried = carried, Bank = bank, Done = done2() })
 		local before = #w.GoldGiven
 		w.Story.Event(p, "FirstKO")
-		local total = (d.CarriedGold or 0) + (d.BankGold or 0)
 		local given = #w.GoldGiven - before
-		if wantN > 0 then
-			check(given == 1 and w.GoldGiven[#w.GoldGiven].N == wantN and w.GoldGiven[#w.GoldGiven].Source == "Choice" and total == 50
-				and d.BankGold == bank and d.CarriedGold == carried + wantN,
-				name .. ": tops up to 50 in total (+" .. wantN .. " carried, source Choice), the bank is untouched", show({ given, d.CarriedGold, d.BankGold }))
-		else
-			check(given == 0 and d.CarriedGold == carried and d.BankGold == bank, name .. ": already has 50 or more: nothing added", show({ given, d.CarriedGold, d.BankGold }))
-		end
-		check(d.Story.First.TopKOT2 == true and d.Story.Subs.KOT and d.Story.Subs.KOT.St == 2, name .. ": the one-time flag is saved", show(d.Story.First))
+		check(given == 0 and d.CarriedGold == carried and d.BankGold == bank and d.Story.Subs.KOT and d.Story.Subs.KOT.St == 2,
+			name .. ": step 2 opens, no gold added (no top-up)", show({ given, d.CarriedGold, d.BankGold, d.Story.Subs.KOT }))
+		check(d.Story.First.TopKOT2 == nil, name .. ": no top-up flag saved", show(d.Story.First))
 		return p, d
 	end
-	arriveAt2("no gold", 0, 0, 50)
-	arriveAt2("30 carried", 30, 0, 20)
-	arriveAt2("10 carried + 20 in the bank", 10, 20, 20)
-	arriveAt2("49 gold", 0, 49, 1)
-	arriveAt2("exactly 50", 50, 0, 0)
-	arriveAt2("50 in the bank", 0, 50, 0)
-	arriveAt2("500 gold", 500, 300, 0)
-	-- the flag keeps a second entry from paying again (a track put back by hand)
-	local p, d = arriveAt2("again", 0, 0, 50)
-	local gold = #w.GoldGiven
-	d.CarriedGold = 0
-	d.Story.Subs.KOT.St = 1
-	w.Story.Event(p, "FirstKO")
-	check(d.Story.Subs.KOT.St == 2 and #w.GoldGiven == gold and d.CarriedGold == 0, "the top-up is paid once per step, never twice", show({ d.CarriedGold, #w.GoldGiven - gold }))
-	-- a step that passes at once (the potion was bought earlier) gets no top-up
+	arriveAt2("no gold", 0, 0)
+	arriveAt2("30 carried", 30, 0)
+	arriveAt2("49 gold", 0, 49)
+	arriveAt2("500 gold", 500, 300)
+	-- a step that passes at once (the potion was bought earlier) moves on, still no gold
 	uid += 1
 	local q, qd = joinKO(w, uid, "Horns", { Done = done2() })
 	local g0 = #w.GoldGiven
 	check(w.Story.Event(q, "PotionBought") == false, "a purchase before the KO moves nothing yet", show(qd.Story.Subs.KOT))
 	w.Story.Event(q, "FirstKO")
-	check(qd.Story.Subs.KOT.St == 3 and #w.GoldGiven == g0 and (qd.CarriedGold or 0) == 0, "step 2 passes at once (bought earlier), no top-up", show({ qd.Story.Subs.KOT, #w.GoldGiven - g0 }))
+	check(qd.Story.Subs.KOT.St == 3 and #w.GoldGiven == g0 and (qd.CarriedGold or 0) == 0, "step 2 passes at once (bought earlier), no gold", show({ qd.Story.Subs.KOT, #w.GoldGiven - g0 }))
 	-- the engine's keeps on the test sub: Lv cap, no potion yet, after its Done
 	local function offered(name, o, expect)
 		uid += 1
@@ -774,10 +760,10 @@ runGroup("debug aids", function()
 	check(#w.Notices == n0 and #panels == 0 and #done == 0 and #w.XP == 0 and #w.Granted == 0, "... no notice, no popup, no QuestDone, no reward", "")
 	check(w.Story.DebugSub(p, "KOT", 4) == "ok" and w:Track(d, "KOT").St == 4 and p:GetAttribute("PotionSip") == true,
 		"DebugSub again: moves it to step 4 (the sip flag lit)", show(w:Track(d, "KOT")))
-	-- step 2 comes with its gold like a real arrival
+	-- A23-222: step 2 comes with no gold (the top-up is gone, like a real arrival)
 	local q, qd = joinKO(w, 1602, "Horns", { Level = 9, Done = done2() })
-	check(w.Story.DebugSub(q, "KOT", 2) == "ok" and qd.CarriedGold == 50 and qd.Story.First.TopKOT2 == true, "DebugSub KOT step 2: the 50 gold top-up like a real step 2", show({ qd.CarriedGold, qd.Story.First }))
-	check(w.Story.DebugSub(q, "KOT", 2) == "ok" and qd.CarriedGold == 50, "... once", show(qd.CarriedGold))
+	check(w.Story.DebugSub(q, "KOT", 2) == "ok" and (qd.CarriedGold or 0) == 0 and qd.Story.First.TopKOT2 == nil, "DebugSub KOT step 2: no gold top-up (A23-222)", show({ qd.CarriedGold, qd.Story.First }))
+	check(w.Story.DebugSub(q, "KOT", 2) == "ok" and (qd.CarriedGold or 0) == 0, "... again: still none", show(qd.CarriedGold))
 	-- a bare quest id = step 1; a fraction rounds down; a bad step / quest is refused and changes nothing
 	local r, rd = joinKO(w, 1603, "Neutral", { Level = 9, Done = done2() })
 	check(w.Story.DebugSub(r, "KOT") == "ok" and w:Track(rd, "KOT").St == 1, "no step given: step 1", show(w:Track(rd, "KOT")))

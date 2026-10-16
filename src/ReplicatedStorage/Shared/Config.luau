@@ -4671,8 +4671,8 @@ for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id
 -- (ShopService.BuyPotion), QuickSlotSet (QuickSlotService: an item put into a slot), PotionUsed (VitalsService, a drink from the
 -- quick slot or the bag). Past = a step whose happening was seen before it opened passes at once (a player who ran ahead is never
 -- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
--- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
--- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+-- HP, MP: nothing to put). (TopUpGold is gone, A23-222: a new save starts with 1000 gold.) Personal = only the personal
+-- King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
 -- 장인 ② N0: the line when the crafted weapon goes into the hand at the quest's end
 Config.StoryQuests.Text.CraftEquipped = "%s equipped!"
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }

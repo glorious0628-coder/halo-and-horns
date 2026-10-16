@@ -54,6 +54,15 @@ def strip_comments(text: str) -> str:
     return "\n".join(line.split("--", 1)[0] for line in text.splitlines())
 
 
+def bank_from_zero(config: str) -> str:
+    """A23-222: a new save starts with 1000 gold in the bank (Config.Data.Defaults.BankGold = 1000). Suites whose gold
+    sums count from an empty purse bind Config with that one default at 0; tools/test_unarmed_start.py checks the 1000."""
+    old = "\t\tBankGold = 1000,"
+    if config.count(old) != 1:
+        raise ValueError("Config.Data.Defaults.BankGold = 1000 not found once; update bank_from_zero.")
+    return config.replace(old, "\t\tBankGold = 0,", 1)
+
+
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8-sig").replace("\r\n", "\n")
 
