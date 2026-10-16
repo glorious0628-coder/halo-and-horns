@@ -395,10 +395,16 @@ function WeaponPose.StowStep(char, tool, kind, attacking, now)
 		S.Stow[char] = st
 	end
 	if attacking then st.Last = now end
-	if not (where and handle and handle:IsA("BasePart")) then return false end
+	if not (handle and handle:IsA("BasePart")) then return false end
+	if not where then
+		-- (stowing switched off while the weapon was put away: back to the hand)
+		if st.On and st.Where then WeaponPose.StowApply(char, tool, handle, st.Where, false) end
+		st.On = false
+		return false
+	end
 	local want = not attacking and now - st.Last >= (tonumber(Config.WeaponStow.HandSeconds) or 5)
 	if want ~= st.On then
-		st.On = want
+		st.On, st.Where = want, where
 		WeaponPose.StowApply(char, tool, handle, where, want)
 	end
 	return st.On

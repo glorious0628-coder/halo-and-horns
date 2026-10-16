@@ -263,6 +263,10 @@ do
     ok(WeaponPose.StowStep(char, tool, "Bow", true, 100.1) == false and weld.Enabled == false, "an attack takes it off the back at once")
     ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand - 0.2) == false, "it stays in the hand for HandSeconds after the attack")
     ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand + 0.1) == true and weld.Enabled, "then back on the back")
+    W.On = false
+    ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand + 0.2) == false and weld.Enabled == false,
+        "stowing switched off while it is on the back: back to the hand")
+    W.On = true
     S.Stow = {}
     char, tool, handle, grip = setup("Sword")
     ok(WeaponPose.StowStep(char, tool, "Sword", false, 200) == true and grip.Enabled == false
