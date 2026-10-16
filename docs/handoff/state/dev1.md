@@ -3,8 +3,12 @@
 ## 10/16 밤 (최신)
 - 병합됨: dev1-clatter-scenes 35a8149b — 마을 Clatter 장면 3개 + 크기 T.Clatter.Scale 0.68(약 6.5스터드, 오프닝은 크기 1 그대로) + Hat 헬멧을 머리 위로. 크기 사진은 다음 메인 Play 확인 때 최종 검수가 봄.
 - 버린 것: 660c0f98(AlwaysShow — G 한 번에 두 프롬프트 다 눌림).
-- **다음**: 개발 2 Otto 고침(모루 프롬프트가 M1_1 부탁을 막음) 오면 scratchpad otto1016.py로 누름 확인(첫 무기 → 모루 G → M1_1 부탁 창 → Next → Accept, 값 보고). 장면 명령 TutorialForge는 모루에서 23스터드(최대 12)라 스크립트가 직접 모루 앞으로 옮김.
-- 대기: 무리 5마리 전사 재측정(feel1016.py --pack, 차이 30%↑ 또는 Lv5 5분↑일 때만 보고), 제작 창 누름 확인(craftpress1016.py, ArtisanAlch/ArtisanSmith).
+- **▶ 남은 큐 (최종 검수 10/16 밤, 이 순서; 화면은 '전달함, 시작' 뒤, PhoneTest_1015만):**
+  1. 개발 2 Otto 고침(모루 프롬프트가 M1_1 부탁을 막음) 오면 누름 확인: 첫 무기 → 모루 G → M1_1 부탁 창 → Next → Accept, 값 보고. 스크립트 = 옛 세션 scratchpad otto1016.py(없으면 같은 흐름으로 새로: StudioFreshSave → Play → scene.py TutorialForge → 모루 앞으로 직접 이동(장면 명령은 모루에서 23스터드, 최대 12) → 키 → PanelsModal/OfferNext/OfferAccept 클릭 → 서버 TutorialStep·StoryOffers).
+  2. 장면 명령(개발 2 `py tools/scene.py <Preset>`, STUDIO_NAME)으로 무리 5마리 손맛 재측정(전사; feel1016.py --pack 방식). 차이 30%↑ 또는 Lv5 5분↑일 때만 보고.
+  3. 대장간 'The first weapon can't be sold' 버튼 글 정리.
+  4. 제작 창 누름 확인(ArtisanAlch / ArtisanSmith 장면: 창 열림·Potion/Gear 줄·제작 버튼 실제 눌림 값).
+- 규칙: 한 묶음 끝(가지 push + tip 보고 + 이 파일 push) → clear_session("self").
 
 ## 10/16 저녁 (최신)
 - 병합됨(main b27db2ac + 9001c93f): dev1-calm-fade 9e6a63c8 = 사라짐·보상 글·소리를 맞은 표시 뒤로(Feel.afterHit / Fx.HitWait + HIT_AFTER 0.08) + 손맛 ① 누르면 몸짓 먼저(Fx.PredictSwing, 누름 줄 Feel.takePending MaxAge 1.5) + Studio 표시 HHDbgSwing; 개발 2 서버 몸 수명 = 1.15 + (CalmTime−1) + HIT_WAIT 0.7.
