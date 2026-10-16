@@ -20,10 +20,9 @@
 --     (lifetime) + RankingService.Credit "Artisan" (the weekly board); the attribute ArtisanRank (Config.ArtisanRank, 0 =
 --     not an artisan now) at PlayerReady, after a craft and after a class / faction change; a new rank says so once
 --     (key Config.Craft.Text.RankUp) and fires RankUp(player, rank).
---   * A23-206 bound materials (최종 검수 10/16, GPT artisan_switch_r1 ②): an item / potion / gear / pet craft takes the bound
---     ones first and remembers how many in Pend.Bound; an Item result made with any bound one is bound (all of it), and a
---     refund gives the bound part back bound - a quest reward never turns tradeable through a craft. A Weapon craft takes
---     free materials only (a spare weapon has no bound count; refusal key BoundMats).
+--   * A23-213 (user 10/16, "그래야 제작하는 애들이 재료 모으는 재미가 생기지"): every craft (weapons too) may use bound
+--     materials, the bound ones first; the result is NOT bound (it trades and sells like any craft). The materials stay
+--     bound themselves: Pend.Bound notes how many were bound, and a refund (the recipe gone) gives that part back bound.
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
 --   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
 --   handlers; public for the offline test) · RecipeOn(id) · Session(player) · Settle(player, data) (a waiting craft)
@@ -160,11 +159,10 @@ local function boundOf(data, item)
 	return math.clamp(type(data.ItemsBound) == "table" and math.floor(num(data.ItemsBound[item])) or 0, 0, held)
 end
 
--- freeOnly (a Weapon craft): the bound ones do not count
-local function hasMats(data, r, freeOnly)
+local function hasMats(data, r)
 	local items = type(data.Items) == "table" and data.Items or {}
 	for item, n in r.Mats do
-		if math.floor(num(items[item])) - (freeOnly and boundOf(data, item) or 0) < n then return false end
+		if math.floor(num(items[item])) < n then return false end
 	end
 	return true
 end
@@ -220,9 +218,8 @@ local function room(player, data, r)
 	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 
--- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }.
--- bound (A23-206): an Item result made with bound materials goes in bound
-local function payOut(player, data, r, plus, bound)
+-- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }
+local function payOut(player, data, r, plus)
 	if r.Kind == "Pet" then
 		local spd = nil -- A23-194: no Spd = no roll (the species' own Bonus line)
 		if type(r.Spd) == "table" then
@@ -263,7 +260,7 @@ local function payOut(player, data, r, plus, bound)
 	end
 	local before = have()
 	if before + n > Config.Loot.ItemCap then return false end -- never a part of it
-	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n, Bound = bound == true or nil } }, nil, "Craft")
+	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n } }, nil, "Craft") -- A23-213: never bound
 	return have() - before >= n
 end
 
@@ -307,14 +304,8 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	if type(r) ~= "table" then return false end
 	local c = craftOf(data)
 	-- an earned +N is kept in the save if the result does not fit now (the next try pays that +N, never less)
-	local bound = false
-	if type(c.Pend) == "table" and c.Pend.Id == recipeId then
-		c.Pend.Plus = plus
-		for _, n in type(c.Pend.Bound) == "table" and c.Pend.Bound or {} do
-			if math.floor(num(n)) > 0 then bound = true end
-		end
-	end
-	local paid, pet = payOut(player, data, r, plus, bound)
+	if type(c.Pend) == "table" and c.Pend.Id == recipeId then c.Pend.Plus = plus end
+	local paid, pet = payOut(player, data, r, plus)
 	if not paid then return false end
 	c.Pend = nil
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
@@ -476,11 +467,6 @@ function CraftService.TryStart(player, id)
 		notify(player, "NeedMats")
 		return "mats"
 	end
-	local freeOnly = r.Kind == "Weapon" -- A23-206: a spare weapon has no bound count, so bound materials never make one
-	if freeOnly and not hasMats(data, r, true) then
-		notify(player, "BoundMats")
-		return "bound"
-	end
 	if not room(player, data, r) then
 		notify(player, "Full")
 		return "full"
@@ -493,8 +479,8 @@ function CraftService.TryStart(player, id)
 	end
 	local bound = {}
 	for item, n in r.Mats do
-		local b = freeOnly and 0 or math.min(n, boundOf(data, item)) -- TakeItem takes the bound ones first
-		if not S.LootService.TakeItem(player, item, n, freeOnly and "Free" or nil) then
+		local b = math.min(n, boundOf(data, item)) -- TakeItem takes the bound ones first
+		if not S.LootService.TakeItem(player, item, n) then
 			Util.Warn(TAG, "take " .. item .. " failed after the check")
 		elseif b > 0 then
 			bound[item] = b

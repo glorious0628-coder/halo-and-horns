@@ -481,8 +481,8 @@ function LootService.GrantItem(player, id, n, source)
 end
 
 -- A23-79 (게임성 개발 3, the candy jar): take `n` (1..ItemCap) of one Config.Loot.Items id; false = not enough (nothing
--- taken). The bag push follows like after a drop. A23-206: mode "Trade" (the market) or "Free" (a weapon craft, 10/16) takes
--- free ones only (bound ones never leave the character); any other use takes the bound ones first
+-- taken). The bag push follows like after a drop. A23-206: mode "Trade" (the market) takes free ones only (bound ones never
+-- leave the character); any other use (a craft too, A23-213) takes the bound ones first
 function LootService.TakeItem(player, id, n, mode)
 	local data = getData(player)
 	n = math.floor(num(n))
@@ -491,7 +491,7 @@ function LootService.TakeItem(player, id, n, mode)
 	local have = math.floor(num(data.Items[id]))
 	if have < n then return false end
 	local before = BOUND.Of(data, id)
-	local freeOnly = mode == "Trade" or mode == "Free"
+	local freeOnly = mode == "Trade"
 	if freeOnly and have - before < n then return false end
 	data.Items[id] = have > n and have - n or nil
 	if freeOnly then
@@ -641,7 +641,7 @@ function LootService.GrantItems(player, list, pos, source)
 		local id = type(row) == "table" and row.Id or nil
 		local n = type(row) == "table" and math.floor(num(row.N)) or 0
 		if type(id) == "string" and n >= 1 and n <= 99 then
-			-- row.Bound (10/16): a craft made from bound materials / their refund stays bound (A23-206, never a way to trade them)
+			-- row.Bound (10/16): a craft refund gives the bound materials back bound (A23-206; a craft result is free, A23-213)
 			local given = addItem(player, data, id, n, false, row.Bound == true) -- 0 for an id missing from LOOT.Items
 			if given > 0 then counts[id] = (counts[id] or 0) + given end
 		end

@@ -10054,7 +10054,6 @@ Config.Craft = {
 		NotArtisan = "Only artisans can make this.",
 		NeedLevel = "Your craft level is too low.",
 		NeedMats = "Not enough materials.",
-		BoundMats = "Reward items can't make weapons.", -- A23-206 (10/16): a weapon craft takes free materials only
 		NeedGold = "Not enough gold.",
 		Far = "Go to your workbench.",
 		Busy = "Finish this craft first.",
@@ -10446,8 +10445,8 @@ function Config.SanitizeCraft(t)
 	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
 	out.Made = V4.countMap(src.Made, L.MaxCount)
 	-- Pend (CraftService, 게임성 검수 10/12): a craft paid and not delivered yet = { Id = recipe id, Plus = -1 (not hammered
-	-- yet) | 0..2, Gold = what was paid, Mats = { [item] = n } paid, Bound = { [item] = n } of those that were bound (A23-206,
-	-- 10/16: the result and a refund stay bound) } (a vanished recipe pays it back); anything else = none
+	-- yet) | 0..2, Gold = what was paid, Mats = { [item] = n } paid, Bound = { [item] = n } of those that were bound (A23-206 /
+	-- A23-213: a refund gives them back bound; the result is never bound) } (a vanished recipe pays it back); anything else = none
 	known.Pend = true
 	local p = src.Pend
 	if type(p) == "table" and V4.key(p.Id) then
