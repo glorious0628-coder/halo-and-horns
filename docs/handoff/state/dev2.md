@@ -1,5 +1,11 @@
 # 게임성 개발 2 — 상태 (2026-10-16 밤 끝: 2장 끝 → 다음 = 장인 최소판)
 
+## 다음 (10/16 밤, 사용자 컴퓨터 끔 — 새 대화는 여기부터)
+1. **dev2-first12 54a3be0d** = 보고·main 위 시험 통과(최종 검수). 병합은 개발 1 화면 짝(허수아비를 튜토리얼 줄 GuideSpot/Practice로 그림)과 같이 → 할 일 없음, 짝 가지 오면 서버 신호 맞는지만 봄.
+2. **dev2-gold1000 c3c55300**(origin push, ① 위, ../wt_gold): 코드 끝(새 저장 BankGold 1000, WeaponShop.OpenAfterDrop + Config.WeaponForgeOpen + 속성 ForgeOpen, TopUpGold 삭제). **시험 남음**: choice_card·first_ko(top-up 묶음 → '더는 안 채움')·gamepass·loot(상점: 첫 드롭 플래그)·onboarding(BankGold 0 가정)·unarmed_start(상점 구매)·village_fund. 방법: 다른 기능 시험은 세계 Defaults.BankGold = 0 주석 달아 고정, 새 검사(드롭 전 거절·드롭 뒤 판매·밈 무기 항상·ForgeOpen 마스크·새 저장 1000+150) + 변이. 끝나면 최종 검수에 SHA.
+3. **dev2-first12c 263df90a**(origin push, 옛 ② 위): ③ = StartClock 9·밤 밝기·안내자 2배 줄·'He'→Slime Prince·Forge 도착 'Talk to Otto'(시험 아직: onboarding)·Reward XPMult. ② 끝나면 dev2-gold1000 위로 cherry-pick → 시험(day_cycle·gamepass 이미 맞춤) → 보고. ③ Lv5 시험 자리 = **(b) 초원 입구 유지**(최종 검수 답) — 바꿀 것 없음.
+4. 그 뒤 장인 2부(깊은 광맥 길) → ⓑ 도구(옵션: 무기 4%·반지 1%p·갑옷 2%p, 한 칸 이웃 역전 0 시험) → ⓒ 주간 선물.
+
 ## 큐 (최종 검수 순서 — 새 대화는 여기서 시작)
 0-4. **(지금, 10/16 밤) 첫 12분+물약(A23-221·222)이 장인보다 먼저.** ① **dev2-first12 54a3be0d 보고함**(../wt_talk): 튜토리얼 Practice 5단계(허수아비, 방향 무관), KO1 → 본편 M1_2(KingHill·Fizzby 옆 일어남·모루 Enhance·초원 입구 재대결), Schema 6, H_Band/R_Band = Done M1_2, 프리셋 4. ② **dev2-gold1000**(../wt_gold, ① 위 c3c55300): 새 저장 BankGold 1000, WeaponShop.OpenAfterDrop + 속성 ForgeOpen, TopUpGold 삭제 — 서브에이전트가 시험 맞추는 중(choice_card·first_ko·gamepass·loot·onboarding·unarmed_start·village_fund). ③ **dev2-first12c**(../wt_gold 옛 커밋 263df90a: StartClock 9·밤 밝기·안내자 2배 줄·'He'→Slime Prince·Forge 'Talk to Otto'·Reward XPMult) → ② 뒤에 cherry-pick. ③ 질문 대기: Lv5 시험 슬라임 성문 밖 길 (a) 개인 슬라임 한 마리씩 4번 (b) 초원 입구 유지. 장인 2부(광맥 길)는 이것들 뒤. 전체 시험 원래 실패 12: costume_physics·english·finisher·halloween·new_zones·rank_marks·skeleton_ground·skin_binding_studio·walk_forge_client·lost_found·auto_face·tool_grip. 도구: 스크래치 sweep.py <wt> <out.json>.
 0-3. **(하는 중, 10/16 밤)** 장인 ⓐ 1부 = **dev2-curve 06650f0d** 보고함(../wt_talk): 레시피 곡선 + DeepMoonShard·TrialCore + Reward.Side(DC3 장인 Trial Core). 병합은 2부 뒤 권함. **다음 = 2부 깊은 광맥 길**(해골 유적: 시작→표시 3→경비 해골 3→타이밍 5중 3→조각 1, 길 A→B→C, 실패=처음부터) 서버 모듈 + Config 좌표 + 개발 1 계약. ⓑ 도구(옵션 ×2 역전 질문 보냄), ⓒ 주간 선물(문턱 대기). guide-look 병합됨 1c946b0a.
