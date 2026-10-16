@@ -4723,6 +4723,23 @@ Config.StoryQuests.RepeatDailyMax = 5
 -- it is done: Fx StoryScene Key "Scene") is one of these (game dev 1 plays each one; a new one = a new row here first)
 Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,
 	Spin = true, Hug = true, Clap = true }
+-- A23-212 (user 10/16, GPT build/codex/story_world_r5.md §4 B): Captain Clatter's three first-10-minute scenes (ClatterScenes;
+-- each once per character, that player only, no accept / trip / reward). Line = his one line (game dev 1 shows it over a LOCAL
+-- copy of ReplicatedStorage[Folder].ClatterTown), Move = what he does (game dev 1's move key), After = the quest step it
+-- follows (Sorry = the guide's [Accept] instead: TutorialStep leaves 0). Side / Ahead = studs right / along the line from
+-- the guide to the player (Sorry) or the player's facing; Stay = s he stays before he goes. Model = the ruins boss model
+-- (ServerStorage CustomModels) copied as the town body
+Config.StoryQuests.Clatter = {
+	Enabled = true, Model = "CaptainClatter", Folder = "StoryProps", Side = 6, Ahead = 3, Stay = 8,
+	Scenes = {
+		-- the first departure, beside the guide: he packs the repair tools, bows too deep, his hat covers his eyes
+		Sorry = { Line = "I broke the crown. I'm sorry. I'm here to help.", Move = "BowHatSlip" },
+		-- after the first Slime Prince: he catches a flying box upside down - and only his own hat
+		Hat = { Line = "Caught it! Oh. That's my hat.", Move = "CatchHat", After = { Quest = "M1_1", Type = "Kill" } },
+		-- after the first skill: he grips his box, then holds the handle right and salutes as the player goes first
+		Carry = { Line = "I'll carry this. You lead.", Move = "CarrySalute", After = { Quest = "M1_3", Type = "Learn" } },
+	},
+}
 -- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
 Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
 
