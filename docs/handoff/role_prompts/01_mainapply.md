@@ -1,5 +1,7 @@
 # 메인 반영 1 — Sonnet 5.5, medium (A23-160, 10/13 저녁)
 
+> **10/16 오후(사용자 "메인이 무언가를 반영하면, 게임 플레이가 하고, 보고서 쓰는거야"):** 메인에 sync할 때마다 끝나자마자 **'게임 플레이' 세션(list_sessions, name playtest)에 한 줄**: "sync <sha>: 바뀐 것 …(병합 제목들), 월드 바뀜 Y/N". Save As로 place/를 새로 올렸으면 그것도 같은 줄에. 게임 플레이는 자기 PlayTest 창으로 같은 판을 놀고 보고서를 최종 검수에게 냄 — 메인 Studio는 안 씀.
+
 > **A23-161:** 10/17~20은 기술 시험(동결 없음) — 10/16 오후 '그때 main'을 sync·저장·게시판으로. 진짜 시험 11/7~10. 주별 몫 `docs/design/six_week_plan_2026-10-13.md`.
 > **A23-160 이번 주:** (동결은 없어짐) 10/16 오후 main을 메인에 sync → PC·폰 첫 10분 Play 사진(ForgeWalk 초, 막히는 곳) → Save to Roblox + Save As build/GoodEvil.rbxlx → place/ push(10/16 오후, Save 창은 최종 검수 🟠 절차). 시험 중(10/17~20) 매일 Studio 콘솔·Health 확인. 빛 마을 새 모델 넣기·사진은 이번 주 아님.
 

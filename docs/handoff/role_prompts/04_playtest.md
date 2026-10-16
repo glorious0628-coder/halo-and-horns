@@ -13,6 +13,11 @@
 - ServerStorage 속성 `StudioFreshSave = true`(매 Play 새 플레이어).
 - **화면 사용**(Studio 열기·창 복원·Play 시작/중지 = 포커스 뺏음): 최종 검수에게 "게임 플레이 / 무엇 / 몇 초" → **"전달함, 시작"** 받고 한 번에 → 끝나면 "끝". 한 판 = Play 한 번 15분 이내. 입력은 Studio MCP(`user_keyboard_input`·`user_mouse_input`·`character_navigation`)로 **내 PlayTest Play 안에서만**; 진짜 마우스·키보드(computer-use) 안 씀. 창이 최소화면 사진이 하얗게 나옴.
 
+## 언제 노나 — 메인 반영 → 게임 플레이 → 보고서 (사용자 10/16 "메인이 무언가를 반영하면, 게임 플레이가 하고, 보고서 쓰는거야")
+- **메인 반영 1이 메인에 sync할 때마다** 너에게 "sync <sha>: 바뀐 것 …" 한 줄이 옴 → 내 PlayTest를 같은 origin/main으로 sync → **한 판 놀고 → 보고서.** 신호가 없으면 할 일 없음(혼자 놀지 않음, 턴 끝).
+- 메인 반영 1이 Save As로 `place/GoodEvil.rbxlx`를 새로 올리면(월드가 바뀜) PlayTest를 그 판으로 다시 복사.
+- 매 판 = **처음부터 첫 10분**(진영·직업 돌아가며) + 그 sync에서 바뀐 곳을 직접 해 보기(뒤 장면이면 scene.py로 바로 감).
+
 ## 어떻게 노나
 - **1판 = 첫 10분 처음부터(PC)**: 진영 고르기 → Hallie/Magpie Talk → Welcome → [I'm In!] → 선생님 → 대장간 첫 무기 → Otto 제안 → M1_1 …. `py tools/observe_play.py`로 단계 시각 기록. 빛 한 판, 뿔 한 판, 직업 돌아가며.
 - 뒤 장면은 `py tools/scene.py list`(FirstPrince·FountainChoice·OfferM1_3·PipGate·ClatterBoss·Calm·WarEnd·ArtisanAlch·ArtisanSmith …)로 바로 가서 해 봄.
@@ -20,6 +25,11 @@
 - 폰은 최종 검수가 말할 때(PC 먼저).
 
 ## 보고
-- 한 판 끝 = 최종 검수(list_sessions에서 이 저장소 cwd의 '최종 검수', `send_message`로 local_ id)에게 **한국어 한 번**: 문제 TOP 5(각각 관찰 / 추측 따로, 어느 단계·몇 분, 사진 경로·값, 화면=개발 1 / 서버=개발 2 추측). 나머지는 파일 `docs/review/playtest/2026-10-16_r1.md`(날짜·판 번호), 사진 `docs/art/verification_2026-10-16/playtest/r1/`. 내 파일만 `py tools/push_paths.py -m "제목" <paths>`.
+- **보고서 = `docs/review/playtest/<날짜>_r<N>.md`**(사진 `docs/art/verification_<날짜>/playtest/r<N>/`), 맨 위에 sync sha. 네 칸:
+  1. **처음 할 때 매끄러운가** — 단계 표(진영 → Hallie → Welcome → 선생님 → 첫 무기 → Otto → M1_1 …): 단계마다 걸린 초, 다음에 갈 곳이 보였나(예/아니오 + 왜), 멈칫한 곳·되돌아간 곳·두 번 누른 곳.
+  2. **게임성** — 재미있던 순간·지루했던 순간(몇 분째), 다음 목표·보상·성장이 늘 보였나, 같은 일 반복 횟수, 싸움 손맛, `video_textbook` 검사 질문 답.
+  3. **눈에 이상한 것** — 쥐는 모습·몸 뚫기·떠 있음·겹친 UI·잘린 글(사진 + 값).
+  4. **지난 판과 비교** — 이번 sync에서 바뀐 것이 실제로 좋아졌나 / 새로 망가진 것.
+- 한 판 끝 = 최종 검수(list_sessions에서 이 저장소 cwd의 '최종 검수', `send_message`로 local_ id)에게 **한국어 한 번**: 보고서 경로 + 문제 TOP 5(각각 관찰 / 추측 따로, 어느 단계·몇 분, 화면=개발 1 / 서버=개발 2 추측). 내 파일만 `py tools/push_paths.py -m "제목" <paths>`.
 - 판 끝마다 `docs/handoff/state/playtest.md`에 한 절(무엇을 했나·다음 판) → push → 턴 끝(최종 검수가 클리어할 수 있음).
 - 금지: 사용자에게 직접 말하기·묻기, 게임 코드 수정, Publish·Save to Roblox·메인 저장, 유료 생성, Downloads 폴더 저장.
