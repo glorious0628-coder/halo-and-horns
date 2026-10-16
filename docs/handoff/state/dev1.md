@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 낮 — A23-211·212 (최신)
+- **dev1-calm-fade 25bc6c2d (보고함, 사진 main f9e6780 calm_fade/)**: Fx WOBBLE.calm(둥근 가루 → 통통·슬라임 0.88·부드러운 빛 → LocalTransparencyModifier 흐려짐, 0.92 × CalmTime(기본 1.0)), King Slime Bounce, Clatter Salute(절+앉음). 삭제: 슬라임 퍼짐, MonsterMotion Fall + *_Fall 5개, Audio DieOf + Config DeathByKind/Die*. test_calm_fade 16·11/11. **병합 = 개발 2 서버 가지(터지는 입자·0.2 줄이기 빼기, 보스 CalmTime)와 같이**(최종 검수).
+- **dev1-intro-clatter 862efdaf (화면 확인 신청함)**: 오프닝 1장면 = 파트 왕관 흔들림 → Clatter(CodexModels.CaptainClatter 복사) 파트 집게 → 쩍 → 팔 뻗음. Intro SCENE 표. test_intro_clatter 12·7/7. 사진 도구 scratchpad clatter1016.py (PhoneTest_1015, 합친 판 wt_dev1b dev1-check-clatter).
+- **큐(최종 검수 순서)**: Clatter 사진 확인·손보기 → 개발 2가 보낼 Clatter 첫 10분 장면 3개 화면 몫 → 제작 창 Potion/Gear 분기. ('무기 레시피 자유 재료만 세기'는 취소 — 귀속 재료로도 제작 가능.)
+
 ## 10/16 아침 — 1~5 끝, 보고함 (최신)
 - **dev1-intro-cam 2b0839db**: 오프닝 자막 2 빛 마을 샷 카메라가 Halo_Gate 메시 속 → 문 안쪽 (SPOT.Halo+(14,12,44)→(5,6,28)).
 - **dev1-phone-cuts 822d78d3**: Mage 'Blast from far!', 전투력 줄 AutomaticSize XY, 폰 N 원판 ≥20, 직업 카드 폰(띄움 여백·Pick! 버튼 높이·칩 14px 실측 폭). 남음: PowerLine 측정 fits=false(box 76x17 bounds 76x16, 눈으로는 안 잘림; 상하 UIPadding 안 통함).
