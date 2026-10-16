@@ -3339,7 +3339,7 @@ end)
 -- WOBBLE's helpers are doubles: makePart records the shadow discs, groundY is flat (0), burst records the landing dust,
 -- Feel.isForeign reads m.Foreign (someone else's hidden personal monster, CR-L15)
 local function wobbleWorld(config)
-	local f = { Clock = 100, Models = {}, Parts = {}, Bursts = {}, Rays = 0, Tweens = {}, Delays = {} }
+	local f = { Clock = 100, Models = {}, Parts = {}, Bursts = {}, Rays = 0, Tweens = {}, Delays = {}, Defers = {} }
 	local folder = { GetChildren = function() return f.Models end }
 	local ws = { CurrentCamera = { CFrame = { Position = vec(0, 0, 0) } },
 		FindFirstChild = function(_, n) if n == "Monsters" then return folder end return nil end }
@@ -3362,7 +3362,8 @@ local function wobbleWorld(config)
 		burst = function(pos, color, n, opts) table.insert(f.Bursts, { Pos = pos, N = n, Opts = opts }) end,
 		Feel = { isForeign = function(m) return m.Foreign == true end } }
 	local env = nativeEnv({ CFrame = D.CFrame, workspace = ws, os = setmetatable({ clock = function() return f.Clock end }, { __index = os }),
-		task = { delay = function(sec, fn) table.insert(f.Delays, { Sec = sec, Fn = fn }) end } })
+		task = { delay = function(sec, fn) table.insert(f.Delays, { Sec = sec, Fn = fn }) end,
+			defer = function(fn) table.insert(f.Defers, fn) end } })
 	f.W = execute("Fx.WOBBLE", WOBBLE_SOURCE, env, config, H)
 	-- opts: Mesh (rest size of the CustomVisual mesh), Rigged, Velocity, Pos, H (body height), Extents, Foreign
 	function f:Model(kind, opts)
@@ -3469,7 +3470,8 @@ runGroup("fx-float", function()
 	ghost.Root.Anchored = true
 	f:Step(1 / 30)
 	check(near((f:Lift(ghost)), 1.5), "dying (anchored root): it stays hovering, it does not drop to the floor", (f:Lift(ghost)))
-	-- review 2026-10-06: a dying slime splats; the Pumpkin King going home ("Leaving") just rests at its normal size
+	-- A23-211 (user 10/16): a beaten slime no longer splats or shrinks into a puddle - it rests at its normal size and Fx
+	-- WOBBLE.calm relaxes and fades it (tools/test_calm_fade.py); the Pumpkin King going home ("Leaving") rests too
 	local g = wobbleWorld(config)
 	local dying = g:Model("PumpkinSlime", { Mesh = vec(3, 2, 3) })
 	local leaving = g:Model("PumpkinKing", { Mesh = vec(5, 4, 5) })
@@ -3479,51 +3481,18 @@ runGroup("fx-float", function()
 	leaving.Root.Anchored = true
 	g:Step(1 / 30)
 	local ds, ls = g.W.State[dying], g.W.State[leaving]
-	check(ds and ds.Splat == true and (g:Lift(dying)) < 0, "a killed slime still splats flat", show(ds and { ds.Splat, (g:Lift(dying)) }))
+	check(ds and not ds.Splat and near(dying.Mesh.Size.Y, ds.Base.Y) and near(dying.Mesh.Size.X, ds.Base.X),
+		"a beaten slime: no splat, no puddle - back to its rest size (the calm fade takes it)", show(ds and { ds.Splat, dying.Mesh.Size }))
+	check(#g.Defers == 1, "the beaten slime (not the leaving king) is handed to the calm fade once a frame (WOBBLE.calm)", #g.Defers)
 	check(ls and not ls.Splat and near((g:Lift(leaving)), 0) and near(leaving.Mesh.Size.Y, ls.Base.Y) and near(leaving.Mesh.Size.X, ls.Base.X),
 		"a leaving king: no splat, back to its rest size and pose while it floats away", show(ls and { ls.Splat, leaving.Mesh.Size }))
-	-- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): the server no longer resizes / fades a slime body, so the
-	-- client shrinks its puddle: DeathHold s after the splat it goes to 0.2 in DeathShrink s (Quad In), its bottom kept on
-	-- the floor, opaque; the timing is the server's death pop (hold DEATH_DESTROY - DEATH_SHRINK - 0.1, then DEATH_SHRINK)
-	local function tweenOf(inst, from)
-		for i = from or 1, #g.Tweens do
-			if g.Tweens[i].Inst == inst then return g.Tweens[i] end
-		end
-		return nil
+	local faded, shrunk = false, false
+	for _, tw in g.Tweens do
+		if tw.Goal.Transparency ~= nil then faded = true end
+		if tw.Inst == dying.Mesh then shrunk = true end
 	end
-	local splatTw = tweenOf(dying.Mesh)
-	check(splatTw and splatTw.Played and near(splatTw.Goal.Size.X, 3 * 1.45) and near(splatTw.Goal.Size.Y, 2 * 0.35)
-		and #g.Delays == 1 and near(g.Delays[1].Sec, g.W.DeathHold), "the splat plays at once, the puddle shrink is scheduled DeathHold s later",
-		show({ splatTw and splatTw.Goal.Size, #g.Delays, g.Delays[1] and g.Delays[1].Sec }))
-	local before = #g.Tweens
-	if g.Delays[1] then g.Delays[1].Fn() end
-	local shrinkTw = tweenOf(dying.Mesh, before + 1)
-	local liftTw = tweenOf(dying.Joint, before + 1)
-	check(shrinkTw and shrinkTw.Played and near(shrinkTw.Goal.Size.X, 3 * 1.45 * 0.2) and near(shrinkTw.Goal.Size.Y, 2 * 0.35 * 0.2)
-		and shrinkTw.Info.Args[1] == g.W.DeathShrink and shrinkTw.Info.Args[3] == "EasingDirection.In",
-		"after the hold the puddle shrinks to 0.2 in DeathShrink s", show(shrinkTw and { shrinkTw.Goal.Size, shrinkTw.Info.Args }))
-	local splatBottom = -(2 * 0.32) - 2 * 0.35 / 2
-	local shrunkBottom = liftTw and liftTw.Goal.C1 and (-liftTw.Goal.C1.Y - 2 * 0.35 * 0.2 / 2)
-	check(liftTw and liftTw.Played and shrunkBottom and near(shrunkBottom, splatBottom, 1e-6) and liftTw.Info.Args[1] == g.W.DeathShrink,
-		"the shrinking puddle keeps its bottom on the floor (joint C1 follows)", show({ shrunkBottom, splatBottom }))
-	local faded = false
-	for _, tw in g.Tweens do if tw.Goal.Transparency ~= nil then faded = true end end
-	check(not faded, "the client never fades a dying slime (no Transparency tween)")
-	local destroyAt = tonumber(string.match(MONSTER_POP_SOURCE, "local DEATH_DESTROY = ([%d%.]+)"))
-	local shrinkS = tonumber(string.match(MONSTER_POP_SOURCE, "local DEATH_SHRINK = ([%d%.]+)"))
-	check(destroyAt and shrinkS and near(g.W.DeathHold, destroyAt - shrinkS - 0.1, 1e-9) and near(g.W.DeathShrink, shrinkS, 1e-9),
-		"the client's puddle timing matches MonsterService's death pop (it is gone before the model is removed)",
-		show({ g.W.DeathHold, g.W.DeathShrink, destroyAt, shrinkS }))
-	-- a body already removed when the hold ends gets no tween
-	local h = wobbleWorld(config)
-	local gone = h:Model("Slime", { Mesh = vec(3, 3, 3) })
-	for _ = 1, 3 do h:Step(1 / 30) end
-	gone.Root.Anchored = true
-	h:Step(1 / 30)
-	gone.Mesh.Parent = nil
-	local n0 = #h.Tweens
-	if h.Delays[1] then h.Delays[1].Fn() end
-	check(#h.Delays == 1 and #h.Tweens == n0, "a slime removed before the hold ends gets no shrink tween", show({ #h.Delays, #h.Tweens - n0 }))
+	check(not faded and not shrunk and #g.Delays == 0, "no Transparency / size tween and no puddle timer for a beaten slime",
+		show({ faded, shrunk, #g.Delays }))
 end)
 
 -- the grounded pass (user 2026-10-06 "떠 있는 게 어색해", Fx 71c10bd / f965cd0): slimes hop at most

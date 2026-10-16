@@ -200,8 +200,6 @@ MUTATIONS = [
      "DEATH_DESTROY + (calm and calm - 1 or 0)", "DEATH_DESTROY"),
     ("A23-211: a leaving boss gets CalmTime", "MONSTER_SOURCE",
      "\tlocal calm = not leaving and type(rec.Kind)", "\tlocal calm = type(rec.Kind)"),
-    ("a leaving king is left to a splat it never gets (keeps its size)", "MONSTER_SOURCE",
-     "local splatted = not leaving and type(def)", "local splatted = type(def)"),
     # (10/16 A23-211: "a slime without a custom model never shrinks" removed - no killed body shrinks on the server now)
     ("a dying body is not held from the ghost sweep", "MONSTER_SOURCE",
      "GHOST.Dying[model] = os.clock() + life + GHOST.Grace", "GHOST.Dying[model] = nil"),
@@ -305,17 +303,12 @@ MUTATIONS = [
     # Fx WOBBLE: float, grounded slimes, blob shadows, dust (71c10bd / f965cd0)
     ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
      "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
-    ("leaving slime still splats", "FX_SOURCE",
-     "\n\t\t\t\tand model:GetAttribute(\"Leaving\") ~= true then", " then"),
-    # A23-74: the client shrinks a killed slime's puddle (the server leaves the body to it)
-    ("a killed slime's puddle never shrinks", "FX_SOURCE",
-     "TweenService:Create(mesh, info, { Size = splat * 0.2 }):Play()", ""),
-    ("the shrinking puddle floats off the floor", "FX_SOURCE",
-     "{ C1 = CFrame.new(0, baseY * 0.46, 0) }", "{ C1 = CFrame.new(0, baseY * 0.32, 0) }"),
-    ("puddle shrink drifts from the server's death timing", "FX_SOURCE",
-     "DeathHold = 0.75, DeathShrink = 0.3 }", "DeathHold = 0.5, DeathShrink = 0.3 }"),
-    ("puddle shrinks while the slime is already gone", "FX_SOURCE",
-     "if not mesh.Parent or not joint.Parent then return end", ""),
+    # A23-211: a beaten slime goes to the calm fade (no splat / puddle); a leaving king does not
+    ("a leaving king gets the calm fade", "FX_SOURCE",
+     'if sroot and sroot.Anchored and not foreign and model:GetAttribute("Leaving") ~= true then',
+     'if sroot and sroot.Anchored and not foreign then'),
+    ("a beaten slime keeps its last hop size", "FX_SOURCE",
+     "\t\t\t\tWOBBLE.rest(st) -- a beaten one relaxes in WOBBLE.calm below", "\t\t\t\tlocal _ = st -- a beaten one relaxes in WOBBLE.calm below"),
     ("slime hop not capped at HopMax", "FX_SOURCE",
      "or math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "or st.H * WOBBLE.HopRatio"),
     ("slime sits on the ground surface (no Sink)", "FX_SOURCE",
