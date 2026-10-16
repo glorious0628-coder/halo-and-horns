@@ -2757,20 +2757,20 @@ Config.Barks = {
 			Low = { "No arrows…", "Retreat!" },
 			Idle = { "Aim… wait.", "Twang~" },
 		},
-		Skeleton = { -- a bony guard who lost track of the days
+		Skeleton = { -- an old bony neighbor who loves parade drills (A23-209)
 			Spot = { "Rattle!", "Clack clack!" },
 			Hit = { "Clank!", "Clack!" },
 			Low = { "Clatter…" },
 			Idle = { "Rattle~", "Tuesday?" },
 		},
-		CaptainClatter = { -- J: the captain nobody relieved (300 years on duty)
+		CaptainClatter = { -- J / A23-212: the drill captain who broke the crown by mistake and helps fix it
 			-- A23-212 (user 10/16): the friendly captain's match - his first line of a life and his line after a defeat
 			Start = { "Your turn, captain. Ready for a match?" },
 			Beaten = { "Good match! I need a sit-down." },
 			Spot = { "HALT!!", "Who's next?" },
 			Hit = { "CLATTER!", "Bones! Ow!" },
 			Low = { "Nap time…", "Off duty?" },
-			Idle = { "300 years…", "Still here." },
+			Idle = { "Left, right…", "Still here." },
 		},
 		SkeletonKnight = { -- an old knight, always on duty
 			Spot = { "Halt!", "Who goes?" },
@@ -8189,13 +8189,15 @@ Config.Story = {
 		Horns = "Their Crown Shards became horns. They take the shards and rule the world.",
 		Neutral = "Those who shape the shards instead of grabbing them.", -- addendum A6
 	},
+	-- A23-209~212 (최종 검수 10/16, GPT world_zones_r1 §4): skeletons are the old townsfolk (a parade yard, no tomb), goblins
+	-- are snack porters whose sacks grew too big (no thief tribe); monster names unchanged. (No reader in src today.)
 	ZoneLore = {
 		Crossroads = "Where the broken crown fell",
 		HaloTown = "The castle of those with halos",
 		HornsTown = "The den of those with horns",
 		SlimeMeadow = "A field of slimes that ate shard dust",
-		GoblinWoods = "The woods of the shard thieves",
-		SkeletonRuins = "The tomb of the old kingdom",
+		GoblinWoods = "Woods where goblins carry sacks far too big",
+		SkeletonRuins = "An old yard where skeletons practice parades",
 	},
 	-- format strings (always through string.format)
 	WarWin = {
@@ -10777,8 +10779,8 @@ Config.Codex = {
 		SlimeKing = { Halo = "The slime dad. He raises his kids all alone.",
 			Horns = "He jumps, he lands, the ground goes boing!",
 			Neutral = "Royal Jelly is rare and thick. Keep it safe." },
-		Goblin = { Halo = "He steals shards, but he shares his snacks.",
-			Horns = "A thief! I like his style. Not his smell.",
+		Goblin = { Halo = "His sack got too big. He still shares his snacks.", -- A23-210: a snack porter, no thief tribe
+			Horns = "Grabs everything shiny! I like his style. Not his smell.",
 			Neutral = "Goblin Teeth are small, sharp and useful." },
 		SlingshotGoblin = { Halo = "Step aside and his pebbles miss. Mostly.",
 			Horns = "Pebbles in the face? Rude. Funny, but rude.",
@@ -10786,16 +10788,16 @@ Config.Codex = {
 		GoblinBrute = { Halo = "Big and slow. He only wants his nap.",
 			Horns = "All muscle, no plan. I respect that.",
 			Neutral = "A Brute Horn is hard as stone." },
-		Skeleton = { Halo = "A guard of the old kingdom, still on duty.",
+		Skeleton = { Halo = "An old neighbor who loves parade drills.", -- A23-209: the ruins' townsfolk, no dead soldiers
 			Horns = "Rattle rattle! Who needs skin anyway?",
 			Neutral = "Old Bones. Light, hard and useful." },
 		SkeletonArcher = { Halo = "His arrows fly slowly. Step aside to dodge them.",
 			Horns = "No eyes, still aims. What a show-off.",
 			Neutral = "More Old Bones. The ruins never run out." },
-		SkeletonKnight = { Halo = "A knight who never left his post.",
+		SkeletonKnight = { Halo = "A knight who never misses a drill.",
 			Horns = "Heavy armor, empty head. Classic.",
 			Neutral = "His Rusty Knight Crest still shines a little." },
-		CaptainClatter = { Halo = "300 years on duty. Please give him a break.",
+		CaptainClatter = { Halo = "He broke the crown by mistake. Now he helps fix it.", -- A23-212
 			Horns = "He yells at everyone. Even the wind.",
 			Neutral = "His Old Crown Gem is bright. Handle with care." },
 	},
