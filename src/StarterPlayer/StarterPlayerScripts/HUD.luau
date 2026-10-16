@@ -3859,6 +3859,10 @@ local function parseQuests()
 				GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil, -- A23-48: which next goal (QuestTarget.IronGold)
 				-- quest P1 ②: the first mission's guide / teacher (its NpcId): the row walks there, the talk opens the lines
 				GuideNpc = (type(e.GuideNpc) == "string" and e.GuideNpc ~= "") and e.GuideNpc or nil,
+				-- A23-221 ① (dev2-first12): the first mission's practice step = its dummy's Landmarks key (StoryNpcs draws the
+				-- dummy there, QuestTarget points at it)
+				GuideSpot = (type(e.GuideSpot) == "string" and e.GuideSpot ~= "") and e.GuideSpot or nil,
+				Practice = e.Practice == true,
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
@@ -5109,6 +5113,18 @@ function L.NpcWalk(id, zone, panels)
 	return true
 end
 
+-- A23-221 ①: a row whose place is a spot (the practice dummy): QuestTarget.ForEntry's place (a trip from another zone
+-- opens Travel); false = no place
+function L.SpotWalk(e, zone, panels)
+	local qt = C and C.QuestTarget
+	if type(qt) ~= "table" or type(qt.ForEntry) ~= "function" then return false end
+	local ok, r = pcall(qt.ForEntry, e, zone)
+	if not ok or type(r) ~= "table" then return false end
+	if r.Travel and panels and panels.Open then panels.Open("Travel") end
+	local target = r.Part or localAnchor(tostring(r.Tag), r.Position)
+	return showGuide(target, tostring(r.Label or ""), tostring(r.Tag), 30)
+end
+
 function L.StoryTap(st, zone, panels)
 	-- 개발 2 dev2-offer-row: "Talk to <asker>" (Story.Offer) = the way to her; her prompt opens the request
 	if st.Offer == true then
@@ -5274,6 +5290,8 @@ function L.PinnedTap(e, r)
 		L.StoryTap(e.Story, zone, panels)
 		return
 	end
+	-- A23-221 ①: "Hit the practice dummy" - the tap shows the way to the dummy (QuestTarget's place)
+	if e.Practice and e.GuideSpot and L.SpotWalk(e, zone, panels) then return end
 	-- quest P1 ②: "Talk to Hallie" / "Meet Sir Gleam at the town gate" - the tap only shows the way (the talk opens it)
 	if e.GuideNpc and L.NpcWalk(e.GuideNpc, zone, panels) then return end
 	-- quest P1 ⑤ / A23-193: "Take Sir Gleam's test" / "Learn a skill" -> the way to my side's teacher

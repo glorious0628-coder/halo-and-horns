@@ -64,6 +64,7 @@ local K = {
 	-- 검수 2026-10-08 (weapon-first photos): the marker's 'Forge' label sat on the anvil (2 studs up) and covered the
 	-- nearby pads' '→ Goblin Woods (Lv 10+)' signs; the marker points at an anchor this far above the anvil instead
 	SmithMarkLift = Vector3.new(0, 9, 0),
+	DummyLift = Vector3.new(0, 8.5, 0), -- A23-221 ①: the mark over the big practice dummy's head (StoryNpcs Dummy 6.2 + head)
 	SmithNear = 14, -- studs (flat) from the anvil: standing there, no 'Forge' marker - the anvil's own prompt is right in front
 	-- (10/08 Play photo: seen from behind the anvil the mark lined up with the Goblin Woods pad sign)
 	HomeBridge = { HaloTown = "Bridge_Halo", HornsTown = "Bridge_Horns" }, -- HUD HOME_BRIDGE
@@ -576,9 +577,12 @@ local function storyEntry(st, myZone, faction, pos)
 	local walk = landmarkSpot(guide) ~= nil and K.SmithWalk[myZone] == true and K.SmithWalk[zone] == true
 	local travel = (myZone ~= zone and not walk) or zone == K.Pumpkin.Zone or zone == K.Hollow.Zone
 	local r = pack(t, "story:" .. guide, storyLabel(guide, zone), zone, travel)
+	local obj = stepObj(st, faction)
+	-- A23-222 (dev2-first12 M1_2): in the King's own zone the mark over the King's hill / the rematch spot says the King,
+	-- not the zone I already stand in
+	if r and not travel and type(obj) == "table" and (obj.Name == "FirstKO" or obj.Kind == "SlimeKing") then r.Label = TXT.King or r.Label end
 	if not r or travel or not pos then return r end
 	-- a Near step (pond slimes, the fountain) already happens inside its radius
-	local obj = stepObj(st, faction)
 	local radius = type(obj) == "table" and num(obj.Radius, nil) or nil
 	if radius and flatDist(pos, r.Position) <= radius * K.NearShare then return nil end
 	return r
@@ -627,6 +631,17 @@ local function placeFor(entry, myZone, faction, pos)
 	if type(entry.Story) == "table" then return storyEntry(entry.Story, myZone, faction, pos) end
 	if entry.Pinned ~= true then return nil end
 	local step = num(entry.TutorialStep, -1)
+	-- A23-221 ① (dev2-first12): the practice step -> its dummy (StoryNpcs draws it at the GuideSpot; a trip to its zone
+	-- from elsewhere); the mark stands over the dummy's head
+	if entry.Practice == true and type(entry.GuideSpot) == "string" then
+		local spot = QuestTarget.StorySpot(entry.GuideSpot)
+		if spot then
+			local z = type(Config.ZoneAt) == "function" and Config.ZoneAt(spot) or nil
+			local zone = type(z) == "table" and z.Id or myZone
+			if zone == myZone then return pack(spot + K.DummyLift, "dummy:" .. entry.GuideSpot, TXT.Dummy or "Dummy", zone, false) end
+			return pack(QuestTarget.Travel(zone, myZone, pos), "zone:" .. tostring(zone), zoneName(zone), zone, true)
+		end
+	end
 	-- quest P1 ②: the first mission's guide / teacher with a body (GuideNpc) -> that NPC (a trip to its zone from elsewhere)
 	if type(entry.GuideNpc) == "string" and entry.GuideNpc ~= "" then
 		local body = QuestTarget.StoryNpc(entry.GuideNpc)

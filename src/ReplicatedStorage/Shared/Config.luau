@@ -11363,6 +11363,8 @@ Config.ClientText.PlayerListUI = {
 }
 Config.ClientText.QuestTarget = {
 	Blacksmith = "Forge",
+	Dummy = "Dummy", -- A23-221 ①: the first mission's practice dummy
+	King = "King Slime", -- A23-222: M1_2's King's hill / rematch mark in the meadow
 	Pond = "Slime Pond",
 	Fountain = "Fountain",
 	Goose = "Golden Goose Nest",
