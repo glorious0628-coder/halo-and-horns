@@ -1,0 +1,55 @@
+samsung_galaxy_s22_ultra 749x361
+fresh on
+line2 Some grew halos. Others grew horns. | cam=13.780424118041992, 27.85361671447754, -366.3903503417969
+Some grew halos. Others grew horns. | cam=10.208290100097656, 25.472192764282227, -372.7408142089844
+saved p1_intro_halo_a
+Some grew halos. Others grew horns. | cam=-12.510902404785156, 28.17030143737793, 326.43560791015625
+saved p1_intro_halo_b
+faction
+saved p2_class
+CLASS FITS
+MainGui.ClassPicker.Cards.Card_Warrior.ClassName | 'Paladin' | ts=16 | box=80x14 | bounds=33x12 | fits=true
+MainGui.ClassPicker.Cards.Card_Warrior.DescClip.Desc | 'Smash up close!' | ts=15 | box=91x19 | bounds=79x11 | fits=true
+MainGui.ClassPicker.Cards.Card_Warrior.ChooseLabel | 'Pick!' | ts=18 | box=67x17 | bounds=23x13 | fits=true
+MainGui.ClassPicker.Cards.Card_Warrior.GenericChip.Text | 'Warrior' | ts=19 | box=67x21 | bounds=41x14 | fits=true
+MainGui.ClassPicker.Cards.Card_Warrior.RecommendBadge.Text | 'Best for beginners' | ts=19 | box=136x21 | bounds=93x14 | fits=true
+MainGui.ClassPicker.Cards.Card_Mage.ClassName | 'Light Mage' | ts=16 | box=80x14 | bounds=46x12 | fits=true
+MainGui.ClassPicker.Cards.Card_Mage.DescClip.Desc | 'Blast from far!' | ts=15 | box=91x19 | bounds=69x11 | fits=true
+MainGui.ClassPicker.Cards.Card_Mage.ChooseLabel | 'Pick!' | ts=18 | box=67x17 | bounds=23x13 | fits=true
+MainGui.ClassPicker.Cards.Card_Mage.GenericChip.Text | 'Mage' | ts=19 | box=54x21 | bounds=27x14 | fits=true
+MainGui.ClassPicker.Cards.Card_Archer.ClassName | 'Ranger' | ts=16 | box=80x14 | bounds=31x12 | fits=true
+MainGui.ClassPicker.Cards.Card_Archer.DescClip.Desc | 'Two arrows, fast!' | ts=15 | box=91x19 | bounds=82x11 | fits=true
+MainGui.ClassPicker.Cards.Card_Archer.ChooseLabel | 'Pick!' | ts=18 | box=67x17 | bounds=23x13 | fits=true
+MainGui.ClassPicker.Cards.Card_Archer.GenericChip.Text | 'Archer' | ts=19 | box=62x21 | bounds=35x14 | fits=true
+MainGui.ClassPicker.GenderPill.Male | 'Boy' | ts=16 | box=44x44 | bounds=19x15 | fits=true
+MainGui.ClassPicker.GenderPill.Female | 'Girl' | ts=16 | box=44x44 | bounds=20x15 | fits=true
+class
+DataLoaded=true Faction=Halo Class=Warrior TutorialStep=0
+saved p3_hud
+HUD FITS
+MainGui.HUD.Stats.PowerLine.Power | 'Lv 1 · Power 0' | ts=17 | box=76x17 | bounds=76x16 | fits=false
+MainGui.MiniMap.North.N | 'N' | ts=16 | box=18x18 | bounds=12x18 | fits=true
+welcome
+saved p4_welcome
+WELCOME FITS
+MainGui.PanelsModal.Window.Content.WelcomeBefore | 'Sir Gleam can't see my wave behind that ' | ts=16 | box=547x12 | bounds=263x12 | fits=true
+MainGui.PanelsModal.Window.Content.WelcomeName | 'Hallie' | ts=18 | box=547x13 | bounds=33x13 | fits=true
+MainGui.PanelsModal.Window.Content.WelcomeLine | 'Hallie here! Now you know my name. Welco' | ts=16 | box=547x12 | bounds=319x12 | fits=true
+MainGui.PanelsModal.Window.Content.Row.WelcomeNext.Label | 'I'm In!' | ts=20 | box=231x39 | bounds=44x20 | fits=true
+MainGui.PanelsModal.Window.Content.Row.WelcomeNext | 'I'm In!' | ts=20 | box=246x45 | bounds=40x15 | fits=true
+closed
+fired
+BUBBLE teacher find
+StoryFindBubble on Workspace.Map.NPCs.Npc_Gleam.Head | 'Oh! Hello! I can see you now.' | box=236.319992, 46.5920029 bounds=215.5, 18 fits=true
+fired
+fired
+BUBBLE forge find
+StoryFindBubble on Workspace.Map.NPCs.Npc_Gleam.Head | 'Oh! Hello! I can see you now.' | box=236.319992, 46.5920029 bounds=215.5, 18 fits=true
+StoryFindBubble on Workspace.Map.NPCs.Npc_Otto.Head | 'Ah, there you are!' | box=0, 0 bounds=14, 18 fits=false
+fired
+BUBBLE otto line 1
+StoryFindBubble on Workspace.Map.NPCs.Npc_Otto.Head | 'Your first weapon. I saved this one for you.' | box=0, 0 bounds=14.5, 18 fits=false
+BUBBLE otto line 2
+StoryFindBubble on Workspace.Map.NPCs.Npc_Otto.Head | 'That Slime Prince has a shiny band in his belly.' | box=0, 0 bounds=16, 18 fits=false
+saved p5_after_forge
+default
