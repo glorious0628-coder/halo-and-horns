@@ -39,3 +39,9 @@
 ## 10/16 밤 — 새 계정 세션 시작
 - 도구는 옛 scratchpad(`%TEMP%\claude\C--Users-glori-Documents-Roblox-Game\52d0667a-…\scratchpad`)에서 새 scratchpad로 그대로 복사(pt.py·intro_watch·cam·walkshot·atkshot·idle·sheet·*.lua). pt.py 안 STUDIO_ID 기본값은 옛 값 → 매 판 list_roblox_studios로 새 id를 환경 변수로.
 - 지금: 메인 반영 1의 'sync <sha>' 신호 기다림. 다음 판 = 4판 '다음 판' 그대로.
+
+## 10/16 밤 — 5판 끝 (뿔 · 마법사 · 패스 끔, sync 85754011 칼 허리·활 시위)
+- 보고서 `docs/review/playtest/2026-10-16_r5.md`, 사진 `.../playtest/r5/`(cmp_warrior_idle·cmp_archer_idle = 위 r4/아래 r5).
+- 고쳐짐: 칼 허리 아래 45°(뿔·빛), 등 활 시위 없음. 새로/그대로: KO 3번(강화·Lv5 슬라임·HP 7 걷기), M1_3 길 표시 틀림/없음(To Tiny 410스터드 0), Tiny 대화 없음(진영 안 바꿔도), 뿔 첫 화면 카메라 Magpie 안 봄.
+- 도구: PlayTest 창 id 21d331aa(매번 list로), atkshot/walkshot OUT = PT_ROUND. 뿔 마을 → 대장간 길 찾기는 (0,3,380)→(0,3,280)→(10,3,200)→(30,3,120)→(36,3,70) 중간 지점으로.
+- **다음 판:** 다음 sync 신호 → 뿔 전사로 처음부터(첫 무기 몽둥이 허리 각도) / first12 병합 뒤 강화·KO·물약 흐름.
