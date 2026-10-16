@@ -31,10 +31,13 @@ def kaiju_bindings(sources: dict[str, str]) -> dict[str, str]:
     return out
 
 MUTATIONS = [
-    ("the town rule is gone", P, 'kstate(victim) == "Active" and not inFactionTown(attacker) then',
-     'kstate(victim) == "Active" then'),
-    ("the victim's town counts instead", P, 'kstate(victim) == "Active" and not inFactionTown(attacker) then',
-     'kstate(victim) == "Active" and not inFactionTown(victim) then'),
+    ("A23-218: the kaiju hit anywhere outside the faction towns", P,
+     "\n\t\tand ((inCrossroads(attacker) and inCrossroads(victim)) or (inPvP(attacker) and inPvP(victim))) then", " then"),
+    ("A23-218: one of the two in the Crossroads is enough", P, "(inCrossroads(attacker) and inCrossroads(victim))",
+     "(inCrossroads(attacker) or inCrossroads(victim))"),
+    ("A23-218: one of the two in a red zone is enough", P, "(inPvP(attacker) and inPvP(victim))", "(inPvP(attacker) or inPvP(victim))"),
+    ("A23-218: no Crossroads exception", P, "\treturn ok and type(zone) == \"table\" and zone.Town == true and zone.Faction == nil\n",
+     "\treturn false\n"),
     ("the Crossroads blocks too", P, "zone.Town == true and zone.Faction ~= nil", "zone.Town == true"),
     ("never in a faction town", P, '\treturn ok and type(zone) == "table" and zone.Town == true and zone.Faction ~= nil\n',
      "\treturn false\n"),
