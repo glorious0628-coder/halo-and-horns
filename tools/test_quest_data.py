@@ -268,11 +268,13 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
             for si, st in enumerate(steps, 1):
                 if not isinstance(st, dict):
                     continue
-                if st.get("On") is not None and st.get("On") != "Self":
-                    add("story-on", f"{i}.{si}", f"On must be \"Self\" (the player's own avatar), not {st.get('On')!r}")
                 for v in [st] + [st[f] for f in ("Halo", "Horns", "Neutral") if isinstance(st.get(f), dict)]:
-                    if v.get("Scene", st.get("Scene")) and not v.get("Npc", st.get("Npc")) and st.get("On") != "Self":
-                        add("story-scene", f"{i}.{si}", "a Scene on a step with no Npc needs On = \"Self\" (who plays it?)")
+                    # 10/16: On = "Self" (the player's avatar) or a Story NPC with a body (that NPC plays the Find / Scene)
+                    on = v.get("On", st.get("On"))
+                    if on is not None and on != "Self" and on not in bodies:
+                        add("story-on", f"{i}.{si}", f"On must be \"Self\" or a Story NPC with a body, not {on!r}")
+                    if v.get("Scene", st.get("Scene")) and not v.get("Npc", st.get("Npc")) and on is None:
+                        add("story-scene", f"{i}.{si}", "a Scene on a step with no Npc needs On (\"Self\" or an NPC: who plays it?)")
             last = steps[-1] if steps and isinstance(steps[-1], dict) else {}
             if not (last.get("Lines") or last.get("LinesBy")):
                 add("story-end", i, "the last step has the closing words (Lines / LinesBy, A23-208)")
@@ -384,7 +386,7 @@ SELF_TESTS = [
     ("a hook to a quest that does not wait", "Next = { Id = \"HX_Ribbon\"", "Next = { Id = \"HX_DailyLamp\"", "story-next"),
     ("a scene on the road with no one", "Find = \"A tiny sock is stuck on the wheel!\", On = \"Self\", Scene = \"Cheer\",",
      "Find = \"A tiny sock is stuck on the wheel!\", Scene = \"Cheer\",", "story-scene"),
-    ("an On that is not Self", "On = \"Self\", Scene = \"Cheer\",", "On = \"Bright\", Scene = \"Cheer\",", "story-on"),
+    ("an On that is no body", "On = \"Self\", Scene = \"Cheer\",", "On = \"Nobody\", Scene = \"Cheer\",", "story-on"),
     ("a remembered line with no first-visit line", "\n\t\t\t\tDefault = \"The town lamp flickers again tonight.\" },", " },", "story-before"),
     ("a remembered line too long", "Moth = \"The moth is back. It brought a friend.\",",
      "Moth = \"The moth is back. It brought a friend. And another. And their whole family too.\",", "story-length"),
