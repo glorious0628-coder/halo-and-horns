@@ -4523,7 +4523,7 @@ Config.StoryQuests.Defs.EG03 = {
 		{ Text = "Visit the goose", Obj = { Type = "Near", Spot = "GooseNest", Radius = 6 } },
 		{ Text = "Goose Fan", Panel = true, Obj = { Type = "Talk" },
 			Lines = { All = { "The Golden Goose has 0 followers. She has never been happier.",
-				"Also, she saw Clatter drop his hat. Twice. Honk." } } },
+				"She watched Clatter fix his hat. Honk." } } },
 	},
 	Reward = { Title = "GooseFan" },
 }
@@ -8162,17 +8162,18 @@ Config.Story = {
 	-- plain lines (no format specifiers)
 	-- A23-212 (user 10/16, replaces A23-209's act-2 reveal): told from the start - Captain Clatter broke the Crown by mistake
 	-- (a clamp held it too still: CRACK) and is sorry; no other culprit, no line blames the other side. Rumor games about what
-	-- the other side is up to stay. Premise = the faction picker's premise panel (3 lines, GDD §1-1).
+	-- the other side is up to stay. Premise = the faction picker's premise panel (3 lines, GDD §1-1). Wording: GPT
+	-- build/codex/story_ch2_r1.md §5-2 (최종 검수 10/16)
 	Premise = {
-		"Captain Clatter broke the Crown of Balance. By mistake.",
+		"Captain Clatter broke the Crown of Balance.",
 		"Some who picked up its shards grew a halo. Others grew horns.",
-		"Now each side wants the shards for itself.",
+		"Gather shards. Make their power your own.",
 	},
 	-- the opening (A23-44 remake) shows OpeningRumor 1-3, then Premise 2-3, then OpeningAsk (story_depth §2-1)
-	OpeningRumor = {
-		"The Crown kept the world in balance.",
-		"Captain Clatter held it still for a parade pose.",
-		"Too still. CRACK.",
+	OpeningRumor = { -- A23-212: the same three lines as Config.ClientText.Intro (no rumor any more; the key name stays)
+		"Captain Clatter broke the Crown of Balance.",
+		"Some grew halos. Others grew horns.",
+		"Gather shards. Make their power your own.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
@@ -9246,8 +9247,8 @@ Config.TownReact = {
 		},
 		Evil = {
 			S6 = "The new kids keep calling you boss. Hmm…",
-			H1 = "Did you hear? The Horns are up to something!",
-			R1 = "The Halos have a secret plan! Everyone says so!",
+			H1 = "Your birthday plan has a very big ribbon!", -- A23-212 (story_ch2_r1 §5-3): no blame of the other side
+			R1 = "A grand birthday plan? Rose told it very loudly!",
 			H2 = "Is that our town lantern in your window?",
 			R5 = "Finders keepers! Rose is still looking, you know.",
 			H3 = "The cat is up the tree again. Was that you?",
