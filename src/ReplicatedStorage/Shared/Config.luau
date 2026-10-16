@@ -1751,6 +1751,18 @@ Config.Sky.ClockForwardMax = 18
 -- short way to StartClock and stays, the look with it unless a war sky covers it (live once Config.Switches.Defs lists
 -- it; until then always on). Enabled = false: WarService keeps the fixed Neutral afternoon and the preset war clocks.
 -- Studio: DebugCommand ("", "Clock", 21) / ("", "DayState") - no player, no save (under a war sky only the clock jumps).
+-- SPEC A23-221 (5) (최종 검수 10/16, the first 10 minutes): a new player's own screen is always day - the clock shown
+-- (Lighting.ClockTime), the night level ZoneLook lifts by, the day phase WeatherFx (rain, the lamps) and Audio (the
+-- night air, the lamps' sound) read - while PlaytimeSeconds < Seconds; nobody else's sky changes (client only)
+Config.FirstDay = { Seconds = 600, Clock = 13 }
+
+-- (pure) a player's screen still in the first-day window (playtime = their PlaytimeSeconds; unknown = no)
+function Config.FirstDayFor(playtime)
+	local fd = Config.FirstDay
+	local t = tonumber(playtime)
+	return type(fd) == "table" and t ~= nil and t >= 0 and t < (tonumber(fd.Seconds) or 0)
+end
+
 Config.DayCycle = {
 	-- on: ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) landed with it (game dev 1;
 	-- tools/test_day_cycle.py checks the pair)
