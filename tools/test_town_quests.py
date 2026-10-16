@@ -18,12 +18,14 @@ from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindi
 FILES = dict(UNARMED_FILES)
 FILES["FACTION_SOURCE"] = SSS / "FactionService.luau"
 FILES["PROGRESSION_SOURCE"] = SSS / "ProgressionService.luau"
+FILES["SCENE_SOURCE"] = SSS / "SceneSetup.luau"  # A23-218 (2)
 C, ST, L, F, PR = "CONFIG_SOURCE", "STORY_SOURCE", "LOOT_SOURCE", "FACTION_SOURCE", "PROGRESSION_SOURCE"
 U = "UTIL_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = unarmed_bindings(sources)
+    out["SCENE_SOURCE"] = sources["SCENE_SOURCE"]  # A23-218 (2)
     faction = sources[F]
     out["FACTION_EXTRACT"] = (
         "local Config, Util, S, FactionService, nearAltar = ...\nlocal TAG = \"FactionService\"\n"
@@ -589,6 +591,10 @@ MUTATIONS = [
     ("④: Reward.Items ignored", ST, "\t\tif type(row) == \"table\" then add(row.Id, row.N) end\n", ""),
     ("④: only the first reward item paid", ST, "\tfor _, row in rewardItems(def.Reward) do\n", "\tfor _, row in { rewardItems(def.Reward)[1] } do\n"),
     ("④: a potion in the preview without its art key", ST, "\t\trow.Icon = type(q) == \"table\" and q.Icon or nil\n", ""),
+    # A23-218 (2): the Studio test scenes
+    ("A23-218: scenes outside Studio", "SCENE_SOURCE", "\tif not RunService:IsStudio() then return \"studio only\" end\n", ""),
+    ("A23-218: Kill takes the farthest", "SCENE_SOURCE", "if d < bestD then best, bestD = rec, d end", "if d > -1 then best, bestD = rec, d end"),
+    ("A23-218: Anchor ignored", "SCENE_SOURCE", "if m.Anchor == true and rec.Root then rec.Root.Anchored = true end", "local _ = m"),
 ]
 
 

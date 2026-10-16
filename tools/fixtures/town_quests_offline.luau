@@ -3467,4 +3467,70 @@ runGroup("a23-199 every step has a guide", function()
 	check(#fixed == 0, "a step on the KNOWN list got its guide: take it off the list", table.concat(fixed, ", "))
 end)
 
+------------------------------------------------------------------ A23-218 ② (user 10/16): SceneSetup, the Studio test scenes (one call)
+runGroup("A23-218 scene setup", function()
+	local w = townWorld()
+	local reg = w.Registry
+	local log = { Faction = {}, Spawn = {}, Damage = {}, War = {}, Boss = {}, Gold = {}, Moved = {} }
+	reg.FactionService.SetFaction = function(pl, f) table.insert(log.Faction, f); pl:SetAttribute("Faction", f); w.Data[pl].Faction = f end
+	reg.FieldBossService = { DebugSpawn = function(key) table.insert(log.Boss, key) return "spawned" end }
+	reg.MonsterService.SpawnEvent = function(kind, o)
+		local rec = { Kind = kind, Alive = true, HP = 10, Root = { Position = o.Near + vec(#log.Spawn + 1, 0, 0), Anchored = false } }
+		table.insert(log.Spawn, { Kind = kind, Radius = o.Radius, Rec = rec })
+		return rec
+	end
+	reg.MonsterService.DamageMonster = function(rec, n, pl) table.insert(log.Damage, { Rec = rec, N = n, P = pl }); rec.Alive = false end
+	reg.WarService = { DebugRound = function(t, h, r) table.insert(log.War, { t, h, r }) return "ends in 3 s" end }
+	reg.ShopService.Anvil = function() return nil end
+	reg.ProgressionService.AddBankGold = function(pl, n) table.insert(log.Gold, n) end
+	reg.PlayerService.RefreshCharacter = reg.PlayerService.RefreshCharacter or function() end
+	local base = w:Env()
+	local env = {}
+	for k, v in base do env[k] = v end
+	env.RaycastParams = { new = function() return {} end }
+	env.Enum = setmetatable({ RaycastFilterType = { Exclude = "Exclude" } }, { __index = base.Enum })
+	env.workspace = setmetatable({ Raycast = function() return nil end }, { __index = base.workspace })
+	env.CFrame = setmetatable({ lookAt = function(at) return { Position = at } end }, { __index = base.CFrame })
+	local function load(studio)
+		local svc = w.Services
+		local old = svc.RunService
+		svc.RunService = { IsStudio = function() return studio end, IsServer = function() return true end }
+		local m = execute("SceneSetup", SCENE_SOURCE, env)
+		svc.RunService = old
+		m.Init(reg)
+		return m
+	end
+	local live = load(false)
+	local p, d = w:Join(9701, { Faction = "Halo", Level = 1, Tutorial = 0 })
+	p.Character.PivotTo = function(_, cf) table.insert(log.Moved, cf.Position) end
+	check(live.Apply(p, "Calm") == "studio only" and #log.Spawn == 0, "outside Studio: refused, nothing changed", "")
+	local sc = load(true)
+	check(string.find(sc.Apply(p, "Nope"), "presets:", 1, true) ~= nil, "an unknown scene lists the presets", "")
+	-- OfferM1_3: Lv5 Halo past M1_1 beside Gleam, the teacher's offer window opens
+	w:Npc("Gleam", vec(20, 0, -440))
+	local r = sc.Apply(p, "OfferM1_3")
+	check(string.sub(r, 1, 3) == "ok:" and d.Level == 5 and d.TutorialStep == 99 and d.Story.Done.M1_1 == true
+		and d.Story.First.TeacherMet == true and log.Faction[1] == "Halo" and #log.Moved == 1
+		and (log.Moved[1] - vec(20, 0, -440)).Magnitude < 10 and string.find(r, "talk Gleam", 1, true) ~= nil,
+		"OfferM1_3: Lv5, the first mission done, M1_1 done, TeacherMet, beside Gleam, the talk asked", r)
+	-- Calm: 3 slimes + a prince held near, the King Slime; Kill = the nearest one, a real DamageMonster
+	r = sc.Apply(p, "Calm")
+	check(#log.Spawn == 4 and log.Spawn[1].Kind == "Slime" and log.Spawn[4].Kind == "BigSlime" and log.Spawn[1].Rec.Root.Anchored == true
+		and log.Spawn[1].Radius == 12 and log.Boss[1] == "SlimeKing", "Calm: 3 slimes + a Slime Prince held near, the King Slime called", r)
+	check(sc.Apply(p, "Kill") == "ok: beat Slime" and log.Damage[1].Rec == log.Spawn[1].Rec and log.Damage[1].P == p
+		and log.Damage[1].N > 10, "Kill: the nearest scene monster takes a killing hit from the player", show({ #log.Damage, log.Damage[1] and log.Damage[1].N }))
+	for _ = 1, 3 do sc.Apply(p, "Kill") end
+	check(#log.Damage == 4 and sc.Apply(p, "Kill") == "no scene monster left", "one by one, then nothing left", #log.Damage)
+	-- WarEnd and a JSON spec (the active main at a step, items, gold, a place by coordinates)
+	sc.Apply(p, "WarEnd")
+	check(log.War[1] and log.War[1][1] == 3 and log.War[1][2] == 7 and log.War[1][3] == 3, "WarEnd: the round ends in 3 s at 7 : 3", show(log.War[1]))
+	r = sc.Apply(p, '{"Main":"M2_3:2","Items":{"Enh70":2},"Gold":500,"At":"30,-12"}')
+	check(string.sub(r, 1, 3) == "ok:" and d.Story.Main.Id == "M2_3" and d.Story.Main.St == 2 and (d.Items.Enh70 or 0) >= 2
+		and log.Gold[#log.Gold] == 500 and (log.Moved[#log.Moved] - vec(34, 4, -8)).Magnitude < 1, "a JSON spec: main M2_3 step 2, items, gold, a place", r)
+	check(string.find(sc.Apply(p, '{"Main":"KO1:1"}'), "no main quest", 1, true) ~= nil, "a sub id as Main is refused", "")
+	local names = 0
+	for _ in sc.PRESETS do names += 1 end
+	check(names == 11, "eleven presets (the five asked by game dev 1 + the six of A23-218)", names)
+end)
+
 finish()
