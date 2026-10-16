@@ -112,6 +112,35 @@ local function joinAfterM23(w, userId, faction, o)
 	return p, d
 end
 
+-- story_ch2_r1 (최종 검수 10/16, A23-199 for every quest): H1 / R1 / N3 / N1 / N2 / N4 are asked by their NPC and start on
+-- [Accept] the way a player does it: walk to the asker's body (when the group placed none, one stands next to the player for
+-- the answer and is taken away again, so the group's own 'not placed' world stays), Refresh, Accept, walk back.
+-- -> the track (nil = not offered) and #w.Fired after the Accept (the first card opens on Accept: count windows after it)
+local function accept(w, p, d, id)
+	local def = w.Config.StoryQuests.Defs[id]
+	local npc = def and type(def.Offer) == "table" and def.Offer.Npc or nil
+	if type(npc) == "table" then npc = npc[p:GetAttribute("Faction")] end
+	local back = p.Character:FindFirstChild("HumanoidRootPart").Position
+	local body = nil
+	for _, n in w.Npcs do if n.Attrs.NpcId == npc then body = n end end
+	local made = body == nil
+	if made then body = w:Npc(npc, back + vec(3, 0, 0)) end
+	local cs = w.Services.CollectionService
+	local seen = false
+	pcall(function() for _, n in cs:GetTagged(SQ0.NpcTag) do if n == body then seen = true end end end)
+	if not seen then -- a world without NPC tags (Npcs = false): only this body, only for the answer
+		w.Services.CollectionService = { GetTagged = function(_, tag) return tag == SQ0.NpcTag and { body } or {} end }
+	end
+	w:MoveTo(p, body.Position + vec(2, 0, 0))
+	w.Story.Refresh(p)
+	w:Flush()
+	w:Act(p, id, "Accept")
+	w:MoveTo(p, back)
+	if not seen then w.Services.CollectionService = cs end
+	if made then table.remove(w.Npcs, table.find(w.Npcs, body)) end
+	return w:Track(d, id), #w.Fired
+end
+
 local function sameReward(a, b)
 	if type(a) ~= "table" or type(b) ~= "table" then return false end
 	for k, v in a do if b[k] ~= v then return false end end
@@ -144,8 +173,9 @@ runGroup("config", function()
 		local first = def and def.Steps[1]
 		check(first and first.Obj.Type == "Talk" and first.Npc == last.Npc and SQ.Speakers[first.Npc] ~= nil and def.Speaker == first.Npc,
 			id .. ": starts by talking to the same NPC (a speaker name)", show(first and first.Npc))
-		check(def and type(def.Finish) == "string" and string.find(def.Finish, "?", 1, true) ~= nil,
-			id .. ": the last line is a question (story_depth §1)", def and def.Finish)
+		-- story_ch2_r1 §3 (최종 검수 10/16): the old rumor Finish question is gone; the last card closes with its own lines + a Scene
+		check(def and def.Finish == nil and type(last.Lines) == "table" and #(last.Lines.All or {}) > 0 and type(last.Scene) == "string",
+			id .. ": closes on the last card's lines + Scene (no rumor Finish)", def and def.Finish)
 	end
 	check(SQ.Defs.N3.Steps[#SQ.Defs.N3.Steps].Obj.Neutral ~= nil, "N3 keeps A / B labels for a Neutral save")
 	-- the steps 검수 set: H1 spies 10 s at the woods' edge, then 2 king slimes; R1 listens 15 s at the fountain, then 6 slimes
@@ -174,21 +204,33 @@ end)
 ------------------------------------------------------------------ 2. who gets what, when
 runGroup("offered", function()
 	local w = townWorld()
+	-- story_ch2_r1 (A23-199): the askers stand in their towns; H1 / R1 / N3 wait there (their '!'), never start by themselves
+	w:Npc("Bright", vec(0, 0, -400))
+	w:Npc("Smokey", vec(0, 0, 400))
+	w:Npc("Tiny", vec(24, 0, 12))
 	local halo, hd = joinAfterM23(w, 101, "Halo")
-	local _, rd = joinAfterM23(w, 102, "Horns")
-	local _, ed = joinAfterM23(w, 103, "Halo", { Before = true })
-	check(w:Track(hd, "H1") and w:Track(hd, "N3") and not w:Track(hd, "R1"), "a Halo player after M2_3: H1 + N3", show(hd.Story.Subs))
-	check(w:Track(rd, "R1") and w:Track(rd, "N3") and not w:Track(rd, "H1"), "a Horns player after M2_3: R1 + N3", show(rd.Story.Subs))
-	check(not w:Track(ed, "H1") and not w:Track(ed, "N3"), "before M2_3: none of them", show(ed.Story.Subs))
+	local horns, rd = joinAfterM23(w, 102, "Horns")
+	local early, ed = joinAfterM23(w, 103, "Halo", { Before = true })
+	local function offers(p) return "," .. (p:GetAttribute("StoryOffers") or "") .. "," end
+	check(not w:Track(hd, "H1") and not w:Track(hd, "N3") and string.find(offers(halo), ",Bright,", 1, true)
+		and string.find(offers(halo), ",Tiny,", 1, true), "a Halo player after M2_3: H1 + N3 offered at Bright / Tiny (not started)",
+		show({ hd.Story.Subs, halo:GetAttribute("StoryOffers") }))
+	check(not w:Track(rd, "R1") and string.find(offers(horns), ",Smokey,", 1, true) and not string.find(offers(horns), ",Bright,", 1, true),
+		"a Horns player after M2_3: R1 offered at Rose, nothing at Bright", show({ rd.Story.Subs, horns:GetAttribute("StoryOffers") }))
+	check(accept(w, halo, hd, "H1") and accept(w, halo, hd, "N3") and not accept(w, halo, hd, "R1"),
+		"a Halo player after M2_3: H1 + N3 start on Accept, R1 never", show(hd.Story.Subs))
+	check(accept(w, horns, rd, "R1") and accept(w, horns, rd, "N3") and not accept(w, horns, rd, "H1"),
+		"a Horns player after M2_3: R1 + N3 start on Accept, H1 never", show(rd.Story.Subs))
+	check(not accept(w, early, ed, "H1") and not accept(w, early, ed, "N3"), "before M2_3: none of them", show(ed.Story.Subs))
 	-- A23-57: an old Neutral save still gets N3, never the artisan-only N1 / N2 while the switch is off
-	local _, gd = joinAfterM23(w, 104, "Neutral")
-	check(w:Track(gd, "N3") and not w:Track(gd, "N1") and not w:Track(gd, "N2"), "a Neutral save (switch off): N3, not N1 / N2",
-		show(gd.Story.Subs))
+	local guild, gd = joinAfterM23(w, 104, "Neutral")
+	check(accept(w, guild, gd, "N3") and not accept(w, guild, gd, "N1") and not accept(w, guild, gd, "N2"),
+		"a Neutral save (switch off): N3, not N1 / N2", show(gd.Story.Subs))
 	local w2 = townWorld()
 	w2.Config.Features.NeutralFaction = true
-	local _, gd2 = joinAfterM23(w2, 105, "Neutral")
-	check(w2:Track(gd2, "N1") and w2:Track(gd2, "N2") and w2:Track(gd2, "N3"), "switch on: N1 / N2 come back (data kept)",
-		show(gd2.Story.Subs))
+	local guild2, gd2 = joinAfterM23(w2, 105, "Neutral")
+	check(accept(w2, guild2, gd2, "N1") and accept(w2, guild2, gd2, "N2") and accept(w2, guild2, gd2, "N3"),
+		"switch on: N1 / N2 come back (data kept)", show(gd2.Story.Subs))
 	-- the row carries the NPC (game dev 1 puts '!' over it) and a waiting talk never pops a window by itself
 	w.Config.StoryQuests.MaxSubs = 20 -- the row itself (A23-56's other new offers share the 3 list rows)
 	local rows = w.Story.SubRows(halo, hd)
@@ -210,15 +252,15 @@ runGroup("h1-good", function()
 	local w = townWorld()
 	w:Npc("Bright", vec(0, 0, -400))
 	local p, d = joinAfterM23(w, 201, "Halo", { Pos = vec(0, 0, -300) })
-	local tr = w:Track(d, "H1")
+	local tr, f0 = accept(w, p, d, "H1") -- [Accept] at Bright (story_ch2_r1), then back 100 studs away
 	-- the NPC is in the world: talking from far away does nothing, next to it works
 	w:Act(p, "H1", "Talk")
 	check(tr.St == 1, "Talk 100 studs from Bright: refused", tr.St)
 	w:Act(p, "H1", "Open")
-	check(w:Opens(0) == 0, "Open from far away: no window", w:Opens(0))
+	check(w:Opens(f0) == 0, "Open from far away: no window", w:Opens(f0))
 	w:MoveTo(p, vec(4, 0, -396))
 	w:Act(p, "H1", "Open")
-	check(w:Opens(0) == 1, "Open next to Bright: the talk window", w:Opens(0))
+	check(w:Opens(f0) == 1, "Open next to Bright: the talk window", w:Opens(f0))
 	w:Act(p, "H1", "Talk")
 	check(tr.St == 2, "Talk next to Bright: step 2", tr.St)
 	-- E4: 10 s in one go at the woods' edge; leaving starts again
@@ -297,7 +339,7 @@ runGroup("r1-evil", function()
 	local w = townWorld() -- NPCs are tagged, but Smokey is not placed yet: talking works anywhere
 	w:Npc("Bright", vec(0, 0, -400))
 	local p, d = joinAfterM23(w, 301, "Horns", { Pos = vec(500, 0, 500) })
-	local tr = w:Track(d, "R1")
+	local tr = accept(w, p, d, "R1") -- (Rose stands by the player only for the [Accept], then is gone again)
 	w:Act(p, "R1", "Talk")
 	check(tr.St == 2, "Smokey not placed yet (only Bright is): the talk works anywhere", tr.St)
 	local fountain = SQ0.Landmarks.Fountain
@@ -326,7 +368,7 @@ end)
 runGroup("n3", function()
 	local w = townWorld({ Npcs = false })
 	local p, d = joinAfterM23(w, 401, "Halo")
-	local tr = w:Track(d, "N3")
+	local tr = accept(w, p, d, "N3")
 	w:Act(p, "N3", "Talk")
 	w:MoveTo(p, SQ0.Landmarks.HaloBridge)
 	w:Tick(p, 1)
@@ -343,7 +385,7 @@ runGroup("n3", function()
 		show({ d.Story.Pick.N3, d.Items.Enh70 }))
 	-- an old Neutral save: A / B, recorded only (no score), A = Good's reward, B = Evil's
 	local q, e = joinAfterM23(w, 402, "Neutral")
-	local tq = w:Track(e, "N3")
+	local tq = accept(w, q, e, "N3")
 	tq.St = #SQ0.Defs.N3.Steps
 	local bank, honor = e.BankGold or 0, e.Honor or 0
 	w:Act(q, "N3", "Choose", "Good")
@@ -361,7 +403,7 @@ local function atPick(w, userId, faction, quest, stats)
 		d[k] = v
 		p:SetAttribute(k, v)
 	end
-	local tr = w:Track(d, quest)
+	local tr = accept(w, p, d, quest)
 	tr.St = #SQ0.Defs[quest].Steps
 	return p, d, tr
 end
@@ -618,8 +660,9 @@ runGroup("clues", function()
 	check(SQ.Defs.M1_2 == nil and SQ.Defs.M1_1.Finish == nil and SQ.Defs.M1_1.Steps[2].Lines.Halo[1] == "Got the band! That knot is still holding.",
 		"the band closes M1_1 in my own words (10/15: no M1_2, no Otto card)", tostring(SQ.Defs.M1_1.Finish))
 	check(string.find(SQ.Defs.M2_3.Finish or "", "Two kids", 1, true) ~= nil, "M2_3: two kids run off", SQ.Defs.M2_3.Finish)
-	check(string.find(SQ.Defs.H1.Clue or "", "wristband", 1, true) ~= nil and string.find(SQ.Defs.R1.Clue or "", "wristband", 1, true) ~= nil,
-		"H1 / R1: the wristband toasts", show({ SQ.Defs.H1.Clue, SQ.Defs.R1.Clue }))
+	-- story_ch2_r1 §3 (최종 검수 10/16): the old wristband Clue toasts are replaced by the knot story in the lines
+	check(SQ.Defs.H1.Clue == nil and SQ.Defs.R1.Clue == nil and SQ.Defs.N3.Clue == nil,
+		"H1 / R1 / N3: no old Clue toast", show({ SQ.Defs.H1.Clue, SQ.Defs.R1.Clue }))
 	local function anyLine(def, word)
 		for _, step in def.Steps do
 			for _, list in step.Lines or {} do
@@ -628,8 +671,9 @@ runGroup("clues", function()
 		end
 		return false
 	end
-	check(anyLine(SQ.Defs.H1, "Page 12") and anyLine(SQ.Defs.H1, "Happy birthday, S.") and anyLine(SQ.Defs.R1, "signed 'B.'")
-		and anyLine(SQ.Defs.R1, "gold spyglass") and anyLine(SQ.Defs.N3, "two kids"), "H1 / R1 / N3 carry their clues")
+	-- (story_ch2_r1 §3: the birthday gift / the two knots replace the old rumor clues)
+	check(anyLine(SQ.Defs.H1, "birthday gift") and anyLine(SQ.Defs.H1, "birthday jelly") and anyLine(SQ.Defs.R1, "birthday surprise")
+		and anyLine(SQ.Defs.R1, "mostly ribbon") and anyLine(SQ.Defs.N3, "Bright tied mine"), "H1 / R1 / N3 carry their clues")
 	-- (quest P1 ⑦: M1_4 ends chapter 1 with the lamp choice itself, no closing question line)
 	check(anyLine(SQ.Defs.M2_7, "why would a goblin need dust?"), "chapter-end question (M2_7)")
 end)
@@ -820,7 +864,8 @@ runGroup("artisan quests", function()
 	d.Story.Done.N2 = true
 	w.Story.Refresh(p)
 	w:Flush()
-	check(w:Track(d, "N4") ~= nil, "N2 done: N4 offered", show(d.Story.Subs))
+	check(w:Track(d, "N4") == nil and accept(w, p, d, "N4") ~= nil, "N2 done: N4 offered at Kit (not by itself), starts on Accept",
+		show(d.Story.Subs))
 	R.CraftService.Crafted:Fire(p, "Nope", 0)
 	R.CraftService.Crafted:Fire(p, "W2", 0)
 	w:Flush()
@@ -911,6 +956,9 @@ runGroup("max-subs", function()
 	local w = townWorld()
 	w:Npc("Bright", vec(0, 0, -400))
 	local p, d = joinAfterM23(w, 701, "Halo", { Pos = vec(2, 0, -398) })
+	-- story_ch2_r1 (A23-199): the two town quests are asked at Bright / Tiny; once accepted their first card waits at the NPC
+	accept(w, p, d, "H1")
+	accept(w, p, d, "N3")
 	local subs = d.Story.Subs
 	check(subs.S0 and subs.S1 and subs.S2 and subs.S3 and subs.H1 and subs.N3,
 		"the busy Halo list after M2_3: S0 (never done), S1, S2, S3, H1, N3", show(subs))
@@ -1077,11 +1125,11 @@ runGroup("a23-71 skill quests", function()
 		M1_3 = true, M1_4 = true }) } })
 	w.Story.Refresh(n3)
 	w:Flush()
-	check(w:Track(nd3, "N1") == nil, "a Neutral Lv3 after M1_4: no N1 yet")
+	check(accept(w, n3, nd3, "N1") == nil, "a Neutral Lv3 after M1_4: no N1 yet (Otto's [Accept] refused)")
 	w.PS.SetStat(n3, "Level", 5)
 	w.Story.Refresh(n3)
 	w:Flush()
-	check(w:Track(nd3, "N1") ~= nil, "at Lv5: N1 is offered")
+	check(w:Track(nd3, "N1") == nil and accept(w, n3, nd3, "N1") ~= nil, "at Lv5: N1 is offered (at Otto, starts on Accept)")
 end)
 
 -- SKL-3 (skill_kit §2): the practice subs SK1 (Z) / SK2 (X) wait for that skill (its switch on and its slot open);
@@ -1222,7 +1270,8 @@ runGroup("e2-lines-by", function()
 	d.Story.Pick.S0 = "Purify"
 	local row = rowOf(w, p, d, "TX_Side")
 	check(row ~= nil and row.Story.Var == "Good", "Purify -> its side (Good)", show(row and row.Story.Var))
-	-- a plain step sends no Var
+	-- a plain step sends no Var (H1, accepted at Bright first: story_ch2_r1)
+	accept(w, p, d, "H1")
 	local h1 = rowOf(w, p, d, "H1")
 	check(h1 ~= nil and h1.Story.Var == nil, "a step without LinesBy: no Var", show(h1 and h1.Story.Var))
 end)
@@ -1896,6 +1945,7 @@ runGroup("send-all-subs", function()
 	local w = townWorld()
 	w:Npc("Bright", vec(0, 0, -400))
 	local p, d = joinAfterM23(w, 702, "Halo", { Pos = vec(2, 0, -398) })
+	accept(w, p, d, "H1") -- story_ch2_r1 (A23-199): [Accept] at Bright; its first card then waits at her
 	-- only H1 (Bright's offer) stays active; three older subs are in progress
 	w.Story.Refresh(p)
 	for _, id in w.Config.StoryQuests.Subs do
@@ -2183,6 +2233,10 @@ runGroup("npc-talk", function()
 	local panels = panelsOf(w)
 	w:Npc("Bright", vec(0, 0, -400))
 	local p, d = joinAfterM23(w, 980, "Halo", { Pos = vec(2, 0, -398) })
+	-- story_ch2_r1 (A23-199): Bright asks first; talking to her before the answer opens the Offer, [Accept] starts H1
+	check(w:Track(d, "H1") == nil and string.find(p:GetAttribute("StoryOffers") or "", "Bright", 1, true) ~= nil,
+		"before the answer: H1 not started, Bright has an offer ('!')", show({ w:Track(d, "H1"), p:GetAttribute("StoryOffers") }))
+	accept(w, p, d, "H1")
 	check(w:Track(d, "H1") and w:Track(d, "H1").St == 1, "H1 waits at Bright (its first card)", show(w:Track(d, "H1")))
 	local before = #panels
 	check(#panels == before, "a step talked through an NPC never pops up by itself", "")
@@ -2196,7 +2250,8 @@ runGroup("npc-talk", function()
 		and w.Story.TalkToNpc(p, nil) == nil and w.Story.TalkToNpc(nil, "Bright") == nil and w.Story.TalkToNpc("p", "Bright") == nil and #panels == before + 1,
 		"another NPC, a bad id or a bad player: nothing", "")
 	-- a player who has not chosen a class / is not ready
-	local fresh = joinAfterM23(w, 981, "Halo", { Pos = vec(2, 0, -398) })
+	local fresh, freshD = joinAfterM23(w, 981, "Halo", { Pos = vec(2, 0, -398) })
+	accept(w, fresh, freshD, "H1")
 	local b1 = #panels
 	check(w.Story.TalkToNpc(fresh, "Bright") == "H1", "(the same player with a class: H1 opens)", "")
 	fresh:SetAttribute("ClassChosen", false)
@@ -2229,6 +2284,7 @@ runGroup("npc-talk", function()
 	addSub(w, "TX_NA", { Requires = { Done = { "M2_3" } }, Steps = { talk("a") } })
 	addSub(w, "TX_NB", { Requires = { Done = { "M2_3" } }, Steps = { talk("b") } })
 	local q, qd = joinAfterM23(w, 982, "Halo", { Pos = vec(2, 0, -398) })
+	accept(w, q, qd, "H1") -- (H1 waits at Bright too, as an accepted card)
 	local b2 = #panels
 	check(w.Story.TalkToNpc(q, "Bright") == "TX_NB" and #panels == b2 + 1 and panels[#panels].Arg.Id == "TX_NB", "two cards wait at Bright: the newest quest (last in Subs) first", show(panels[#panels] and panels[#panels].Arg))
 	w:Act(q, "TX_NB", "Talk")
@@ -2236,6 +2292,7 @@ runGroup("npc-talk", function()
 	-- a finished quest waiting for [Claim] is never opened
 	local c, cd = joinAfterM23(w, 983, "Halo", { Pos = vec(2, 0, -398) })
 	cd.Story.Subs.H1, cd.Story.Subs.TX_NB = nil, nil
+	cd.Story.Done.H1 = true -- (story_ch2_r1: an untaken H1 would be Bright's Offer; this check is about the [Claim] card)
 	cd.Story.Subs.TX_NA.Claim = true
 	cd.Story.Done.H_Band = true -- P1 ③: Bright's band offer aside
 	local b3 = #panels
@@ -3419,6 +3476,9 @@ runGroup("p1 chase and escort", function()
 		return true
 	end
 	local p, d = joinAfterM23(w, 9971, "Halo", { Pos = vec(2, 0, 0) })
+	-- (this player has only the escort open, like q below has only the chase: the attributes show one mover, the first in the
+	-- Subs table's order, which was only by chance TESC while H1 / N3 started by themselves - story_ch2_r1 10/16)
+	d.Story.Subs.TCHS, d.Story.Done.TCHS = nil, true
 	w.Story.DebugSub(p, "TESC", 1)
 	local function tick(n) for _ = 1, n or 1 do w:Advance(1); w.Story.Refresh(p) end end
 	tick(1)
@@ -3628,6 +3688,13 @@ runGroup("A23-212 clatter scenes", function()
 	w:Flush()
 	s = scenes(p)
 	check(#s == 3 and s[3].Key == "Carry" and d.Story.First.ClatterCarry == true, "the first skill learned (M1_3's Learn step): Carry", show(s[3]))
+	-- chapter 2 (story_ch2_r1 §4): once, as M2_4's gold run ends (its EarnGold step)
+	check(stepOf("M2_4", "EarnGold") == 1, "M2_4 step 1 is the gold run", stepOf("M2_4", "EarnGold"))
+	w.Story.StepDone:Fire(p, "M2_4", 1)
+	w.Story.StepDone:Fire(p, "M2_4", 1)
+	w:Flush()
+	s = scenes(p)
+	check(#s == 4 and s[4].Key == "Tools" and d.Story.First.ClatterTools == true, "M2_4's gold run done: Tools, once", show(s[4]))
 	-- a returning player past the guide (step 4 at the join) gets no Sorry
 	local r = w:Join(9603, { Faction = "Horns", Tutorial = 4 })
 	r:SetAttribute("TutorialStep", 99)

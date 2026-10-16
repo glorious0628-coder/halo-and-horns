@@ -193,8 +193,9 @@ MUTATIONS = [
     ("the clue toast back", ST, "\t-- A23-130: no def.Clue toast (lore)\n", "\tif def.Clue then notify(player, def.Clue, \"info\") end\n"),
     ("the Halo bridge spot moves away", C, "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -138)",
      "Config.StoryQuests.Landmarks.HaloBridge = Vector3.new(0, 0, -100)"),
-    ("B pays no gold", C, 'Reward = { Potion = "HP", N = 3, Gold = 220 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Rose: So who',
-     'Reward = { Potion = "HP", N = 3 } } } },\n\t\t\t},\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t\tFinish = "Rose: So who'),
+    # (anchor = R1's end, story_ch2_r1 10/16: R1 has no Finish now, the next def is N3)
+    ("B pays no gold", C, 'Reward = { Potion = "HP", N = 3, Gold = 220 } } } },\n\t\t\t},\n\t\t\tLast = true,\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t},\n\t\tN3 = {',
+     'Reward = { Potion = "HP", N = 3 } } } },\n\t\t\t},\n\t\t\tLast = true,\n\t\t\tReward = { GoldN = 120, XPBar = 0.5 },\n\t\t},\n\t\tN3 = {'),
     ("leaving the spot keeps the count", ST, "\t\t\t\t\t\tif mine then mine[key] = nil end\n", ""),
     ("a stay counts by ticks, not time", ST, "local held = math.min(obj.Stay, math.floor(os.clock() - mine[key]))",
      "local held = math.min(obj.Stay, num(tr.P) + 1)"),
