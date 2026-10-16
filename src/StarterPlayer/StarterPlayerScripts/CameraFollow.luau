@@ -268,6 +268,7 @@ end
 -- 게임 플레이 3판 ① (최종 검수 10/16: the Halo first screen faced the guide but the camera looked at the stairs): once per
 -- character, when Roblox's camera has it (a spawn, a respawn, the opening handing the camera back), the camera turns
 -- round behind it at its current zoom - the server faces a new character toward the guide / Fizzby, so that is on screen
+FOLLOW.ReSnap = { 0.8, 1.8 } -- s after a side / class pick in the first mission (CameraFollow.Start)
 function FOLLOW.SnapBehind(char)
 	local camera = workspace.CurrentCamera
 	if not camera or camera.CameraType ~= Enum.CameraType.Custom or char ~= LocalPlayer.Character then return end
@@ -361,6 +362,19 @@ function CameraFollow.Start()
 			pcall(function() Net.Get("Fx").OnClientEvent:Connect(FOLLOW.OnFx) end)
 		end
 	end)
+	-- 게임 플레이 5판 (10/16: the Horns body faced Magpie, the camera did not): the side / class pick moves and turns the
+	-- body on the server after the first snap - while the first mission waits (TutorialStep 0) the camera goes behind
+	-- the body again a moment after each pick (FOLLOW.ReSnap s, twice for a slow move)
+	for _, name in { "Faction", "ClassChosen" } do
+		pcall(function()
+			LocalPlayer:GetAttributeChangedSignal(name):Connect(function()
+				if (tonumber(LocalPlayer:GetAttribute("TutorialStep")) or 0) ~= 0 then return end
+				for _, after in FOLLOW.ReSnap do
+					task.delay(after, function() pcall(FOLLOW.SnapBehind, LocalPlayer.Character) end)
+				end
+			end)
+		end)
+	end
 	LocalPlayer.CharacterAdded:Connect(bindCharacter)
 	LocalPlayer.CharacterRemoving:Connect(function(removing)
 		if character == removing then bindCharacter(nil) end

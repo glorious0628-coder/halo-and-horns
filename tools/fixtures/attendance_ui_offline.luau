@@ -288,6 +288,11 @@ local ctx = { Ready = true, Step = 99, Done = 99, Days = 3, Played = 30, Day = 5
 check("out of town (hunting): never by itself", UI.AutoOpen(ctx) == false)
 ctx.Town = true
 check("a claim open, first mission done, calm, in a town: opens", UI.AutoOpen(ctx) == true)
+ctx.Spawned = 5
+check("5 s after a KO got up (a respawn): not yet", UI.AutoOpen(ctx) == false)
+ctx.Spawned = 40
+check("... 40 s after it: opens", UI.AutoOpen(ctx) == true)
+ctx.Spawned = nil
 ctx.OpenedDay = 50
 check("once a day", UI.AutoOpen(ctx) == false)
 ctx.OpenedDay, ctx.Step = 49, 2
