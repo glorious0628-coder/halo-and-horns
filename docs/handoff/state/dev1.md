@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 밤 10 — 새 계정 세션 (최신)
+- **병합됨:** dev1-stow-fix f82a25f0 → main 85754011 (허리 무기 Down 65·바닥 0.4칸·Turn Z +4, 등 활 시위 Beam 숨김). 엔진 값: 뿔 몽둥이 끝 36°(걷기 28°) 바닥 위 0.25칸, 칼 40° — 허리 낮은 아바타라 바닥 규칙이 각도를 줄임.
+- **가지 dev1-first12 7671b89f** (push, ../Game-dev1grip, **dev2-first12 54a3be0d 합쳐 있음 → 서버와 한 번에 병합**): 2274799f 선물 창 마을에서만·Lv5 자물쇠 글 'Quest'·SignFit(땅 글 겹침 숨김, ORDER LightCap 다음) / e339aa98 허수아비(Practice 줄 GuideSpot, Scale 1.4·흔들림 24°)·OpenPanel 'Enhance' → 가방 스크롤 단계 무기 고른 채·M1_2 표시 'King Slime' / faf77e9c 머리 위 들기(Fx.HoldUp, 첫 무기·무기/스크롤/Gear 드롭)·레벨업 싸움 끝 묶음(Feel.levelQueue, HUD.LevelHold/LevelCount)·XP ×2(Fx Reward XPMult, 서버 아직)·2배 칩 한 번 반짝(HUD.PulseBoost) / 842cf8e4 test_audio 변이 / 7671b89f 5판: 첫 미션 진영·직업 고른 뒤 카메라 재스냅, 다시 태어난 뒤 30초 선물 창 안 뜸.
+- **엔진 확인(PhoneTest, 사진 docs/art/verification_2026-10-17/dev1_photos/, 도구 build/dev1_tools/photo1017.py·photo1017b.py·diag1017.py):** 모루 G → 가방 강화 단계 열림 ✅, 첫 무기 FxHoldUp+만세 ✅, 허수아비 생김(기둥 6.2)·step 5 ✅. 🔴 **PracticeH(-18,-366)가 초원 패드 Pad_Halo_SlimeMeadow(-24,-357)에서 10.8칸** → 허수아비 앞에 서면 1초 안에 초원으로 보내짐 → F가 안 셈. 자리 옮기기 = 개발 2(최종 검수에 보고함). 옮긴 뒤 F 한 대 → step 넘어가는지 다시 볼 것.
+- 남은 것: 대장간 'Altar of Fate' 글이 위 거위 칩과 겹침(SignFit이 위 칩도 피할지 최종 검수에 물음). 전체 스윕(내 가지 vs ../wt_d1base = dev2-first12) 진행 중: build/sw/_summary.txt 두 곳 비교(116/253까지 새 실패는 test_audio뿐, 고침). 사진용 worktree ../wt_photo(커밋 안 함, 지워도 됨).
+
 ## 10/16 밤 9 — 사용자 컴퓨터 끔, 여기서 이어서 (최신)
 - 병합됨: dev1-hold-angles → main 2a3489d1. 가지 **dev1-first12 15a860af**(push, worktree ../Game-dev1grip): A23-221 ⑤ 첫 10분 화면 낮(Config.FirstDay/FirstDayFor, ZoneLook·WeatherFx·Audio) + 3판 ① 스폰 때 카메라 등 뒤(CameraFollow FOLLOW.SnapBehind). 시험 통과(zone_look, weather_fx, audio 360, day_cycle, camera_input 43/43, keys_settings). Studio 사진 아직. (main 2a3489d1보다 뒤에서 갈라짐 — 충돌 날 때만 main 합치기)
 - **▶ 다음 (최종 검수 10/16 밤, 이 순서):**
