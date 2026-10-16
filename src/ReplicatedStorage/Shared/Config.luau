@@ -2880,6 +2880,10 @@ function Config.MonsterActive(kind, override)
 	return type(def) == "table" and Config.SeasonOn(def.Season, override)
 end
 
+-- A23-211 (user 10/16, game dev 1's calm fade): a boss's calm moment before it fades (s; the model attribute CalmTime, the
+-- clients fit the fade to it, 0.6..3); every other kind = the 1.0 s default (no attribute)
+Config.MonsterCalmTime = { SlimeKing = 1.8, CaptainClatter = 2.2 }
+
 -- true for a seasonal kind that adds its Count on top of its zone instead of taking base slots (no Takes, e.g. the
 -- little ghost): MonsterService spawns it to its own Config.MonsterTargets target outside MonsterDensity.GlobalCap, so
 -- with the season on the other zones keep the density they have with it off, also when the cap is full

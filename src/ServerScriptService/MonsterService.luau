@@ -7,7 +7,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local TweenService = game:GetService("TweenService")
-local Debris = game:GetService("Debris")
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage.Shared.Config)
@@ -88,9 +87,13 @@ local BAR_MAX_DISTANCE = 80
 -- (0.75: the rigged fall / slime splat shows), then shrinks over DEATH_SHRINK; destroyed at DEATH_DESTROY.
 -- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): a monster body is never see-through (ART_DIRECTION: part
 -- Transparency is 0 or 1): no fade, it stays opaque until the model is destroyed
+-- A23-211 (user 10/16, "죽는 모션이 아니라 편안해지는 느낌으로 사라지면"): the clients play the calm fade (round dust, one
+-- soft hop, a little smaller, fading); the server no longer bursts particles or shrinks a killed body (its replicated size
+-- would override the clients'). DEATH_SHRINK stays for the clients' old puddle timing until the calm fade replaces it.
+-- A boss's model gets the attribute CalmTime (s, Config.MonsterCalmTime) just before it is anchored and is destroyed that
+-- much later (DEATH_DESTROY is the 1.0 s default fade + 0.15)
 local DEATH_SHRINK = 0.3
 local DEATH_DESTROY = 1.15
-local DEATH_PARTICLES = 15
 -- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
 -- "Leaving" (clients skip the dying-slime splat), floats up Rise studs while it shrinks away over Time s, no burst
 local LEAVE = { Time = 1.2, Rise = 3 }
@@ -1427,41 +1430,16 @@ local function spawnMonster(kind, opts)
 	return rec
 end
 
-local function emitDeathParticles(pos, color, scale)
-	local fx = Instance.new("Part")
-	fx.Name = "MonsterPop"
-	fx.Anchored = true
-	fx.CanCollide = false
-	fx.CanQuery = false
-	fx.CanTouch = false
-	fx.Transparency = 1
-	fx.Size = Vector3.new(1, 1, 1)
-	fx.CFrame = CFrame.new(pos)
-	local pe = Instance.new("ParticleEmitter")
-	pe.Color = ColorSequence.new(color)
-	pe.Rate = 0
-	pe.Lifetime = NumberRange.new(0.4, 0.8)
-	pe.Speed = NumberRange.new(8, 16)
-	pe.SpreadAngle = Vector2.new(180, 180)
-	pe.Acceleration = Vector3.new(0, -25, 0)
-	pe.LightEmission = 0.4
-	pe.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7 * scale), NumberSequenceKeypoint.new(1, 0) })
-	pe.Parent = fx
-	fx.Parent = Util.GetFolder(workspace, "Effects")
-	pe:Emit(DEATH_PARTICLES)
-	Debris:AddItem(fx, 1.5)
-end
-
--- particle burst, the body holds (fall / splat) then shrinks to 0.2 in DEATH_SHRINK, destroyed at DEATH_DESTROY.
--- leaving = it goes home instead (LEAVE): no splat, no burst, it floats up while it shrinks away.
--- A23-74 (user 2026-10-07 "왜 반투명한 애들이 생기냐고"): no Transparency tween, the body stays opaque until it is
--- destroyed. A killed slime's CustomVisual keeps its size here: the clients splat it and shrink the puddle (Fx WOBBLE);
--- a server resize replicated over the splat and stood the body back up full size while it faded, so a dead slime read
--- as a living see-through one.
-local function deathPop(rec, withParticles, leaving)
+-- a kill (A23-211): the body stops and anchors where it is, its name bar and lights go off, the clients play the calm
+-- fade; a boss's model carries CalmTime; destroyed at DEATH_DESTROY (+ the boss's extra calm time). No burst, no server
+-- resize. leaving = it goes home instead (LEAVE): it floats up while it shrinks away. A23-74: never a Transparency tween.
+-- (_killed: the callers' old burst flag, unused since A23-211)
+local function deathPop(rec, _killed, leaving)
 	local model, root, hum = rec.Model, rec.Root, rec.Humanoid
 	if not model then return end
 	if leaving then model:SetAttribute("Leaving", true) end -- set before the anchor below (clients test it on anchor)
+	local calm = not leaving and type(rec.Kind) == "string" and Config.MonsterCalmTime[rec.Kind] or nil
+	if calm then model:SetAttribute("CalmTime", calm) end -- A23-211: a boss's longer calm moment (before the anchor too)
 	if hum and hum.Parent then
 		hum.WalkSpeed = 0
 	end
@@ -1469,31 +1447,23 @@ local function deathPop(rec, withParticles, leaving)
 		root.Anchored = true
 		local bar = root:FindFirstChild("MonsterBar")
 		if bar then bar.Enabled = false end
-		if withParticles then
-			emitDeathParticles(root.Position, rec.Golden and MC.GoldenColor or rec.Def.Color, rec._scale or 1)
-		end
 		if leaving then
 			TweenService:Create(root, TweenInfo.new(LEAVE.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.In),
 				{ CFrame = root.CFrame + Vector3.new(0, LEAVE.Rise, 0) }):Play()
 		end
 	end
-	local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_SHRINK - 0.1) -- TweenInfo DelayTime: the body stays
-	local info = TweenInfo.new(leaving and LEAVE.Time or DEATH_SHRINK, Enum.EasingStyle.Quad, Enum.EasingDirection.In, 0,
-		false, hold)
-	local def = rec.Def
-	local splatted = not leaving and type(def) == "table" and def.Shape == "Slime" and model:FindFirstChild("CustomVisual")
-		or nil
+	local info = TweenInfo.new(LEAVE.Time, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 	for _, d in model:GetDescendants() do
 		if d:IsA("BasePart") then
-			-- the invisible joint anchor keeps its size; so does a slime body the clients splat
-			if d ~= root and d.Name ~= VISUAL_ROOT_NAME and not (splatted and d:IsDescendantOf(splatted)) then
+			-- only a leaving body shrinks here (the invisible joint anchor keeps its size)
+			if leaving and d ~= root and d.Name ~= VISUAL_ROOT_NAME then
 				TweenService:Create(d, info, { Size = d.Size * 0.2 }):Play()
 			end
 		elseif d:IsA("ParticleEmitter") or d:IsA("Light") or d:IsA("Highlight") then
 			d.Enabled = false
 		end
 	end
-	local life = leaving and LEAVE.Time + 0.1 or DEATH_DESTROY
+	local life = leaving and LEAVE.Time + 0.1 or DEATH_DESTROY + (calm and calm - 1 or 0)
 	GHOST.Dying[model] = os.clock() + life + GHOST.Grace
 	task.delay(life, function()
 		if model then model:Destroy() end
