@@ -63,10 +63,10 @@ POINTS = {"Sword": 0.5, "DarkSword": 0.5, "Bow": 0.5, "ShortBow": 0.5, "Staff": 
 ROWS = [("Warrior", "Halo", "Sword"), ("Warrior", "Horns", "DarkSword"), ("Warrior", "Neutral", "Hammer"),
         ("Mage", "Halo", "Staff"), ("Mage", "Horns", "CrookStaff"), ("Mage", "Neutral", "FlaskStaff"),
         ("Archer", "Halo", "Bow"), ("Archer", "Horns", "ShortBow"), ("Archer", "Neutral", "Baton")]
-# the attack clips as on main 11213d87 (before A23-150 7): "공격 = 지금 직업별 동작 그대로"
-CLIP_SHA = {"MOTION": "acad910ec814df2db9c45090c1a62e5551f0fcedac772b13fbd1b27044e8ba05",
-            "archerPose": "f27d1f59f2e1e73f819908d1b43557fd16bd370ed22737695ab1f8eff31c2e91",
-            "staffPose": "8d2dd2c00d819354aedb2dc17fd89b80297cff34b2770ff74b4d3f27a239ccef"}
+# the attack clips as on main 11213d87 (before A23-150 7): "공격 = 지금 직업별 동작 그대로"; hold-angles (최종 검수 10/16):
+# the mage clips' right wrist leans the staff ~30 forward (no tip aim: Feel.staffPose is gone) - the MOTION print of that
+CLIP_SHA = {"MOTION": "a36e23b56b7bbbe610c56aed23e40e9cbb89f9f758e5ed2793ec53df1196a67c",
+            "archerPose": "136320ecfdf70cd2880ca6351602cc4a7bee3084e98ebe77681228782c3aa868"}  # (the same body; the comment after it is launchWeapon's now)
 
 CHECK_OLD = '''local function check(value, message)
     assert(value, message)
@@ -463,7 +463,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         # 최종 검수 10/14: the sword rests at the side unless an attack clip runs (toolnone faded, the Rest grip)
         # hold-pose-2 (Codex ③): toolnone stays down (rest and attack); the grip Turn <-> Rest on the pose's clock (PoseStep)
         ("WeaponPose: toolnone down while held, the Rest grip while no attack runs (blended on the pose's clock)",
-         "local want = WeaponPose.Want(kind, fxAttacking(char))" in wp
+         "local want = WeaponPose.Want(kind, attacking)" in wp and "local attacking = fxAttacking(char)" in wp
          and "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end" in wp
          and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest", centre), share)' in wp
          and "weld.C1 = c1" in wp
@@ -490,7 +490,8 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         # (the attack clips as on main 11213d87; the one new MOTION line is the bow's hold, 최종 검수 10/13)
         motion = "\n".join(line for line in motion.split("\n") if not line.startswith("\tBOW_HOLD = "))
         out.append(("the attack clips as before (Fx MOTION)", sha(motion) == CLIP_SHA["MOTION"]))
-        for name in ("archerPose", "staffPose"):
+        out.append(("hold-angles: no staff tip aim (Feel.staffPose gone)", "function Feel.staffPose(" not in fx))
+        for name in ("archerPose",):
             out.append((f"the attack solve as before (Feel.{name})", sha(WM.source_function(fx, name)) == CLIP_SHA[name]))
     except ValueError:
         out.append(("the attack clips found", False))
@@ -560,7 +561,7 @@ MUTATIONS = [
     ("FX", "an attack clip changed", "PaladinSwing", "PaladinSwing2"),
     ("WP", "the sword never rests", 'Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest", centre), share)',
      "Config.WeaponGrip(kind, handle.Size.Y, nil, centre)"),
-    ("WP", "rests during an attack too", "local want = WeaponPose.Want(kind, fxAttacking(char))", "local want = WeaponPose.Want(kind, false)"),
+    ("WP", "rests during an attack too", "local want = WeaponPose.Want(kind, attacking)", "local want = WeaponPose.Want(kind, false)"),
     ("WP", "the rest step never runs", "local okR, errR = pcall(WeaponPose.RestStep, os.clock())", "local okR, errR = true, nil"),
     ("WP", "the weld never turns (Tool.Grip only: the engine weld kept the blade level)", "weld.C1 = c1", "local _ = c1"),
     ("WP", "toolnone raised for an attack again", "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end",

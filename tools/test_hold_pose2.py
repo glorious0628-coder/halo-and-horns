@@ -38,7 +38,10 @@ WP_CUTS = ["function WeaponPose.MemeOf(tier)", "function WeaponPose.HoldOf(kind)
            "function WeaponPose.Approach(x, want, dt, time)", "function WeaponPose.MoveState(air, share)",
            "function WeaponPose.PoseFor(kind, w, state)", "function WeaponPose.Compose(base, target, damp, s)",
            "function WeaponPose.DampOf(pose, joint, state)", "local function fxAttacking(char)", "function WeaponPose.BaseOf(m)",
-           "function WeaponPose.JointOf(char, joint)", "function WeaponPose.PoseStep(dt)"]
+           "function WeaponPose.JointOf(char, joint)", "function WeaponPose.PoseStep(dt)",
+           # A23-223: a bow on the back / a sword at the hip out of a fight
+           "function WeaponPose.StowOf(kind)", "function WeaponPose.StowApply(char, tool, handle, where, stow)",
+           "function WeaponPose.StowStep(char, tool, kind, attacking, now)"]
 
 EXTRA = r'''
 function CF:ToEulerAnglesXYZ()
@@ -226,6 +229,58 @@ do
         "an upgraded avatar: the AnimationConstraint gets the damped pose, the off Motor6D is left alone", xOf(ac.Transform) .. " vs " .. wantX)
 end
 
+-- 2e. A23-223: out of a fight a bow rides on the back and a sword at the left hip (a torso weld, the engine grip off); an
+-- attack takes it to the hand at once, HandSeconds after the last attack it goes back; a staff stays in the hand
+do
+    Instance = { new = function(kind)
+        local n = node(kind, "")
+        n.Parent = nil
+        n.Enabled = true
+        return setmetatable(n, { __newindex = function(obj, key, value)
+            rawset(obj, key, value)
+            if key == "Parent" and type(value) == "table" and value.Children then table.insert(value.Children, obj) end
+        end })
+    end }
+    S.Stow = {}
+    local W = Config.WeaponStow
+    local function setup(kind)
+        local _, grip = rig(kind)
+        local char = PLAYERS[1].Character
+        child(char, node("Part", "UpperTorso", { CFrame = CFrame.new(), Size = Vector3.new(2, 1.6, 1) }))
+        child(char, node("Part", "LowerTorso", { CFrame = CFrame.new(), Size = Vector3.new(2, 0.4, 1) }))
+        local tool = char:FindFirstChild("WeaponModel")
+        return char, tool, tool:FindFirstChild("Handle"), grip
+    end
+    ok(WeaponPose.StowOf("Bow") == "Back" and WeaponPose.StowOf("ShortBow") == "Back" and WeaponPose.StowOf("Sword") == "Hip"
+        and WeaponPose.StowOf("DarkSword") == "Hip" and WeaponPose.StowOf("Staff") == nil and WeaponPose.StowOf("Hammer") == nil
+        and WeaponPose.StowOf("Meme") == nil and WeaponPose.StowOf("Baton") == nil, "StowOf: bows on the back, swords at the hip, the rest in the hand")
+    local char, tool, handle, grip = setup("Bow")
+    local hand = W.HandSeconds
+    ok(WeaponPose.StowStep(char, tool, "Bow", false, 100) == true, "a bow never used in a fight starts on the back")
+    local weld = handle:FindFirstChild(T.StowWeld)
+    ok(weld and weld.Enabled and weld.Part0 == char:FindFirstChild("UpperTorso") and weld.Part1 == handle and grip.Enabled == false,
+        "the bow's back weld is on, the right grip off")
+    ok(WeaponPose.StowStep(char, tool, "Bow", true, 100.1) == false and weld.Enabled == false, "an attack takes it off the back at once")
+    ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand - 0.2) == false, "it stays in the hand for HandSeconds after the attack")
+    ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand + 0.1) == true and weld.Enabled, "then back on the back")
+    S.Stow = {}
+    char, tool, handle, grip = setup("Sword")
+    ok(WeaponPose.StowStep(char, tool, "Sword", false, 200) == true and grip.Enabled == false
+        and handle:FindFirstChild(T.StowWeld).Part0 == char:FindFirstChild("LowerTorso"), "a sword hangs at the hip, the right grip off")
+    ok(WeaponPose.StowStep(char, tool, "Sword", true, 200.1) == false and grip.Enabled == true
+        and handle:FindFirstChild(T.StowWeld).Enabled == false, "an attack puts the sword back on the right grip at once")
+    S.Stow = {}
+    char, tool, handle, grip = setup("Staff")
+    ok(WeaponPose.StowStep(char, tool, "Staff", false, 300) == false and handle:FindFirstChild(T.StowWeld) == nil and grip.Enabled,
+        "a staff stays in the hand")
+    S.Stow = {}
+    W.On = false
+    char, tool, handle, grip = setup("Bow")
+    ok(WeaponPose.StowStep(char, tool, "Bow", false, 400) == false and grip.Enabled, "WeaponStow.On = false: always in the hand")
+    W.On = true
+    S.Stow = {}
+end
+
 -- 3. Config
 local good = true
 for name, pose in Config.HoldPoses do
@@ -252,6 +307,8 @@ MUTATIONS = [
     ("WP", "the grip not on the same clock", "Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, \"Rest\", centre), share)",
      "Config.WeaponGrip(kind, handle.Size.Y, \"Rest\", centre)"),
     ("WP", "the other arm damped like the holding one", "\treturn tonumber(d.Free) or 0\n", "\treturn tonumber(d.Lower) or 0\n"),
+    ("WP", "A23-223: the last attack's time never kept (back on the back at once)", "\tif attacking then st.Last = now end\n", "\n"),
+    ("WP", "A23-223: the sword's right grip left off after the hip", "\t\tif where == \"Hip\" and grip and grip:IsA(\"JointInstance\") and grip.Part1 == handle and not grip.Enabled then grip.Enabled = true end\n", "\n"),
     ("WP", "our own output built on again", "\tif w and now:FuzzyEq(w.Out, T.Same) then return w.Base end\n", ""),
     ("WP", "toolnone raised for the attack", "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end",
      "local w = rest and T.Low or 1 if math.abs(tr.WeightTarget - w) > 1e-3 then tr:AdjustWeight(w, T.Fade) end"),
@@ -303,7 +360,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
 def run(src: dict) -> tuple[int, int, str]:
     w, c = src["WP"], src["CONFIG"]
     t = re.search(r"\nlocal T = \{\n.*?\n\}\n", w, re.S)
-    parts = [EXTRA, block(c, "Config.WeaponGrips = {"), block(c, "Config.HoldPoses = {"),
+    parts = [EXTRA, block(c, "Config.WeaponGrips = {"), block(c, "Config.HoldPoses = {"), block(c, "Config.WeaponStow = {"),
              c[c.find("Config.HoldMotion = {"):c.find("\n", c.find("Config.HoldMotion = {"))] + "\n",
              cut(c, "function Config.WeaponGripOf(kind)"), cut(c, "function Config.WeaponGrip(kind, len, mode, centre)"),
              "local PLAYERS = {}\nlocal Players = { GetPlayers = function() return PLAYERS end }\nlocal WeaponPose = {}\n",

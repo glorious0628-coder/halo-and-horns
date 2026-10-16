@@ -7326,6 +7326,22 @@ Config.HoldPoses = {
 -- / running. Smoothstep on both (WeaponPose.Smooth); the grip turns (Rest <-> Turn) on the same clock
 Config.HoldMotion = { Blend = 0.16, In = 0.08, InBow = 0.06, Out = 0.18, WalkAt = 0.08, RunAt = 0.75 }
 
+-- A23-223 (user 10/16: the bow on the back like in cartoons, the sword at the waist): out of a fight a bow rides on
+-- the back (diagonal, the top over the right shoulder) and a sword hangs at the left hip (the hilt forward and up, the
+-- tip back and down; no scabbard until the design restarts from 2D); an attack brings it to the hand at once and
+-- HandSeconds after the last attack it goes back (WeaponPose.StowStep, this client, every character; a local weld on
+-- the torso part, the engine grip off). Pos = a share of the part's half size (x right, y up, z back), Turn = degrees
+-- X / Y / Z of the weapon's Handle there. The hammer, the baton, the staffs and the joke weapons stay in the hand.
+-- On = false: always in the hand
+Config.WeaponStow = {
+	On = true,
+	HandSeconds = 5,
+	Kinds = { Bow = "Back", ShortBow = "Back", Sword = "Hip", DarkSword = "Hip" },
+	Back = { Part = "UpperTorso", Pos = { 0, 0, 1.3 }, Turn = { 0, 0, -35 } },
+	Hip = { Part = "LowerTorso", Pos = { -1.15, -0.2, -0.35 }, Turn = { 120, 0, -8 } },
+	Sound = "Equip",
+}
+
 -- (pure) the grip row of a weapon kind (a kind without a row: the sword's)
 -- dev1-weapon-mesh (최종 검수 10/14): the Tripo weapons (art/models/tripo/weapons/weapons_fit_manifest.json; every GLB 1
 -- unit = 1 stud, origin = the grip point, +Y = the tip, front = -Z). [Config.ClassGripKey][tier] = { MeshId, TextureId,
