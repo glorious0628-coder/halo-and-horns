@@ -1,0 +1,1551 @@
+{
+ "bow": [],
+ "mage": {
+  "LightMageSwing": [
+   {
+    "key": {
+     "wA": -30,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 88,
+     "n": 26
+    },
+    "score": 48
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 89,
+     "n": 26
+    },
+    "score": 49
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 89,
+     "n": 34
+    },
+    "score": 49
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 95,
+     "n": 31
+    },
+    "score": 55
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 99,
+     "n": 19
+    },
+    "score": 59
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -3,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 109,
+     "n": 25
+    },
+    "score": 69
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 111,
+     "n": 33
+    },
+    "score": 71
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 111,
+     "n": 28
+    },
+    "score": 71
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 118,
+     "n": 25
+    },
+    "score": 78
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 127,
+     "n": 27
+    },
+    "score": 87
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 129,
+     "n": 24
+    },
+    "score": 89
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 129,
+     "n": 26
+    },
+    "score": 89
+   },
+   {
+    "key": "now (no aim)",
+    "m": {
+     "minFwd": -3,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 167,
+     "n": 31
+    },
+    "score": 127
+   }
+  ],
+  "LightMageSwing_def": {
+   "Len": 0.68,
+   "Keys": [
+    [
+     0.0,
+     "Out",
+     {}
+    ],
+    [
+     0.1,
+     "Out",
+     {
+      "Waist": [
+       6.0,
+       -10.0,
+       0.0
+      ],
+      "Neck": [
+       -2.0,
+       6.0,
+       0.0
+      ],
+      "RightShoulder": [
+       30.0,
+       -6.0,
+       12.0
+      ],
+      "RightElbow": [
+       36.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       -30,
+       0.0,
+       6.0
+      ],
+      "LeftShoulder": [
+       48.0,
+       6.0,
+       -26.0
+      ],
+      "LeftElbow": [
+       92.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -40.0,
+       0.0,
+       -10.0
+      ]
+     }
+    ],
+    [
+     0.19,
+     "InOut",
+     {
+      "Waist": [
+       10.0,
+       -14.0,
+       0.0
+      ],
+      "Neck": [
+       -3.0,
+       9.0,
+       0.0
+      ],
+      "RightShoulder": [
+       34.0,
+       -6.0,
+       12.0
+      ],
+      "RightElbow": [
+       38.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       -30,
+       0.0,
+       6.0
+      ],
+      "LeftShoulder": [
+       56.0,
+       6.0,
+       -30.0
+      ],
+      "LeftElbow": [
+       100.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -55.0,
+       0.0,
+       -10.0
+      ]
+     }
+    ],
+    [
+     0.24,
+     "In",
+     {
+      "Waist": [
+       -8.0,
+       8.0,
+       0.0
+      ],
+      "Neck": [
+       4.0,
+       -5.0,
+       0.0
+      ],
+      "RightShoulder": [
+       40.0,
+       0.0,
+       -6.0
+      ],
+      "RightElbow": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       -4.0
+      ],
+      "LeftShoulder": [
+       88.0,
+       0.0,
+       -8.0
+      ],
+      "LeftElbow": [
+       8.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -80.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.36,
+     "Out",
+     {
+      "Waist": [
+       -6.0,
+       6.0,
+       0.0
+      ],
+      "Neck": [
+       3.0,
+       -3.0,
+       0.0
+      ],
+      "RightShoulder": [
+       36.0,
+       0.0,
+       -6.0
+      ],
+      "RightElbow": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       -2.0
+      ],
+      "LeftShoulder": [
+       80.0,
+       0.0,
+       -8.0
+      ],
+      "LeftElbow": [
+       14.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -70.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.5,
+     "InOut",
+     {
+      "Waist": [
+       0.0,
+       2.0,
+       0.0
+      ],
+      "RightShoulder": [
+       18.0,
+       0.0,
+       0.0
+      ],
+      "RightElbow": [
+       18.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       30.0,
+       0.0,
+       -12.0
+      ],
+      "LeftElbow": [
+       50.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.68,
+     "InOut",
+     {}
+    ]
+   ]
+  },
+  "LightMageRelease": [
+   {
+    "key": {
+     "wA": 25,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 16
+     },
+     "maxFwd": 19,
+     "n": 39
+    },
+    "score": 33
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 17
+     },
+     "maxFwd": 19,
+     "n": 45
+    },
+    "score": 35
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 18
+     },
+     "maxFwd": 19,
+     "n": 49
+    },
+    "score": 37
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 20
+     },
+     "maxFwd": 19,
+     "n": 50
+    },
+    "score": 41
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 20
+     },
+     "maxFwd": 19,
+     "n": 44
+    },
+    "score": 41
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 23
+     },
+     "maxFwd": 19,
+     "n": 59
+    },
+    "score": 47
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 25
+     },
+     "maxFwd": 19,
+     "n": 59
+    },
+    "score": 51
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 26
+     },
+     "maxFwd": 19,
+     "n": 48
+    },
+    "score": 53
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 29
+     },
+     "maxFwd": 19,
+     "n": 53
+    },
+    "score": 59
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": {
+      "Head": 30
+     },
+     "maxFwd": 19,
+     "n": 55
+    },
+    "score": 61
+   },
+   {
+    "key": "now (no aim)",
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -45
+    },
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -20
+    },
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   }
+  ],
+  "LightMageRelease_def": {
+   "Len": 0.75,
+   "Keys": [
+    [
+     0.0,
+     "Out",
+     {}
+    ],
+    [
+     0.15,
+     "Out",
+     {
+      "Waist": [
+       14.0,
+       -6.0,
+       0.0
+      ],
+      "Neck": [
+       18.0,
+       4.0,
+       0.0
+      ],
+      "RightShoulder": [
+       150.0,
+       -6.0,
+       18.0
+      ],
+      "RightElbow": [
+       30.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       70.0,
+       0.0,
+       -30.0
+      ],
+      "LeftElbow": [
+       60.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -60.0,
+       0.0,
+       -10.0
+      ]
+     }
+    ],
+    [
+     0.33,
+     "InOut",
+     {
+      "Waist": [
+       18.0,
+       -8.0,
+       0.0
+      ],
+      "Neck": [
+       22.0,
+       6.0,
+       0.0
+      ],
+      "RightShoulder": [
+       168.0,
+       -6.0,
+       16.0
+      ],
+      "RightElbow": [
+       18.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       96.0,
+       0.0,
+       -26.0
+      ],
+      "LeftElbow": [
+       40.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -70.0,
+       0.0,
+       -10.0
+      ]
+     }
+    ],
+    [
+     0.35,
+     "In",
+     {
+      "Waist": [
+       -18.0,
+       0.0,
+       0.0
+      ],
+      "Neck": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "RightShoulder": [
+       44.0,
+       0.0,
+       6.0
+      ],
+      "RightElbow": [
+       4.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       84.0,
+       0.0,
+       -8.0
+      ],
+      "LeftElbow": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -80.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.55,
+     "Out",
+     {
+      "Waist": [
+       -14.0,
+       0.0,
+       0.0
+      ],
+      "Neck": [
+       5.0,
+       0.0,
+       0.0
+      ],
+      "RightShoulder": [
+       60.0,
+       0.0,
+       6.0
+      ],
+      "RightElbow": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       64.0,
+       0.0,
+       -8.0
+      ],
+      "LeftElbow": [
+       8.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.75,
+     "InOut",
+     {}
+    ]
+   ]
+  },
+  "MageSwing": [
+   {
+    "key": {
+     "wA": 25,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 85,
+     "n": 33
+    },
+    "score": 45
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 90,
+     "n": 50
+    },
+    "score": 50
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 91,
+     "n": 58
+    },
+    "score": 51
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 99,
+     "n": 38
+    },
+    "score": 59
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 103,
+     "n": 56
+    },
+    "score": 63
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 105,
+     "n": 57
+    },
+    "score": 65
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 111,
+     "n": 44
+    },
+    "score": 71
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 116,
+     "n": 59
+    },
+    "score": 76
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -6,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 116,
+     "n": 52
+    },
+    "score": 76
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -6,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": 126,
+     "n": 31
+    },
+    "score": 86
+   },
+   {
+    "key": "now (no aim)",
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -45
+    },
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -20
+    },
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   }
+  ],
+  "MageSwing_def": {
+   "Len": 0.68,
+   "Keys": [
+    [
+     0.0,
+     "Out",
+     {}
+    ],
+    [
+     0.1,
+     "Out",
+     {
+      "Waist": [
+       8.0,
+       -14.0,
+       -3.0
+      ],
+      "Neck": [
+       -3.0,
+       8.0,
+       0.0
+      ],
+      "RightShoulder": [
+       28.0,
+       -8.0,
+       14.0
+      ],
+      "RightElbow": [
+       38.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       8.0
+      ],
+      "LeftShoulder": [
+       60.0,
+       5.0,
+       -18.0
+      ],
+      "LeftElbow": [
+       48.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -70.0,
+       0.0,
+       -15.0
+      ]
+     }
+    ],
+    [
+     0.19,
+     "InOut",
+     {
+      "Waist": [
+       12.0,
+       -18.0,
+       -4.0
+      ],
+      "Neck": [
+       -4.0,
+       12.0,
+       0.0
+      ],
+      "RightShoulder": [
+       34.0,
+       -8.0,
+       12.0
+      ],
+      "RightElbow": [
+       40.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       8.0
+      ],
+      "LeftShoulder": [
+       78.0,
+       8.0,
+       -22.0
+      ],
+      "LeftElbow": [
+       42.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -85.0,
+       0.0,
+       -12.0
+      ]
+     }
+    ],
+    [
+     0.24,
+     "In",
+     {
+      "Waist": [
+       -9.0,
+       10.0,
+       4.0
+      ],
+      "Neck": [
+       4.0,
+       -6.0,
+       0.0
+      ],
+      "RightShoulder": [
+       38.0,
+       0.0,
+       -8.0
+      ],
+      "RightElbow": [
+       4.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       -4.0
+      ],
+      "LeftShoulder": [
+       64.0,
+       0.0,
+       -32.0
+      ],
+      "LeftElbow": [
+       24.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -65.0,
+       0.0,
+       -12.0
+      ]
+     }
+    ],
+    [
+     0.36,
+     "Out",
+     {
+      "Waist": [
+       -6.0,
+       8.0,
+       3.0
+      ],
+      "Neck": [
+       3.0,
+       -4.0,
+       0.0
+      ],
+      "RightShoulder": [
+       34.0,
+       0.0,
+       -6.0
+      ],
+      "RightElbow": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       -2.0
+      ],
+      "LeftShoulder": [
+       42.0,
+       0.0,
+       -26.0
+      ],
+      "LeftElbow": [
+       22.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.5,
+     "InOut",
+     {
+      "Waist": [
+       0.0,
+       3.0,
+       0.0
+      ],
+      "RightShoulder": [
+       18.0,
+       0.0,
+       0.0
+      ],
+      "RightElbow": [
+       18.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       25,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       15.0,
+       0.0,
+       -8.0
+      ]
+     }
+    ],
+    [
+     0.68,
+     "InOut",
+     {}
+    ]
+   ]
+  },
+  "DarkMageRelease": [
+   {
+    "key": {
+     "wA": -30,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -3,
+     "n": 35
+    },
+    "score": 23
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -3,
+     "n": 46
+    },
+    "score": 23
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -3,
+     "n": 60
+    },
+    "score": 23
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -3,
+     "n": 59
+    },
+    "score": 23
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -45
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -3,
+     "n": 56
+    },
+    "score": 23
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": -20
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -3,
+     "n": 57
+    },
+    "score": 23
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -4,
+     "n": 52
+    },
+    "score": 24
+   },
+   {
+    "key": {
+     "wA": 0,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -4,
+     "n": 60
+    },
+    "score": 24
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": 0
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -4,
+     "n": 54
+    },
+    "score": 24
+   },
+   {
+    "key": {
+     "wA": 25,
+     "wB": 25
+    },
+    "m": {
+     "minFwd": -4,
+     "behind": 0,
+     "hits": [],
+     "maxFwd": -4,
+     "n": 56
+    },
+    "score": 24
+   },
+   {
+    "key": "now (no aim)",
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -45
+    },
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   },
+   {
+    "key": {
+     "wA": -30,
+     "wB": -20
+    },
+    "m": {
+     "raw": "sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Tools.ExecuteLuauTool:116: sabuiltin_Assistant.rbxm.Assistant.Packages._Index.AssistantUI.AssistantUI.Util.CommandExecution:5"
+    },
+    "score": 999
+   }
+  ],
+  "DarkMageRelease_def": {
+   "Len": 0.75,
+   "Keys": [
+    [
+     0.0,
+     "Out",
+     {}
+    ],
+    [
+     0.2,
+     "Out",
+     {
+      "Waist": [
+       -20.0,
+       0.0,
+       0.0
+      ],
+      "Neck": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "RightShoulder": [
+       30.0,
+       0.0,
+       10.0
+      ],
+      "RightElbow": [
+       40.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       -30,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       40.0,
+       0.0,
+       -20.0
+      ],
+      "LeftElbow": [
+       30.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -60.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.33,
+     "InOut",
+     {
+      "Waist": [
+       -24.0,
+       4.0,
+       0.0
+      ],
+      "Neck": [
+       8.0,
+       0.0,
+       0.0
+      ],
+      "RightShoulder": [
+       26.0,
+       0.0,
+       10.0
+      ],
+      "RightElbow": [
+       44.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       -30,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       30.0,
+       0.0,
+       -24.0
+      ],
+      "LeftElbow": [
+       24.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -70.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.35,
+     "In",
+     {
+      "Waist": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "Neck": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "RightShoulder": [
+       50.0,
+       0.0,
+       6.0
+      ],
+      "RightElbow": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "RightWrist": [
+       0,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       120.0,
+       0.0,
+       -20.0
+      ],
+      "LeftElbow": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "LeftWrist": [
+       -30.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.55,
+     "Out",
+     {
+      "Waist": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "Neck": [
+       6.0,
+       0.0,
+       0.0
+      ],
+      "RightShoulder": [
+       50.0,
+       0.0,
+       6.0
+      ],
+      "RightElbow": [
+       10.0,
+       0.0,
+       0.0
+      ],
+      "LeftShoulder": [
+       100.0,
+       0.0,
+       -16.0
+      ],
+      "LeftElbow": [
+       20.0,
+       0.0,
+       0.0
+      ]
+     }
+    ],
+    [
+     0.75,
+     "InOut",
+     {}
+    ]
+   ]
+  }
+ }
+}
