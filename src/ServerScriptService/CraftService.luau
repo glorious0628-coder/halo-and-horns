@@ -20,6 +20,10 @@
 --     (lifetime) + RankingService.Credit "Artisan" (the weekly board); the attribute ArtisanRank (Config.ArtisanRank, 0 =
 --     not an artisan now) at PlayerReady, after a craft and after a class / faction change; a new rank says so once
 --     (key Config.Craft.Text.RankUp) and fires RankUp(player, rank).
+--   * A23-206 bound materials (최종 검수 10/16, GPT artisan_switch_r1 ②): an item / potion / gear / pet craft takes the bound
+--     ones first and remembers how many in Pend.Bound; an Item result made with any bound one is bound (all of it), and a
+--     refund gives the bound part back bound - a quest reward never turns tradeable through a craft. A Weapon craft takes
+--     free materials only (a spare weapon has no bound count; refusal key BoundMats).
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
 --   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
 --   handlers; public for the offline test) · RecipeOn(id) · Session(player) · Settle(player, data) (a waiting craft)
@@ -150,10 +154,17 @@ function CraftService.RecipeOn(id)
 	return r
 end
 
-local function hasMats(data, r)
+-- A23-206: how many of the held `item` are bound (LootService's BOUND.Of: never more than held)
+local function boundOf(data, item)
+	local held = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+	return math.clamp(type(data.ItemsBound) == "table" and math.floor(num(data.ItemsBound[item])) or 0, 0, held)
+end
+
+-- freeOnly (a Weapon craft): the bound ones do not count
+local function hasMats(data, r, freeOnly)
 	local items = type(data.Items) == "table" and data.Items or {}
 	for item, n in r.Mats do
-		if math.floor(num(items[item])) < n then return false end
+		if math.floor(num(items[item])) - (freeOnly and boundOf(data, item) or 0) < n then return false end
 	end
 	return true
 end
@@ -209,8 +220,9 @@ local function room(player, data, r)
 	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 
--- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }
-local function payOut(player, data, r, plus)
+-- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }.
+-- bound (A23-206): an Item result made with bound materials goes in bound
+local function payOut(player, data, r, plus, bound)
 	if r.Kind == "Pet" then
 		local spd = nil -- A23-194: no Spd = no roll (the species' own Bonus line)
 		if type(r.Spd) == "table" then
@@ -251,7 +263,7 @@ local function payOut(player, data, r, plus)
 	end
 	local before = have()
 	if before + n > Config.Loot.ItemCap then return false end -- never a part of it
-	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n } }, nil, "Craft")
+	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n, Bound = bound == true or nil } }, nil, "Craft")
 	return have() - before >= n
 end
 
@@ -295,8 +307,14 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	if type(r) ~= "table" then return false end
 	local c = craftOf(data)
 	-- an earned +N is kept in the save if the result does not fit now (the next try pays that +N, never less)
-	if type(c.Pend) == "table" and c.Pend.Id == recipeId then c.Pend.Plus = plus end
-	local paid, pet = payOut(player, data, r, plus)
+	local bound = false
+	if type(c.Pend) == "table" and c.Pend.Id == recipeId then
+		c.Pend.Plus = plus
+		for _, n in type(c.Pend.Bound) == "table" and c.Pend.Bound or {} do
+			if math.floor(num(n)) > 0 then bound = true end
+		end
+	end
+	local paid, pet = payOut(player, data, r, plus, bound)
 	if not paid then return false end
 	c.Pend = nil
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
@@ -358,11 +376,17 @@ function CraftService.Settle(player, data)
 		local gold = math.floor(num(p.Gold))
 		if gold > 0 then pcall(S.ProgressionService.AddBankGold, player, gold, "CraftRefund") end
 		local list = {}
+		local boundMats = type(p.Bound) == "table" and p.Bound or {}
 		for item, n in type(p.Mats) == "table" and p.Mats or {} do
-			local left = math.floor(num(n))
-			while Config.Loot.Items[item] and left > 0 do
-				table.insert(list, { Id = item, N = math.min(99, left) })
-				left -= 99
+			-- A23-206: the bound part comes back bound (rows of at most 99, bound first)
+			local total = math.floor(num(n))
+			local b = math.clamp(math.floor(num(boundMats[item])), 0, math.max(0, total))
+			for _, part in { { b, true }, { total - b, false } } do
+				local left = part[1]
+				while Config.Loot.Items[item] and left > 0 do
+					table.insert(list, { Id = item, N = math.min(99, left), Bound = part[2] or nil })
+					left -= 99
+				end
 			end
 		end
 		if #list > 0 then pcall(S.LootService.GrantItems, player, list, nil, "CraftRefund") end
@@ -452,6 +476,11 @@ function CraftService.TryStart(player, id)
 		notify(player, "NeedMats")
 		return "mats"
 	end
+	local freeOnly = r.Kind == "Weapon" -- A23-206: a spare weapon has no bound count, so bound materials never make one
+	if freeOnly and not hasMats(data, r, true) then
+		notify(player, "BoundMats")
+		return "bound"
+	end
 	if not room(player, data, r) then
 		notify(player, "Full")
 		return "full"
@@ -462,10 +491,16 @@ function CraftService.TryStart(player, id)
 		notify(player, "NeedGold")
 		return "gold"
 	end
+	local bound = {}
 	for item, n in r.Mats do
-		if not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, "take " .. item .. " failed after the check") end
+		local b = freeOnly and 0 or math.min(n, boundOf(data, item)) -- TakeItem takes the bound ones first
+		if not S.LootService.TakeItem(player, item, n, freeOnly and "Free" or nil) then
+			Util.Warn(TAG, "take " .. item .. " failed after the check")
+		elseif b > 0 then
+			bound[item] = b
+		end
 	end
-	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats) }
+	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil }
 	table.insert(recent, now)
 	ST.Serial += 1
 	local T = CraftMini.T
