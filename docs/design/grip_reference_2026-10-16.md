@@ -46,3 +46,13 @@
 
 **목표(최종 검수 10/16):** 왼팔 팔꿈치 60~90° 굽혀 손이 왼쪽 허리~배 앞. 활은 몸 앞쪽으로 비스듬히(위 끝이 앞·바깥 25~40°). 오른손은 시위 근처나 허리. 앞·옆 어디서 봐도 활 모양이 보임.
 **안 2개(사진으로 고름):** A = 비스듬히 앞(위 끝 앞·바깥 25~40°) / B = 낮게 몸 앞 가로(배 앞, 거의 수평).
+
+## 5. 싸우지 않을 때 무기 두는 곳 (A23-223, 사용자 10/16: 활은 등에, 칼은 허리에)
+| 무엇 | 핵심 | 출처 |
+|---|---|---|
+| 칼은 왼쪽 허리 | 오른손잡이가 많아서 칼은 보통 왼쪽 허리에 찬다(오른손으로 몸 앞을 가로질러 뽑음) | [Writer's Digest "Where To Carry a Weapon"](https://www.writersdigest.com/where-to-carry-a-weapon-fightwrite) |
+| 게임에서 무기를 등에 | 게임 캐릭터가 지팡이·창·활을 등에 메는 모습을 플레이어가 알아보고 이야기함(그 게임은 가로로 멤) | [Steam: Trails of Cold Steel 토론](https://steamcommunity.com/app/538680/discussions/0/1693785669856166482) |
+| 플레이어가 원하는 것 | 칼은 허리에, 다른 무기는 등에 보이게 해 달라는 요청과 그걸 해 주는 모드 | [Steam: Baldur's Gate 3 토론](https://steamcommunity.com/app/1086940/discussions/0/3808408747684743306), [Step Mods "sheath weapon from hip"](https://stepmodifications.org/forum/topic/10973-sheat-weapon-from-hip/) |
+| (못 찾음) | 활을 '비스듬히' 멘 각도를 숫자로 적은 자료는 못 찾음 → 오른어깨 위 → 왼허리 아래(최종 검수 목표)로, 사진으로 맞춤 | — |
+
+**우리 값(Config.WeaponStow):** 활 = UpperTorso 뒤(몸통 반 두께의 1.3배 뒤), Z −35°(위 끝이 오른어깨 쪽). 칼 = LowerTorso 왼쪽(반 폭의 1.15배), 조금 앞, X 120°(손잡이 앞·위, 칼끝 뒤·아래), Z −8°. 공격하면 그 순간 손으로, 마지막 공격 5초 뒤 다시. 검집은 디자인 재개 때(지금은 칼만).
