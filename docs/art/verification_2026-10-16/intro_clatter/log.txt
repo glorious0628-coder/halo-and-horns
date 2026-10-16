@@ -1,0 +1,12 @@
+fresh
+line1 The Crown of Balance broke. | clatter=true size=7.961208343505859, 12, 3.4988558292388916
+saved s1_wobble
+s1_wobble at 1.57
+saved s2_clamp
+s2_clamp at 2.5
+saved s3_crack
+s3_crack at 3.34
+saved s4_apart
+s4_apart at 4.23
+saved s5_end
+s5_end at 5.13
