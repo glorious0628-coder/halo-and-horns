@@ -22,3 +22,9 @@
 - 도구: pt.py에 PT_ROUND 환경 변수(사진 폴더), intro_watch.py(1초 간격 IntroSeen·GUI), face.lua(가장 가까운 BigSlime 보기). Studio id는 매번 list_roblox_studios로(이번 34dfd4a5).
 - **다음 판:** 다음 sync 신호 → 'Tiny 본편 먼저'를 장면으로 + 빛 · 마법사 처음부터.
 - 최종 검수 10/16 저녁: 다음 판부터 보고서 '게임성' 칸에 한 줄 — "첫 10분 누구나 XP 2배를 아이가 알아챘나?"(칩 '2x XP · N min'을 봤나, 언제, 뜻을 알 만했나). 패스 끈 판에서만 보임. (2판 값: 첫 화면 0:08부터 '2x XP · 9 min' 칩이 위 가운데, 9:50 Daily Gifts 때는 없어짐. 글만 있고 눌러도 설명 없음 — 다음 판에 눌러 보기.)
+
+## 10/16 밤 — 3판 끝 (빛 · 마법사 · 패스 끔, sync f6af22e6 쥐는 점)
+- 보고서 `docs/review/playtest/2026-10-16_r3.md`, 사진 `.../playtest/r3/`(walk_sheet, attack_sheet, *_zoom).
+- 쥐는 모습: 마법사 서 있기 좋아짐 / 공격 때 지팡이가 머리 뒤를 지남. 강화 중 KO 3/3, KO 이름 'King Slime'이 틀렸을 수 있음(근처엔 왕자뿐), 빛 첫 화면 카메라가 할리를 안 봄(몸만 돎).
+- 도구: cam.py(카메라 각도 사진), walkshot.py(W 누른 채 따라가는 카메라), atkshot.py(F 순간 사진) — scratchpad, STUDIO_ID 환경 변수 필요.
+- **다음 판:** 다음 sync 신호 → 전사·궁수 쥐는 모습 + 'Tiny 본편 먼저'(장면).
