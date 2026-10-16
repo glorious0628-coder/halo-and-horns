@@ -150,7 +150,7 @@ Config.Data = {
 		Version = 6,
 		Level = 1,
 		XP = 0,
-		BankGold = 0,
+		BankGold = 1000, -- A23-222 (user 10/16 "기본 1000 코인을 주자."): a new save starts with 1000 in the bank (never lost to PvP)
 		CarriedGold = 0,
 		-- A23-34: a new player starts bare-handed (tier 0, nothing owned); the M1_1 blacksmith gives tier 1. Records
 		-- saved before A23-34 keep their weapons (they always own tier 1). v1 name: SwordTier (migrated by DataService)
@@ -305,7 +305,21 @@ end
 -- A23-186 (user 10/14 "기본 무기는 팔자고 했는데? 5개 정도 팔자"): Otto sells again (Buy = true; Buy = false would refuse
 -- buying a weapon not owned yet, Text.WeaponDropOnly). The Forge rows = tiers 2..MaxSoldTier (tier 1 stays the free M1_1
 -- gift) + every Meme row (Config.WeaponSoldAtForge); MaxSoldTier also bounds enhance / sell rows (never 0)
-Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12,
+	-- A23-222 (user 10/16): the Forge sells a tier only after the player first got it from a monster (the saved first-drop
+	-- flag, LootService: tier 2 = the first Slime Prince, tier 3 = the first King Slime), so the 1000 starting gold never buys
+	-- the 'stronger!' moment of that drop ahead. A tier owned already, the joke weapons and tiers not listed are not held back
+	OpenAfterDrop = { [2] = "FirstWeapon", [3] = "FirstKingWeapon" } }
+-- A23-222: true when the Forge sells weapon `tier` to the save `data` (its first-drop flag is set, or it owns that tier)
+function Config.WeaponForgeOpen(data, tier)
+	local shop = Config.WeaponShop
+	local flag = type(shop) == "table" and type(shop.OpenAfterDrop) == "table" and shop.OpenAfterDrop[tier] or nil
+	if type(flag) ~= "string" then return true end
+	if type(data) ~= "table" then return false end
+	if type(data.LootFlags) == "table" and data.LootFlags[flag] == true then return true end
+	local mask = tonumber(data.WeaponOwnedMask) or 0
+	return type(tier) == "number" and tier >= 1 and bit32.btest(math.floor(mask), bit32.lshift(1, tier - 1))
+end
 
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
@@ -8306,6 +8320,7 @@ Config.Text = {
 	WeaponShopFar = "Too far from the Forge.",
 	WeaponNotSold = "The Forge doesn't sell this weapon.",
 	WeaponDropOnly = "New weapons drop from monsters!", -- 1-A #2: Config.WeaponShop.Buy == false (a weapon not owned)
+	WeaponDropFirst = "Find this one on a monster first!", -- A23-222: Config.WeaponShop.OpenAfterDrop (not dropped for me yet)
 	WeaponSellFar = "Too far from the Forge.",
 	WeaponSold = "Sold %s! Gold +%s", -- (weaponName, gold)
 	BlacksmithPromptAction = "See weapons",

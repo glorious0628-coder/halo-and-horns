@@ -648,19 +648,7 @@ local function eventPast(data, obj)
 	return type(held) == "string" and type(data[held]) == "string" and string.find(data[held], "%a") ~= nil
 end
 
--- A23-110 TopUpGold: a step that opens with the player short of this much gold (carried + bank) adds the missing part to the
--- carried gold, once per step ("Choice" source: never doubled by the 2x pass). Nothing for a step that already passes.
-local function topUpGold(player, data, id, track)
-	local step = stepOf(player, DEFS[id], track.St)
-	local want = step and math.floor(num(step.TopUpGold)) or 0
-	if want <= 0 or eventPast(data, step.Obj) then return end
-	local first = story(data).First
-	local key = "Top" .. id .. tostring(track.St)
-	if first[key] == true then return end
-	first[key] = true -- saved before the gold, so it can never be paid twice
-	local have = S.ProgressionService.GetTotalGold(player)
-	if have < want then S.ProgressionService.AddCarriedGold(player, want - have, "Choice") end
-end
+-- (A23-110 TopUpGold is gone, A23-222: a new save starts with 1000 gold; user "그러면 돈이 모자라면 채워줄 필요 없자넝")
 
 -- the player's stack of item `id` is at its cap (Config.Loot.ItemCap; potions Config.Vitals.PotionInventoryCap)
 local function stackFull(data, id)
@@ -766,7 +754,6 @@ local function advance(player, data, id, track)
 		if track.St == 1 then giveWeapon(player, def) end -- 1-A #2: M1_1's weapon comes with the visit (before Otto's scroll)
 		track.St += 1
 		-- A23-130: no step Start line (the row switches to the new step text)
-		topUpGold(player, data, id, track)
 		giveStepItem(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
@@ -1413,7 +1400,7 @@ function StoryQuestService.RetryGifts(player)
 end
 
 -- Studio test aids (Main's DebugCommand "StorySub" / "StoryDone", built inside its IsStudio block only): start a Sub quest at a
--- step (what the step needs at its start is done as when it opens: TopUpGold; steps that pass at once pass), and mark one
+-- step (what the step needs at its start is done as when it opens: GiveItem; steps that pass at once pass), and mark one
 -- done. No reward, no notice, no QuestDone. Both return "ok" or a short reason.
 function StoryQuestService.DebugSub(player, id, step)
 	local def = DEFS[id]
@@ -1426,7 +1413,6 @@ function StoryQuestService.DebugSub(player, id, step)
 	st.Done[id] = nil
 	local track = { St = n, P = 0, T = {}, Claim = false }
 	st.Subs[id] = track
-	topUpGold(player, data, id, track)
 	giveStepItem(player, data, id, track)
 	dirty(player)
 	local ok, err = pcall(refresh, player)
