@@ -412,3 +412,8 @@
 - 10/16 게시판: 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P (+ 배지 7개 docs/design/badges_2026-10-15.md, Env place id).
 - (추가, 밤 끝) 병합 c672eb17 → main bc0b5bf4. 개발 1·2·메인 반영 1 모두 정리·클리어함. **dev2-daily12 53256460 = 병합 안 함**: R 표가 옛 초안 숫자(DH2 HP3·DR1 Move30 등)이고 Hard 과제가 아직 Normal과 같은 크기(Slime 3) → 내일 개발 2가 수정 보상표·Hard 강화 커밋 붙인 뒤 병합. 소품 목록 docs/design/daily_props_2026-10-15.md(그 가지).
 - **내일 결정할 것:** Config.Features.Gathering·Crafting·Tonics·Research = false, NeutralFaction = false(베타 Live 꺼짐) → 장인 재료·간식·강장제 보상이 쓸 곳 없고 장인 DN 3종은 아무도 못 봄. A23-162는 베타(12/15)에 장인 길드 포함 → 계획 순서표 3번(장인 최소판) 언제 켤지 + 그 전까지 매일 보상을 쓸모 있는 것으로 바꿀지(GPT 상의 후 정함).
+
+## 10/16 아침 (최종 검수)
+- 세 세션 아침 일 시작(개발 1: 오프닝 카메라·폰 잘림·Tutorial 이야기 화면 / 개발 2: 매일 12종 수정 / 메인 반영 1: build/GoodEvil.rbxlx 열고 7803b320 sync, 캡처 정상). build ≠ place 해시(10/15 21:29 사용자 저장본) → 게시 때 맞춤.
+- **다섯 언어 업로드 끝:** es·fr·ja·zh-hans·zh-hant 3,049줄 × 5, ok 3049 fail 0 (scratchpad loc5_up.py: entries.json identifier + 40개 묶음 PATCH, DuplicatedKeySourceContext 묶음은 한 줄씩 다시). 샘플 확인 5×8줄, 자리표시 {n} 어긋남 0. **남은 것:** 10/15 아침 스냅샷 뒤 새 글(1장 이야기·오프닝 자막·매일 부탁 등)은 5언어·한국어 번역 없음 → l10n_coverage로 빠진 줄 뽑아 다시 돌리기.
+- GPT 상의 중: 장인 길드·채집·제작 스위치 켜는 순서 + 그동안 매일 보상(build/codex/artisan_switch_r1.md). 내 추천: 10/17 기술 시험은 꺼 둔 채, 시험 뒤 계획 3번 순서로.
