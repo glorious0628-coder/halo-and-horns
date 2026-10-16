@@ -86,7 +86,7 @@ MUTATIONS = [
     ("night as long as the day", C, "{ From = 19, Seconds = 240 }, -- the night", "{ From = 19, Seconds = 960 }, -- the night"),
     ("night starts at 21", C, '{ Name = "Night", From = 19 },', '{ Name = "Night", From = 21 },'),
     ("Dawn (lamps off) from 5:00 under the full night look", C, '{ Name = "Dawn", From = 6 },', '{ Name = "Dawn", From = 5 },'),
-    ("one write a second again (Tick 1)", C, "\tTick = 0.5,\n\tStartClock = 15.3,\n", "\tTick = 1,\n\tStartClock = 15.3,\n"),
+    ("one write a second again (Tick 1)", C, "\tTick = 0.5,\n\tStartClock = 9,", "\tTick = 1,\n\tStartClock = 9,"),
     # the merge gate (검수 2026-10-10): the cycle runs only with ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk
     # without the 6:00 jump) - game dev 1 landed both with Enabled = true; losing either must fail the gate
     ("Enabled = true without ZoneLook C1 (the night lift back on the Eclipse name)", "ZONELOOK_SOURCE",
@@ -102,7 +102,7 @@ MUTATIONS = [
     ("PhaseOf / PosOf without the wrap", D,
      "\t\tlocal c = c0\n\t\twhile c < a do\n\t\t\tc += 24\n\t\tend\n\t\tif c < b then return i, c, a, b end",
      "\t\tlocal c = c0\n\t\tif c >= a and c < b then return i, c, a, b end"),
-    ("a new server starts at noon", C, "\tStartClock = 15.3,\n", "\tStartClock = 12,\n"),
+    ("a new server starts at noon", C, "\tStartClock = 9,", "\tStartClock = 12,"),
     ("the day is not Neutral", C, "\t\tDay = {},\n", "\t\tDay = { Brightness = 2.6 },\n"),
     ("looks switch without easing", D, "fromName, toName, s = k.Look, nextKey.Look, t * t * (3 - 2 * t)",
      "fromName, toName, s = k.Look, nextKey.Look, t < 0.5 and 0 or 1"),
@@ -110,7 +110,7 @@ MUTATIONS = [
     # floors and the night look
     ("no floor", D, "\tfloored(v)\n\tif type(v.FogStart)", "\tif type(v.FogStart)"),
     ("floor too low", C, "\tFloor = { Brightness = 1.2,", "\tFloor = { Brightness = 0.6,"),
-    ("a pitch-dark night", C, "OutdoorAmbient = Color3.fromRGB(98, 110, 148),\n\t\t\tExposureCompensation = 0.35,",
+    ("a pitch-dark night", C, "OutdoorAmbient = Color3.fromRGB(120, 130, 162),\n\t\t\tExposureCompensation = 0.35,",
      "OutdoorAmbient = Color3.fromRGB(30, 34, 46),\n\t\t\tExposureCompensation = 0.35,"),
     ("no NightLevel", D, '\t\tsetGame("NightLevel", n)\n', ""),
     ("no DayPhase", D, '\t\tsetGame("DayPhase", phase)\n', ""),

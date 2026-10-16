@@ -1770,7 +1770,7 @@ Config.DayCycle = {
 	-- tools/test_day_cycle.py checks the pair)
 	Enabled = true,
 	Tick = 0.5,
-	StartClock = 15.3,
+	StartClock = 9, -- A23-221 ⑤ (최종 검수 10/16): a new server starts in the morning (15.3 put the night at ~4:45 of a first play)
 	MaxStepHours = 0.025,
 	Pace = {
 		{ From = 5, Seconds = 120 }, -- sunrise
@@ -1794,7 +1794,8 @@ Config.DayCycle = {
 			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(236, 196, 178), Night = 0.3 },
 		Dusk = { Brightness = 1.6, Ambient = Color3.fromRGB(88, 74, 82), OutdoorAmbient = Color3.fromRGB(116, 100, 108),
 			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(232, 168, 140), Night = 0.3 },
-		Night = { Brightness = 1.4, Ambient = Color3.fromRGB(70, 78, 106), OutdoorAmbient = Color3.fromRGB(98, 110, 148),
+		-- A23-221 ⑤: brighter so monsters and paths stay readable at night (was 1.4 / (70, 78, 106) / (98, 110, 148))
+		Night = { Brightness = 1.8, Ambient = Color3.fromRGB(92, 100, 126), OutdoorAmbient = Color3.fromRGB(120, 130, 162),
 			ExposureCompensation = 0.35, FogColor = Color3.fromRGB(46, 60, 100), FogStart = 120, FogEnd = 800, Night = 1 },
 	},
 	Floor = { Brightness = 1.2, Ambient = Color3.fromRGB(60, 66, 80), OutdoorAmbient = Color3.fromRGB(88, 96, 108),
@@ -3222,21 +3223,23 @@ Config.Tutorial = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- 사용자 10/15: page 1 = the guide's own hello (catchphrase), page 2 = the mission (the Forge); two pages only (A23-99)
 				"Hallie here! Now you know my name. Welcome to the Knights!",
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+				-- A23-221 ⑦ (user 10/16 "누구나 경험치 2배라는 걸 인지시키고 가는 게 중요할듯"): the first 10 minutes' 2x XP, in the
+				-- guide's own voice (Config.EarlyXP)
+				"First, go to Otto's Forge and get your weapon! New knights learn twice as fast for 10 minutes!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+				"First, go to Otto's Forge and get your weapon! Psst... you learn twice as fast for 10 minutes!", -- A23-188 / A23-221 ⑦
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+				"First, go to Otto's Forge and get your weapon! For 10 minutes, every lesson counts twice.", -- A23-188 / A23-221 ⑦
 			},
 		},
 	},
@@ -3250,6 +3253,7 @@ Config.Tutorial = {
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
 		Practice = "Hit the practice dummy", -- A23-221 ①: the row while the dummy waits
+		ForgeHere = "Talk to Otto", -- A23-221 ⑥: the Forge row once the player stands at the anvil (game dev 1: the marker over Otto)
 		Forge = "Go to Otto's Forge in the Crossroads", -- A23-88: walking; Otto hands over the first weapon (zone_check_halo #44: the Forge is outside the town)
 		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
 		-- A23-130 (user 2026-10-11): the claim line is the reward only, for a [Claim] and the F10-4 safety net alike
@@ -3508,9 +3512,9 @@ Config.StoryQuests = {
 			Kind = "Main", Chapter = 1, Type = "Combat", Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			-- A23-208 / A23-210 story fields (r2 §2 H01 / R01 / N01, r4 §6): the steps say the player's own words on the spot
 			Offer = { Npc = "Otto", Before = {
-					Halo = "Shard dust made him bounce! He swallowed the band!",
-					Horns = "Shard dust, wild hops... and he swallowed his new 'hat'!",
-					Neutral = "Too much shard dust! He bounced and swallowed the band." },
+					Halo = "Shard dust made the Slime Prince bounce! He swallowed the band!", -- A23-221 ⑥: who 'he' is
+					Horns = "Shard dust, wild hops... and the Slime Prince swallowed his new 'hat'!",
+					Neutral = "Too much shard dust! The Slime Prince bounced and swallowed the band." },
 				Lines = {
 				Halo = { "Otto: Will you beat him and get the band back?" },
 				Horns = { "Otto: Will you beat him and grab the band?" },

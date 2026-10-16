@@ -223,6 +223,8 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    ("A23-221: no XPMult on the reward", "PROGRESSION_SOURCE", "\t\tXPMult = (num(xp) > 0 and boost > 1) and boost or nil })", "\t\tXPMult = nil })"),
+    ("A23-221: XPMult always", "PROGRESSION_SOURCE", "\t\tXPMult = (num(xp) > 0 and boost > 1) and boost or nil })", "\t\tXPMult = boost })"),
     # feedback_audit #2 (최종 검수 10/15): the LevelUp Fx says what changed
     ("LevelUp without the power", P, "\t\t\tPowerFrom = powerFrom,\n\t\t\tPowerTo = powerTo,\n", ""),
     ("LevelUp power at the new level twice", P, "local okA, a = pcall(Config.CombatPowerOf, player, nil, nil, startLevel)",

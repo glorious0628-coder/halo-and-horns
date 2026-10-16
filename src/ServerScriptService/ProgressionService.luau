@@ -539,6 +539,7 @@ local function onMonsterKilled(player, info)
 		if level < capBelow then cap = math.floor(Config.XPToNext(level)) end
 	end
 	gold = M.AddCarriedGold(player, gold, "Monster") -- A23-75: what was added (2x Gold / 2x XP), shown below
+	local boost = M.XPBoost(player) -- A23-221 ⑦: the x2 of this XP (the first 10 minutes or the pass), for the client's '×2'
 	xp = M.AddXP(player, xp, cap, "Monster")
 	-- A23-194: the following pet's tiny kill bonus, from the kill's own base (never x the passes / tonics: source "Pet" is no
 	-- PassBoost gold source), the fraction carried to the next kill; 0 in a PvP zone (PetService.BonusExtra)
@@ -554,7 +555,8 @@ local function onMonsterKilled(player, info)
 	if typeof(pos) ~= "Vector3" then
 		pos = rootPosition(player) or Vector3.zero
 	end
-	Net.Fx(player, "Reward", { Pos = pos, Gold = gold, XP = xp, Golden = info.Golden == true })
+	Net.Fx(player, "Reward", { Pos = pos, Gold = gold, XP = xp, Golden = info.Golden == true,
+		XPMult = (num(xp) > 0 and boost > 1) and boost or nil }) -- A23-221 ⑦: XPMult = this XP was doubled (game dev 1: '×2')
 end
 
 local function onPlayerReady(player, _data)

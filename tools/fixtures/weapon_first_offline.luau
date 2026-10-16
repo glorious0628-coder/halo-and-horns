@@ -170,8 +170,9 @@ runGroup("config", function()
 		"A23-88: Forge = { Near = 24 } only; no landing, no trip delay, no accept trip", show(F))
 	for _, side in { "Halo", "Horns", "Neutral" } do
 		local line = TC.Welcome[side].Lines[2] -- 사용자 10/15: page 1 = the hello, page 2 = the mission
-		check(line == "First, go to Otto's Forge and get your weapon!" and not string.find(line, "slimes", 1, true),
-			side .. ": page 2 = the Forge (A23-188: no '5 slimes' mission)", line)
+		check(string.sub(line, 1, 46) == "First, go to Otto's Forge and get your weapon!" and string.find(line, "10 minutes", 1, true) ~= nil
+			and not string.find(line, "slimes", 1, true),
+			side .. ": page 2 = the Forge (A23-188: no '5 slimes' mission) + the first 10 minutes' 2x XP (A23-221 ⑦)", line)
 	end
 	check(TC.Text.Forge == "Go to Otto's Forge in the Crossroads" and TC.ShortNames.Forge == "To the Forge" and #TC.ShortNames.Forge <= 14,
 		"the Forge row: text + phone ShortName", show({ TC.Text.Forge, TC.ShortNames.Forge }))

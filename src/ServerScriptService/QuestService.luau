@@ -34,7 +34,7 @@ local STEP_FORGE = TUT_CFG.Steps.Forge -- 3 (A23-74): to the Crossroads Forge fo
 local TUT_DONE = TUT_CFG.Steps.Done -- 99
 -- A23-74: the Forge step's settings (Config.Tutorial.Forge) and its session state (Late[Player] = the late gift for an
 -- old save was tried this session)
-local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {}, AcceptedAt = {}, Reached = {} }
+local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {}, AcceptedAt = {}, Reached = {}, WasNear = {} }
 -- quest bible v3 H00 / R00 / N00 (P1 ②, docs/design/quest_p1_server_contract_2026-10-15.md): the first mission is talked through
 -- the faction guide's body (Config.Tutorial.Guides) and, for Halo / Horns, the teacher's (Config.Skills.Learn.Teachers) at the
 -- step Teacher (4) before the Forge. No body in this world = the old way (the row tap / no teacher step)
@@ -809,8 +809,14 @@ local function tryTutorial(player)
 		end
 		-- A23-88: the first time the walker stands at the anvil (a metric: seconds since [I'm In!]; only for a walk begun
 		-- this session)
+		-- A23-221 ⑥: the row follows arriving at / leaving the anvil ("Talk to Otto")
+		local near = FORGE.Near(player)
+		if FORGE.WasNear[player] ~= near then
+			FORGE.WasNear[player] = near
+			dirty[player] = true
+		end
 		local from = FORGE.AcceptedAt[player]
-		if from and not FORGE.Reached[player] and FORGE.Near(player) then
+		if from and not FORGE.Reached[player] and near then
 			FORGE.Reached[player] = true
 			M.ForgeReached:Fire(player, math.max(0, os.clock() - from))
 		end
@@ -1034,6 +1040,12 @@ local function tutorialEntry(player, data)
 		-- A23-74: a tap sends RequestTutorial (the forge trip again); the client's beam goes to the anvil
 		entry.Text = TUT_MESSAGES.Forge or "Get your first weapon · Crossroads Forge"
 		entry.ShortName = TUT_SHORT.Forge
+		-- A23-221 ⑥: arrived (within Forge.Near of the anvil): "Talk to Otto", the guide on Otto (GuideNpc)
+		if FORGE.Near(player) then
+			entry.Text = TUT_MESSAGES.ForgeHere or "Talk to Otto"
+			entry.ShortName = TUT_MESSAGES.ForgeHere or "Talk to Otto"
+			entry.GuideNpc = "Otto"
+		end
 	elseif step == TUT_DONE and data.ClassChosen == true and getFaction(player) ~= "None" then
 		if data.BlacksmithVisited ~= true then
 			entry.Text = (hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith)
