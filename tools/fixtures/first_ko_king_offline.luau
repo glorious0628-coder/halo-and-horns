@@ -56,6 +56,7 @@ local function fkWorld(o)
 	w.Kings, w.Removed, w.Spawns, w.Ground, w.Struck, w.Events, w.StepOf, w.StepAsks = {}, {}, {}, {}, {}, {}, {}, {}
 	w.Pops = 0
 	local M = reg.MonsterService
+	M.Moment = M.Moment or Signal.new() -- A23-212: killRecord tells BarkService a boss calmed down
 	-- the real killRecord on this world's MonsterKilled (deathPop / refs / respawn are counted doubles)
 	local kill = execute("MonsterService.killRecord", MON_KILL_EXTRACT, w:Env(), {}, cfg, cfg.Monsters, M,
 		function(p) return reg.FactionService.GetFaction(p) end, function() end, function() w.Pops += 1 end, function() end,
@@ -1260,7 +1261,7 @@ runGroup("monster service", function()
 		and fields(p, { Practice = "Nope" }).Practice == "SlimeKing" and fields(p, { Practice = false }).Practice == nil
 		and fields(p, {}).Practice == nil, "Practice = a monster kind (true / unknown: its own kind), only when asked")
 	-- killRecord: quiet = no MonsterKilled, the hook; practice = Practice + the PayAs pay; the field King pays its contributors
-	local MS = { MonsterKilled = w.Util.Signal.new() }
+	local MS = { MonsterKilled = w.Util.Signal.new(), Moment = w.Util.Signal.new() }
 	local paid, calls = {}, { Pop = 0, Ref = 0, Respawn = 0 }
 	MS.MonsterKilled:Connect(function(pl, info) table.insert(paid, { P = pl, Info = info }) end)
 	local kill = execute("MonsterService.killRecord", MON_KILL_EXTRACT, w:Env(), {}, w.Config, C0.Monsters, MS,
