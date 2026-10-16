@@ -57,6 +57,15 @@ PRESENT = [
         "c.Soft.FillTransparency = math.max(soft, fade)"]),
     ("FX", "the rising sparkles come once", ["if fade > 0 and not c.Rose then"]),
     ("MM", "a beaten rigged monster stays calm (Idle)", ['want = "Idle" -- beaten (A23-211']),
+    ("FX", "손맛 ③⑤: the calm waits until the killing hit shows (contact / arrival)", [
+        "\t\tif os.clock() - c.Seen < MOTION.HURT_SYNC_WAIT then return end\n\t\tc.T0 = os.clock() + Feel.pendingDelay(root.Position)\n",
+        "\tif t < 0 then return end\n\tif not c.Popped then\n"]),
+    ("FX", "손맛 ③⑤: a kill's +G / +XP and drops show after the killing hit", [
+        "Feel.afterHit(asVec(type(data) == \"table\" and data.Pos or nil), function() Feel.rewardNow(data) end)",
+        "Feel.afterHit(asVec(type(data) == \"table\" and data.Pos or nil), function() Feel.lootNow(data) end)",
+        "\t\tlocal left = Feel.pendingDelay(pos)\n\t\tif left > 0.02 then later(left, fn) else fn() end\n"]),
+    ("AUDIO", "손맛 ③⑤: a kill's pop and coins wait for the killing hit too", [
+        "local ok, wait = pcall(fx.HitWait, pos)", "playAll(ok and type(wait) == \"number\" and wait or 0)"]),
     ("AUDIO", "the kill still pops", ['\t\tadd(out, "KillPop", 0)\n']),
 ]
 
@@ -93,6 +102,11 @@ def run(files: dict[str, str], anims_fall: list[str]) -> tuple[int, int, list[st
     destroy = float(m[1]) if m else 0
     check("gone before the server removes the body (Gone x Time < DEATH_DESTROY)", K.get("Gone", 9) * K.get("Time", 9) < destroy,
           (K.get("Gone"), K.get("Time"), destroy))
+    # 손맛 ③⑤: the calm may wait up to HURT_SYNC_MAX + HURT_SYNC_WAIT for the killing hit; 개발 2's server branch keeps the
+    # body CalmTime + 0.7 s (checked once MonsterService writes CalmTime; until then the old 1.15 s stands)
+    if "CalmTime" in files["MONSTER"]:
+        check("the server keeps the body for the wait + the calm (CalmTime + >= 0.65 s)",
+              re.search(r"CalmTime[^\n]*\+\s*0?\.[6-9]", files["MONSTER"]) is not None, "")
     calm = re.search(r"\nfunction WOBBLE\.calm\(.*?\nend\n", files["FX"], re.S)
     body = calm[0] if calm else ""
     check("calm draws no rays (default round particles, no beams / textures)", body != "" and "Texture" not in body
@@ -111,6 +125,9 @@ MUTATIONS = [
     ("FX", "Clatter does not sit", "up = -c.H * K.Sit *", "up = 0 * K.Sit *"),
     ("FX", "too slow for the server", "Gone = 0.92,", "Gone = 1.4,"),
     ("FX", "a ray texture", "\t\tc.Soft = hl\n", "\t\tc.Soft = hl\n\t\thl:SetAttribute(\"Texture\", \"rays\")\n"),
+    ("FX", "the calm starts at the kill again (no wait for the hit)", "c.T0 = os.clock() + Feel.pendingDelay(root.Position)", "c.T0 = os.clock()"),
+    ("FX", "the reward shows at the kill again", "function() Feel.rewardNow(data) end)", "function() end) Feel.rewardNow(data)"),
+    ("AUDIO", "the kill's coins at the kill again", "playAll(ok and type(wait) == \"number\" and wait or 0)", "playAll(0)"),
     ("CONFIG", "a Die sound back", "\t\tKillPop = { File = \"KillPop\",", "\t\tDieSlime = {},\n\t\tKillPop = { File = \"KillPop\","),
 ]
 

@@ -1447,7 +1447,7 @@ function WOBBLE.calm(model, root, st, camPos)
 		end
 		local h, rh = monsterSize(model)
 		local kind = model:GetAttribute("MonsterKind")
-		c = { T0 = os.clock(), H = h, Joint = visualJoint(model), Way = K.Kings[type(kind) == "string" and kind or ""],
+		c = { Seen = os.clock(), H = h, Joint = visualJoint(model), Way = K.Kings[type(kind) == "string" and kind or ""],
 			Time = math.clamp(asNum(model:GetAttribute("CalmTime"), K.Time), 0.6, 3), Parts = {} }
 		for _, d in model:GetDescendants() do
 			if (d:IsA("BasePart") and d.Transparency < 1) or d:IsA("Decal") then table.insert(c.Parts, d) end
@@ -1457,6 +1457,19 @@ function WOBBLE.calm(model, root, st, camPos)
 		model.AncestryChanged:Connect(function(_, parent)
 			if parent == nil then WOBBLE.Calming[model] = nil end
 		end)
+	end
+	-- 손맛 ③⑤ (GPT game_feel_r1, 최종 검수 10/16): the server beats it at once, but the killing hit shows later (the
+	-- swing's contact frame, the orb / arrow's arrival): it stands as it is until that hit shows (Feel.pendingDelay,
+	-- after HURT_SYNC_WAIT for the Swing Fx of the same server frame), then relaxes
+	if not c.T0 then
+		if os.clock() - c.Seen < MOTION.HURT_SYNC_WAIT then return end
+		c.T0 = os.clock() + Feel.pendingDelay(root.Position)
+	end
+	local T = c.Time
+	local t = os.clock() - c.T0
+	if t < 0 then return end
+	if not c.Popped then
+		c.Popped = true
 		-- (1) the shard dust pops out: round sparkles, a little up and out, no rays, nothing falls
 		burst(c.Mid, K.PopColor, K.Pop, { Size = 0.45, EndSize = 0, LightEmission = 0.8, LifeMin = 0.5, LifeMax = 0.9,
 			SpeedMin = 2, SpeedMax = 5, Spread = Vector2.new(60, 60), Acceleration = Vector3.new(0, 3, 0), Drag = 3 })
@@ -1470,8 +1483,6 @@ function WOBBLE.calm(model, root, st, camPos)
 		hl.Parent = model
 		c.Soft = hl
 	end
-	local T = c.Time
-	local t = os.clock() - c.T0
 	-- (2) relax: one soft hop (King Slime: a few water-drop bounces; Clatter: a bow, then he sits down)
 	local hopH = math.min(c.H * K.HopRatio, K.HopMax)
 	local up, tilt, k = 0, 0, 1
@@ -3680,6 +3691,25 @@ function Feel.pendingDelay(pos)
 	return math.min(best, MOTION.HURT_SYNC_MAX)
 end
 
+-- 손맛 ③⑤ (GPT game_feel_r1, 최종 검수 10/16): fn runs once the hit remembered near pos has shown (after
+-- HURT_SYNC_WAIT for the Swing / Release Fx of the same server frame); at once when no such hit is pending
+function Feel.afterHit(pos, fn)
+	if typeof(pos) ~= "Vector3" then
+		fn()
+		return
+	end
+	later(MOTION.HURT_SYNC_WAIT, function()
+		local left = Feel.pendingDelay(pos)
+		if left > 0.02 then later(left, fn) else fn() end
+	end)
+end
+
+-- (Audio) seconds until the hit remembered near pos shows; 0 = none
+function Fx.HitWait(pos)
+	if typeof(pos) ~= "Vector3" then return 0 end
+	return Feel.pendingDelay(pos)
+end
+
 -- pain sticker + a quick squash flinch (not while it attacks / winds up, and not right after my own directional recoil)
 function Feel.hurtReact(model, big)
 	local st = monsterMotion[model]
@@ -4330,7 +4360,13 @@ handlers.Pain = function(data)
 	Feel.playerPain(math.floor(uid), data.Big == true)
 end
 
+-- a kill's gold / XP numbers (and the drops below) show after the killing hit itself (Feel.afterHit): never a "+6 G"
+-- before the orb / arrow has landed
 handlers.Reward = function(data)
+	Feel.afterHit(asVec(type(data) == "table" and data.Pos or nil), function() Feel.rewardNow(data) end)
+end
+
+function Feel.rewardNow(data)
 	bumpCombo()
 	Fx.PlaySound("Coin")
 	local pos = asVec(data.Pos)
@@ -4356,6 +4392,10 @@ end
 -- A23-12: { Pos, Items = { { Item | Potion | Weapon, Name, N } } } = my own drops (already saved on the server).
 -- Uses the existing number popups and bursts only (no new art): "+슬라임 젤리" rises above the kill spot.
 handlers.Loot = function(data)
+	Feel.afterHit(asVec(type(data) == "table" and data.Pos or nil), function() Feel.lootNow(data) end)
+end
+
+function Feel.lootNow(data)
 	local pos = asVec(data.Pos)
 	local items = type(data.Items) == "table" and data.Items or {}
 	local rare = false
