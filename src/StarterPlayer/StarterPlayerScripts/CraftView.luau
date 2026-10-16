@@ -393,6 +393,14 @@ function CraftView.OnResult(payload)
 		name = ok and n or nil
 	elseif type(payload.Item) == "string" and Config.Loot.Items[payload.Item] then
 		name = tx(Config.Loot.Items[payload.Item], "Name")
+	elseif payload.Kind == "Potion" and type(payload.Potion) == "string" then -- AP1 / AP2 (Config.QuickSlots.Items)
+		local qs = type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Items) == "table" and Config.QuickSlots.Items or {}
+		name = type(qs[payload.Potion]) == "table" and tx(qs[payload.Potion], "Name") or nil
+	elseif payload.Kind == "Gear" then -- armor / rings / pet gear: the craft window's name ("Armor I")
+		local cw = C and C.CraftWindow
+		local ok, look = false, nil
+		if type(cw) == "table" and type(cw.GearLook) == "function" then ok, look = pcall(cw.GearLook, payload.Slot, payload.Tier) end
+		name = ok and type(look) == "table" and look.Name or nil
 	end
 	if UI.Result and not (pet and tonumber(pet.Spd)) then
 		UI.Result.Text = name and tx(TXT, "Result", plus, name) or tx(TXT, "ResultPlain", plus)

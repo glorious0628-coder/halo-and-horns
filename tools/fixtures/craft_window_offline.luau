@@ -41,9 +41,9 @@ local Config = fn()
 assert(Config.Craft.Recipes.W1 == nil, "the shipped W1 is gone (장인 ②)")
 Config.Craft.Recipes.W1 = { Role = "Smith", Kind = "Weapon", Tier = 1, Lv = 1, Gold = 10, Mats = { Jelly = 5, CopperOre = 2 }, XP = 10 }
 Config.Features.Crafting = true
--- test-only recipes: an alchemist item (Kind Item, x2) and a gear row (no names yet: hidden)
+-- test-only recipe: an alchemist item (Kind Item, x2). GPT review 10/16: the shipped gear (G / R / PA / PC) and potion
+-- (AP1 / AP2) rows are listed now, with their real numbers
 Config.Craft.Recipes.ZTestItem = { Role = "Alch", Kind = "Item", Item = "Jelly", N = 2, Lv = 1, Gold = 5, Mats = { Petal = 1 }, XP = 5 }
-Config.Craft.Recipes.G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 1, Gold = 5, Mats = { Jelly = 1 }, XP = 5 }
 
 ------------------------------------------------------------------ an Instance tree double
 local ISA = {
@@ -348,12 +348,32 @@ check(CraftWindow.RoleOf(ctxOf()) == "Smith" and CraftWindow.RoleOf(ctxOf({ Clas
 check(CraftWindow.RoleOf(ctxOf({ Faction = "Horns" })) == nil and CraftWindow.RoleOf(ctxOf({ ClassChosen = false })) == nil,
 	"no role outside the guild / before the class")
 local list = CraftWindow.Entries(ctxOf())
-check(ids(list) == "W1,W2,W3,W4,W5,W6,W7,W9", "the smith's recipes, lowest level first; W7 / W9 shown since C1 added their boss materials and tier 9; Gear (no names yet) hidden", ids(list))
+check(ids(list) == "W1,W2,W3,G1,R1,W4,W5,G2,R2,W6,G3,R3,W7,W9", "the smith's recipes, lowest level first (then tier); W7 / W9 since C1; armor / rings listed (GPT review 10/16: Gear was hidden)", ids(list))
+do -- GPT review 10/16: gear and potion rows (they were left out, so AP1 / AP2 and the armor / rings could not be made)
+	local g1, r2 = entry(list, "G1"), entry(list, "R2")
+	check(g1 and g1.Name == "Armor I" and g1.Grade == "Fine" and g1.Stat == "HP +6%" and g1.Wear == 10 and g1.Lv == 8 and g1.Locked,
+		"a gear row: '<slot> <tier>', the tier's grade, its stat, the level to wear it, locked below its craft level", g1 and (g1.Name .. "|" .. tostring(g1.Stat)))
+	check(r2 and r2.Name == "Ring II" and r2.Grade == "Rare" and r2.Stat == "Attack +8%" and r2.Icon == "GearRing",
+		"a ring row (no icon art yet: the slot's letter)", r2 and r2.Name)
+	local alch = CraftWindow.Entries(ctxOf({ Class = "Mage" }))
+	local ap1, ap2 = entry(alch, "AP1"), entry(alch, "AP2")
+	check(ap1 and ap1.Name == "HP Potion" and ap1.Icon == "IconPotionHP" and ap1.N == 2 and ap2 and ap2.Name == "MP Potion"
+		and ap2.Icon == "IconPotionMP", "the alchemist's first potions (AP1 HP / AP2 MP, x2 each)", ap1 and ap1.Name)
+	local tame = CraftWindow.Entries(ctxOf({ Class = "Archer" }))
+	local pa1 = entry(tame, "PA1")
+	check(pa1 and pa1.Name == "Pet Armor I" and pa1.Stat == "Pet XP +20%" and pa1.Wear == nil, "the tamer's pet gear (no player level to wear)", pa1 and pa1.Name)
+	local dv = CraftWindow.Detail(g1, ctxOf())
+	local function lineWith(v, t) for _, l in v.Lines do if string.find(l.Text, t, 1, true) then return l end end return nil end
+	check(lineWith(dv, "HP +6%") ~= nil and lineWith(dv, "Use from Lv 10") ~= nil, "the gear's detail: its stat and the level to wear it")
+end
 do -- C1 made W7 / W9's boss materials real, so a test recipe keeps the "material not in the game = hidden" rule covered
 	K.Recipes.WTEST = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 1, Mats = { NoSuchMaterial = 1 }, XP = 1 }
 	local l2 = CraftWindow.Entries(ctxOf())
 	check(entry(l2, "WTEST") == nil and #l2 == #list, "a recipe with a material not in the game (a test id) stays hidden", ids(l2))
 	K.Recipes.WTEST = nil
+	K.Recipes.XTEST = { Role = "Smith", Kind = "Mystery", Lv = 1, Gold = 1, Mats = { Jelly = 1 }, XP = 1 }
+	check(entry(CraftWindow.Entries(ctxOf()), "XTEST") == nil, "a recipe kind the window does not know stays hidden")
+	K.Recipes.XTEST = nil
 end
 do -- (a test id: 개발 3's own alchemist recipes A1~A4 join Config later)
 	local alch = CraftWindow.Entries(ctxOf({ Class = "Mage" }))
@@ -441,7 +461,7 @@ check(lineWith(v, "craft XP") == nil, "no craft XP line at the top level")
 ------------------------------------------------------------------ 5. the window
 open(nil)
 local rows = findAll(root, "^Row_")
-check(#rows == 8 and rows[1].Name == "Row_W1", "a row per recipe", #rows)
+check(#rows == 14 and rows[1].Name == "Row_W1", "a row per recipe", #rows)
 check(find(find(root, "Row_W1"), "Picked") ~= nil and find(find(root, "Row_W2"), "Picked") == nil, "the first ready recipe is picked (gold rim)")
 check(find(find(root, "Row_W1"), "Ready") ~= nil and find(find(root, "Row_W2"), "Ready") == nil, "a gold check on what I can make now")
 check(find(find(root, "Row_W3"), "Lv").Text == "Lv 5" and find(find(root, "Row_W3"), "Lv").TextColor3 == "bad", "a locked row's level in red")
