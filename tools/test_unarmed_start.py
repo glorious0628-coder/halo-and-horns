@@ -71,6 +71,8 @@ REFRESH_LINE = "\tif type(story) == \"table\" and type(story.Refresh) == \"funct
 OPEN_LINE = "\tNet.Get(\"OpenPanel\"):FireClient(player, \"WeaponShop\")\n"
 
 MUTATIONS = [
+    # 최종 검수 10/16 🔴: the anvil opens Otto's story talk while he has one (his own prompt is hidden behind the anvil's)
+    ("🔴 the anvil never asks Otto", "SHOP_SOURCE", "\t\tif okT and talked ~= nil then return end\n", ""),
     # A23-186: Otto sells 5 (3 normal + 2 joke weapons)
     ("A23-186: the Forge sells no joke weapon", "SHOP_SOURCE", "\tif selectedTier > saleLimit and not Config.WeaponSoldAtForge(selectedTier) then -- A23-186: + the joke weapons\n",
      "\tif selectedTier > saleLimit then\n"),
@@ -226,6 +228,9 @@ def static() -> tuple[int, list[str]]:
         if not ok:
             failures.append(message)
 
+    shop_src = read(SSS / "ShopService.luau")
+    check('local BLACKSMITH = { PromptName = "HHC_BlacksmithPrompt", Distance = 12, PromptRate = 0.5, StoryNpc = "Otto" }' in shop_src,
+          "ShopService's BLACKSMITH names Otto's story id (the fixture passes the same table)")
     tele = strip_comments(read(SSS / "TelemetryService.luau"))
     check('if num(data.WeaponOwnedMask) > 0 then Step(player, "FirstWeapon") end' in tele
           and 'watch(player, "WeaponOwnedMask", function(v) if num(v) > 0 then Step(player, "FirstWeapon") end end)' in tele,

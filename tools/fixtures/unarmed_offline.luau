@@ -413,6 +413,24 @@ runGroup("shop", function()
 	check(opened ~= nil and opened.Payload == "WeaponShop", "the anvil opens the weapon shop")
 	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Main.Id == "M1_1" and g.Story.Main.St == 2,
 		"the M1_1 gift is in hand by the time the shop opens (M1_1 at step 2)", show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main }))
+	-- 최종 검수 10/16 🔴: Otto's talk shares the anvil's key and only the anvil's prompt shows - while Otto has a story talk for
+	-- me (an offer / a step / a lesson: TalkToNpc answers), the anvil opens that talk instead of the shop
+	local realTalk, asked = w4.Story.TalkToNpc, {}
+	w4.Story.TalkToNpc = function(pl, npc) table.insert(asked, npc); return "Offer:M1_1" end
+	w4:Advance(1)
+	local f1 = #w4.Fired
+	w4:Anvil(s)
+	local shopNow = false
+	for i = f1 + 1, #w4.Fired do if w4.Fired[i].Remote == "OpenPanel" and w4.Fired[i].Payload == "WeaponShop" then shopNow = true end end
+	check(asked[1] == "Otto" and not shopNow, "Otto has a request for me: the anvil opens Otto's talk, not the shop", show(asked))
+	w4.Story.TalkToNpc = function(pl, npc) table.insert(asked, npc); return nil end
+	w4:Advance(1)
+	local f2 = #w4.Fired
+	w4:Anvil(s)
+	shopNow = false
+	for i = f2 + 1, #w4.Fired do if w4.Fired[i].Remote == "OpenPanel" and w4.Fired[i].Payload == "WeaponShop" then shopNow = true end end
+	check(#asked == 2 and shopNow, "nothing waits at Otto: the anvil opens the shop again", #asked)
+	w4.Story.TalkToNpc = realTalk
 end)
 
 ------------------------------------------------------------------ 6b. A23-186: Otto sells 5 (3 normal + 2 joke weapons)
