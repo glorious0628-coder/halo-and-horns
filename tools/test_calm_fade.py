@@ -106,8 +106,12 @@ def run(files: dict[str, str], anims_fall: list[str]) -> tuple[int, int, list[st
     # 손맛 ③⑤: the calm may wait up to HURT_SYNC_MAX + HURT_SYNC_WAIT for the killing hit; 개발 2's server branch keeps the
     # body CalmTime + 0.7 s (checked once MonsterService writes CalmTime; until then the old 1.15 s stands)
     if "CalmTime" in files["MONSTER"]:
-        check("the server keeps the body for the wait + the calm (CalmTime + >= 0.65 s)",
-              re.search(r"CalmTime[^\n]*\+\s*0?\.[6-9]", files["MONSTER"]) is not None, "")
+        # 개발 2 dev2-calm-fade feb4abc1: life = DEATH_DESTROY + (CalmTime - 1) + HIT_WAIT (0.7)
+        hw = re.search(r"local HIT_WAIT = ([\d.]+)", files["MONSTER"])
+        life = re.search(r"local life = [^\n]*DEATH_DESTROY \+ \(calm and calm - 1 or 0\) \+ HIT_WAIT", files["MONSTER"])
+        need = K.get("Gone", 9) * K.get("Time", 9) + 0.65
+        check("the server keeps the body for the wait + the calm (DEATH_DESTROY + HIT_WAIT >= Gone x Time + 0.65 s)",
+              hw is not None and life is not None and destroy + float(hw[1]) >= need, (hw and hw[1], destroy, need))
     calm = re.search(r"\nfunction WOBBLE\.calm\(.*?\nend\n", files["FX"], re.S)
     body = calm[0] if calm else ""
     check("calm draws no rays (default round particles, no beams / textures)", body != "" and "Texture" not in body
