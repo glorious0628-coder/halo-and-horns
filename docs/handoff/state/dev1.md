@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 오후 (최신)
+- 병합됨: dev1-intro-clatter b402c29c(파트 Clatter, 칼 없음), 1~4번 가지 3개(fbe330c5).
+- **보고한 가지(병합 대기)**: dev1-calm-fade 25bc6c2d(개발 2 서버 가지 ①파티클 ②0.2 줄이기 삭제 ③CalmTime와 같이 병합), dev1-reward-icon 96e154e9(물약 Icon), dev1-craft-kinds 93b9399c(제작 창 Potion/Gear 줄, GearLook, 등급 Fine/Rare/Epic = 내 표시값), dev1-war-end a482e059(A23-216 ⑤: WarRoundEndsAt 앞으로 → 막대 균형 0.9초 → 두 표장 통통 → 2초 WarNext 종; Clatter 경례는 마을 몸 생길 때), fix/king-diary-jar f2b0a21f(지운 jar note 기대값).
+- 개발 2에 장면 바로 만들기(A23-218) 프리셋 부탁: Calm·OfferM1_3·WarEnd·Tutorial·Artisan → 오면 사진.
+- **다음**: 개발 2 Clatter 첫 10분 장면 3개 화면 몫(가지 오면 먼저), 그다음 최종 검수 지시.
+- 도구: scratchpad run1016.py(폰 사진)·calm1016.py(이 클라 뿌리 고정)·clatter1016.py(오프닝), PhoneTest_1015 창은 쓰고 나면 Stop-Process로 닫음(다른 프로젝트 ParcelPanic Studio는 건드리지 말 것).
+
 ## 10/16 낮 — A23-211·212 (최신)
 - **dev1-calm-fade 25bc6c2d (보고함, 사진 main f9e6780 calm_fade/)**: Fx WOBBLE.calm(둥근 가루 → 통통·슬라임 0.88·부드러운 빛 → LocalTransparencyModifier 흐려짐, 0.92 × CalmTime(기본 1.0)), King Slime Bounce, Clatter Salute(절+앉음). 삭제: 슬라임 퍼짐, MonsterMotion Fall + *_Fall 5개, Audio DieOf + Config DeathByKind/Die*. test_calm_fade 16·11/11. **병합 = 개발 2 서버 가지(터지는 입자·0.2 줄이기 빼기, 보스 CalmTime)와 같이**(최종 검수).
 - **dev1-intro-clatter 862efdaf (화면 확인 신청함)**: 오프닝 1장면 = 파트 왕관 흔들림 → Clatter(CodexModels.CaptainClatter 복사) 파트 집게 → 쩍 → 팔 뻗음. Intro SCENE 표. test_intro_clatter 12·7/7. 사진 도구 scratchpad clatter1016.py (PhoneTest_1015, 합친 판 wt_dev1b dev1-check-clatter).
