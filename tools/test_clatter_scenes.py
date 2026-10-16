@@ -53,9 +53,7 @@ STATIC = [
     ("NPCS", "he goes after Stay", ["local stay = tonumber(K.Stay) or 8", "if t >= stay then"]),
     ("INTRO", "the part body is shared from the opening", ["function Intro.ClatterBody(parent)", "function Intro.PlaceClatter(c, root, head, aims)"]),
     ("INTRO", "the body's part list is filled apart from c (PhoneTest 10/16: c.All grew while walked = endless loop)", [
-        "				table.insert(all, p)
-", "	c.All = all
-"]),
+        "\t\t\t\ttable.insert(all, p)\n", "\tc.All = all\n"]),
     ("LABELS", "a sure line = the wide story bubble", ["local sure = B.SureMoment(kindOf(model), text)", "pcall(npcs.Bubble, att, text, B.SureShow)"]),
     ("LABELS", "a beaten body says only its Beaten line", ['if root.Anchored and sure ~= "Beaten" then return end',
                                                        "B.Check(model, root, bb, me) -- A23-212: only a sure Beaten line"]),
@@ -102,9 +100,7 @@ MUTATIONS = [
     ("NPCS", "floats at Pos (no ground)", "local feet = Vector3.new(pos.X, StoryNpcs.GroundAt(pos), pos.Z)", "local feet = pos"),
     ("NPCS", "no line", "pcall(StoryNpcs.Bubble, c.Head, sc.Line, T.Clatter.Line)", "pcall(print, sc.Line)"),
     ("NPCS", "he never goes", "if t >= stay then", "if false then"),
-    ("INTRO", "the part list grows while it is walked again", "				table.insert(all, p)
-", "				table.insert(c.All or all, p)
-"),
+    ("INTRO", "the part list grows while it is walked again", "\t\t\t\ttable.insert(all, p)\n", "\t\t\t\ttable.insert(c.All or all, p)\n"),
     ("LABELS", "a Spot line counts as sure", 'for _, moment in { "Start", "Beaten" } do', 'for _, moment in { "Start", "Beaten", "Spot" } do'),
     ("LABELS", "a beaten body speaks any line", 'if root.Anchored and sure ~= "Beaten" then return end', ""),
     ("LABELS", "sure lines in the small round bubble", "pcall(npcs.Bubble, att, text, B.SureShow)\n\t\treturn\n", "pcall(print, text)\n"),
