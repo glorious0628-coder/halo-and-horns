@@ -1,6 +1,14 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 8 — dev1-hold-angles defe5408 병합 요청함 (최신)
+## 10/16 밤 9 — 사용자 컴퓨터 끔, 여기서 이어서 (최신)
+- 병합됨: dev1-hold-angles → main 2a3489d1. 가지 **dev1-first12 15a860af**(push, worktree ../Game-dev1grip): A23-221 ⑤ 첫 10분 화면 낮(Config.FirstDay/FirstDayFor, ZoneLook·WeatherFx·Audio) + 3판 ① 스폰 때 카메라 등 뒤(CameraFollow FOLLOW.SnapBehind). 시험 통과(zone_look, weather_fx, audio 360, day_cycle, camera_input 43/43, keys_settings). Studio 사진 아직. (main 2a3489d1보다 뒤에서 갈라짐 — 충돌 날 때만 main 합치기)
+- **▶ 다음 (최종 검수 10/16 밤, 이 순서):**
+  1. **2a3489d1에서 생긴 것(짧게, 먼저)** — 게임 플레이 4판 docs/review/playtest/2026-10-16_r4.md: ① 뿔 T1 가시 몽둥이가 허리에서 뒤로 수평으로 몸 길이만큼 뻗음(꼬리처럼, 10_warrior_idle_sheet·12_warrior_walk_sheet) → Config.WeaponStow.Hip Turn을 아래로(칼끝 뒤·아래 60~70°, 다리 뒤 따라), 긴 무기 땅 안 닿게, 빛 칼도 확인 ② 활시위(흰 선)가 등 뒤 1스터드 허공에 세로로 뜸(13_archer_side_zoom) → 등에 멜 때 시위(String 부품/BowNock?)가 활과 같이 안 옮겨짐 의심: 넣을 때 시위도 같이 옮기거나 숨기기, 걷기·쏘기도 확인. 고치면 사진 2장(뿔 전사 옆, 궁수 옆) + 가지 → 바로 병합.
+  2. **첫 12분 화면 짝(첫 묶음, 개발 2 dev2-first12 54a3be0d와 한 번에 병합)**: ① 허수아비(튜토리얼 Practice 5 줄 GuideSpot "PracticeH/R"·Practice=true로 그림, 크게, 맞으면 흔들림) ② 모루 G = OpenPanel "Enhance" { Item, Tier } → 그 무기 고른 채 강화 창, 성공 반짝/실패 흔들림 ③ M1_2 표시(KingHill(400,-118)·Fizzby(6,-30)·MeadowArrival, 초원 안에서 안 꺼지게). 장면 TutorialPractice·KingHop·KingAnvil. 최종 검수에게 '언제쯤' 한 줄 보낼 것.
+  3. 다음 묶음: 보상 몸·숫자 반응, XP ×2(Fx Reward XPMult), (낮 고정은 dev1-first12에 있음), 2판 ①~④·3판 ③, 작은 것들.
+- 남은 숫자(메모만): 활 A 위 끝 안쪽 15°, 걷기 안쪽 칼 17°·지팡이 16°, 마법사 기본 공격 한순간 87°, 빛 Q 머리 겹침·뿔 Q 못 잼, 등·허리 겹침 숫자는 상자 기준, 검집 없음.
+
+## 10/16 밤 8 — dev1-hold-angles defe5408 병합 요청함
 - 3차 엔진 확인 끝(docs/art/verification_2026-10-16/hold_tune3/sheet_r3.jpg). 남은 숫자(다음에): 활 A 위 끝 안쪽 15°, 걷기 안쪽 칼 17°·지팡이 16°, 마법사 기본 공격 한순간 87°, 빛 Q 머리 겹침, 뿔 Q 못 잼, 검집 없음.
 - ▶ 지금: 첫 12분·물약 화면 몫(아래 큐, 개발 2 dev2-first12 약속에 맞춤).
 
