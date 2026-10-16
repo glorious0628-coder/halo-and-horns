@@ -35,3 +35,7 @@
 - 'Tiny 본편 먼저' 확인됨(장면: scene.py OfferM1_3 → 수락 → DebugCommand Faction Horns → StoryStep M1_3:3 → Tiny G). 대화 안 보임 + 목표 'Next goal.'은 진영 바꾼 시험 탓일 수 있음.
 - 도구: Studio 명령 Class(직업 바꾸기), Clock 12, idle.py/walkshot.py/atkshot.py(PRE·FACE 환경 변수), sheet.py. 순간 이동 직후 ~10초 하얀 사진 → 기다렸다 찍기. 뿔 마을 → 사거리 character_navigation 실패할 때 있음.
 - **다음 판:** 다음 sync 신호 → 뿔 처음부터 M1_3 3단계 Tiny까지(진영 바꾸기 없이), 빛 전사 검 허리 각도.
+
+## 10/16 밤 — 새 계정 세션 시작
+- 도구는 옛 scratchpad(`%TEMP%\claude\C--Users-glori-Documents-Roblox-Game\52d0667a-…\scratchpad`)에서 새 scratchpad로 그대로 복사(pt.py·intro_watch·cam·walkshot·atkshot·idle·sheet·*.lua). pt.py 안 STUDIO_ID 기본값은 옛 값 → 매 판 list_roblox_studios로 새 id를 환경 변수로.
+- 지금: 메인 반영 1의 'sync <sha>' 신호 기다림. 다음 판 = 4판 '다음 판' 그대로.
