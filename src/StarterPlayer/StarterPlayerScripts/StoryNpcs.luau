@@ -61,7 +61,8 @@ function StoryNpcs.Offers(text)
 end
 
 -- A23-199 (pure): my rows' open Pickup steps -> { { Id, Spot, Pos, Radius } } (the step of each Story row, my side's
--- override first; the spot from Config.StoryQuests.Landmarks)
+-- override first; the spot from Config.StoryQuests.Landmarks). A Story.Offer row (개발 2 dev2-offer-row: "Talk to <asker>"
+-- while the next main waits, St = 1) is no step yet: skipped here, in Spots and WatchSteps; its asker gets a plain "!"
 function StoryNpcs.Pickups(entries, faction)
 	local sq = type(Config.StoryQuests) == "table" and Config.StoryQuests or {}
 	local defs = type(sq.Defs) == "table" and sq.Defs or {}
@@ -69,7 +70,7 @@ function StoryNpcs.Pickups(entries, faction)
 	local out, seen = {}, {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
-		local def = type(st) == "table" and type(st.Id) == "string" and defs[st.Id] or nil
+		local def = type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true and defs[st.Id] or nil
 		local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(st.St) or 0] or nil
 		if type(step) == "table" then
 			local over = type(faction) == "string" and step[faction] or nil
@@ -107,7 +108,7 @@ function StoryNpcs.Marks(entries, offers, teacher)
 			local step = steps[n]
 			local obj = type(step) == "table" and step.Obj or nil
 			local done = (n >= #steps and #steps > 0) or (type(obj) == "table" and obj.Type == "Deliver")
-			put(st.Npc, done, e.Kind == "Main")
+			put(st.Npc, done and st.Offer ~= true, e.Kind == "Main")
 		end
 	end
 	for id in type(offers) == "table" and offers or {} do put(id, false, false) end
@@ -233,7 +234,7 @@ function StoryNpcs.Spots(entries, faction)
 	local out, seen = {}, {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
-		local def = type(st) == "table" and type(st.Id) == "string" and defs[st.Id] or nil
+		local def = type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true and defs[st.Id] or nil
 		local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(st.St) or 0] or nil
 		if type(step) == "table" and not seen[st.Id] then
 			local over = type(faction) == "string" and step[faction] or nil
@@ -1026,12 +1027,14 @@ function StoryNpcs.Bubble(adornee, text, seconds)
 	return bb
 end
 
--- Fx StoryScene Find: the words of step n (Config, my side) over its NPC's head, else over its Guide / Obj.Spot place
+-- Fx StoryScene Find: the words of step n (Config, my side) over its NPC's head (On = an NPC id: hers), else over its
+-- Guide / Obj.Spot place
 function StoryNpcs.Find(id, n, faction)
 	local step = StoryNpcs.StepFor(id, n, faction)
 	local text = type(step) == "table" and step.Find or nil
 	if type(text) ~= "string" or text == "" then return false end
-	local body = type(step.Npc) == "string" and StoryNpcs.Body(step.Npc) or nil
+	local who = (type(step.On) == "string" and step.On ~= "" and step.On ~= "Self") and step.On or step.Npc -- 개발 2: On = an NPC id
+	local body = type(who) == "string" and StoryNpcs.Body(who) or nil
 	if step.On == "Self" then -- 10/15: my own words, over my head
 		local me = game:GetService("Players").LocalPlayer
 		body = me and me.Character or nil
@@ -1072,13 +1075,15 @@ function StoryNpcs.MoveOffset(kind, k)
 end
 
 -- Fx StoryScene Scene: the NPC of step st (else StoryNpcs.SceneNpc) plays the move (anchored town bodies move on this
--- client only) + a round sparkle over her head; On = "Self" or no body near = my own avatar (emote / jump + sparkle)
+-- client only) + a round sparkle over her head; On = an NPC id = that NPC plays it; On = "Self" or no body near = my own
+-- avatar (emote / jump + sparkle)
 function StoryNpcs.PlayScene(id, scene, faction, st)
 	local SK = type(Config.StoryQuests) == "table" and Config.StoryQuests.SceneKeys or nil
 	if type(scene) ~= "string" or not (type(SK) == "table" and SK[scene]) then return false end
 	local step = st ~= nil and StoryNpcs.StepFor(id, st, faction) or nil
 	local mine = type(step) == "table" and step.On == "Self"
-	local npc = (type(step) == "table" and type(step.Npc) == "string" and step.Npc) or StoryNpcs.SceneNpc(id, scene, faction)
+	local on = type(step) == "table" and type(step.On) == "string" and step.On ~= "" and step.On ~= "Self" and step.On or nil
+	local npc = on or (type(step) == "table" and type(step.Npc) == "string" and step.Npc) or StoryNpcs.SceneNpc(id, scene, faction)
 	local m = (not mine and type(npc) == "string") and StoryNpcs.Body(npc) or nil
 	if not m then
 		local me = game:GetService("Players").LocalPlayer
@@ -1291,7 +1296,7 @@ function StoryNpcs.WatchSteps(entries, faction)
 	local now = {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
-		if type(st) == "table" and type(st.Id) == "string" then
+		if type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true then
 			now[st.Id] = { St = tonumber(st.St) or 0,
 				Done = (tonumber(e.Progress) or 0) >= (tonumber(e.Target) or math.huge) and e.CanClaim == true }
 		end

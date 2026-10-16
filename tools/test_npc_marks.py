@@ -54,6 +54,8 @@ m = StoryNpcs.Marks({}, { Tiny = true }, nil)
 check("a request = side !", m.Tiny.Text == "!" and m.Tiny.Main == false)
 m = StoryNpcs.Marks({}, {}, "Gleam")
 check("a skill at the teacher = main !", m.Gleam.Main == true and m.Gleam.Text == "!")
+m = StoryNpcs.Marks({ { Kind = "Main", Story = { Id = "B", St = 1, Npc = "Tiny", Offer = true } } }, {}, nil)
+check("an Offer row (Talk to her) = main !, never ?", m.Tiny.Text == "!" and m.Tiny.Main == true, m.Tiny and m.Tiny.Text)
 m = StoryNpcs.Marks({ { Kind = "Daily" }, row("A", 1, "") }, {}, nil)
 check("rows without an NPC: no mark", next(m) == nil)
 print(fails == 0 and "MARKS_PURE_OK" or "MARKS_PURE_FAILED")
@@ -91,7 +93,8 @@ MUTATIONS = [
     ("never ?", "\t\tif done then m.Text = T.Done end\n", ""),
     ("! wins back over ?", "\t\tif done then m.Text = T.Done end\n", "\t\tm.Text = done and T.Done or T.MarkText\n"),
     ("Deliver not a hand-in", ' or (type(obj) == "table" and obj.Type == "Deliver")', ""),
-    ("main not told", 'put(st.Npc, done, e.Kind == "Main")', "put(st.Npc, done, false)"),
+    ("main not told", 'put(st.Npc, done and st.Offer ~= true, e.Kind == "Main")', "put(st.Npc, done and st.Offer ~= true, false)"),
+    ("an Offer row reads its St as a step", 'put(st.Npc, done and st.Offer ~= true, e.Kind == "Main")', 'put(st.Npc, done, e.Kind == "Main")'),
     ("a request is main", "for id in type(offers) == \"table\" and offers or {} do put(id, false, false) end",
      "for id in type(offers) == \"table\" and offers or {} do put(id, false, true) end"),
     ("the star on side marks too", "if star then star.Visible = mark.Main == true end", "if star then star.Visible = true end"),
