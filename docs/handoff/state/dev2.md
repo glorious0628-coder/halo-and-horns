@@ -1,6 +1,7 @@
 # 게임성 개발 2 — 상태 (2026-10-16 밤 끝: 2장 끝 → 다음 = 장인 최소판)
 
 ## 큐 (최종 검수 순서 — 새 대화는 여기서 시작)
+0-3. **(하는 중, 10/16 밤)** 장인 ⓐ 1부 = **dev2-curve 06650f0d** 보고함(../wt_talk): 레시피 곡선 + DeepMoonShard·TrialCore + Reward.Side(DC3 장인 Trial Core). 병합은 2부 뒤 권함. **다음 = 2부 깊은 광맥 길**(해골 유적: 시작→표시 3→경비 해골 3→타이밍 5중 3→조각 1, 길 A→B→C, 실패=처음부터) 서버 모듈 + Config 좌표 + 개발 1 계약. ⓑ 도구(옵션 ×2 역전 질문 보냄), ⓒ 주간 선물(문턱 대기). guide-look 병합됨 1c946b0a.
 0-2. **(끝, 10/16 밤)** 플레이 1판 ③ 첫 스폰 = 안내자 쪽 → **dev2-guide-look c5989cd4** 보고함(../wt_talk 같은 worktree, 가지만 바꿈). 밤·비·강화 두루마리 = 최종 검수 GPT 결과(build/codex/first12_r1.md) 올 때까지 손대지 않음. talk-order는 병합됨(c2644158).
 0-1. **(끝, 10/16 밤)** 최종 검수 2장 누름 관찰 2개 → **dev2-talk-order bd9b8cc5** 보고함(../wt_talk): ① TalkToNpc = 다음 본편 부탁이 같은 NPC 곁가지 카드보다 먼저(거절 뒤엔 카드 먼저, 세션만) ② 뿔 Rose 첫 G = 스승 Smokey 배우기였음 → SceneSetup이 SkillService.LearnNow. 실제 플레이 Lv15 Rose 첫 G 배우기는 A23-193 그대로(결정 오면 바꿈).
 0. **(끝, 10/16 밤)** 2장 = **dev2-ch2-story dc088861** 보고함(게시 뒤 병합): Halo_Ch2·Horns_Ch2·Artisan_Ch2 묶음 + H1/R1/N3/N1/N2/N4 + 분수 Tiny 한 줄(On="Tiny") + Clatter Tools 장면 + test_quest_data On=NPC 허용 + 시험 '수락 먼저'. 아래 1번은 기록용(끝남). 병합 대기 전체: dev2-scene-cmd bfd1d593, dev2-daily12 01038ecb, dev2-zone-lore 9a081f0e, dev2-ch2-story dc088861. 결정: 몬스터·무기 이름 그대로, M2_7/M3_1 도둑 대사는 3장 묶음(Pip)에서.
