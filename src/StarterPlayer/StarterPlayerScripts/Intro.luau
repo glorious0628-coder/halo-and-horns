@@ -278,7 +278,8 @@ function SCENE.Clatter(at, floor, toward)
 		local _, size = m:GetBoundingBox()
 		if size.Y > 0.1 then m:ScaleTo(m:GetScale() * SCENE.ClatterH / size.Y) end
 	end)
-	local base = CFrame.lookAt(Vector3.new(at.X, floor, at.Z), Vector3.new(toward.X, floor, toward.Z))
+	-- PhoneTest 10/16: the codex copy's front is its pivot's +Z (it stood with its back to the crown) -> turned half round
+	local base = CFrame.lookAt(Vector3.new(at.X, floor, at.Z), Vector3.new(toward.X, floor, toward.Z)) * CFrame.Angles(0, math.pi, 0)
 	m:PivotTo(base)
 	local cf, size = m:GetBoundingBox()
 	m:PivotTo(base + Vector3.new(0, floor - (cf.Position.Y - size.Y / 2), 0)) -- feet on the floor
@@ -346,7 +347,7 @@ function SCENE.Pose(s, t)
 	if m and m.Parent and s.Home then
 		local back = math.clamp((t - K.CrackAt - 0.1) / 0.35, 0, 1)
 		local hop = math.sin(math.pi * back) * K.Hop
-		m:PivotTo(s.Home * CFrame.new(0, hop, back * K.Back) * CFrame.Angles(math.rad(-6 * back), 0, 0))
+		m:PivotTo(s.Home * CFrame.new(0, hop, -back * K.Back) * CFrame.Angles(math.rad(-6 * back), 0, 0)) -- back = away from it
 		local reach = math.clamp((t - K.CrackAt - 0.15) / K.ReachIn, 0, 1)
 		for name, bone in s.Bones do
 			local a = K.Reach[name] * reach
