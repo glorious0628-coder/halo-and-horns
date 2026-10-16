@@ -434,3 +434,12 @@
 - **재게시:** 사용자 Save As 15:10(새 창 'GoodEvil.rbxlx' 말고 '헤일로 & 혼스' 창에서) → place push dce0db87(main a5a5c40e 반영). Alt+P는 사용자.
 - 게시 뒤 병합: daily12 01038ecb·zone-lore 9a081f0e. dev2-scene-cmd는 Main 목록 충돌 → 개발 2가 main 합쳐 다시.
 - 사용자 지시: 알림은 할 일·결정 때만(앱 '작업 완료 알림' 끔), 세션들은 묶음 끝나면 스스로 클리어, 게시 전 실제 흐름 확인(메모리 prepublish-real-flow-check).
+
+## 10/16 밤 (최종 검수) — 사용자 컴퓨터 끔 전 정리
+- **main = 2a3489d1+**(SPEC 줄들 뒤). 오늘 저녁 병합: c2644158 본편 부탁 먼저(Tiny)·장면 스킬 미리 배움 / 1c946b0a 첫 스폰 안내자 쪽 / f6af22e6 무기 쥐는 점 = 아바타 손 가운데 / 2a3489d1 무기 자세(활 등·칼 허리·마법사 공격·각도, A23-223). 메인 Studio 소스 = 2a3489d1(sync만, Save As·게시 없음 — place/는 15:10 게시판 dce0db87 그대로).
+- **새 세션 '게임 플레이'**(local_34e5452d, Opus 5.5 medium, 역할 04_playtest.md): 메인 반영 sync 신호 → 자기 PlayTest 창으로 처음부터 한 판 → 보고서 docs/review/playtest/2026-10-16_r1~r4.md. 고리: 메인 반영 1이 sync마다 게임 플레이에 "sync <sha>: …" 한 줄(메인 Play 확인은 생략).
+- **GPT(Codex) 한도 → 10/22 15:12까지 막힘**, 사용자 "크레딧 사지 말고 10/22까지 기다려. 그동안은 API Claude로 상의해." → 상의 = `py tools/api_agent.py run --model opus`(first12_r1 $0.93, potion_flow_r1 $1.46), 결과 build/codex/*_r1.md 복사, 회의실 d1016_48~51.
+- **SPEC 새로:** A23-221 첫 12분 매끄럽게(선생님 연습 합침·강화는 모루·보상 몸/숫자 반응·밤·⑦ 첫 10분 XP 2배 알리기; ④ Lv5 시험은 초원 입구 유지로 고침), A23-222 물약 퀘스트 본편 M1_2(왕자 → 본편 줄 + 표시로 King 언덕 걸어감 → 한 방 KO → 교차로 Fizzby 옆 일어남 → 물약·퀵슬롯·마시기 → 모루 강화 → King 다시) + 새 저장 1000골드(은행, 채워 주기 없음) + 대장간은 처음 얻은 단계부터 팖, A23-223 싸우지 않을 땐 활 = 등·칼 = 허리(검집 디자인은 재개 때 2D부터, idea_backlog), 지팡이는 손.
+- **병합 대기:** dev2-first12 54a3be0d — main 위 시험 다 통과(town_quests 1328·first_ko 285·first_ko_king 315·weapon_first 158·unarmed_start 264·slime_prince 32·beta_metrics 200·war_intro·quest_target·onboarding 877·story_npcs), **개발 1 화면 짝(허수아비·모루 Enhance 창·M1_2 표시)과 한 번에 병합**(서버만 넣으면 허수아비 안 그려져 막힘). dev2-curve 06650f0d(장인 1부) = 2부 붙인 뒤.
+- **다음 순서:** 개발 1 = 2a3489d1에서 생긴 것 2개(뿔 몽둥이 허리 뒤 꼬리처럼 수평, 궁수 활시위가 등 뒤 허공에 뜸 — r4 사진) → 첫 12분 화면 짝 ①②③ → 보상 반응·×2·첫 10분 내 화면 낮 / 개발 2 = ② 1000골드+대장간 → ③ StartClock 9·밤 밝기·글·안내자 2배 한 줄·Reward XPMult → 장인 2부(옵션 (1) 무기 4%·반지 1%p·갑옷 2%p 역전 0, A23-219). 그 뒤 게임 플레이로 새 흐름 처음부터 + 게시 전 실제 흐름 점검(prepublish 규칙) → 사용자 Save As + Alt+P.
+- 배지 2개(ShardChoice·Rank2)는 사용자가 내일 badge_create.py 실행(5개는 오늘).
