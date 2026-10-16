@@ -238,7 +238,9 @@ local function run(token)
 	-- 3. shards fly to the castle of light and the horn den (11-17 s): close cuts only
 	say(TXT.Lines[2])
 	local gold = shard(SPOT.Gold, SPOT.Halo + Vector3.new(0, 55, 70))
-	if not shot(token, look(SPOT.Halo + Vector3.new(18, 14, 95), SPOT.Halo), look(SPOT.Halo + Vector3.new(6, 10, 70), SPOT.Halo), 3) then return end
+	-- 10/16: the old (18,14,95) -> (6,10,70) path ended inside the Halo gate mesh (z -361..-330, 48 tall) = a blurred
+	-- white close-up; the camera now stays inside the gate, on the town side
+	if not shot(token, look(SPOT.Halo + Vector3.new(14, 12, 44), SPOT.Halo), look(SPOT.Halo + Vector3.new(5, 6, 28), SPOT.Halo), 3) then return end
 	flyTo(gold, SPOT.Halo + Vector3.new(0, 2, 4), 2.2)
 	if not wait(token, 2.3) then return end
 	burst(SPOT.Halo + Vector3.new(0, 2, 4), SPOT.Gold, 80)
