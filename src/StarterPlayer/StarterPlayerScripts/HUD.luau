@@ -544,7 +544,7 @@ function L.PowerValue()
 end
 
 function L.PowerText(n)
-	local lv = math.floor(num("Level", 1))
+	local lv = L.LvShown() or math.floor(num("Level", 1))
 	if L.Pow.Short then return L.Tx(TXT, "PowerLineShort", lv, Util.FormatInt(n)) end
 	return L.Tx(TXT, "PowerLine", lv, TXT.PowerWord, Util.FormatInt(n))
 end
@@ -710,7 +710,73 @@ end
 -- 최종 검수 10/15 (feedback_audit #2, one moment; server Fx LevelUp From / PowerFrom / PowerTo): my level-up on the
 -- HUD at the same moment as Fx's ring and stars - the level badge pops (bigger, then back with a little overshoot) and
 -- the power number counts up with its "+N" (the settle after it stays quiet: no second "+N")
-L.LevelPop = { Up = 1.6, In = 0.15, Out = 0.35 }
+L.LevelPop = { Up = 1.6, In = 0.15, Out = 0.35, Step = 0.16, HoldMax = 20 }
+
+-- A23-221 ③: while Fx holds my level-ups (a fight) the badge and the power line keep the level from before (Lv.Hold,
+-- never longer than HoldMax s); LevelCount then ticks the badge From -> To, one short tick sound per level
+L.Lv = { Hold = nil, At = 0, Seq = 0 }
+function L.LvShown()
+	local H = L.Lv
+	if H.Hold == nil or os.clock() - H.At > L.LevelPop.HoldMax then return nil end
+	return H.Hold
+end
+
+function HUD.LevelHold(from)
+	from = tonumber(from)
+	if not from then return end
+	L.Lv.Hold, L.Lv.At = math.floor(from), os.clock()
+	L.Lv.Seq += 1
+	if ui.level then ui.level.Text = tostring(L.Lv.Hold) end
+end
+
+function HUD.LevelCount(from, to)
+	from, to = math.floor(tonumber(from) or 0), math.floor(tonumber(to) or 0)
+	L.Lv.Seq += 1
+	local seq = L.Lv.Seq
+	local function done()
+		L.Lv.Hold = nil
+		if ui.level then ui.level.Text = tostring(math.floor(num("Level", 1))) end
+		if ui.power then ui.power.Text = L.PowerText(L.Pow.Shown or L.PowerValue()) end
+	end
+	if to - from <= 1 or UIKit.ReducedMotion() then
+		done()
+		return
+	end
+	task.spawn(function()
+		for v = from + 1, to do
+			if L.Lv.Seq ~= seq then return end
+			L.Lv.Hold, L.Lv.At = v, os.clock()
+			if ui.level then ui.level.Text = tostring(v) end
+			if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, "CountTick") end
+			task.wait(L.LevelPop.Step)
+		end
+		if L.Lv.Seq == seq then done() end
+	end)
+end
+
+-- A23-221 ⑦: the '2x XP · N min' chip shines once, at the first XP of the session in the first minutes (a small pop +
+-- a brighter rim for a moment; no words, no banner); it goes quietly when the minutes end (L.RefreshBoost)
+function HUD.PulseBoost()
+	if L.BoostPulsed or L.EarlyXPLeft() == nil then return false end
+	local chip = ui.chip and ui.chip.Boost
+	if not (chip and chip.Frame and chip.Frame.Visible) then return false end
+	L.BoostPulsed = true
+	if UIKit.ReducedMotion() then return true end
+	local f = chip.Frame
+	local sc = f:FindFirstChild("BoostPop") or Instance.new("UIScale")
+	sc.Name, sc.Scale, sc.Parent = "BoostPop", 1, f
+	local up = TweenService:Create(sc, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = 1.18 })
+	up.Completed:Connect(function()
+		TweenService:Create(sc, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	end)
+	up:Play()
+	if chip.Stroke then
+		local th = chip.Stroke.Thickness
+		chip.Stroke.Thickness = th + 2.5
+		TweenService:Create(chip.Stroke, TweenInfo.new(0.7, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { Thickness = th }):Play()
+	end
+	return true
+end
 function HUD.LevelUpMoment(d)
 	if type(d) ~= "table" then return end
 	local holder = ui.badgeHolder
@@ -783,6 +849,11 @@ end
 function L.FirstWeapon()
 	local F = L.First
 	if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, "PowerUp") end
+	-- A23-221 ③: the new weapon rises over my head for a moment (Fx.HoldUp: a round glow, my cheer out of a fight)
+	pcall(function()
+		local key = Config.WeaponArtKey(num("WeaponTier", 1), attr("Class", nil), getFaction())
+		if key and C and type(C.Fx) == "table" and type(C.Fx.HoldUp) == "function" then C.Fx.HoldUp(key) end
+	end)
 	-- A23-191: no "Stronger!" banner (the sparkles + the power count-up say it)
 	-- gold sparkles bursting from me (Roblox's own sparkle texture; no new art)
 	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -3235,7 +3306,7 @@ end
 local function refreshStats()
 	local level = math.floor(num("Level", 1))
 	L.RefreshBadge()
-	if ui.level then ui.level.Text = tostring(level) end
+	if ui.level then ui.level.Text = tostring(L.LvShown() or level) end
 
 	local xp = math.max(0, num("XP", 0))
 	if level >= Config.Levels.MaxLevel then

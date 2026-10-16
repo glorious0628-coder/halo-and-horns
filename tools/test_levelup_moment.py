@@ -28,13 +28,20 @@ def block(src: str, start: str) -> str:
 
 
 def statics(s: dict) -> list[tuple[str, bool]]:
-    fx = block(s["FX"], "handlers.LevelUp = function(data)")
+    handler = block(s["FX"], "handlers.LevelUp = function(data)")
+    queue = block(s["FX"], "function Feel.levelQueue(data, level)")
+    fx = block(s["FX"], "function Feel.levelMoment(q)")
     hud = block(s["HUD"], "function HUD.LevelUpMoment(d)")
+    count = block(s["HUD"], "function HUD.LevelCount(from, to)")
     return [
-        ("mine: a gold ring at my feet, then stars round me", "\t\tif own then\n\t\t\t-- 최종 검수 10/15" in fx
+        ("mine: a gold ring at my feet, then stars round me", "-- 최종 검수 10/15" in fx
          and "ring(pos, 6, COLOR_GOLD," in fx and "task.delay(0.15, function()" in fx and "burst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30," in fx),
-        ("others keep the pillar", "\t\telse\n\t\t\tpillar(pos, 40, 4, COLOR_PILLAR, 1.0)" in fx),
-        ("the HUD moment with the server's numbers", "pcall(hud.LevelUpMoment, { Level = level, From = asNum(data.From, nil), PowerFrom = asNum(data.PowerFrom, nil)," in fx),
+        ("others keep the pillar", "if own or not (pos and nearCamera(pos)) then return end\n\tpillar(pos, 40, 4, COLOR_PILLAR, 1.0)" in handler),
+        ("the HUD moment with the server's numbers", "pcall(hud.LevelUpMoment, { Level = q.To, From = q.From, PowerFrom = q.PowerFrom, PowerTo = q.PowerTo })" in fx),
+        ("A23-221 ③: my level-ups in a fight wait (Calm after the last hit) and play once, the badge ticks From -> To",
+         "Feel.levelQueue(data, level)" in handler and "q.To = math.max(q.To, level)" in queue and "\t\treturn q\n\tend\n\tq = { From" in queue
+         and "now - asNum(Fx.LastFightAt, -math.huge) >= W.Calm" in queue and "pcall(hud.LevelHold, q.From)" in queue
+         and "pcall(hud.LevelCount, q.From, q.To)" in fx and "for v = from + 1, to do" in count and "L.Lv.Seq ~= seq" in count),
         ("no banner / words", "Announce" not in fx and "Toast" not in fx and "Announce" not in hud and "Toast" not in hud),
         ("the badge pops and comes back (Back), not with reduced motion",
          "if holder and not reduced then" in hud and "{ Scale = L.LevelPop.Up }" in hud and "Enum.EasingStyle.Back" in hud),
@@ -52,8 +59,11 @@ def statics(s: dict) -> list[tuple[str, bool]]:
 
 
 MUTATIONS = [
-    ("FX", "the pillar for me too", "\t\tif own then\n\t\t\t-- 최종 검수 10/15", "\t\tif false then\n\t\t\t-- 최종 검수 10/15"),
-    ("FX", "no stars", "\t\t\t\tburst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30,", "\t\t\t\tlocal _ = (pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30,"),
+    ("FX", "the pillar for me too", "if own or not (pos and nearCamera(pos)) then return end", "if not (pos and nearCamera(pos)) then return end"),
+    ("FX", "level-ups never wait for the fight", "now - asNum(Fx.LastFightAt, -math.huge) >= W.Calm or", "true or"),
+    ("FX", "every level-up its own moment", "\t\tq.To = math.max(q.To, level)\n\t\tq.PowerTo = asNum(data.PowerTo, q.PowerTo)\n\t\treturn q\n",
+     "\t\tq.To = math.max(q.To, level)\n\t\tq.PowerTo = asNum(data.PowerTo, q.PowerTo)\n"),
+    ("FX", "no stars", "\t\t\tburst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30,", "\t\t\tlocal _ = (pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30,"),
     ("FX", "the HUD never told", "pcall(hud.LevelUpMoment,", "pcall(print,"),
     ("HUD", "the badge pops under reduced motion", "if holder and not reduced then", "if holder then"),
     ("HUD", "a second +N after", "L.Pow.Base, L.Pow.LevelAt = to, os.clock()", "L.Pow.LevelAt = os.clock()"),
