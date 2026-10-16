@@ -1,6 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 5 — 무기 #1·#5 고침 가지 (최신)
+## 10/16 밤 6 — 자세 각도 가지 (최신)
+- #1·#5(dev1-grip-centre) **main 병합됨 f6af22e6**.
+- 가지 **dev1-hold-angles 3f8fa49f** (worktree ../Game-dev1grip): 지팡이 팔꿈치 80·Rest 15(서기 7°, 위팔 틈 0.7), 칼 걷기 손목 +2(앞 26°), WeaponPose.TuneStep(Studio 전용 Dev1Tune 자세 조정). 사진·값 docs/art/verification_2026-10-16/hold_tune/(sheets, tune.json). 도구 build/dev1_tools/tune1016.py.
+- ▶ 기다림: 활 A/B 고름(최종 검수 → 사용자). 다음: 고른 안 값으로(A면 위 끝 바깥·손 높이 다듬기) → 걷기 안쪽 기울기(칼 17°, 지팡이 16°) → #3·#6 공격 겹침(지팡이 공격 겨누기 버릴지 최종 검수 결정) → 첫 12분·물약 화면 몫.
+
+## 10/16 밤 5 — 무기 #1·#5 고침 가지
 - 가지 **dev1-grip-centre 9e85b7ee** (worktree ../Game-dev1grip, sparse src/tools): 엔진 값 = 사용자 아바타 손 0.38×0.58×0.45, RightGripAttachment가 손 가운데에서 손잡이 방향 0.26·옆 0.11 떨어져 주먹이 날밑에 감. Config.WeaponGrip(kind, len, mode, centre) + CharacterVisuals GripCentre 속성 + WeaponPose 쥐기 → 주먹 가운데 = 쥐는 점(엔진 다시 잼 0.000). 시험 11개 통과(tool_grip 1 실패 = main에도 있는 것). 값 docs/art/verification_2026-10-16/grip_probe/.
 - ▶ 다음: 최종 검수 '전달함, 시작' 오면 다시 찍기 — PhoneTest 열기 → **가지 코드로 sync**(cd ../Game-dev1grip; STUDIO_ID=… py tools/sync_to_studio.py) → `py build/dev1_tools/grip1016.py --out grip_check_fix --keep`(빛·뿔, 선물 창 닫기·걷는 중 재기·이어찍기 들어감) → 전/후 앞·옆 시트 → 최종 검수. 그 뒤 #2·#3·#4·#6(각도·몸 뚫기, build/codex/grip_r1.md 기준표).
 
