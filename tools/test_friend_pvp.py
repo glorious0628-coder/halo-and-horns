@@ -50,6 +50,10 @@ GATE = ('\tif pvp and type(pvp.AreFriends) == "function" and pvp.AreFriends(atta
 
 MUTATIONS = [
     # --- PvPService.CanAttack
+    ("A23-203: a combat tag carries PvP into the safe land", P, "\treturn S.ZoneService.IsPvPZone(p) == true\n",
+     "\treturn S.ZoneService.IsPvPZone(p) or (not S.ZoneService.IsTown(p) and S.CombatService.IsInCombat(p))\n"),
+    ("A23-203: one side in the red zone is enough", P, "\tif not inPvP(attacker) or not inPvP(victim) then\n",
+     "\tif not inPvP(attacker) and not inPvP(victim) then\n"),
     ("CanAttack ignores friends", P, FRIEND_CHECK, ""),
     ("the kaiju exception wins over friends", P, "\tif PvPService.AreFriends(attacker, victim) then\n",
      '\tif PvPService.AreFriends(attacker, victim) and not (fa == "Halo" and kstate(victim) == "Active") then\n'),

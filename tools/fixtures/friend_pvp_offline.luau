@@ -444,4 +444,29 @@ runGroup("ranking unchanged", function()
 	check(w3:Rank(k3).Honor == 1 and refused(w3, "Friend") == 0, "strangers: a fair KO reaches the weekly Honor board", show(w3:Rank(k3)))
 end)
 
+------------------------------------------------------------------ 10. A23-203: danger only inside a red PvP zone (최종 검수 10/16,
+-- GPT gameplay_r1 bug ①): a combat tag no longer carries a fight out into the safe hunting land
+runGroup("safe land (A23-203)", function()
+	local w = fightWorld({})
+	local a = w:Fighter(101, "Halo")
+	local c = w:Fighter(303, "Horns", { Pos = vec(0, 0, -4) })
+	w:RunSpawned()
+	local red = {}
+	w.Registry.ZoneService.IsPvPZone = function(p) return red[p] == true end
+	red[a], red[c] = true, true
+	check(w.PvP.CanAttack(a, c) == true, "both in the red zone: a stranger may hit", "")
+	face(a, vec(0, 0, -1))
+	w:Swing(a)
+	check(w.Combat.IsInCombat(a) and w.Combat.IsInCombat(c) and hp(c) < 100, "the hit lands and tags both", show({ hp(c) }))
+	red[a], red[c] = false, false
+	local ok, why = w.PvP.CanAttack(a, c)
+	check(ok == false and why == "SafeZone", "both step out into the safe hunting land, still tagged: no PvP (A23-203)", show({ ok, why }))
+	local before = hp(c)
+	w:Swing(a)
+	check(hp(c) == before, "... a swing there does 0", show({ before, hp(c) }))
+	red[a] = true
+	check(select(1, w.PvP.CanAttack(a, c)) == false and select(1, w.PvP.CanAttack(c, a)) == false,
+		"one inside, one outside (still tagged): no hit either way", "")
+end)
+
 finish()
