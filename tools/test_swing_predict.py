@@ -32,9 +32,12 @@ NEEDLES = [
         "if now - P.LastSwing < asNum(prof.SwingInterval, 1) - P.Gap then return false end"]),
     ("FX", "the class's real swing (the profile's style, bare hands = the punch)", [
         "local prof = Config.AttackProfile(classId, me:GetAttribute(\"WeaponTier\"), faction)", "Style = prof.Style,"]),
-    ("FX", "the pair: the next own Manual Fx within Window plays no second swing", [
-        "if data.Manual == true and P.Pending and os.clock() - P.Pending <= P.Window then",
-        "P.Pending = nil -- my press already plays this swing"]),
+    ("FX", "the pair: each own Manual Fx takes the oldest waiting press (a queue, not a time window)", [
+        "if data.Manual == true and Feel.takePending(P, os.clock()) then",
+        "-- my press already plays this swing (Fx.PredictSwing): no restart",
+        "\ttable.insert(P.Pending, now)\n"]),
+    ("FX", "a refused press is dropped after MaxAge (never swallows a later swing)", [
+        "while P.Pending[1] and now - P.Pending[1] > P.MaxAge do table.remove(P.Pending, 1) end"]),
     ("FX", "an unpaired own Fx swings as before", ["\t\t\tFx.PlaySound(\"Swing\")\n\t\t\tanimateOwnAttack(data, \"Swing\")\n\t\t\tP.LastSwing = os.clock()\n"]),
 ]
 
@@ -64,11 +67,12 @@ MUTATIONS = [
     ("HUD", "the remote before my body", "pcall(fx.PredictSwing) end\n\tfire(\"Swing\", target)\nend",
      "pcall(print) end\n\tfire(\"Swing\", target)\n\tpcall(fx.PredictSwing)\nend"),
     ("FX", "an early swing inside the cooldown", "if now - P.LastSwing < asNum(prof.SwingInterval, 1) - P.Gap then return false end", ""),
-    ("FX", "the server's Fx restarts the swing", "P.Pending = nil -- my press already plays this swing (Fx.PredictSwing): no restart",
+    ("FX", "the server's Fx restarts the swing", "-- my press already plays this swing (Fx.PredictSwing): no restart",
      "animateOwnAttack(data, \"Swing\") -- my press already plays this swing"),
-    ("FX", "an auto swing pairs with a press", "if data.Manual == true and P.Pending and", "if P.Pending and"),
-    ("FX", "a hit flash before the server", "\tP.Pending, P.LastSwing = now, now\n", "\tP.Pending, P.LastSwing = now, now\n\tflashMonstersAt({})\n"),
-    ("FX", "a client-side reservation", "\tP.Pending, P.LastSwing = now, now\n", "\tP.Pending, P.LastSwing = now, now\n\ttask.delay(0.2, Fx.PredictSwing)\n"),
+    ("FX", "an auto swing pairs with a press", "if data.Manual == true and Feel.takePending(P, os.clock()) then", "if Feel.takePending(P, os.clock()) then"),
+    ("FX", "old presses never expire", "while P.Pending[1] and now - P.Pending[1] > P.MaxAge do", "while false and P.Pending[1] and now - P.Pending[1] > P.MaxAge do"),
+    ("FX", "a hit flash before the server", "\tP.LastSwing = now\n\tFeel.dbgSwing(\"P\")", "\tP.LastSwing = now\n\tflashMonstersAt({})\n\tFeel.dbgSwing(\"P\")"),
+    ("FX", "a client-side reservation", "\tP.LastSwing = now\n\tFeel.dbgSwing(\"P\")", "\tP.LastSwing = now\n\ttask.delay(0.2, Fx.PredictSwing)\n\tFeel.dbgSwing(\"P\")"),
 ]
 
 

@@ -4091,8 +4091,21 @@ local handlers = {}
 -- press starts my body's basic attack at once when the swing is ready (the class interval since my last own swing;
 -- inside it the server's 0.20 s reservation does the next one, no early body move). The Swing Fx of that press then
 -- plays no second swing: the next own Manual Swing Fx within Window s is its pair. A23-196: only my body, weapon and
--- the whoosh - no target flash, number or hit sound before the server confirms (those stay on the Fx's Hits)
-Feel.Predict = { Window = 0.6, Pending = nil, LastSwing = -math.huge, Gap = 0.02 }
+-- the whoosh - no target flash, number or hit sound before the server confirms (those stay on the Fx's Hits).
+-- PhoneTest 10/16 (a loaded PC, replies 0.48-0.71 s): a time window of 0.6 s let late replies swing a second time ->
+-- the presses queue up (Pending, oldest first) and each own Manual Swing Fx takes the oldest; a press older than
+-- MaxAge s (its swing refused / lost) is dropped, so it never swallows a later swing
+Feel.Predict = { MaxAge = 1.5, Pending = {}, LastSwing = -math.huge, Gap = 0.02 }
+
+-- (pure on P) takes the oldest press still waiting for its Fx; drops the ones older than MaxAge -> true when one was there
+function Feel.takePending(P, now)
+	while P.Pending[1] and now - P.Pending[1] > P.MaxAge do table.remove(P.Pending, 1) end
+	if P.Pending[1] then
+		table.remove(P.Pending, 1)
+		return true
+	end
+	return false
+end
 
 -- Studio test aid (손맛 측정, attack_feel): which path started my swing and when ("P" = my press, "S" = the server's
 -- Fx, "pair" = the Fx of a press that already swings), as the local attribute HHDbgSwing; nothing outside Studio
@@ -4117,7 +4130,9 @@ function Fx.PredictSwing()
 		Manual = true }
 	Fx.PlaySound("Swing")
 	animateOwnAttack(data, "Swing")
-	P.Pending, P.LastSwing = now, now
+	table.insert(P.Pending, now)
+	if #P.Pending > 4 then table.remove(P.Pending, 1) end
+	P.LastSwing = now
 	Feel.dbgSwing("P")
 	return true
 end
@@ -4130,8 +4145,8 @@ handlers.Swing = function(data)
 	if own then
 		Fx.LastFightAt = os.clock() -- B15: Panels keeps story pages back while I fight (manual or auto)
 		local P = Feel.Predict
-		if data.Manual == true and P.Pending and os.clock() - P.Pending <= P.Window then
-			P.Pending = nil -- my press already plays this swing (Fx.PredictSwing): no restart
+		if data.Manual == true and Feel.takePending(P, os.clock()) then
+			-- my press already plays this swing (Fx.PredictSwing): no restart
 			Feel.dbgSwing("pair")
 		else
 			Fx.PlaySound("Swing")
