@@ -1,6 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 2 (최신)
+## 10/16 밤 3 — ▶ 큐 맨 앞 (최종 검수 local_cb4b05f8…, 최신)
+- main ff1b809b에 2장 이야기 들어감(dev2-ch2-story dc088861): 2장 본편·지선 모두 부탁자에게 가서 수락(빛·뿔도 M2_3·M2_4·M2_6 부탁자 = 교차로 Tiny), H1/R1/N3 수락 뒤 1단계도 같은 NPC 대화, 분수 M2_3[2] Tiny 한 줄(On="Tiny"), Clatter M2_4 장면(Key "Tools", Move = CarrySalute + 상자).
+- **0번(맨 앞) 실제 누름 확인, 빛·뿔 둘 다:** 장면 명령(`py tools/scene.py`)으로 M1_4 끝 → M2_1 부탁자 '!'·'Talk to …' 줄·길 안내 → 부탁 창 수락 → M2_3 분수 Tiny 말풍선 → M2_4 끝 Clatter 장면. 값(서버 StoryOffers·단계, 화면 줄 글) 보고. 막힘은 바로 최종 검수에. 화면(Play) 신청은 최종 검수에 → '전달함, 시작' 뒤.
+- 그 다음 아래 '10/16 밤' 큐 2~4번.
+- 참고: 개발 2가 tools/test_clatter_scenes.py 장면 수 검사를 '3개 이상, 모두 몸짓 있음'으로 바꿈 — 개발 1 OK 답함.
+
+## 10/16 밤 2
 - 병합됨(main a5a5c40e): dev1-offer-row ad8e1291 — Story.Offer 줄('Talk to <부탁자>', 개발 2 dev2-offer-row) 탭/길 안내 → Story.Npc; StoryNpcs Pickups·Spots·WatchSteps가 Offer 줄 건너뜀, 표시 = 본편 '!'; Panels STORY.Lines 진영판 단계(step[f].Lines/LinesBy) 먼저(M2_3[2]); 단계 On = NPC id → Find 말풍선·PlayScene 그 몸(개발 2 데이터 오면 화면 확인).
 - 게시 전 누름 확인 끝(a5a5c40e, 새 저장, 빛+뿔): 안내자 G → Welcome → I'm In → 스승 G → 모루 G 첫 무기 → 'Talk to Otto' 줄 → 모루 G = Otto 부탁 창 → Sure! → M1_1 시작. 로그 docs/art/verification_2026-10-16/prepublish_flow/(git 밖), 도구 build/dev1_tools/full1016.py (STUDIO_ID로; PhoneTest 창 이름이 'Game'으로 잡힐 때 있음).
 - 관찰 보고함: 스승 Talk가 Rose 부탁 창(Rose's Lesson)을 엶.
