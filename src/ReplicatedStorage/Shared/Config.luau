@@ -11173,6 +11173,11 @@ Config.ClientText.CraftWindow = {
 	Spare = "In your bag ×%d",
 	SpareOwned = "You already have this weapon.",
 	Use = "Use it",
+	-- GPT review 10/16 (artisan switch r1): the gear recipes in the list - name "<slot> <tier>", the tier's grade, its stat
+	GearName = "%s %s",
+	Tiers = { "I", "II", "III" },
+	GearGrades = { "Fine", "Rare", "Epic" },
+	GearStat = { Hp = "HP +%s%%", Atk = "Attack +%s%%", PetXP = "Pet XP +%s%%", PetSpeed = "Pet speed +%s%%" },
 }
 Config.ClientText.MarketWindow = {
 	Title = "Market",
