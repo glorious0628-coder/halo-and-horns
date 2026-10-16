@@ -533,7 +533,7 @@ runGroup("a23-70 lunchbox", function()
 		show({ o1.Story.Subs.Lunch1.St, o2.Story.Subs.Lunch1, o3.Story.Subs.Lunch1.St, o5.Story.Subs.Lunch1.St }))
 	w.Registry.PlayerService.PlayerReady:Fire(po2, o2)
 	w:Flush()
-	check(o2.Story.Subs.Lunch1.St == 1, "a second join moves nothing again", show(o2.Story.Subs.Lunch1))
+	check(o2.Story.Subs.Lunch1.St == 1 and o2.Story.Subs.Lunch1.P == 1, "a second join moves nothing again", show(o2.Story.Subs.Lunch1))
 end)
 
 runGroup("a23-58", function()

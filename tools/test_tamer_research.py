@@ -67,8 +67,10 @@ MUTATIONS = [
     ("summon: one per species", PE, "\treturn addPet(player, data, pets, { Sp = species, Lv = 1, XP = 0, Name = \"\", Lean = \"\", Bound = true, Roll = r }, nil)\n", "\treturn grant(player, species, \"\", \"\", nil, false)\n"),
     ("summon: the roll not kept", PE, "Lean = \"\", Bound = true, Roll = r }, nil)", "Lean = \"\", Bound = true, Roll = nil }, nil)"),
     ("summon: not Bound", PE, "Lean = \"\", Bound = true, Roll = r }, nil)", "Lean = \"\", Bound = false, Roll = r }, nil)"),
-    ("summon: any roll", PE, "\tlocal r = sanitizeRoll(roll)\n\tif not r then return nil end\n", "\tlocal r = sanitizeRoll(roll) or { Spd = 5 }\n"),
-    ("summon: unknown species", PE, "\tif not data or not known(species) then return nil end\n\tlocal r = sanitizeRoll(roll)", "\tif not data then return nil end\n\tlocal r = sanitizeRoll(roll)"),
+    # 10/16 (GPT artisan_switch_r1 ③): re-aimed at A23-194's SummonPet (a roll only for a walk-speed species, PetReady)
+    ("summon: any roll", PE, "\t\tr = sanitizeRoll(roll)\n\t\tif not r then return nil end\n", "\t\tr = sanitizeRoll(roll) or { Spd = 5 }\n"),
+    ("summon: unknown species", PE, "\tif not data or not known(species) or not Config.PetReady(species) then return nil end\n\tlocal r = nil",
+     "\tif not data then return nil end\n\tlocal r = nil"),
     ("summon: a summon is the gift / story pet", PE, "\t\tif p.Sp == species and p.Roll == nil then return uid end\n", "\t\tif p.Sp == species then return uid end\n"),
     ("pets: no cap of 64", PE, "\tif petCount(pets) >= LIMIT.Pets then return nil end\n", ""),
     ("pets: a 65th", PE, "\tif petCount(pets) >= LIMIT.Pets then return nil end\n", "\tif petCount(pets) > LIMIT.Pets then return nil end\n"),
