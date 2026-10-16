@@ -6940,6 +6940,8 @@ Config.Audio = {
 		KingDefeat = { File = "KingDefeat", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B11 a king is beaten; contributors' KillPop + coin 0.25 s later
 		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
 		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
+		-- A23-216 ⑤: the next crown-war round's short bell (HUD L.RoundEnd) - the 30-s bell's file, higher and softer (0 won)
+		WarNext = { File = "WarFinal30", Volume = 0.35, Speed = { 1.25, 1.25 }, Max = 1, Gap = 30 },
 		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
 		-- A23-131 황금 알 줍기 (EggFx / Audio; design golden_egg §소리; files from 소리 만들기, "" until then = the stand-in in
 		-- brackets plays): others' egg sounds only within Config.GooseEggFx.SoundRange, Max / Gap keep 30 players quiet
