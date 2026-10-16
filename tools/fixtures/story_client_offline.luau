@@ -262,6 +262,14 @@ do
 		first(STORY.Lines({ Lines = { Horns = { "h" }, All = { "a" } } }, "Horns", "Good")) == "h"
 		and first(STORY.Lines({ Lines = { All = { "a" } } }, "Halo", "Evil")) == "a")
 	check(g, "a step with neither -> no lines (empty page, never an error)", #STORY.Lines({}, "Halo", "Good") == 0)
+	-- 개발 2 (M2_3[2]): a side's own step (step[f].Lines / LinesBy) wins over the shared lines; a plain list works too
+	local sided = { Lines = { All = { "a" } }, Halo = { Lines = { "h1", "h2" } }, Horns = { LinesBy = { Default = { All = { "hd" } } } } }
+	check(g, "my side's step lines first (Halo plain list, Horns LinesBy), Neutral = shared",
+		first(STORY.Lines(sided, "Halo", nil)) == "h1" and #STORY.Lines(sided, "Halo", nil) == 2
+		and first(STORY.Lines(sided, "Horns", "Good")) == "hd" and first(STORY.Lines(sided, "Neutral", nil)) == "a",
+		show({ STORY.Lines(sided, "Halo", nil), STORY.Lines(sided, "Horns", "Good"), STORY.Lines(sided, "Neutral", nil) }))
+	check(g, "a side step without lines (only Obj) keeps the shared lines",
+		first(STORY.Lines({ Lines = { All = { "a" } }, Halo = { Obj = {} } }, "Halo", nil)) == "a")
 
 	-- the real data: every LinesBy step gives Halo and Horns players lines for each of its keys and for no Var
 	local sq = Config.StoryQuests or {}
