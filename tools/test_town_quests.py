@@ -12,12 +12,14 @@ from __future__ import annotations
 
 import re
 
-from dev2_offline import ROOT, SSS, Suite, function_block, read, run
+from dev2_offline import ROOT, SHARED, SSS, Suite, function_block, read, run
 from test_unarmed_start import FILES as UNARMED_FILES, bindings as unarmed_bindings
 
 FILES = dict(UNARMED_FILES)
 FILES["FACTION_SOURCE"] = SSS / "FactionService.luau"
 FILES["PROGRESSION_SOURCE"] = SSS / "ProgressionService.luau"
+FILES["DAILY_SOURCE"] = SHARED / "Quests/Daily.luau"  # A23-205 the 12 daily requests (a quest data pack)
+FILES["CLATTER_SOURCE"] = SSS / "ClatterScenes.luau"  # A23-212
 FILES["SCENE_SOURCE"] = SSS / "SceneSetup.luau"  # A23-218 (2)
 C, ST, L, F, PR = "CONFIG_SOURCE", "STORY_SOURCE", "LOOT_SOURCE", "FACTION_SOURCE", "PROGRESSION_SOURCE"
 U = "UTIL_SOURCE"
@@ -25,6 +27,8 @@ U = "UTIL_SOURCE"
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = unarmed_bindings(sources)
+    out["DAILY_SOURCE"] = sources["DAILY_SOURCE"]
+    out["CLATTER_SOURCE"] = sources["CLATTER_SOURCE"]  # A23-212
     out["SCENE_SOURCE"] = sources["SCENE_SOURCE"]  # A23-218 (2)
     faction = sources[F]
     out["FACTION_EXTRACT"] = (
@@ -591,6 +595,16 @@ MUTATIONS = [
     ("④: Reward.Items ignored", ST, "\t\tif type(row) == \"table\" then add(row.Id, row.N) end\n", ""),
     ("④: only the first reward item paid", ST, "\tfor _, row in rewardItems(def.Reward) do\n", "\tfor _, row in { rewardItems(def.Reward)[1] } do\n"),
     ("④: a potion in the preview without its art key", ST, "\t\trow.Icon = type(q) == \"table\" and q.Icon or nil\n", ""),
+    # A23-212 (user 10/16): Captain Clatter's three first-10-minute scenes (ClatterScenes.luau)
+    ("A23-212: a scene every time", "CLATTER_SOURCE", "\tif data.Story.First[first] == true then return false end\n", ""),
+    ("A23-212: Sorry on any step change", "CLATTER_SOURCE", "if was == Config.Tutorial.Steps.Kill and now ~= was", "if now ~= was"),
+    ("A23-212: the scene to everyone", "CLATTER_SOURCE", "pcall(Net.Fx, player, \"StoryScene\"", "pcall(Net.FxAll or Net.Fx, nil, \"StoryScene\""),
+    ("A23-212: any step plays Hat", "CLATTER_SOURCE", "after.Quest == id and after.Type == t then", "after.Quest == id then"),
+    ("A23-212: Sorry by the player, not the guide", "CLATTER_SOURCE", "local base = (key == \"Sorry\" and guideRoot(player)) or root", "local base = root"),
+    ("A23-212: the switch ignored", "CLATTER_SOURCE", "\treturn type(K) == \"table\" and K.Enabled == true and type(K.Scenes) == \"table\"", "\treturn type(K) == \"table\" and type(K.Scenes) == \"table\""),
+    # 최종 검수 10/16 ①: the waiting main's pinned row
+    ("①: no row while the main waits", ST, "\tif st.Main.Id == \"\" then\n\t\tlocal id = num(data.TutorialStep)", "\tif st.Main.Id == \"\" then do return nil end\n\t\tlocal id = num(data.TutorialStep)"),
+    ("①: the waiting row guides nowhere", ST, "Story = { Id = id, St = 1, Npc = npc, Offer = true },", "Story = { Id = id, St = 1, Offer = true },"),
     # A23-218 (2): the Studio test scenes
     ("A23-218: scenes outside Studio", "SCENE_SOURCE", "\tif not RunService:IsStudio() then return \"studio only\" end\n", ""),
     ("A23-218: Kill takes the farthest", "SCENE_SOURCE", "if d < bestD then best, bestD = rec, d end", "if d > -1 then best, bestD = rec, d end"),

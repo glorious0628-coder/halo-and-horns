@@ -5083,6 +5083,9 @@ end
 -- replicate (0.27-0.43 s in Studio, measured 2026-10-07)
 function L.SwingFaced()
 	local _, target = L.FaceTarget("Swing")
+	-- 손맛 ① (최종 검수 10/16): my body starts the swing now (Fx.PredictSwing; the server's Fx does not restart it)
+	local fx = C and C.Fx
+	if type(fx) == "table" and type(fx.PredictSwing) == "function" then pcall(fx.PredictSwing) end
 	fire("Swing", target)
 end
 
@@ -5107,6 +5110,11 @@ function L.NpcWalk(id, zone, panels)
 end
 
 function L.StoryTap(st, zone, panels)
+	-- 개발 2 dev2-offer-row: "Talk to <asker>" (Story.Offer) = the way to her; her prompt opens the request
+	if st.Offer == true then
+		L.NpcWalk(st.Npc, zone, panels)
+		return
+	end
 	if st.Panel then
 		-- 빛 마을 점검 #1 / #30: a talk through a town NPC that stands in the world: far from her the tap guides there
 		-- (the Travel window + the guide from another zone, the guide to her a walk away); near (Config.StoryQuests

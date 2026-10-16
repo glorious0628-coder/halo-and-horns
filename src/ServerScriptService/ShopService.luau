@@ -13,7 +13,8 @@ local Net = require(ReplicatedStorage.Shared.Net)
 local M = {}
 
 local S = nil
-local BLACKSMITH = { PromptName = "HHC_BlacksmithPrompt", Distance = 12, PromptRate = 0.5 }
+-- StoryNpc = Otto's story id: he stands behind the anvil and his talk shares its key (최종 검수 10/16 🔴, below)
+local BLACKSMITH = { PromptName = "HHC_BlacksmithPrompt", Distance = 12, PromptRate = 0.5, StoryNpc = "Otto" }
 
 local function finite(value)
 	return type(value) == "number" and value == value and value > -math.huge and value < math.huge
@@ -240,9 +241,17 @@ local function onBlacksmithPrompt(prompt, player)
 		if not ok then Util.Warn("ShopService", "ForgeGift: " .. tostring(handled)) end
 		if ok and handled == true then return end
 	end
+	-- 최종 검수 10/16 🔴 (game dev 1's live check): Otto's talk prompt sits behind the anvil on the same key and only the
+	-- anvil's shows, so his request (M1_1's offer, a step talked through him, a lesson) could never be opened. While Otto has
+	-- a story talk for me, the anvil IS that talk; the shop opens again once nothing waits (TalkToNpc answers nil)
+	local story = S.StoryQuestService
+	if type(story) == "table" and type(story.TalkToNpc) == "function" then
+		local okT, talked = pcall(story.TalkToNpc, player, BLACKSMITH.StoryNpc)
+		if not okT then Util.Warn("ShopService", "TalkToNpc: " .. tostring(talked)) end
+		if okT and talked ~= nil then return end
+	end
 	-- an active M1_1 finishes right here (its story lines; A23-34's free first weapon is only its safety net now), then
 	-- the shop opens
-	local story = S.StoryQuestService
 	if type(story) == "table" and type(story.Refresh) == "function" then pcall(story.Refresh, player) end
 	Net.Get("OpenPanel"):FireClient(player, "WeaponShop")
 end

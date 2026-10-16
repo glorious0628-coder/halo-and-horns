@@ -75,7 +75,8 @@ def static() -> tuple[int, list[str]]:
     check("S.CombatService.DamagePlayer(target, rec.Def.Damage, nil, false, rec.Kind)" in monster,
           "MonsterService passes the monster kind (BB14 sourceKind)")
     kaiju = read(SSS / "KaijuService.luau")
-    check('Config.Kaiju.StompPct), atk, false,\n\t\t\t\t\t\t"Kaiju")' in kaiju, "the kaiju stomp passes sourceKind \"Kaiju\"")
+    # (A23-203 / A23-218, 10/16: the stomp hurts only inside a red zone and always credits the kaiju there: p, not atk)
+    check('Config.Kaiju.StompPct), p, false,\n\t\t\t\t\t\t\t"Kaiju")' in kaiju, "the kaiju stomp passes sourceKind \"Kaiju\"")
     combat = read(SSS / "CombatService.luau")
     died = function_block(combat, "local function onCharacterDied(")
     check("Util.GetRoot(player)" in died and died.find("Util.GetRoot(player)") < died.find("task.defer("),

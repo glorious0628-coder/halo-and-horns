@@ -59,9 +59,10 @@ MUTATIONS = [
      BANTER_CALL + '\t\tpcall(C.UIKit.Toast, args.Banter, "reward", 5)\n'),
     ("drop lines show a banter too", "announce", BANTER_IF, 'if type(args.Banter) == "string" and args.Banter ~= "" then'),
     ("an empty banter is shown", "announce", BANTER_IF, 'if type(ev) == "table" and type(args.Banter) == "string" then'),
-    ("Var ignored (always Default)", "panels", "(step.LinesBy[var] or step.LinesBy.Default)", "step.LinesBy.Default"),
-    ("no Default fallback", "panels", "(step.LinesBy[var] or step.LinesBy.Default)", "step.LinesBy[var]"),
-    ("the faction row ignored", "panels", "(src[f] or src.All)", "src.All"),
+    ("Var ignored (always Default)", "panels", "(over.LinesBy[var] or over.LinesBy.Default)", "over.LinesBy.Default"),
+    ("no Default fallback", "panels", "(over.LinesBy[var] or over.LinesBy.Default)", "over.LinesBy[var]"),
+    ("the faction row ignored", "panels", "(src[f] or src.All or", "(src.All or"),
+    ("my side's step ignored", "panels", ") and over or step", ") and step or step"),
     ("the hint ignores the faction line", "panels", 'type(own) == "string" and own or TXT.ChoiceHint', "TXT.ChoiceHint"),
     # round 3 #5
     ("the hint shows the full minus at 0 points", "panels",

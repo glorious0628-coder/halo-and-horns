@@ -692,7 +692,10 @@ local function onAcceptTutorial(player, ...)
 	if select("#", ...) ~= 0 or not canWelcome(player) then return end
 	if not Util.RateLimit(player, "AcceptTutorial", TUT_CFG.WelcomeRate or 0.5) then return end
 	local guide = TEACH.Guide(player)
-	if guide and not TEACH.Near(player, guide) then return end -- P1 ②: accepted next to the guide's body
+	-- P1 ②: accepted next to the guide's body - or anywhere once the server itself opened this session's Welcome there
+	-- (A23-180, 최종 검수 10/16 first-10 audit: a child who walked off with the window open pressed [I'm In!] and nothing
+	-- happened). An [I'm In!] with no Welcome ever opened is still refused
+	if guide and not TEACH.Near(player, guide) and not welcomeShown[player] then return end
 	welcomeShown[player] = true
 	S.PlayerService.SetStat(player, "TutorialKills", 0) -- a fresh acceptance never inherits stale kills
 	-- A23-74 weapon first: a bare-handed player without the first weapon walks to the Forge (A23-88: no automatic move);

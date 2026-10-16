@@ -59,7 +59,7 @@ local function fixture(saved, opts)
 	-- Clock: os.clock() as QuestService sees it (F10-4 safety-net timer); the other services keep the real clock
 	local f = { Zone = "HaloTown", Alive = true, Ready = true, RateAllowed = true, Loops = {}, LoopOrder = {}, Delayed = {},
 		Notices = {}, NoticeLog = {}, Rows = {}, Remote = {}, Sends = 0, Spawned = {}, Panels = {}, Clock = 1000,
-		Character = { Name = "Body1" }, FxLog = {}, Travels = {}, TravelOk = true }
+		Character = { Name = "Body1" }, FxLog = {}, Travels = {}, TravelOk = true, Marks = {} }
 	local config = execute(CONFIG_SOURCE, configEnv)
 	f.Config = config
 	-- A23-74: the forge trip lands at the Crossroads spawn here (no Vector3 / CFrame doubles; test_weapon_first checks
@@ -101,7 +101,7 @@ local function fixture(saved, opts)
 		GetCharacter = function() return f.Character end,
 		-- A23-74: no root and no anvil here (QuestService's forge trip lands at the Crossroads only: tools/test_weapon_first.py
 		-- checks the spot in front of the anvil)
-		GetRoot = function() return nil end,
+		GetRoot = function() return f.Root end, -- nil unless a group stands the player somewhere (10/16 guide bodies)
 		FlatDistance = function(a, b) return math.sqrt((a.X - b.X) ^ 2 + (a.Z - b.Z) ^ 2) end,
 		RateLimit = function() return f.RateAllowed end,
 		Signal = { new = signal }, -- A23-88: QuestService.ForgeReached
@@ -127,6 +127,8 @@ local function fixture(saved, opts)
 	local token = 0
 	local services = { Players = players, ReplicatedStorage = { Shared = { Config = "Config", Util = "Util", Net = "Net" } },
 		DataStoreService = { GetDataStore = function() return store end }, RunService = { IsStudio = function() return true end },
+		-- 10/16: opts.Bodies = the StoryNpc bodies (the guide / the teacher); none = the old path without bodies
+		CollectionService = { GetTagged = function() return (opts and opts.Bodies) or {} end },
 		HttpService = { GenerateGUID = function() token += 1; return "session-" .. serial .. "-" .. token end,
 			JSONEncode = function(_, value) f.Encoding = copy(value); return encode(value) end } }
 	local world = {}
@@ -160,7 +162,8 @@ local function fixture(saved, opts)
 		AddBankGold = function(p, amount) ps.AddStat(p, "BankGold", amount) end,
 		AddXP = function(p, amount) ps.AddStat(p, "XP", amount) end }
 	local registry = { PlayerService = ps, DataService = dataService, MonsterService = monster, ProgressionService = prog,
-		StoryQuestService = { QuestDone = signal() }, -- QuestService listens to the daily intro quest (A23-104)
+		StoryQuestService = { QuestDone = signal(), -- QuestService listens to the daily intro quest (A23-104)
+			Mark = function(_, key) f.Marks[key] = true end }, -- P1 ②: TeacherMet
 		FieldBossService = { SecondsUntil = function() return 0 end }, -- Codex B5: a King Slime is here (the iron drop line shows)
 		FactionService = { FactionChanged = signal(), GetFaction = function(p) return dataService.Get(p).Faction end },
 		ClassService = { ClassChanged = signal() }, ZoneService = { ZoneChanged = signal(), GetZoneId = function() return f.Zone end,
@@ -916,6 +919,46 @@ do
 	f.Config.Tutorial.RespawnInMeadow = false
 	check(respawnZoneId(who) == home, "A23-68 RespawnInMeadow off: home again")
 	f.Config.Tutorial.RespawnInMeadow = true
+end
+-- 10/16 🔴 (the user: "할리 만나기부터가 안 됨"): the first mission through the BODIES, server side - a new save waits at the
+-- guide (no automatic lines), a talk beside Hallie opens the Welcome (far away: nothing), [I'm In!] beside her goes to the
+-- Teacher step, a talk beside Gleam meets him (TeacherMet) and sends a bare-handed player on to the Forge
+do
+	local function body(id, x, z)
+		local b = { __kind = "Instance", Attrs = { NpcId = id }, Position = { __kind = "Vector3", X = x, Y = 0, Z = z } }
+		function b:GetAttribute(k) return self.Attrs[k] end
+		function b:IsA(kind) return kind == "BasePart" end
+		return b
+	end
+	local f = fixture(nil, { Bodies = { body("Hallie", -16, -428), body("Gleam", 20, -440) } })
+	f:Choose(); f:Publish()
+	check(f.Data.TutorialStep == 0 and #f.Panels == 0, "with a guide body the class choice opens no lines (the player walks to Hallie)")
+	f.Root = { Position = { X = -16, Y = 0, Z = -300 } }
+	check(f.Quest.TalkNpc(f.Player, "Hallie") == nil and #f.Panels == 0, "a talk 128 studs from Hallie opens nothing")
+	f.Root = { Position = { X = -14, Y = 0, Z = -424 } }
+	check(f.Quest.TalkNpc(f.Player, "Hallie") == "Welcome" and f.Panels[#f.Panels] == "Welcome",
+		"a talk beside Hallie (step 0) opens the first mission's Welcome")
+	check(f.Quest.TalkNpc(f.Player, "Gleam") == nil and f.Data.TutorialStep == 0, "the teacher's talk before [I'm In!] does nothing")
+	f:Accept(); f:Publish()
+	local teacher = f.Config.Tutorial.Steps.Teacher
+	check(f.Data.TutorialStep == teacher, "[I'm In!] beside Hallie: the Teacher step (" .. tostring(f.Data.TutorialStep) .. ")")
+	f.Root = { Position = { X = 20, Y = 0, Z = -380 } }
+	check(f.Quest.TalkNpc(f.Player, "Gleam") == nil and f.Data.TutorialStep == teacher, "a talk 60 studs from Gleam: nothing")
+	f.Root = { Position = { X = 18, Y = 0, Z = -436 } }
+	check(f.Quest.TalkNpc(f.Player, "Gleam") == "Teacher" and f.Marks.TeacherMet == true and f.Data.TutorialStep == 3,
+		"a talk beside Gleam meets him (TeacherMet) and sends the bare-handed player to the Forge (step 3)")
+	local g = fixture(nil, { Bodies = { body("Hallie", -16, -428) } })
+	g:Choose(); g:Publish()
+	g.Root = { Position = { X = 40, Y = 0, Z = -428 } }
+	g:Accept(); g:Publish()
+	check(g.Data.TutorialStep == 0, "[I'm In!] 56 studs from Hallie with no Welcome ever opened is refused")
+	-- A23-180 (최종 검수 10/16): the Welcome the server opened beside her, then the child walks off and presses [I'm In!]
+	g.Root = { Position = { X = -14, Y = 0, Z = -424 } }
+	check(g.Quest.TalkNpc(g.Player, "Hallie") == "Welcome", "the talk beside Hallie opens the Welcome")
+	g.Root = { Position = { X = 40, Y = 0, Z = -428 } }
+	g:Accept(); g:Publish()
+	check(g.Data.TutorialStep == g.Config.Tutorial.Steps.Forge, -- (no teacher body here: on to the Forge)
+		"A23-180: [I'm In!] 56 studs away after the server opened the Welcome is accepted (no silent ignore)")
 end
 if #failures > 0 then
 	for _, message in failures do print("CONTRACT_FAILURE " .. message) end

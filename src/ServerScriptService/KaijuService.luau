@@ -466,10 +466,13 @@ local function stomp(p)
 				local hum = Util.GetHumanoid(v)
 				if hum and hum.Health > 0 then
 					contested = true -- a Halo player stood in stomp range: the kaiju faced real opposition
-					-- CR-M13: outside PvP zones the stomp is environmental damage (no combat tag, no PvP KO credit)
-					local atk = (call("ZoneService", "IsPvPZone", v) == true) and p or nil
-					call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), atk, false,
-						"Kaiju") -- BB14: the KO screen says "괴수 …" when no player is credited
+					-- A23-203 / A23-218 (user 10/15-16): danger only inside a red PvP zone - the stomp hurts only while the kaiju
+					-- and that player both stand inside one (it credits the kaiju there); outside it hurts nobody (was CR-M13's
+					-- environmental damage everywhere but the towns)
+					if call("ZoneService", "IsPvPZone", v) == true and call("ZoneService", "IsPvPZone", p) == true then
+						call("CombatService", "DamagePlayer", v, Util.RoundDamage(hum.MaxHealth * Config.Kaiju.StompPct), p, false,
+							"Kaiju") -- BB14: the KO screen says "괴수 …"
+					end
 				end
 			end
 		end
@@ -734,17 +737,21 @@ function KaijuService.HandleKaijuDeath(victim, killer, leaving)
 		end
 		mint = math.floor(mint)
 
-		local carried = math.max(0, math.floor(getNum(victim, "CarriedGold")))
-		local taken = math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", victim, carried, "Kaiju")) or 0))
-		-- CR-M11: a leaving kaiju's pouch was escrowed before ProgressionService could bank it; it joins the pool here
+		-- A23-216 (user 10/16): the kaiju loses Config.Kaiju.DefeatLossRate of its pouch, at most level x PlunderCapPerLevel
+		-- (CR-M3's cap); the rest stays its own. CR-M11: a leaving kaiju's pouch was escrowed before ProgressionService could
+		-- bank it - the loss comes from the escrow first, what is left there is banked by bankLeftover (entry kept: CombatLog)
 		local escrow = leaveEscrow[victim]
-		if type(escrow) == "table" then
-			taken += math.max(0, math.floor(tonumber(escrow.Gold) or 0))
-			escrow.Gold = 0 -- entry kept: bankLeftover still reads CombatLog
-		end
-		-- CR-M3: the carried gold moved into the pool is capped like a PvP plunder; the excess is destroyed
+		local escrowGold = type(escrow) == "table" and math.max(0, math.floor(tonumber(escrow.Gold) or 0)) or 0
+		local carried = math.max(0, math.floor(getNum(victim, "CarriedGold")))
 		local capPerLevel = tonumber(Config.PvP.PlunderCapPerLevel) or 100
-		taken = math.min(taken, math.max(0, math.floor(capPerLevel * level)))
+		local loss = math.min(math.floor((carried + escrowGold) * (tonumber(Config.Kaiju.DefeatLossRate) or 0.1)),
+			math.max(0, math.floor(capPerLevel * level)))
+		local fromEscrow = math.min(loss, escrowGold)
+		if type(escrow) == "table" then escrow.Gold = escrowGold - fromEscrow end
+		local taken = fromEscrow
+		if loss - fromEscrow > 0 then
+			taken += math.max(0, math.floor(tonumber(call("ProgressionService", "TakeCarriedGold", victim, loss - fromEscrow, "Kaiju")) or 0))
+		end
 		local pool = mint + taken
 
 		local n = #participants

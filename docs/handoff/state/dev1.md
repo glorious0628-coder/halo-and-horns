@@ -1,5 +1,29 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 밤 2 (최신)
+- 병합됨(main a5a5c40e): dev1-offer-row ad8e1291 — Story.Offer 줄('Talk to <부탁자>', 개발 2 dev2-offer-row) 탭/길 안내 → Story.Npc; StoryNpcs Pickups·Spots·WatchSteps가 Offer 줄 건너뜀, 표시 = 본편 '!'; Panels STORY.Lines 진영판 단계(step[f].Lines/LinesBy) 먼저(M2_3[2]); 단계 On = NPC id → Find 말풍선·PlayScene 그 몸(개발 2 데이터 오면 화면 확인).
+- 게시 전 누름 확인 끝(a5a5c40e, 새 저장, 빛+뿔): 안내자 G → Welcome → I'm In → 스승 G → 모루 G 첫 무기 → 'Talk to Otto' 줄 → 모루 G = Otto 부탁 창 → Sure! → M1_1 시작. 로그 docs/art/verification_2026-10-16/prepublish_flow/(git 밖), 도구 build/dev1_tools/full1016.py (STUDIO_ID로; PhoneTest 창 이름이 'Game'으로 잡힐 때 있음).
+- 관찰 보고함: 스승 Talk가 Rose 부탁 창(Rose's Lesson)을 엶.
+- 새 main 19dbf76c로 다시(최종 검수 2번째 요청): 위 흐름 + 'Talk to Otto' 길 안내(35스터드에서 표시 10m, 화면 밖이면 가장자리 화살표) 통과. 도구 full1016.py의 close()는 진짜 [Not now]/Close 누름 — 창을 Visible=false로만 숨기면 Panels가 열린 채라 표시가 숨음(도구 착시). 같은 PC에 'Game' 이름 Studio가 여럿(build/GoodEvil 사본 등) → game.Name으로 내 창 확인 후 STUDIO_ID.
+- ▶ 남은 큐: 위 '10/16 밤' 큐 2~4번(무리 손맛 재측정, 대장간 첫 무기 버튼 글, 제작 창 누름 확인).
+
+## 10/16 밤 (최신)
+- 병합됨: dev1-clatter-scenes 35a8149b — 마을 Clatter 장면 3개 + 크기 T.Clatter.Scale 0.68(약 6.5스터드, 오프닝은 크기 1 그대로) + Hat 헬멧을 머리 위로. 크기 사진은 다음 메인 Play 확인 때 최종 검수가 봄.
+- 버린 것: 660c0f98(AlwaysShow — G 한 번에 두 프롬프트 다 눌림).
+- **▶ 남은 큐 (최종 검수 10/16 밤, 이 순서; 화면은 '전달함, 시작' 뒤, PhoneTest_1015만):**
+  1. 개발 2 Otto 고침(모루 프롬프트가 M1_1 부탁을 막음) 오면 누름 확인: 첫 무기 → 모루 G → M1_1 부탁 창 → Next → Accept, 값 보고. 스크립트 = build/dev1_tools/otto1016.py (git 밖; feel1016.py·feel_logger.luau·craftpress1016.py·clattertown1016.py도 여기)(없으면 같은 흐름으로 새로: StudioFreshSave → Play → scene.py TutorialForge → 모루 앞으로 직접 이동(장면 명령은 모루에서 23스터드, 최대 12) → 키 → PanelsModal/OfferNext/OfferAccept 클릭 → 서버 TutorialStep·StoryOffers).
+  2. 장면 명령(개발 2 `py tools/scene.py <Preset>`, STUDIO_NAME)으로 무리 5마리 손맛 재측정(전사; feel1016.py --pack 방식). 차이 30%↑ 또는 Lv5 5분↑일 때만 보고.
+  3. 대장간 'The first weapon can't be sold' 버튼 글 정리.
+  4. 제작 창 누름 확인(ArtisanAlch / ArtisanSmith 장면: 창 열림·Potion/Gear 줄·제작 버튼 실제 눌림 값).
+- 규칙: 한 묶음 끝(가지 push + tip 보고 + 이 파일 push) → clear_session("self").
+
+## 10/16 저녁 (최신)
+- 병합됨(main b27db2ac + 9001c93f): dev1-calm-fade 9e6a63c8 = 사라짐·보상 글·소리를 맞은 표시 뒤로(Feel.afterHit / Fx.HitWait + HIT_AFTER 0.08) + 손맛 ① 누르면 몸짓 먼저(Fx.PredictSwing, 누름 줄 Feel.takePending MaxAge 1.5) + Studio 표시 HHDbgSwing; 개발 2 서버 몸 수명 = 1.15 + (CalmTime−1) + HIT_WAIT 0.7.
+- **dev1-clatter-scenes 3ce912d0 (보고함, 화면 확인 대기)**: Fx StoryScene Id=Clatter(Sorry/Hat/Carry) → StoryNpcs.ClatterScene(오프닝 파트 몸 Intro.ClatterBody 재사용 — 칼 든 StoryProps.ClatterTown 안 씀, 최종 검수 OK), 몸짓 BowHatSlip/CatchHat/CarrySalute(StoryNpcs.ClatterPose), 말풍선, Stay 뒤 흐려짐. 보스 Start/Beaten = 넓은 이야기 말풍선(MonsterLabels B.SureMoment), 처치된 몸은 Beaten만. 사진 도구 scratchpad clattertown1016.py.
+- **fix/halloween-old-puddle 53213356 (보고 전)**: test_halloween 옛 웅덩이 검사 → 사라짐 넘김 검사.
+- 손맛 측정: docs/art/verification_2026-10-16/attack_feel/*.json + feel1016.py(--pack = 무리 슬라임)·feel_logger.luau. 전사 54% 느림은 한 마리씩 측정이라 판단 보류 → 장면 명령(개발 2 A23-218) 오면 무리 5마리 재측정.
+- 화면 사용 주의: 같은 PC에 다른 Studio(Game, ParcelPanic, Darugi_S2 장소)가 자주 떠 있음 — PhoneTest만 Stop-Process로 닫기.
+
 ## 10/16 오후 (최신)
 - 병합됨: dev1-intro-clatter b402c29c(파트 Clatter, 칼 없음), 1~4번 가지 3개(fbe330c5).
 - **보고한 가지(병합 대기)**: dev1-calm-fade 25bc6c2d(개발 2 서버 가지 ①파티클 ②0.2 줄이기 삭제 ③CalmTime와 같이 병합), dev1-reward-icon 96e154e9(물약 Icon), dev1-craft-kinds 93b9399c(제작 창 Potion/Gear 줄, GearLook, 등급 Fine/Rare/Epic = 내 표시값), dev1-war-end a482e059(A23-216 ⑤: WarRoundEndsAt 앞으로 → 막대 균형 0.9초 → 두 표장 통통 → 2초 WarNext 종; Clatter 경례는 마을 몸 생길 때), fix/king-diary-jar f2b0a21f(지운 jar note 기대값).

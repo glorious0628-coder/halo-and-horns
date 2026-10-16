@@ -1,0 +1,19 @@
+scene: ok: Halo, Lv1, Anvil
+1 step=3 tier=0 offers= 42.99999237060547, 24.080631256103516, 49
+at anvil front (otto 4.3 studs behind it)
+prompts:
+HHC_BlacksmithPrompt[p.Landmarks.ArtisanGuild.Anvil] on=true key=G excl=OnePerButton dist=5.3 max=12 story=nil
+AltarPrompt[Workspace.Map.Landmarks.Altar] on=true key=G excl=OnePerButton dist=35.9 max=12 story=nil
+TalkPrompt[NPCs.Npc_Otto.HumanoidRootPart] on=false key=G excl=OnePerButton dist=9.0 max=10 story=Otto
+TalkPrompt[NPCs.Npc_Tiny.HumanoidRootPart] on=false key=G excl=OnePerButton dist=31.5 max=10 story=Tiny
+TalkPrompt[.NPCs.Npc_Kit.HumanoidRootPart] on=false key=G excl=OnePerButton dist=7.6 max=10 story=Kit
+visible before: shown: HHC_BlacksmithPrompt(nil) of near 1
+2 after anvil G step=99 tier=1 offers=Gleam,Otto,Tiny panel=false offerAccept=false title=
+prompts after gift:
+HHC_BlacksmithPrompt[p.Landmarks.ArtisanGuild.Anvil] on=true key=G excl=OnePerButton dist=5.3 max=12 story=nil
+AltarPrompt[Workspace.Map.Landmarks.Altar] on=true key=G excl=OnePerButton dist=35.9 max=12 story=nil
+TalkPrompt[NPCs.Npc_Otto.HumanoidRootPart] on=true key=G excl=OnePerButton dist=9.0 max=10 story=Otto
+TalkPrompt[NPCs.Npc_Tiny.HumanoidRootPart] on=true key=G excl=OnePerButton dist=31.5 max=10 story=Tiny
+TalkPrompt[.NPCs.Npc_Kit.HumanoidRootPart] on=false key=G excl=OnePerButton dist=7.6 max=10 story=Kit
+visible: shown: HHC_BlacksmithPrompt(nil) of near 2
+3 after Otto key G panel=true offerAccept=false title=Forge

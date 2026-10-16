@@ -49,8 +49,15 @@ MUTATIONS = [
     ("idle asks for every monster (no forPlayer)", B, "num(K.IdleNear, 40), p)", "num(K.IdleNear, 40))"),
     ("Enabled ignored", B, "return K.Enabled == true and type(K.Lines) == \"table\"", "return type(K.Lines) == \"table\""),
     ("no BarkAt", B, "\t\trec.Model:SetAttribute(\"BarkAt\", workspace:GetServerTimeNow())\n", ""),
-    ("a dead monster barks", B, "type(rec) ~= \"table\" or not rec.Alive or", "type(rec) ~= \"table\" or"),
-    ("Spot moments ignored", B, "if kind == \"Spot\" or kind == \"Hit\" then", "if kind == \"Hit\" then"),
+    ("a dead monster barks", B, "\tif not rec.Alive then return false end\n", ""),
+    ("Spot moments ignored", B, "if kind == \"Spot\" or kind == \"Hit\" or kind == \"Beaten\" then",
+     "if kind == \"Hit\" or kind == \"Beaten\" then"),
+    # A23-212 (user 10/16): Captain Clatter's sure Start / Beaten lines
+    ("A23-212: Beaten never heard", B, "if kind == \"Spot\" or kind == \"Hit\" or kind == \"Beaten\" then",
+     "if kind == \"Spot\" or kind == \"Hit\" then"),
+    ("A23-212: no Start line", B, "\t\tif sure(rec, m, \"Start\") then return true end\n", ""),
+    ("A23-212: Beaten needs a living record", B, "\tif moment == \"Beaten\" then return sure(rec, m, \"Beaten\") end", "\tif false then end"),
+    ("A23-212: the Start line every Spot", B, "\t\tm.Start = true\n", ""),
     ("the idle loop ignores IdleEvery", B, "task.wait(math.max(1, num(K.IdleEvery, 10)))", "task.wait(1)"),
     # MonsterService hooks (game dev 1's file: two lines + the signal)
     ("no Hit moment", M, "\t\tMonsterService.Moment:Fire(record, \"Hit\") -- ③ barks\n", ""),
@@ -98,8 +105,8 @@ def static() -> tuple[int, list[str]]:
     monster = read(SSS / "MonsterService.luau")
     dm = function_block(monster, "function MonsterService.DamageMonster(")
     check(dm.count("Moment:Fire") == 1, "DamageMonster fires one moment")
-    check(monster.count("Moment:Fire") == 4,
-          "MonsterService fires exactly four moments (Hit, aiStep Spot, personal Spot, A23-87 flower pop Spot)")
+    check(monster.count("Moment:Fire") == 5,
+          "MonsterService fires exactly five moments (Hit, aiStep Spot, personal Spot, A23-87 flower pop Spot, A23-212 Beaten)")
     config = read(SHARED / "Config.luau")
     check(config.count("\nConfig.Barks = {") == 1, "one Config.Barks table")
     return count, failures

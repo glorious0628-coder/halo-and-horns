@@ -10,6 +10,9 @@
 -- Hit > Idle (only one speaks). Lines: the kind's own (else Config.QuestKind(kind)'s); a golden monster prefers
 -- Lines.Golden for every moment; the same line never comes twice in a row for a kind and moment. Lines never change
 -- any score (GDD §0 tilts come from picks only).
+-- A23-212 (user 10/16): two sure lines where a kind has them - Start = its first line of a life (said at its first Spot
+-- instead of a Spot line: no roll, no cooldown) and Beaten = its line as it calms down after a defeat (MonsterService fires
+-- Moment "Beaten" from killRecord; said on the still-standing body, no roll, no cooldown). Captain Clatter's match.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
@@ -70,10 +73,34 @@ local function lowNow(rec)
 	return max > 0 and num(rec.HP) > 0 and num(rec.HP) / max < num(K.LowAt, 0.3)
 end
 
+local function write(rec, line)
+	local ok, err = pcall(function()
+		rec.Model:SetAttribute("Bark", line)
+		rec.Model:SetAttribute("BarkAt", workspace:GetServerTimeNow())
+	end)
+	if not ok then Util.Warn(TAG, "bark: " .. tostring(err)) end
+	return ok
+end
+
+-- A23-212: a sure line (Start / Beaten) of this kind, said now; false when the kind has none
+local function sure(rec, m, moment)
+	local list, key = linesFor(rec, moment)
+	if not list then return false end
+	m.At = os.clock()
+	zoneAt[rec.ZoneId or "?"] = m.At
+	return write(rec, pickLine(list, key .. ":" .. moment))
+end
+
 -- one moment of one monster: the priority's first moment that may speak, after the rolls and both cooldowns
 local function say(rec, moment)
-	if not on() or type(rec) ~= "table" or not rec.Alive or typeof(rec.Model) ~= "Instance" then return false end
+	if not on() or type(rec) ~= "table" or typeof(rec.Model) ~= "Instance" then return false end
 	local m = memo(rec)
+	if moment == "Beaten" then return sure(rec, m, "Beaten") end -- A23-212 (the record is no longer Alive here)
+	if not rec.Alive then return false end
+	if moment == "Spot" and not m.Start then -- A23-212: the first Spot of a life says the Start line when there is one
+		m.Start = true
+		if sure(rec, m, "Start") then return true end
+	end
 	if moment == "Hit" and not m.Low and lowNow(rec) then moment = "Low" end -- Low > Hit (once per life)
 	local now = os.clock()
 	local zone = rec.ZoneId or "?"
@@ -87,12 +114,7 @@ local function say(rec, moment)
 	local line = pickLine(list, key .. ":" .. moment)
 	m.At, zoneAt[zone] = now, now
 	if moment == "Low" then m.Low = true end
-	local ok, err = pcall(function()
-		rec.Model:SetAttribute("Bark", line)
-		rec.Model:SetAttribute("BarkAt", workspace:GetServerTimeNow())
-	end)
-	if not ok then Util.Warn(TAG, "bark: " .. tostring(err)) end
-	return ok
+	return write(rec, line)
 end
 
 -- Idle: a monster with no target and a player within IdleNear rolls Chance.Idle (every IdleEvery s from the loop; one
@@ -126,7 +148,7 @@ function BarkService.Start()
 	local moment = mons and mons.Moment
 	if type(moment) == "table" and type(moment.Connect) == "function" then
 		moment:Connect(function(rec, kind)
-			if kind == "Spot" or kind == "Hit" then
+			if kind == "Spot" or kind == "Hit" or kind == "Beaten" then
 				local ok, err = pcall(say, rec, kind)
 				if not ok then Util.Warn(TAG, "moment: " .. tostring(err)) end
 			end

@@ -1467,12 +1467,12 @@ Config.PvP = {
 	PowerRatioMin = 0.8,
 	PowerRatioMax = 1.5,
 	CombatTagTime = 15, -- PvP damage within this window credits the KO and blocks travel/switch/class change
-	PlunderRate = 0.20, -- Horns KO Halo: take 20% of (carried - safe floor) into the grudge sack
+	PlunderRate = 0.05, -- Horns KO Halo: take 5% of (carried - safe floor) into the grudge sack (A23-216, user 10/16: was 20%)
 	PlunderCapPerLevel = 100, -- max stolen per KO = victim level * 100
 	SafeFloorPerLevel = 10, -- never-stealable carried gold = victim level * 10
 	BountyPerLevelStar = 15, -- bounty = 15 * level * stars (minted)
-	VillainLossOnBountyKO = 0.25, -- Wanted Horns KO'd by Halo lose 25% of remaining carried gold
-	VillainLossOnWantedPvEDeath = 0.25, -- Wanted Horns dying without a PvP killer
+	VillainLossOnBountyKO = 0.05, -- Wanted Horns KO'd by Halo lose 5% of remaining carried gold (A23-216: was 25%)
+	VillainLossOnWantedPvEDeath = 0.05, -- Wanted Horns dying without a PvP killer (A23-216: was 25%)
 	MaxStars = 5,
 	StarDecaySeconds = 120,
 	StarDamageBonus = 0.05,
@@ -1538,7 +1538,10 @@ Config.Kaiju = {
 	StompInterval = 4,
 	StompRadius = 15,
 	StompPct = 0.06, -- of each stomped Halo player's MaxHealth (never rookies, never Protected, never in towns)
-	BountyPoolMult = 3, -- reward pool = 3 x current bounty + the kaiju's carried gold
+	BountyPoolMult = 3, -- reward pool = 3 x current bounty + the kaiju's lost gold (DefeatLossRate)
+	-- A23-216 (user 10/16): a defeated kaiju loses at most this share of its pouch, capped at level x PvP.PlunderCapPerLevel;
+	-- the rest stays its own (was: the whole pouch taken, the part over the cap destroyed)
+	DefeatLossRate = 0.10,
 	DamageShare = 0.5, -- 50% of the pool split by damage share, the rest split equally among participants
 	SurviveBankMult = 1.5, -- survived: carried gold x1.5 moved to the bank
 	ShieldSeconds = 10, -- spawn-protection-style shield after the event
@@ -1585,7 +1588,7 @@ Config.War = {
 	SiegeTarget = 1.5, -- per-capita points needed when only one faction is online
 	ChestMinPoints = 1, -- personal points this round needed for a chest
 	WinnerChestPerLevel = 100,
-	LoserChestPerLevel = 30,
+	LoserChestPerLevel = 50, -- A23-216 (user 10/16): the losing / drawn side smiles too (was 30)
 	BlessingGold = 0.25,
 	BlessingXP = 0.25,
 	Tick = 1,
@@ -2754,17 +2757,20 @@ Config.Barks = {
 			Low = { "No arrows…", "Retreat!" },
 			Idle = { "Aim… wait.", "Twang~" },
 		},
-		Skeleton = { -- a bony guard who lost track of the days
+		Skeleton = { -- an old bony neighbor who loves parade drills (A23-209)
 			Spot = { "Rattle!", "Clack clack!" },
 			Hit = { "Clank!", "Clack!" },
 			Low = { "Clatter…" },
 			Idle = { "Rattle~", "Tuesday?" },
 		},
-		CaptainClatter = { -- J: the captain nobody relieved (300 years on duty)
+		CaptainClatter = { -- J / A23-212: the drill captain who broke the crown by mistake and helps fix it
+			-- A23-212 (user 10/16): the friendly captain's match - his first line of a life and his line after a defeat
+			Start = { "Your turn, captain. Ready for a match?" },
+			Beaten = { "Good match! I need a sit-down." },
 			Spot = { "HALT!!", "Who's next?" },
 			Hit = { "CLATTER!", "Bones! Ow!" },
 			Low = { "Nap time…", "Off duty?" },
-			Idle = { "300 years…", "Still here." },
+			Idle = { "Left, right…", "Still here." },
 		},
 		SkeletonKnight = { -- an old knight, always on duty
 			Spot = { "Halt!", "Who goes?" },
@@ -2879,6 +2885,10 @@ function Config.MonsterActive(kind, override)
 	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
 	return type(def) == "table" and Config.SeasonOn(def.Season, override)
 end
+
+-- A23-211 (user 10/16, game dev 1's calm fade): a boss's calm moment before it fades (s; the model attribute CalmTime, the
+-- clients fit the fade to it, 0.6..3); every other kind = the 1.0 s default (no attribute)
+Config.MonsterCalmTime = { SlimeKing = 1.8, CaptainClatter = 2.2 }
 
 -- true for a seasonal kind that adds its Count on top of its zone instead of taking base slots (no Takes, e.g. the
 -- little ghost): MonsterService spawns it to its own Config.MonsterTargets target outside MonsterDensity.GlobalCap, so
@@ -3355,6 +3365,8 @@ Config.StoryQuests = {
 		NewTitle = "New title: %s!", -- E3 (a stat-free title)
 		SkillLater = "%s · Learn skills at Lv%d", -- A23-71: a skill step before the first skill (the row, %s = its text)
 		SkillLearnFirst = "%s · Learn it from %s first", -- A23-193: the same row while the skill waits at the teacher
+		-- A23-199 for the main chain (최종 검수 10/16 ①): the pinned row while the next main waits at its asker (%s = the name)
+		OfferTalk = "Talk to %s", OfferTalkShort = "To %s",
 	},
 	Defs = {
 		-- S0 (A23-2): the shard that fell in front of me in the opening was swallowed by a Slime Prince (A23-84)
@@ -3637,7 +3649,7 @@ Config.StoryQuests = {
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
-						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nHalos and Horns tell the same story. They just swap who did it.",
+						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nClatter held it too tight. Now its shards are everywhere.",
 						"The sparkly dust you got from the pond slimes? That's crown dust.",
 						"Give the dust to the fountain: the world leans to the light.\nKeep it: it leans to the dark. What will you do?",
 					} },
@@ -3954,7 +3966,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "The Horns are up to something! I need Form H-1.\nTo get Form H-1, I need Form H-0. …Can you just help?",
-						"They say a Horn broke the Crown. Everyone says so.\n…Who said so first?",
+						"Captain Clatter broke the Crown. He even said sorry.\nBut the Horns? Still up to SOMETHING.",
 						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
@@ -3980,7 +3992,7 @@ Config.StoryQuests = {
 			Start = "Psst! Rose in Horns Den has a secret job for you.",
 			Steps = {
 				{ Text = "Talk to Rose in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Psst! A Halo broke the Crown! My uncle's friend's cousin saw it!",
+					Lines = { All = { "Psst! The Halos have a secret plan! My uncle's friend's cousin saw it!",
 						"This gold spyglass? Found it. Gold is fine. For spying.\nPlan A: we spy. Plan B: same as Plan A, but sneakier!",
 						"The Halos whisper at the fountain. A secret plan!\nGo listen there. Look natural!" } } },
 				{ Text = "Listen at the fountain %d/%d s", Guide = "Fountain",
@@ -4007,7 +4019,7 @@ Config.StoryQuests = {
 			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Halos blame Horns. Horns blame Halos.\nNoted: nobody saw it.",
+					Lines = { All = { "Halos say Horns are plotting. Horns say Halos are.\nNoted: nobody checked.",
 						"Can you watch both bridges for me? Quietly." } } },
 				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
 				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
@@ -4520,7 +4532,7 @@ Config.StoryQuests.Defs.EG03 = {
 		{ Text = "Visit the goose", Obj = { Type = "Near", Spot = "GooseNest", Radius = 6 } },
 		{ Text = "Goose Fan", Panel = true, Obj = { Type = "Talk" },
 			Lines = { All = { "The Golden Goose has 0 followers. She has never been happier.",
-				"Also, she saw who broke the Crown. Honk." } } },
+				"She watched Clatter fix his hat. Honk." } } },
 	},
 	Reward = { Title = "GooseFan" },
 }
@@ -4720,6 +4732,23 @@ Config.StoryQuests.RepeatDailyMax = 5
 -- it is done: Fx StoryScene Key "Scene") is one of these (game dev 1 plays each one; a new one = a new row here first)
 Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,
 	Spin = true, Hug = true, Clap = true }
+-- A23-212 (user 10/16, GPT build/codex/story_world_r5.md §4 B): Captain Clatter's three first-10-minute scenes (ClatterScenes;
+-- each once per character, that player only, no accept / trip / reward). Line = his one line (game dev 1 shows it over a LOCAL
+-- copy of ReplicatedStorage[Folder].ClatterTown), Move = what he does (game dev 1's move key), After = the quest step it
+-- follows (Sorry = the guide's [Accept] instead: TutorialStep leaves 0). Side / Ahead = studs right / along the line from
+-- the guide to the player (Sorry) or the player's facing; Stay = s he stays before he goes. Model = the ruins boss model
+-- (ServerStorage CustomModels) copied as the town body
+Config.StoryQuests.Clatter = {
+	Enabled = true, Model = "CaptainClatter", Folder = "StoryProps", Side = 6, Ahead = 3, Stay = 8,
+	Scenes = {
+		-- the first departure, beside the guide: he packs the repair tools, bows too deep, his hat covers his eyes
+		Sorry = { Line = "I broke the crown. I'm sorry. I'm here to help.", Move = "BowHatSlip" },
+		-- after the first Slime Prince: he catches a flying box upside down - and only his own hat
+		Hat = { Line = "Caught it! Oh. That's my hat.", Move = "CatchHat", After = { Quest = "M1_1", Type = "Kill" } },
+		-- after the first skill: he grips his box, then holds the handle right and salutes as the player goes first
+		Carry = { Line = "I'll carry this. You lead.", Move = "CarrySalute", After = { Quest = "M1_3", Type = "Learn" } },
+	},
+}
 -- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
 Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
 
@@ -6720,6 +6749,9 @@ Config.TitleDefs.ClatterStopper = { Name = "Clatter Stopper", NameEn = "Clatter 
 Config.TitleDefs.ClatterStopper10 = { Name = "Clatter Stopper 10", NameEn = "Clatter Stopper 10", Color = Color3.fromRGB(235, 210, 140) }
 Config.TitleDefs.ClatterStopper50 = { Name = "Clatter Stopper 50", NameEn = "Clatter Stopper 50", Color = Color3.fromRGB(255, 220, 120) }
 for _, id in { "ClatterStopper", "ClatterStopper10", "ClatterStopper50" } do table.insert(Config.TitleOrder, id) end
+-- SPEC A23-215 (user 10/16, build/codex/artisan_switch_r1.md §3): the Challenge daily DC3's first finish (no stat)
+Config.TitleDefs.RecordKeeper = { Name = "Record Keeper", NameEn = "Record Keeper", Color = Color3.fromRGB(200, 215, 235) }
+table.insert(Config.TitleOrder, "RecordKeeper")
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
 	Swing = "rbxasset://sounds/swordslash.wav",
@@ -6789,9 +6821,6 @@ Config.Audio = {
 		HitArrowHeavy = "rbxassetid://111127770916206",
 		HitArrowCrit = "rbxassetid://83876322718434",
 		-- 검수 10/10: monster death sounds by kind (소리 15차 86cd4a69, slimes first)
-		DieSlime = "rbxassetid://105660948835844",
-		DieBigSlime = "rbxassetid://135159844685749",
-		DieFlowerSlime = "rbxassetid://108731319971001",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -6890,10 +6919,6 @@ Config.Audio = {
 		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		-- 검수 10/10: a monster kind's own death sound takes KillPop's place (Config.Audio.DeathByKind; same caps)
-		DieSlime = { File = "DieSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieBigSlime = { File = "DieBigSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieFlowerSlime = { File = "DieFlowerSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
@@ -7000,9 +7025,6 @@ Config.Audio = {
 	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
 	-- bare hands, the pet and a class not listed keep the material hits
 	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
-	-- 검수 10/10: my kill's sound by the monster kind (the Reward packet's Kind, else the monster at its Pos); a kind not
-	-- listed or not uploaded keeps KillPop (goblin, skeleton, pumpkin, ghost follow in their zone turns)
-	DeathByKind = { Slime = "DieSlime", BigSlime = "DieBigSlime", FlowerSlime = "DieFlowerSlime" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
@@ -8142,19 +8164,20 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 / story_depth §0-1: the story everyone tells — someone greedy broke the Crown, each side blames the other. It
-	-- is only a rumor: A23-209 (user 10/15) Captain Clatter broke it by mistake (a clamp held it too still: CRACK), told in
-	-- act 2, never in chapters 1-5; so every line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
+	-- A23-212 (user 10/16, replaces A23-209's act-2 reveal): told from the start - Captain Clatter broke the Crown by mistake
+	-- (a clamp held it too still: CRACK) and is sorry; no other culprit, no line blames the other side. Rumor games about what
+	-- the other side is up to stay. Premise = the faction picker's premise panel (3 lines, GDD §1-1). Wording: GPT
+	-- build/codex/story_ch2_r1.md §5-2 (최종 검수 10/16)
 	Premise = {
-		"They say someone broke the Crown of Balance.",
+		"Captain Clatter broke the Crown of Balance.",
 		"Some who picked up its shards grew a halo. Others grew horns.",
-		"Now each side says the other did it.",
+		"Gather shards. Make their power your own.",
 	},
 	-- the opening (A23-44 remake) shows OpeningRumor 1-3, then Premise 2-3, then OpeningAsk (story_depth §2-1)
-	OpeningRumor = {
-		"They say the Crown kept the world in balance.",
-		"They say someone wanted it all to themselves.",
-		"\"If I can't have it, no one can!\" CRACK.",
+	OpeningRumor = { -- A23-212: the same three lines as Config.ClientText.Intro (no rumor any more; the key name stays)
+		"Captain Clatter broke the Crown of Balance.",
+		"Some grew halos. Others grew horns.",
+		"Gather shards. Make their power your own.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
@@ -8169,13 +8192,15 @@ Config.Story = {
 		Horns = "Their Crown Shards became horns. They take the shards and rule the world.",
 		Neutral = "Those who shape the shards instead of grabbing them.", -- addendum A6
 	},
+	-- A23-209~212 (최종 검수 10/16, GPT world_zones_r1 §4): skeletons are the old townsfolk (a parade yard, no tomb), goblins
+	-- are snack porters whose sacks grew too big (no thief tribe); monster names unchanged. (No reader in src today.)
 	ZoneLore = {
 		Crossroads = "Where the broken crown fell",
 		HaloTown = "The castle of those with halos",
 		HornsTown = "The den of those with horns",
 		SlimeMeadow = "A field of slimes that ate shard dust",
-		GoblinWoods = "The woods of the shard thieves",
-		SkeletonRuins = "The tomb of the old kingdom",
+		GoblinWoods = "Woods where goblins carry sacks far too big",
+		SkeletonRuins = "An old yard where skeletons practice parades",
 	},
 	-- format strings (always through string.format)
 	WarWin = {
@@ -9228,8 +9253,8 @@ Config.TownReact = {
 		},
 		Evil = {
 			S6 = "The new kids keep calling you boss. Hmm…",
-			H1 = "Did you hear? The Horns are up to something!",
-			R1 = "The Halos have a secret plan! Everyone says so!",
+			H1 = "Your birthday plan has a very big ribbon!", -- A23-212 (story_ch2_r1 §5-3): no blame of the other side
+			R1 = "A grand birthday plan? Rose told it very loudly!",
 			H2 = "Is that our town lantern in your window?",
 			R5 = "Finders keepers! Rose is still looking, you know.",
 			H3 = "The cat is up the tree again. Was that you?",
@@ -10757,8 +10782,8 @@ Config.Codex = {
 		SlimeKing = { Halo = "The slime dad. He raises his kids all alone.",
 			Horns = "He jumps, he lands, the ground goes boing!",
 			Neutral = "Royal Jelly is rare and thick. Keep it safe." },
-		Goblin = { Halo = "He steals shards, but he shares his snacks.",
-			Horns = "A thief! I like his style. Not his smell.",
+		Goblin = { Halo = "His sack got too big. He still shares his snacks.", -- A23-210: a snack porter, no thief tribe
+			Horns = "Grabs everything shiny! I like his style. Not his smell.",
 			Neutral = "Goblin Teeth are small, sharp and useful." },
 		SlingshotGoblin = { Halo = "Step aside and his pebbles miss. Mostly.",
 			Horns = "Pebbles in the face? Rude. Funny, but rude.",
@@ -10766,16 +10791,16 @@ Config.Codex = {
 		GoblinBrute = { Halo = "Big and slow. He only wants his nap.",
 			Horns = "All muscle, no plan. I respect that.",
 			Neutral = "A Brute Horn is hard as stone." },
-		Skeleton = { Halo = "A guard of the old kingdom, still on duty.",
+		Skeleton = { Halo = "An old neighbor who loves parade drills.", -- A23-209: the ruins' townsfolk, no dead soldiers
 			Horns = "Rattle rattle! Who needs skin anyway?",
 			Neutral = "Old Bones. Light, hard and useful." },
 		SkeletonArcher = { Halo = "His arrows fly slowly. Step aside to dodge them.",
 			Horns = "No eyes, still aims. What a show-off.",
 			Neutral = "More Old Bones. The ruins never run out." },
-		SkeletonKnight = { Halo = "A knight who never left his post.",
+		SkeletonKnight = { Halo = "A knight who never misses a drill.",
 			Horns = "Heavy armor, empty head. Classic.",
 			Neutral = "His Rusty Knight Crest still shines a little." },
-		CaptainClatter = { Halo = "300 years on duty. Please give him a break.",
+		CaptainClatter = { Halo = "He broke the crown by mistake. Now he helps fix it.", -- A23-212
 			Horns = "He yells at everyone. Even the wind.",
 			Neutral = "His Old Crown Gem is bright. Handle with care." },
 	},
@@ -11251,8 +11276,8 @@ Config.ClientText.EventHUD = {
 }
 Config.ClientText.FirstSteps = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
 Config.ClientText.Intro = {
-	Lines = { -- A23-209 (user 10/15)
-		"The Crown of Balance broke.",
+	Lines = { -- A23-209 (user 10/15); line 1 = A23-212 (user 10/16): the culprit is told from the start
+		"Captain Clatter broke the Crown of Balance.",
 		"Some grew halos. Others grew horns.",
 		"Gather shards. Make their power your own.",
 	},

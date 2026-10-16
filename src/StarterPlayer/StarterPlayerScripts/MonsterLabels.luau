@@ -251,6 +251,19 @@ function B.Make(root, offsetY, text, kind, size)
 	return bb, fadeOut
 end
 
+-- (pure) "Start" / "Beaten" when text is one of kind's sure lines (Config.Barks.Lines[kind]), else nil
+B.SureShow = 4.5
+function B.SureMoment(kind, text)
+	local lines = type(Config.Barks) == "table" and type(Config.Barks.Lines) == "table" and Config.Barks.Lines[kind] or nil
+	if type(lines) ~= "table" then return nil end
+	for _, moment in { "Start", "Beaten" } do
+		for _, l in type(lines[moment]) == "table" and lines[moment] or {} do
+			if l == text then return moment end
+		end
+	end
+	return nil
+end
+
 -- the bark check of one monster this tick (called with its MonsterBar's root part)
 function B.Check(model, root, barBB, me)
 	local at = model:GetAttribute("BarkAt")
@@ -263,6 +276,19 @@ function B.Check(model, root, barBB, me)
 	local text = model:GetAttribute("Bark")
 	if type(text) ~= "string" or text == "" then return end
 	if me and (root.Position - me).Magnitude > (tonumber(cfg.MaxDistance) or 60) then return end
+	-- A23-212 (개발 2 10/16): a kind's sure lines (Start / Beaten: Captain Clatter's match) are long - the wide story
+	-- bubble (StoryNpcs.Bubble) over the head instead of the small round one; a beaten body says only its Beaten line
+	local sure = B.SureMoment(kindOf(model), text)
+	if root.Anchored and sure ~= "Beaten" then return end
+	local npcs = C and C.StoryNpcs
+	if sure and type(npcs) == "table" and type(npcs.Bubble) == "function" then
+		local att = root:FindFirstChild("HH_BarkSpot") or Instance.new("Attachment")
+		att.Name = "HH_BarkSpot"
+		att.Position = Vector3.new(0, (barBB and barBB.StudsOffset.Y or 3) + B.Lift, 0)
+		att.Parent = root
+		pcall(npcs.Bubble, att, text, B.SureShow)
+		return
+	end
 	local bubble, fadeOut = B.Make(root, barBB and barBB.StudsOffset.Y or 3, text, kindOf(model))
 	local show = tonumber(cfg.Show) or 3
 	if fadeOut then task.delay(math.max(0, show - B.Out), fadeOut) end
@@ -286,6 +312,7 @@ local function tick()
 			-- name slot from the living ones; a dead body with "Shard Slime" over it read as a living monster
 			seen[bb] = true
 			if bb.Enabled then bb.Enabled = false end
+			B.Check(model, root, bb, me) -- A23-212: only a sure Beaten line speaks from a beaten body (B.Check)
 		elseif bb and bb:IsA("BillboardGui") and root and root:IsA("BasePart") then
 			seen[bb] = true
 			local back = bb:FindFirstChild("Bar")

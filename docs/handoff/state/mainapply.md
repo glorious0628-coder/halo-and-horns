@@ -1,5 +1,11 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/16 낮 현재 (최신)
+- 메인 Studio: 사용자가 15:07 build/GoodEvil.rbxlx를 새 창으로 다시 열었고, 15:10 Save As 저장 확인(새 코드 a5a5c40e + RetiredDecor_1016 포함), place push dce0db87. 창 id는 list_roblox_studios로 확인(열 때마다 바뀜, 이름 "Game"/"헤일로 & 혼스"로 2개 뜰 수 있음 → RetiredDecor·OfferTalk 유무로 구분). Edit·Play 없음.
+- 장식: Tombstone 16·SoulWisp 6 → ServerStorage/RetiredDecor_1016 (지운 것 아님, 되돌리려면 자식을 Decor로). 저장 반영됨.
+- 사진: docs/art/verification_2026-10-16/main_b27db2ac(_v2 = 창 복원 뒤 정상), main_d75725e7. 최소화 창은 사진 하얗게 찍힘 → 사진 전 RESTORE(최종 검수 알림 뒤).
+- Play 스크립트: tools/play_phone_round_photos.py first10 out=…; sync: HH_MAIN_STUDIO=1 STUDIO_ID=<id> py tools/sync_to_studio.py.
+
 ## 내일: 10/16 게시판
 - 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P. (10/15 밤 상태: Studio 창 GoodEvil 열림, Edit·Play 없음·저장 X, main 45fbdb32 sync 완료. 10/15 캡처 막힘 원인 = 업데이트 전 Studio로 연 것 → 재오픈으로 해결. 사진 = docs/art/verification_2026-10-15/main_a1d06f69/. 강제 종료(Stop-Process)는 권한 거부됨 — 창 닫기는 사용자 몫.)
 

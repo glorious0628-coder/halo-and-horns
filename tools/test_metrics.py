@@ -168,7 +168,9 @@ def static() -> tuple[int, list[str]]:
     pvp = read(SSS / "PvPService.luau")
     check(pvp.count('"Penalty")') == 2 and 'TakeCarriedGold(victim, stolen, "Plunder")' in pvp, "PvP tags plunder and penalties")
     kaiju = read(SSS / "KaijuService.luau")
-    check(kaiju.count('"TakeCarriedGold", ') == 3 and kaiju.count('carried, "Kaiju")') == 3, "the kaiju tags its three gold takes")
+    # A23-216: the defeat takes only its loss (the third take, "loss - fromEscrow")
+    check(kaiju.count('"TakeCarriedGold", ') == 3 and kaiju.count('carried, "Kaiju")') == 2
+          and 'loss - fromEscrow, "Kaiju")' in kaiju, "the kaiju tags its three gold takes")
     net = read(SHARED / "Net.luau")
     check(net.count('"UiMetric"') == 1, "Net.Names has UiMetric once")
     tel = read(SSS / "TelemetryService.luau")

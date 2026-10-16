@@ -370,13 +370,6 @@ local function inFactionTown(p)
 	return ok and type(zone) == "table" and zone.Town == true and zone.Faction ~= nil
 end
 
--- A23-218: true while p stands in the Crossroads (the town without a faction)
-local function inCrossroads(p)
-	local zs = S and S.ZoneService
-	if type(zs) ~= "table" or type(zs.GetZone) ~= "function" then return false end
-	local ok, zone = pcall(zs.GetZone, p)
-	return ok and type(zone) == "table" and zone.Town == true and zone.Faction == nil
-end
 
 -- ⑤ a soft outline in the faction color (no fill, hidden behind walls) while protected, outside the towns (#42).
 -- Protect adds it; the 1 s loop puts it back on a rebuilt body (an appearance swap moves the ForceField, not this) and
@@ -617,12 +610,11 @@ function PvPService.CanAttack(attacker, victim)
 	if PvPService.AreFriends(attacker, victim) then
 		return false, "Friend"
 	end
-	-- kaiju exception (A23-218, user 10/16, with A23-203 "danger only in a red zone"): Halo may hit the Active kaiju
-	-- (rookies allowed, protection ignored) where both stand in the Crossroads (the knights calm it there) or both inside a
-	-- red PvP zone - never from a faction town (#41) and never in the safe hunting land. The kaiju itself hurts nobody in
-	-- the Crossroads: it is no PvP zone, so the normal rules below answer
-	if fa == "Halo" and kstate(victim) == "Active" and not inFactionTown(attacker)
-		and ((inCrossroads(attacker) and inCrossroads(victim)) or (inPvP(attacker) and inPvP(victim))) then
+	-- kaiju exception (A23-220, user 10/16 "글리치 이용해서 깨는 건 안 돼", replaces A23-218's Crossroads exception): Halo may
+	-- hit the Active kaiju (rookies allowed, protection ignored) only while both stand inside a red PvP zone - the same
+	-- place the kaiju can fight back. The Crossroads, the towns, the safe hunting land, one of the two outside: nobody hits
+	-- anybody (the normal rules below answer SafeZone)
+	if fa == "Halo" and kstate(victim) == "Active" and not inFactionTown(attacker) and inPvP(attacker) and inPvP(victim) then
 		return true, nil
 	end
 	if not inPvP(attacker) or not inPvP(victim) then

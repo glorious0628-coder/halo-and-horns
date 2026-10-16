@@ -605,8 +605,11 @@ runGroup("clues", function()
 	local C, SQ = C0, SQ0
 	check(SQ.Speakers.Kids == "Bright & Rose" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
 		and SQ.Landmarks.KidsBench.Z == 18, "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)", show(SQ.Landmarks.KidsBench))
-	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[1], "They say", 1, true) == 1
-		and #C.Story.Premise == 3 and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 rumor lines, 3 premise lines, the ask",
+	-- A23-212 (user 10/16): the culprit is told from the start - Captain Clatter, by mistake (no "They say" rumor any more)
+	check(#C.Story.OpeningRumor == 3 and C.Story.OpeningRumor[1] == "Captain Clatter broke the Crown of Balance."
+		and #C.Story.Premise == 3 and string.find(C.Story.Premise[1], "Captain Clatter broke the Crown", 1, true) == 1
+		and C.ClientText.Intro.Lines[1] == "Captain Clatter broke the Crown of Balance."
+		and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 lines, 3 premise lines naming Clatter, the ask",
 		show({ C.Story.OpeningRumor, C.Story.OpeningAsk }))
 	for _, line in C.Story.Premise do
 		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",
@@ -2869,18 +2872,27 @@ runGroup("p1 core", function()
 	local m, dm = w:Join(9913, { Faction = "Halo", Class = "Warrior", Level = 2, Pos = vec(2, 0, 2),
 		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 	w.Story.Refresh(m)
-	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) == nil,
-		"an offered main below its level: not started, not offered", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
+	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) == nil
+		and w.Story.MainRow(m, dm) == nil,
+		"an offered main below its level: not started, not offered, no row", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
 	dm.Level = 3
 	m:SetAttribute("Level", 3)
 	w.Story.Refresh(m)
 	check(dm.Story.Main.Id == "" and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) ~= nil,
 		"at its level: not started by itself, its NPC offers it", show({ dm.Story.Main, m:GetAttribute("StoryOffers") }))
+	-- 최종 검수 10/16 ①: the pinned row points at the asker while the main waits ("Talk to <name>", Story.Npc, Offer)
+	local wrow = w.Story.MainRow(m, dm)
+	check(type(wrow) == "table" and wrow.Pinned == true and wrow.Id == "story:TP1M" and wrow.Story.Npc == "TKidM"
+		and wrow.Story.Offer == true and wrow.Text == string.format(SQ.Text.OfferTalk, "TKidM") and wrow.CanClaim == false,
+		"the waiting main's pinned row: 'Talk to <asker>', guides to that NPC (Story.Npc), not claimable", show(wrow))
 	check(w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M", "the talk offers the main", "")
 	w:Act(m, "TP1M", "Decline")
-	check(dm.Story.Main.Id == "", "Decline: nothing saved", show(dm.Story.Main))
+	check(dm.Story.Main.Id == "" and w.Story.MainRow(m, dm) ~= nil and w.Story.MainRow(m, dm).Story.Npc == "TKidM"
+		and string.find(m:GetAttribute("StoryOffers") or "", "TKidM", 1, true) ~= nil and w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M",
+		"Decline = later: nothing saved, the row and the '!' stay, the next talk asks again", show(dm.Story.Main))
 	w:Act(m, "TP1M", "Accept")
-	check(dm.Story.Main.Id == "TP1M" and dm.Story.Main.St == 1, "Accept: the main runs", show(dm.Story.Main))
+	check(dm.Story.Main.Id == "TP1M" and dm.Story.Main.St == 1 and w.Story.MainRow(m, dm).Story.Offer == nil,
+		"Accept: the main runs (its own step row now)", show(dm.Story.Main))
 	local m2, dm2 = w:Join(9914, { Faction = "Halo", Class = "Warrior", Level = 3, Pos = vec(2, 0, 2),
 		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = { Migrated = true } } } })
 	SQ.Defs.TP1M.Offer.Npc = "TNobody"
@@ -3281,6 +3293,102 @@ runGroup("daily repeat requests", function()
 	end
 end)
 
+------------------------------------------------------------------ A23-205 the real daily pack (Shared/Quests/Daily.luau)
+runGroup("the daily pack", function()
+	local w = townWorld({ Prompts = true })
+	local C, SQ = w.Config, w.Config.StoryQuests
+	local pack = execute("Daily", DAILY_SOURCE, nativeEnv())
+	C.AddQuests(pack, "Daily")
+	-- A23-215 (user 10/16): twelve different bundles (kinds AND counts; DC1 = an XP share; DC3 adds a first-finish title)
+	local function sig(r)
+		local parts = {}
+		if r.Item or r.Potion then table.insert(parts, tostring(r.Item or r.Potion) .. "x" .. tostring(r.N or 1)) end
+		for _, row in r.Items or {} do table.insert(parts, tostring(row.Id) .. "x" .. tostring(row.N or 1)) end
+		table.sort(parts)
+		local out = table.concat(parts, "+")
+		if out == "" then out = r.XPBar and "XPBar" or "" end
+		return out
+	end
+	local kinds, n = {}, 0
+	for _, id in pack.Subs do
+		local def = SQ.Defs[id]
+		local r = def.Reward
+		local kind = sig(r)
+		check(def.Repeat == "Daily" and def.Last == true and kind ~= "" and kinds[kind] == nil, id .. ": a daily, its own reward bundle", show(r))
+		kinds[kind] = true
+		n += 1
+	end
+	check(n == 12 and SQ.RepeatDailyMax == 5, "12 dailies, 5 a day", n)
+	local R = function(id) return SQ.Defs[id].Reward end
+	check(sig(R("DH3")) == "HPx2+MPx1" and sig(R("DR2")) == "HPx1+MPx2" and R("DC1").XPBar == 0.03 and sig(R("DC2")) == "Enh70x1+HPx2"
+		and sig(R("DC3")) == "Enh30x1+Enh70x1" and R("DC3").Title == "RecordKeeper" and C.TitleDefs.RecordKeeper ~= nil
+		and R("DH1").Item == "Enh70" and R("DR1").Item == "Move70",
+		"A23-215 bundles: DH3 HP2+MP1, DR2 MP2+HP1, DC1 3% XP, DC2 Enh70+HP2, DC3 Enh30+Enh70 + the Record Keeper title",
+		show({ sig(R("DH3")), sig(R("DR2")), sig(R("DC2")), sig(R("DC3")) }))
+	local BRIGHT = vec(18, 0, -424)
+	w:Npc("Bright", BRIGHT)
+	w:Npc("Gleam", vec(-10, 0, -372))
+	local p, d = joinAfterM23(w, 9981, "Halo", { Pos = BRIGHT + vec(2, 0, 0), Level = 9 })
+	w.Story.Refresh(p)
+	check(string.find(p:GetAttribute("StoryOffers") or "", "Bright", 1, true) ~= nil, "Halo past M1_4: Bright asks (DH1 / DH3)",
+		p:GetAttribute("StoryOffers"))
+	check(C.QuestBefore(SQ.Defs.DH1, "Halo", d.Story.Flags) == SQ.Defs.DH1.Offer.BeforeBy.Default, "the first visit: the Default line", "")
+	-- 10/16: Hard is really harder - Hard hunts twice the Normal one, Hard / Challenge repairs = 3 timings after a long walk
+	local function kills(id) return SQ.Defs[id].Steps[1].Obj.Count end
+	-- user 10/16: Hard 50 slimes, Normal 20, the goblin race 30, the Challenge 50 ruins skeletons (Daily.luau's K table)
+	local dc3 = SQ.Defs.DC3.Steps[2].Obj
+	check(kills("DH1") == 50 and kills("DR1") == 50 and kills("DN1") == 20 and kills("DC2") == 30
+		and dc3.Type == "Kill" and dc3.Kind == "Skeleton" and dc3.Count == 50, "Hard 50 slimes, Normal DN1 20, DC2 30 goblins, DC3 50 skeletons",
+		show({ kills("DH1"), kills("DR1"), kills("DN1"), kills("DC2"), dc3.Count }))
+	for _, id in { "DN2", "DC3" } do
+		local def, timings, far = SQ.Defs[id], 0, 0
+		local home = def.Steps[1].Obj.Spot
+		for _, st in def.Steps do
+			if st.Obj.Type == "Timing" and st.Obj.Spot == home then timings += 1 end
+			if st.Obj.Type == "Pickup" then far = (SQ.Landmarks[st.Obj.Spot] - SQ.Landmarks[home]).Magnitude end
+		end
+		check(timings == 3 and far >= 250, id .. ": 3 timings at the object after a long walk for the parts", show({ timings, far }))
+	end
+	w:Act(p, "DH1", "Accept")
+	check(w:Track(d, "DH1") ~= nil, "DH1 accepted", "")
+	local function slime()
+		w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", ZoneId = "SlimeMeadow", Golden = false, Personal = false,
+			Position = vec(150, 0, 0), WarPoints = 0 })
+		w:Flush()
+	end
+	for _ = 1, 49 do slime() end
+	check(w:Track(d, "DH1").St == 1, "49 slimes: still hunting (Hard = 50)", show(w:Track(d, "DH1")))
+	slime()
+	check(w:Track(d, "DH1").St == 2, "50 slimes: on to the glue", show(w:Track(d, "DH1")))
+	w:MoveTo(p, SQ.Landmarks.DH1Glue + vec(2, 0, 0))
+	w:Act(p, "DH1", "Pickup")
+	check(w:Track(d, "DH1").St == 3, "the glue picked up at its spot: on to Bright", show(w:Track(d, "DH1")))
+	w:MoveTo(p, BRIGHT + vec(2, 0, 0))
+	local bank = d.BankGold or 0
+	local had = (d.Items or {}).Enh70 or 0
+	w:Act(p, "DH1", "Choose", "Good")
+	check(d.Story.Daily.Done.DH1 == true and d.Story.Done.DH1 == nil and (d.BankGold or 0) == bank + 100
+		and ((d.Items or {}).Enh70 or 0) == had + 1 and ((d.ItemsBound or {}).Enh70 or 0) >= 1,
+		"DH1 done: +100 gold and one Enhance Scroll 70%, bound; done for today only", show({ d.BankGold, d.Items, d.ItemsBound }))
+	check(d.Story.Flags.DH1 == "Shared", "the choice is remembered (Story.Flags DH1 = Shared)", show(d.Story.Flags))
+	check(C.QuestBefore(SQ.Defs.DH1, "Halo", d.Story.Flags) == SQ.Defs.DH1.Offer.BeforeBy.Shared,
+		"the next visit's Before remembers it (BeforeBy)", "")
+	-- a Horns player never gets Halo's town requests; Pip (a body only at the woods' edge) asks from Lv10
+	w:Npc("Rex", vec(28, 0, 412))
+	local h, hd = joinAfterM23(w, 9982, "Horns", { Pos = vec(28, 0, 414), Level = 9 })
+	w.Story.Refresh(h)
+	check(string.find(h:GetAttribute("StoryOffers") or "", "Bright", 1, true) == nil
+		and string.find(h:GetAttribute("StoryOffers") or "", "Rex", 1, true) ~= nil, "Horns: Rex asks, Bright does not", h:GetAttribute("StoryOffers"))
+	w:Npc("Pip", vec(700, 0, 30))
+	w.Story.Refresh(h)
+	check(string.find(h:GetAttribute("StoryOffers") or "", "Pip", 1, true) == nil, "Lv9: Pip's barrel race waits for Lv10", h:GetAttribute("StoryOffers"))
+	local _ = hd
+	for _, id in pack.Subs do
+		SQ.Defs[id] = nil
+		table.remove(SQ.Subs, table.find(SQ.Subs, id))
+	end
+end)
+
 ------------------------------------------------------------------ quest P1 ⑧ (bible §13-3): a short escort (moves only while I am near; one event; a saved
 -- checkpoint a rejoin goes on from) and a short chase (catch it; fall far behind = it waits at the last waypoint)
 runGroup("p1 chase and escort", function()
@@ -3465,6 +3573,74 @@ runGroup("a23-199 every step has a guide", function()
 	table.sort(fixed)
 	check(#missing == 0, "every new quest step has a Guide or an Npc (A23-199)", table.concat(missing, ", "))
 	check(#fixed == 0, "a step on the KNOWN list got its guide: take it off the list", table.concat(fixed, ", "))
+end)
+
+------------------------------------------------------------------ A23-212 (user 10/16): Captain Clatter's three first-10-minute scenes
+-- (ClatterScenes.luau): each once per character, that player only, on the path they already walk; Fx StoryScene { Id = "Clatter" }
+runGroup("A23-212 clatter scenes", function()
+	local w = townWorld()
+	w.Services.ServerStorage = { FindFirstChild = function() return nil end } -- no boss model here: the scenes still fire
+	local cs = w:Load("ClatterScenes", CLATTER_SOURCE)
+	cs.Init(w.Registry)
+	cs.Start()
+	local K = w.Config.StoryQuests.Clatter
+	local function stepOf(id, t)
+		for i, st in w.Config.StoryQuests.Defs[id].Steps do if st.Obj and st.Obj.Type == t then return i end end
+		return nil
+	end
+	check(K.Enabled == true and K.Scenes.Hat.After.Quest == "M1_1" and stepOf("M1_1", "Kill") == 1 and stepOf("M1_3", "Learn") ~= nil,
+		"the scenes follow M1_1's prince kill and M1_3's Learn step (they exist in the chain)", show({ stepOf("M1_1", "Kill"), stepOf("M1_3", "Learn") }))
+	for key, sc in K.Scenes do
+		check(type(sc.Line) == "string" and #sc.Line <= 50 and type(sc.Move) == "string", key .. ": one short line and a move", sc.Line)
+	end
+	local function scenes(pl)
+		local out = {}
+		for _, f in w.Fx do if f.Kind == "StoryScene" and f.Player == pl and f.Data.Id == "Clatter" then table.insert(out, f.Data) end end
+		return out
+	end
+	local hallie = w:Npc("Hallie", vec(-16, 0, -428))
+	local p, d = w:Join(9601, { Faction = "Halo", Tutorial = 0, Pos = vec(-16, 0, -400) }) -- 28 studs from Hallie
+	local q = w:Join(9602, { Faction = "Halo", Tutorial = 0, Pos = vec(-16, 0, -420) })
+	check(#scenes(p) == 0, "waiting at the guide: no scene yet", "")
+	p:SetAttribute("TutorialStep", 4)
+	w:Flush()
+	local s = scenes(p)
+	local dx, dz = s[1] and s[1].Pos.X - hallie.Position.X or 99, s[1] and s[1].Pos.Z - hallie.Position.Z or 99
+	check(#s == 1 and s[1].Key == "Sorry" and s[1].Value == "Clatter" and d.Story.First.ClatterSorry == true
+		and math.sqrt(dx * dx + dz * dz) < 10 and s[1].Look ~= nil,
+		"the guide's [Accept] (TutorialStep 0 -> 4): Sorry, beside Hallie, saved", show(s[1]))
+	check(#scenes(q) == 0, "... seen by that player only", "")
+	p:SetAttribute("TutorialStep", 3)
+	p:SetAttribute("TutorialStep", 0)
+	p:SetAttribute("TutorialStep", 1)
+	w:Flush()
+	check(#scenes(p) == 1, "once per character: a later step change never repeats it", #scenes(p))
+	w.Story.StepDone:Fire(p, "M1_1", 1)
+	w:Flush()
+	s = scenes(p)
+	check(#s == 2 and s[2].Key == "Hat" and d.Story.First.ClatterHat == true, "the first Slime Prince beaten (M1_1 step 1): Hat", show(s[2]))
+	w.Story.StepDone:Fire(p, "M1_1", 1)
+	w.Story.StepDone:Fire(p, "M1_1", 2)
+	w.Story.StepDone:Fire(p, "M1_3", 1)
+	w:Flush()
+	check(#scenes(p) == 2, "Hat once; other steps play nothing", #scenes(p))
+	w.Story.StepDone:Fire(p, "M1_3", stepOf("M1_3", "Learn"))
+	w:Flush()
+	s = scenes(p)
+	check(#s == 3 and s[3].Key == "Carry" and d.Story.First.ClatterCarry == true, "the first skill learned (M1_3's Learn step): Carry", show(s[3]))
+	-- a returning player past the guide (step 4 at the join) gets no Sorry
+	local r = w:Join(9603, { Faction = "Horns", Tutorial = 4 })
+	r:SetAttribute("TutorialStep", 99)
+	w:Flush()
+	check(#scenes(r) == 0, "joined past the guide (step 4 -> 99): no Sorry", #scenes(r))
+	-- switched off: nothing
+	K.Enabled = false
+	local o, od = w:Join(9604, { Faction = "Halo", Tutorial = 0 })
+	o:SetAttribute("TutorialStep", 4)
+	w.Story.StepDone:Fire(o, "M1_1", 1)
+	w:Flush()
+	check(#scenes(o) == 0 and od.Story.First.ClatterSorry == nil, "Clatter.Enabled = false: no scene, nothing saved", #scenes(o))
+	K.Enabled = true
 end)
 
 ------------------------------------------------------------------ A23-218 ② (user 10/16): SceneSetup, the Studio test scenes (one call)

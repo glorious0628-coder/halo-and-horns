@@ -3,7 +3,7 @@
 Every attack restarts Slash; the wind-up (WindupAt) starts it at HitTime - wind-up so the clip's fastest frame meets the
 impact; an AttackSeq without a seen wind-up shows the follow-through; Walk runs at real speed / chase Speed (0.45-1.5x)
 and a chase at 75%+ of that speed plays Run; a standing monster plays one LookAround every 6-12 s (moving cuts it);
-loops start at each monster's own phase and +-8% speed; dying plays Fall at 1.8x from the frame that hits the ground
+loops start at each monster's own phase and +-8% speed; beaten (A23-211) stays Idle, no fall
 0.5 s after death; Leaving monsters float (Idle). Real Goblin clip modules; Config numbers read from Config.luau.
 Status "passed" only when the fixture passes AND every mutation was applied and caught.
 Report: docs/art/verification_2026-10-06/offline_monster_motion_2026-10-06.json
@@ -22,7 +22,7 @@ ANIMS = ROOT / "src/ReplicatedStorage/MonsterAnims"
 FIXTURE = ROOT / "tools/fixtures/monster_motion_offline.luau"
 BINARY = ROOT / "build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-06/offline_monster_motion_2026-10-06.json"
-CLIP_NAMES = ["Idle", "Walk", "Run", "LookAround", "Slash", "Hurt", "Fall"]
+CLIP_NAMES = ["Idle", "Walk", "Run", "LookAround", "Slash", "Hurt"]
 
 MUTATIONS = [
     ("Slash never restarts while it plays (token ignored)",
@@ -34,9 +34,7 @@ MUTATIONS = [
     ("HitTime takes the first frame", "if sum > best then best, bestI = sum, i end", "if best < 0 then best, bestI = sum, i end"),
     ("Walk ignores the real speed",
      "rate = st.Rate * math.clamp(ratio, M.WalkRate.Min, M.WalkRate.Max)", "rate = st.Rate"),
-    ("the fall plays at normal speed", 'want, once, rate = "Fall", true, M.FallRate', 'want, once, rate = "Fall", true, 1'),
-    ("the fall starts at its first frame", "math.max(0, M.HitTime(clip) - M.FallImpactAt * M.FallRate)", "0"),
-    ("a leaving monster falls", 'if model:GetAttribute("Leaving") == true then', "if false then"),
+    ("a beaten monster plays a hurt again", 'want = "Idle" -- beaten (A23-211', 'want, once = "Hurt", true -- beaten (A23-211'),
     ("loops all start in step", "st.T = from or (once and 0 or st.Phase * clip.Length)", "st.T = from or 0"),
     ("every monster loops at the same speed", "Rate = 1 + (math.random() * 2 - 1) * M.Jitter,", "Rate = 1 + 0 * math.random(),"),
     ("a chase walks (Run never played)", 'want = (ratio >= M.RunAbove and clipFor(st.Kind, "Run")) and "Run" or "Walk"',
@@ -82,7 +80,7 @@ def harness(source: str) -> str:
         parts.append(f'\t["Goblin_{name}"] = {lua_str(text)},')
     parts.append("}")
     parts.append(f"local WINDUP, GOBLIN_SPEED = {windup!r}, {speed!r}")
-    parts.append(f"local EXPECT_SLASH_HIT, EXPECT_FALL_HIT = {hit_time(clips['Slash'])!r}, {hit_time(clips['Fall'])!r}")
+    parts.append(f"local EXPECT_SLASH_HIT = {hit_time(clips['Slash'])!r}")
     parts.append("local BONES = {" + ", ".join(f'"{b}"' for b in bones) + "}")
     return "\n".join(parts) + "\n" + FIXTURE.read_text(encoding="utf-8")
 

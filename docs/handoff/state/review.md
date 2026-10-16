@@ -417,3 +417,20 @@
 - 세 세션 아침 일 시작(개발 1: 오프닝 카메라·폰 잘림·Tutorial 이야기 화면 / 개발 2: 매일 12종 수정 / 메인 반영 1: build/GoodEvil.rbxlx 열고 7803b320 sync, 캡처 정상). build ≠ place 해시(10/15 21:29 사용자 저장본) → 게시 때 맞춤.
 - **다섯 언어 업로드 끝:** es·fr·ja·zh-hans·zh-hant 3,049줄 × 5, ok 3049 fail 0 (scratchpad loc5_up.py: entries.json identifier + 40개 묶음 PATCH, DuplicatedKeySourceContext 묶음은 한 줄씩 다시). 샘플 확인 5×8줄, 자리표시 {n} 어긋남 0. **남은 것:** 10/15 아침 스냅샷 뒤 새 글(1장 이야기·오프닝 자막·매일 부탁 등)은 5언어·한국어 번역 없음 → l10n_coverage로 빠진 줄 뽑아 다시 돌리기.
 - GPT 상의 중: 장인 길드·채집·제작 스위치 켜는 순서 + 그동안 매일 보상(build/codex/artisan_switch_r1.md). 내 추천: 10/17 기술 시험은 꺼 둔 채, 시험 뒤 계획 3번 순서로.
+
+## 10/16 낮 (최종 검수) — 게시판 + 오늘 결정
+- **게시판:** 사용자 Save As 12:54 → place push a94e7c6d (main b27db2ac 반영, ClatterScenes·PredictSwing 들어 있음 확인). 메인 사진 docs/art/verification_2026-10-16/main_b27db2ac_v2(세상 정상; v1은 창 최소화로 흰색). 콘솔 Error 0, 68/68 서비스. 저장 판 그대로 → 서버 종료 불필요. Alt+P는 사용자 "했음둥"(게시 확인은 다음에).
+- **오늘 사용자 결정 SPEC A23-208~219:** 이야기 촘촘(208), Clatter 실수(209)→처음부터 공개·공통 길동무(212), 공존·가루 소동(210), Pip 고블린·몬스터 편안히 사라짐(211), 귀속 재료 제작품 거래 가능·좋은 물건일수록 재료 어렵게(213), Clatter 위엄+귀여움 새 디자인·모델 여러 개(214), 제작 곡선·매일 보상 묶음(215), PvP 손실 줄이기(216), 주간 진영 승부·장인 주간 선물(217), 괴수 교차로·장면 명령(218), 제작 도구 강화·축복 주문서·옵션 1~5%(219).
+- **GPT 상의 기록:** build/codex/ story_emotion_r1·r2, story_world_r3~r5, story_ch2_r1, design_r1·r2, gameplay_r1, daily_rewards_r1, artisan_switch_r1, craft_curve_r1, weekly_war_r1, artisan_weekly_r1, craft_tools_r1, game_feel_r1 — 회의실 페이지에 d1016_01~42로 올림. 안건표 build/codex/agenda.md.
+- **다섯 언어 업로드 끝**(3,049×5). 이후 번역은 하루 한 번 새 줄만(메모리 translation-daily-small-batches).
+- **배지 7개:** Open Cloud 만들기 명령이 권한 검사에서 막힘(Create Public Surface) → 사용자에게 직접 실행 명령 안내(scratchpad badge_create.py, expectedCost 0). 결과 ID 받으면 Config.Badges.Ids.
+- **개발 2 큐:** 장면 명령(A23-218) → 매일 보상 묶음(daily12) → A23-216 숫자 → 2장 데이터 → 장인 최소판(213·215·217 선물·219) → 주간 승부(217).
+- **개발 1 큐:** Clatter 장면 사진(dev1-clatter-scenes 3ce912d0, 병합 대기) → 대장간 'The first weapon can't be sold' 버튼 글 정리 → 무리 5마리 손맛 재측정(장면 명령 뒤).
+
+## 10/16 오후 (최종 검수) — 🔴 첫 10분 막힘 2개 고치고 다시 게시
+- 12:54 게시 판에서 **할리(안내자)·스승 Talk 버튼 안 뜸**(클라 StoryNpcs가 GuideNpc를 called에 안 넣음, 1e20b9f5부터) + **대장간에서 Otto 부탁(M1_1) 못 엶**(모루 프롬프트가 같은 키로 Otto Talk 가림). 고침: fix/hallie-talk 39163d5e, dev2-otto-anvil f22d400b(모루가 Otto 부탁 먼저), dev2-offer-row cfab6038 + dev1-offer-row ad8e1291('Talk to <이름>' 줄·길 안내), dev2-welcome-accept 08bdfcdb(멀리서 I'm In!), onboarding 흐름 시험 a8354007. 개발 1이 PhoneTest에서 빛·뿔 새 저장으로 할리 → 스승 → 첫 무기 → Otto 부탁 → M1_1까지 실제 누름 확인. API 검사 first10_audit(Opus $3.8: 스승 막힘·Otto 겹침 찾음), first10_audit2(Opus $6.3 한도 초과 결과 없음 — 낭비), first10_audit3(Sonnet $0.5, 좁게: 막힘 없음).
+- 게임성: PvP A23-216 숫자 6af55828, 괴수 A23-220(붉은 구역 안에서만) f22d400b, Clatter 첫 10분 장면 화면 35a8149b.
+- 폐허 묘비 16·영혼불 6 → ServerStorage/RetiredDecor_1016(메인 Studio, 처음 옮긴 건 창이 바뀌며 사라져 다시 옮김).
+- **재게시:** 사용자 Save As 15:10(새 창 'GoodEvil.rbxlx' 말고 '헤일로 & 혼스' 창에서) → place push dce0db87(main a5a5c40e 반영). Alt+P는 사용자.
+- 게시 뒤 병합: daily12 01038ecb·zone-lore 9a081f0e. dev2-scene-cmd는 Main 목록 충돌 → 개발 2가 main 합쳐 다시.
+- 사용자 지시: 알림은 할 일·결정 때만(앱 '작업 완료 알림' 끔), 세션들은 묶음 끝나면 스스로 클리어, 게시 전 실제 흐름 확인(메모리 prepublish-real-flow-check).
