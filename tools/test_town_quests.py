@@ -70,8 +70,8 @@ MUTATIONS = [
     # by "P1: Accept without the body"
     ("offer: Accept without the requirements", ST, "\treturn def.Kind == \"Sub\" and st.Subs[id] == nil and requirementsMet(player, data, def)\nend",
      "\treturn def.Kind == \"Sub\" and st.Subs[id] == nil\nend"),
-    ("offer: Decline saves the quest", ST, "\tif action == \"Decline\" then\n\t\tStoryQuestService.Declined:Fire(player, id)\n\t\treturn true",
-     "\tif action == \"Decline\" then\n\t\tstory(data).Subs[id] = { St = 1, P = 0, T = {}, Claim = false }\n\t\treturn true"),
+    ("offer: Decline saves the quest", ST, "\t\tStoryQuestService.Declined:Fire(player, id)\n\t\treturn true",
+     "\t\tstory(data).Subs[id] = { St = 1, P = 0, T = {}, Claim = false }\n\t\treturn true"),
     ("offer: no Offer panel", ST, "\t\t\tNet.Get(\"OpenPanel\"):FireClient(player, \"Offer\", { Id = offered[1], Npc = npcId, Reward = reward })\n", ""),
     ("pickup: anywhere", ST, "\t\tif pickupOk(player, step.Obj) then advance(player, data, id, tr) end", "\t\tadvance(player, data, id, tr)"),
     ("deliver: anywhere", ST, "\t\tif npcNear(player, step.Obj.Npc or step.Npc) then advance(player, data, id, tr) end", "\t\tadvance(player, data, id, tr)"),
@@ -607,6 +607,10 @@ MUTATIONS = [
     ("①: no row while the main waits", ST, "\tif st.Main.Id == \"\" then\n\t\tlocal id = num(data.TutorialStep)", "\tif st.Main.Id == \"\" then do return nil end\n\t\tlocal id = num(data.TutorialStep)"),
     ("①: the waiting row guides nowhere", ST, "Story = { Id = id, St = 1, Npc = npc, Offer = true },", "Story = { Id = id, St = 1, Offer = true },"),
     # A23-218 (2): the Studio test scenes
+    ("ch2 press ①: the main offer after the side cards", ST, "\tif nextOffer and nextOffer.Kind == \"Main\" and later[player] ~= offered[1] then\n", "\tif false then\n"),
+    ("ch2 press ①: any offer before the cards", ST, "\tif nextOffer and nextOffer.Kind == \"Main\" and later[player] ~= offered[1] then\n", "\tif nextOffer and later[player] ~= offered[1] then\n"),
+    ("ch2 press ①: 'Not now' never lets the cards through", ST, "\t\tif def.Kind == \"Main\" then later[player] = id end\n", ""),
+    ("ch2 press ②: scenes leave the skills to the teacher", "SCENE_SOURCE", "then pcall(skills.LearnNow, player) end", "then end"),
     ("A23-218: scenes outside Studio", "SCENE_SOURCE", "\tif not RunService:IsStudio() then return \"studio only\" end\n", ""),
     ("A23-218: Kill takes the farthest", "SCENE_SOURCE", "if d < bestD then best, bestD = rec, d end", "if d > -1 then best, bestD = rec, d end"),
     ("A23-218: Anchor ignored", "SCENE_SOURCE", "if m.Anchor == true and rec.Root then rec.Root.Anchored = true end", "local _ = m"),

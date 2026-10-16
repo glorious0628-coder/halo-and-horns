@@ -186,6 +186,10 @@ local function apply(player, spec)
 		pcall(S.LootService.GrantItem, player, id, math.min(99, math.floor(tonumber(n) or 1)))
 	end
 	if tonumber(spec.Gold) then pcall(S.ProgressionService.AddBankGold, player, math.floor(tonumber(spec.Gold)), "Debug") end
+	-- 2장 누름 확인 ②: the skills this level + story open are learned already (else the side's teacher, Horns = Rose's body
+	-- Smokey, spends the first G on the lesson and the quest window opens only on the second)
+	local skills = S.SkillService
+	if type(skills) == "table" and type(skills.LearnNow) == "function" then pcall(skills.LearnNow, player) end
 	pcall(S.StoryQuestService.Refresh, player)
 	if spec.At then
 		local pos, why = placeOf(spec.At)

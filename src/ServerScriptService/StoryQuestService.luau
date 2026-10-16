@@ -51,6 +51,7 @@ local stays = {}
 -- P1 ④ Match / Timing: [Player] = { [questId .. ":" .. step] = { Kind = "Match", Answer = index } | { Kind = "Timing", At } }
 -- (never saved: a rejoin opens the panel again)
 local panels = {}
+local later = {} -- 2장 누름 확인 ①: [player] = the next main this player put off with "Not now" (its NPC's side cards first)
 -- story_depth E1 / E2 / E3: a pick's side (Good / Purify / A on one side, Evil / Devour / B on the other). Every Pick in
 -- Config.StoryQuests has its side here (검수 2026-10-07: SKL-3 SK2's Guard / Take were missing, so that pick never
 -- counted as a change of mind; A23-70 Lunch1's GiveBack / Bite too)
@@ -1856,6 +1857,7 @@ local function answerOffer(player, data, id, action)
 	local npc = offerNpc(player, def)
 	if not offerable(player, data, id) or not nearBody(player, npc) then return false end
 	if action == "Decline" then
+		if def.Kind == "Main" then later[player] = id end
 		StoryQuestService.Declined:Fire(player, id)
 		return true
 	end
@@ -2131,6 +2133,26 @@ function StoryQuestService.TalkToNpc(player, npcId)
 		local id = SQ.Subs[i]
 		if st.Subs[id] then table.insert(order, { id, st.Subs[id] }) end
 	end
+	-- A23-199: the first quest it offers -> OpenPanel "Offer" { Id, Npc } ([Accept] / [Decline]; the lines are
+	-- Config.StoryQuests.Defs[Id].Offer.Lines)
+	local offered = offersOf(player, data, npcId)
+	local function offerFirst()
+		if not (offered[1] and nearBody(player, npcId)) then return nil end
+		-- P1 ①-1: Reward = what the quest really pays (rule 11; nil = nothing)
+		local reward = rewardPreview(player, DEFS[offered[1]])
+		pcall(function()
+			Net.Get("OpenPanel"):FireClient(player, "Offer", { Id = offered[1], Npc = npcId, Reward = reward })
+		end)
+		return "Offer:" .. offered[1]
+	end
+	-- 2장 누름 확인 ① (최종 검수 10/16): the next main's offer comes before a side card at the same NPC (the kid walks to
+	-- the gold '!'); a running main never has an offer, so its own step still goes first. After "Not now" on that offer the
+	-- side cards there open first (else a waiting card could only be reached by Accept)
+	local nextOffer = offered[1] and DEFS[offered[1]]
+	if nextOffer and nextOffer.Kind == "Main" and later[player] ~= offered[1] then
+		local r = offerFirst()
+		if r then return r end
+	end
 	for _, entry in order do
 		local id, tr = entry[1], entry[2]
 		local def = DEFS[id]
@@ -2150,18 +2172,8 @@ function StoryQuestService.TalkToNpc(player, npcId)
 			if openMini(player, id, tr, step) then return id end
 		end
 	end
-	-- A23-199: nothing open with this NPC: the first quest it offers -> OpenPanel "Offer" { Id, Npc } ([Accept] / [Decline];
-	-- the lines are Config.StoryQuests.Defs[Id].Offer.Lines)
-	local offered = offersOf(player, data, npcId)
-	if offered[1] and nearBody(player, npcId) then
-		-- P1 ①-1: Reward = what the quest really pays (rule 11; nil = nothing)
-		local reward = rewardPreview(player, DEFS[offered[1]])
-		pcall(function()
-			Net.Get("OpenPanel"):FireClient(player, "Offer", { Id = offered[1], Npc = npcId, Reward = reward })
-		end)
-		return "Offer:" .. offered[1]
-	end
-	return nil
+	-- nothing open with this NPC: its side offer
+	return offerFirst()
 end
 
 local function connect(serviceName, signalName, fn)
@@ -2292,6 +2304,9 @@ function StoryQuestService.Start()
 			end
 			for p in panels do
 				if p.Parent == nil then panels[p] = nil end -- P1 ④ open panels of players who left
+			end
+			for p in later do
+				if p.Parent == nil then later[p] = nil end
 			end
 			for p in MOVER.Live do
 				if p.Parent == nil then MOVER.Drop(p) end -- P1 ⑧ movers of players who left (their attackers go home)

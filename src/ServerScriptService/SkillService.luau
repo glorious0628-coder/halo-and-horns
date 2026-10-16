@@ -984,6 +984,16 @@ function SkillService.CatchUp(player)
 	catchUp(player, false)
 end
 
+-- 2장 누름 확인 ② (SceneSetup only): a made-up save at a level learns the slots its story lets open at once, like a player
+-- who took the lessons on the way (no Fx); the teacher then has nothing waiting, so the first talk opens the quest
+function SkillService.LearnNow(player)
+	if not isPlayer(player) or player.Parent == nil or not S.PlayerService.IsReady(player) then return end
+	local have = slotsOf(player)
+	local want = LEARN.Gated(player, have, slotsFor(player))
+	if want > have then raise(player, have, want, false) end
+	catchUp(player, false)
+end
+
 ------------------------------------------------------------------ remote
 local function onUseSkill(player, slot, ...)
 	if select("#", ...) ~= 0 or type(slot) ~= "string" or SLOT[slot] == nil then return end

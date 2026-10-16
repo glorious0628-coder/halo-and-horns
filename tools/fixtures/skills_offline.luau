@@ -331,6 +331,21 @@ runGroup("teacher", function()
 	w.Skills.CatchUp(g)
 	check(g:GetAttribute("SkillLearnReady") == 1 and w.Skills.TryLearn(g, "Gleam") == true and g:GetAttribute("SkillSlots") == 1,
 		"the gate: the test done - ready (CatchUp) and taught", show(a(g)))
+	-- 2장 누름 확인 ② (SceneSetup): a made-up Lv16 save learns what its story opens at once, silently; the teacher's talk is free
+	local sn = w:Hero(12, { Level = 16, Faction = "Halo", Pos = vec(0, 0, -4) })
+	local snd = w.Data[sn]
+	local fs = #w.Fx
+	w.Skills.LearnNow(sn)
+	check(sn:GetAttribute("SkillSlots") == 0 and sn:GetAttribute("SkillLearnReady") == 0,
+		"LearnNow before the Lv5 test: the gate holds Q (and Z behind it)", show(a(sn)))
+	snd.Story = snd.Story or {}
+	snd.Story.Done = snd.Story.Done or {}
+	snd.Story.Done.M1_3 = true
+	w.Skills.LearnNow(sn)
+	check(sn:GetAttribute("SkillSlots") == 2 and snd.SkillSlots == 2 and sn:GetAttribute("SkillLearnReady") == 0
+		and sn:GetAttribute("SkillTeacher") == "" and #w:FxOf("SkillLearned", fs) == 0 and #w:FxOf("SkillUnlocked", fs) == 0
+		and w.Skills.TryLearn(sn, "Gleam") == false,
+		"LearnNow after the test: Q and Z learned, no Fx, nothing waits at Sir Gleam", show(a(sn)))
 	w.Config.Skills.Learn.Gate = nil
 	-- old saves keep their skills; a rebirth needs no teacher; no teacher body here (Otto) = the slot opens at once
 	local old = w:Hero(4, { Level = 30, Faction = "Halo", Data = { SkillSlots = 3 } })

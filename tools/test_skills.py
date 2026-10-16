@@ -219,6 +219,9 @@ MUTATIONS = [
     ("P1: the gate never closes", "SKILL_SOURCE", "\t\tif ok and open == false then return i - 1 end\n", ""),
     ("P1: ready ignores the gate", "SKILL_SOURCE", "LEARN.Mirror(player, open > have and open or 0, open > have and teacher or nil)", "LEARN.Mirror(player, want, teacher)"),
     ("P1: taught past the gate", "SKILL_SOURCE", "\twant = LEARN.Gated(player, have, want) -- P1 ⑤", "\twant = want -- P1 ⑤"),
+    ("scene: LearnNow past the gate", "SKILL_SOURCE", "\tlocal want = LEARN.Gated(player, have, slotsFor(player))\n\tif want > have", "\tlocal want = slotsFor(player)\n\tif want > have"),
+    ("scene: LearnNow learns nothing", "SKILL_SOURCE", "\tif want > have then raise(player, have, want, false) end\n\tcatchUp(player, false)", "\tcatchUp(player, false)"),
+    ("scene: LearnNow announces", "SKILL_SOURCE", "\tif want > have then raise(player, have, want, false) end\n\tcatchUp(player, false)", "\tif want > have then raise(player, have, want, true) end\n\tcatchUp(player, false)"),
     ("P1: no CatchUp", "SKILL_SOURCE", "function SkillService.CatchUp(player)\n\tcatchUp(player, false)\nend", "function SkillService.CatchUp(player)\nend"),
 ]
 
