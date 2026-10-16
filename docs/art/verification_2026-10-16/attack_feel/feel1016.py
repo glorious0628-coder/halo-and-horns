@@ -178,7 +178,7 @@ def main():
     out = []
     for cls in args or ["Warrior", "Mage", "Archer"]:
         out.append(run_class(c, cls, bare))
-    name = "feel_bare.json" if bare else "feel_armed.json"
+    name = "feel_%s_%s.json" % ("bare" if bare else "armed", "_".join(args or ["all"]))
     with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
     print("saved", name)

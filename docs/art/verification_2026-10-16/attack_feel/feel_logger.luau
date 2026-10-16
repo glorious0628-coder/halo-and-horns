@@ -61,6 +61,7 @@ local monsters = workspace:WaitForChild("Monsters", 5)
 local function watchMonster(m)
 	if not m:IsA("Model") then return end
 	on(m:GetAttributeChangedSignal("HurtSeq"), function() add("hurt", m:GetAttribute("MonsterKind")) end)
+	on(m.ChildAdded, function(c) if c.Name == "CalmSoft" then add("calm", m:GetAttribute("MonsterKind")) end end)
 	local root = m.PrimaryPart
 	if root then on(root:GetPropertyChangedSignal("Anchored"), function() if root.Anchored then add("beaten", m:GetAttribute("MonsterKind")) end end) end
 end
