@@ -40,7 +40,7 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_halloween_2026-10-06.json
 SSS = ROOT / "src/ServerScriptService"
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 ANIMS = ROOT / "src/ReplicatedStorage/MonsterAnims"
-CLIP_NAMES = ("Idle", "Walk", "Slash", "Hurt", "Fall")
+CLIP_NAMES = ("Idle", "Walk", "Slash", "Hurt")  # A23-211: no Fall clip
 FILES = {
     "CONFIG_SOURCE": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
     "NET_SOURCE": ROOT / "src/ReplicatedStorage/Shared/Net.luau",
@@ -75,7 +75,6 @@ CLIP_ARGS = {
     "Walk": ["--loop", "--from", "0", "--to", "2.3333"],
     "Slash": ["--from", "0.9", "--to", "2.9"],
     "Hurt": ["--from", "0", "--to", "1.0"],
-    "Fall": ["--from", "0", "--to", "3.0"],
 }
 # files the Halloween change touched (line endings must stay one style per file)
 EOL_FILES = [FILES[k] for k in ("CONFIG_SOURCE", "NET_SOURCE", "QUEST_SOURCE", "STORY_SOURCE", "ANNOUNCE_SOURCE",
@@ -191,12 +190,17 @@ MUTATIONS = [
     ("a dying body fades see-through again", "MONSTER_SOURCE",
      "TweenService:Create(d, info, { Size = d.Size * 0.2 }):Play()",
      "TweenService:Create(d, info, { Size = d.Size * 0.2, Transparency = 1 }):Play()"),
-    ("the server resizes a killed slime's splatted body", "MONSTER_SOURCE",
-     "and not (splatted and d:IsDescendantOf(splatted)) then", " then"),
-    ("a leaving king is left to a splat it never gets (keeps its size)", "MONSTER_SOURCE",
-     "local splatted = not leaving and type(def)", "local splatted = type(def)"),
-    ("a slime without a custom model never shrinks", "MONSTER_SOURCE",
-     "def.Shape == \"Slime\" and model:FindFirstChild(\"CustomVisual\")\n\t\tor nil", "def.Shape == \"Slime\" and model\n\t\tor nil"),
+    # A23-211 (user 10/16): a kill = the clients' calm fade; the server neither bursts nor shrinks; bosses get CalmTime
+    ("A23-211: a kill shrinks on the server again", "MONSTER_SOURCE",
+     "\t\t\tif leaving and d ~= root and d.Name ~= VISUAL_ROOT_NAME then", "\t\t\tif d ~= root and d.Name ~= VISUAL_ROOT_NAME then"),
+    ("A23-211: no CalmTime on a boss", "MONSTER_SOURCE",
+     "\tif calm then model:SetAttribute(\"CalmTime\", calm) end", "\tif false then model:SetAttribute(\"CalmTime\", calm) end"),
+    ("A23-211: no wait for the hit mark", "MONSTER_SOURCE", "local HIT_WAIT = 0.7\n", "local HIT_WAIT = 0\n"),
+    ("A23-211: a boss removed at the default time", "MONSTER_SOURCE",
+     "DEATH_DESTROY + (calm and calm - 1 or 0)", "DEATH_DESTROY"),
+    ("A23-211: a leaving boss gets CalmTime", "MONSTER_SOURCE",
+     "\tlocal calm = not leaving and type(rec.Kind)", "\tlocal calm = type(rec.Kind)"),
+    # (10/16 A23-211: "a slime without a custom model never shrinks" removed - no killed body shrinks on the server now)
     ("a dying body is not held from the ghost sweep", "MONSTER_SOURCE",
      "GHOST.Dying[model] = os.clock() + life + GHOST.Grace", "GHOST.Dying[model] = nil"),
     ("the ghost sweep removes dying bodies early", "MONSTER_SOURCE",
@@ -296,22 +300,15 @@ MUTATIONS = [
      "if Util.FlatDistance(pos, info.Pos) <= NATURAL.GlanceRange then", "if false then"),
     ("a killed monster vanishes at once again (0.4 s)", "MONSTER_SOURCE",
      "local DEATH_DESTROY = 1.15\n", "local DEATH_DESTROY = 0.4\n"),
-    ("the body shrinks at once (no hold before the shrink)", "MONSTER_SOURCE",
-     "local hold = leaving and 0 or math.max(0, DEATH_DESTROY - DEATH_SHRINK - 0.1)", "local hold = 0"),
     # Fx WOBBLE: float, grounded slimes, blob shadows, dust (71c10bd / f965cd0)
     ("ghost walks on the floor (Float ignored)", "FX_SOURCE",
      "Float = (float and float > 0 and def.Shape ~= \"Slime\") and float or nil,", "Float = nil,"),
-    ("leaving slime still splats", "FX_SOURCE",
-     "\n\t\t\t\tand model:GetAttribute(\"Leaving\") ~= true then", " then"),
-    # A23-74: the client shrinks a killed slime's puddle (the server leaves the body to it)
-    ("a killed slime's puddle never shrinks", "FX_SOURCE",
-     "TweenService:Create(mesh, info, { Size = splat * 0.2 }):Play()", ""),
-    ("the shrinking puddle floats off the floor", "FX_SOURCE",
-     "{ C1 = CFrame.new(0, baseY * 0.46, 0) }", "{ C1 = CFrame.new(0, baseY * 0.32, 0) }"),
-    ("puddle shrink drifts from the server's death timing", "FX_SOURCE",
-     "DeathHold = 0.75, DeathShrink = 0.3 }", "DeathHold = 0.5, DeathShrink = 0.3 }"),
-    ("puddle shrinks while the slime is already gone", "FX_SOURCE",
-     "if not mesh.Parent or not joint.Parent then return end", ""),
+    # A23-211: a beaten slime goes to the calm fade (no splat / puddle); a leaving king does not
+    ("a leaving king gets the calm fade", "FX_SOURCE",
+     'if sroot and sroot.Anchored and not foreign and model:GetAttribute("Leaving") ~= true then',
+     'if sroot and sroot.Anchored and not foreign then'),
+    ("a beaten slime keeps its last hop size", "FX_SOURCE",
+     "\t\t\t\tWOBBLE.rest(st) -- a beaten one relaxes in WOBBLE.calm below", "\t\t\t\tlocal _ = st -- a beaten one relaxes in WOBBLE.calm below"),
     ("slime hop not capped at HopMax", "FX_SOURCE",
      "or math.min(st.H * WOBBLE.HopRatio, WOBBLE.HopMax)", "or st.H * WOBBLE.HopRatio"),
     ("slime sits on the ground surface (no Sink)", "FX_SOURCE",
@@ -426,7 +423,7 @@ def make_harness(sources: dict[str, str]) -> str:
     # the real death pop (A23-74: opaque; kill: hold + shrink + burst, a slime's CustomVisual left to the clients;
     # leaving: "Leaving" attribute, rise + shrink) and the ghost sweep (GHOST.Sweep)
     pop_consts = []
-    for pattern in (r"^local DEATH_SHRINK = .*$", r"^local DEATH_DESTROY = .*$", r"^local VISUAL_ROOT_NAME = .*$",
+    for pattern in (r"^local DEATH_SHRINK = .*$", r"^local DEATH_DESTROY = .*$", r"^local HIT_WAIT = .*$", r"^local VISUAL_ROOT_NAME = .*$",
                     r"^local LEAVE = \{.*\}$", r"^local GHOST = \{.*\}$"):
         m = re.search(pattern, mon, re.M)
         if not m:
@@ -569,7 +566,8 @@ def static_checks() -> tuple[int, list[str], list[str]]:
         try:
             for clip in CLIP_NAMES:
                 glb = ROOT / f"art/models/tripo/MonsterBatGoblin_{clip}.glb"
-                check(glb.is_file(), f"art/models/tripo/MonsterBatGoblin_{clip}.glb exists")
+                # 10/16: the source GLBs were deleted on purpose (a74d4954, A23-150 shadowed-source 3D, the record is in git
+                # history): a missing GLB skips its regeneration check instead of stopping the whole suite
                 if not glb.is_file():
                     continue
                 sys.argv = ["glb_anim_to_luau.py", str(glb), "BatGoblin", clip, *CLIP_ARGS[clip]]
@@ -583,13 +581,16 @@ def static_checks() -> tuple[int, list[str], list[str]]:
     # 2. the BatGoblin rig has the Goblin skeleton (same 41 Tripo bone names, same order); every clip bone is on the rig
     bat_glb = ROOT / "art/models/tripo/MonsterBatGoblin_Idle.glb"
     gob_glb = ROOT / "art/models/tripo/MonsterGoblin_Idle.glb"
-    bat_joints, gob_joints = joint_names(bat_glb), joint_names(gob_glb)
-    check(bat_joints == gob_joints and len(bat_joints) == 41,
-          f"BatGoblin GLB skeleton = Goblin GLB skeleton (41 joints, same names/order): {len(bat_joints)} vs {len(gob_joints)}")
+    have_glbs = bat_glb.is_file() and gob_glb.is_file() # 10/16: deleted on purpose (a74d4954); skip the rig checks then
+    bat_joints, gob_joints = (joint_names(bat_glb), joint_names(gob_glb)) if have_glbs else ([], [])
+    if have_glbs:
+        check(bat_joints == gob_joints and len(bat_joints) == 41,
+              f"BatGoblin GLB skeleton = Goblin GLB skeleton (41 joints, same names/order): {len(bat_joints)} vs {len(gob_joints)}")
     for clip in CLIP_NAMES:
         text = (ANIMS / f"BatGoblin_{clip}.luau").read_text(encoding="utf-8")
         bones = set(re.findall(r'\["([^"]+)"\] = \{ r =', text))
-        check(bones and bones <= set(bat_joints), f"BatGoblin_{clip} bones are joints of the BatGoblin rig: {sorted(bones - set(bat_joints))}")
+        if have_glbs:
+            check(bones and bones <= set(bat_joints), f"BatGoblin_{clip} bones are joints of the BatGoblin rig: {sorted(bones - set(bat_joints))}")
         check(text.startswith(f"-- generated by tools/glb_anim_to_luau.py from art/models/tripo/MonsterBatGoblin_{clip}.glb"),
               f"BatGoblin_{clip} header names its source GLB")
     # 3. one line-ending style per touched file
@@ -601,7 +602,7 @@ def static_checks() -> tuple[int, list[str], list[str]]:
     # 4. client wiring that the extracted chunks do not show
     motion = STATIC_ONLY["MONSTER_MOTION"].read_text(encoding="utf-8")
     check('local key = kind .. "_" .. name' in motion
-          and 'Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt", "Fall" }' in motion,
+          and 'Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt" }' in motion,
           "MonsterMotion loads ReplicatedStorage.MonsterAnims['<Kind>_<Clip>'] for its clips, Run / LookAround included "
           "(BatGoblin_* are found by kind id; tools/test_monster_motion.py runs the playback rules)")
     hud = FILES["EVENTHUD_SOURCE"].read_text(encoding="utf-8").replace("\r\n", "\n")

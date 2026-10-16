@@ -117,6 +117,7 @@ local T = {
 	LootKinds = type(A.LootKinds) == "table" and A.LootKinds or { Enhance = true, Transfer = true },
 	LootWeaponSpeed = tonumber(A.LootWeaponSpeed) or 0.92,
 	KingPrize = tonumber(A.KingPrize) or 0.25, -- s after KingDefeat: a contributor's KillPop + coin
+	HitSync = 0.05, -- s a kill's sounds wait for the Swing Fx of the same server frame (Fx MOTION.HURT_SYNC_WAIT)
 	LootItems = type(Config.Loot) == "table" and type(Config.Loot.Items) == "table" and Config.Loot.Items or {},
 	Duck = type(A.Duck) == "table" and A.Duck or { Mul = 0.5, Seconds = 1.2, By = {} },
 	Combo = type(A.Combo) == "table" and A.Combo or { Base = 0.8, Top = 1.6, Steps = { 0, 2, 4, 5, 7, 9, 11, 12 } },
@@ -229,14 +230,6 @@ function T.ClassHit(data, event)
 	local snd = own and SOUNDS[own] or nil
 	if type(snd) == "table" and idOf(snd.File) then return own end
 	return event
-end
-
--- 검수 10/10: the killed monster kind's own death sound (Config.Audio.DeathByKind) once uploaded, else KillPop
-function T.DieOf(kind)
-	local ev = type(kind) == "string" and type(A.DeathByKind) == "table" and A.DeathByKind[kind] or nil
-	local snd = ev and SOUNDS[ev] or nil
-	if type(snd) == "table" and idOf(snd.File) then return ev end
-	return "KillPop"
 end
 
 local function warnThrottled(key, msg)
@@ -377,12 +370,8 @@ function Audio.Plan(kind, data, ctx)
 		local step = num(steps[math.min(combo, #steps)], 0)
 		local speed = math.min(num(T.Combo.Top, 1.6), num(T.Combo.Base, 0.8) * 2 ^ (step / 12))
 		local golden = data.Golden == true -- sound_spec GoldenKill: the GoldenSpot file, the coin 0.1 s later
-		local dead = type(data.Kind) == "string" and data.Kind or nil
-		if not dead and typeof(data.Pos) == "Vector3" and type(ctx.KindAt) == "function" then
-			local ok, k = pcall(ctx.KindAt, data.Pos)
-			dead = ok and k or nil
-		end
-		add(out, T.DieOf(dead), 0)
+		-- A23-211: no death sound of any kind - the shard dust's pop for every monster
+		add(out, "KillPop", 0)
 		if golden then add(out, "GoldenKill", 0) end
 		add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed })
 		if MILESTONES[combo] then add(out, "ComboMilestone", 0.15) end
@@ -1057,13 +1046,28 @@ function Audio.OnFx(kind, data)
 		HP = hum and hum.Health or nil,
 		MaxHP = hum and hum.MaxHealth or nil,
 	})
-	for _, p in plan do
-		if p.At > 0 then
-			task.delay(p.At, Audio.Play, p.Event, p)
-		else
-			Audio.Play(p.Event, p)
+	local function playAll(extra)
+		for _, p in plan do
+			local at = p.At + extra
+			if at > 0 then
+				task.delay(at, Audio.Play, p.Event, p)
+			else
+				Audio.Play(p.Event, p)
+			end
 		end
 	end
+	-- 손맛 ③⑤ (GPT game_feel_r1, 최종 검수 10/16): a kill's pop and coins wait for the killing hit to show (Fx.HitWait:
+	-- the contact frame / the orb or arrow's arrival), after T.HitSync for the Swing Fx of the same server frame
+	local pos = (kind == "Reward" or kind == "Loot") and type(data) == "table" and typeof(data.Pos) == "Vector3" and data.Pos or nil
+	local fx = C and C.Fx
+	if pos and type(fx) == "table" and type(fx.HitWait) == "function" then
+		task.delay(T.HitSync, function()
+			local ok, wait = pcall(fx.HitWait, pos)
+			playAll(ok and type(wait) == "number" and wait or 0)
+		end)
+		return
+	end
+	playAll(0)
 end
 
 -- the sound of one Notify line: payload.Sound wins ("None" = silent), else the kind ("bad" -> Deny, "reward" ->

@@ -38,12 +38,15 @@ local T = {
 -- in a weak table - a weak-keyed Instance entry is dropped once Lua holds no reference, so every pass made a new one
 local S = { Started = false }
 
--- the NPC ids my rows talk through (pure: entries = HUD quest rows)
+-- the NPC ids my rows talk through (pure: entries = HUD quest rows). 10/16 (user: "할리 만나기부터 안 됨" - no Talk
+-- prompt on Hallie): the first mission's row names its guide / teacher as GuideNpc (QuestService: step 0 = the side's
+-- guide, the Teacher step = the teacher), not as Story.Npc - those are called too, or their Talk prompt stays off
 function StoryNpcs.Called(entries)
 	local out = {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
 		if type(st) == "table" and type(st.Npc) == "string" and st.Npc ~= "" then out[st.Npc] = true end
+		if type(e) == "table" and type(e.GuideNpc) == "string" and e.GuideNpc ~= "" then out[e.GuideNpc] = true end
 	end
 	return out
 end

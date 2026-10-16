@@ -1467,12 +1467,12 @@ Config.PvP = {
 	PowerRatioMin = 0.8,
 	PowerRatioMax = 1.5,
 	CombatTagTime = 15, -- PvP damage within this window credits the KO and blocks travel/switch/class change
-	PlunderRate = 0.20, -- Horns KO Halo: take 20% of (carried - safe floor) into the grudge sack
+	PlunderRate = 0.05, -- Horns KO Halo: take 5% of (carried - safe floor) into the grudge sack (A23-216, user 10/16: was 20%)
 	PlunderCapPerLevel = 100, -- max stolen per KO = victim level * 100
 	SafeFloorPerLevel = 10, -- never-stealable carried gold = victim level * 10
 	BountyPerLevelStar = 15, -- bounty = 15 * level * stars (minted)
-	VillainLossOnBountyKO = 0.25, -- Wanted Horns KO'd by Halo lose 25% of remaining carried gold
-	VillainLossOnWantedPvEDeath = 0.25, -- Wanted Horns dying without a PvP killer
+	VillainLossOnBountyKO = 0.05, -- Wanted Horns KO'd by Halo lose 5% of remaining carried gold (A23-216: was 25%)
+	VillainLossOnWantedPvEDeath = 0.05, -- Wanted Horns dying without a PvP killer (A23-216: was 25%)
 	MaxStars = 5,
 	StarDecaySeconds = 120,
 	StarDamageBonus = 0.05,
@@ -1538,7 +1538,10 @@ Config.Kaiju = {
 	StompInterval = 4,
 	StompRadius = 15,
 	StompPct = 0.06, -- of each stomped Halo player's MaxHealth (never rookies, never Protected, never in towns)
-	BountyPoolMult = 3, -- reward pool = 3 x current bounty + the kaiju's carried gold
+	BountyPoolMult = 3, -- reward pool = 3 x current bounty + the kaiju's lost gold (DefeatLossRate)
+	-- A23-216 (user 10/16): a defeated kaiju loses at most this share of its pouch, capped at level x PvP.PlunderCapPerLevel;
+	-- the rest stays its own (was: the whole pouch taken, the part over the cap destroyed)
+	DefeatLossRate = 0.10,
 	DamageShare = 0.5, -- 50% of the pool split by damage share, the rest split equally among participants
 	SurviveBankMult = 1.5, -- survived: carried gold x1.5 moved to the bank
 	ShieldSeconds = 10, -- spawn-protection-style shield after the event
@@ -1585,7 +1588,7 @@ Config.War = {
 	SiegeTarget = 1.5, -- per-capita points needed when only one faction is online
 	ChestMinPoints = 1, -- personal points this round needed for a chest
 	WinnerChestPerLevel = 100,
-	LoserChestPerLevel = 30,
+	LoserChestPerLevel = 50, -- A23-216 (user 10/16): the losing / drawn side smiles too (was 30)
 	BlessingGold = 0.25,
 	BlessingXP = 0.25,
 	Tick = 1,
@@ -2882,6 +2885,10 @@ function Config.MonsterActive(kind, override)
 	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
 	return type(def) == "table" and Config.SeasonOn(def.Season, override)
 end
+
+-- A23-211 (user 10/16, game dev 1's calm fade): a boss's calm moment before it fades (s; the model attribute CalmTime, the
+-- clients fit the fade to it, 0.6..3); every other kind = the 1.0 s default (no attribute)
+Config.MonsterCalmTime = { SlimeKing = 1.8, CaptainClatter = 2.2 }
 
 -- true for a seasonal kind that adds its Count on top of its zone instead of taking base slots (no Takes, e.g. the
 -- little ghost): MonsterService spawns it to its own Config.MonsterTargets target outside MonsterDensity.GlobalCap, so
@@ -6809,9 +6816,6 @@ Config.Audio = {
 		HitArrowHeavy = "rbxassetid://111127770916206",
 		HitArrowCrit = "rbxassetid://83876322718434",
 		-- 검수 10/10: monster death sounds by kind (소리 15차 86cd4a69, slimes first)
-		DieSlime = "rbxassetid://105660948835844",
-		DieBigSlime = "rbxassetid://135159844685749",
-		DieFlowerSlime = "rbxassetid://108731319971001",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -6910,10 +6914,6 @@ Config.Audio = {
 		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		-- 검수 10/10: a monster kind's own death sound takes KillPop's place (Config.Audio.DeathByKind; same caps)
-		DieSlime = { File = "DieSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieBigSlime = { File = "DieBigSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieFlowerSlime = { File = "DieFlowerSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
@@ -7020,9 +7020,6 @@ Config.Audio = {
 	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
 	-- bare hands, the pet and a class not listed keep the material hits
 	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
-	-- 검수 10/10: my kill's sound by the monster kind (the Reward packet's Kind, else the monster at its Pos); a kind not
-	-- listed or not uploaded keeps KillPop (goblin, skeleton, pumpkin, ghost follow in their zone turns)
-	DeathByKind = { Slime = "DieSlime", BigSlime = "DieBigSlime", FlowerSlime = "DieFlowerSlime" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
