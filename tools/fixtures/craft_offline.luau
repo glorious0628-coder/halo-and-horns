@@ -570,9 +570,9 @@ runGroup("results", function()
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
 end)
 
------------------------------------------------------------------- A23-206 bound materials (최종 검수 10/16, GPT artisan_switch_r1 ②)
--- a quest reward never turns tradeable through a craft: an Item result made with bound materials is bound, a refund gives
--- the bound part back bound, a Weapon craft takes free materials only (a spare weapon has no bound count)
+------------------------------------------------------------------ A23-206 / A23-213 bound materials (user 10/16)
+-- every craft (weapons too) may use bound materials, the bound ones first; the result is free (it trades / sells); the
+-- materials stay bound themselves: a refund gives the bound part back bound
 runGroup("bound materials", function()
 	local w = cWorld({ EditConfig = function(c)
 		c.Craft.Recipes.T1 = { Role = "Smith", Kind = "Item", Item = "Jelly", N = 3, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
@@ -581,9 +581,9 @@ runGroup("bound materials", function()
 	check(w.C.TryStart(p, "T1") == "ok" and d.Craft.Pend.Bound.CopperOre == 1 and (d.ItemsBound.CopperOre or 0) == 0,
 		"an item craft takes the bound copper first and remembers it (Pend.Bound)", show(d.Craft.Pend))
 	hammer(w, p, HONEST)
-	check(d.Items.Jelly == 205 and d.ItemsBound.Jelly == 5, "the result (3 + the earned +2) made with a bound one is bound", show({ d.Items.Jelly, d.ItemsBound }))
-	check(w.Reg.LootService.TakeItem(p, "Jelly", 196, "Trade") and not w.Reg.LootService.TakeItem(p, "Jelly", 5, "Trade"),
-		"... the market takes the 200 free jelly, never the 5 bound", show({ d.Items.Jelly, d.ItemsBound }))
+	check(d.Items.Jelly == 205 and (d.ItemsBound.Jelly or 0) == 0, "A23-213: the result (3 + the earned +2) made with a bound one is free",
+		show({ d.Items.Jelly, d.ItemsBound }))
+	check(w.Reg.LootService.TakeItem(p, "Jelly", 205, "Trade"), "... the market takes all 205 jelly", show({ d.Items.Jelly, d.ItemsBound }))
 	local q, dq = smith(w, 2)
 	w:Advance(61)
 	check(w.C.TryStart(q, "T1") == "ok" and dq.Craft.Pend.Bound == nil, "free copper only: nothing remembered (the old Pend shape)", show(dq.Craft.Pend))
@@ -600,14 +600,13 @@ runGroup("bound materials", function()
 	local san = w.Config.SanitizeCraft({ Pend = { Id = "T1", Plus = 1, Gold = 1, Mats = { CopperOre = 1 }, Bound = { CopperOre = 1, Bad = -3 } } })
 	local old = w.Config.SanitizeCraft({ Pend = { Id = "T1", Plus = 1, Gold = 1, Mats = { CopperOre = 1 } } })
 	check(san.Pend.Bound.CopperOre == 1 and san.Pend.Bound.Bad == nil and old.Pend.Bound == nil, "SanitizeCraft keeps Pend.Bound (none = no field)", show(san.Pend))
-	-- a weapon craft: free materials only
-	local k, dk = smith(w, 4, { ItemsBound = { CopperOre = 79 } })
-	local nf = #w.Notices
-	check(w.C.TryStart(k, "W1") == "bound" and keysFor(w, k, nf)[1] == "Config.Craft.Text.BoundMats" and dk.Items.CopperOre == 80
-		and dk.Items.Jelly == 200 and dk.BankGold == 100000, "W1 needs 2 copper, 1 is free: refused (BoundMats), nothing taken", show(dk.Items))
-	local m, dm = smith(w, 5, { ItemsBound = { CopperOre = 78 } })
-	check(w.C.TryStart(m, "W1") == "ok" and dm.Items.CopperOre == 78 and dm.ItemsBound.CopperOre == 78 and dm.Craft.Pend.Bound == nil,
-		"2 free: the weapon takes those two, the 78 bound stay", show({ dm.Items.CopperOre, dm.ItemsBound }))
+	-- a weapon craft too (A23-213): all copper bound - it starts, the bound ones go first
+	local k, dk = smith(w, 4, { ItemsBound = { CopperOre = 80 } })
+	check(w.C.TryStart(k, "W1") == "ok" and dk.Items.CopperOre == 78 and dk.ItemsBound.CopperOre == 78 and dk.Craft.Pend.Bound.CopperOre == 2,
+		"W1 from 80 bound copper: starts, 2 bound ones used and noted", show({ dk.Items.CopperOre, dk.ItemsBound, dk.Craft.Pend }))
+	local m, dm = smith(w, 5, { ItemsBound = { CopperOre = 1 } })
+	check(w.C.TryStart(m, "W1") == "ok" and dm.Items.CopperOre == 78 and (dm.ItemsBound.CopperOre or 0) == 0 and dm.Craft.Pend.Bound.CopperOre == 1,
+		"1 bound + free: the bound one goes first, then a free one", show({ dm.Items.CopperOre, dm.ItemsBound }))
 	local _ = m
 end)
 
