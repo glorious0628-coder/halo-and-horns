@@ -13,3 +13,11 @@
 - **다음 판:** 메인 반영 1의 다음 'sync <sha>' 신호 → 뿔 · 궁수/마법사로 처음부터 + 바뀐 곳(scene.py). 가능하면 2x XP 패스 끈 판.
 - 최종 검수 10/16 저녁 메모(다음 판 꼭): ① **패스 없이** — Play 시작 직후 Server에서 `game.ServerScriptService.DebugCommand:Invoke("", "Pass", "XP2:off")`, 같은 식으로 `Gold2:off`·`VIP:off`(MonetizationService.DebugSetPass, 이 세션만, 저장 안 됨; 첫 인자 = 플레이어 이름이 필요하면 이름) → 위쪽 '2x XP · Gold' 칩이 없어졌는지 사진으로 확인. ② 오프닝 안 나온 원인 값 하나: Play 직후 1~2초 간격으로 IntroSeen·화면(인트로 GUI) 값 기록 — 1판은 25초 뒤 처음 봤을 때 이미 IntroSeen=true(인트로가 그 사이 끝났는지, 안 나왔는지 모름). 클라가 `IntroSeen` 원격을 쏴야 true가 됨(QuestService onIntroSeen).
 - 지금: 쉼, 메인 반영 1 sync 신호 기다림.
+
+## 10/16 저녁 — 2판 끝 (뿔 · 궁수 · PC · 패스 끔, sync 1c946b0a)
+- 보고서 `docs/review/playtest/2026-10-16_r2.md`, 사진 `.../playtest/r2/`. 패스 끄기 = DebugCommand:Invoke(<플레이어 이름>, "Pass", "XP2:off") 등 — 됨.
+- 오프닝 원인 값: 오프닝은 나오고 약 21초 뒤 혼자 끝나 IntroSeen=true(1판은 25초 뒤에 봐서 몰랐음).
+- 고쳐진 것 확인: 첫 스폰이 Magpie 쪽을 봄. 그대로: 연습 할 일 안 보임, 강화 중 KO(2/2), 첫 무기 창 없음. 새로: 초원 들어가면 방향 표시 꺼짐, 사냥 중 Daily Gifts 창.
+- 못 한 것: 'Tiny 본편 먼저'(c2644158) — M1_3 Tiny 단계까지 못 감. 도구 문제: character_navigation이 (380,11,60) 대신 바닷가로 감 → 슬라임 0/4.
+- 도구: pt.py에 PT_ROUND 환경 변수(사진 폴더), intro_watch.py(1초 간격 IntroSeen·GUI), face.lua(가장 가까운 BigSlime 보기). Studio id는 매번 list_roblox_studios로(이번 34dfd4a5).
+- **다음 판:** 다음 sync 신호 → 'Tiny 본편 먼저'를 장면으로 + 빛 · 마법사 처음부터.
