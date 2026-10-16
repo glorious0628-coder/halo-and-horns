@@ -1,0 +1,1635 @@
+{
+ "Halo_Warrior_T0": {
+  "stand": {
+   "bare": true
+  },
+  "walk": {
+   "bare": true
+  },
+  "attack": {
+   "bare": true
+  }
+ },
+ "Halo_Warrior_T1": {
+  "stand": {
+   "tilt": 33,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.84,
+    "fwd": -0.54,
+    "out": -0.1
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.8,
+   "frames": 52,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 52
+   },
+   "axisMax": 30,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 52
+   },
+   "dGripMax": 0.04
+  },
+  "walk": {
+   "tilt": 48,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.66,
+    "fwd": -0.7,
+    "out": -0.27
+   },
+   "foreMin": 85,
+   "lowAboveFeet": 1.82,
+   "frames": 58,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 20,
+   "hits": {
+    "RightLowerArm": 58
+   },
+   "axisMax": 30,
+   "swing": 10,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 58
+   },
+   "dGripMax": 0.04
+  },
+  "attack": {
+   "tilt": 61,
+   "dGripMean": 0.08,
+   "dir": {
+    "up": 0.48,
+    "fwd": -0.86,
+    "out": -0.19
+   },
+   "foreMin": 19,
+   "lowAboveFeet": 0.35,
+   "frames": 42,
+   "point": [
+    0.27,
+    0.28
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 42,
+    "RightUpperArm": 2,
+    "UpperTorso": 8,
+    "RightUpperLeg": 12,
+    "LowerTorso": 8
+   },
+   "axisMax": 30,
+   "swing": 120,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 42
+   },
+   "dGripMax": 0.11
+  }
+ },
+ "Halo_Warrior_T2": {
+  "stand": {
+   "tilt": 32,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.84,
+    "fwd": -0.53,
+    "out": -0.1
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.88,
+   "frames": 47,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 47
+   },
+   "axisMax": 30,
+   "swing": 4,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 47
+   },
+   "dGripMax": 0.04
+  },
+  "walk": {
+   "tilt": 49,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.66,
+    "fwd": -0.71,
+    "out": -0.25
+   },
+   "foreMin": 85,
+   "lowAboveFeet": 1.84,
+   "frames": 45,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 20,
+   "hits": {
+    "RightLowerArm": 45
+   },
+   "axisMax": 30,
+   "swing": 13,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 45
+   },
+   "dGripMax": 0.04
+  },
+  "attack": {
+   "tilt": 69,
+   "dGripMean": 0.08,
+   "dir": {
+    "up": 0.36,
+    "fwd": -0.91,
+    "out": -0.21
+   },
+   "foreMin": 18,
+   "lowAboveFeet": 0.29,
+   "frames": 42,
+   "point": [
+    0.27,
+    0.28
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 42,
+    "RightUpperArm": 1,
+    "UpperTorso": 11,
+    "RightUpperLeg": 19,
+    "LowerTorso": 13
+   },
+   "axisMax": 30,
+   "swing": 78,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 42
+   },
+   "dGripMax": 0.11
+  }
+ },
+ "Halo_Warrior_T3": {
+  "stand": {
+   "tilt": 28,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.88,
+    "fwd": -0.44,
+    "out": -0.16
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.7,
+   "frames": 51,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "Head": 2,
+    "RightLowerArm": 51
+   },
+   "axisMax": 30,
+   "swing": 62,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 51
+   },
+   "dGripMax": 0.04
+  },
+  "walk": {
+   "tilt": 44,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.72,
+    "fwd": -0.6,
+    "out": -0.34
+   },
+   "foreMin": 85,
+   "lowAboveFeet": 1.73,
+   "frames": 49,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 6.6,
+   "hits": {
+    "RightLowerArm": 49
+   },
+   "axisMax": 30,
+   "swing": 53,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 49
+   },
+   "dGripMax": 0.04
+  },
+  "attack": {
+   "tilt": 72,
+   "dGripMean": 0.09,
+   "dir": {
+    "up": 0.3,
+    "fwd": -0.93,
+    "out": -0.22
+   },
+   "foreMin": 19,
+   "lowAboveFeet": 0.29,
+   "frames": 54,
+   "point": [
+    0.27,
+    0.28
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 54,
+    "RightUpperArm": 6,
+    "Head": 2,
+    "UpperTorso": 19,
+    "RightUpperLeg": 34,
+    "LowerTorso": 26
+   },
+   "axisMax": 30,
+   "swing": 148,
+   "weldOffFrames": 0,
+   "kind": "Sword",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.11
+  }
+ },
+ "Halo_Mage_T0": {
+  "stand": {
+   "bare": true
+  },
+  "walk": {
+   "bare": true
+  },
+  "attack": {
+   "bare": true
+  }
+ },
+ "Halo_Mage_T1": {
+  "stand": {
+   "tilt": 6,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.99,
+    "fwd": -0.05,
+    "out": 0.09
+   },
+   "foreMin": 30,
+   "lowAboveFeet": 0.52,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "walk": {
+   "tilt": 24,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.91,
+    "fwd": -0.41,
+    "out": -0.08
+   },
+   "foreMin": 14,
+   "lowAboveFeet": 0.69,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 20,
+   "hits": {
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 8,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "attack": {
+   "tilt": 79,
+   "dGripMean": 0.14,
+   "dir": {
+    "up": 0.19,
+    "fwd": -0.97,
+    "out": -0.13
+   },
+   "foreMin": 1,
+   "lowAboveFeet": 0.48,
+   "frames": 54,
+   "point": [
+    0.36,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 34,
+    "RightLowerArm": 54
+   },
+   "axisMax": 81,
+   "swing": 93,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.24
+  }
+ },
+ "Halo_Mage_T2": {
+  "stand": {
+   "tilt": 6,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.99,
+    "fwd": -0.05,
+    "out": 0.09
+   },
+   "foreMin": 30,
+   "lowAboveFeet": 0.48,
+   "frames": 61,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 61,
+    "RightLowerArm": 61
+   },
+   "axisMax": 81,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 61
+   },
+   "dGripMax": 0.24
+  },
+  "walk": {
+   "tilt": 25,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.91,
+    "fwd": -0.41,
+    "out": -0.08
+   },
+   "foreMin": 14,
+   "lowAboveFeet": 0.66,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 20,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 7,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "attack": {
+   "tilt": 83,
+   "dGripMean": 0.13,
+   "dir": {
+    "up": 0.12,
+    "fwd": -0.99,
+    "out": -0.12
+   },
+   "foreMin": 1,
+   "lowAboveFeet": 0.42,
+   "frames": 52,
+   "point": [
+    0.36,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 31,
+    "RightLowerArm": 52
+   },
+   "axisMax": 81,
+   "swing": 90,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 52
+   },
+   "dGripMax": 0.24
+  }
+ },
+ "Halo_Mage_T3": {
+  "stand": {
+   "tilt": 6,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.99,
+    "fwd": -0.05,
+    "out": 0.09
+   },
+   "foreMin": 30,
+   "lowAboveFeet": 0.43,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "walk": {
+   "tilt": 25,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.91,
+    "fwd": -0.41,
+    "out": -0.08
+   },
+   "foreMin": 14,
+   "lowAboveFeet": 0.59,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 20,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 7,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "attack": {
+   "tilt": 75,
+   "dGripMean": 0.14,
+   "dir": {
+    "up": 0.26,
+    "fwd": -0.96,
+    "out": -0.15
+   },
+   "foreMin": 2,
+   "lowAboveFeet": 0.36,
+   "frames": 54,
+   "point": [
+    0.36,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 54,
+    "RightUpperArm": 35,
+    "UpperTorso": 2,
+    "RightUpperLeg": 7,
+    "LowerTorso": 5
+   },
+   "axisMax": 81,
+   "swing": 97,
+   "weldOffFrames": 0,
+   "kind": "Staff",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.24
+  }
+ },
+ "Halo_Archer_T0": {
+  "stand": {
+   "bare": true
+  },
+  "walk": {
+   "bare": true
+  },
+  "attack": {
+   "bare": true
+  }
+ },
+ "Halo_Archer_T1": {
+  "stand": {
+   "tilt": 3,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 1,
+    "fwd": -0.03,
+    "out": 0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.54,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "walk": {
+   "tilt": 15,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 0.96,
+    "fwd": -0.26,
+    "out": -0.04
+   },
+   "foreMin": 28,
+   "lowAboveFeet": 0.33,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 22,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 11,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "attack": {
+   "tilt": 27,
+   "dGripMean": 0.17,
+   "dir": {
+    "up": 0.89,
+    "fwd": -0.45,
+    "out": 0.08
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.54,
+   "frames": 55,
+   "point": [
+    0.21,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftUpperLeg": 1,
+    "LeftLowerArm": 55
+   },
+   "axisMax": 90,
+   "swing": 65,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 55
+   },
+   "dGripMax": 0.26
+  }
+ },
+ "Halo_Archer_T2": {
+  "stand": {
+   "tilt": 3,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 1,
+    "fwd": -0.03,
+    "out": 0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.44,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "walk": {
+   "tilt": 15,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 0.96,
+    "fwd": -0.26,
+    "out": -0.04
+   },
+   "foreMin": 28,
+   "lowAboveFeet": 0.24,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 22,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 11,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "attack": {
+   "tilt": 28,
+   "dGripMean": 0.17,
+   "dir": {
+    "up": 0.89,
+    "fwd": -0.46,
+    "out": 0.07
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.44,
+   "frames": 54,
+   "point": [
+    0.21,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftUpperLeg": 1,
+    "LeftLowerArm": 50
+   },
+   "axisMax": 90,
+   "swing": 64,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 54
+   },
+   "dGripMax": 0.26
+  }
+ },
+ "Halo_Archer_T3": {
+  "stand": {
+   "tilt": 3,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 1,
+    "fwd": -0.03,
+    "out": 0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.34,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "walk": {
+   "tilt": 15,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 0.96,
+    "fwd": -0.26,
+    "out": -0.04
+   },
+   "foreMin": 28,
+   "lowAboveFeet": 0.11,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 22,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 11,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "attack": {
+   "tilt": 27,
+   "dGripMean": 0.17,
+   "dir": {
+    "up": 0.89,
+    "fwd": -0.46,
+    "out": 0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.32,
+   "frames": 54,
+   "point": [
+    0.21,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftUpperLeg": 2,
+    "LeftLowerArm": 54
+   },
+   "axisMax": 90,
+   "swing": 64,
+   "weldOffFrames": 0,
+   "kind": "Bow",
+   "holder": {
+    "Left": 54
+   },
+   "dGripMax": 0.26
+  }
+ },
+ "Horns_Warrior_T1": {
+  "stand": {
+   "tilt": 33,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.84,
+    "fwd": -0.53,
+    "out": -0.1
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.81,
+   "frames": 60,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 60
+   },
+   "axisMax": 30,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.04
+  },
+  "walk": {
+   "tilt": 48,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.67,
+    "fwd": -0.69,
+    "out": -0.27
+   },
+   "foreMin": 85,
+   "lowAboveFeet": 1.82,
+   "frames": 60,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 19.1,
+   "hits": {
+    "RightLowerArm": 60
+   },
+   "axisMax": 30,
+   "swing": 10,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.04
+  },
+  "attack": {
+   "tilt": 58,
+   "dGripMean": 0.08,
+   "dir": {
+    "up": 0.52,
+    "fwd": -0.79,
+    "out": -0.33
+   },
+   "foreMin": 11,
+   "lowAboveFeet": 1.14,
+   "frames": 54,
+   "point": [
+    0.27,
+    0.28
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 54,
+    "RightUpperArm": 12,
+    "RightUpperLeg": 14,
+    "UpperTorso": 9,
+    "LeftUpperLeg": 3,
+    "LowerTorso": 13
+   },
+   "axisMax": 30,
+   "swing": 120,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.11
+  }
+ },
+ "Horns_Warrior_T2": {
+  "stand": {
+   "tilt": 33,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.84,
+    "fwd": -0.54,
+    "out": -0.1
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.66,
+   "frames": 60,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 60
+   },
+   "axisMax": 30,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.04
+  },
+  "walk": {
+   "tilt": 48,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.67,
+    "fwd": -0.69,
+    "out": -0.27
+   },
+   "foreMin": 85,
+   "lowAboveFeet": 1.69,
+   "frames": 60,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 19.7,
+   "hits": {
+    "RightLowerArm": 60
+   },
+   "axisMax": 30,
+   "swing": 10,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.04
+  },
+  "attack": {
+   "tilt": 55,
+   "dGripMean": 0.09,
+   "dir": {
+    "up": 0.58,
+    "fwd": -0.73,
+    "out": -0.36
+   },
+   "foreMin": 10,
+   "lowAboveFeet": 1.03,
+   "frames": 55,
+   "point": [
+    0.27,
+    0.28
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 55,
+    "RightUpperArm": 14,
+    "RightUpperLeg": 29,
+    "UpperTorso": 16,
+    "LeftUpperLeg": 14,
+    "LowerTorso": 22
+   },
+   "axisMax": 30,
+   "swing": 115,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 55
+   },
+   "dGripMax": 0.11
+  }
+ },
+ "Horns_Warrior_T3": {
+  "stand": {
+   "tilt": 33,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.84,
+    "fwd": -0.53,
+    "out": -0.1
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.71,
+   "frames": 60,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperLeg": 37,
+    "RightLowerArm": 60
+   },
+   "axisMax": 30,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.04
+  },
+  "walk": {
+   "tilt": 48,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.67,
+    "fwd": -0.69,
+    "out": -0.27
+   },
+   "foreMin": 85,
+   "lowAboveFeet": 1.7,
+   "frames": 60,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 20,
+   "hits": {
+    "RightLowerArm": 60
+   },
+   "axisMax": 30,
+   "swing": 10,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.04
+  },
+  "attack": {
+   "tilt": 32,
+   "dGripMean": 0.04,
+   "dir": {
+    "up": 0.84,
+    "fwd": -0.53,
+    "out": -0.11
+   },
+   "foreMin": 71,
+   "lowAboveFeet": 1.71,
+   "frames": 54,
+   "point": [
+    0.27,
+    0.27
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 54
+   },
+   "axisMax": 30,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "DarkSword",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.04
+  }
+ },
+ "Horns_Mage_T1": {
+  "stand": {
+   "tilt": 6,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 1,
+    "fwd": -0.05,
+    "out": 0.08
+   },
+   "foreMin": 30,
+   "lowAboveFeet": 0.5,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "walk": {
+   "tilt": 25,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.91,
+    "fwd": -0.41,
+    "out": -0.08
+   },
+   "foreMin": 14,
+   "lowAboveFeet": 0.68,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 20,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 7,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "attack": {
+   "tilt": 80,
+   "dGripMean": 0.13,
+   "dir": {
+    "up": 0.18,
+    "fwd": -0.98,
+    "out": -0.08
+   },
+   "foreMin": 1,
+   "lowAboveFeet": 0.46,
+   "frames": 54,
+   "point": [
+    0.36,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 34,
+    "RightLowerArm": 54
+   },
+   "axisMax": 81,
+   "swing": 101,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.24
+  }
+ },
+ "Horns_Mage_T2": {
+  "stand": {
+   "tilt": 6,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.99,
+    "fwd": -0.05,
+    "out": 0.09
+   },
+   "foreMin": 30,
+   "lowAboveFeet": 0.46,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "walk": {
+   "tilt": 25,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.91,
+    "fwd": -0.41,
+    "out": -0.08
+   },
+   "foreMin": 14,
+   "lowAboveFeet": 0.65,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 20,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 7,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "attack": {
+   "tilt": 81,
+   "dGripMean": 0.13,
+   "dir": {
+    "up": 0.16,
+    "fwd": -0.98,
+    "out": -0.1
+   },
+   "foreMin": 1,
+   "lowAboveFeet": 0.41,
+   "frames": 54,
+   "point": [
+    0.36,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 34,
+    "RightLowerArm": 54
+   },
+   "axisMax": 81,
+   "swing": 100,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.24
+  }
+ },
+ "Horns_Mage_T3": {
+  "stand": {
+   "tilt": 6,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.99,
+    "fwd": -0.05,
+    "out": 0.09
+   },
+   "foreMin": 30,
+   "lowAboveFeet": 0.42,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "walk": {
+   "tilt": 25,
+   "dGripMean": 0.24,
+   "dir": {
+    "up": 0.91,
+    "fwd": -0.41,
+    "out": -0.08
+   },
+   "foreMin": 14,
+   "lowAboveFeet": 0.61,
+   "frames": 60,
+   "point": [
+    0.4,
+    0.4
+   ],
+   "moving": 19.7,
+   "hits": {
+    "RightUpperArm": 60,
+    "RightLowerArm": 60
+   },
+   "axisMax": 81,
+   "swing": 7,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 60
+   },
+   "dGripMax": 0.24
+  },
+  "attack": {
+   "tilt": 75,
+   "dGripMean": 0.14,
+   "dir": {
+    "up": 0.26,
+    "fwd": -0.96,
+    "out": -0.14
+   },
+   "foreMin": 0,
+   "lowAboveFeet": 0.36,
+   "frames": 54,
+   "point": [
+    0.36,
+    0.4
+   ],
+   "moving": 0,
+   "hits": {
+    "RightLowerArm": 54,
+    "RightUpperArm": 34,
+    "RightUpperLeg": 5
+   },
+   "axisMax": 81,
+   "swing": 105,
+   "weldOffFrames": 0,
+   "kind": "CrookStaff",
+   "holder": {
+    "Right": 54
+   },
+   "dGripMax": 0.24
+  }
+ },
+ "Horns_Archer_T1": {
+  "stand": {
+   "tilt": 3,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 1,
+    "fwd": -0.03,
+    "out": 0.04
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.87,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "walk": {
+   "tilt": 15,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 0.96,
+    "fwd": -0.26,
+    "out": -0.04
+   },
+   "foreMin": 28,
+   "lowAboveFeet": 0.66,
+   "frames": 61,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 21.1,
+   "hits": {
+    "LeftLowerArm": 61
+   },
+   "axisMax": 90,
+   "swing": 11,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 61
+   },
+   "dGripMax": 0.26
+  },
+  "attack": {
+   "tilt": 29,
+   "dGripMean": 0.17,
+   "dir": {
+    "up": 0.88,
+    "fwd": -0.47,
+    "out": -0.07
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.87,
+   "frames": 54,
+   "point": [
+    0.22,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftUpperLeg": 2,
+    "LeftLowerArm": 49
+   },
+   "axisMax": 90,
+   "swing": 62,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 54
+   },
+   "dGripMax": 0.26
+  }
+ },
+ "Horns_Archer_T2": {
+  "stand": {
+   "tilt": 3,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 1,
+    "fwd": -0.03,
+    "out": 0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.8,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "walk": {
+   "tilt": 15,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 0.96,
+    "fwd": -0.26,
+    "out": -0.04
+   },
+   "foreMin": 28,
+   "lowAboveFeet": 0.57,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 21.8,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 11,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "attack": {
+   "tilt": 27,
+   "dGripMean": 0.17,
+   "dir": {
+    "up": 0.89,
+    "fwd": -0.45,
+    "out": -0.06
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.79,
+   "frames": 54,
+   "point": [
+    0.22,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftUpperLeg": 2,
+    "LeftLowerArm": 51
+   },
+   "axisMax": 90,
+   "swing": 64,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 54
+   },
+   "dGripMax": 0.26
+  }
+ },
+ "Horns_Archer_T3": {
+  "stand": {
+   "tilt": 3,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 1,
+    "fwd": -0.03,
+    "out": 0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.71,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 0,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "walk": {
+   "tilt": 15,
+   "dGripMean": 0.26,
+   "dir": {
+    "up": 0.96,
+    "fwd": -0.26,
+    "out": -0.04
+   },
+   "foreMin": 28,
+   "lowAboveFeet": 0.49,
+   "frames": 60,
+   "point": [
+    0.38,
+    0.38
+   ],
+   "moving": 22,
+   "hits": {
+    "LeftLowerArm": 60
+   },
+   "axisMax": 90,
+   "swing": 11,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 60
+   },
+   "dGripMax": 0.26
+  },
+  "attack": {
+   "tilt": 27,
+   "dGripMean": 0.17,
+   "dir": {
+    "up": 0.89,
+    "fwd": -0.45,
+    "out": -0.05
+   },
+   "foreMin": 22,
+   "lowAboveFeet": 0.71,
+   "frames": 54,
+   "point": [
+    0.22,
+    0.38
+   ],
+   "moving": 0,
+   "hits": {
+    "LeftUpperLeg": 2,
+    "LeftLowerArm": 54
+   },
+   "axisMax": 90,
+   "swing": 64,
+   "weldOffFrames": 0,
+   "kind": "ShortBow",
+   "holder": {
+    "Left": 54
+   },
+   "dGripMax": 0.26
+  }
+ }
+}
