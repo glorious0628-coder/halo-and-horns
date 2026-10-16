@@ -61,6 +61,8 @@ local personal = {} -- [Player] = personal points of the current round
 local hunt = { KOs = {} }
 local blessing = "None" -- faction holding the crown (decided at each round end, lasts one round)
 local roundEndsAt = 0
+-- A23-218 ② Studio scene aid (SceneSetup "WarEnd"): until this round ends both sides count as present (DebugRound)
+local debugUntil = 0
 local warTint = nil
 local skyTweens = {}
 local lastWarnAt = {}
@@ -436,6 +438,7 @@ end
 local function tick()
 	local halo, horns = getCounts()
 	local aH, aR = averageCounts(halo, horns) -- CR-M19
+	if debugUntil > Util.Now() then aH, aR = math.max(aH, 1), math.max(aR, 1) end -- A23-218 ② (Studio only)
 	local haloScore, hornsScore, mode = publish(aH, aR)
 	if warOff() then
 		roundEndsAt = Util.Now() + Config.War.RoundSeconds -- the round never ends while the switch is off
@@ -525,6 +528,16 @@ function WarService.GetPersonalPoints(player)
 end
 
 -- server time of the current round end; valid after Start
+-- A23-218 ② Studio scene aid (SceneSetup "WarEnd", Main's Studio-only DebugCommand): this round ends in `seconds` with these
+-- side points, both sides counting as present until then (a normal round end follows: the real result, rewards, sky)
+function WarService.DebugRound(seconds, halo, horns)
+	if not game:GetService("RunService"):IsStudio() then return "studio only" end
+	roundEndsAt = Util.Now() + math.max(1, tonumber(seconds) or 3)
+	debugUntil = roundEndsAt
+	points.Halo, points.Horns = tonumber(halo) or points.Halo, tonumber(horns) or points.Horns
+	return "ends in " .. tostring(math.max(1, tonumber(seconds) or 3)) .. " s"
+end
+
 function WarService.GetRoundEndsAt()
 	if roundEndsAt <= 0 then
 		return Util.Now() + Config.War.RoundSeconds

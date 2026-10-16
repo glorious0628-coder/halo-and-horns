@@ -20,6 +20,7 @@ FILES["FACTION_SOURCE"] = SSS / "FactionService.luau"
 FILES["PROGRESSION_SOURCE"] = SSS / "ProgressionService.luau"
 FILES["DAILY_SOURCE"] = SHARED / "Quests/Daily.luau"  # A23-205 the 12 daily requests (a quest data pack)
 FILES["CLATTER_SOURCE"] = SSS / "ClatterScenes.luau"  # A23-212
+FILES["SCENE_SOURCE"] = SSS / "SceneSetup.luau"  # A23-218 (2)
 C, ST, L, F, PR = "CONFIG_SOURCE", "STORY_SOURCE", "LOOT_SOURCE", "FACTION_SOURCE", "PROGRESSION_SOURCE"
 U = "UTIL_SOURCE"
 
@@ -28,6 +29,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     out = unarmed_bindings(sources)
     out["DAILY_SOURCE"] = sources["DAILY_SOURCE"]
     out["CLATTER_SOURCE"] = sources["CLATTER_SOURCE"]  # A23-212
+    out["SCENE_SOURCE"] = sources["SCENE_SOURCE"]  # A23-218 (2)
     faction = sources[F]
     out["FACTION_EXTRACT"] = (
         "local Config, Util, S, FactionService, nearAltar = ...\nlocal TAG = \"FactionService\"\n"
@@ -604,6 +606,10 @@ MUTATIONS = [
     # 최종 검수 10/16 ①: the waiting main's pinned row
     ("①: no row while the main waits", ST, "\tif st.Main.Id == \"\" then\n\t\tlocal id = num(data.TutorialStep)", "\tif st.Main.Id == \"\" then do return nil end\n\t\tlocal id = num(data.TutorialStep)"),
     ("①: the waiting row guides nowhere", ST, "Story = { Id = id, St = 1, Npc = npc, Offer = true },", "Story = { Id = id, St = 1, Offer = true },"),
+    # A23-218 (2): the Studio test scenes
+    ("A23-218: scenes outside Studio", "SCENE_SOURCE", "\tif not RunService:IsStudio() then return \"studio only\" end\n", ""),
+    ("A23-218: Kill takes the farthest", "SCENE_SOURCE", "if d < bestD then best, bestD = rec, d end", "if d > -1 then best, bestD = rec, d end"),
+    ("A23-218: Anchor ignored", "SCENE_SOURCE", "if m.Anchor == true and rec.Root then rec.Root.Anchored = true end", "local _ = m"),
 ]
 
 

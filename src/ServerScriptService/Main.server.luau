@@ -39,6 +39,7 @@ local INIT_ORDER = {
 	"ReviveService", -- 게임성 개발 2: 99N G helping a friend up (after FirstKOService and PvPService)
 	"PartyService", "QuestCreditService", -- A23-201 / A23-204 the party + who a kill's quests credit (MonsterService asks at run time)
 	"ClatterScenes", -- 게임성 개발 2: A23-212 Captain Clatter's first-10-minute scenes (after StoryQuestService)
+	"SceneSetup", -- 게임성 개발 2: A23-218 ② the Studio test scenes (DebugCommand key Scene; refuses outside Studio)
 }
 -- WarService starts before GooseService (goose schedule reads the round end).
 -- PlayerService starts LAST so every service is ready before the first player is processed.
@@ -73,6 +74,7 @@ local START_ORDER = {
 	"ReviveService", -- 게임성 개발 2: 99N G (after PvPService: its spawn shield comes first; before PlayerService)
 	"PartyService", "QuestCreditService", -- A23-201 (before PlayerService too: it listens to PlayerLeaving)
 	"ClatterScenes", -- 게임성 개발 2: A23-212 (after StoryQuestService; before PlayerService: it listens to PlayerReady)
+	"SceneSetup", -- 게임성 개발 2: A23-218 ② (Studio test scenes only)
 	"PlayerService",
 }
 
@@ -124,6 +126,7 @@ end
 --   A23-105 (no player needed, nothing saved or tainted): Clock (hours 0-24: the day jumps there and goes on), Weather
 --   ("Rain" / "Snow" / "Clear" [":seconds"]: that weather now, snow in any month here), DayState (the day / weather now):
 --   game.ServerScriptService.DebugCommand:Invoke("", "Clock", 21)
+--   A23-218 ②: Scene (a preset of SceneSetup.PRESETS, "Kill" = beat the nearest scene monster, or a JSON spec; tools/scene.py)
 if game:GetService("RunService"):IsStudio() then
 	local debugFn = Instance.new("BindableFunction")
 	debugFn.Name = "DebugCommand"
@@ -154,6 +157,8 @@ if game:GetService("RunService"):IsStudio() then
 			S.VitalsService.DebugSetMana(player, value)
 		elseif key == "Charge" then
 			return S.CombatService.DebugSetCharge(player, value) and "ok" or "invalid charge"
+		elseif key == "Scene" then -- A23-218 ② Studio test scene (SceneSetup.luau)
+			return S.SceneSetup.Apply(player, value)
 		elseif key == "StoryStep" then -- Studio test aid: "M2_3:1" moves the active main quest back/forward to that step
 			local id, st = string.match(tostring(value), "^([%w_]+):(%d+)$")
 			local data = S.PlayerService.GetData(player)
