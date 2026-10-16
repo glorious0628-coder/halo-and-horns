@@ -4,6 +4,7 @@
 - 병합됨(main a5a5c40e): dev1-offer-row ad8e1291 — Story.Offer 줄('Talk to <부탁자>', 개발 2 dev2-offer-row) 탭/길 안내 → Story.Npc; StoryNpcs Pickups·Spots·WatchSteps가 Offer 줄 건너뜀, 표시 = 본편 '!'; Panels STORY.Lines 진영판 단계(step[f].Lines/LinesBy) 먼저(M2_3[2]); 단계 On = NPC id → Find 말풍선·PlayScene 그 몸(개발 2 데이터 오면 화면 확인).
 - 게시 전 누름 확인 끝(a5a5c40e, 새 저장, 빛+뿔): 안내자 G → Welcome → I'm In → 스승 G → 모루 G 첫 무기 → 'Talk to Otto' 줄 → 모루 G = Otto 부탁 창 → Sure! → M1_1 시작. 로그 docs/art/verification_2026-10-16/prepublish_flow/(git 밖), 도구 build/dev1_tools/full1016.py (STUDIO_ID로; PhoneTest 창 이름이 'Game'으로 잡힐 때 있음).
 - 관찰 보고함: 스승 Talk가 Rose 부탁 창(Rose's Lesson)을 엶.
+- 새 main 19dbf76c로 다시(최종 검수 2번째 요청): 위 흐름 + 'Talk to Otto' 길 안내(35스터드에서 표시 10m, 화면 밖이면 가장자리 화살표) 통과. 도구 full1016.py의 close()는 진짜 [Not now]/Close 누름 — 창을 Visible=false로만 숨기면 Panels가 열린 채라 표시가 숨음(도구 착시). 같은 PC에 'Game' 이름 Studio가 여럿(build/GoodEvil 사본 등) → game.Name으로 내 창 확인 후 STUDIO_ID.
 - ▶ 남은 큐: 위 '10/16 밤' 큐 2~4번(무리 손맛 재측정, 대장간 첫 무기 버튼 글, 제작 창 누름 확인).
 
 ## 10/16 밤 (최신)
