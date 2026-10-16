@@ -3739,7 +3739,7 @@ runGroup("main-debug", function()
 end)
 
 ------------------------------------------------------------------ 12. BatGoblin clips (MonsterAnims modules)
-local CLIP_SPEC = { Idle = { 32, true }, Walk = { 36, true }, Slash = { 31, false }, Hurt = { 16, false }, Fall = { 46, false } }
+local CLIP_SPEC = { Idle = { 32, true }, Walk = { 36, true }, Slash = { 31, false }, Hurt = { 16, false } }
 
 runGroup("clips", function()
 	local function load(name)

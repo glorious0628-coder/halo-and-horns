@@ -195,15 +195,12 @@ groot.AssemblyLinearVelocity = vec(0, 0, 0)
 frame()
 check(st.Clip == "Idle", "standing again before the next look time: back to Idle (the cut look does not resume)", st.Clip)
 
--- 6. dying: the fall plays faster and from the point that hits the ground FallImpactAt s after death
+-- 6. beaten (A23-211, user 10/16): no fall of any kind - it stays calm (Idle) while Fx relaxes and fades it
 groot.AssemblyLinearVelocity = vec(0, 0, 0)
 groot.Anchored = true
 frame()
-local fall = M.Cache.Goblin_Fall
-local from = math.max(0, EXPECT_FALL_HIT - M.FallImpactAt * M.FallRate)
-check(fall and near(M.HitTime(fall), EXPECT_FALL_HIT, 1e-9) and st.Clip == "Fall" and near(st.T, from + DT * M.FallRate, 1e-6)
-	and M.FallRate == 1.8 and M.FallImpactAt == 0.5,
-	"dying: Fall at 1.8x from the point where the body hits the ground 0.5 s later", { st.Clip, st.T, from })
+check(st.Clip == "Idle" and M.Cache.Goblin_Fall == nil and M.FallRate == nil,
+	"beaten: Idle, no Fall clip, no fall rate", { st.Clip })
 -- 7. an event monster going home (Leaving) floats calmly: no fall
 local k, kroot = newModel("Goblin", 0.5, 0.5)
 frame()

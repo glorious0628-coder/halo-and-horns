@@ -40,7 +40,7 @@ OUT = ROOT / "docs/art/verification_2026-10-06/offline_halloween_2026-10-06.json
 SSS = ROOT / "src/ServerScriptService"
 SPS = ROOT / "src/StarterPlayer/StarterPlayerScripts"
 ANIMS = ROOT / "src/ReplicatedStorage/MonsterAnims"
-CLIP_NAMES = ("Idle", "Walk", "Slash", "Hurt", "Fall")
+CLIP_NAMES = ("Idle", "Walk", "Slash", "Hurt")  # A23-211: no Fall clip
 FILES = {
     "CONFIG_SOURCE": ROOT / "src/ReplicatedStorage/Shared/Config.luau",
     "NET_SOURCE": ROOT / "src/ReplicatedStorage/Shared/Net.luau",
@@ -75,7 +75,6 @@ CLIP_ARGS = {
     "Walk": ["--loop", "--from", "0", "--to", "2.3333"],
     "Slash": ["--from", "0.9", "--to", "2.9"],
     "Hurt": ["--from", "0", "--to", "1.0"],
-    "Fall": ["--from", "0", "--to", "3.0"],
 }
 # files the Halloween change touched (line endings must stay one style per file)
 EOL_FILES = [FILES[k] for k in ("CONFIG_SOURCE", "NET_SOURCE", "QUEST_SOURCE", "STORY_SOURCE", "ANNOUNCE_SOURCE",
@@ -601,7 +600,7 @@ def static_checks() -> tuple[int, list[str], list[str]]:
     # 4. client wiring that the extracted chunks do not show
     motion = STATIC_ONLY["MONSTER_MOTION"].read_text(encoding="utf-8")
     check('local key = kind .. "_" .. name' in motion
-          and 'Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt", "Fall" }' in motion,
+          and 'Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt" }' in motion,
           "MonsterMotion loads ReplicatedStorage.MonsterAnims['<Kind>_<Clip>'] for its clips, Run / LookAround included "
           "(BatGoblin_* are found by kind id; tools/test_monster_motion.py runs the playback rules)")
     hud = FILES["EVENTHUD_SOURCE"].read_text(encoding="utf-8").replace("\r\n", "\n")
