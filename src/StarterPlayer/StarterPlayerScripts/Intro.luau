@@ -522,6 +522,27 @@ function Intro.Play(replay)
 end
 
 -- "Skip ▶ (Enter)" where keys are shown (Keybinds.ShowsKeys), else "Skip ▶"
+-- A23-212 / A23-214 (10/16): the town scenes (StoryNpcs ClatterScene) use the opening's sword-free part body. Builds it
+-- under parent -> c (Head, Helmet, Badge, Hands, every part in c.All); Intro.PlaceClatter(c, root, head, aims) poses it
+function Intro.ClatterBody(parent)
+	local c = SCENE.Clatter()
+	c.All = {}
+	for _, v in c do
+		local list = type(v) == "table" and v or { v }
+		for _, p in list do
+			if typeof(p) == "Instance" and p:IsA("BasePart") then
+				p.Parent = parent
+				table.insert(c.All, p)
+			end
+		end
+	end
+	return c
+end
+
+function Intro.PlaceClatter(c, root, head, aims)
+	SCENE.PlaceClatter(c, root, head, aims)
+end
+
 function Intro.SkipText()
 	local kb = C and C.Keybinds
 	local shows = UserInputService.KeyboardEnabled == true
