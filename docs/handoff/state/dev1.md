@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 밤 2 (최신)
+- 병합됨(main a5a5c40e): dev1-offer-row ad8e1291 — Story.Offer 줄('Talk to <부탁자>', 개발 2 dev2-offer-row) 탭/길 안내 → Story.Npc; StoryNpcs Pickups·Spots·WatchSteps가 Offer 줄 건너뜀, 표시 = 본편 '!'; Panels STORY.Lines 진영판 단계(step[f].Lines/LinesBy) 먼저(M2_3[2]); 단계 On = NPC id → Find 말풍선·PlayScene 그 몸(개발 2 데이터 오면 화면 확인).
+- 게시 전 누름 확인 끝(a5a5c40e, 새 저장, 빛+뿔): 안내자 G → Welcome → I'm In → 스승 G → 모루 G 첫 무기 → 'Talk to Otto' 줄 → 모루 G = Otto 부탁 창 → Sure! → M1_1 시작. 로그 docs/art/verification_2026-10-16/prepublish_flow/(git 밖), 도구 build/dev1_tools/full1016.py (STUDIO_ID로; PhoneTest 창 이름이 'Game'으로 잡힐 때 있음).
+- 관찰 보고함: 스승 Talk가 Rose 부탁 창(Rose's Lesson)을 엶.
+- ▶ 남은 큐: 위 '10/16 밤' 큐 2~4번(무리 손맛 재측정, 대장간 첫 무기 버튼 글, 제작 창 누름 확인).
+
 ## 10/16 밤 (최신)
 - 병합됨: dev1-clatter-scenes 35a8149b — 마을 Clatter 장면 3개 + 크기 T.Clatter.Scale 0.68(약 6.5스터드, 오프닝은 크기 1 그대로) + Hat 헬멧을 머리 위로. 크기 사진은 다음 메인 Play 확인 때 최종 검수가 봄.
 - 버린 것: 660c0f98(AlwaysShow — G 한 번에 두 프롬프트 다 눌림).
