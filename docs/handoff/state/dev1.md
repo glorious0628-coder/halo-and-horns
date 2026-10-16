@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 저녁 (최신)
+- 병합됨(main b27db2ac + 9001c93f): dev1-calm-fade 9e6a63c8 = 사라짐·보상 글·소리를 맞은 표시 뒤로(Feel.afterHit / Fx.HitWait + HIT_AFTER 0.08) + 손맛 ① 누르면 몸짓 먼저(Fx.PredictSwing, 누름 줄 Feel.takePending MaxAge 1.5) + Studio 표시 HHDbgSwing; 개발 2 서버 몸 수명 = 1.15 + (CalmTime−1) + HIT_WAIT 0.7.
+- **dev1-clatter-scenes 3ce912d0 (보고함, 화면 확인 대기)**: Fx StoryScene Id=Clatter(Sorry/Hat/Carry) → StoryNpcs.ClatterScene(오프닝 파트 몸 Intro.ClatterBody 재사용 — 칼 든 StoryProps.ClatterTown 안 씀, 최종 검수 OK), 몸짓 BowHatSlip/CatchHat/CarrySalute(StoryNpcs.ClatterPose), 말풍선, Stay 뒤 흐려짐. 보스 Start/Beaten = 넓은 이야기 말풍선(MonsterLabels B.SureMoment), 처치된 몸은 Beaten만. 사진 도구 scratchpad clattertown1016.py.
+- **fix/halloween-old-puddle 53213356 (보고 전)**: test_halloween 옛 웅덩이 검사 → 사라짐 넘김 검사.
+- 손맛 측정: docs/art/verification_2026-10-16/attack_feel/*.json + feel1016.py(--pack = 무리 슬라임)·feel_logger.luau. 전사 54% 느림은 한 마리씩 측정이라 판단 보류 → 장면 명령(개발 2 A23-218) 오면 무리 5마리 재측정.
+- 화면 사용 주의: 같은 PC에 다른 Studio(Game, ParcelPanic, Darugi_S2 장소)가 자주 떠 있음 — PhoneTest만 Stop-Process로 닫기.
+
 ## 10/16 오후 (최신)
 - 병합됨: dev1-intro-clatter b402c29c(파트 Clatter, 칼 없음), 1~4번 가지 3개(fbe330c5).
 - **보고한 가지(병합 대기)**: dev1-calm-fade 25bc6c2d(개발 2 서버 가지 ①파티클 ②0.2 줄이기 삭제 ③CalmTime와 같이 병합), dev1-reward-icon 96e154e9(물약 Icon), dev1-craft-kinds 93b9399c(제작 창 Potion/Gear 줄, GearLook, 등급 Fine/Rare/Epic = 내 표시값), dev1-war-end a482e059(A23-216 ⑤: WarRoundEndsAt 앞으로 → 막대 균형 0.9초 → 두 표장 통통 → 2초 WarNext 종; Clatter 경례는 마을 몸 생길 때), fix/king-diary-jar f2b0a21f(지운 jar note 기대값).
