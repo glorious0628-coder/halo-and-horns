@@ -8,6 +8,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -39,6 +40,17 @@ local state = { Open = false, Token = 0, Done = false, Replay = false, Gui = nil
 -- shot 1 (검수 2026-10-07: seen from straight below the crown was only an orange ring): a front three-quarter view,
 -- 25 deg below the crown and 30 deg to its left, pushing in slowly; the crown's front (-Z, the glowing crack) faces it
 local CROWN_SHOT = { Down = math.rad(25), Side = math.rad(30), From = 330, To = 255 }
+-- A23-212 (user 10/16 "처음부터 범인이 누구인지 밝히고"): shot 1 = the crown wobbles, Captain Clatter clamps it still, it
+-- cracks, he jumps back and reaches out to hold it. 0-won stand-in (the opening is a placeholder): his codex copy
+-- (ReplicatedStorage.CodexModels.CaptainClatter = the borrowed Skeleton Knight) + a part crown on a pedestal + a part
+-- clamp, Up studs over the sky crown (the broken landmark stays below the frame). Times in s from the shot's start:
+-- Wobble until ClampAt, the clamp moves in (ClampAt .. ClampIn) and shuts (Shut s), Crack at CrackAt, the halves drift
+-- Gap studs apart over Drift s; Reach = his upper arms' turn (degrees, bone axes) when he reaches out
+local SCENE = { Up = 140, CrownR = 3.2, Segs = 10, Wobble = 9, WobbleRate = 7, PedestalH = 5, ClatterH = 12, Stand = 7.5,
+	ClampAt = 1.5, ClampIn = 2.2, Shut = 0.3, CrackAt = 3.0, Drift = 1.4, Gap = 5, Hop = 0.9, Back = 1.5, ReachIn = 0.35,
+	Gold = Color3.fromRGB(255, 214, 90), Jewel = Color3.fromRGB(120, 200, 255), Steel = Color3.fromRGB(125, 130, 140),
+	Stone = Color3.fromRGB(240, 232, 214), White = Color3.fromRGB(255, 250, 225), Model = "CaptainClatter",
+	Reach = { L_Upperarm = Vector3.new(-75, 0, 0), R_Upperarm = Vector3.new(-75, 0, 0) }, Length = 6 }
 local SKIP_GRACE = 1.5 -- seconds after the start when skip input is ignored
 
 local function needsFirstIntro()
@@ -219,16 +231,164 @@ local function crownPos()
 	return SPOT.Crown
 end
 
+-- the part crown: two halves (x < 0 / x >= 0), each a model pivoted on the ring's centre (at)
+function SCENE.Crown(at)
+	local halves = {}
+	for i, name in { "CrownLeft", "CrownRight" } do
+		local m = Instance.new("Model")
+		m.Name = name
+		local core = fxPart({ Name = "Core", Size = Vector3.new(0.2, 0.2, 0.2), Transparency = 1, CFrame = CFrame.new(at) })
+		core.Parent = m
+		m.PrimaryPart = core
+		halves[i] = m
+	end
+	local r, n = SCENE.CrownR, SCENE.Segs
+	local segW = 2 * math.pi * r / n + 0.15
+	for k = 0, n - 1 do
+		local a = (k + 0.5) / n * 2 * math.pi
+		local pos = at + Vector3.new(math.cos(a) * r, 0, math.sin(a) * r)
+		local face = CFrame.lookAt(pos, Vector3.new(at.X, pos.Y, at.Z))
+		local half = halves[math.cos(a) < 0 and 1 or 2]
+		local band = fxPart({ Name = "Band", Size = Vector3.new(segW, 1.1, 0.35), Color = SCENE.Gold,
+			Material = Enum.Material.SmoothPlastic, CFrame = face })
+		band.Parent = half
+		local tip = fxPart({ Name = "Point", Size = Vector3.new(0.7, 1.2, 0.3), Color = SCENE.Gold,
+			Material = Enum.Material.SmoothPlastic, CFrame = face * CFrame.new(0, 1.05, 0) * CFrame.Angles(0, 0, math.rad(45)) })
+		tip.Parent = half
+		if k % 2 == 0 then
+			local gem = fxPart({ Name = "Gem", Shape = Enum.PartType.Ball, Size = Vector3.new(0.45, 0.45, 0.45), Color = SCENE.Jewel,
+				CFrame = face * CFrame.new(0, 0, -0.2) })
+			gem.Parent = half
+		end
+	end
+	for _, m in halves do m.Parent = state.Folder end
+	return halves
+end
+
+-- his codex copy, ClatterH tall, feet on y = floor, at x / z of `at`, facing `toward` (nil when not there)
+function SCENE.Clatter(at, floor, toward)
+	local folder = ReplicatedStorage:FindFirstChild((Config.Codex and Config.Codex.ModelFolder) or "CodexModels")
+	local src = folder and folder:FindFirstChild(SCENE.Model)
+	if not src then return nil end
+	local ok, m = pcall(function() return src:Clone() end)
+	if not ok or not m or not m:IsA("Model") then return nil end
+	m.Name = "IntroClatter"
+	m.Parent = state.Folder
+	pcall(function()
+		local _, size = m:GetBoundingBox()
+		if size.Y > 0.1 then m:ScaleTo(m:GetScale() * SCENE.ClatterH / size.Y) end
+	end)
+	local base = CFrame.lookAt(Vector3.new(at.X, floor, at.Z), Vector3.new(toward.X, floor, toward.Z))
+	m:PivotTo(base)
+	local cf, size = m:GetBoundingBox()
+	m:PivotTo(base + Vector3.new(0, floor - (cf.Position.Y - size.Y / 2), 0)) -- feet on the floor
+	return m
+end
+
+-- the whole set around the ring's centre `at` -> { Halves, Clatter, Home, Jaws, Bar, Mid, ... }
+function SCENE.Build(at)
+	local s = { At = at, Floor = at.Y - SCENE.PedestalH, Bones = {}, Cracked = false }
+	fxPart({ Name = "Floor", Shape = Enum.PartType.Cylinder, Size = Vector3.new(1, 26, 26), Color = SCENE.Stone,
+		Material = Enum.Material.SmoothPlastic, CFrame = CFrame.new(at.X - 3, s.Floor - 0.5, at.Z) * CFrame.Angles(0, 0, math.rad(90)) })
+	fxPart({ Name = "Pedestal", Size = Vector3.new(3, SCENE.PedestalH - 0.55, 3), Color = SCENE.Stone,
+		Material = Enum.Material.SmoothPlastic, Position = Vector3.new(at.X, s.Floor + (SCENE.PedestalH - 0.55) / 2, at.Z) })
+	s.Halves = SCENE.Crown(at)
+	s.Clatter = SCENE.Clatter(at - Vector3.new(SCENE.Stand, 0, 0), s.Floor, at)
+	if s.Clatter then
+		s.Home = s.Clatter:GetPivot()
+		for _, d in s.Clatter:GetDescendants() do
+			if d:IsA("Bone") and SCENE.Reach[d.Name] then s.Bones[d.Name] = d end
+		end
+	end
+	-- the clamp: a bar from his hands to two steel jaws that close on the ring's near side
+	s.Hold = at - Vector3.new(SCENE.Stand - 2.5, -0.3, 0)
+	s.Grip = at - Vector3.new(SCENE.CrownR, 0, 0)
+	s.Bar = fxPart({ Name = "ClampBar", Size = Vector3.new(2.4, 0.3, 0.3), Color = SCENE.Steel, Material = Enum.Material.Metal })
+	s.Jaws = {
+		fxPart({ Name = "Jaw", Size = Vector3.new(0.5, 0.35, 0.9), Color = SCENE.Steel, Material = Enum.Material.Metal }),
+		fxPart({ Name = "Jaw", Size = Vector3.new(0.5, 0.35, 0.9), Color = SCENE.Steel, Material = Enum.Material.Metal }),
+	}
+	s.Mid = at + Vector3.new(-3.5, 1.5, 0)
+	return s
+end
+
+-- the set at t s into the shot
+function SCENE.Pose(s, t)
+	local K = SCENE
+	-- the crown wobbles (stronger at first), the clamp stills it
+	local w = 0
+	if t < K.ClampIn then
+		w = K.Wobble * math.sin(t * K.WobbleRate) * math.min(1, t / 1.2)
+	elseif t < K.ClampIn + K.Shut then
+		w = K.Wobble * math.sin(K.ClampIn * K.WobbleRate) * (1 - (t - K.ClampIn) / K.Shut)
+	end
+	local drift = t >= K.CrackAt and math.clamp((t - K.CrackAt) / K.Drift, 0, 1) or 0
+	for i, half in s.Halves do
+		local side = i == 1 and -1 or 1
+		half:PivotTo(CFrame.new(s.At + Vector3.new(side * drift * K.Gap / 2, -drift * 0.8, 0))
+			* CFrame.Angles(0, 0, math.rad(w - side * drift * 14)))
+	end
+	-- the clamp: in his hands, then onto the ring, the jaws shut
+	local move = math.clamp((t - K.ClampAt) / (K.ClampIn - K.ClampAt), 0, 1)
+	local shut = math.clamp((t - K.ClampIn) / K.Shut, 0, 1)
+	local jawAt = s.Hold:Lerp(s.Grip, move)
+	if drift > 0 then jawAt += Vector3.new(-drift * K.Gap / 2, -drift * 0.8, 0) end
+	local open = 0.65 - 0.45 * shut
+	s.Jaws[1].CFrame = CFrame.new(jawAt + Vector3.new(0, open, 0))
+	s.Jaws[2].CFrame = CFrame.new(jawAt - Vector3.new(0, open, 0))
+	s.Bar.CFrame = CFrame.new(jawAt - Vector3.new(1.3, 0, 0))
+	-- CRACK: the light flashes round, he hops back and reaches out to hold it
+	if t >= K.CrackAt and not s.Cracked then
+		s.Cracked = true
+		burst(s.At, K.White, 40)
+	end
+	local m = s.Clatter
+	if m and m.Parent and s.Home then
+		local back = math.clamp((t - K.CrackAt - 0.1) / 0.35, 0, 1)
+		local hop = math.sin(math.pi * back) * K.Hop
+		m:PivotTo(s.Home * CFrame.new(0, hop, back * K.Back) * CFrame.Angles(math.rad(-6 * back), 0, 0))
+		local reach = math.clamp((t - K.CrackAt - 0.15) / K.ReachIn, 0, 1)
+		for name, bone in s.Bones do
+			local a = K.Reach[name] * reach
+			bone.Transform = CFrame.Angles(math.rad(a.X), math.rad(a.Y), math.rad(a.Z))
+		end
+	end
+end
+
 local function run(token)
 	local look = CFrame.lookAt
-	-- 1. the broken crown in the sky over the Crossroads, front three-quarter (0-6 s)
+	-- 1. Captain Clatter clamps the wobbling crown still - CRACK (A23-212, 0-6 s); the old sky-crown shot when the set
+	-- cannot be built
 	local crown = crownPos()
-	local c = CROWN_SHOT
-	local dir = Vector3.new(-math.sin(c.Side) * math.cos(c.Down), -math.sin(c.Down), -math.cos(c.Side) * math.cos(c.Down))
-	if not shot(token, look(crown + dir * c.From, crown + Vector3.new(0, -20, 0)), look(crown + dir * c.To, crown), 5.5) then return end
-	if not wait(token, 0.4) then return end
-	say(TXT.Lines[1])
-	if not wait(token, 5.4) then return end
+	local okSet, set = pcall(SCENE.Build, crown + Vector3.new(0, SCENE.Up, 0))
+	if okSet and set then
+		local mid = set.Mid
+		if not shot(token, look(mid + Vector3.new(7, 4, 30), mid), look(mid + Vector3.new(4, 2.5, 21), mid), SCENE.Length) then return end
+		local t0 = os.clock()
+		local said = false
+		while os.clock() - t0 < SCENE.Length do
+			if state.Token ~= token then return end
+			local t = os.clock() - t0
+			if not said and t >= 0.4 then
+				said = true
+				say(TXT.Lines[1])
+			end
+			local okP, errP = pcall(SCENE.Pose, set, t)
+			if not okP then
+				Util.Warn("Intro", "clatter scene: " .. tostring(errP))
+				break
+			end
+			RunService.RenderStepped:Wait()
+		end
+		if not wait(token, math.max(0, SCENE.Length - (os.clock() - t0))) then return end
+	else
+		local c = CROWN_SHOT
+		local dir = Vector3.new(-math.sin(c.Side) * math.cos(c.Down), -math.sin(c.Down), -math.cos(c.Side) * math.cos(c.Down))
+		if not shot(token, look(crown + dir * c.From, crown + Vector3.new(0, -20, 0)), look(crown + dir * c.To, crown), 5.5) then return end
+		if not wait(token, 0.4) then return end
+		say(TXT.Lines[1])
+		if not wait(token, 5.4) then return end
+	end
 	-- 2. down into the shard's light column over the fountain (6-11 s)
 	fxPart({ Shape = Enum.PartType.Cylinder, Size = Vector3.new(90, 3, 3), Color = SPOT.Gold, Transparency = 0.45,
 		CFrame = CFrame.new(SPOT.Shard + Vector3.new(0, 45, 0)) * CFrame.Angles(0, 0, math.rad(90)) })
