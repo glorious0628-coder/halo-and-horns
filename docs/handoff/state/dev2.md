@@ -1,6 +1,8 @@
-# 게임성 개발 2 — 상태 (2026-10-15 밤: 퀘스트 P1 ①~⑨ + 데이터 규격 + 귀속 + 매일 5개 끝 → 비교·병합 요청 대기)
+# 게임성 개발 2 — 상태 (2026-10-16 아침: 매일 12종 1·2 끝 = dev2-daily12 cf10e502 → 최종 검수 병합 대기)
 
-## 내일 아침 할 일 (10/15 밤 정리, 최종 검수 지시)
+- **10/16 아침 (최신)**: 아래 1·2 끝 → **dev2-daily12 cf10e502**(53256460 위 1커밋) 최종 검수에 보냄. R 표 확정값, DH1·DR1 슬라임 6+표본 3, DN2·DC3 = 먼 곳 줍기(DN2Wood (640,80) ~610 studs, DC3Rests (1580,120) ~310 studs) + 그 물건 옆에서만 열리는 타이밍 3번(Obj.Spot), 소품 목록 고침. 시험: quest_data 통과, town_quests 1286/1286(돌연변이 324/327 = 옛 3개 그대로), story_text·quest_text·story_npcs 통과. CAPS에 개수 상한 없음(등급·골드만) 확인. 3번(장인 스위치)은 최종 검수 결정 기다림 — 장인 DN 3종 데이터 그대로.
+
+## 내일 아침 할 일 (10/15 밤 정리, 최종 검수 지시) — 1·2 끝(10/16)
 1. **매일 12종 수정**(가지 dev2-daily12 53256460 위에 커밋, ../wt_daily): 보상 = 최종 검수 수정 확정표(build/codex/daily_rewards_r1.md 반영) — DH2 HP Potion 1 · DH3 Oak Log 4 · DH1 Enh70 1 · DR3 MP Potion 1 · DR2 Jelly 10 · **DR1 Move70 1**(30% 아님) · DN3 Pet Treat 3 · DN1 Herb 10 · DN2 Glowcap 8 · DC1 Copper Ore 3 · DC2 Guard Tonic 2 · DC3 Moon Crystal 8, 골드 30/60/100/200은 **GoldN**(Gold는 사냥 단위라 틀림). 숫자는 Daily.luau 맨 위 R 표 한 곳. 난이도 상한(test_quest_data CAPS: Normal Item 개수 제한 없음? 확인) 맞는지 검사.
 2. **Hard는 실제로 어렵게**: DH1·DR1(Hard) = Slime 6 + 표본 3(또는 Prince 포함), DN1(Normal)은 지금 크기(Slime 3 + 표본 2). DN2(Hard)·DC3(Challenge) 수리 = 3회 + 이동 거리 길게. 소품 목록 docs/design/daily_props_2026-10-15.md도 같이 고침(표본 3 등).
 3. **제작 스위치 확인 결과(최종 검수에 이미 한 줄 보냄)**: Config.Features.Gathering·Crafting·Tonics·Research = false(빌드 스위치, Config 9879·9986·10155·10179), NeutralFaction = false → 베타 Live에서 꺼진 채. 장인 재료·간식·강장제 보상(Oak Log·Herb·Copper·Glowcap·Pet Treat·Guard Tonic)이 쓸모없음 + 장인 DN 3종은 Neutral 꺼져서 아무도 못 봄 → 최종 검수 답(켤지 / 보상 바꿀지) 따라 처리.
