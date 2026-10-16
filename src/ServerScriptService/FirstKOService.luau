@@ -1,6 +1,8 @@
 -- FirstKOService.luau : A23-110 the first KO (게임성 개발 2; user 2026-10-10 "한 번 죽자. 초반 퀘스트 하면서 그래서 물약 사게
--- 하고, 퀵슬롯 하게 하자" + "죽게 만드는 거에서는 킹 슬라임을 잡자"). Config.FirstKOKing (the numbers) + Config.FirstKO (game dev
--- 3's quest KO1 "The King's Hop": Quest, Step, RematchStep; never a step number of our own).
+-- 하고, 퀵슬롯 하게 하자" + "죽게 만드는 거에서는 킹 슬라임을 잡자"). Config.FirstKOKing (the numbers) + Config.FirstKO (the
+-- quest "The King's Hop", the main M1_2 since A23-222: Quest, Step, RematchStep; never a step number of our own). A23-222: the
+-- first King comes at the hill row's spot (Landmark / Radius), the rematch King at the meadow's arrival (RetryLandmark /
+-- RetryRadius); the first KO gets up beside Fizzby in the Crossroads (GetUp.Spot / Face).
 -- The stage comes from StoryQuestService.CurrentStep(player, Config.FirstKO.Quest):
 --   == Step        "First": a quiet personal King Slime (MonsterService.SpawnPersonal Quiet: only its owner sees and hits
 --                  it, its kill fires no MonsterKilled). Its landing thud - and every later hit - knocks the player out in
@@ -154,9 +156,10 @@ function FirstKOService.StageOf(player, data)
 	return nil
 end
 
--- the quest's spot (Landmark: a StoryLandmark-tagged instance first, then Config.StoryQuests.Landmarks); nil = anywhere
-local function landmark()
-	local id = FK.Landmark
+-- the stage's spot (A23-222: "First" = Landmark, "Retry" = RetryLandmark; a StoryLandmark-tagged instance first, then
+-- Config.StoryQuests.Landmarks) and its radius; nil = anywhere in Zone
+local function landmark(stage)
+	local id = stage == "Retry" and FK.RetryLandmark or FK.Landmark
 	if type(id) ~= "string" then return nil end
 	local SQ = type(Config.StoryQuests) == "table" and Config.StoryQuests or {}
 	local spot = Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", id)
@@ -164,17 +167,19 @@ local function landmark()
 	return typeof(spot) == "Vector3" and spot or nil
 end
 
--- the player stands where the King comes: alive, in Zone (not a town), within Radius of the landmark when one is set,
--- and no field King (FieldBossService's, Owner nil) within BossClear studs: the two bodies never overlap
-local function inPlace(player)
+-- the player stands where the King comes: alive, in Zone (not a town), within Radius (RetryRadius for the rematch) of the
+-- stage's landmark when one is set, and no field King (FieldBossService's, Owner nil) within BossClear studs: the two
+-- bodies never overlap
+local function inPlace(player, stage)
 	if not Util.IsAlive(player) then return false end
 	local root = Util.GetRoot(player)
 	local pos = root and root.Position
 	if typeof(pos) ~= "Vector3" then return false end
 	local zone = Config.ZoneAt(pos)
 	if zone.Id ~= FK.Zone or zone.Town == true then return false end
-	local spot = landmark()
-	if spot ~= nil and Util.FlatDistance(pos, spot) > num(FK.Radius, 90) then return false end
+	local spot = landmark(stage)
+	local radius = stage == "Retry" and num(FK.RetryRadius, num(FK.Radius, 90)) or num(FK.Radius, 90)
+	if spot ~= nil and Util.FlatDistance(pos, spot) > radius then return false end
 	local okM, list = pcall(S.MonsterService.GetMonstersInRadius, pos, math.max(0, num(FK.BossClear, 24)))
 	if okM and type(list) == "table" then
 		for _, r in list do
@@ -344,7 +349,7 @@ local function checkPlayer(player, now)
 		return
 	end
 	if stage == "Retry" and ST.Beaten[player] then return end -- one rematch win per session while the row stays
-	if not inPlace(player) then return end
+	if not inPlace(player, stage) then return end
 	spawnKing(player, stage)
 end
 
@@ -365,10 +370,19 @@ function FirstKOService.Tick()
 end
 
 ------------------------------------------------------------------ the KO and the get-up
--- where the first KO gets up: GetUp.Back studs from where it fell, away from the King (else right there), on the
--- monsters' walkable ground in Zone and out of town, facing where the King was; nil = the normal spawn
+-- where the first KO gets up: A23-222 GetUp.Spot (beside Fizzby: the potion is the next row; the ground under it, facing
+-- GetUp.Face), else GetUp.Back studs from where it fell, away from the King (else right there), on the monsters' walkable
+-- ground in Zone and out of town, facing where the King was; nil = the normal spawn
 local function getUpCFrame(pend)
 	local G = type(FK.GetUp) == "table" and FK.GetUp or {}
+	if typeof(G.Spot) == "Vector3" then
+		local okG, g, noHit = pcall(S.MonsterService.GroundAt, G.Spot.X, G.Spot.Z)
+		local ground = (okG and typeof(g) == "Vector3") and g or Vector3.new(G.Spot.X, okG and noHit == true and 0 or G.Spot.Y, G.Spot.Z)
+		local at = ground + Vector3.new(0, num(G.Lift, 4), 0)
+		local face = typeof(G.Face) == "Vector3" and Vector3.new(G.Face.X, at.Y, G.Face.Z) or nil
+		if face and Util.FlatDistance(face, at) > 0.5 then return CFrame.lookAt(at, face) end
+		return CFrame.new(at)
+	end
 	local pos, from = pend.Pos, pend.From
 	local away = Vector3.new(pos.X - from.X, 0, pos.Z - from.Z)
 	away = away.Magnitude > 0.01 and away.Unit or Vector3.new(0, 0, 1)

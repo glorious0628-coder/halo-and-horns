@@ -411,8 +411,10 @@ runGroup("shop", function()
 		if w4.Fired[i].Remote == "OpenPanel" then opened = w4.Fired[i] end
 	end
 	check(opened ~= nil and opened.Payload == "WeaponShop", "the anvil opens the weapon shop")
-	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Main.Id == "M1_1" and g.Story.Main.St == 2,
-		"the M1_1 gift is in hand by the time the shop opens (M1_1 at step 2)", show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main }))
+	-- A23-222: M1_1 is one step now (the scroll moved to M1_2's anvil step): the visit closes it
+	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Done.M1_1 == true and g.Story.Main.Id ~= "M1_1",
+		"the M1_1 gift is in hand by the time the shop opens (M1_1 done: one step since A23-222)",
+		show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main, g.Story.Done }))
 	-- 최종 검수 10/16 🔴: Otto's talk shares the anvil's key and only the anvil's prompt shows - while Otto has a story talk for
 	-- me (an offer / a step / a lesson: TalkToNpc answers), the anvil opens that talk instead of the shop
 	local realTalk, asked = w4.Story.TalkToNpc, {}
@@ -538,9 +540,14 @@ end)
 ------------------------------------------------------------------ 7. the M1_1 gift (both orders)
 -- A23-188: M1_1 ships "Beat a Slime Prince" as step 1 (no second Forge visit); these groups test the engine's gift at the
 -- end of a GiveWeapon quest's first step on this world's own Config with the old visit step (State BlacksmithVisited)
+-- A23-222: M1_1 ships ONE step (the scroll is M1_2's anvil step now); the old flow's step 2 (Otto's scroll from the bag, Event
+-- ScrollUsed Past + GiveItem) is put back here so the engine's step-1 gift is still the first of two steps
 local function visitStep(world)
-	world.Config.StoryQuests.Defs.M1_1.Steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
-	world.Config.StoryQuests.Defs.M1_1.Steps[2].GiveItem = { Item = "Enh70", N = 1 } -- and Otto's scroll at step 2 (the old flow)
+	local steps = world.Config.StoryQuests.Defs.M1_1.Steps
+	steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
+	steps[2] = { Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
+		Obj = { Type = "Event", Name = "ScrollUsed", Past = true },
+		GiveItem = { Item = "Enh70", N = 1 } } -- and Otto's scroll at step 2 (the old flow)
 	return world
 end
 runGroup("gift", function()
