@@ -166,10 +166,26 @@ local function firstMissionOpen(player)
 	return type(steps.Done) == "number" and type(step) == "number" and step < steps.Done
 end
 
+-- playtest r1 ③ (최종 검수 10/16): before the guide is met (TutorialStep Kill = 0: the spawn after the faction pick) the spawn
+-- faces this side's guide (Config.Tutorial.Guides -> its Config.TownNpcs.List At: Hallie / Magpie stood 18-23 studs behind
+-- the camera); nil = a guide without a fixed spot (Kit at the anvil) or a later step
+local function guideSpot(player)
+	local tut = Config.Tutorial or {}
+	local steps = tut.Steps or {}
+	if type(steps.Kill) ~= "number" or stat(player, "TutorialStep", 0) ~= steps.Kill then return nil end
+	local id = type(tut.Guides) == "table" and tut.Guides[stat(player, "Faction", "None")] or nil
+	local list = type(Config.TownNpcs) == "table" and Config.TownNpcs.List or nil
+	if type(id) ~= "string" or type(list) ~= "table" then return nil end
+	for _, npc in list do
+		if npc.Id == id and typeof(npc.At) == "Vector3" then return npc.At end
+	end
+	return nil
+end
+
 local function spawnCFrame(zoneId, faceOut)
 	local zs = S.ZoneService
 	if zs and zs.GetSpawnCFrame then
-		local ok, cf = pcall(zs.GetSpawnCFrame, zoneId, faceOut == true)
+		local ok, cf = pcall(zs.GetSpawnCFrame, zoneId, typeof(faceOut) == "Vector3" and faceOut or faceOut == true)
 		if ok and typeof(cf) == "CFrame" then return cf end
 		if not ok then Util.Warn(TAG, "GetSpawnCFrame failed: " .. tostring(cf)) end
 	end
@@ -199,7 +215,7 @@ end
 local function spawnSpot(player)
 	local g = getUp(player)
 	if g and typeof(g.CFrame) == "CFrame" then return g.CFrame end
-	return spawnCFrame(respawnZoneId(player), firstMissionOpen(player))
+	return spawnCFrame(respawnZoneId(player), guideSpot(player) or firstMissionOpen(player))
 end
 
 -- CR-H2: tell ZoneService's movement check that the server is about to move this player (no false "teleport" log)

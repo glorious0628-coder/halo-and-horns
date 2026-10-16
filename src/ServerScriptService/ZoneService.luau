@@ -723,6 +723,7 @@ function ZoneService.GetSpawnCFrame(zoneId, faceOut)
 		base.Z + Util.Random:NextNumber(-SPAWN_JITTER, SPAWN_JITTER)
 	)
 	local target = faceOut == true and typeof(zone.SpawnLook) == "Vector3" and zone.SpawnLook or zone.Center
+	if typeof(faceOut) == "Vector3" then target = faceOut end -- playtest r1 ③: a spot to face (the side's guide)
 	local look = Vector3.new(target.X, pos.Y, target.Z)
 	if (look - pos).Magnitude > 1 then
 		return CFrame.lookAt(pos, look)
