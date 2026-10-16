@@ -101,12 +101,14 @@ runGroup("config", function()
 		show(stray))
 	-- A23-74 (user 2026-10-07 "의성어 의태어나 단어 수준"): every line a sound word / one short word - at most 2 words and
 	-- 12 letters (marks included, … = one), with a letter in it; no two kinds (Golden / Goose too) share a line
+	-- A23-212 (user 10/16): the sure Start / Beaten lines are the captain's short sentences (at most 40 letters), not counted here
 	local longest, widest, bad, long, count = 0, 0, {}, {}, 0
-	local owner, shared = {}, {}
+	local owner, shared, sureLong = {}, {}, {}
 	for kind, set in K0.Lines do
 		for moment, list in set do
-			check(moment == "Spot" or moment == "Hit" or moment == "Low" or moment == "Idle", "a known moment: " .. tostring(moment), moment)
-			for _, line in list do
+			check(moment == "Spot" or moment == "Hit" or moment == "Low" or moment == "Idle" or moment == "Start" or moment == "Beaten",
+				"a known moment: " .. tostring(moment), moment)
+			for _, line in moment ~= "Start" and moment ~= "Beaten" and list or {} do
 				count += 1
 				local n = utf8.len(line) or #line
 				longest = math.max(longest, words(line))
@@ -126,6 +128,16 @@ runGroup("config", function()
 	end
 	check(count >= 60 and #long == 0 and longest <= 2 and widest <= 12,
 		"A23-74 sound words: 60+ lines, each at most 2 words and 12 letters", show({ count, longest, widest, long }))
+	for _, set in K0.Lines do
+		for _, moment in { "Start", "Beaten" } do
+			for _, line in type(set[moment]) == "table" and set[moment] or {} do
+				if (utf8.len(line) or #line) > 40 then table.insert(sureLong, line) end
+			end
+		end
+	end
+	check(#sureLong == 0 and K0.Lines.CaptainClatter.Start[1] == "Your turn, captain. Ready for a match?"
+		and K0.Lines.CaptainClatter.Beaten[1] == "Good match! I need a sit-down.",
+		"A23-212: Captain Clatter's match lines (Start / Beaten), each at most 40 letters", show(sureLong))
 	check(#bad == 0, "no kill / die / dead / blood / scary, the one-glyph ellipsis only", show(bad))
 	check(#shared == 0, "every monster sounds like itself (no two kinds share a line)", show(shared))
 	local L = K0.Lines
@@ -136,6 +148,31 @@ runGroup("config", function()
 		"each kind's first Spot is its own sound (A23-74 examples)", show({ L.Slime.Spot[1], L.BigSlime.Spot[1], L.GhostKing.Spot[1] }))
 	check(L.Golden.Spot[1] == "Bling!" and L.Golden.Low[1] == "Okay, share!" and L.Goblin.Low[1] == "Yikes!"
 		and L.Goose.Spot[1] == "HONK!", "golden / goose lines as written (A23-74)", show({ L.Golden.Spot[1], L.Golden.Low[1] }))
+end)
+
+------------------------------------------------------------------ A23-212 (user 10/16): the captain's sure lines
+runGroup("start and beaten", function()
+	local w = barkWorld()
+	local cap = w:Mon("CaptainClatter")
+	w:Moment(cap, "Spot", { 0 }) -- no roll: the one line pick only
+	check(barkOf(cap) == "Your turn, captain. Ready for a match?" and #w.Script == 0,
+		"Captain Clatter's first Spot of a life: the Start line, no roll", show({ barkOf(cap), #w.Script }))
+	w:Advance(13)
+	cap.Model.Attrs.Bark = nil
+	w:Moment(cap, "Spot", { 0.01, 0 })
+	check(inList(K0.Lines.CaptainClatter.Spot, barkOf(cap)), "his next Spot (after the cooldown) is a normal Spot line", barkOf(cap))
+	w:Advance(1)
+	cap.Alive = false
+	w:Moment(cap, "Beaten", { 0 })
+	check(barkOf(cap) == "Good match! I need a sit-down.", "beaten (no longer Alive, within the cooldown): the Beaten line, no roll",
+		barkOf(cap))
+	local slime = w:Mon("Slime")
+	slime.Alive = false
+	w:Moment(slime, "Beaten", { 0 })
+	check(barkOf(slime) == nil, "a kind without a Beaten line says nothing when beaten", barkOf(slime))
+	local cap2 = w:Mon("CaptainClatter")
+	w:Moment(cap2, "Hit", { 0, 0 })
+	check(barkOf(cap2) ~= "Your turn, captain. Ready for a match?", "a Hit is never the Start line", barkOf(cap2))
 end)
 
 runGroup("spot and hit", function()
@@ -340,6 +377,13 @@ runGroup("monster service hooks", function()
 		1, true) ~= nil, "aiStep fires Spot when a monster picks a new target", #ai)
 	local _, spots = string.gsub(ai, "Moment:Fire", "")
 	check(spots == 1, "aiStep fires one moment only", spots)
+	-- A23-212: killRecord fires Beaten once, right after the record stops being Alive (before the death pop)
+	local kr = block("local function killRecord(")
+	local beat = string.find(kr, "\tMonsterService.Moment:Fire(rec, \"Beaten\")", 1, true)
+	local alive = string.find(kr, "\trec.Alive = false\n", 1, true)
+	local pop = string.find(kr, "deathPop(rec", 1, true)
+	check(beat and alive and pop and alive < beat and beat < pop, "killRecord fires Beaten after Alive = false, before the death pop",
+		show({ alive, beat, pop }))
 	-- Spot: a personal monster once, when it first goes for its owner (the tutorial golden slime)
 	local ps = block("local function personalStep(")
 	check(string.find(ps, "if d <= PERSONAL_FOLLOW_RADIUS and not rec._spotted then\n\t\trec._spotted = true\n\t\tMonsterService.Moment:Fire(rec, \"Spot\")",

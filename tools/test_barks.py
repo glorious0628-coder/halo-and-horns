@@ -49,8 +49,15 @@ MUTATIONS = [
     ("idle asks for every monster (no forPlayer)", B, "num(K.IdleNear, 40), p)", "num(K.IdleNear, 40))"),
     ("Enabled ignored", B, "return K.Enabled == true and type(K.Lines) == \"table\"", "return type(K.Lines) == \"table\""),
     ("no BarkAt", B, "\t\trec.Model:SetAttribute(\"BarkAt\", workspace:GetServerTimeNow())\n", ""),
-    ("a dead monster barks", B, "type(rec) ~= \"table\" or not rec.Alive or", "type(rec) ~= \"table\" or"),
-    ("Spot moments ignored", B, "if kind == \"Spot\" or kind == \"Hit\" then", "if kind == \"Hit\" then"),
+    ("a dead monster barks", B, "\tif not rec.Alive then return false end\n", ""),
+    ("Spot moments ignored", B, "if kind == \"Spot\" or kind == \"Hit\" or kind == \"Beaten\" then",
+     "if kind == \"Hit\" or kind == \"Beaten\" then"),
+    # A23-212 (user 10/16): Captain Clatter's sure Start / Beaten lines
+    ("A23-212: Beaten never heard", B, "if kind == \"Spot\" or kind == \"Hit\" or kind == \"Beaten\" then",
+     "if kind == \"Spot\" or kind == \"Hit\" then"),
+    ("A23-212: no Start line", B, "\t\tif sure(rec, m, \"Start\") then return true end\n", ""),
+    ("A23-212: Beaten needs a living record", B, "\tif moment == \"Beaten\" then return sure(rec, m, \"Beaten\") end", "\tif false then end"),
+    ("A23-212: the Start line every Spot", B, "\t\tm.Start = true\n", ""),
     ("the idle loop ignores IdleEvery", B, "task.wait(math.max(1, num(K.IdleEvery, 10)))", "task.wait(1)"),
     # MonsterService hooks (game dev 1's file: two lines + the signal)
     ("no Hit moment", M, "\t\tMonsterService.Moment:Fire(record, \"Hit\") -- ③ barks\n", ""),

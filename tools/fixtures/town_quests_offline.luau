@@ -605,8 +605,11 @@ runGroup("clues", function()
 	local C, SQ = C0, SQ0
 	check(SQ.Speakers.Kids == "Bright & Rose" and SQ.Landmarks.KidsBench and SQ.Landmarks.KidsBench.X == 18
 		and SQ.Landmarks.KidsBench.Z == 18, "Speakers.Kids + Landmarks.KidsBench (18, 0, 18)", show(SQ.Landmarks.KidsBench))
-	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[1], "They say", 1, true) == 1
-		and #C.Story.Premise == 3 and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 rumor lines, 3 premise lines, the ask",
+	-- A23-212 (user 10/16): the culprit is told from the start - Captain Clatter, by mistake (no "They say" rumor any more)
+	check(#C.Story.OpeningRumor == 3 and string.find(C.Story.OpeningRumor[2], "Captain Clatter", 1, true) ~= nil
+		and #C.Story.Premise == 3 and string.find(C.Story.Premise[1], "Captain Clatter broke the Crown", 1, true) == 1
+		and C.ClientText.Intro.Lines[1] == "Captain Clatter broke the Crown of Balance."
+		and C.Story.OpeningAsk == "Which side will you choose?", "opening: 3 lines, 3 premise lines naming Clatter, the ask",
 		show({ C.Story.OpeningRumor, C.Story.OpeningAsk }))
 	for _, line in C.Story.Premise do
 		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",

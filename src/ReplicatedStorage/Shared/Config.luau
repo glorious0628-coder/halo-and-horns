@@ -2761,6 +2761,9 @@ Config.Barks = {
 			Idle = { "Rattle~", "Tuesday?" },
 		},
 		CaptainClatter = { -- J: the captain nobody relieved (300 years on duty)
+			-- A23-212 (user 10/16): the friendly captain's match - his first line of a life and his line after a defeat
+			Start = { "Your turn, captain. Ready for a match?" },
+			Beaten = { "Good match! I need a sit-down." },
 			Spot = { "HALT!!", "Who's next?" },
 			Hit = { "CLATTER!", "Bones! Ow!" },
 			Low = { "Nap time…", "Off duty?" },
@@ -3637,7 +3640,7 @@ Config.StoryQuests = {
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
-						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nHalos and Horns tell the same story. They just swap who did it.",
+						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nClatter held it too tight. Now its shards are everywhere.",
 						"The sparkly dust you got from the pond slimes? That's crown dust.",
 						"Give the dust to the fountain: the world leans to the light.\nKeep it: it leans to the dark. What will you do?",
 					} },
@@ -3954,7 +3957,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "The Horns are up to something! I need Form H-1.\nTo get Form H-1, I need Form H-0. …Can you just help?",
-						"They say a Horn broke the Crown. Everyone says so.\n…Who said so first?",
+						"Captain Clatter broke the Crown. He even said sorry.\nBut the Horns? Still up to SOMETHING.",
 						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
@@ -3980,7 +3983,7 @@ Config.StoryQuests = {
 			Start = "Psst! Rose in Horns Den has a secret job for you.",
 			Steps = {
 				{ Text = "Talk to Rose in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Psst! A Halo broke the Crown! My uncle's friend's cousin saw it!",
+					Lines = { All = { "Psst! The Halos have a secret plan! My uncle's friend's cousin saw it!",
 						"This gold spyglass? Found it. Gold is fine. For spying.\nPlan A: we spy. Plan B: same as Plan A, but sneakier!",
 						"The Halos whisper at the fountain. A secret plan!\nGo listen there. Look natural!" } } },
 				{ Text = "Listen at the fountain %d/%d s", Guide = "Fountain",
@@ -4007,7 +4010,7 @@ Config.StoryQuests = {
 			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Halos blame Horns. Horns blame Halos.\nNoted: nobody saw it.",
+					Lines = { All = { "Halos say Horns are plotting. Horns say Halos are.\nNoted: nobody checked.",
 						"Can you watch both bridges for me? Quietly." } } },
 				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
 				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
@@ -4520,7 +4523,7 @@ Config.StoryQuests.Defs.EG03 = {
 		{ Text = "Visit the goose", Obj = { Type = "Near", Spot = "GooseNest", Radius = 6 } },
 		{ Text = "Goose Fan", Panel = true, Obj = { Type = "Talk" },
 			Lines = { All = { "The Golden Goose has 0 followers. She has never been happier.",
-				"Also, she saw who broke the Crown. Honk." } } },
+				"Also, she saw Clatter drop his hat. Twice. Honk." } } },
 	},
 	Reward = { Title = "GooseFan" },
 }
@@ -8140,19 +8143,19 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 / story_depth §0-1: the story everyone tells — someone greedy broke the Crown, each side blames the other. It
-	-- is only a rumor: A23-209 (user 10/15) Captain Clatter broke it by mistake (a clamp held it too still: CRACK), told in
-	-- act 2, never in chapters 1-5; so every line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
+	-- A23-212 (user 10/16, replaces A23-209's act-2 reveal): told from the start - Captain Clatter broke the Crown by mistake
+	-- (a clamp held it too still: CRACK) and is sorry; no other culprit, no line blames the other side. Rumor games about what
+	-- the other side is up to stay. Premise = the faction picker's premise panel (3 lines, GDD §1-1).
 	Premise = {
-		"They say someone broke the Crown of Balance.",
+		"Captain Clatter broke the Crown of Balance. By mistake.",
 		"Some who picked up its shards grew a halo. Others grew horns.",
-		"Now each side says the other did it.",
+		"Now each side wants the shards for itself.",
 	},
 	-- the opening (A23-44 remake) shows OpeningRumor 1-3, then Premise 2-3, then OpeningAsk (story_depth §2-1)
 	OpeningRumor = {
-		"They say the Crown kept the world in balance.",
-		"They say someone wanted it all to themselves.",
-		"\"If I can't have it, no one can!\" CRACK.",
+		"The Crown kept the world in balance.",
+		"Captain Clatter held it still for a parade pose.",
+		"Too still. CRACK.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
@@ -11244,8 +11247,8 @@ Config.ClientText.EventHUD = {
 }
 Config.ClientText.FirstSteps = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
 Config.ClientText.Intro = {
-	Lines = { -- A23-209 (user 10/15)
-		"The Crown of Balance broke.",
+	Lines = { -- A23-209 (user 10/15); line 1 = A23-212 (user 10/16): the culprit is told from the start
+		"Captain Clatter broke the Crown of Balance.",
 		"Some grew halos. Others grew horns.",
 		"Gather shards. Make their power your own.",
 	},
