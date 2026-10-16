@@ -196,6 +196,7 @@ MUTATIONS = [
      "\t\t\tif leaving and d ~= root and d.Name ~= VISUAL_ROOT_NAME then", "\t\t\tif d ~= root and d.Name ~= VISUAL_ROOT_NAME then"),
     ("A23-211: no CalmTime on a boss", "MONSTER_SOURCE",
      "\tif calm then model:SetAttribute(\"CalmTime\", calm) end", "\tif false then model:SetAttribute(\"CalmTime\", calm) end"),
+    ("A23-211: no wait for the hit mark", "MONSTER_SOURCE", "local HIT_WAIT = 0.7\n", "local HIT_WAIT = 0\n"),
     ("A23-211: a boss removed at the default time", "MONSTER_SOURCE",
      "DEATH_DESTROY + (calm and calm - 1 or 0)", "DEATH_DESTROY"),
     ("A23-211: a leaving boss gets CalmTime", "MONSTER_SOURCE",
@@ -430,7 +431,7 @@ def make_harness(sources: dict[str, str]) -> str:
     # the real death pop (A23-74: opaque; kill: hold + shrink + burst, a slime's CustomVisual left to the clients;
     # leaving: "Leaving" attribute, rise + shrink) and the ghost sweep (GHOST.Sweep)
     pop_consts = []
-    for pattern in (r"^local DEATH_SHRINK = .*$", r"^local DEATH_DESTROY = .*$", r"^local VISUAL_ROOT_NAME = .*$",
+    for pattern in (r"^local DEATH_SHRINK = .*$", r"^local DEATH_DESTROY = .*$", r"^local HIT_WAIT = .*$", r"^local VISUAL_ROOT_NAME = .*$",
                     r"^local LEAVE = \{.*\}$", r"^local GHOST = \{.*\}$"):
         m = re.search(pattern, mon, re.M)
         if not m:

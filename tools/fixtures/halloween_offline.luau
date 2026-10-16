@@ -2211,25 +2211,25 @@ runGroup("king-leave-visual", function()
 	local kill = popRun(true, nil, { Kind = "Goblin" })
 	local kg = goalOf(kill, kill.Mesh)
 	check(kill.Model.Attrs.Leaving == nil and kill.Model.Attrs.CalmTime == nil and kill.Particles == 0 and kg == nil
-		and near(kill.Delays[1] or 0, 1.15, 1e-9),
-		"a kill (A23-211): no burst, no server shrink, opaque; the clients play the calm fade, removed at 1.15 s", show({ kg, kill.Delays[1] }))
+		and near(kill.Delays[1] or 0, 1.85, 1e-9),
+		"a kill (A23-211): no burst, no server shrink, opaque; the clients play the calm fade, removed at 1.85 s (+0.7 hit wait)", show({ kg, kill.Delays[1] }))
 	check(kill.RootData.Anchored == true and kill.Bar.Enabled == false and goalOf(kill, kill.Root) == nil,
 		"a kill: anchored on the spot, name bar off", show(kill.Log))
 	local slime = popRun(true, nil, { Kind = "Slime" })
 	local sh = goalOf(slime, slime.Hitbox)
-	check(goalOf(slime, slime.Mesh) == nil and sh == nil and near(slime.Delays[1] or 0, 1.15, 1e-9),
-		"a killed slime: nothing resized on the server (the clients own the look), removed at 1.15 s",
+	check(goalOf(slime, slime.Mesh) == nil and sh == nil and near(slime.Delays[1] or 0, 1.85, 1e-9),
+		"a killed slime: nothing resized on the server (the clients own the look), removed at 1.85 s",
 		show({ goalOf(slime, slime.Mesh), sh, slime.Delays[1] }))
 	local king = popRun(true, nil, { Kind = "PumpkinKing" })
 	check(goalOf(king, king.Mesh) == nil and king.Particles == 0 and king.Model.Attrs.CalmTime == nil,
 		"a defeated Pumpkin King: no burst, no resize, no CalmTime (not in Config.MonsterCalmTime)", show(goalOf(king, king.Mesh)))
 	local boss = popRun(true, nil, { Kind = "SlimeKing" })
 	local calmAt, anchorAt = table.find(boss.Log, "attr:CalmTime"), table.find(boss.Log, "anchor")
-	check(boss.Model.Attrs.CalmTime == 1.8 and calmAt and anchorAt and calmAt < anchorAt and near(boss.Delays[1] or 0, 1.95, 1e-9),
-		"King Slime (A23-211): CalmTime 1.8 set before the anchor, removed 0.8 s later than a monster (1.95 s)",
+	check(boss.Model.Attrs.CalmTime == 1.8 and calmAt and anchorAt and calmAt < anchorAt and near(boss.Delays[1] or 0, 2.65, 1e-9),
+		"King Slime (A23-211): CalmTime 1.8 set before the anchor, removed 0.8 s later than a monster (2.65 s)",
 		show({ boss.Model.Attrs.CalmTime, boss.Log, boss.Delays[1] }))
 	local clat = popRun(true, nil, { Kind = "CaptainClatter", Custom = false })
-	check(clat.Model.Attrs.CalmTime == 2.2 and near(clat.Delays[1] or 0, 2.35, 1e-9), "Captain Clatter: CalmTime 2.2, removed at 2.35 s",
+	check(clat.Model.Attrs.CalmTime == 2.2 and near(clat.Delays[1] or 0, 3.05, 1e-9), "Captain Clatter: CalmTime 2.2, removed at 3.05 s",
 		show({ clat.Model.Attrs.CalmTime, clat.Delays[1] }))
 	local bossLeave = popRun(false, true, { Kind = "SlimeKing" })
 	check(bossLeave.Model.Attrs.CalmTime == nil, "a boss that leaves (not beaten) gets no CalmTime", show(bossLeave.Model.Attrs))
@@ -2252,8 +2252,8 @@ runGroup("king-leave-visual", function()
 	local kInfo, lInfo0 = nil, nil
 	for _, tw in kill.Tweens do if tw.Inst == kill.Mesh then kInfo = tw.Info end end
 	for _, tw in leave.Tweens do if tw.Inst == leave.Mesh then lInfo0 = tw.Info end end
-	check(kInfo == nil and near(kill.Delays[1] or 0, 1.15, 1e-9),
-		"a kill (A23-211): the body stays its size for the clients' calm fade, removed at 1.15 s", show({ kInfo, kill.Delays[1] }))
+	check(kInfo == nil and near(kill.Delays[1] or 0, 1.85, 1e-9),
+		"a kill (A23-211): the body stays its size for the clients' calm fade, removed at 1.85 s", show({ kInfo, kill.Delays[1] }))
 	check(lInfo0 and (lInfo0.Args[6] or 0) == 0, "leaving: the shrink starts at once (no hold)", show(lInfo0 and lInfo0.Args))
 	local faded = {}
 	for _, f in { kill, slime, king, bare, leave } do
@@ -2266,8 +2266,8 @@ runGroup("king-leave-visual", function()
 	local g = kill.Ghost
 	local kUntil, lUntil = g and g.Dying[kill.Model], leave.Ghost and leave.Ghost.Dying[leave.Model]
 	check(type(kUntil) == "number" and type(g.Grace) == "number" and g.Grace > 0 and g.Grace <= 2
-		and kUntil >= kill.Before + 1.15 + g.Grace - 1e-6 and kUntil <= os.clock() + 1.15 + g.Grace + 1e-6,
-		"a killed body is held from the ghost sweep until its destroy time (1.15 s) + grace", show({ kUntil and kUntil - kill.Before }))
+		and kUntil >= kill.Before + 1.85 + g.Grace - 1e-6 and kUntil <= os.clock() + 1.85 + g.Grace + 1e-6,
+		"a killed body is held from the ghost sweep until its destroy time (1.85 s) + grace", show({ kUntil and kUntil - kill.Before }))
 	check(type(lUntil) == "number" and lUntil >= leave.Before + (leave.Delays[1] or math.huge) + g.Grace - 1e-6,
 		"a leaving body is held until its later destroy + grace", show({ lUntil and lUntil - leave.Before, leave.Delays[1] }))
 end)

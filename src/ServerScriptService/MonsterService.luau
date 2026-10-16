@@ -91,9 +91,12 @@ local BAR_MAX_DISTANCE = 80
 -- soft hop, a little smaller, fading); the server no longer bursts particles or shrinks a killed body (its replicated size
 -- would override the clients'). DEATH_SHRINK stays for the clients' old puddle timing until the calm fade replaces it.
 -- A boss's model gets the attribute CalmTime (s, Config.MonsterCalmTime) just before it is anchored and is destroyed that
--- much later (DEATH_DESTROY is the 1.0 s default fade + 0.15)
+-- much later (DEATH_DESTROY is the 1.0 s default fade + 0.15). HIT_WAIT (최종 검수 / game dev 1 10/16, GPT game_feel_r1 ③⑤):
+-- the clients hold a beaten body until its hit mark shows (melee ~0.3 s, a magic orb ~0.55 s, at most 0.6 + 0.05 + 0.08) and
+-- only then fade it, so the body lives that much longer (kill credit, drops and rewards stay at once)
 local DEATH_SHRINK = 0.3
 local DEATH_DESTROY = 1.15
+local HIT_WAIT = 0.7
 -- an event monster that leaves undefeated (RemoveEvent(rec, true, true), the Pumpkin King going home): model attribute
 -- "Leaving" (clients skip the dying-slime splat), floats up Rise studs while it shrinks away over Time s, no burst
 local LEAVE = { Time = 1.2, Rise = 3 }
@@ -1463,7 +1466,7 @@ local function deathPop(rec, _killed, leaving)
 			d.Enabled = false
 		end
 	end
-	local life = leaving and LEAVE.Time + 0.1 or DEATH_DESTROY + (calm and calm - 1 or 0)
+	local life = leaving and LEAVE.Time + 0.1 or DEATH_DESTROY + (calm and calm - 1 or 0) + HIT_WAIT -- CalmTime + 0.15 + 0.7
 	GHOST.Dying[model] = os.clock() + life + GHOST.Grace
 	task.delay(life, function()
 		if model then model:Destroy() end
