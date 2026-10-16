@@ -40,7 +40,9 @@ WP_CUTS = ["function WeaponPose.MemeOf(tier)", "function WeaponPose.HoldOf(kind)
            "function WeaponPose.DampOf(pose, joint, state)", "local function fxAttacking(char)", "function WeaponPose.BaseOf(m)",
            "function WeaponPose.JointOf(char, joint)", "function WeaponPose.PoseStep(dt)",
            # A23-223: a bow on the back / a sword at the hip out of a fight
-           "function WeaponPose.StowOf(kind)", "function WeaponPose.StowApply(char, tool, handle, where, stow)",
+           "function WeaponPose.StowOf(kind)", "function WeaponPose.HipDown(want, height, reach, margin)",
+           "function WeaponPose.HipDownOf(char, tool, handle, part, at, row)",
+           "function WeaponPose.StowApply(char, tool, handle, where, stow)",
            "function WeaponPose.StowStep(char, tool, kind, attacking, now)"]
 
 EXTRA = r'''
@@ -255,12 +257,17 @@ do
         and WeaponPose.StowOf("DarkSword") == "Hip" and WeaponPose.StowOf("Staff") == nil and WeaponPose.StowOf("Hammer") == nil
         and WeaponPose.StowOf("Meme") == nil and WeaponPose.StowOf("Baton") == nil, "StowOf: bows on the back, swords at the hip, the rest in the hand")
     local char, tool, handle, grip = setup("Bow")
+    local str = child(tool, node("Part", "String", { Size = Vector3.new(0.05, 3, 0.05), CFrame = CFrame.new(0, 0, 0.8) }))
+    local beams = { child(str, node("Beam", "BowTopString", { Enabled = true })), child(str, node("Beam", "BowBottomString", { Enabled = true })) }
+    function str:GetChildren() return self.Children end
     local hand = W.HandSeconds
     ok(WeaponPose.StowStep(char, tool, "Bow", false, 100) == true, "a bow never used in a fight starts on the back")
     local weld = handle:FindFirstChild(T.StowWeld)
     ok(weld and weld.Enabled and weld.Part0 == char:FindFirstChild("UpperTorso") and weld.Part1 == handle and grip.Enabled == false,
         "the bow's back weld is on, the right grip off")
+    ok(beams[1].Enabled == false and beams[2].Enabled == false, "stow-fix: the bow's string beams hidden on the back")
     ok(WeaponPose.StowStep(char, tool, "Bow", true, 100.1) == false and weld.Enabled == false, "an attack takes it off the back at once")
+    ok(beams[1].Enabled and beams[2].Enabled, "stow-fix: the string shows again in the hand")
     ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand - 0.2) == false, "it stays in the hand for HandSeconds after the attack")
     ok(WeaponPose.StowStep(char, tool, "Bow", false, 100.1 + hand + 0.1) == true and weld.Enabled, "then back on the back")
     W.On = false
@@ -273,6 +280,26 @@ do
         and handle:FindFirstChild(T.StowWeld).Part0 == char:FindFirstChild("LowerTorso"), "a sword hangs at the hip, the right grip off")
     ok(WeaponPose.StowStep(char, tool, "Sword", true, 200.1) == false and grip.Enabled == true
         and handle:FindFirstChild(T.StowWeld).Enabled == false, "an attack puts the sword back on the right grip at once")
+    -- stow-fix (게임 플레이 4판): the tip Down degrees under level (not a tail), less for a long weapon near the floor
+    local function tipDown(c0)
+        local v = c0:VectorToWorldSpace(Vector3.new(0, 1, 0))
+        return math.deg(math.asin(-v.Y)), v.Z, v.X
+    end
+    local dn, back, side = tipDown(handle:FindFirstChild(T.StowWeld).C0)
+    ok(math.abs(dn - W.Hip.Down) < 0.5 and back > 0.3 and side <= 0.01, "the sword's tip hangs Down degrees back and down, out past the leg",
+        dn .. " " .. back .. " " .. side)
+    ok(WeaponPose.HipDown(65, 2.6, 2.0, 0.4) == 65 and math.abs(WeaponPose.HipDown(65, 2.6, 5, 0.4) - math.deg(math.asin(2.2 / 5))) < 1e-6
+        and WeaponPose.HipDown(65, 0.2, 3, 0.4) == 0 and WeaponPose.HipDown(65, 2.6, 0, 0.4) == 65,
+        "HipDown: Down, flatter for a long weapon (tip Floor studs over the floor), never under level")
+    S.Stow = {}
+    char, tool, handle, grip = setup("Sword")
+    local hum, root = char:FindFirstChild("Humanoid"), char:FindFirstChild("HumanoidRootPart")
+    hum.HipHeight, root.Size, root.Position = 2, Vector3.new(2, 2, 1), Vector3.new(0, 0.4, 0)
+    child(tool, node("Part", "Blade", { Size = Vector3.new(0.2, 6, 0.2), CFrame = CFrame.new(0, 3, 0) }))
+    WeaponPose.StowStep(char, tool, "Sword", false, 250)
+    dn = tipDown(handle:FindFirstChild(T.StowWeld).C0)
+    local want = math.deg(math.asin((2.6 - 0.04 - W.Hip.Floor) / 6)) -- weld point y -0.04, floor y -2.6, the tip 6 out
+    ok(math.abs(dn - want) < 0.5 and dn < 30, "a long blade (6 studs out): flatter so its tip stays Floor over the floor", dn .. " vs " .. want)
     S.Stow = {}
     char, tool, handle, grip = setup("Staff")
     ok(WeaponPose.StowStep(char, tool, "Staff", false, 300) == false and handle:FindFirstChild(T.StowWeld) == nil and grip.Enabled,
