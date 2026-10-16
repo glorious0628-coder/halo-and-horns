@@ -93,7 +93,8 @@ def run(files: dict[str, str]) -> tuple[int, int, str]:
         failed += 0 if ok else 1
         out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + name
     moves = moves_in_config(files["CONFIG"])
-    ok = len(moves) == 3 and all(f'move == "{mv}"' in files["NPCS"] for mv in moves)
+    # (10/16 dev 2: chapter 2 adds a 4th scene, Tools, on an existing pose: every scene needs a pose, 3 or more)
+    ok = len(moves) >= 3 and all(f'move == "{mv}"' in files["NPCS"] for mv in moves)
     checks += 1
     failed += 0 if ok else 1
     out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + f"every Config Scenes Move has a pose {moves}"

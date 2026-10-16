@@ -4784,7 +4784,8 @@ Config.StoryQuests.Clatter = {
 		-- after the first skill: he grips his box, then holds the handle right and salutes as the player goes first
 		Carry = { Line = "I'll carry this. You lead.", Move = "CarrySalute", After = { Quest = "M1_3", Type = "Learn" } },
 		-- chapter 2 (story_ch2_r1 §4, 최종 검수 10/16): once, as M2_4's gold run ends on the road back to town
-		Tools = { Line = "I'll carry my tools. You lead.", Move = "Nod", After = { Quest = "M2_4", Type = "EarnGold" } },
+		Tools = { Line = "I'll carry my tools. You lead.", Move = "CarrySalute", -- (his carry pose; no Nod pose)
+			 After = { Quest = "M2_4", Type = "EarnGold" } },
 	},
 }
 -- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
