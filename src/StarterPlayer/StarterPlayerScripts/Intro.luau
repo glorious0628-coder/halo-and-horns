@@ -269,14 +269,17 @@ function SCENE.Crown(at)
 	return halves
 end
 
--- his part body (A23-212 stand-in, no weapon): parts placed each frame from his root (feet, facing the crown = -Z)
-function SCENE.Clatter()
+-- his part body (A23-212 stand-in, no weapon): parts placed each frame from his root (feet, facing the crown = -Z);
+-- scale (default 1 = the opening's size) shrinks every part and offset (the town scenes: about 1.3 x a player)
+function SCENE.Clatter(scale)
 	local K = SCENE
+	local sc = tonumber(scale) or 1
 	local function part(name, shape, size, color)
-		return fxPart({ Name = name, Shape = shape or Enum.PartType.Block, Size = size, Color = color,
+		return fxPart({ Name = name, Shape = shape or Enum.PartType.Block, Size = size * sc, Color = color,
 			Material = Enum.Material.SmoothPlastic })
 	end
 	local c = {
+		Scale = sc,
 		Legs = { part("LegL", nil, Vector3.new(0.9, 3.4, 0.9), K.Bone), part("LegR", nil, Vector3.new(0.9, 3.4, 0.9), K.Bone) },
 		Body = part("Coat", nil, Vector3.new(2.6, 3.2, 1.6), K.Coat),
 		Belt = part("Belt", nil, Vector3.new(2.7, 0.4, 1.7), K.Gold),
@@ -293,24 +296,26 @@ end
 -- his pose: root = feet (facing -Z), head = the head's tilt / nod, aims[i] = where hand i reaches (world)
 function SCENE.PlaceClatter(c, root, head, aims)
 	local K = SCENE
-	c.Legs[1].CFrame = root * CFrame.new(-0.6, 1.7, 0)
-	c.Legs[2].CFrame = root * CFrame.new(0.6, 1.7, 0)
-	c.Body.CFrame = root * CFrame.new(0, 5.0, 0)
-	c.Belt.CFrame = root * CFrame.new(0, 3.9, 0)
-	local h = root * CFrame.new(0, 8.0, 0) * head
+	local sc = c.Scale or 1
+	local function at(x, y, z) return CFrame.new(x * sc, y * sc, z * sc) end
+	c.Legs[1].CFrame = root * at(-0.6, 1.7, 0)
+	c.Legs[2].CFrame = root * at(0.6, 1.7, 0)
+	c.Body.CFrame = root * at(0, 5.0, 0)
+	c.Belt.CFrame = root * at(0, 3.9, 0)
+	local h = root * at(0, 8.0, 0) * head
 	c.Head.CFrame = h
-	c.Eyes[1].CFrame = h * CFrame.new(-0.55, 0.15, -1.15)
-	c.Eyes[2].CFrame = h * CFrame.new(0.55, 0.15, -1.15)
-	c.Helmet.CFrame = h * CFrame.new(0, 0.95, 0) * CFrame.Angles(0, 0, math.rad(90))
-	c.Badge.CFrame = h * CFrame.new(0, 1.0, -1.65)
+	c.Eyes[1].CFrame = h * at(-0.55, 0.15, -1.15)
+	c.Eyes[2].CFrame = h * at(0.55, 0.15, -1.15)
+	c.Helmet.CFrame = h * at(0, 0.95, 0) * CFrame.Angles(0, 0, math.rad(90))
+	c.Badge.CFrame = h * at(0, 1.0, -1.65)
 	for i, side in { -1, 1 } do
-		local sh = (root * CFrame.new(side * K.Shoulder.X, K.Shoulder.Y, K.Shoulder.Z)).Position
+		local sh = (root * at(side * K.Shoulder.X, K.Shoulder.Y, K.Shoulder.Z)).Position
 		local aim = aims[i]
 		local dir = aim - sh
 		if dir.Magnitude < 0.1 then dir = (root.LookVector * 0.3 - root.UpVector) end
 		local arm = CFrame.lookAt(sh, sh + dir.Unit)
-		c.Arms[i].CFrame = arm * CFrame.new(0, 0, -K.ArmLen / 2)
-		c.Hands[i].CFrame = arm * CFrame.new(0, 0, -K.ArmLen)
+		c.Arms[i].CFrame = arm * CFrame.new(0, 0, -K.ArmLen * sc / 2)
+		c.Hands[i].CFrame = arm * CFrame.new(0, 0, -K.ArmLen * sc)
 	end
 end
 
@@ -523,9 +528,10 @@ end
 
 -- "Skip ▶ (Enter)" where keys are shown (Keybinds.ShowsKeys), else "Skip ▶"
 -- A23-212 / A23-214 (10/16): the town scenes (StoryNpcs ClatterScene) use the opening's sword-free part body. Builds it
--- under parent -> c (Head, Helmet, Badge, Hands, every part in c.All); Intro.PlaceClatter(c, root, head, aims) poses it
-function Intro.ClatterBody(parent)
-	local c = SCENE.Clatter()
+-- under parent -> c (Head, Helmet, Badge, Hands, every part in c.All, Scale); Intro.PlaceClatter(c, root, head, aims)
+-- poses it. scale (10/16 최종 검수: the town = about 1.3 x a player) shrinks him; nil = the opening's size
+function Intro.ClatterBody(parent, scale)
+	local c = SCENE.Clatter(scale)
 	-- PhoneTest 10/16: filled in a separate list (c.All itself inside c grew while it was walked = an endless loop)
 	local all = {}
 	for _, v in c do

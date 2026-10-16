@@ -46,12 +46,18 @@ print(("CLATTER_SUMMARY checks=%d failed=%d"):format(checks, failed))
 STATIC = [
     ("NPCS", "Fx StoryScene Id Clatter reaches ClatterScene", ['if data.Id == "Clatter" then', "return StoryNpcs.ClatterScene(key, data.Pos, data.Look)"]),
     ("NPCS", "his body = the opening's part body (no sword), posed by Intro", [
-        "local ok, c = pcall(intro.ClatterBody, folder)", "pcall(intro.PlaceClatter, c, pose.Root, pose.Head, pose.Aims)"]),
+        "local ok, c = pcall(intro.ClatterBody, folder, T.Clatter.Scale)", "pcall(intro.PlaceClatter, c, pose.Root, pose.Head, pose.Aims)"]),
+    ("NPCS", "town size: about 1.3 x a player (body, pose and box all shrink)", [
+        "Scale = 0.68,", "pcall(StoryNpcs.ClatterPose, sc.Move, t, home, T.Clatter.Scale)", "T.Clatter.Box * T.Clatter.Scale",
+        "local function at(x, y, z) return home * CFrame.new(x * u, y * u, z * u) end"]),
+    ("NPCS", "the caught helmet is held up over his head, not at his chest", ["local caught = (at(0, 9.75, -0.6)).Position"]),
+    ("INTRO", "the opening keeps its size; scale shrinks every part and offset", [
+        "s.Clatter = SCENE.Clatter()\n", "Size = size * sc,", "local function at(x, y, z) return CFrame.new(x * sc, y * sc, z * sc) end"]),
     ("NPCS", "on the ground at Pos, facing Look", ["local feet = Vector3.new(pos.X, StoryNpcs.GroundAt(pos), pos.Z)", "local home = CFrame.lookAt(feet, face)"]),
     ("NPCS", "every move has a pose", ['if move == "BowHatSlip" then', 'elseif move == "CatchHat" then', 'elseif move == "CarrySalute" then']),
     ("NPCS", "his line in the story bubble over his head", ["pcall(StoryNpcs.Bubble, c.Head, sc.Line, T.Clatter.Line)"]),
     ("NPCS", "he goes after Stay", ["local stay = tonumber(K.Stay) or 8", "if t >= stay then"]),
-    ("INTRO", "the part body is shared from the opening", ["function Intro.ClatterBody(parent)", "function Intro.PlaceClatter(c, root, head, aims)"]),
+    ("INTRO", "the part body is shared from the opening", ["function Intro.ClatterBody(parent, scale)", "function Intro.PlaceClatter(c, root, head, aims)"]),
     ("INTRO", "the body's part list is filled apart from c (PhoneTest 10/16: c.All grew while walked = endless loop)", [
         "\t\t\t\ttable.insert(all, p)\n", "\tc.All = all\n"]),
     ("LABELS", "a sure line = the wide story bubble", ["local sure = B.SureMoment(kindOf(model), text)", "pcall(npcs.Bubble, att, text, B.SureShow)"]),
@@ -96,7 +102,11 @@ def run(files: dict[str, str]) -> tuple[int, int, str]:
 
 MUTATIONS = [
     ("NPCS", "the scene never plays", 'if data.Id == "Clatter" then', 'if data.Id == "ClatterX" then'),
-    ("NPCS", "the borrowed knight (sword) instead", "local ok, c = pcall(intro.ClatterBody, folder)", "local ok, c = false, nil"),
+    ("NPCS", "the borrowed knight (sword) instead", "local ok, c = pcall(intro.ClatterBody, folder, T.Clatter.Scale)", "local ok, c = false, nil"),
+    ("NPCS", "a giant in town (opening size)", "local ok, c = pcall(intro.ClatterBody, folder, T.Clatter.Scale)", "local ok, c = pcall(intro.ClatterBody, folder)"),
+    ("NPCS", "small body, opening-size pose", "pcall(StoryNpcs.ClatterPose, sc.Move, t, home, T.Clatter.Scale)", "pcall(StoryNpcs.ClatterPose, sc.Move, t, home)"),
+    ("NPCS", "helmet back at his chest like a box", "local caught = (at(0, 9.75, -0.6)).Position", "local caught = (at(0, 6.9, -1.6)).Position"),
+    ("INTRO", "the opening shrinks too", "s.Clatter = SCENE.Clatter()\n", "s.Clatter = SCENE.Clatter(0.68)\n"),
     ("NPCS", "floats at Pos (no ground)", "local feet = Vector3.new(pos.X, StoryNpcs.GroundAt(pos), pos.Z)", "local feet = pos"),
     ("NPCS", "no line", "pcall(StoryNpcs.Bubble, c.Head, sc.Line, T.Clatter.Line)", "pcall(print, sc.Line)"),
     ("NPCS", "he never goes", "if t >= stay then", "if false then"),

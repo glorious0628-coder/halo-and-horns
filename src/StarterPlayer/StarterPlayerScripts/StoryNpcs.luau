@@ -734,68 +734,74 @@ end
 -- borrowed knight mesh holds a sword and reads as a villain - the server's StoryProps.ClatterTown copy waits for his new
 -- model), standing on the ground at Pos facing Look; his Config.StoryQuests.Clatter.Scenes[Key].Move plays (times in s)
 -- and its Line shows in the story bubble over his head (Line s); he fades out (Fade s) after Config Stay.
-T.Clatter = { Line = 4.5, Fade = 0.6, Box = Vector3.new(1.6, 1.2, 1.2), BoxColor = Color3.fromRGB(176, 124, 72) }
+-- Scale (10/16 최종 검수): the opening's body is ~9.5 studs; in town he is about 1.3 x a player (~6.5 studs, a captain,
+-- not a giant). Every pose offset below is in the opening's body units and shrinks with it (the box too).
+T.Clatter = { Line = 4.5, Fade = 0.6, Scale = 0.68, Box = Vector3.new(1.6, 1.2, 1.2), BoxColor = Color3.fromRGB(176, 124, 72) }
 
 -- (pure) his pose at t s into move `move` from his feet `home` (facing -Z): { Root, Head (CFrame for the head), Aims =
 -- { left, right } (world), Hat (nil = on his head; else { Drop } studs down over his eyes, or World = a world CFrame when
 -- it is off his head), Box (world CFrame or nil) }
-function StoryNpcs.ClatterPose(move, t, home)
+function StoryNpcs.ClatterPose(move, t, home, scale)
+	local u = tonumber(scale) or 1
+	local function at(x, y, z) return home * CFrame.new(x * u, y * u, z * u) end
 	local function k(a, b) return math.clamp((t - a) / (b - a), 0, 1) end
 	local function bell(a, b) return math.sin(math.pi * k(a, b)) end
 	local root, head = home, CFrame.identity
-	local restL = (home * CFrame.new(-1.9, 3.6, -0.4)).Position
-	local restR = (home * CFrame.new(1.9, 3.6, -0.4)).Position
+	local restL = (at(-1.9, 3.6, -0.4)).Position
+	local restR = (at(1.9, 3.6, -0.4)).Position
 	local out = { Aims = { restL, restR } }
+	local side, up1 = home.RightVector * u, home.UpVector * u
 	if move == "BowHatSlip" then
 		-- a deep sorry bow, the helmet slides over his eyes, he straightens and pushes it back up
 		local bow = k(0.3, 0.8) * (1 - k(1.8, 2.3))
 		root = home * CFrame.Angles(math.rad(-28 * bow), 0, 0)
 		local drop = 0.75 * k(0.7, 1.1) * (1 - k(2.5, 2.9))
-		out.Hat = { Drop = drop }
-		if t >= 2.2 and t < 3.0 then out.Aims[2] = (home * CFrame.new(0.6, 8.6, -1.2)).Position end
+		out.Hat = { Drop = drop * u }
+		if t >= 2.2 and t < 3.0 then out.Aims[2] = (at(0.6, 8.6, -1.2)).Position end
 	elseif move == "CatchHat" then
 		-- a box flies at him; he reaches up, it bumps past, his helmet pops off and he catches only the helmet
 		local fly = k(0, 0.9)
-		local from = (home * CFrame.new(-2, 9, -9)).Position
-		local over = (home * CFrame.new(0, 8.5, -1)).Position
-		local land = (home * CFrame.new(2.6, 0.6, 0.8)).Position
+		local from = (at(-2, 9, -9)).Position
+		local over = (at(0, 8.5, -1)).Position
+		local land = (at(2.6, 0.6, 0.8)).Position
 		local boxAt
 		if t < 0.9 then
-			boxAt = from:Lerp(over, fly) + Vector3.new(0, math.sin(math.pi * fly) * 2, 0)
+			boxAt = from:Lerp(over, fly) + Vector3.new(0, math.sin(math.pi * fly) * 2 * u, 0)
 		else
 			boxAt = over:Lerp(land, k(0.9, 1.3))
 		end
 		out.Box = CFrame.new(boxAt) * CFrame.Angles(0, t * 3, t * 2 * (1 - k(0.9, 1.3)))
-		local up = (home * CFrame.new(0, 9.4, -0.8)).Position
+		local up = (at(0, 9.4, -0.8)).Position
 		if t < 1.0 then
-			out.Aims = { restL:Lerp(up + Vector3.new(-0.6, 0, 0), k(0.3, 0.8)), restR:Lerp(up + Vector3.new(0.6, 0, 0), k(0.3, 0.8)) }
+			out.Aims = { restL:Lerp(up - side * 0.6, k(0.3, 0.8)), restR:Lerp(up + side * 0.6, k(0.3, 0.8)) }
 		end
 		if t >= 0.9 and t < 3.2 then
 			local hop = k(0.9, 1.7)
-			local caught = (home * CFrame.new(0, 6.9, -1.6)).Position
-			local pos = (home * CFrame.new(0, 9.0 + 3 * math.sin(math.pi * hop), -0.4)).Position:Lerp(caught, hop)
+			-- 10/16 최종 검수: caught up over his head (about to put it back on), not at his chest like a box
+			local caught = (at(0, 9.75, -0.6)).Position
+			local pos = (at(0, 9.0 + 3 * math.sin(math.pi * hop), -0.4)).Position:Lerp(caught, hop)
 			out.Hat = { World = CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)) * CFrame.Angles(t * 6 * (1 - hop), 0, 0) }
-			out.Aims = { caught + Vector3.new(-0.9, 0, 0), caught + Vector3.new(0.9, 0, 0) }
+			out.Aims = { caught - side * 1.55 - up1 * 0.75, caught + side * 1.55 - up1 * 0.75 }
 		elseif t >= 3.2 and t < 3.8 then
-			local back = (home * CFrame.new(0, 8.95, 0)).Position
-			out.Aims = { back + Vector3.new(-1, 0, 0), back + Vector3.new(1, 0, 0) }
+			local back = (at(0, 8.95, 0)).Position
+			out.Aims = { back - side, back + side }
 		end
 		head = CFrame.Angles(math.rad(10 * bell(0.2, 1.0)), 0, 0)
 		if t >= 0.9 then out.BoxDown = true end
 	elseif move == "CarrySalute" then
 		-- both hands grip his repair box, then the left hand holds its handle and the right hand salutes
-		local side = k(1.2, 1.8)
-		local front = home * CFrame.new(0, 4.6, -1.6)
-		local left = home * CFrame.new(-2.0, 3.4, -0.6)
-		local boxCF = front:Lerp(left, side) * CFrame.Angles(0, 0, math.rad(4 * math.sin(t * 9) * (1 - side)))
+		local turn = k(1.2, 1.8)
+		local front = at(0, 4.6, -1.6)
+		local left = at(-2.0, 3.4, -0.6)
+		local boxCF = front:Lerp(left, turn) * CFrame.Angles(0, 0, math.rad(4 * math.sin(t * 9) * (1 - turn)))
 		out.Box = boxCF
-		local handle = (boxCF * CFrame.new(0, 0.9, 0)).Position
-		local l = (boxCF * CFrame.new(-0.85, 0, 0)).Position:Lerp(handle, side)
-		local r = (boxCF * CFrame.new(0.85, 0, 0)).Position
-		local salute = (home * CFrame.new(0.9, 8.4, -1.1)).Position
-		out.Aims = { l, side < 1 and r or r:Lerp(salute, k(1.8, 2.2)) }
+		local handle = (boxCF * CFrame.new(0, 0.9 * u, 0)).Position
+		local l = (boxCF * CFrame.new(-0.85 * u, 0, 0)).Position:Lerp(handle, turn)
+		local r = (boxCF * CFrame.new(0.85 * u, 0, 0)).Position
+		local salute = (at(0.9, 8.4, -1.1)).Position
+		out.Aims = { l, turn < 1 and r or r:Lerp(salute, k(1.8, 2.2)) }
 		if t >= 2.2 then out.Aims[2] = salute end
-		root = home * CFrame.Angles(math.rad(-4 * side), 0, 0)
+		root = home * CFrame.Angles(math.rad(-4 * turn), 0, 0)
 	end
 	out.Root, out.Head = root, head
 	return out
@@ -828,7 +834,7 @@ function StoryNpcs.ClatterScene(key, pos, look)
 	local folder = Instance.new("Folder")
 	folder.Name = "HH_ClatterScene"
 	folder.Parent = workspace
-	local ok, c = pcall(intro.ClatterBody, folder)
+	local ok, c = pcall(intro.ClatterBody, folder, T.Clatter.Scale)
 	if not ok or type(c) ~= "table" then
 		folder:Destroy()
 		return false
@@ -839,7 +845,7 @@ function StoryNpcs.ClatterScene(key, pos, look)
 	local home = CFrame.lookAt(feet, face)
 	local box = nil
 	if sc.Move == "CatchHat" or sc.Move == "CarrySalute" then
-		box = block("ClatterBox", T.Clatter.Box, T.Clatter.BoxColor, home, folder)
+		box = block("ClatterBox", T.Clatter.Box * T.Clatter.Scale, T.Clatter.BoxColor, home, folder)
 		box.Anchored, box.CanCollide, box.CanQuery, box.CanTouch = true, false, false, false
 	end
 	local t0 = os.clock()
@@ -852,13 +858,13 @@ function StoryNpcs.ClatterScene(key, pos, look)
 			conn:Disconnect()
 			return
 		end
-		local okP, pose = pcall(StoryNpcs.ClatterPose, sc.Move, t, home)
+		local okP, pose = pcall(StoryNpcs.ClatterPose, sc.Move, t, home, T.Clatter.Scale)
 		if okP and type(pose) == "table" then
 			pcall(intro.PlaceClatter, c, pose.Root, pose.Head, pose.Aims)
 			local hat = pose.Hat
 			if type(hat) == "table" and hat.World then
 				c.Helmet.CFrame = hat.World
-				c.Badge.CFrame = hat.World * CFrame.Angles(0, 0, math.rad(-90)) * CFrame.new(0, 0.05, -1.65)
+				c.Badge.CFrame = hat.World * CFrame.Angles(0, 0, math.rad(-90)) * CFrame.new(0, 0.05 * c.Scale, -1.65 * c.Scale)
 			elseif type(hat) == "table" and (hat.Drop or 0) > 0 then
 				c.Helmet.CFrame = c.Helmet.CFrame * CFrame.new(-hat.Drop, 0, -hat.Drop * 0.4)
 				c.Badge.CFrame = c.Badge.CFrame * CFrame.new(0, -hat.Drop, -hat.Drop * 0.4)
