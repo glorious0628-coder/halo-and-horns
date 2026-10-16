@@ -951,7 +951,14 @@ do
 	g:Choose(); g:Publish()
 	g.Root = { Position = { X = 40, Y = 0, Z = -428 } }
 	g:Accept(); g:Publish()
-	check(g.Data.TutorialStep == 0, "[I'm In!] 56 studs from Hallie (a stale panel) is refused")
+	check(g.Data.TutorialStep == 0, "[I'm In!] 56 studs from Hallie with no Welcome ever opened is refused")
+	-- A23-180 (최종 검수 10/16): the Welcome the server opened beside her, then the child walks off and presses [I'm In!]
+	g.Root = { Position = { X = -14, Y = 0, Z = -424 } }
+	check(g.Quest.TalkNpc(g.Player, "Hallie") == "Welcome", "the talk beside Hallie opens the Welcome")
+	g.Root = { Position = { X = 40, Y = 0, Z = -428 } }
+	g:Accept(); g:Publish()
+	check(g.Data.TutorialStep == g.Config.Tutorial.Steps.Forge, -- (no teacher body here: on to the Forge)
+		"A23-180: [I'm In!] 56 studs away after the server opened the Welcome is accepted (no silent ignore)")
 end
 if #failures > 0 then
 	for _, message in failures do print("CONTRACT_FAILURE " .. message) end
