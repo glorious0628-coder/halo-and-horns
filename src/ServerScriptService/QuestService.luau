@@ -1478,7 +1478,7 @@ local function onPlayerLeaving(player)
 	welcomeShown[player] = nil
 	TUT_READY_AT[player] = nil
 	FORGE.Late[player] = nil
-	FORGE.AcceptedAt[player], FORGE.Reached[player] = nil, nil
+	FORGE.AcceptedAt[player], FORGE.Reached[player], FORGE.WasNear[player] = nil, nil, nil
 end
 
 local function onCharacterSpawned(player)

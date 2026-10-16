@@ -253,6 +253,18 @@ do
 	check(f.Data.TutorialStep == 3 and f.LastList[1].TutorialStep == 3 and f.LastList[1].Text == TT.Forge
 		and f.LastList[1].ShortName == SN.Forge and f.LastList[1].CanClaim == false and f.LastList[1].ShowProgress == false,
 		"A23-74: a bare-handed accept pins the Forge row (step 3, 'To the Forge', not claimable)")
+	-- A23-221 ⑥: standing at the anvil (within Forge.Near 24 of (39, 45)) the row says "Talk to Otto" and guides to Otto;
+	-- walking off puts the Forge row back (the 1 s loop marks the change)
+	check(TT.ForgeHere == "Talk to Otto", "A23-221 ⑥: Config.Tutorial.Text.ForgeHere = 'Talk to Otto'")
+	f.Root = { Position = { X = 45, Y = 0, Z = 50 } }
+	f:Publish()
+	check(f.LastList[1].Text == "Talk to Otto" and f.LastList[1].ShortName == "Talk to Otto" and f.LastList[1].GuideNpc == "Otto"
+		and f.LastList[1].TutorialStep == 3, "A23-221 ⑥: at the anvil the Forge row reads 'Talk to Otto', guide on Otto")
+	f.Root = { Position = { X = 39, Y = 0, Z = 120 } }
+	f:Publish()
+	check(f.LastList[1].Text == TT.Forge and f.LastList[1].GuideNpc == nil, "A23-221 ⑥: 75 studs away the Forge row is back")
+	f.Root = nil
+	f:Publish()
 	local travelFx = 0
 	for _, e in f.FxLog do
 		if type(e) ~= "table" or (e.Kind or e[1] or e.Name) ~= "StoryScene" then travelFx += 1 end -- (A23-208: the Forge step's Find bubble may come)
