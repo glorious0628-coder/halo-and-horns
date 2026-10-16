@@ -1059,8 +1059,12 @@ local function buildWeapon(player, character)
 		if p.Name == "Handle" then handle = p end
 	end
 	if not handle then return end
-	local grip = Config.WeaponGrip(kind, handle.Size.Y)
-	local place = hand.CFrame * gripFrame(hand, "RightGripAttachment") * grip:Inverse()
+	-- grip-centre (10/16): the grip point in the middle of the fist (the hand's centre in the attachment's frame; the
+	-- Tool keeps it as GripCentre for WeaponPose's rest grips)
+	local attCF = gripFrame(hand, "RightGripAttachment")
+	local centre = attCF:PointToObjectSpace(Vector3.new(0, 0, 0))
+	local grip = Config.WeaponGrip(kind, handle.Size.Y, nil, centre)
+	local place = hand.CFrame * attCF * grip:Inverse()
 	for _, p in parts do
 		p.CFrame = place * p.CFrame
 	end
@@ -1089,6 +1093,7 @@ local function buildWeapon(player, character)
 	model.CanBeDropped = false -- never dropped (Backspace)
 	model.ManualActivationOnly = true -- a click / tap is our own attack input (Fx / CombatService), never Tool.Activated
 	model.Grip = grip
+	model:SetAttribute("GripCentre", centre)
 	model:SetAttribute("Class", classId)
 	model:SetAttribute("Kind", kind)
 	model:SetAttribute("GripHand", hand.Name)

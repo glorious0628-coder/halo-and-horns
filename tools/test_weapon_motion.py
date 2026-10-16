@@ -688,13 +688,14 @@ for _,data in FIXTURES do
                     local direction=(target-origin).Unit
                     check(main.CFrame.UpVector:Dot(direction)>.999999,data.name..": actual staff/cast target axis")
                     local shaft=equipped:FindFirstChild("Handle") -- A23-150 7: the staff's shaft is its Handle
-                    local grip=shaft.CFrame:PointToObjectSpace(Feel.handPoint(st.Char,false))
+                    -- grip-centre (10/16): the fist's centre (the hand part's own centre) on the shaft, not its grip attachment
+                    local grip=shaft.CFrame:PointToObjectSpace(st.Char:FindFirstChild("RightHand").CFrame.Position)
                     check(math.sqrt(grip.X*grip.X+grip.Z*grip.Z)<1e-5,data.name..": actual staff grip centreline")
                     check(math.abs(grip.Y)<shaft.Size.Y*.5,data.name..": hand within actual shaft length")
                     check(out.RightWrist.Position.Magnitude<1e-5,data.name..": staff wrist joint not translated")
                 elseif class=="Warrior" then
                     local handle=equipped:FindFirstChild("Handle")
-                    local grip=handle.CFrame:PointToObjectSpace(Feel.handPoint(st.Char,false))
+                    local grip=handle.CFrame:PointToObjectSpace(st.Char:FindFirstChild("RightHand").CFrame.Position) -- grip-centre (10/16)
                     -- A23-150 7: the fist on the hilt's Config.WeaponGrips Point, on its centreline; 최종 검수 10/14 (user:
                     -- the fist sat on the guard) the Point is the hilt's middle now (never below it)
                     check(near(grip,Config.WeaponGrip("Sword",handle.Size.Y).Position) and grip.Y>-1e-6,
