@@ -11,6 +11,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(GAME, "docs", "art", "verification_2026-10-16", "attack_feel")
 os.makedirs(OUT, exist_ok=True)
 LOGGER = open(os.path.join(HERE, "feel_logger.luau"), encoding="utf-8").read()
+PACKMODE = "false"
 INTERVAL = {"Warrior": 1.0, "Mage": 1.1, "Archer": 0.5, "Bare": 0.8}
 
 
@@ -51,19 +52,30 @@ local p = game:GetService("Players"):GetPlayers()[1]
 local hrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
 if not hrp then return "no char" end
 local best, bd = nil, math.huge
+local live = {}
 for _, m in workspace.Monsters:GetChildren() do
 	local r = m.PrimaryPart
 	if r and not r.Anchored and m:GetAttribute("MonsterKind") == "Slime" and m:GetAttribute("OwnerUserId") == nil then
-		local d = (r.Position - hrp.Position).Magnitude
-		if d < bd then best, bd = m, d end
+		table.insert(live, m)
 	end
+end
+local PACK = %s
+for _, m in live do
+	local r = m.PrimaryPart.Position
+	local score = (r - hrp.Position).Magnitude
+	if PACK then
+		local n = 0
+		for _, o in live do if o ~= m and (o.PrimaryPart.Position - r).Magnitude <= 10 then n += 1 end end
+		score = -n * 1000 + score
+	end
+	if score < bd then best, bd = m, score end
 end
 if not best then return "none" end
 local r = best.PrimaryPart.Position
 local stand = %s
 local from = r + Vector3.new(0, 0, stand)
 hrp.CFrame = CFrame.lookAt(Vector3.new(from.X, r.Y + 2.5, from.Z), Vector3.new(r.X, r.Y + 2.5, r.Z))
-return string.format("at %%.0f stand %%s", bd, tostring(stand))
+return string.format("score %%.0f stand %%s", bd, tostring(stand))
 '''
 READ = 'local v = workspace:FindFirstChild("HH_FeelLog") return v and v.Value or "-"'
 
@@ -92,7 +104,7 @@ def analyse(raw, label):
                 if t <= tt < nxt and k in kinds and cond(d):
                     return round((tt - t) * 1000)
             return None
-        rows.append({"swing_ms": first(("anim", "arm")), "fx_ms": first(("fx",)), "hurt_ms": first(("hurt",)),
+        rows.append({"whoosh_ms": first(("whoosh",)), "swing_ms": first(("swing",)), "swing_src": next((d.split()[0] for tt, k, d in ev if t <= tt < nxt and k == "swing"), None), "fx_ms": first(("fx",)), "hurt_ms": first(("hurt",)),
                      "num_ms": first(("num",))})
     return {"label": label, "presses": len(presses), "rows": rows,
             "hurts": sum(1 for _, k, _ in ev if k == "hurt"), "beaten": sum(1 for _, k, _ in ev if k == "beaten"),
@@ -123,13 +135,13 @@ def run_class(c, cls, bare):
         print(lua(c, SETUP % (0 if bare else 2), "Server"))
         time.sleep(1.5)
         stand = {"Warrior": 6, "Mage": 18, "Archer": 16}[cls] if not bare else 5
-        print(lua(c, GO % stand, "Server"))
+        print(lua(c, GO % (PACKMODE, stand), "Server"))
         time.sleep(1.5)
         print(lua(c, LOGGER, "Client"))
         iv = INTERVAL["Bare" if bare else cls]
         # A1 / A2: single presses well apart
         for _ in range(6):  # each press next to a live slime (a tier-2 weapon beats one in 2 hits)
-            lua(c, GO % stand, "Server")
+            lua(c, GO % (PACKMODE, stand), "Server")
             time.sleep(0.4)
             keys(c, [{"action": "keyPress", "key_code": "F"}])
             time.sleep(iv + 0.6)
@@ -138,7 +150,7 @@ def run_class(c, cls, bare):
         res["single_raw"] = single
         # A3: a fast burst (8 presses 120 ms apart): how many became hits
         print(lua(c, LOGGER, "Client"))
-        print(lua(c, GO % stand, "Server"))
+        print(lua(c, GO % (PACKMODE, stand), "Server"))
         time.sleep(1.2)
         print("burst", keys(c, press_pattern(120, 8))[:80])
         time.sleep(2.0)
@@ -149,7 +161,7 @@ def run_class(c, cls, bare):
         print(lua(c, LOGGER, "Client"))
         t1 = time.time()
         while time.time() - t1 < 40:  # two presses per placement (a slime takes about 2)
-            lua(c, GO % stand, "Server")
+            lua(c, GO % (PACKMODE, stand), "Server")
             keys(c, press_pattern(int(iv * 1000) + 50, 2))
         sraw = lua(c, READ, "Client")
         res["steady"] = analyse(sraw, "steady")
@@ -162,7 +174,7 @@ def run_class(c, cls, bare):
             print("stop", e)
         time.sleep(3)
     s = res.get("single", {}).get("rows", [])
-    res["summary"] = {"swing_ms": median([r["swing_ms"] for r in s]), "fx_ms": median([r["fx_ms"] for r in s]),
+    res["summary"] = {"whoosh_ms": median([r["whoosh_ms"] for r in s]), "swing_ms": median([r["swing_ms"] for r in s]), "fx_ms": median([r["fx_ms"] for r in s]),
                       "hurt_ms": median([r["hurt_ms"] for r in s]), "num_ms": median([r["num_ms"] for r in s]),
                       "burst_presses": res.get("burst", {}).get("presses"), "burst_hurts": res.get("burst", {}).get("hurts"),
                       "steady_beaten": res.get("steady", {}).get("beaten"), "steady_s": res.get("steady", {}).get("seconds")}
@@ -173,12 +185,14 @@ def run_class(c, cls, bare):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     bare = "--bare" in sys.argv
+    global PACKMODE
+    PACKMODE = "true" if "--pack" in sys.argv else "false"
     c = Client()
     c.start()
     out = []
     for cls in args or ["Warrior", "Mage", "Archer"]:
         out.append(run_class(c, cls, bare))
-    name = "feel_%s_%s.json" % ("bare" if bare else "armed", "_".join(args or ["all"]))
+    name = "feel_%s%s_%s.json" % ("bare" if bare else "armed", "_pack" if PACKMODE == "true" else "", "_".join(args or ["all"]))
     with open(os.path.join(OUT, name), "w", encoding="utf-8") as f:
         json.dump(out, f, indent=1, ensure_ascii=False)
     print("saved", name)

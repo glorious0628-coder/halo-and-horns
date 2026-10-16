@@ -39,7 +39,8 @@ local function watchChar(char)
 	local seen = {}
 	local rs = char:FindFirstChild("RightShoulder", true)
 	local last = rs and rs:IsA("Motor6D") and (rs.C0 * rs.Transform) or nil
-	on(game:GetService("RunService").RenderStepped, function()
+	-- Fx Feel writes the procedural pose in PreSimulation (after the Animator): read it after that (PostSimulation)
+	on(game:GetService("RunService").PostSimulation, function()
 		if hum then
 			local now = {}
 			for _, tr in hum:GetPlayingAnimationTracks() do
@@ -70,5 +71,13 @@ if monsters then
 	on(monsters.ChildAdded, watchMonster)
 end
 on(me:GetAttributeChangedSignal("XP"), function() add("xp", me:GetAttribute("XP")) end)
+-- the whoosh Fx.PlaySound("Swing") plays (SoundService.Fx_Swing): on my press (predicted) or on the server's Fx
+local SS = game:GetService("SoundService")
+local function watchSound(snd)
+	if snd:IsA("Sound") and snd.Name == "Fx_Swing" then on(snd.Played, function() add("whoosh", "") end) end
+end
+for _, d in SS:GetChildren() do watchSound(d) end
+on(SS.ChildAdded, watchSound)
+on(me:GetAttributeChangedSignal("HHDbgSwing"), function() add("swing", me:GetAttribute("HHDbgSwing")) end)
 add("start", me:GetAttribute("Class"))
 return "logger on " .. #conns
