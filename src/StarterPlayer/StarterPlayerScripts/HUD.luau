@@ -5027,6 +5027,9 @@ end
 -- replicate (0.27-0.43 s in Studio, measured 2026-10-07)
 function L.SwingFaced()
 	local _, target = L.FaceTarget("Swing")
+	-- 손맛 ① (최종 검수 10/16): my body starts the swing now (Fx.PredictSwing; the server's Fx does not restart it)
+	local fx = C and C.Fx
+	if type(fx) == "table" and type(fx.PredictSwing) == "function" then pcall(fx.PredictSwing) end
 	fire("Swing", target)
 end
 

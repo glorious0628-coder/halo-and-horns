@@ -4087,6 +4087,33 @@ end
 ----------------------------------------------------------------- kind handlers
 local handlers = {}
 
+-- 손맛 ① (GPT game_feel_r1 TOP 1, 최종 검수 10/16; measured 10/16: my swing waited for the server's Swing Fx): my own
+-- press starts my body's basic attack at once when the swing is ready (the class interval since my last own swing;
+-- inside it the server's 0.20 s reservation does the next one, no early body move). The Swing Fx of that press then
+-- plays no second swing: the next own Manual Swing Fx within Window s is its pair. A23-196: only my body, weapon and
+-- the whoosh - no target flash, number or hit sound before the server confirms (those stay on the Fx's Hits)
+Feel.Predict = { Window = 0.6, Pending = nil, LastSwing = -math.huge, Gap = 0.02 }
+
+function Fx.PredictSwing()
+	local me = LocalPlayer
+	local char = me and me.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not hum or hum.Health <= 0 then return false end
+	local classId = me:GetAttribute("Class")
+	if type(classId) ~= "string" or not Config.Classes[classId] then return false end
+	local faction = me:GetAttribute("Faction")
+	local prof = Config.AttackProfile(classId, me:GetAttribute("WeaponTier"), faction)
+	local P = Feel.Predict
+	local now = os.clock()
+	if now - P.LastSwing < asNum(prof.SwingInterval, 1) - P.Gap then return false end
+	local data = { UserId = me.UserId, Character = char, Class = classId, Faction = faction, Style = prof.Style,
+		Manual = true }
+	Fx.PlaySound("Swing")
+	animateOwnAttack(data, "Swing")
+	P.Pending, P.LastSwing = now, now
+	return true
+end
+
 -- A14-4: projectiles / hits wait for the clip's key frame (CAST_DELAY thrust, SHOT_DELAY release, SLASH_CONTACT)
 handlers.Swing = function(data)
 	local ctx = Feel.attackContext(data)
@@ -4094,8 +4121,14 @@ handlers.Swing = function(data)
 	local own = isOwn(data)
 	if own then
 		Fx.LastFightAt = os.clock() -- B15: Panels keeps story pages back while I fight (manual or auto)
-		Fx.PlaySound("Swing")
-		animateOwnAttack(data, "Swing")
+		local P = Feel.Predict
+		if data.Manual == true and P.Pending and os.clock() - P.Pending <= P.Window then
+			P.Pending = nil -- my press already plays this swing (Fx.PredictSwing): no restart
+		else
+			Fx.PlaySound("Swing")
+			animateOwnAttack(data, "Swing")
+			P.LastSwing = os.clock()
+		end
 	end
 	local pos = asVec(data.Pos)
 	local from = asVec(data.From) or pos
