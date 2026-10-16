@@ -443,3 +443,7 @@
 - **병합 대기:** dev2-first12 54a3be0d — main 위 시험 다 통과(town_quests 1328·first_ko 285·first_ko_king 315·weapon_first 158·unarmed_start 264·slime_prince 32·beta_metrics 200·war_intro·quest_target·onboarding 877·story_npcs), **개발 1 화면 짝(허수아비·모루 Enhance 창·M1_2 표시)과 한 번에 병합**(서버만 넣으면 허수아비 안 그려져 막힘). dev2-curve 06650f0d(장인 1부) = 2부 붙인 뒤.
 - **다음 순서:** 개발 1 = 2a3489d1에서 생긴 것 2개(뿔 몽둥이 허리 뒤 꼬리처럼 수평, 궁수 활시위가 등 뒤 허공에 뜸 — r4 사진) → 첫 12분 화면 짝 ①②③ → 보상 반응·×2·첫 10분 내 화면 낮 / 개발 2 = ② 1000골드+대장간 → ③ StartClock 9·밤 밝기·글·안내자 2배 한 줄·Reward XPMult → 장인 2부(옵션 (1) 무기 4%·반지 1%p·갑옷 2%p 역전 0, A23-219). 그 뒤 게임 플레이로 새 흐름 처음부터 + 게시 전 실제 흐름 점검(prepublish 규칙) → 사용자 Save As + Alt+P.
 - 배지 2개(ShardChoice·Rank2)는 사용자가 내일 badge_create.py 실행(5개는 오늘).
+
+## 10/16 밤 늦게 (새 계정 최종 검수) — 세션 다시 엶
+- 새 Claude 계정에서 최종 검수(Opus 5.5) 시작 → `new_account_2026-10-16.md` §2대로 메인 반영 1(Sonnet medium)·게임성 개발 1(Opus high)·게임성 개발 2(Opus high)·게임 플레이(Opus medium) 4개를 start_session으로 엶(id는 list_sessions로).
+- **회의실 https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1 = 옛 계정 것 → 새 계정에서 404**(watch·db 읽기 둘 다 안 됨). 새로 만들지 사용자에게 물음. 원본 `build/review_kit_1015/council.html`.
