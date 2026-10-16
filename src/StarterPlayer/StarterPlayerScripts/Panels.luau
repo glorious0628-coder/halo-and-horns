@@ -1402,6 +1402,16 @@ BUILDERS.Welcome = function(parent)
 	local cam = workspace.CurrentCamera
 	local short = cam ~= nil and cam.ViewportSize.Y < 520
 	local face = short and 64 or 170
+	-- A23-208 (first mission, Config.Tutorial.Story.Before): what is going on, one small italic line at the top - the
+	-- Offer window's look
+	local story = type(Config.Tutorial) == "table" and Config.Tutorial.Story or nil
+	local before = type(story) == "table" and type(story.Before) == "table" and story.Before[faction] or nil
+	if type(before) == "string" and before ~= "" then
+		local b = addText(parent, before, { Name = "WelcomeBefore", Size = short and 16 or 18, Color = theme.SubText,
+			Align = Enum.TextXAlignment.Center })
+		local ff = b.FontFace
+		b.FontFace = Font.new(ff.Family, ff.Weight, Enum.FontStyle.Italic)
+	end
 	local portraitRow = addRow(parent, face, 0)
 	portraitRow.Name = "WelcomePortrait"
 	if UIKit and type(UIKit.ArtImage) == "function" then
