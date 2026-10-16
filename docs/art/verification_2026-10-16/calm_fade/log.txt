@@ -1,0 +1,23 @@
+keep save
+loaded true None
+picked
+Slime at 432.3127746582031
+saved c0_Slime_before
+t=0.05 soft=true fill=1.00 ltm=0.00
+saved c0_Slime_005
+Slime at 4.840885639190674
+saved c1_Slime_before
+t=0.25 soft=true fill=0.80 ltm=0.00
+saved c1_Slime_025
+Slime at 5.010433197021484
+saved c2_Slime_before
+t=0.5 soft=true fill=0.55 ltm=0.16
+saved c2_Slime_050
+Slime at 161.22225952148438
+saved c3_Slime_before
+t=0.75 soft=true fill=0.65 ltm=0.65
+saved c3_Slime_075
+BigSlime at 117.27200317382812
+saved c4_BigSlime_before
+t=0.2 soft=true fill=0.87 ltm=0.00
+saved c4_BigSlime_020
