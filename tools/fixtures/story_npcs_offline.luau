@@ -104,6 +104,9 @@ end
 -- pure
 local c = SN.Called({ { Story = { Id = "H1", Npc = "Bright" } }, { Story = { Id = "H5" } }, { Id = "daily" }, { Story = { Npc = "" } } })
 check(c.Bright == true and next(c, "Bright") == nil, "Called: only the rows that talk through an NPC", c.Bright)
+-- 10/16 (user: no Talk prompt on Hallie): the first mission's row names its guide / teacher as GuideNpc
+local g = SN.Called({ { Id = "tutorial", TutorialStep = 0, GuideNpc = "Hallie" }, { Id = "x", GuideNpc = "" } })
+check(g.Hallie == true and next(g, "Hallie") == nil, "Called: the first mission's guide / teacher (GuideNpc) is called", g.Hallie)
 
 local bright, bp, bOther = npc("Bright")
 local gleam, gp = npc("Gleam")

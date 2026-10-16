@@ -31,6 +31,7 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_story_npcs_2026-10-10.json"
 
 MUTATIONS = [
+    ("NPC", "the first mission's guide is not called (no Talk prompt on Hallie, 10/16)", "if type(e) == \"table\" and type(e.GuideNpc) == \"string\" and e.GuideNpc ~= \"\" then out[e.GuideNpc] = true end", ""),
     ("NPC", "the '!' always shows", "\t\t\t\tbb.Enabled = on\n", "\t\t\t\tbb.Enabled = true\n"),
     ("NPC", "the Talk prompt never hides", " and d.Enabled ~= on then d.Enabled = on end", " and false then d.Enabled = on end"),
     ("NPC", "every prompt is toggled", "d:IsA(\"ProximityPrompt\") and d:GetAttribute(\"StoryNpcId\") ~= nil", "d:IsA(\"ProximityPrompt\")"),
