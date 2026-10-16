@@ -28,3 +28,10 @@
 - 쥐는 모습: 마법사 서 있기 좋아짐 / 공격 때 지팡이가 머리 뒤를 지남. 강화 중 KO 3/3, KO 이름 'King Slime'이 틀렸을 수 있음(근처엔 왕자뿐), 빛 첫 화면 카메라가 할리를 안 봄(몸만 돎).
 - 도구: cam.py(카메라 각도 사진), walkshot.py(W 누른 채 따라가는 카메라), atkshot.py(F 순간 사진) — scratchpad, STUDIO_ID 환경 변수 필요.
 - **다음 판:** 다음 sync 신호 → 전사·궁수 쥐는 모습 + 'Tiny 본편 먼저'(장면).
+
+## 10/16 밤 — 4판 끝 (뿔 · 전사 → 세 직업 쥐는 모습, sync 2a3489d1)
+- 보고서 `docs/review/playtest/2026-10-16_r4.md`, 사진 `.../playtest/r4/`(직업별 *_sheet).
+- 좋아짐: 마법사 공격(머리 겹침 없음), 궁수 쏘기·활 등에 메기, 전사 공격. 새 문제: 전사 몽둥이 허리 뒤 수평 꼬리, 궁수 활시위가 등 뒤에 따로 뜸.
+- 'Tiny 본편 먼저' 확인됨(장면: scene.py OfferM1_3 → 수락 → DebugCommand Faction Horns → StoryStep M1_3:3 → Tiny G). 대화 안 보임 + 목표 'Next goal.'은 진영 바꾼 시험 탓일 수 있음.
+- 도구: Studio 명령 Class(직업 바꾸기), Clock 12, idle.py/walkshot.py/atkshot.py(PRE·FACE 환경 변수), sheet.py. 순간 이동 직후 ~10초 하얀 사진 → 기다렸다 찍기. 뿔 마을 → 사거리 character_navigation 실패할 때 있음.
+- **다음 판:** 다음 sync 신호 → 뿔 처음부터 M1_3 3단계 Tiny까지(진영 바꾸기 없이), 빛 전사 검 허리 각도.
