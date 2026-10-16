@@ -45,6 +45,17 @@ QUEST_TYPES = {"Combat", "Skill", "Gather", "Craft", "Sell", "Investigate", "Rec
 REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "Items", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet"}
 
 
+def reward_counts(reward: dict) -> list:
+    """(id, n) of every item a reward pays (Item / Potion x N, then Reward.Items rows)"""
+    out = []
+    if reward.get("Item") or reward.get("Potion"):
+        out.append((reward.get("Item") or reward.get("Potion"), reward.get("N", 1)))
+    for row in arr(reward.get("Items")):
+        if isinstance(row, dict):
+            out.append((row.get("Id"), row.get("N", 1)))
+    return out
+
+
 def reward_ids(reward: dict) -> list:
     """every item id a reward pays (StoryQuestService rewardItems, 10/16): Item or Potion, then Reward.Items = { { Id, N } }"""
     ids = [reward.get("Item") or reward.get("Potion")] if (reward.get("Item") or reward.get("Potion")) else []
@@ -346,8 +357,10 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
         if not r:
             add("repeat-reward", i, "a repeat request pays something (A23-206)")
             continue
-        # a bundle (Reward.Items, 10/16) = its whole set of kinds, so two bundles differ when their sets differ
-        sig = "+".join(sorted(str(x) for x in reward_ids(r))) or ("Gold" if r.get("Gold") or r.get("GoldN") else "XP")
+        # a bundle (Reward.Items, 10/16) = its whole set of kinds AND counts (A23-215: HP2+MP1 and MP2+HP1 are two bundles)
+        sig = "+".join(sorted(f"{x}x{n}" for x, n in reward_counts(r))) or ("Gold" if r.get("Gold") or r.get("GoldN") else "XP")
+        if r.get("Title"):
+            sig += "+T:" + str(r.get("Title"))
         if sig in seen:
             add("repeat-reward-same", i, f"pays {sig} like {seen[sig]} (A23-206: every repeat a different kind)")
         seen[sig] = i
@@ -374,7 +387,7 @@ SELF_TESTS = [
     ("no difficulty", "Kind = \"Sub\", Type = \"Deliver\", Difficulty = \"Easy\",", "Kind = \"Sub\", Type = \"Deliver\",", "difficulty"),
     ("an easy quest that pays a scroll", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Item = \"Enh70\", N = 1 }", "difficulty-reward"),
     ("an easy quest with a title", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Title = \"Helper\" }", "difficulty-reward"),
-    ("a hard quest that pays like an easy one", "Reward = { Item = \"Enh70\", N = 1 }", "Reward = { GoldN = 40 }", "difficulty-reward-low"),
+    ("a hard quest that pays like an easy one", "Reward = { Item = \"LuckyTonic\", N = 1 }", "Reward = { GoldN = 40 }", "difficulty-reward-low"),
     ("no situation line", "Offer = { Npc = \"Bright\", Before = \"The cart wobbles. The bridge planks creak.\",", "Offer = { Npc = \"Bright\",", "story-before"),
     ("a long situation line", "Before = \"The cart wobbles. The bridge planks creak.\",", "Before = \"The cart wobbles. The bridge planks creak. Everyone in town is watching the cart now.\",", "story-length"),
     ("nothing found on the way", "Find = \"A tiny sock is stuck on the wheel!\",", "", "story-find"),

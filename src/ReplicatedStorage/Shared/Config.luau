@@ -6749,6 +6749,9 @@ Config.TitleDefs.ClatterStopper = { Name = "Clatter Stopper", NameEn = "Clatter 
 Config.TitleDefs.ClatterStopper10 = { Name = "Clatter Stopper 10", NameEn = "Clatter Stopper 10", Color = Color3.fromRGB(235, 210, 140) }
 Config.TitleDefs.ClatterStopper50 = { Name = "Clatter Stopper 50", NameEn = "Clatter Stopper 50", Color = Color3.fromRGB(255, 220, 120) }
 for _, id in { "ClatterStopper", "ClatterStopper10", "ClatterStopper50" } do table.insert(Config.TitleOrder, id) end
+-- SPEC A23-215 (user 10/16, build/codex/artisan_switch_r1.md §3): the Challenge daily DC3's first finish (no stat)
+Config.TitleDefs.RecordKeeper = { Name = "Record Keeper", NameEn = "Record Keeper", Color = Color3.fromRGB(200, 215, 235) }
+table.insert(Config.TitleOrder, "RecordKeeper")
 
 Config.Sounds = { -- optional built-in files; client must pcall and ignore failures
 	Swing = "rbxasset://sounds/swordslash.wav",
