@@ -1,6 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 7 — 가지 dev1-hold-angles 74d57d4b (최신)
+## 10/16 밤 8 — dev1-hold-angles defe5408 병합 요청함 (최신)
+- 3차 엔진 확인 끝(docs/art/verification_2026-10-16/hold_tune3/sheet_r3.jpg). 남은 숫자(다음에): 활 A 위 끝 안쪽 15°, 걷기 안쪽 칼 17°·지팡이 16°, 마법사 기본 공격 한순간 87°, 빛 Q 머리 겹침, 뿔 Q 못 잼, 검집 없음.
+- ▶ 지금: 첫 12분·물약 화면 몫(아래 큐, 개발 2 dev2-first12 약속에 맞춤).
+
+## 10/16 밤 7 — 가지 dev1-hold-angles 74d57d4b
 - 들어간 것: 지팡이 팔꿈치 80·Rest 15, 칼 걷기 손목 +2, 마법사 겨누기(staffPose) 제거 + 공격 손목 +28/+42(시전 때 앞 ~30°), A23-223 활 등에·칼 허리에(Config.WeaponStow, WeaponPose.StowStep/StowApply, Fx.Glint, 5초), Studio 전용 조정 고리(Dev1Tune HoldPoses/WeaponGrips/WeaponStow, Dev1Clips). 시험 hold_pose2 43·14/14, tool_grip 369/0, weapon_motion 269 등.
 - 결정(최종 검수): 활 = A안(B X), 마법사 공격 = 겨누기 버림. 남음: 활 A 위 끝 바깥 5~15°(지금 안쪽 15), 걷기 안쪽 기울기(칼 17·지팡이 16), 빛 Q 지팡이-머리 겹침, 뿔 Q 공격 안 나감(장면 확인).
 - ▶ 다음: 화면 신청함(약 9분) → `py build/dev1_tools/tune3_1016.py`(등·허리 위치 고르기, 활 옆 기울기, 마법사 전체 구간) → 값 Config에 → 병합 요청. 도구 tune1016/tune2_1016/tune3_1016.py(git 밖), 오프라인 손목 훑기 = test_weapon_motion STAFF_LEAN 출력.
