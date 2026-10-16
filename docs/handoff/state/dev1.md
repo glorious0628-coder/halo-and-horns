@@ -1,5 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 아침 — 1~5 끝, 보고함 (최신)
+- **dev1-intro-cam 2b0839db**: 오프닝 자막 2 빛 마을 샷 카메라가 Halo_Gate 메시 속 → 문 안쪽 (SPOT.Halo+(14,12,44)→(5,6,28)).
+- **dev1-phone-cuts 822d78d3**: Mage 'Blast from far!', 전투력 줄 AutomaticSize XY, 폰 N 원판 ≥20, 직업 카드 폰(띄움 여백·Pick! 버튼 높이·칩 14px 실측 폭). 남음: PowerLine 측정 fits=false(box 76x17 bounds 76x16, 눈으로는 안 잘림; 상하 UIPadding 안 통함).
+- **dev1-tutorial-story 9b140237**: Fx StoryScene Id=Tutorial Find/Scene, 오토 Lines+Next 말풍선 + M1_1 통통, StoryNpcs.Body가 HHC_TownNpc(오토)도 찾음, Welcome 창 Before. test_story_fields_screen 61·19/19.
+- 폰 사진 main eb1337e docs/art/verification_2026-10-16/phone_1016/ (도구 scratchpad run1016.py, 합친 판 wt_dev1b dev1-check-1016 로컬).
+- **다음**: 제작 창 Potion/Gear 분기(build/codex/artisan_switch_r1.md: CraftWindow 163·191, 연금 AP1/AP2·방어구·반지, fixtures/craft_window_offline.luau:351 Gear 숨김을 성공으로 검사하는 것 고치기).
+
 ## ▶ 내일 아침 할 일 (최종 검수 10/15 밤, 이 순서; 화면 사용은 최종 검수 '전달함, 시작' 뒤)
 1. **오프닝 카메라** (main 사진 docs/art/verification_2026-10-15/main_a1d06f69/844_f10_02): 자막 2 "Some grew halos…" 장면 카메라가 흰 조각상 안에 박혀 흐린 클로즈업 → Intro.luau 3장면(SPOT.Halo 샷, look(SPOT.Halo + Vector3.new(18,14,95)…))의 카메라 위치·경로만 조각상 피하게(최소 수정, 오프닝은 임시판).
 2. **'Blast from far!'**: phone_f10_03 마법사 카드 'Blast from far away!'가 'Blast from far'로 잘림 → Config ClassPicker Tag Mage = "Blast from far!" (dev1-easy-words 문구 되돌려 짧게).
