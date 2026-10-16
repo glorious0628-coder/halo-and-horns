@@ -762,7 +762,11 @@ runGroup("artisan quests", function()
 	end
 	-- the order tag: Otto's talk opens the Match panel, the right shape moves on to the craft
 	local function tag(p, qid)
-		w.Story.TalkToNpc(p, "Otto")
+		-- 2장 누름 확인 ①: M1_1 (not done in these saves) is offered by Otto first; "Not now" -> his side card opens
+		if w.Story.TalkToNpc(p, "Otto") == "Offer:M1_1" then
+			w:Act(p, "M1_1", "Decline")
+			w.Story.TalkToNpc(p, "Otto")
+		end
 		local arg = panels[#panels].Arg
 		w:Act(p, qid, "Match", tostring(table.find(arg.Options, arg.Target)))
 	end
@@ -2942,6 +2946,28 @@ runGroup("p1 core", function()
 	check(type(wrow) == "table" and wrow.Pinned == true and wrow.Id == "story:TP1M" and wrow.Story.Npc == "TKidM"
 		and wrow.Story.Offer == true and wrow.Text == string.format(SQ.Text.OfferTalk, "TKidM") and wrow.CanClaim == false,
 		"the waiting main's pinned row: 'Talk to <asker>', guides to that NPC (Story.Npc), not claimable", show(wrow))
+	-- 2장 누름 확인 ① (최종 검수 10/16, Tiny's Lost & Found card beside M2_3's offer): a side card waits at the same NPC -
+	-- the gold '!' (the next main's offer) opens first; with no main offer there, the card still beats a side offer
+	local talkCard = function(who) return { { Text = "Talk", Panel = true, Npc = "TKidM", Obj = { Type = "Talk" }, Lines = { All = { who } } } } end
+	addSub(w, "TP1CARD", { Steps = talkCard("card") })
+	addSub(w, "TP1SOFF", { Offer = { Npc = "TKidM", Lines = { All = { "Kid: A small job?" } } }, Steps = talkCard("side") })
+	dm.Story.Subs.TP1CARD = { St = 1, P = 0, T = {}, Claim = false }
+	check(w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M", "a side card waits at the same NPC: the main's offer opens first", "")
+	local m3, dm3 = w:Join(9915, { Faction = "Halo", Class = "Warrior", Level = 2, Pos = vec(2, 0, 2),
+		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = { TP1CARD = { St = 1, P = 0, T = {}, Claim = false } }, Done = {},
+			Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(m3)
+	check(dm3.Story.Main.Id == "" and w.Story.TalkToNpc(m3, "TKidM") == "TP1CARD",
+		"no main offer (below its level): the side card opens before the side offer", show(dm3.Story.Subs))
+	w:Act(m, "TP1M", "Decline")
+	check(dm.Story.Main.Id == "" and w.Story.TalkToNpc(m, "TKidM") == "TP1CARD",
+		"after 'Not now' on the main offer: the side card at that NPC opens (never stuck behind the offer)", show(dm.Story.Main))
+	dm.Story.Subs.TP1CARD = nil
+	for _, id in { "TP1CARD", "TP1SOFF" } do
+		w.Config.StoryQuests.Defs[id] = nil
+		local at = table.find(w.Config.StoryQuests.Subs, id)
+		if at then table.remove(w.Config.StoryQuests.Subs, at) end
+	end
 	check(w.Story.TalkToNpc(m, "TKidM") == "Offer:TP1M", "the talk offers the main", "")
 	w:Act(m, "TP1M", "Decline")
 	check(dm.Story.Main.Id == "" and w.Story.MainRow(m, dm) ~= nil and w.Story.MainRow(m, dm).Story.Npc == "TKidM"
@@ -3727,6 +3753,11 @@ runGroup("A23-218 scene setup", function()
 	reg.ShopService.Anvil = function() return nil end
 	reg.ProgressionService.AddBankGold = function(pl, n) table.insert(log.Gold, n) end
 	reg.PlayerService.RefreshCharacter = reg.PlayerService.RefreshCharacter or function() end
+	local learnAt = {}
+	reg.SkillService = { LearnNow = function(pl)
+		local dd = w.Data[pl]
+		table.insert(learnAt, { Done = dd.Story and dd.Story.Done and dd.Story.Done.M1_1 == true, Level = dd.Level })
+	end }
 	local base = w:Env()
 	local env = {}
 	for k, v in base do env[k] = v end
@@ -3756,6 +3787,9 @@ runGroup("A23-218 scene setup", function()
 		and d.Story.First.TeacherMet == true and log.Faction[1] == "Halo" and #log.Moved == 1
 		and math.abs((log.Moved[1] - vec(20, 4, -440)).Magnitude - 5) < 0.01 and string.find(r, "talk Gleam", 1, true) ~= nil,
 		"OfferM1_3: Lv5, the first mission done, M1_1 done, TeacherMet, beside Gleam, the talk asked", r)
+	-- 2장 누름 확인 ②: the scene learns the skills its level + story open (after Done, so the M1_3 gate sees the test done)
+	check(#learnAt == 1 and learnAt[1].Done == true and learnAt[1].Level == 5,
+		"the scene learns the open skills (SkillService.LearnNow) after the level and the done quests", show(learnAt))
 	-- Calm: 3 slimes + a prince held near, the King Slime; Kill = the nearest one, a real DamageMonster
 	r = sc.Apply(p, "Calm")
 	check(#log.Spawn == 4 and log.Spawn[1].Kind == "Slime" and log.Spawn[4].Kind == "BigSlime" and log.Spawn[1].Rec.Root.Anchored == true
