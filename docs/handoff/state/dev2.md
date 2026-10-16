@@ -1,4 +1,6 @@
-# 게임성 개발 2 — 상태 (2026-10-16 아침: 매일 12종 1·2 끝 = dev2-daily12 cf10e502 → 최종 검수 병합 대기)
+# 게임성 개발 2 — 상태 (2026-10-16 낮: 가지 여러 개 보고 → 다음 A23-212 Clatter)
+
+- **10/16 낮 (최신)**: 보고한 가지(최종 검수 병합 판단): dev2-bound-craft c89303ec(병합됨) → **dev2-bound-free 7a2cc27a**(A23-213: 귀속 재료 = 무기 포함 모든 제작 OK, 결과물 자유, 환불만 귀속), **dev2-reward-items 71541584**(④ Reward.Potion 실제 지급 + Reward.Items 여러 종류 + 미리보기 Icon; 개발 1 한 줄: Icon or Id), **dev2-stale-muts 61383c29**(③, reward-items 위; town_quests 349/349, tamer_research·gear_slots), dev2-pvp-safe 389e8503(병합됨, 붉은 구역 밖 PvP 0), **dev2-kaiju-cross 57f4646b**(A23-218 괴수 = 둘 다 교차로 또는 둘 다 붉은 구역), **dev2-daily12 03f21bee**(K 표 50/5·20/3·30/5·해골 50; 병합 보류 — 보상표 사용자 답 대기). 다음 순서: A23-212 Clatter(① 오프닝 1줄 ② 첫 10분 장면 3 + 마을용 Clatter 몸 ③ 상대 진영 비난 줄 삭제 ④ 보스 시작/승리 대사, 근거 build/codex/story_world_r5.md) → 개발 1 부탁 A23-211 서버 몫(MonsterService deathPop: 파티클·축소 삭제, CalmTime SlimeKing 1.8·CaptainClatter 2.2) → 장인 길드 최소판(계획 순서 3번). A23-216 숫자는 내 몫인지 최종 검수에 물음. 도구: Luau = C:/Users/glori/Tools/luau-0.740 (시험에 --luau), 새 worktree wt_bound·wt_rw·wt_daily.
 
 - **10/16 아침 (최신)**: 아래 1·2 끝 → **dev2-daily12 cf10e502**(53256460 위 1커밋) 최종 검수에 보냄. R 표 확정값, DH1·DR1 슬라임 6+표본 3, DN2·DC3 = 먼 곳 줍기(DN2Wood (640,80) ~610 studs, DC3Rests (1580,120) ~310 studs) + 그 물건 옆에서만 열리는 타이밍 3번(Obj.Spot), 소품 목록 고침. 시험: quest_data 통과, town_quests 1286/1286(돌연변이 324/327 = 옛 3개 그대로), story_text·quest_text·story_npcs 통과. CAPS에 개수 상한 없음(등급·골드만) 확인. 3번(장인 스위치)은 최종 검수 결정 기다림 — 장인 DN 3종 데이터 그대로.
 
