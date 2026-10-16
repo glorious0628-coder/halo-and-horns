@@ -4094,6 +4094,13 @@ local handlers = {}
 -- the whoosh - no target flash, number or hit sound before the server confirms (those stay on the Fx's Hits)
 Feel.Predict = { Window = 0.6, Pending = nil, LastSwing = -math.huge, Gap = 0.02 }
 
+-- Studio test aid (손맛 측정, attack_feel): which path started my swing and when ("P" = my press, "S" = the server's
+-- Fx, "pair" = the Fx of a press that already swings), as the local attribute HHDbgSwing; nothing outside Studio
+function Feel.dbgSwing(tag)
+	if not RunService:IsStudio() or not LocalPlayer then return end
+	pcall(LocalPlayer.SetAttribute, LocalPlayer, "HHDbgSwing", string.format("%s %.4f", tag, os.clock()))
+end
+
 function Fx.PredictSwing()
 	local me = LocalPlayer
 	local char = me and me.Character
@@ -4111,6 +4118,7 @@ function Fx.PredictSwing()
 	Fx.PlaySound("Swing")
 	animateOwnAttack(data, "Swing")
 	P.Pending, P.LastSwing = now, now
+	Feel.dbgSwing("P")
 	return true
 end
 
@@ -4124,10 +4132,12 @@ handlers.Swing = function(data)
 		local P = Feel.Predict
 		if data.Manual == true and P.Pending and os.clock() - P.Pending <= P.Window then
 			P.Pending = nil -- my press already plays this swing (Fx.PredictSwing): no restart
+			Feel.dbgSwing("pair")
 		else
 			Fx.PlaySound("Swing")
 			animateOwnAttack(data, "Swing")
 			P.LastSwing = os.clock()
+			Feel.dbgSwing("S")
 		end
 	end
 	local pos = asVec(data.Pos)
