@@ -248,8 +248,8 @@ MUTATIONS = [
     ("WP", "no smoothstep", "\t\tlocal share = WeaponPose.Smooth(st.R)\n", "\t\tlocal share = st.R\n"),
     ("WP", "written at share 0 (fights the clip)", "\t\tif share <= 0 then continue end -- the attack clip owns the arm\n", ""),
     ("WP", "the attack cuts the pose at once", "attacking and (hold == \"Bow\" and HM.InBow or HM.In) or HM.Out", "attacking and 0 or HM.Out"),
-    ("WP", "the grip not on the same clock", "Config.WeaponGrip(kind, handle.Size.Y):Lerp(Config.WeaponGrip(kind, handle.Size.Y, \"Rest\"), share)",
-     "Config.WeaponGrip(kind, handle.Size.Y, \"Rest\")"),
+    ("WP", "the grip not on the same clock", "Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, \"Rest\", centre), share)",
+     "Config.WeaponGrip(kind, handle.Size.Y, \"Rest\", centre)"),
     ("WP", "the other arm damped like the holding one", "\treturn tonumber(d.Free) or 0\n", "\treturn tonumber(d.Lower) or 0\n"),
     ("WP", "our own output built on again", "\tif w and now:FuzzyEq(w.Out, T.Same) then return w.Base end\n", ""),
     ("WP", "toolnone raised for the attack", "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end",
@@ -304,7 +304,7 @@ def run(src: dict) -> tuple[int, int, str]:
     t = re.search(r"\nlocal T = \{\n.*?\n\}\n", w, re.S)
     parts = [EXTRA, block(c, "Config.WeaponGrips = {"), block(c, "Config.HoldPoses = {"),
              c[c.find("Config.HoldMotion = {"):c.find("\n", c.find("Config.HoldMotion = {"))] + "\n",
-             cut(c, "function Config.WeaponGripOf(kind)"), cut(c, "function Config.WeaponGrip(kind, len, mode)"),
+             cut(c, "function Config.WeaponGripOf(kind)"), cut(c, "function Config.WeaponGrip(kind, len, mode, centre)"),
              "local PLAYERS = {}\nlocal Players = { GetPlayers = function() return PLAYERS end }\nlocal WeaponPose = {}\n",
              t[0] if t else "local T = {}\n", "local S = { Rest = {}, Wrote = {}, Char = {}, Joint = {} }\n"]
     parts += [cut(w, s) for s in WP_CUTS]

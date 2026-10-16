@@ -7408,13 +7408,20 @@ end
 -- Handle, turned by Turn (mode "Rest" and a row with Rest: turned by Rest - the standing / walking hold). The engine then
 -- puts the Handle at hand x RightGripAttachment x Grip:Inverse() - the Handle's frame in the fist =
 -- CFrame.Angles(Turn) x CFrame.new(0, -(Point - 0.5) x len, 0)
-function Config.WeaponGrip(kind, len, mode)
+-- grip-centre (user 10/16 "무기 드는 것 ... 완전 이상해", docs/review/grip_check_2026-10-16.md #1 / #5): Roblox's
+-- RightGripAttachment sits on the hand's fingertip face (R15: 0.158 under its centre), so the Handle's line ran along
+-- that face - with our thick 3D hilts the fist sat on the guard and the wrap + pommel hung under it. `centre` (optional)
+-- = the hand's centre in the grip attachment's frame (CharacterVisuals: the Tool's GripCentre attribute): the grip point
+-- then sits in the middle of the fist, the turn about that point. nil = the attachment itself (the old grip)
+function Config.WeaponGrip(kind, len, mode, centre)
 	local row = Config.WeaponGripOf(kind)
 	local point = math.clamp(tonumber(row.Point) or 0.5, 0, 1)
 	local turn = type(row.Turn) == "table" and row.Turn or {}
 	if mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end
 	local angles = CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
-	return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
+	local grip = CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()
+	if typeof(centre) == "Vector3" then grip *= CFrame.new(-centre) end
+	return grip
 end
 
 function Config.ClassGripKey(classId, faction)

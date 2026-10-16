@@ -347,7 +347,10 @@ function WeaponPose.BowRest(char, tool, handle, rightGrip, rest)
 			mine.Parent = left
 		end
 		mine.Part1 = handle
-		mine.C1 = Config.WeaponGrip(tool:GetAttribute("Kind"), handle.Size.Y, "Rest")
+		-- grip-centre (10/16): the left fist's own centre (its LeftGripAttachment), like the right one's GripCentre
+		local att = left:FindFirstChild("LeftGripAttachment")
+		local centre = (att and att:IsA("Attachment")) and att.CFrame:PointToObjectSpace(Vector3.new(0, 0, 0)) or tool:GetAttribute("GripCentre")
+		mine.C1 = Config.WeaponGrip(tool:GetAttribute("Kind"), handle.Size.Y, "Rest", centre)
 		if rightGrip.Enabled then rightGrip.Enabled = false end
 		if not mine.Enabled then mine.Enabled = true end
 	elseif mine and mine.Enabled and fxOn then
@@ -439,7 +442,8 @@ function WeaponPose.PoseStep(dt)
 		local hand = char:FindFirstChild("RightHand") or char:FindFirstChild("Right Arm")
 		local weld = hand and hand:FindFirstChild("RightGrip")
 		if hold ~= "Bow" and handle and weld and weld:IsA("JointInstance") and weld.Part1 == handle then
-			local c1 = Config.WeaponGrip(kind, handle.Size.Y):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest"), share)
+			local centre = tool:GetAttribute("GripCentre") -- grip-centre (10/16): the grip point in the middle of the fist
+			local c1 = Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest", centre), share)
 			if not weld.C1:FuzzyEq(c1, T.Same) then weld.C1 = c1 end
 		end
 		if share <= 0 then continue end -- the attack clip owns the arm

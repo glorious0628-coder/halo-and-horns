@@ -156,13 +156,17 @@ for _, hand in HANDS do
 				and model:GetAttribute("GripHand") == "RightHand" and model:GetAttribute("Kind") == kind
 			ok.base = ok.base and model.HandPart == handle
 			-- Tool.Grip from the grip table, and the Handle where the engine's RightGrip holds it
-			local gripCF = Config.WeaponGrip(kind, handle.Size.Y)
-			ok.grip = ok.grip and same(model.Grip, gripCF)
+			-- grip-centre (10/16, docs/review/grip_check_2026-10-16.md #1): the grip point in the middle of the fist
 			local att = right:FindFirstChild("RightGripAttachment")
+			local centre = att.CFrame:PointToObjectSpace(Vector3.new(0, 0, 0))
+			local gripCF = Config.WeaponGrip(kind, handle.Size.Y, nil, centre)
+			ok.grip = ok.grip and same(model.Grip, gripCF) and model:GetAttribute("GripCentre") ~= nil
+				and near(model:GetAttribute("GripCentre"), centre, 1e-6)
 			local held = right.CFrame * att.CFrame * model.Grip:Inverse()
 			ok.weld = ok.weld and same(held, handle.CFrame)
-			-- the grip point on the Handle's axis at the table share
-			local g = handle.CFrame:PointToObjectSpace((right.CFrame * att.CFrame).Position)
+			-- the fist's centre on the Handle's axis at the table share (grip-centre 10/16: the hand's centre, not the
+			-- attachment on its fingertip face)
+			local g = handle.CFrame:PointToObjectSpace(right.CFrame.Position)
 			worst.onAxis = math.max(worst.onAxis, math.sqrt(g.X * g.X + g.Z * g.Z))
 			local share = g.Y / handle.Size.Y + 0.5
 			worst.point = math.max(worst.point, math.abs(share - POINTS[kind]))
@@ -177,7 +181,7 @@ for _, hand in HANDS do
 			-- sizes: shares of the avatar height, the hand's share up from the weapon's end
 			local lo, hi = extent(model, handle)
 			local len = (hi - lo) / AVATAR_H
-			local handAt = (right.CFrame * att.CFrame).Position:Dot(handle.CFrame.UpVector)
+			local handAt = right.CFrame.Position:Dot(handle.CFrame.UpVector)
 			local handShare = (handAt - lo) / (hi - lo)
 			-- (the crook's hook bends over: its top 0.075 under the nominal Hook, so its measured floor is 0.62)
 			local span = ({ Sword = { .72, .95 }, DarkSword = { .72, .95 }, Staff = { .65, .75 }, CrookStaff = { .62, .75 },
@@ -193,7 +197,7 @@ for _, hand in HANDS do
 			end
 			if kind == "FlaskStaff" then
 				local wrap = model:FindFirstChild("Wrap")
-				ok.wrap = ok.wrap and near(wrap.CFrame.Position, (right.CFrame * att.CFrame).Position, 1e-6)
+				ok.wrap = ok.wrap and near(wrap.CFrame.Position, right.CFrame.Position, 1e-6)
 			end
 			if kind == "DarkSword" then -- the sword's own handle and blade (A23-128)
 				local blade = model:FindFirstChild("Blade")
@@ -452,7 +456,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
         ("WeaponPose: toolnone down while held, the Rest grip while no attack runs (blended on the pose's clock)",
          "local want = WeaponPose.Want(kind, fxAttacking(char))" in wp
          and "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end" in wp
-         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest"), share)' in wp
+         and 'local c1 = Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest", centre), share)' in wp
          and "weld.C1 = c1" in wp
          and "weld.Part1 == handle" in wp
          and "pcall(WeaponPose.RestStep, os.clock())" in wp and "function Fx.AttackPlaying(char)" in fx),
@@ -502,10 +506,11 @@ MUTATIONS = [
     ("CONFIG", "the bow flat across the side again", 'Bow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },', 'Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },'),
     ("CONFIG", "the joke weapons take the sword's new hold", 'Meme = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', 'Meme = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },'),
     ("CONFIG", "the short bow not canted", 'ShortBow = { Point = 0.5, Turn = { 0, 0, 15 }, Rest = { 90, -90, 0 }, Hold = "Bow" },', 'ShortBow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },'),
-    ("CONFIG", "Tool.Grip without the turn", "return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()",
-     "return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0)"),
-    ("CONFIG", "Tool.Grip measured from the other end", "return CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()",
-     "return CFrame.new(0, (0.5 - point) * (tonumber(len) or 0), 0) * angles:Inverse()"),
+    ("CONFIG", "Tool.Grip without the turn", "local grip = CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()",
+     "local grip = CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0)"),
+    ("CONFIG", "Tool.Grip measured from the other end", "local grip = CFrame.new(0, (point - 0.5) * (tonumber(len) or 0), 0) * angles:Inverse()",
+     "local grip = CFrame.new(0, (0.5 - point) * (tonumber(len) or 0), 0) * angles:Inverse()"),
+    ("CONFIG", "grip-centre: the fist's centre ignored (the fingertip face again)", "\tif typeof(centre) == \"Vector3\" then grip *= CFrame.new(-centre) end\n", "\n"),
     ("CONFIG", "a standing pose back in ClassGrips", '\tWarrior_Halo = { Weapon = "Sword" },',
      '\tWarrior_Halo = { Weapon = "Sword", Hold = { Waist = { 3, 0, 0 } } },'),
     ("CV", "the bow in the left hand again", 'local hand = Util.FindPart(character, "RightHand", "Right Arm")',
@@ -514,8 +519,8 @@ MUTATIONS = [
     ("CV", "clicks activate the Tool", "model.ManualActivationOnly = true", "model.ManualActivationOnly = false"),
     ("CV", "the Tool can be dropped", "model.CanBeDropped = false", "model.CanBeDropped = true"),
     ("CV", "Tool.Grip not set", "\tmodel.Grip = grip\n", "\n"),
-    ("CV", "the parts built where the weld does not hold them", "local place = hand.CFrame * gripFrame(hand, \"RightGripAttachment\") * grip:Inverse()",
-     "local place = hand.CFrame * gripFrame(hand, \"RightGripAttachment\")"),
+    ("CV", "the parts built where the weld does not hold them", "local place = hand.CFrame * attCF * grip:Inverse()",
+     "local place = hand.CFrame * attCF"),
     ("CV", "the grip attachment's turn ignored (the hand's own axes)", "\tif att and att:IsA(\"Attachment\") then return att.CFrame end",
      "\tif att and att:IsA(\"Attachment\") then return CFrame.new(att.Position) end"),
     ("CV", "the parts welded to the hand", "mount(model, parts, character, handle)", "mount(model, parts, character, hand)"),
@@ -544,8 +549,8 @@ MUTATIONS = [
     ("FX", "drop leaves the bow in the left hand", "\tFeel.clearWeaponMotion(st)\n\tFeel.bowHand(st, false)\n", "\tFeel.clearWeaponMotion(st)\n"),
     ("FX", "a sword moved too", 'weapon:GetAttribute("AttackHand") == "LeftHand" and weapon:FindFirstChild("Handle")', 'weapon:FindFirstChild("Handle")'),
     ("FX", "an attack clip changed", "PaladinSwing", "PaladinSwing2"),
-    ("WP", "the sword never rests", 'Config.WeaponGrip(kind, handle.Size.Y):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest"), share)',
-     "Config.WeaponGrip(kind, handle.Size.Y)"),
+    ("WP", "the sword never rests", 'Config.WeaponGrip(kind, handle.Size.Y, nil, centre):Lerp(Config.WeaponGrip(kind, handle.Size.Y, "Rest", centre), share)',
+     "Config.WeaponGrip(kind, handle.Size.Y, nil, centre)"),
     ("WP", "rests during an attack too", "local want = WeaponPose.Want(kind, fxAttacking(char))", "local want = WeaponPose.Want(kind, false)"),
     ("WP", "the rest step never runs", "local okR, errR = pcall(WeaponPose.RestStep, os.clock())", "local okR, errR = true, nil"),
     ("WP", "the weld never turns (Tool.Grip only: the engine weld kept the blade level)", "weld.C1 = c1", "local _ = c1"),
