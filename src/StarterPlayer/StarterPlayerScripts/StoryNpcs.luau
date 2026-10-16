@@ -595,6 +595,13 @@ function StoryNpcs.Body(id)
 	for _, m in list do
 		if typeof(m) == "Instance" and m:IsA("Model") and m:GetAttribute("NpcId") == id and m:IsDescendantOf(workspace) then return m end
 	end
+	-- 10/16 (first mission story): a town body that is no quest NPC (Otto at the Forge) by its TownNpcs id
+	local okT, town = pcall(function() return game:GetService("CollectionService"):GetTagged("NPC") end)
+	for _, m in okT and town or {} do
+		if typeof(m) == "Instance" and m:IsA("Model") and m:GetAttribute("HHC_TownNpc") == id and m:IsDescendantOf(workspace) then
+			return m
+		end
+	end
 	return nil
 end
 
@@ -706,6 +713,10 @@ function StoryNpcs.Scene(data)
 		if value == "Common" then StoryNpcs.Hop("Folk1", 1) end -- the neighbours wave
 		StoryNpcs.Hop(T.World.LampNpc[f or ""] or "Bright", 1)
 		return true
+	elseif key == "Find" and data.Id == "Tutorial" then -- the first mission (Config.Tutorial.Story, St = the step name)
+		return StoryNpcs.TutorialFind(data.St or value, me and me:GetAttribute("Faction"))
+	elseif key == "Scene" and data.Id == "Tutorial" then
+		return StoryNpcs.TutorialScene(value, me and me:GetAttribute("Faction"), data.St)
 	elseif key == "Find" then -- A23-208: what I find as a step starts (St / Value = the step number)
 		return StoryNpcs.Find(data.Id, data.St or value, me and me:GetAttribute("Faction"))
 	elseif key == "Scene" then -- A23-208: what the people do as step St is done (Value = a Config.StoryQuests.SceneKeys key)
@@ -899,7 +910,6 @@ end
 function StoryNpcs.PlayScene(id, scene, faction, st)
 	local SK = type(Config.StoryQuests) == "table" and Config.StoryQuests.SceneKeys or nil
 	if type(scene) ~= "string" or not (type(SK) == "table" and SK[scene]) then return false end
-	local M = T.Story.Moves[scene] or T.Story.Moves.Sparkle
 	local step = st ~= nil and StoryNpcs.StepFor(id, st, faction) or nil
 	local mine = type(step) == "table" and step.On == "Self"
 	local npc = (type(step) == "table" and type(step.Npc) == "string" and step.Npc) or StoryNpcs.SceneNpc(id, scene, faction)
@@ -917,6 +927,12 @@ function StoryNpcs.PlayScene(id, scene, faction, st)
 		end
 		return root ~= nil
 	end
+	return StoryNpcs.Move(m, scene)
+end
+
+-- body m plays the move scene (anchored town bodies move on this client only) + a round sparkle over its head
+function StoryNpcs.Move(m, scene)
+	local M = T.Story.Moves[scene] or T.Story.Moves.Sparkle
 	local head = m:FindFirstChild("Head")
 	local home = m:GetPivot()
 	burst(head and head.Position + Vector3.new(0, 1.5, 0) or home.Position, T.Gold, scene == "Sparkle" and 26 or 16)
@@ -1011,6 +1027,12 @@ function StoryNpcs.SayEnds(ends, faction)
 		for _, l in lines do table.insert(S.Talk, { Line = l, Npc = npc }) end
 		if nx and type(nx.Id) == "string" then pcall(StoryNpcs.ExpectNext, nx.Id) end
 	end
+	StoryNpcs.Say()
+end
+
+-- the bubble queue S.Talk ({ Line, Npc }), one after another (Talk.Seconds each); a running queue just grows
+function StoryNpcs.Say()
+	S.Talk = S.Talk or {}
 	if S.Talking or #S.Talk == 0 then return end
 	S.Talking = true
 	task.spawn(function()
@@ -1028,6 +1050,74 @@ function StoryNpcs.SayEnds(ends, faction)
 		end
 		S.Talking = false
 	end)
+end
+
+------------------------------------------------------------------ A23-208 first mission (Config.Tutorial.Story)
+-- QuestService fires Fx StoryScene { Id = "Tutorial", Key = "Find" / "Scene", Value, St = the step NAME }: Find = the
+-- step's words over its NPC (Teacher = my side's teacher, Forge = Otto) as it starts; Scene = that NPC's move as it is
+-- done. The Forge is the last step (A23-188): after Otto's move his Lines, then the hook to M1_1 (Next.Line, also his),
+-- then the M1_1 asker's one hop when her "!" shows. The Before line sits in the guide's Welcome window (Panels)
+
+-- (pure) the NpcId of first-mission step st for my side: Teacher = Config.Skills.Learn.Teachers, Forge = Otto
+function StoryNpcs.TutorialNpc(st, faction)
+	if st == "Forge" then return "Otto" end
+	if st == "Teacher" then
+		local L = type(Config.Skills) == "table" and Config.Skills.Learn or nil
+		local id = type(L) == "table" and type(L.Teachers) == "table" and L.Teachers[faction] or nil
+		return type(id) == "string" and id or nil
+	end
+	return nil
+end
+
+-- (pure) step st's story table (Config.Tutorial.Story.Steps[st]) and a field of it for my side
+function StoryNpcs.TutorialField(st, field, faction)
+	local story = type(Config.Tutorial) == "table" and Config.Tutorial.Story or nil
+	local step = type(story) == "table" and type(story.Steps) == "table" and type(st) == "string" and story.Steps[st] or nil
+	local v = type(step) == "table" and type(step[field]) == "table" and step[field][faction] or nil
+	return v
+end
+
+-- (pure) what step st says when it is done (the Forge: Otto's Lines, then the hook to M1_1) -> lines, next { Id, Line }
+function StoryNpcs.TutorialEnd(st, faction)
+	local out = {}
+	local lines = StoryNpcs.TutorialField(st, "Lines", faction)
+	for _, l in type(lines) == "table" and lines or {} do
+		if type(l) == "string" and l ~= "" then table.insert(out, l) end
+	end
+	local story = type(Config.Tutorial) == "table" and Config.Tutorial.Story or nil
+	local nx = st == "Forge" and type(story) == "table" and type(story.Next) == "table" and story.Next[faction] or nil
+	if type(nx) ~= "table" then return out, nil end
+	if type(nx.Line) == "string" and nx.Line ~= "" then table.insert(out, nx.Line) end
+	return out, nx
+end
+
+function StoryNpcs.TutorialFind(st, faction)
+	local text = StoryNpcs.TutorialField(st, "Find", faction)
+	local npc = StoryNpcs.TutorialNpc(st, faction)
+	local body = type(text) == "string" and text ~= "" and npc and StoryNpcs.Body(npc) or nil
+	local head = body and body:FindFirstChild("Head")
+	if not (head and head:IsA("BasePart")) then return false end
+	return StoryNpcs.Bubble(head, text) ~= nil
+end
+
+function StoryNpcs.TutorialScene(scene, faction, st)
+	local SK = type(Config.StoryQuests) == "table" and Config.StoryQuests.SceneKeys or nil
+	local npc = StoryNpcs.TutorialNpc(st, faction)
+	local m = npc and StoryNpcs.Body(npc) or nil
+	local moved = false
+	if m and type(scene) == "string" and type(SK) == "table" and SK[scene] then moved = StoryNpcs.Move(m, scene) end
+	local lines, nx = StoryNpcs.TutorialEnd(st, faction)
+	if #lines > 0 then
+		S.Talk = S.Talk or {}
+		-- Otto says them ("Otto: words" -> the words over his head; SpeakerOf maps his speaker name to another id)
+		for _, l in lines do
+			local words = string.match(l, "^[^:]+:%s*(.+)$")
+			table.insert(S.Talk, { Line = words or l, Npc = npc })
+		end
+		StoryNpcs.Say()
+	end
+	if type(nx) == "table" and type(nx.Id) == "string" then pcall(StoryNpcs.ExpectNext, nx.Id) end
+	return moved or #lines > 0
 end
 
 -- one pass: my story rows' steps -> the ended ones speak (the first pass after joining only remembers)

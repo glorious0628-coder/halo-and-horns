@@ -597,8 +597,10 @@ function L.PowerBuild(parent)
 		return L.FitText(artLabel(false, {
 			Name = name,
 			LayoutOrder = order,
-			AutomaticSize = Enum.AutomaticSize.X,
-			Size = UDim2.new(0, 0, 1, 0),
+			-- 10/16 phone dump: the 16 px floor text in the 12 px row read 'cut'; the label's box now follows the text
+			-- both ways (the row's UIListLayout centres it, so the drawn line stays where it was)
+			AutomaticSize = Enum.AutomaticSize.XY,
+			Size = UDim2.new(0, 0, 0, 0),
 			TextSize = 14,
 			Number = true,
 			Color = color,
@@ -3480,6 +3482,11 @@ function L.CrownPop(data)
 	if type(data) ~= "table" or (tonumber(data.N) or 0) < 1 then return false end
 	local f = getFaction()
 	local badge = (f == "Halo" and ui.warBadgeHalo) or (f == "Horns" and ui.warBadgeHorns) or nil
+	return L.BadgePop(badge)
+end
+
+-- one war-bar badge pops once (no number, no banner; none with ReducedMotion)
+function L.BadgePop(badge)
 	if not (badge and badge.Parent and ui.war and ui.war.Visible) or UIKit.ReducedMotion() then return false end
 	local s = badge:FindFirstChild("CrownPop") or Instance.new("UIScale")
 	s.Name = "CrownPop"
@@ -3524,10 +3531,8 @@ function L.RegisterWarInfo()
 	return L.WarInfoOn
 end
 
-local function refreshWar()
-	local h = math.max(0, tonumber(UIKit.GameAttr("WarHaloScore", 0)) or 0)
-	local r = math.max(0, tonumber(UIKit.GameAttr("WarHornsScore", 0)) or 0)
-	local frac = (h + r > 0) and (h / (h + r)) or 0.5
+-- the bar's two fills, split line and crown at a Halo share
+function L.WarDraw(frac)
 	ui.haloFill.Size = UDim2.fromScale(frac, 1)
 	ui.hornsFill.Size = UDim2.fromScale(1 - frac, 1)
 	ui.haloFill.Visible = frac > 0.001
@@ -3535,6 +3540,59 @@ local function refreshWar()
 	ui.warDivider.Position = UDim2.fromScale(frac, 0.5)
 	L.WarCrownX = L.WarCrownFrac(frac)
 	L.PlaceWarCrown()
+end
+
+-- A23-216 ⑤ (user 10/16, "진 쪽도 웃는 왕관전"): a round ended (the server's new WarRoundEndsAt after a round that was
+-- played, WarMode not Idle) -> the bar slides from where the round left it back to balance (Back s), both sides' badges
+-- pop once together, then the next round's short bell (Bell s after the end, after the winner's crown sound). No words,
+-- no banner, nobody's screen darkens (A23-191). Captain Clatter's salute in the losing town waits for his town body.
+L.RoundEnd = { Back = 0.9, Bell = 2.0, Sound = "WarNext" }
+
+-- (pure) did a round end between two looks at the game state? old / new = { Ends, Mode }
+function HUD.WarRoundEnded(old, new)
+	if type(old) ~= "table" or type(new) ~= "table" then return false end
+	local a, b = tonumber(old.Ends) or 0, tonumber(new.Ends) or 0
+	return a > 0 and b > a + 1 and old.Mode ~= nil and old.Mode ~= "Idle"
+end
+
+function L.WarRoundEnd(fromFrac)
+	local P = L.RoundEnd
+	L.WarSliding = true
+	local still = UIKit.ReducedMotion() or not (ui.war and ui.war.Visible)
+	if not still then
+		local v = Instance.new("NumberValue")
+		v.Value = math.clamp(tonumber(fromFrac) or 0.5, 0, 1)
+		v.Changed:Connect(function(f) pcall(L.WarDraw, f) end)
+		local tw = TweenService:Create(v, TweenInfo.new(P.Back, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), { Value = 0.5 })
+		tw.Completed:Connect(function() v:Destroy() end)
+		tw:Play()
+	end
+	task.delay(still and 0 or P.Back, function()
+		L.WarSliding = false
+		pcall(L.WarDraw, 0.5)
+		pcall(L.BadgePop, ui.warBadgeHalo)
+		pcall(L.BadgePop, ui.warBadgeHorns)
+	end)
+	task.delay(P.Bell, function()
+		if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, P.Sound) end
+	end)
+	return true
+end
+
+local function refreshWar()
+	local h = math.max(0, tonumber(UIKit.GameAttr("WarHaloScore", 0)) or 0)
+	local r = math.max(0, tonumber(UIKit.GameAttr("WarHornsScore", 0)) or 0)
+	local frac = (h + r > 0) and (h / (h + r)) or 0.5
+	local now = { Ends = UIKit.GameAttr("WarRoundEndsAt", 0), Mode = UIKit.GameAttr("WarMode", nil) }
+	if HUD.WarRoundEnded(L.WarSeen, now) then
+		L.WarRoundEnd(L.WarFracSeen or 0.5)
+		L.WarFracSeen = nil
+	elseif not L.WarSliding then
+		L.WarDraw(frac)
+	end
+	L.WarSeen = now
+	-- the share the round is ending at = the last one with points (the new round's 0 : 0 may arrive before its time)
+	if h + r > 0 and not L.WarSliding then L.WarFracSeen = frac end
 	ui.haloNum.Text = L.WarNumOnly and fmtScore(h) or L.Tx(TXT, "WarHalo", fmtScore(h))
 	ui.hornsNum.Text = L.WarNumOnly and fmtScore(r) or L.Tx(TXT, "WarHorns", fmtScore(r))
 	refreshChips()
@@ -5025,6 +5083,9 @@ end
 -- replicate (0.27-0.43 s in Studio, measured 2026-10-07)
 function L.SwingFaced()
 	local _, target = L.FaceTarget("Swing")
+	-- 손맛 ① (최종 검수 10/16): my body starts the swing now (Fx.PredictSwing; the server's Fx does not restart it)
+	local fx = C and C.Fx
+	if type(fx) == "table" and type(fx.PredictSwing) == "function" then pcall(fx.PredictSwing) end
 	fire("Swing", target)
 end
 

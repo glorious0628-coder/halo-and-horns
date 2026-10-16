@@ -20,6 +20,9 @@
 --     (lifetime) + RankingService.Credit "Artisan" (the weekly board); the attribute ArtisanRank (Config.ArtisanRank, 0 =
 --     not an artisan now) at PlayerReady, after a craft and after a class / faction change; a new rank says so once
 --     (key Config.Craft.Text.RankUp) and fires RankUp(player, rank).
+--   * A23-213 (user 10/16, "그래야 제작하는 애들이 재료 모으는 재미가 생기지"): every craft (weapons too) may use bound
+--     materials, the bound ones first; the result is NOT bound (it trades and sells like any craft). The materials stay
+--     bound themselves: Pend.Bound notes how many were bound, and a refund (the recipe gone) gives that part back bound.
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
 --   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
 --   handlers; public for the offline test) · RecipeOn(id) · Session(player) · Settle(player, data) (a waiting craft)
@@ -150,6 +153,12 @@ function CraftService.RecipeOn(id)
 	return r
 end
 
+-- A23-206: how many of the held `item` are bound (LootService's BOUND.Of: never more than held)
+local function boundOf(data, item)
+	local held = type(data.Items) == "table" and math.floor(num(data.Items[item])) or 0
+	return math.clamp(type(data.ItemsBound) == "table" and math.floor(num(data.ItemsBound[item])) or 0, 0, held)
+end
+
 local function hasMats(data, r)
 	local items = type(data.Items) == "table" and data.Items or {}
 	for item, n in r.Mats do
@@ -251,7 +260,7 @@ local function payOut(player, data, r, plus)
 	end
 	local before = have()
 	if before + n > Config.Loot.ItemCap then return false end -- never a part of it
-	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n } }, nil, "Craft")
+	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n } }, nil, "Craft") -- A23-213: never bound
 	return have() - before >= n
 end
 
@@ -358,11 +367,17 @@ function CraftService.Settle(player, data)
 		local gold = math.floor(num(p.Gold))
 		if gold > 0 then pcall(S.ProgressionService.AddBankGold, player, gold, "CraftRefund") end
 		local list = {}
+		local boundMats = type(p.Bound) == "table" and p.Bound or {}
 		for item, n in type(p.Mats) == "table" and p.Mats or {} do
-			local left = math.floor(num(n))
-			while Config.Loot.Items[item] and left > 0 do
-				table.insert(list, { Id = item, N = math.min(99, left) })
-				left -= 99
+			-- A23-206: the bound part comes back bound (rows of at most 99, bound first)
+			local total = math.floor(num(n))
+			local b = math.clamp(math.floor(num(boundMats[item])), 0, math.max(0, total))
+			for _, part in { { b, true }, { total - b, false } } do
+				local left = part[1]
+				while Config.Loot.Items[item] and left > 0 do
+					table.insert(list, { Id = item, N = math.min(99, left), Bound = part[2] or nil })
+					left -= 99
+				end
 			end
 		end
 		if #list > 0 then pcall(S.LootService.GrantItems, player, list, nil, "CraftRefund") end
@@ -462,10 +477,16 @@ function CraftService.TryStart(player, id)
 		notify(player, "NeedGold")
 		return "gold"
 	end
+	local bound = {}
 	for item, n in r.Mats do
-		if not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, "take " .. item .. " failed after the check") end
+		local b = math.min(n, boundOf(data, item)) -- TakeItem takes the bound ones first
+		if not S.LootService.TakeItem(player, item, n) then
+			Util.Warn(TAG, "take " .. item .. " failed after the check")
+		elseif b > 0 then
+			bound[item] = b
+		end
 	end
-	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats) }
+	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil }
 	table.insert(recent, now)
 	ST.Serial += 1
 	local T = CraftMini.T

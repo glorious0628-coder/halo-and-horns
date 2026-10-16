@@ -402,3 +402,27 @@
 - 모험단 G0 = 10/20 뒤. 개발 2 다음: M1_1 옛 Finish 삭제 → Tutorial 이야기 칸 엔진 크기 → 매일 12종 보상표 초안(내가 확정). 개발 1: 폰 진영·직업 카드 결과 보고 대기, 그다음 1장 화면 사진(폰 잘림).
 - 메인 Studio = ed7d03e7까지 sync됨(그 뒤 병합분 안 들어감). 다음 sync·사진 = 10/16 게시판 전에 메인 반영 1.
 - 사용자 몫(10/16 게시판): Save As → Alt+P, 배지 7개 Creator Hub에서 만들기(badges_2026-10-15.md), Env place id.
+
+## 10/15 밤 끝 (최종 검수) — 사용자 "정리, 내일 아침 다시" — 다음 나는 여기부터
+- main 45fbdb32. 오늘 밤 추가 병합: dev1 wall-edges·fail-spot·codex-where·crown-mine·friend-mark·phone-cards·story-screen 3db67d7c, dev2 nudges-cut 8fe721cd·ch1-story·ch1-finish c9a2762a(첫 임무 이야기 칸, M1_1 원격 카드 삭제).
+- 메인 Studio: 21:14 Studio 자동 업데이트로 창 전부 닫힘(사용자 다른 게임 aqua-sparkle 창 포함 — 사용자에게 알림, 자동 복구 확인 권함). 캡처 막힘 원인 = 업데이트 전 Studio(메모리 studio-capture-hang-update). 사용자가 다시 염 → a1d06f69 sync + first10 사진 docs/art/verification_2026-10-15/main_a1d06f69/, 콘솔 오류 0. 45fbdb32 sync는 메인 반영 1 마무리 중.
+- 사진에서 본 것 → 개발 1 내일: 오프닝 자막 2 카메라가 조각상 안(흐림), 폰 'Blast from far away!' 잘림 → 'Blast from far!', 폰 HUD PowerLine·'N' 잘림. 그다음 Tutorial 이야기 화면, PhoneTest 폰 사진(1장 말풍선·Before).
+- 개발 2 내일: 매일 12종 정의(GPT 검토 반영 보상 확정: DH2 HP1·DH3 Oak4·DH1 Enh70·DR3 MP1·DR2 Jelly10·DR1 Move70·DN3 Treat3·DN1 Herb10·DN2 Glowcap8·DC1 Copper3·DC2 Guard2·DC3 Moon8, 골드 GoldN 30/60/100/200, Hard 과제 실제로 어렵게) + 소품·Pip(임시 기본 NPC) 배치 목록 → 메인 반영 1이 파트로 놓음 + 제작 스위치 확인.
+- GPT 상의 남은 것: 디자인 쪽은 아직 시작 안 함(사용자 역할 지정: 퀘스트·게임성(스토리 포함)·디자인 GPT 상의). 2~5장 데이터는 1장 화면 확인 뒤.
+- 10/16 게시판: 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P (+ 배지 7개 docs/design/badges_2026-10-15.md, Env place id).
+- (추가, 밤 끝) 병합 c672eb17 → main bc0b5bf4. 개발 1·2·메인 반영 1 모두 정리·클리어함. **dev2-daily12 53256460 = 병합 안 함**: R 표가 옛 초안 숫자(DH2 HP3·DR1 Move30 등)이고 Hard 과제가 아직 Normal과 같은 크기(Slime 3) → 내일 개발 2가 수정 보상표·Hard 강화 커밋 붙인 뒤 병합. 소품 목록 docs/design/daily_props_2026-10-15.md(그 가지).
+- **내일 결정할 것:** Config.Features.Gathering·Crafting·Tonics·Research = false, NeutralFaction = false(베타 Live 꺼짐) → 장인 재료·간식·강장제 보상이 쓸 곳 없고 장인 DN 3종은 아무도 못 봄. A23-162는 베타(12/15)에 장인 길드 포함 → 계획 순서표 3번(장인 최소판) 언제 켤지 + 그 전까지 매일 보상을 쓸모 있는 것으로 바꿀지(GPT 상의 후 정함).
+
+## 10/16 아침 (최종 검수)
+- 세 세션 아침 일 시작(개발 1: 오프닝 카메라·폰 잘림·Tutorial 이야기 화면 / 개발 2: 매일 12종 수정 / 메인 반영 1: build/GoodEvil.rbxlx 열고 7803b320 sync, 캡처 정상). build ≠ place 해시(10/15 21:29 사용자 저장본) → 게시 때 맞춤.
+- **다섯 언어 업로드 끝:** es·fr·ja·zh-hans·zh-hant 3,049줄 × 5, ok 3049 fail 0 (scratchpad loc5_up.py: entries.json identifier + 40개 묶음 PATCH, DuplicatedKeySourceContext 묶음은 한 줄씩 다시). 샘플 확인 5×8줄, 자리표시 {n} 어긋남 0. **남은 것:** 10/15 아침 스냅샷 뒤 새 글(1장 이야기·오프닝 자막·매일 부탁 등)은 5언어·한국어 번역 없음 → l10n_coverage로 빠진 줄 뽑아 다시 돌리기.
+- GPT 상의 중: 장인 길드·채집·제작 스위치 켜는 순서 + 그동안 매일 보상(build/codex/artisan_switch_r1.md). 내 추천: 10/17 기술 시험은 꺼 둔 채, 시험 뒤 계획 3번 순서로.
+
+## 10/16 낮 (최종 검수) — 게시판 + 오늘 결정
+- **게시판:** 사용자 Save As 12:54 → place push a94e7c6d (main b27db2ac 반영, ClatterScenes·PredictSwing 들어 있음 확인). 메인 사진 docs/art/verification_2026-10-16/main_b27db2ac_v2(세상 정상; v1은 창 최소화로 흰색). 콘솔 Error 0, 68/68 서비스. 저장 판 그대로 → 서버 종료 불필요. Alt+P는 사용자 "했음둥"(게시 확인은 다음에).
+- **오늘 사용자 결정 SPEC A23-208~219:** 이야기 촘촘(208), Clatter 실수(209)→처음부터 공개·공통 길동무(212), 공존·가루 소동(210), Pip 고블린·몬스터 편안히 사라짐(211), 귀속 재료 제작품 거래 가능·좋은 물건일수록 재료 어렵게(213), Clatter 위엄+귀여움 새 디자인·모델 여러 개(214), 제작 곡선·매일 보상 묶음(215), PvP 손실 줄이기(216), 주간 진영 승부·장인 주간 선물(217), 괴수 교차로·장면 명령(218), 제작 도구 강화·축복 주문서·옵션 1~5%(219).
+- **GPT 상의 기록:** build/codex/ story_emotion_r1·r2, story_world_r3~r5, story_ch2_r1, design_r1·r2, gameplay_r1, daily_rewards_r1, artisan_switch_r1, craft_curve_r1, weekly_war_r1, artisan_weekly_r1, craft_tools_r1, game_feel_r1 — 회의실 페이지에 d1016_01~42로 올림. 안건표 build/codex/agenda.md.
+- **다섯 언어 업로드 끝**(3,049×5). 이후 번역은 하루 한 번 새 줄만(메모리 translation-daily-small-batches).
+- **배지 7개:** Open Cloud 만들기 명령이 권한 검사에서 막힘(Create Public Surface) → 사용자에게 직접 실행 명령 안내(scratchpad badge_create.py, expectedCost 0). 결과 ID 받으면 Config.Badges.Ids.
+- **개발 2 큐:** 장면 명령(A23-218) → 매일 보상 묶음(daily12) → A23-216 숫자 → 2장 데이터 → 장인 최소판(213·215·217 선물·219) → 주간 승부(217).
+- **개발 1 큐:** Clatter 장면 사진(dev1-clatter-scenes 3ce912d0, 병합 대기) → 대장간 'The first weapon can't be sold' 버튼 글 정리 → 무리 5마리 손맛 재측정(장면 명령 뒤).

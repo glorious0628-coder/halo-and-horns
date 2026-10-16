@@ -570,6 +570,46 @@ runGroup("results", function()
 	check(w.C.TryStart(e2, "T2") == "ok", "one free slot: Herb fits", "")
 end)
 
+------------------------------------------------------------------ A23-206 / A23-213 bound materials (user 10/16)
+-- every craft (weapons too) may use bound materials, the bound ones first; the result is free (it trades / sells); the
+-- materials stay bound themselves: a refund gives the bound part back bound
+runGroup("bound materials", function()
+	local w = cWorld({ EditConfig = function(c)
+		c.Craft.Recipes.T1 = { Role = "Smith", Kind = "Item", Item = "Jelly", N = 3, Lv = 1, Gold = 1, Mats = { CopperOre = 1 }, XP = 1 }
+	end })
+	local p, d = smith(w, 1, { ItemsBound = { CopperOre = 1 } })
+	check(w.C.TryStart(p, "T1") == "ok" and d.Craft.Pend.Bound.CopperOre == 1 and (d.ItemsBound.CopperOre or 0) == 0,
+		"an item craft takes the bound copper first and remembers it (Pend.Bound)", show(d.Craft.Pend))
+	hammer(w, p, HONEST)
+	check(d.Items.Jelly == 205 and (d.ItemsBound.Jelly or 0) == 0, "A23-213: the result (3 + the earned +2) made with a bound one is free",
+		show({ d.Items.Jelly, d.ItemsBound }))
+	check(w.Reg.LootService.TakeItem(p, "Jelly", 205, "Trade"), "... the market takes all 205 jelly", show({ d.Items.Jelly, d.ItemsBound }))
+	local q, dq = smith(w, 2)
+	w:Advance(61)
+	check(w.C.TryStart(q, "T1") == "ok" and dq.Craft.Pend.Bound == nil, "free copper only: nothing remembered (the old Pend shape)", show(dq.Craft.Pend))
+	hammer(w, q, HONEST)
+	check(dq.Items.Jelly == 205 and (dq.ItemsBound or {}).Jelly == nil, "... and the result is free", show(dq.ItemsBound))
+	-- a refund (the recipe is gone): the bound part comes back bound
+	local craftWith = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {},
+		Pend = { Id = "Nope", Plus = -1, Gold = 10, Mats = { Jelly = 7, CopperOre = 150 }, Bound = { CopperOre = 120 } } }
+	local u, du = smith(w, 3, { Craft = craftWith })
+	check(du.Craft.Pend == nil and du.Items.CopperOre == 80 + 150 and du.ItemsBound.CopperOre == 120 and (du.ItemsBound.Jelly or 0) == 0,
+		"a refund: 150 copper back, the 120 that were bound stay bound (two rows of at most 99), the jelly free", show({ du.Items, du.ItemsBound }))
+	local _ = u
+	-- the save keeps Pend.Bound (and an old Pend without it reads as nothing bound)
+	local san = w.Config.SanitizeCraft({ Pend = { Id = "T1", Plus = 1, Gold = 1, Mats = { CopperOre = 1 }, Bound = { CopperOre = 1, Bad = -3 } } })
+	local old = w.Config.SanitizeCraft({ Pend = { Id = "T1", Plus = 1, Gold = 1, Mats = { CopperOre = 1 } } })
+	check(san.Pend.Bound.CopperOre == 1 and san.Pend.Bound.Bad == nil and old.Pend.Bound == nil, "SanitizeCraft keeps Pend.Bound (none = no field)", show(san.Pend))
+	-- a weapon craft too (A23-213): all copper bound - it starts, the bound ones go first
+	local k, dk = smith(w, 4, { ItemsBound = { CopperOre = 80 } })
+	check(w.C.TryStart(k, "W1") == "ok" and dk.Items.CopperOre == 78 and dk.ItemsBound.CopperOre == 78 and dk.Craft.Pend.Bound.CopperOre == 2,
+		"W1 from 80 bound copper: starts, 2 bound ones used and noted", show({ dk.Items.CopperOre, dk.ItemsBound, dk.Craft.Pend }))
+	local m, dm = smith(w, 5, { ItemsBound = { CopperOre = 1 } })
+	check(w.C.TryStart(m, "W1") == "ok" and dm.Items.CopperOre == 78 and (dm.ItemsBound.CopperOre or 0) == 0 and dm.Craft.Pend.Bound.CopperOre == 1,
+		"1 bound + free: the bound one goes first, then a free one", show({ dm.Items.CopperOre, dm.ItemsBound }))
+	local _ = m
+end)
+
 ------------------------------------------------------------------ 장인 ⑤ (A23-178): the alchemist's goods
 runGroup("alchemist goods", function()
 	local w = cWorld({ EditConfig = function(c)

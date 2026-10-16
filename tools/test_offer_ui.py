@@ -62,6 +62,9 @@ local pr = STORY.PayloadReward({ Gold = 40, Items = { { Id = "Petal", N = 2 } },
 check("the payload's preview: gold, items, bag slots", pr[1].Icon == "IconCoin" and pr[1].N == 40 and pr[2].Icon == "Petal"
 	and pr[2].N == 2 and pr[3].Icon == "IconBag", pr[1] and pr[1].N)
 check("no payload preview: nil (Config's then)", STORY.PayloadReward(nil) == nil)
+local pi = STORY.PayloadReward({ Items = { { Id = "HP", N = 3, Icon = "IconPotionHP" }, { Id = "Petal", N = 1, Icon = "" } } })
+check("an item's own Icon wins (potions), an empty one = its Id", pi[1].Icon == "IconPotionHP" and pi[1].N == 3
+	and pi[2].Icon == "Petal", pi[1] and pi[1].Icon)
 local vt = STORY.OfferView({ Offer = { Npc = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" } } }, nil, "Horns")
 check("an Offer.Npc by side: mine", vt.Npc == "Smokey", vt.Npc)
 print(fails == 0 and "OFFER_PURE_OK" or "OFFER_PURE_FAILED")
@@ -118,6 +121,7 @@ MUTATIONS = [
     ("PANELS", "a side table as a name", '\tif type(who) == "table" then who = who[f] or who.Neutral end\n', ''),
     ("PANELS", "exact gold forgotten", "\tif n(reward.GoldN) > 0 then g += math.floor(n(reward.GoldN)) end\n", ""),
     ("PANELS", "gold at level 1 always", "g = select(1, Config.HuntValue(level, reward.Gold))", "g = select(1, Config.HuntValue(1, reward.Gold))"),
+    ("PANELS", "the item's Icon ignored", "and it.Icon or it.Id, N =", "and it.Id or it.Id, N ="),
     ("PANELS", "the payload's Npc ignored", "local who = (type(npc) == \"string\" and npc ~= \"\") and npc or offer.Npc", "local who = offer.Npc"),
 ]
 

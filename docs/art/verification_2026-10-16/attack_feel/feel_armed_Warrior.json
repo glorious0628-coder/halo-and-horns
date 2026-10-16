@@ -1,0 +1,384 @@
+[
+ {
+  "class": "Warrior",
+  "bare": false,
+  "single": {
+   "label": "single",
+   "presses": 6,
+   "rows": [
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 17,
+     "hurt_ms": 64,
+     "num_ms": 304
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 231,
+     "hurt_ms": null,
+     "num_ms": 281
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 166,
+     "hurt_ms": 64,
+     "num_ms": 164
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 18,
+     "hurt_ms": null,
+     "num_ms": 325
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 151,
+     "hurt_ms": 48,
+     "num_ms": 149
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 248,
+     "hurt_ms": null,
+     "num_ms": 299
+    }
+   ],
+   "hurts": 3,
+   "beaten": 2,
+   "events": 123
+  },
+  "single_raw": "257.1398 start Warrior\n257.1460 anim http://www.roblox.com/asset/?id=10921259953 Animation1\n257.1460 anim rbxassetid://114302219876492 Animation1\n257.1461 anim http://www.roblox.com/asset/?id=507768375 ToolNoneAnim\n257.6468 press F\n257.6640 fx FxBurst\n257.7105 hurt Slime\n257.7167 fx FxBurst\n257.8962 fx FxPop\n257.9466 fx FxPop\n257.9468 fx FxNumber1\n257.9470 fx FxNumber2\n257.9471 fx FxNumber3\n257.9472 fx FxNumber4\n257.9473 fx FxNumber5\n257.9474 fx FxNumber6\n257.9475 fx FxNumber7\n257.9476 fx FxNumber8\n257.9476 fx FxNumber9\n257.9477 fx FxNumber10\n257.9478 fx FxNumber11\n257.9479 fx FxNumber12\n257.9480 fx FxNumber13\n257.9484 fx FxNumber14\n257.9486 fx FxNumber15\n257.9488 fx FxNumber16\n257.9489 fx FxNumber17\n257.9490 fx FxNumber18\n257.9492 fx FxNumber19\n257.9493 fx FxNumber20\n257.9494 fx FxNumber21\n257.9495 fx FxNumber22\n257.9497 fx FxNumber23\n257.9499 fx FxNumber24\n257.9501 fx FxNumber25\n257.9503 num 8\n258.5309 fx FxBurst\n258.5806 fx FxBurst\n258.7791 fx FxPop\n258.7793 fx FxPop\n259.3646 fx FxBurst\n259.3966 fx FxBurst\n259.8637 press F\n259.9113 xp 44\n259.9120 beaten Slime\n260.0946 fx FxPop\n260.1449 fx FxPop\n260.1451 num 8\n260.1471 fx FxBurst\n260.2277 num +6 G\n260.2279 num +14 XP\n260.2305 fx FxBurst\n260.2308 calm Slime\n260.6306 fx FxBurst\n261.0963 fx FxBurst\n261.6813 fx BlobShadow\n261.6814 fx BlobShadow\n261.6814 fx BlobShadow\n261.7793 fx FxBurst\n261.8796 fx FxBurst\n262.0801 press F\n262.1445 hurt Slime\n262.2441 num -2\n262.2461 fx FxPop\n262.2464 fx FxPop\n262.3274 fx FxPop\n262.3803 fx FxPop\n262.3806 num 8\n262.6056 fx FxBurst\n263.0142 fx FxBurst\n263.7294 fx FxBurst\n263.8102 num -2\n263.8125 fx FxPop\n263.8127 fx FxPop\n263.9189 fx BlobShadow\n263.9191 fx BlobShadow\n263.9192 fx BlobShadow\n264.2984 press F\n264.3168 fx FxBurst\n264.3462 xp 10\n264.3473 fx FxRing\n264.3799 beaten Slime\n264.5000 fx FxBurst\n264.5523 fx FxPop\n264.5970 fx FxBurst\n264.6228 fx FxPop\n264.6230 num 8\n264.6981 fx FxBurst\n264.6983 calm Slime\n264.7079 num +6 G\n264.7081 num +14 XP\n265.1060 fx FxBurst\n265.4132 fx FxBurst\n266.2308 fx FxBurst\n266.4949 press F\n266.5429 hurt Slime\n266.6441 num -2\n266.6456 fx FxPop\n266.6459 fx FxPop\n266.7270 fx FxPop\n266.7775 fx FxPop\n266.7777 num 8\n267.3795 fx FxBurst\n268.2278 num -2\n268.2299 fx FxPop\n268.2301 fx FxPop\n268.3656 fx BlobShadow\n268.3657 fx BlobShadow\n268.3658 fx BlobShadow\n268.6959 press F\n268.7604 xp 24\n268.9434 fx FxPop\n268.9949 fx FxPop\n268.9952 num 8\n269.0791 num +Jelly\n269.0795 fx FxBurst\n269.0796 num +6 G\n269.0796 num +14 XP\n269.0822 fx FxBurst\n269.0824 calm Slime\n269.4464 fx FxBurst\n269.4795 fx FxBurst\n270.1294 fx FxBurst",
+  "burst": {
+   "label": "burst",
+   "presses": 8,
+   "rows": [
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 216,
+     "hurt_ms": 46,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 32,
+     "hurt_ms": null,
+     "num_ms": 33
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 167,
+     "hurt_ms": null,
+     "num_ms": 165
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 220,
+     "hurt_ms": null,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 51,
+     "hurt_ms": null,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 47,
+     "hurt_ms": null,
+     "num_ms": 97
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": null,
+     "hurt_ms": null,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 84,
+     "hurt_ms": null,
+     "num_ms": 2065
+    }
+   ],
+   "hurts": 1,
+   "beaten": 1,
+   "events": 44
+  },
+  "burst_raw": "270.5305 start Warrior\n270.5446 anim http://www.roblox.com/asset/?id=10921259953 Animation1\n270.5446 anim rbxassetid://114302219876492 Animation1\n270.5446 anim http://www.roblox.com/asset/?id=507768375 ToolNoneAnim\n270.8304 fx FxBurst\n270.8944 num -2\n270.8961 fx FxPop\n270.8963 fx FxPop\n271.8468 press F\n271.8927 hurt Slime\n272.0632 fx FxBurst\n272.0779 fx FxPop\n272.0954 press F\n272.1275 fx FxPop\n272.1279 num 8\n272.3288 press F\n272.4942 num -2\n272.4959 fx FxPop\n272.4961 fx FxPop\n272.5630 press F\n272.7827 fx BlobShadow\n272.7828 fx BlobShadow\n272.7828 fx BlobShadow\n272.8137 press F\n272.8646 fx FxBurst\n272.9099 xp 38\n272.9104 beaten Slime\n273.0473 press F\n273.0939 fx FxPop\n273.1445 fx FxPop\n273.1447 num 8\n273.2277 num +6 G\n273.2279 num +14 XP\n273.2302 fx FxBurst\n273.2304 calm Slime\n273.2969 press F\n273.5453 press F\n273.6291 fx FxBurst\n273.7330 fx FxBurst\n274.4820 fx FxBurst\n275.2139 fx FxBurst\n275.6108 num -2\n275.6141 fx FxPop\n275.6144 fx FxPop",
+  "steady": {
+   "label": "steady",
+   "presses": 34,
+   "rows": [
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 160,
+     "hurt_ms": 63,
+     "num_ms": 307
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 13,
+     "hurt_ms": null,
+     "num_ms": 11
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 201,
+     "hurt_ms": 45,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 228,
+     "hurt_ms": null,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": 88,
+     "fx_ms": 2,
+     "hurt_ms": null,
+     "num_ms": 329
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 228,
+     "hurt_ms": null,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 3,
+     "hurt_ms": 67,
+     "num_ms": 606
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 229,
+     "hurt_ms": null,
+     "num_ms": 282
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": 77,
+     "fx_ms": 215,
+     "hurt_ms": 42,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 98,
+     "hurt_ms": 61,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 218,
+     "hurt_ms": 43,
+     "num_ms": 289
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 79,
+     "hurt_ms": null,
+     "num_ms": 323
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 3,
+     "hurt_ms": 68,
+     "num_ms": 310
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 19,
+     "hurt_ms": null,
+     "num_ms": 282
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 233,
+     "hurt_ms": 48,
+     "num_ms": 663
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 219,
+     "hurt_ms": null,
+     "num_ms": 285
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 221,
+     "hurt_ms": 46,
+     "num_ms": 294
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 243,
+     "hurt_ms": null,
+     "num_ms": 314
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 22,
+     "hurt_ms": 47,
+     "num_ms": 283
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 43,
+     "hurt_ms": null,
+     "num_ms": 400
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 3,
+     "hurt_ms": 64,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 259,
+     "hurt_ms": null,
+     "num_ms": 409
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 186,
+     "hurt_ms": 60,
+     "num_ms": 490
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 234,
+     "hurt_ms": null,
+     "num_ms": 309
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 227,
+     "hurt_ms": 43,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 220,
+     "hurt_ms": null,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 205,
+     "hurt_ms": 52,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 187,
+     "hurt_ms": null,
+     "num_ms": 278
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 229,
+     "hurt_ms": 47,
+     "num_ms": 279
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 30,
+     "hurt_ms": null,
+     "num_ms": 28
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 2,
+     "hurt_ms": 64,
+     "num_ms": null
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 251,
+     "hurt_ms": null,
+     "num_ms": 403
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 240,
+     "hurt_ms": 66,
+     "num_ms": 307
+    },
+    {
+     "whoosh_ms": null,
+     "swing_ms": null,
+     "fx_ms": 164,
+     "hurt_ms": null,
+     "num_ms": 407
+    }
+   ],
+   "hurts": 17,
+   "beaten": 2,
+   "events": 406,
+   "seconds": 41.5
+  },
+  "steady_raw": "275.8957 start Warrior\n275.9108 anim http://www.roblox.com/asset/?id=10921259953 Animation1\n275.9109 anim rbxassetid://114302219876492 Animation1\n275.9109 anim http://www.roblox.com/asset/?id=507768375 ToolNoneAnim\n276.0175 press F\n276.0809 hurt Slime\n276.1770 fx FxBurst\n276.2558 fx FxPop\n276.3247 fx FxPop\n276.3249 num 8\n276.9139 fx BlobShadow\n276.9141 fx BlobShadow\n276.9142 fx BlobShadow\n276.9638 fx FxBurst\n277.1733 fx FxBurst\n277.1894 press F\n277.2002 num -2\n277.2026 fx FxPop\n277.2033 fx FxPop\n277.2356 xp 52\n277.2363 beaten Slime\n277.4200 fx FxPop\n277.4689 fx FxPop\n277.5486 num +Jelly\n277.5490 fx FxBurst\n277.5492 num +6 G\n277.5493 num +14 XP\n277.5559 fx FxBurst\n277.5561 calm Slime\n277.8217 fx FxBurst\n277.9556 fx FxBurst\n277.9887 fx FxBurst\n278.1240 fx FxBurst\n278.4556 press F\n278.5003 hurt Slime\n278.6564 fx FxBurst\n278.6820 fx FxPop\n278.7324 fx FxPop\n278.9674 fx FxPop\n278.9677 fx FxPop\n278.9911 fx FxBurst\n279.6205 press F\n279.6642 xp 66\n279.8490 fx FxPop\n279.8567 fx FxBurst\n279.9005 fx FxPop\n279.9916 fx FxBurst\n279.9918 calm Slime\n280.3912 fx FxBurst\n280.8723 press F\n280.8743 fx BlobShadow\n280.8744 fx BlobShadow\n280.8745 fx BlobShadow\n280.8749 fx BlobShadow\n280.8750 fx BlobShadow\n280.8751 fx BlobShadow\n280.8754 fx BlobShadow\n280.8755 fx BlobShadow\n280.8756 fx BlobShadow\n280.9379 xp 8\n280.9391 fx FxRing\n280.9576 beaten Slime\n280.9604 anim http://www.roblox.com/asset/?id=10921262864 FallAnim\n281.0088 anim http://www.roblox.com/asset/?id=10921259953 Animation1\n281.0947 fx FxBurst\n281.1302 fx FxPop\n281.2007 fx FxPop\n281.2011 num 16!\n281.2746 fx BlobShadow\n281.2748 fx BlobShadow\n281.2749 fx BlobShadow\n281.2755 fx FxBurst\n281.2758 calm Slime\n281.2845 num +6 G\n281.2846 num +14 XP\n281.6706 fx FxBurst\n282.0484 press F\n282.2760 fx FxPop\n282.7178 fx FxBurst\n283.3147 press F\n283.3177 fx BlobShadow\n283.3178 fx BlobShadow\n283.3180 fx BlobShadow\n283.3817 hurt Slime\n283.4802 fx FxBurst\n283.5554 fx FxPop\n283.6220 fx FxPop\n283.6936 fx BlobShadow\n283.6937 fx BlobShadow\n283.6938 fx BlobShadow\n283.9202 num -2\n283.9221 fx FxPop\n283.9224 fx FxPop\n284.3215 fx FxBurst\n284.4901 press F\n284.5362 xp 22\n284.7192 fx FxPop\n284.7719 fx FxPop\n284.7724 num 8\n284.8514 fx FxBurst\n284.8518 calm Slime\n284.8605 num +6 G\n284.8608 num +14 XP\n284.8702 fx FxBurst\n284.9424 fx BlobShadow\n284.9425 fx BlobShadow\n284.9426 fx BlobShadow\n285.2637 fx FxBurst\n285.6652 fx FxBurst\n285.7637 press F\n285.8061 hurt Slime\n285.8402 anim http://www.roblox.com/asset/?id=10921262864 FallAnim\n285.8909 anim http://www.roblox.com/asset/?id=10921259953 Animation1\n285.9791 fx FxPop\n286.0471 fx FxPop\n286.4500 fx FxBurst\n286.9391 press F\n287.0001 hurt Slime\n287.0370 fx FxPop\n287.0374 fx FxPop\n287.1858 fx FxPop\n287.2382 fx FxPop\n288.2065 press F\n288.2493 hurt Slime\n288.4241 fx FxPop\n288.4950 fx FxPop\n288.4954 num 8\n288.5805 fx BlobShadow\n288.5807 fx BlobShadow\n288.5808 fx BlobShadow\n288.6185 fx FxBurst\n289.3555 num -2\n289.3576 fx FxPop\n289.3579 fx FxPop\n289.3631 press F\n289.4248 xp 13\n289.4417 fx FxRing\n289.6006 fx FxBurst\n289.6105 fx FxBurst\n289.6268 fx FxPop\n289.6855 fx FxPop\n289.6859 num 8\n289.7585 num +Jelly\n289.7589 fx FxBurst\n289.7591 num +60 G\n289.7592 num +40 XP\n289.7594 fx FxBurst\n289.7597 fx FxRing\n289.7672 fx FxBurst\n289.7676 calm Slime\n290.1628 fx FxBurst\n290.3419 fx FxBurst\n290.6339 press F\n290.6373 fx BlobShadow\n290.6376 fx BlobShadow\n290.6379 fx BlobShadow\n290.7016 hurt Slime\n290.8901 fx FxPop\n290.9438 fx FxPop\n290.9443 num 8\n291.0789 fx FxBurst\n291.8079 press F\n291.8272 fx FxBurst\n291.8529 xp 27\n292.0394 fx FxPop\n292.0893 fx FxPop\n292.0896 num 8\n292.1661 fx FxBurst\n292.1664 calm Slime\n292.1761 num +Jelly\n292.1767 fx FxBurst\n292.1769 num +6 G\n292.1770 num +14 XP\n292.5792 fx FxBurst\n293.0642 fx BlobShadow\n293.0644 fx BlobShadow\n293.0646 fx BlobShadow\n293.0651 fx FxBurst\n293.0849 press F\n293.1324 hurt Slime\n293.3175 fx FxPop\n293.3764 fx FxPop\n293.4455 fx BlobShadow\n293.4457 fx BlobShadow\n293.4458 fx BlobShadow\n293.7475 num -2\n293.7499 fx FxPop\n293.7504 fx FxPop\n293.8511 fx FxBurst\n294.2486 press F\n294.2962 xp 41\n294.4679 fx FxBurst\n294.4775 fx FxPop\n294.5328 fx FxPop\n294.5332 num 8\n294.6115 fx FxBurst\n294.6118 calm Slime\n294.6211 num +6 G\n294.6215 num +14 XP\n294.6289 fx FxBurst\n295.0224 fx FxBurst\n295.1782 fx FxBurst\n295.5367 press F\n295.5831 hurt Slime\n295.7573 fx FxPop\n295.8304 fx FxPop\n295.8309 num 8\n295.8759 fx BlobShadow\n295.8761 fx BlobShadow\n295.8762 fx BlobShadow\n295.8962 fx FxBurst\n296.0744 num -2\n296.0765 fx FxPop\n296.0768 fx FxPop\n296.7103 press F\n296.7745 xp 55\n296.9531 fx FxPop\n297.0243 fx FxPop\n297.0246 num 8\n297.0924 num +6 G\n297.0927 num +14 XP\n297.1019 fx FxBurst\n297.1024 calm Slime\n297.2390 fx FxBurst\n297.4953 fx FxBurst\n297.9828 press F\n298.0045 fx FxBurst\n298.0296 hurt Slime\n298.2142 fx FxPop\n298.2658 fx FxPop\n298.2662 num 8\n298.3301 fx BlobShadow\n298.3303 fx BlobShadow\n298.3303 fx BlobShadow\n298.4032 fx FxBurst\n298.8649 fx FxBurst\n299.1477 press F\n299.1906 fx FxBurst\n299.1913 fx FxBurst\n299.2179 xp 69\n299.3964 fx FxPop\n299.4510 fx FxPop\n299.5355 fx FxBurst\n299.5363 calm Slime\n299.5479 num +6 G\n299.5482 num +14 XP\n299.8995 fx FxBurst\n299.9375 fx FxBurst\n299.9717 fx FxBurst\n300.4235 press F\n300.4266 fx BlobShadow\n300.4268 fx BlobShadow\n300.4272 fx BlobShadow\n300.4879 hurt Slime\n300.6051 fx FxBurst\n300.6649 fx FxPop\n300.7330 fx FxPop\n300.7921 fx BlobShadow\n300.7922 fx BlobShadow\n300.7923 fx BlobShadow\n300.9969 fx FxPop\n300.9971 fx FxPop\n301.4695 fx FxBurst\n301.5894 press F\n301.6525 xp 83\n301.8482 fx FxPop\n301.9142 fx FxPop\n301.9898 fx FxBurst\n301.9901 calm Slime\n301.9983 fx FxBurst\n301.9988 num +6 G\n301.9991 num +14 XP\n302.2421 fx FxBurst\n302.3909 fx FxBurst\n302.8548 press F\n302.9148 hurt Slime\n303.0405 fx FxBurst\n303.0969 fx FxPop\n303.1487 fx FxPop\n303.2232 fx BlobShadow\n303.2233 fx BlobShadow\n303.2234 fx BlobShadow\n303.3444 num -2\n303.3465 fx FxPop\n303.3469 fx FxPop\n304.0255 press F\n304.0864 xp 97\n304.2597 fx FxPop\n304.3247 fx FxBurst\n304.3346 fx FxPop\n304.3350 num 17!\n304.4145 fx FxBurst\n304.4150 calm Slime\n304.8145 fx FxBurst\n305.1899 fx FxBurst\n305.2897 press F\n305.3329 hurt Slime\n305.5167 fx FxPop\n305.5680 fx FxPop\n305.6761 fx BlobShadow\n305.6764 fx BlobShadow\n305.6766 fx BlobShadow\n305.9084 fx FxPop\n305.9090 fx FxPop\n306.1374 fx FxBurst\n306.4552 press F\n306.5017 xp 111\n306.6755 fx FxPop\n306.7487 fx FxPop\n306.8241 fx FxBurst\n306.8245 calm Slime\n307.1404 fx FxBurst\n307.2137 fx FxBurst\n307.7357 press F\n307.7877 hurt Slime\n307.9408 fx FxBurst\n307.9694 fx FxPop\n308.0356 fx FxPop\n308.1089 fx BlobShadow\n308.1090 fx BlobShadow\n308.1093 fx BlobShadow\n308.7684 fx FxBurst\n308.9028 press F\n308.9489 xp 125\n309.0901 fx FxBurst\n309.1306 fx FxPop\n309.1803 fx FxPop\n309.1808 num 8\n309.2632 num +6 G\n309.2636 num +14 XP\n309.2720 fx FxBurst\n309.2724 calm Slime\n309.6757 fx FxBurst\n309.8543 fx FxBurst\n310.1606 press F\n310.2074 hurt Slime\n310.3894 fx FxPop\n310.4393 fx FxPop\n310.4397 num 8\n310.5326 fx BlobShadow\n310.5328 fx BlobShadow\n310.5331 fx BlobShadow\n310.6400 fx FxBurst\n311.3142 press F\n311.3423 num -2\n311.3446 fx FxPop\n311.3450 fx FxPop\n311.3771 xp 11\n311.3940 fx FxRing\n311.5517 fx FxBurst\n311.5696 fx FxPop\n311.6368 fx FxPop\n311.7121 fx FxBurst\n311.7124 calm Slime\n312.1070 fx FxBurst\n312.1780 fx FxBurst\n312.2465 fx FxBurst\n312.5889 press F\n312.5912 fx BlobShadow\n312.5914 fx BlobShadow\n312.5916 fx BlobShadow\n312.6525 hurt Slime\n312.8241 fx FxPop\n312.8926 fx FxPop\n312.9005 fx FxBurst\n312.9728 fx BlobShadow\n312.9731 fx BlobShadow\n312.9731 fx BlobShadow\n313.1236 fx FxBurst\n313.1345 fx FxPop\n313.1349 fx FxPop\n313.6139 fx FxBurst\n313.7528 press F\n313.8137 xp 25\n314.0039 fx FxPop\n314.0700 fx FxPop\n314.1106 fx FxBurst\n314.1451 fx FxBurst\n314.1456 calm Slime\n314.1557 num +6 G\n314.1561 num +14 XP\n314.5464 fx FxBurst\n314.8369 fx FxBurst\n315.0197 press F\n315.0854 hurt Slime\n315.2593 fx FxPop\n315.3259 fx FxPop\n315.3264 num 8\n315.4032 fx BlobShadow\n315.4033 fx BlobShadow\n315.4035 fx BlobShadow\n315.5739 fx FxBurst\n315.7571 fx FxBurst\n316.1922 press F\n316.2747 xp 39\n316.3563 fx FxBurst\n316.4556 fx FxPop\n316.5096 fx FxPop\n316.5166 fx FxBurst\n316.5886 fx FxBurst\n316.5890 calm Slime\n316.5990 num +6 G\n316.5993 num +14 XP\n317.0033 fx FxBurst\n317.2374 fx FxBurst\n317.2732 fx FxBurst",
+  "summary": {
+   "whoosh_ms": null,
+   "swing_ms": null,
+   "fx_ms": 166,
+   "hurt_ms": 64,
+   "num_ms": 299,
+   "burst_presses": 8,
+   "burst_hurts": 1,
+   "steady_beaten": 2,
+   "steady_s": 41.5
+  }
+ }
+]

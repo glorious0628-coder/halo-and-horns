@@ -153,9 +153,10 @@ function CodexUI.View(kind, card, faction, foil)
 	local zones = type(Config.Zones) == "table" and Config.Zones or {}
 	local zone = type(def.Zone) == "string" and zones[def.Zone] or nil
 	local zoneName = tostring(type(zone) == "table" and zone.Name or def.Zone or "")
-	-- 최종 검수 10/15 #7 (the next card to collect was not readable): a card not met says where it lives ("Found in:
-	-- Squishy Meadow") and its first goal ("Card at 1") on its front; nothing known about the zone = "Not met yet"
-	v.KillsText = known and tx("Kills", Util.FormatInt(kills)) or (zoneName ~= "" and tx("Where", zoneName) or tx("NotMet"))
+	-- 최종 검수 10/15 #7 (the next card to collect was not readable): a card not met says where it lives (the zone's
+	-- name - phone photo 10/15: "Found in: Squishy Meadow" was cut on the big card) and its first goal ("Card at 1") on
+	-- its front; nothing known about the zone = "Not met yet"
+	v.KillsText = known and tx("Kills", Util.FormatInt(kills)) or (zoneName ~= "" and zoneName or tx("NotMet"))
 	local steps = type(Config.CodexSteps) == "function" and Config.CodexSteps(kind) or {}
 	if not known then
 		v.NextText = steps[1] and tx("NextAt", tostring(stages[1] or ""), Util.FormatInt(steps[1])) or ""

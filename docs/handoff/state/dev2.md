@@ -1,11 +1,22 @@
-# 게임성 개발 2 — 상태 (2026-10-15 밤: 퀘스트 P1 ①~⑨ + 데이터 규격 + 귀속 + 매일 5개 끝 → 비교·병합 요청 대기)
+# 게임성 개발 2 — 상태 (2026-10-16 낮: 가지 여러 개 보고 → 다음 A23-212 Clatter)
+
+- **10/16 낮 (최신)**: 보고한 가지(최종 검수 병합 판단): dev2-bound-craft c89303ec(병합됨) → **dev2-bound-free 7a2cc27a**(A23-213: 귀속 재료 = 무기 포함 모든 제작 OK, 결과물 자유, 환불만 귀속), **dev2-reward-items 71541584**(④ Reward.Potion 실제 지급 + Reward.Items 여러 종류 + 미리보기 Icon; 개발 1 한 줄: Icon or Id), **dev2-stale-muts 61383c29**(③, reward-items 위; town_quests 349/349, tamer_research·gear_slots), dev2-pvp-safe 389e8503(병합됨, 붉은 구역 밖 PvP 0), **dev2-kaiju-cross 57f4646b**(A23-218 괴수 = 둘 다 교차로 또는 둘 다 붉은 구역), **dev2-daily12 03f21bee**(K 표 50/5·20/3·30/5·해골 50; 병합 보류 — 보상표 사용자 답 대기). 다음 순서: A23-212 Clatter(① 오프닝 1줄 ② 첫 10분 장면 3 + 마을용 Clatter 몸 ③ 상대 진영 비난 줄 삭제 ④ 보스 시작/승리 대사, 근거 build/codex/story_world_r5.md) → 개발 1 부탁 A23-211 서버 몫(MonsterService deathPop: 파티클·축소 삭제, CalmTime SlimeKing 1.8·CaptainClatter 2.2) → 장인 길드 최소판(계획 순서 3번). A23-216 숫자는 내 몫인지 최종 검수에 물음. 도구: Luau = C:/Users/glori/Tools/luau-0.740 (시험에 --luau), 새 worktree wt_bound·wt_rw·wt_daily.
+
+- **10/16 아침 (최신)**: 아래 1·2 끝 → **dev2-daily12 cf10e502**(53256460 위 1커밋) 최종 검수에 보냄. R 표 확정값, DH1·DR1 슬라임 6+표본 3, DN2·DC3 = 먼 곳 줍기(DN2Wood (640,80) ~610 studs, DC3Rests (1580,120) ~310 studs) + 그 물건 옆에서만 열리는 타이밍 3번(Obj.Spot), 소품 목록 고침. 시험: quest_data 통과, town_quests 1286/1286(돌연변이 324/327 = 옛 3개 그대로), story_text·quest_text·story_npcs 통과. CAPS에 개수 상한 없음(등급·골드만) 확인. 3번(장인 스위치)은 최종 검수 결정 기다림 — 장인 DN 3종 데이터 그대로.
+
+## 내일 아침 할 일 (10/15 밤 정리, 최종 검수 지시) — 1·2 끝(10/16)
+1. **매일 12종 수정**(가지 dev2-daily12 53256460 위에 커밋, ../wt_daily): 보상 = 최종 검수 수정 확정표(build/codex/daily_rewards_r1.md 반영) — DH2 HP Potion 1 · DH3 Oak Log 4 · DH1 Enh70 1 · DR3 MP Potion 1 · DR2 Jelly 10 · **DR1 Move70 1**(30% 아님) · DN3 Pet Treat 3 · DN1 Herb 10 · DN2 Glowcap 8 · DC1 Copper Ore 3 · DC2 Guard Tonic 2 · DC3 Moon Crystal 8, 골드 30/60/100/200은 **GoldN**(Gold는 사냥 단위라 틀림). 숫자는 Daily.luau 맨 위 R 표 한 곳. 난이도 상한(test_quest_data CAPS: Normal Item 개수 제한 없음? 확인) 맞는지 검사.
+2. **Hard는 실제로 어렵게**: DH1·DR1(Hard) = Slime 6 + 표본 3(또는 Prince 포함), DN1(Normal)은 지금 크기(Slime 3 + 표본 2). DN2(Hard)·DC3(Challenge) 수리 = 3회 + 이동 거리 길게. 소품 목록 docs/design/daily_props_2026-10-15.md도 같이 고침(표본 3 등).
+3. **제작 스위치 확인 결과(최종 검수에 이미 한 줄 보냄)**: Config.Features.Gathering·Crafting·Tonics·Research = false(빌드 스위치, Config 9879·9986·10155·10179), NeutralFaction = false → 베타 Live에서 꺼진 채. 장인 재료·간식·강장제 보상(Oak Log·Herb·Copper·Glowcap·Pet Treat·Guard Tonic)이 쓸모없음 + 장인 DN 3종은 Neutral 꺼져서 아무도 못 봄 → 최종 검수 답(켤지 / 보상 바꿀지) 따라 처리.
+4. 소품·Pip 배치 목록 파일은 있음(docs/design/daily_props_2026-10-15.md) → 수정 반영 후 최종 검수가 메인 반영 1에 넘김.
+5. 모험단 G0 = 10/20 기술 시험 뒤.
 
 ## 새 최종 검수에게 보낼 것 (인사 오면; 옛 최종 검수 local_5994bea0엔 보내지 않음)
 1. **병합 요청 dev2-quest-p1 = 1caa86aa** (en-apply d8a47d89 위; 개발 1 dev1-quest-p1 6628e52b가 이 가지 위). 전체 223 비교(a951cf8b 기준): 새로 깨진 4개(first_meetings·halo_text·town_npcs·war_intro) 고침(2cab4ba8), 원래 실패 26개 줄 단위 비교 = 진행 중(결과 여기 적기). 시간 초과(-9)는 부하 탓, 혼자 돌리면 통과.
 2. **질문**: M1_4가 등불로 바뀌며 옛 '안내자 보고' 대사(영웅 동상·용암 틈 설명, "More shards are out there. What will you do with the next one?")가 빠짐 — 옮길 곳(예: 1장 끝 안내자 한마디 / 도감 / 삭제)?
 3. 이미 보낸 것: dev2-en-apply d8a47d89, dev2-mut-fix 584e2629 (옛 최종 검수가 병합했는지 확인 필요).
 
-- **10/15 밤 (최신)**: 병합 대기 = **dev2-ch1-story 77c1f395**(1장 이야기 칸 r2+r4, 오프닝 자막, M3_3/M3_8, 배지 이름 docs/design/badges_2026-10-15.md, test_intro_seen 패턴 고침; ../wt_ch1) + **dev2-nudges-cut 8fe721cd**(서버 꺼진 알림 4개 코드째 삭제; ../wt_nudge). 병합됨 = ops-rehearsal(487071df 등). 남은 일: 매일 부탁 12종 정의(보상표·소품 자리 필요), Tutorial H00/R00/N00 이야기 칸(엔진 없음), H1/R1/N3 Offer 생기면 r2 2장 첫 사정 3줄, ⑦ 출시 알림(키·11/09), 모험단 G0(10/20 뒤). test_loot 돌연변이 4개 낡음(C2·bag, main도) → 최종 검수 답 대기. 스크래치 도구: sweep.py, only_mut.py(세션마다 다시). 지워도 되는 worktree: ../wt_swbase ../wt_swmerge ../wt_story ../wt_party ../wt_escort ../wt_ops2. 주의: worktree는 Game에서 `git worktree add ../wt_x`(-C Game 금지), sparse 패턴은 MSYS_NO_PATHCONV=1, 이스케이프 든 패치는 Write로 .py.
+- **10/15 밤 (최신)**: 병합 대기 = **dev2-ch1-finish c9a2762a**(M1_1 옛 Finish 삭제, 첫 임무 이야기 칸 Config.Tutorial.Story + QuestService TEACH.Story, test_loot 돌연변이 158/158; ../wt_ch1) + **dev2-daily12 53256460**(Shared/Quests/Daily.luau 12종, 보상 R 표 한 곳, Pip 임시 몸, 소품 목록 docs/design/daily_props_2026-10-15.md; ../wt_daily). 병합됨: ch1-story 77c1f395, nudges-cut 8fe721cd, ops-rehearsal. 남은 일: 소품 배치 = 메인 반영 1(최종 검수가 넘김), H1/R1/N3 Offer 생기면 r2 2장 첫 사정 3줄, ⑦ 출시 알림(키·11/09), 모험단 G0(10/20 뒤), GPT 경제 조정 오면 Daily.luau R 표. 스크래치 도구: sweep.py, only_mut.py(세션마다 다시). 지워도 되는 worktree: ../wt_swbase ../wt_swmerge ../wt_story ../wt_party ../wt_escort ../wt_ops2 ../wt_nudge. 주의: worktree는 Game에서 `git worktree add ../wt_x`(-C Game 금지), sparse 패턴은 MSYS_NO_PATHCONV=1, 이스케이프 든 패치는 Write로 .py, xargs -P는 중간에 멈출 수 있음(직접 & 루프).
 - **A23-208 이야기 칸 dev2-story-fields 498ae457**: 화면 몫(①Offer.Before ②Find 말풍선 ③Scene 몸짓 ④Next 줄·'!' 통통)은 개발 1이 받음(10/15 밤). 개발 1 세션 클리어 → 새 개발 1이 state/dev1.md 맨 위 ①~④로 이음. 내 쪽 할 일 없음, 화면 가지 나오면 서버 신호 맞는지만 확인.
 
 ## 가지 dev2-quest-p1 (worktree ../wt_p1) 내용

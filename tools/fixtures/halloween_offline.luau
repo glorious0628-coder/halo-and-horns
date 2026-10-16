@@ -2198,7 +2198,8 @@ runGroup("king-leave-visual", function()
 		function model:FindFirstChild(n) if n == "CustomVisual" and custom then return cv end return nil end
 		local hum = { Parent = true, WalkSpeed = 7 }
 		f.Before = os.clock()
-		pop({ Model = model, Root = root, Humanoid = hum, Def = CONFIG.MonsterTypes[opts.Kind or "PumpkinKing"], _scale = 1 },
+		pop({ Model = model, Root = root, Humanoid = hum, Kind = opts.Kind or "PumpkinKing",
+			Def = CONFIG.MonsterTypes[opts.Kind or "PumpkinKing"], _scale = 1 },
 			withParticles, leaving)
 		f.Model, f.Root, f.Mesh, f.Hitbox, f.Bar, f.Hum, f.RootData, f.Ghost = model, root, mesh, hitbox, bar, hum, rootData, ghost
 		return f
@@ -2209,22 +2210,32 @@ runGroup("king-leave-visual", function()
 	end
 	local kill = popRun(true, nil, { Kind = "Goblin" })
 	local kg = goalOf(kill, kill.Mesh)
-	check(kill.Model.Attrs.Leaving == nil and kill.Particles == 1 and kg and kg.Size and near(kg.Size.X, 1) and kg.Transparency == nil,
-		"a kill: the parts shrink to 0.2 with the particle burst and stay opaque (no fade)", show(kg))
+	check(kill.Model.Attrs.Leaving == nil and kill.Model.Attrs.CalmTime == nil and kill.Particles == 0 and kg == nil
+		and near(kill.Delays[1] or 0, 1.85, 1e-9),
+		"a kill (A23-211): no burst, no server shrink, opaque; the clients play the calm fade, removed at 1.85 s (+0.7 hit wait)", show({ kg, kill.Delays[1] }))
 	check(kill.RootData.Anchored == true and kill.Bar.Enabled == false and goalOf(kill, kill.Root) == nil,
 		"a kill: anchored on the spot, name bar off", show(kill.Log))
 	local slime = popRun(true, nil, { Kind = "Slime" })
 	local sh = goalOf(slime, slime.Hitbox)
-	check(goalOf(slime, slime.Mesh) == nil and sh and sh.Size and near(sh.Size.X, 0.6) and near(slime.Delays[1] or 0, 1.15, 1e-9),
-		"a killed slime: its CustomVisual keeps its size on the server (the clients splat it), its hidden parts shrink, removed at 1.15 s",
+	check(goalOf(slime, slime.Mesh) == nil and sh == nil and near(slime.Delays[1] or 0, 1.85, 1e-9),
+		"a killed slime: nothing resized on the server (the clients own the look), removed at 1.85 s",
 		show({ goalOf(slime, slime.Mesh), sh, slime.Delays[1] }))
 	local king = popRun(true, nil, { Kind = "PumpkinKing" })
-	check(goalOf(king, king.Mesh) == nil and king.Particles == 1, "a defeated Pumpkin King (slime shape) is splatted by the clients too",
-		show(goalOf(king, king.Mesh)))
+	check(goalOf(king, king.Mesh) == nil and king.Particles == 0 and king.Model.Attrs.CalmTime == nil,
+		"a defeated Pumpkin King: no burst, no resize, no CalmTime (not in Config.MonsterCalmTime)", show(goalOf(king, king.Mesh)))
+	local boss = popRun(true, nil, { Kind = "SlimeKing" })
+	local calmAt, anchorAt = table.find(boss.Log, "attr:CalmTime"), table.find(boss.Log, "anchor")
+	check(boss.Model.Attrs.CalmTime == 1.8 and calmAt and anchorAt and calmAt < anchorAt and near(boss.Delays[1] or 0, 2.65, 1e-9),
+		"King Slime (A23-211): CalmTime 1.8 set before the anchor, removed 0.8 s later than a monster (2.65 s)",
+		show({ boss.Model.Attrs.CalmTime, boss.Log, boss.Delays[1] }))
+	local clat = popRun(true, nil, { Kind = "CaptainClatter", Custom = false })
+	check(clat.Model.Attrs.CalmTime == 2.2 and near(clat.Delays[1] or 0, 3.05, 1e-9), "Captain Clatter: CalmTime 2.2, removed at 3.05 s",
+		show({ clat.Model.Attrs.CalmTime, clat.Delays[1] }))
+	local bossLeave = popRun(false, true, { Kind = "SlimeKing" })
+	check(bossLeave.Model.Attrs.CalmTime == nil, "a boss that leaves (not beaten) gets no CalmTime", show(bossLeave.Model.Attrs))
 	local bare = popRun(true, nil, { Kind = "Slime", Custom = false })
 	local bg = goalOf(bare, bare.Mesh)
-	check(bg and bg.Size and near(bg.Size.X, 1), "a slime without a custom model (procedural ball, no client splat) shrinks on the server",
-		show(bg))
+	check(bg == nil, "a slime without a custom model: no server shrink either (A23-211)", show(bg))
 	local leave = popRun(false, true)
 	local lg = goalOf(leave, leave.Mesh)
 	check(leave.Model.Attrs.Leaving == true and leave.Log[1] == "attr:Leaving" and leave.Log[2] == "anchor",
@@ -2241,9 +2252,8 @@ runGroup("king-leave-visual", function()
 	local kInfo, lInfo0 = nil, nil
 	for _, tw in kill.Tweens do if tw.Inst == kill.Mesh then kInfo = tw.Info end end
 	for _, tw in leave.Tweens do if tw.Inst == leave.Mesh then lInfo0 = tw.Info end end
-	check(kInfo and near(kInfo.Args[1], 0.3) and near(kInfo.Args[6] or 0, 0.75, 1e-9) and near(kill.Delays[1] or 0, 1.15, 1e-9),
-		"a kill: the body stays 0.75 s (the fall / splat shows), then shrinks in 0.3 s, removed at 1.15 s",
-		show({ kInfo and kInfo.Args, kill.Delays[1] }))
+	check(kInfo == nil and near(kill.Delays[1] or 0, 1.85, 1e-9),
+		"a kill (A23-211): the body stays its size for the clients' calm fade, removed at 1.85 s", show({ kInfo, kill.Delays[1] }))
 	check(lInfo0 and (lInfo0.Args[6] or 0) == 0, "leaving: the shrink starts at once (no hold)", show(lInfo0 and lInfo0.Args))
 	local faded = {}
 	for _, f in { kill, slime, king, bare, leave } do
@@ -2256,8 +2266,8 @@ runGroup("king-leave-visual", function()
 	local g = kill.Ghost
 	local kUntil, lUntil = g and g.Dying[kill.Model], leave.Ghost and leave.Ghost.Dying[leave.Model]
 	check(type(kUntil) == "number" and type(g.Grace) == "number" and g.Grace > 0 and g.Grace <= 2
-		and kUntil >= kill.Before + 1.15 + g.Grace - 1e-6 and kUntil <= os.clock() + 1.15 + g.Grace + 1e-6,
-		"a killed body is held from the ghost sweep until its destroy time (1.15 s) + grace", show({ kUntil and kUntil - kill.Before }))
+		and kUntil >= kill.Before + 1.85 + g.Grace - 1e-6 and kUntil <= os.clock() + 1.85 + g.Grace + 1e-6,
+		"a killed body is held from the ghost sweep until its destroy time (1.85 s) + grace", show({ kUntil and kUntil - kill.Before }))
 	check(type(lUntil) == "number" and lUntil >= leave.Before + (leave.Delays[1] or math.huge) + g.Grace - 1e-6,
 		"a leaving body is held until its later destroy + grace", show({ lUntil and lUntil - leave.Before, leave.Delays[1] }))
 end)
@@ -3739,7 +3749,7 @@ runGroup("main-debug", function()
 end)
 
 ------------------------------------------------------------------ 12. BatGoblin clips (MonsterAnims modules)
-local CLIP_SPEC = { Idle = { 32, true }, Walk = { 36, true }, Slash = { 31, false }, Hurt = { 16, false }, Fall = { 46, false } }
+local CLIP_SPEC = { Idle = { 32, true }, Walk = { 36, true }, Slash = { 31, false }, Hurt = { 16, false } }
 
 runGroup("clips", function()
 	local function load(name)

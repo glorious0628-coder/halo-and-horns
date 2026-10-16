@@ -1,5 +1,33 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/16 오후 (최신)
+- 병합됨: dev1-intro-clatter b402c29c(파트 Clatter, 칼 없음), 1~4번 가지 3개(fbe330c5).
+- **보고한 가지(병합 대기)**: dev1-calm-fade 25bc6c2d(개발 2 서버 가지 ①파티클 ②0.2 줄이기 삭제 ③CalmTime와 같이 병합), dev1-reward-icon 96e154e9(물약 Icon), dev1-craft-kinds 93b9399c(제작 창 Potion/Gear 줄, GearLook, 등급 Fine/Rare/Epic = 내 표시값), dev1-war-end a482e059(A23-216 ⑤: WarRoundEndsAt 앞으로 → 막대 균형 0.9초 → 두 표장 통통 → 2초 WarNext 종; Clatter 경례는 마을 몸 생길 때), fix/king-diary-jar f2b0a21f(지운 jar note 기대값).
+- 개발 2에 장면 바로 만들기(A23-218) 프리셋 부탁: Calm·OfferM1_3·WarEnd·Tutorial·Artisan → 오면 사진.
+- **다음**: 개발 2 Clatter 첫 10분 장면 3개 화면 몫(가지 오면 먼저), 그다음 최종 검수 지시.
+- 도구: scratchpad run1016.py(폰 사진)·calm1016.py(이 클라 뿌리 고정)·clatter1016.py(오프닝), PhoneTest_1015 창은 쓰고 나면 Stop-Process로 닫음(다른 프로젝트 ParcelPanic Studio는 건드리지 말 것).
+
+## 10/16 낮 — A23-211·212 (최신)
+- **dev1-calm-fade 25bc6c2d (보고함, 사진 main f9e6780 calm_fade/)**: Fx WOBBLE.calm(둥근 가루 → 통통·슬라임 0.88·부드러운 빛 → LocalTransparencyModifier 흐려짐, 0.92 × CalmTime(기본 1.0)), King Slime Bounce, Clatter Salute(절+앉음). 삭제: 슬라임 퍼짐, MonsterMotion Fall + *_Fall 5개, Audio DieOf + Config DeathByKind/Die*. test_calm_fade 16·11/11. **병합 = 개발 2 서버 가지(터지는 입자·0.2 줄이기 빼기, 보스 CalmTime)와 같이**(최종 검수).
+- **dev1-intro-clatter 862efdaf (화면 확인 신청함)**: 오프닝 1장면 = 파트 왕관 흔들림 → Clatter(CodexModels.CaptainClatter 복사) 파트 집게 → 쩍 → 팔 뻗음. Intro SCENE 표. test_intro_clatter 12·7/7. 사진 도구 scratchpad clatter1016.py (PhoneTest_1015, 합친 판 wt_dev1b dev1-check-clatter).
+- **큐(최종 검수 순서)**: Clatter 사진 확인·손보기 → 개발 2가 보낼 Clatter 첫 10분 장면 3개 화면 몫 → 제작 창 Potion/Gear 분기. ('무기 레시피 자유 재료만 세기'는 취소 — 귀속 재료로도 제작 가능.)
+
+## 10/16 아침 — 1~5 끝, 보고함 (최신)
+- **dev1-intro-cam 2b0839db**: 오프닝 자막 2 빛 마을 샷 카메라가 Halo_Gate 메시 속 → 문 안쪽 (SPOT.Halo+(14,12,44)→(5,6,28)).
+- **dev1-phone-cuts 822d78d3**: Mage 'Blast from far!', 전투력 줄 AutomaticSize XY, 폰 N 원판 ≥20, 직업 카드 폰(띄움 여백·Pick! 버튼 높이·칩 14px 실측 폭). 남음: PowerLine 측정 fits=false(box 76x17 bounds 76x16, 눈으로는 안 잘림; 상하 UIPadding 안 통함).
+- **dev1-tutorial-story 9b140237**: Fx StoryScene Id=Tutorial Find/Scene, 오토 Lines+Next 말풍선 + M1_1 통통, StoryNpcs.Body가 HHC_TownNpc(오토)도 찾음, Welcome 창 Before. test_story_fields_screen 61·19/19.
+- 폰 사진 main eb1337e docs/art/verification_2026-10-16/phone_1016/ (도구 scratchpad run1016.py, 합친 판 wt_dev1b dev1-check-1016 로컬).
+- **다음**: 제작 창 Potion/Gear 분기(build/codex/artisan_switch_r1.md: CraftWindow 163·191, 연금 AP1/AP2·방어구·반지, fixtures/craft_window_offline.luau:351 Gear 숨김을 성공으로 검사하는 것 고치기).
+
+## ▶ 내일 아침 할 일 (최종 검수 10/15 밤, 이 순서; 화면 사용은 최종 검수 '전달함, 시작' 뒤)
+1. **오프닝 카메라** (main 사진 docs/art/verification_2026-10-15/main_a1d06f69/844_f10_02): 자막 2 "Some grew halos…" 장면 카메라가 흰 조각상 안에 박혀 흐린 클로즈업 → Intro.luau 3장면(SPOT.Halo 샷, look(SPOT.Halo + Vector3.new(18,14,95)…))의 카메라 위치·경로만 조각상 피하게(최소 수정, 오프닝은 임시판).
+2. **'Blast from far!'**: phone_f10_03 마법사 카드 'Blast from far away!'가 'Blast from far'로 잘림 → Config ClassPicker Tag Mage = "Blast from far!" (dev1-easy-words 문구 되돌려 짧게).
+3. **폰 HUD 잘림**: 'Lv 1 · Power 0'(HUD.Stats.PowerLine)·미니맵 'N' 글자 잘림, 11~12px 작은 글(직업 카드 Paladin·Pick!·Best for beginners).
+4. **Tutorial 이야기 화면** (dev2 45fbdb32 / dev2-ch1-finish c9a2762a): Fx StoryScene {Id="Tutorial", Key="Find"|"Scene", Value, St = 단계 이름 "Teacher"/"Forge"}; 글 = Config.Tutorial.Story: Steps[St].Find[진영] = 그 단계 NPC 머리 위 말풍선(Teacher = 내 스승 Gleam/Rose, Forge = Otto), Scene = 그 NPC 몸짓, Steps.Forge.Lines[진영] = 무기 받은 뒤 오토 끝 대사 한 줄, Next[진영] = 예고 줄 + M1_1 '!' 통통, Before[진영] = 안내자 Welcome 창 맨 위 작은 기울임 한 줄(부탁 창과 같은 모양). 장인(Neutral)은 Teacher 없음(Forge만). StoryNpcs.Find/PlayScene/ExpectNext·Panels STORY.Before 재사용.
+5. **PhoneTest 폰 사진**: 위 1~4 + 1장 이야기 말풍선·폰 Before. 도구 = scratchpad phone_cards.py(start/probe/shot/fireshot/stop, STUDIO_NAME=PhoneTest_1015), build/PhoneTest_1015.rbxlx 복사본. MCP 캡처는 BillboardGui(말풍선)를 안 찍음 → 값(TextBounds·AbsoluteSize)으로 확인.
+6. 남은 큐.
+- 병합됨: dev1-codex-where c672eb17 (main bc0b5bf4). dev1-crown-mine 5d751602·dev1-friend-mark 6db57610도 main a1d06f69에 병합됨(최종 검수 확인). 작업 폴더 모두 깨끗(커밋 안 한 것 없음).
+
 ## 10/15 밤 (클리어 뒤 새 세션) — 1·2·3② 끝, 보고함
 - **dev1-nudges-cut aff7935e** (wt_kosweep): 꺼둔 클라 Nudges 11개 + 그림 코드 삭제(HUD.Hint 체계, QuestHead 줄, 길 Beam·이름표, TugSub, SackLore, WSHOP.Farewell…). test_nudges_gone 117·8/8. 스윕 72개 새 실패 0(attendance_ui·first_weapon_client·walk_forge_client·loot·halloween·a23_14 = main도). 옛 가지 dev1-first-hunt-hint 4681edff와 부딪힘(버릴 것). 서버 4개(GuideDone·DailyReady·EnteredSafe·WeaponUsableNow)는 개발 2에 넘김.
 - **dev1-story-screen f7761733** (wt_grip, dev2-story-fields + main fcee99b6): Before(Config.QuestBefore)·Find 말풍선(BarkBubble 4초, St, On=Self)·Scene 몸짓(SceneKeys 10개)·끝 줄 Config.QuestNext + 다음 부탁 NPC 통통. test_story_fields_screen 34·12/12. 폰 사진 = 실제 묶음 데이터 들어온 뒤.
@@ -8,7 +36,9 @@
 - **dev1-easy-words 80dcdcbc** (wt_kosweep): afar→far away, halved→cut in half, Pet Acc→Pet Gear.
 - **dev1-phone-cards 1d952866** (wt_dev1b): 폰에서 진영 카드 아래 3줄 숨김 + 혜택 좁으면 문구 한 줄 → 잘림 13→0(실측). 사진 main 7ef952f phone_cards/. 3③ 흰 네모 = 오프닝 하얀 조각(임시판, 손 안 댐).
 - 시험 Studio: build/PhoneTest_1015.rbxlx 복사본 + scratchpad phone_cards.py(start/probe/shot/stop, STUDIO_ID). 화면 사용은 최종 검수 '전달함, 시작' 뒤.
-- **다음**: 4번(닫힌 문 판자·투명 벽 울타리 → #1 → #7 → #11 → #8).
+- 4번 끝(10/15 밤): dev1-wall-edges·dev1-fail-spot(main 병합), dev1-codex-where **c672eb17**(빈 카드 앞면 = 지역 이름 + 'Card at 1'), dev1-crown-mine 5d751602(방패 톡 + 전쟁 창 My points), dev1-friend-mark 6db57610(먼 친구 머리 위 점). 문 판자 보류(최종 검수 동의).
+- 폰 확인(10/15 밤, PhoneTest): 이야기 말풍선 40줄 잘림 0, 부탁 창 Before 한 줄, 전쟁 창 OK. 사진 phone_cards/p3~p5. MCP screen_capture는 BillboardGui를 안 찍음(값으로 확인). wt_dev1b = dev1-check-all(로컬 합친 판, push 안 함).
+- **다음**: 최종 검수 다음 지시 / 메인 반영 1 메인 사진 결과 반영.
 - 습관: Bash 헤레독 안 `\\t`·`\b`가 바뀜 → 패치 스크립트는 Write로 파일 만들어 실행. 일부 시험 파일은 CRLF.
 
 ## ▶ 클리어 뒤 할 일 (최종 검수 local_cb4b05f8… 10/15 밤, 이 순서)

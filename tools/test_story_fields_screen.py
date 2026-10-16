@@ -35,7 +35,7 @@ if not BINARY.exists():
     BINARY = ROOT.parent / "Game/build/luau_cli_0_741/luau.exe"
 OUT = ROOT / "docs/art/verification_2026-10-15/offline_story_fields_screen_2026-10-15.json"
 
-NPC_FNS = ["StepFor", "SceneNpc", "AskerOf", "StepEnds", "EndLines", "SpeakerOf"]
+NPC_FNS = ["StepFor", "SceneNpc", "AskerOf", "StepEnds", "EndLines", "SpeakerOf", "TutorialNpc", "TutorialField", "TutorialEnd"]
 PANEL_FNS = ["WithNext", "Before"]
 
 FIXTURE = r'''
@@ -73,7 +73,14 @@ DEFS.D = { Steps = {
 		{ Npc = "Gleam", Obj = { Type = "Learn" }, Lines = { All = { "Sir Gleam: They'll wave when they see you now." } } },
 	},
 	Next = { Halo = { Id = "R", Line = "Sir Gleam: Bright wants that dust." } } }
-local env = { StoryNpcs = {}, STORY = {}, Config = { StoryQuests = { Defs = DEFS, Speakers = { Tiny = "Tiny", Gleam = "Sir Gleam" } } } }
+-- 10/16 the first mission's fields (Config.Tutorial.Story, St = the step NAME)
+local TUT = { Before = { Halo = "B halo" }, Steps = {
+		Teacher = { Find = { Halo = "T find halo", Horns = "T find horns" }, Scene = { Halo = "Wave", Horns = "Cheer" } },
+		Forge = { Find = { Neutral = "F find guild" }, Lines = { Halo = { "Otto: Gift halo." }, Neutral = { "Otto: Gift guild." } },
+			Scene = { Halo = "Nod" } } },
+	Next = { Halo = { Id = "M1_1", Line = "Hook halo." } } }
+local env = { StoryNpcs = {}, STORY = {}, Config = { StoryQuests = { Defs = DEFS, Speakers = { Tiny = "Tiny", Gleam = "Sir Gleam" } },
+	Tutorial = { Story = TUT }, Skills = { Learn = { Teachers = { Halo = "Gleam", Horns = "Smokey", Neutral = "Otto" } } } } }
 setmetatable(env, { __index = getfenv() })
 for _, src in SOURCES do
 	local f = assert(loadstring(src, "=cut"))
@@ -134,6 +141,20 @@ who, words = N.SpeakerOf("Neighbor: Wait!", "Folk1")
 check("SpeakerOf: an unknown name -> the step's Npc", who == "Folk1" and words == "Wait!")
 who, words = N.SpeakerOf("Neighbor: Wait!", nil)
 check("SpeakerOf: no NPC (On = Self) -> me, the whole line", who == nil and words == "Neighbor: Wait!")
+check("TutorialNpc: Teacher = my side's teacher, Forge = Otto", N.TutorialNpc("Teacher", "Halo") == "Gleam"
+	and N.TutorialNpc("Teacher", "Horns") == "Smokey" and N.TutorialNpc("Forge", "Horns") == "Otto")
+check("TutorialNpc: another step = nobody", N.TutorialNpc("Kill", "Halo") == nil and N.TutorialNpc(nil, "Halo") == nil)
+check("TutorialField: my side's Find", N.TutorialField("Teacher", "Find", "Horns") == "T find horns"
+	and N.TutorialField("Forge", "Find", "Neutral") == "F find guild")
+check("TutorialField: a side without it = nil", N.TutorialField("Forge", "Find", "Halo") == nil
+	and N.TutorialField("Nope", "Find", "Halo") == nil)
+local tl, tnx = N.TutorialEnd("Forge", "Halo")
+check("TutorialEnd: the Forge = Otto's Lines, then the hook", #tl == 2 and tl[1] == "Otto: Gift halo." and tl[2] == "Hook halo."
+	and tnx and tnx.Id == "M1_1", #tl)
+local gl, gnx = N.TutorialEnd("Forge", "Neutral")
+check("TutorialEnd: a side without a hook = the Lines only", #gl == 1 and gnx == nil)
+local el, enx = N.TutorialEnd("Teacher", "Halo")
+check("TutorialEnd: the Teacher step has no closing words or hook", #el == 0 and enx == nil)
 print(("STORY_SCREEN_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
@@ -172,6 +193,19 @@ STATIC = [
         "\t\tif type(entries) == \"table\" and #entries > 0 then pcall(StoryNpcs.WatchSteps, entries, me:GetAttribute(\"Faction\")) end\n",
         "\t\t\tif head and head:IsA(\"BasePart\") then pcall(StoryNpcs.Bubble, head, words, T.Story.Talk.Seconds) end\n",
         "\t\tif nx and type(nx.Id) == \"string\" then pcall(StoryNpcs.ExpectNext, nx.Id) end\n"]),
+    ("NPCS", "first mission: Fx StoryScene Id Tutorial reaches TutorialFind / TutorialScene", [
+        '\telseif key == "Find" and data.Id == "Tutorial" then',
+        "\t\treturn StoryNpcs.TutorialFind(data.St or value, me and me:GetAttribute(\"Faction\"))\n",
+        "\t\treturn StoryNpcs.TutorialScene(value, me and me:GetAttribute(\"Faction\"), data.St)\n"]),
+    ("NPCS", "first mission: the NPC moves, Otto says his words (no name), then the M1_1 asker's hop", [
+        "\tif m and type(scene) == \"string\" and type(SK) == \"table\" and SK[scene] then moved = StoryNpcs.Move(m, scene) end\n",
+        "\t\t\tlocal words = string.match(l, \"^[^:]+:%s*(.+)$\")\n",
+        "\tif type(nx) == \"table\" and type(nx.Id) == \"string\" then pcall(StoryNpcs.ExpectNext, nx.Id) end\n"]),
+    ("NPCS", "Body: a town body that is no quest NPC (Otto) by HHC_TownNpc", [
+        "m:GetAttribute(\"HHC_TownNpc\") == id and m:IsDescendantOf(workspace)"]),
+    ("PANELS", "Welcome window: the italic Before line at the top", [
+        '\t\tlocal b = addText(parent, before, { Name = "WelcomeBefore", Size = short and 16 or 18, Color = theme.SubText,',
+        "\t\tb.FontFace = Font.new(ff.Family, ff.Weight, Enum.FontStyle.Italic)\n"]),
     ("CONFIG", "the SceneKeys list (dev2)", ["Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,"]),
 ]
 MUTATIONS = [
@@ -195,6 +229,12 @@ MUTATIONS = [
     ("NPCS", "the speaker's name kept over the speaker", "if shown == name then return id, words end", "if shown == name then return id, line end"),
     ("PANELS", "no Before line", '\t\tlocal b = addText(parent, before, { Name = "OfferBefore", Size = 18, Color = theme.SubText })\n',
      '\t\tlocal b = Instance.new("TextLabel")\n'),
+    ("NPCS", "the hook after the Teacher step too", '\tlocal nx = st == "Forge" and type(story) == "table"', '\tlocal nx = type(story) == "table"'),
+    ("NPCS", "Otto's town body not found", "m:GetAttribute(\"HHC_TownNpc\") == id and m:IsDescendantOf(workspace)",
+     "m:GetAttribute(\"HHC_TownNpcX\") == id and m:IsDescendantOf(workspace)"),
+    ("NPCS", "the teacher by the other side", "and L.Teachers[faction] or nil", "and L.Teachers.Halo or nil"),
+    ("PANELS", "no Welcome Before line", '\t\tlocal b = addText(parent, before, { Name = "WelcomeBefore", Size = short and 16 or 18, Color = theme.SubText,',
+     '\t\tlocal b = addText(parent, "", { Name = "WelcomeBefore", Size = short and 16 or 18, Color = theme.SubText,'),
 ]
 
 

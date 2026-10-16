@@ -151,8 +151,26 @@ local function matsOf(r, items)
 	return list
 end
 
--- one recipe as the window shows it, or nil when it can't be shown (a material / result the client doesn't know; Gear
--- has no names yet, A23-133: those rows come with the gear data)
+-- (pure) a made gear's name / grade / stat line: "Armor II", the tier's grade (TXT.GearGrades), "HP +12%" and the
+-- level to wear it (player slots); nil for a slot / tier the client does not know. Gear has no icon art yet: the slot
+-- draws the name's first letter (Icon = "Gear<Slot>", no such art part)
+function CraftWindow.GearLook(slot, tier)
+	local def = type(Config.GearDef) == "function" and Config.GearDef(slot) or nil
+	tier = math.floor(num(tier, 0))
+	if type(def) ~= "table" or tier < 1 or tier > Config.Gear.MaxTier then return nil end
+	local slots = Config.ClientText.CharacterUI and Config.ClientText.CharacterUI.Slots or {}
+	local pct = Config.GearBonus(slot, tier, 0) * 100
+	local look = {
+		Name = tx(TXT, "GearName", tx(slots, slot), TXT.Tiers[tier] or tostring(tier)),
+		Grade = TXT.GearGrades[tier] or "Common",
+		Stat = tx(TXT.GearStat, def.Stat, string.format("%g", math.floor(pct * 10 + 0.5) / 10)),
+		Icon = "Gear" .. slot,
+	}
+	if Config.Gear.Slots[slot] and type(def.Wear) == "table" then look.Wear = math.floor(num(def.Wear[tier], 0)) end
+	return look
+end
+
+-- one recipe as the window shows it, or nil when it can't be shown (a material / result the client doesn't know)
 local function entryOf(id, r, ctx, lv, made)
 	if type(r.Mats) ~= "table" then return nil end
 	for item in r.Mats do
@@ -173,6 +191,19 @@ local function entryOf(id, r, ctx, lv, made)
 		e.Item, e.N = r.Item, math.max(1, math.floor(num(r.N, 1)))
 		e.Grade = (type(def.Grade) == "string" and Config.WeaponGrades[def.Grade]) and def.Grade or "Common"
 		e.Name, e.Icon, e.Color = tx(def, "Name"), r.Item, def.Color or gradeDef(e.Grade).Color
+	elseif r.Kind == "Potion" then
+		-- 장인 ⑤ (A23-178): HP / MP potions into the potion stock (Config.QuickSlots.Items: the potion's name and icon)
+		local qs = type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Items) == "table" and Config.QuickSlots.Items or {}
+		local def = type(r.Potion) == "string" and qs[r.Potion] or nil
+		if type(def) ~= "table" then return nil end
+		e.Potion, e.N, e.Grade = r.Potion, math.max(1, math.floor(num(r.N, 1))), "Common"
+		e.Name, e.Icon, e.Color = tx(def, "Name"), def.Icon, gradeDef("Common").Color
+	elseif r.Kind == "Gear" then
+		-- the smith's armor / ring, the tamer's pet gear (GearService); GPT review 10/16: they were left out of the list
+		local look = CraftWindow.GearLook(r.Slot, r.Tier)
+		if not look then return nil end
+		e.Slot, e.Tier, e.Grade, e.Stat, e.Wear = r.Slot, math.floor(num(r.Tier, 0)), look.Grade, look.Stat, look.Wear
+		e.Name, e.Icon, e.Color = look.Name, look.Icon, gradeDef(look.Grade).Color
 	elseif r.Kind == "Pet" then
 		-- a tamer's summon (개발 3 dev3-tamer): only while research is on; the pet's species gives the name and icon
 		local pets = type(Config.Pets) == "table" and type(Config.Pets.Species) == "table" and Config.Pets.Species or {}
@@ -323,6 +354,9 @@ function CraftWindow.Detail(e, ctx)
 					tone == "Good" and "Good" or (tone == "Bad" and "Bad" or "Sub"))
 			end
 		end
+	elseif e.Kind == "Gear" then
+		line(e.Stat)
+		if e.Wear and e.Wear > 1 then line(tx(TXT, "UseFrom", e.Wear), level >= e.Wear and "Sub" or "Bad") end
 	elseif e.Kind == "Pet" then
 		if e.Spd then line(tx(TXT, "PetSpeed", e.Spd[1], e.Spd[2])) end
 		line(tx(TXT, "ResearchNeed", CraftWindow.FamilyName(e.Family), Util.FormatInt(e.ResearchHave), Util.FormatInt(e.Research)),

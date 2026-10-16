@@ -87,7 +87,7 @@ MUTATIONS = [
     ("craft: Made dropped", C, "\tout.Made = V4.countMap(src.Made, L.MaxCount)\n", "\tout.Made = {}\n"),
     ("craft: Pend dropped", C, "\tif type(p) == \"table\" and V4.key(p.Id) then\n", "\tif false then\n"),
     ("craft: Pend Plus unclamped", C, "Plus = V4.int(p.Plus, -1, 2) or -1,", "Plus = V4.int(p.Plus, -math.huge, math.huge) or -1,"),
-    ("craft: Pend Mats as they are", C, "\t\t\tMats = V4.countMap(p.Mats, L.MaxCount) }\n", "\t\t\tMats = p.Mats }\n"),
+    ("craft: Pend Mats as they are", C, "\t\t\tMats = V4.countMap(p.Mats, L.MaxCount), Bound", "\t\t\tMats = p.Mats, Bound"),
     ("craft: Pend kept as a text", C, "\tif type(p) == \"table\" and V4.key(p.Id) then\n", "\tif type(p) == \"string\" then\n\t\tout.Pend = p\n\telseif type(p) == \"table\" and V4.key(p.Id) then\n"),
     ("research: Sum dropped", C, "Sum = V4.countMap(src.Sum, Config.SaveV4.MaxCount) }", "Sum = {} }"),
     ("gather: FirstBloom from any value", C, "\tlocal out = { FirstBloom = src.FirstBloom == true }\n", "\tlocal out = { FirstBloom = src.FirstBloom ~= nil and src.FirstBloom ~= false }\n"),

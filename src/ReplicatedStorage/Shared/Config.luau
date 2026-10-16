@@ -2761,6 +2761,9 @@ Config.Barks = {
 			Idle = { "Rattle~", "Tuesday?" },
 		},
 		CaptainClatter = { -- J: the captain nobody relieved (300 years on duty)
+			-- A23-212 (user 10/16): the friendly captain's match - his first line of a life and his line after a defeat
+			Start = { "Your turn, captain. Ready for a match?" },
+			Beaten = { "Good match! I need a sit-down." },
 			Spot = { "HALT!!", "Who's next?" },
 			Hit = { "CLATTER!", "Bones! Ow!" },
 			Low = { "Nap time…", "Off duty?" },
@@ -2879,6 +2882,10 @@ function Config.MonsterActive(kind, override)
 	local def = type(kind) == "string" and Config.MonsterTypes[kind] or nil
 	return type(def) == "table" and Config.SeasonOn(def.Season, override)
 end
+
+-- A23-211 (user 10/16, game dev 1's calm fade): a boss's calm moment before it fades (s; the model attribute CalmTime, the
+-- clients fit the fade to it, 0.6..3); every other kind = the 1.0 s default (no attribute)
+Config.MonsterCalmTime = { SlimeKing = 1.8, CaptainClatter = 2.2 }
 
 -- true for a seasonal kind that adds its Count on top of its zone instead of taking base slots (no Takes, e.g. the
 -- little ghost): MonsterService spawns it to its own Config.MonsterTargets target outside MonsterDensity.GlobalCap, so
@@ -3637,7 +3644,7 @@ Config.StoryQuests = {
 					Obj = { Type = "Near", Spot = "Fountain", Radius = 22, Zone = "Crossroads" } },
 				{ Text = "Talk to the Fountain Shard", Panel = true,
 					Lines = { All = {
-						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nHalos and Horns tell the same story. They just swap who did it.",
+						"I'm a Crown Shard, stuck in this fountain since the sky crown broke.\nClatter held it too tight. Now its shards are everywhere.",
 						"The sparkly dust you got from the pond slimes? That's crown dust.",
 						"Give the dust to the fountain: the world leans to the light.\nKeep it: it leans to the dark. What will you do?",
 					} },
@@ -3954,7 +3961,7 @@ Config.StoryQuests = {
 			Steps = {
 				{ Text = "Talk to Bright in Halo Citadel", Guide = "HaloTown", Npc = "Bright", Panel = true, Obj = { Type = "Talk" },
 					Lines = { All = { "The Horns are up to something! I need Form H-1.\nTo get Form H-1, I need Form H-0. …Can you just help?",
-						"They say a Horn broke the Crown. Everyone says so.\n…Who said so first?",
+						"Captain Clatter broke the Crown. He even said sorry.\nBut the Horns? Still up to SOMETHING.",
 						"Page 12 of my rulebook is missing. Don't look at me!\nThe Horns sneak past the woods with big sacks. Go take a look!" } } },
 				{ Text = "Spy by the woods' edge %d/%d s", Guide = "WoodsGate",
 					Obj = { Type = "Near", Spot = "WoodsGate", Radius = 14, Stay = 10 } },
@@ -3980,7 +3987,7 @@ Config.StoryQuests = {
 			Start = "Psst! Rose in Horns Den has a secret job for you.",
 			Steps = {
 				{ Text = "Talk to Rose in Horns Den", Guide = "HornsTown", Npc = "Smokey", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Psst! A Halo broke the Crown! My uncle's friend's cousin saw it!",
+					Lines = { All = { "Psst! The Halos have a secret plan! My uncle's friend's cousin saw it!",
 						"This gold spyglass? Found it. Gold is fine. For spying.\nPlan A: we spy. Plan B: same as Plan A, but sneakier!",
 						"The Halos whisper at the fountain. A secret plan!\nGo listen there. Look natural!" } } },
 				{ Text = "Listen at the fountain %d/%d s", Guide = "Fountain",
@@ -4007,7 +4014,7 @@ Config.StoryQuests = {
 			Start = "Tiny from the guild is taking notes. Find Tiny at the Crossroads!",
 			Steps = {
 				{ Text = "Talk to Tiny at the Crossroads", Guide = "Crossroads", Npc = "Tiny", Panel = true, Obj = { Type = "Talk" },
-					Lines = { All = { "Halos blame Horns. Horns blame Halos.\nNoted: nobody saw it.",
+					Lines = { All = { "Halos say Horns are plotting. Horns say Halos are.\nNoted: nobody checked.",
 						"Can you watch both bridges for me? Quietly." } } },
 				{ Text = "Watch the Halo bridge", Guide = "HaloBridge", Obj = { Type = "Near", Spot = "HaloBridge", Radius = 14 } },
 				{ Text = "Watch the Horns bridge", Guide = "HornsBridge", Obj = { Type = "Near", Spot = "HornsBridge", Radius = 14 } },
@@ -4520,7 +4527,7 @@ Config.StoryQuests.Defs.EG03 = {
 		{ Text = "Visit the goose", Obj = { Type = "Near", Spot = "GooseNest", Radius = 6 } },
 		{ Text = "Goose Fan", Panel = true, Obj = { Type = "Talk" },
 			Lines = { All = { "The Golden Goose has 0 followers. She has never been happier.",
-				"Also, she saw who broke the Crown. Honk." } } },
+				"She watched Clatter fix his hat. Honk." } } },
 	},
 	Reward = { Title = "GooseFan" },
 }
@@ -4720,6 +4727,23 @@ Config.StoryQuests.RepeatDailyMax = 5
 -- it is done: Fx StoryScene Key "Scene") is one of these (game dev 1 plays each one; a new one = a new row here first)
 Config.StoryQuests.SceneKeys = { Wave = true, Hop = true, Laugh = true, Bow = true, Cheer = true, Nod = true, Sparkle = true,
 	Spin = true, Hug = true, Clap = true }
+-- A23-212 (user 10/16, GPT build/codex/story_world_r5.md §4 B): Captain Clatter's three first-10-minute scenes (ClatterScenes;
+-- each once per character, that player only, no accept / trip / reward). Line = his one line (game dev 1 shows it over a LOCAL
+-- copy of ReplicatedStorage[Folder].ClatterTown), Move = what he does (game dev 1's move key), After = the quest step it
+-- follows (Sorry = the guide's [Accept] instead: TutorialStep leaves 0). Side / Ahead = studs right / along the line from
+-- the guide to the player (Sorry) or the player's facing; Stay = s he stays before he goes. Model = the ruins boss model
+-- (ServerStorage CustomModels) copied as the town body
+Config.StoryQuests.Clatter = {
+	Enabled = true, Model = "CaptainClatter", Folder = "StoryProps", Side = 6, Ahead = 3, Stay = 8,
+	Scenes = {
+		-- the first departure, beside the guide: he packs the repair tools, bows too deep, his hat covers his eyes
+		Sorry = { Line = "I broke the crown. I'm sorry. I'm here to help.", Move = "BowHatSlip" },
+		-- after the first Slime Prince: he catches a flying box upside down - and only his own hat
+		Hat = { Line = "Caught it! Oh. That's my hat.", Move = "CatchHat", After = { Quest = "M1_1", Type = "Kill" } },
+		-- after the first skill: he grips his box, then holds the handle right and salutes as the player goes first
+		Carry = { Line = "I'll carry this. You lead.", Move = "CarrySalute", After = { Quest = "M1_3", Type = "Learn" } },
+	},
+}
 -- phone limits of the story lines (characters, English): Offer.Before, a step's Find, Next.Line
 Config.StoryQuests.StoryLimits = { Before = 70, Find = 40, NextLine = 60 }
 
@@ -6789,9 +6813,6 @@ Config.Audio = {
 		HitArrowHeavy = "rbxassetid://111127770916206",
 		HitArrowCrit = "rbxassetid://83876322718434",
 		-- 검수 10/10: monster death sounds by kind (소리 15차 86cd4a69, slimes first)
-		DieSlime = "rbxassetid://105660948835844",
-		DieBigSlime = "rbxassetid://135159844685749",
-		DieFlowerSlime = "rbxassetid://108731319971001",
 		HurtBig = "rbxassetid://73666772845621",
 		KillPop = "rbxassetid://117802423144289",
 		ComboCoin = "rbxassetid://132925998560879",
@@ -6890,10 +6911,6 @@ Config.Audio = {
 		HitArrowHeavy = { File = "HitArrowHeavy", Volume = 0.36, Speed = { 0.90, 1.00 }, Max = 3, Gap = 0.06, Auto = true, Combat = true },
 		HitArrowCrit = { File = "HitArrowCrit", Volume = 0.38, Speed = { 1, 1 }, Max = 1, Gap = 1.5, Auto = true, Combat = true },
 		KillPop = { File = "KillPop", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		-- 검수 10/10: a monster kind's own death sound takes KillPop's place (Config.Audio.DeathByKind; same caps)
-		DieSlime = { File = "DieSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieBigSlime = { File = "DieBigSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
-		DieFlowerSlime = { File = "DieFlowerSlime", Volume = 0.40, Speed = { 0.95, 1.12 }, Max = 3, Gap = 0.05, Auto = true, Combat = true },
 		ComboCoin = { File = "ComboCoin", Volume = 0.29, Speed = { 1, 1 }, Max = 2, Gap = 0.06, Auto = true, Combat = true },
 		ComboMilestone = { File = "ComboMilestone", Volume = 0.45, Speed = { 1, 1 }, Max = 1, Gap = 1.0, Auto = true },
 		LevelUp = { File = "LevelUp", Volume = 0.85, Speed = { 1, 1 }, Max = 1, Gap = 2.0 },
@@ -6940,6 +6957,8 @@ Config.Audio = {
 		KingDefeat = { File = "KingDefeat", Volume = 0.65, Speed = { 1, 1 }, Max = 1, Gap = 10 }, -- B11 a king is beaten; contributors' KillPop + coin 0.25 s later
 		WarFinal30 = { File = "WarFinal30", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 60 }, -- B7 once per round at 30 s left (WarRoundEndsAt), faction set, joined > 30 s ago
 		CountTick = { File = "CountTick", Volume = 0.40, Speed = { 1, 1 }, Max = 1, Gap = 0.5 }, -- B7 3-2-1 before a reveal: SpeedMul 1.0 / 1.12 / 1.26
+		-- A23-216 ⑤: the next crown-war round's short bell (HUD L.RoundEnd) - the 30-s bell's file, higher and softer (0 won)
+		WarNext = { File = "WarFinal30", Volume = 0.35, Speed = { 1.25, 1.25 }, Max = 1, Gap = 30 },
 		GooseEnd = { File = "GooseEnd", Volume = 0.50, Speed = { 1, 1 }, Max = 1, Gap = 5 }, -- B3 Fx GooseEnd near the camera; the reward is GoldPickup 1.5 s later
 		-- A23-131 황금 알 줍기 (EggFx / Audio; design golden_egg §소리; files from 소리 만들기, "" until then = the stand-in in
 		-- brackets plays): others' egg sounds only within Config.GooseEggFx.SoundRange, Max / Gap keep 30 players quiet
@@ -6998,9 +7017,6 @@ Config.Audio = {
 	-- A23-113 ④ (user 2026-10-10): the attacker's class picks its hit family (<family>Soft / Heavy / Crit, once uploaded);
 	-- bare hands, the pet and a class not listed keep the material hits
 	HitByClass = { Warrior = "HitBlade", Mage = "HitMagic", Archer = "HitArrow" },
-	-- 검수 10/10: my kill's sound by the monster kind (the Reward packet's Kind, else the monster at its Pos); a kind not
-	-- listed or not uploaded keeps KillPop (goblin, skeleton, pumpkin, ghost follow in their zone turns)
-	DeathByKind = { Slime = "DieSlime", BigSlime = "DieBigSlime", FlowerSlime = "DieFlowerSlime" },
 	SoftKinds = { Slime = true, FlowerSlime = true, BigSlime = true, SlimeKing = true, PumpkinSlime = true, LittleGhost = true, GhostMinion = true, GhostKing = true },
 	-- typewriter voices (quality ②): speaker -> blip speed (the shard high and fast, the Horns guide low; Config story
 	-- Speaker ids Shard / Smith / Guild / Fountain)
@@ -8140,19 +8156,20 @@ Config.CustomModels = {
 ----------------------------------------------------------------- story (world flavor text only)
 Config.Story = {
 	-- plain lines (no format specifiers)
-	-- A23-55 / story_depth §0-1: the story everyone tells — someone greedy broke the Crown, each side blames the other. It
-	-- is only a rumor: A23-209 (user 10/15) Captain Clatter broke it by mistake (a clamp held it too still: CRACK), told in
-	-- act 2, never in chapters 1-5; so every line says "They say". Premise = the faction picker's premise panel (3 lines, GDD §1-1).
+	-- A23-212 (user 10/16, replaces A23-209's act-2 reveal): told from the start - Captain Clatter broke the Crown by mistake
+	-- (a clamp held it too still: CRACK) and is sorry; no other culprit, no line blames the other side. Rumor games about what
+	-- the other side is up to stay. Premise = the faction picker's premise panel (3 lines, GDD §1-1). Wording: GPT
+	-- build/codex/story_ch2_r1.md §5-2 (최종 검수 10/16)
 	Premise = {
-		"They say someone broke the Crown of Balance.",
+		"Captain Clatter broke the Crown of Balance.",
 		"Some who picked up its shards grew a halo. Others grew horns.",
-		"Now each side says the other did it.",
+		"Gather shards. Make their power your own.",
 	},
 	-- the opening (A23-44 remake) shows OpeningRumor 1-3, then Premise 2-3, then OpeningAsk (story_depth §2-1)
-	OpeningRumor = {
-		"They say the Crown kept the world in balance.",
-		"They say someone wanted it all to themselves.",
-		"\"If I can't have it, no one can!\" CRACK.",
+	OpeningRumor = { -- A23-212: the same three lines as Config.ClientText.Intro (no rumor any more; the key name stays)
+		"Captain Clatter broke the Crown of Balance.",
+		"Some grew halos. Others grew horns.",
+		"Gather shards. Make their power your own.",
 	},
 	-- The server opens Config.Tutorial.Welcome after the first class choice. Do not overlap it with old toasts.
 	Intro = {},
@@ -9226,8 +9243,8 @@ Config.TownReact = {
 		},
 		Evil = {
 			S6 = "The new kids keep calling you boss. Hmm…",
-			H1 = "Did you hear? The Horns are up to something!",
-			R1 = "The Halos have a secret plan! Everyone says so!",
+			H1 = "Your birthday plan has a very big ribbon!", -- A23-212 (story_ch2_r1 §5-3): no blame of the other side
+			R1 = "A grand birthday plan? Rose told it very loudly!",
 			H2 = "Is that our town lantern in your window?",
 			R5 = "Finders keepers! Rose is still looking, you know.",
 			H3 = "The cat is up the tree again. Was that you?",
@@ -10445,12 +10462,14 @@ function Config.SanitizeCraft(t)
 	out.Rep = V4.int(src.Rep, 0, L.MaxCount) or 0
 	out.Made = V4.countMap(src.Made, L.MaxCount)
 	-- Pend (CraftService, 게임성 검수 10/12): a craft paid and not delivered yet = { Id = recipe id, Plus = -1 (not hammered
-	-- yet) | 0..2, Gold = what was paid, Mats = { [item] = n } paid } (a vanished recipe pays it back); anything else = none
+	-- yet) | 0..2, Gold = what was paid, Mats = { [item] = n } paid, Bound = { [item] = n } of those that were bound (A23-206 /
+	-- A23-213: a refund gives them back bound; the result is never bound) } (a vanished recipe pays it back); anything else = none
 	known.Pend = true
 	local p = src.Pend
 	if type(p) == "table" and V4.key(p.Id) then
+		local bound = V4.countMap(p.Bound, L.MaxCount)
 		out.Pend = { Id = p.Id, Plus = V4.int(p.Plus, -1, 2) or -1, Gold = V4.int(p.Gold, 0, L.MaxCount) or 0,
-			Mats = V4.countMap(p.Mats, L.MaxCount) }
+			Mats = V4.countMap(p.Mats, L.MaxCount), Bound = next(bound) ~= nil and bound or nil }
 	end
 	return V4.keepExtra(src, out, known)
 end
@@ -11170,6 +11189,11 @@ Config.ClientText.CraftWindow = {
 	Spare = "In your bag ×%d",
 	SpareOwned = "You already have this weapon.",
 	Use = "Use it",
+	-- GPT review 10/16 (artisan switch r1): the gear recipes in the list - name "<slot> <tier>", the tier's grade, its stat
+	GearName = "%s %s",
+	Tiers = { "I", "II", "III" },
+	GearGrades = { "Fine", "Rare", "Epic" },
+	GearStat = { Hp = "HP +%s%%", Atk = "Attack +%s%%", PetXP = "Pet XP +%s%%", PetSpeed = "Pet speed +%s%%" },
 }
 Config.ClientText.MarketWindow = {
 	Title = "Market",
@@ -11242,8 +11266,8 @@ Config.ClientText.EventHUD = {
 }
 Config.ClientText.FirstSteps = { Travel = "Off to %s!", Count = "%s  %d", Place = "the meadow", Forge = "the Forge" }
 Config.ClientText.Intro = {
-	Lines = { -- A23-209 (user 10/15)
-		"The Crown of Balance broke.",
+	Lines = { -- A23-209 (user 10/15); line 1 = A23-212 (user 10/16): the culprit is told from the start
+		"Captain Clatter broke the Crown of Balance.",
 		"Some grew halos. Others grew horns.",
 		"Gather shards. Make their power your own.",
 	},
@@ -11375,7 +11399,7 @@ Config.ClientText.ClassPicker = {
 	ChooseShort = "Pick!", -- the A23-57 frames' button band is narrow
 	-- the A23-57 frames' body holds one short line above the stat bars (the full Desc does not fit there)
 	-- final review 10/14 phone photo: "Smash all around!" broke onto a hidden second line at the phone text floor
-	Tag = { Warrior = "Smash up close!", Mage = "Blast from far away!", Archer = "Two arrows, fast!" },
+	Tag = { Warrior = "Smash up close!", Mage = "Blast from far!", Archer = "Two arrows, fast!" },
 	Wait = "One moment...",
 	Recommend = "Best for beginners",
 	-- 그림체 #42 (검수 2026-10-08): the cards show class outfits; players wear their own avatar until those come

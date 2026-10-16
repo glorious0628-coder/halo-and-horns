@@ -1402,6 +1402,16 @@ BUILDERS.Welcome = function(parent)
 	local cam = workspace.CurrentCamera
 	local short = cam ~= nil and cam.ViewportSize.Y < 520
 	local face = short and 64 or 170
+	-- A23-208 (first mission, Config.Tutorial.Story.Before): what is going on, one small italic line at the top - the
+	-- Offer window's look
+	local story = type(Config.Tutorial) == "table" and Config.Tutorial.Story or nil
+	local before = type(story) == "table" and type(story.Before) == "table" and story.Before[faction] or nil
+	if type(before) == "string" and before ~= "" then
+		local b = addText(parent, before, { Name = "WelcomeBefore", Size = short and 16 or 18, Color = theme.SubText,
+			Align = Enum.TextXAlignment.Center })
+		local ff = b.FontFace
+		b.FontFace = Font.new(ff.Family, ff.Weight, Enum.FontStyle.Italic)
+	end
 	local portraitRow = addRow(parent, face, 0)
 	portraitRow.Name = "WelcomePortrait"
 	if UIKit and type(UIKit.ArtImage) == "function" then
@@ -3275,7 +3285,8 @@ function STORY.PayloadReward(r)
 	if n(r.XP) > 0 then table.insert(out, { Icon = "IconExp", N = n(r.XP) }) end
 	for _, it in type(r.Items) == "table" and r.Items or {} do
 		if type(it) == "table" and type(it.Id) == "string" and it.Id ~= "" then
-			table.insert(out, { Icon = it.Id, N = math.max(1, n(it.N)) })
+			-- dev2-reward-items (10/16): an item row may carry its icon key (potions: IconPotionHP / MP; the Id "HP" has none)
+			table.insert(out, { Icon = (type(it.Icon) == "string" and it.Icon ~= "") and it.Icon or it.Id, N = math.max(1, n(it.N)) })
 		end
 	end
 	if n(r.BagSlots) > 0 then table.insert(out, { Icon = "IconBag", N = n(r.BagSlots) }) end

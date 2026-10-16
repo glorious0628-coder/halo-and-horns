@@ -252,10 +252,10 @@ function PvPService.ScalePoints(points, mult)
 	return whole
 end
 
--- addendum A10-V3-3: inside a PvP zone, or combat-tagged (Config.PvP.CombatTagTime) anywhere outside a town
--- (Outskirts, bridges, safe hunting land), so a fight or a sack chase does not end at a zone edge
+-- A23-203 (user 10/15, 최종 검수 10/16 - GPT gameplay_r1 bug ①): danger only inside a red PvP zone. A combat tag no longer
+-- carries a fight out into the Outskirts / bridges / safe hunting land (was addendum A10-V3-3): outside = no PvP hit
 local function inPvP(p)
-	return S.ZoneService.IsPvPZone(p) or (not S.ZoneService.IsTown(p) and S.CombatService.IsInCombat(p))
+	return S.ZoneService.IsPvPZone(p) == true
 end
 
 local function rootPos(p)
@@ -368,6 +368,14 @@ local function inFactionTown(p)
 	if type(zs) ~= "table" or type(zs.GetZone) ~= "function" then return false end
 	local ok, zone = pcall(zs.GetZone, p)
 	return ok and type(zone) == "table" and zone.Town == true and zone.Faction ~= nil
+end
+
+-- A23-218: true while p stands in the Crossroads (the town without a faction)
+local function inCrossroads(p)
+	local zs = S and S.ZoneService
+	if type(zs) ~= "table" or type(zs.GetZone) ~= "function" then return false end
+	local ok, zone = pcall(zs.GetZone, p)
+	return ok and type(zone) == "table" and zone.Town == true and zone.Faction == nil
 end
 
 -- ⑤ a soft outline in the faction color (no fill, hidden behind walls) while protected, outside the towns (#42).
@@ -609,10 +617,12 @@ function PvPService.CanAttack(attacker, victim)
 	if PvPService.AreFriends(attacker, victim) then
 		return false, "Friend"
 	end
-	-- kaiju exception: Halo may hit the Active kaiju in any zone (rookies allowed, protection ignored), except from inside
-	-- a faction town (user 2026-10-10, 빛 마을 점검 #41: Halo Citadel / Horns Den are no fortress; the Crossroads fight
-	-- stays). From a faction town the normal rules below answer (a town is a safe zone).
-	if fa == "Halo" and kstate(victim) == "Active" and not inFactionTown(attacker) then
+	-- kaiju exception (A23-218, user 10/16, with A23-203 "danger only in a red zone"): Halo may hit the Active kaiju
+	-- (rookies allowed, protection ignored) where both stand in the Crossroads (the knights calm it there) or both inside a
+	-- red PvP zone - never from a faction town (#41) and never in the safe hunting land. The kaiju itself hurts nobody in
+	-- the Crossroads: it is no PvP zone, so the normal rules below answer
+	if fa == "Halo" and kstate(victim) == "Active" and not inFactionTown(attacker)
+		and ((inCrossroads(attacker) and inCrossroads(victim)) or (inPvP(attacker) and inPvP(victim))) then
 		return true, nil
 	end
 	if not inPvP(attacker) or not inPvP(victim) then

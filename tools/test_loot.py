@@ -411,7 +411,7 @@ MUTATIONS = [
      "local dmg = Config.WeaponDamage(tier, level, 0)"),
     # --- A23-206 bound quest rewards
     ("A23-206: rewards not bound", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", false)\n"),
-    ("A23-206: the market takes bound ones", "LOOT_SOURCE", "\tif mode == \"Trade\" and have - before < n then return false end\n", ""),
+    ("A23-206: the market takes bound ones", "LOOT_SOURCE", "\tif freeOnly and have - before < n then return false end\n", ""),
     ("A23-206: a use takes free ones first", "LOOT_SOURCE", "\t\tBOUND.Used(data, id, n, before)\n\tend\n\tpublish(player, data)", "\t\tBOUND.Set(data, id, math.min(before, math.floor(num(data.Items[id]))))\n\tend\n\tpublish(player, data)"),
     ("A23-206: the Forge sells bound ones", "LOOT_SOURCE", "\tif BOUND.Free(data, id) < n then notify(player, TXT.SellBound or TXT.SellItemNone, \"bad\"); return end\n", ""),
     ("A23-206: the sell-all sells bound ones", "LOOT_SOURCE", "\t\t\tlocal bound = BOUND.Of(data, id) -- A23-206: bound ones stay\n", "\t\t\tlocal bound = 0\n"),

@@ -242,8 +242,9 @@ BUTTONS = {}
 REGISTERED.Diary.Build(root, kit, { Tab = "Jar" })
 body = root:FindFirstChild("Body")
 all = table.concat(texts(body), "\n")
-check("the jar: my candy (Panels' cache), the note, both titles", all:find("Your candy: 33", 1, true) and all:find("Pumpkin Pal", 1, true)
-	and all:find("Candy Keeper", 1, true) and all:find("Titles are just for fun", 1, true), all:sub(1, 80))
+-- A23-191 (10/15): the jar's "Titles are just for fun" note is gone (no explaining lines) - it must stay gone
+check("the jar: my candy (Panels' cache), both titles, no note", all:find("Your candy: 33", 1, true) and all:find("Pumpkin Pal", 1, true)
+	and all:find("Candy Keeper", 1, true) and not all:find("Titles are just for fun", 1, true), all:sub(1, 80))
 local tradeBtns = {}
 for _, b in BUTTONS do if b.Text == "Trade" then table.insert(tradeBtns, b) end end
 check("an owned title shows 'Owned', the other a [Trade] that is off (33 < 200)", #tradeBtns == 1 and ENABLED[tradeBtns[1]] == false

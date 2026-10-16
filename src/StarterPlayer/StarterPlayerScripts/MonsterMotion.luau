@@ -3,8 +3,8 @@
 -- tools/glb_anim_to_luau.py in ReplicatedStorage.MonsterAnims ("<MonsterKind>_<Clip>"), so no Roblox animation asset
 -- upload is needed. Only monsters near the camera move. Unrigged monsters keep Fx's procedural wobble.
 --   moving -> Walk (loop, played as fast as the monster really walks; Run at its chase pace), still -> Idle (loop)
---   with one LookAround now and then, attack -> Slash once, HurtSeq bump -> Hurt once, dying (anchored root) -> Fall
---   once, faster, and hold the last frame (Leaving = Idle). Changes cross-fade over BLEND seconds.
+--   with one LookAround now and then, attack -> Slash once, HurtSeq bump -> Hurt once, beaten (anchored root) -> Idle
+--   (A23-211: no fall; Fx WOBBLE.calm relaxes and fades it). Changes cross-fade over BLEND seconds.
 -- Monster motion review 2026-10-06 (docs/design/monster_motion_survey_2026-10-06.md 4-1): every attack restarts Slash
 -- (it used to freeze on its last frame when two attacks came back to back); Slash starts at the wind-up (WindupAt) and
 -- skips its first part so the clip's fastest frame (HitTime) lands on the impact (wind-up end) instead of ~1.1 s after
@@ -21,14 +21,12 @@ local M = {
 	Range = 130, -- studs from the camera
 	Blend = 0.15,
 	HurtMax = 0.6, -- a hit reaction never plays longer than this
-	FallRate = 1.8, -- the fall plays this much faster (the server keeps the body ~1.1 s: MonsterService DEATH)
-	FallImpactAt = 0.5, -- s after death when the fall's fastest frame (hitting the ground) shows
 	WalkRate = { Min = 0.45, Max = 1.5 }, -- Walk / Run speed = real flat speed / the kind's chase Speed, clamped
 	RunAbove = 0.75, -- at this share of the chase Speed or more it runs (Run clip, ab7e7a5); a wander walks at half
 	LookEvery = { 6, 12 }, -- s between two LookAround clips of a standing monster (its own rhythm)
 	Jitter = 0.08, -- each monster's loops run +-8% faster / slower
 	SlashFresh = 1.2, -- s: an AttackSeq this soon after a seen wind-up belongs to that wind-up (no restart)
-	Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt", "Fall" },
+	Clips = { "Idle", "Walk", "Run", "LookAround", "Slash", "Hurt" },
 	Cache = {}, -- ["Goblin_Walk"] = clip table | false
 	State = {}, -- [model] = per-monster state
 }
@@ -207,12 +205,7 @@ local function step(dt)
 				local v = st.Root.AssemblyLinearVelocity
 				local flat2 = v.X * v.X + v.Z * v.Z
 				if st.Root.Anchored then
-					-- dying: fall (faster); an event monster going home (Leaving) floats away calmly instead
-					if model:GetAttribute("Leaving") == true then
-						want = "Idle"
-					else
-						want, once, rate = "Fall", true, M.FallRate
-					end
+					want = "Idle" -- beaten (A23-211: it relaxes, Fx WOBBLE.calm) or going home (Leaving): calm
 				elseif now < st.AttackUntil then
 					want, once, rate = "Slash", true, 1
 					st.LookUntil = 0
@@ -240,9 +233,6 @@ local function step(dt)
 				if clip then
 					if want == "Slash" then
 						play(st, want, once, clip, st.SlashToken, st.SlashFrom)
-					elseif want == "Fall" then
-						-- skip the start so the body hits the ground FallImpactAt s after death, before the fade
-						play(st, want, once, clip, nil, math.max(0, M.HitTime(clip) - M.FallImpactAt * M.FallRate))
 					else
 						play(st, want, once, clip, nil, nil)
 					end

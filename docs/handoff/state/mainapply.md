@@ -1,5 +1,8 @@
 # 메인 반영 1 — 인계 상태
 
+## 내일: 10/16 게시판
+- 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P. (10/15 밤 상태: Studio 창 GoodEvil 열림, Edit·Play 없음·저장 X, main 45fbdb32 sync 완료. 10/15 캡처 막힘 원인 = 업데이트 전 Studio로 연 것 → 재오픈으로 해결. 사진 = docs/art/verification_2026-10-15/main_a1d06f69/. 강제 종료(Stop-Process)는 권한 거부됨 — 창 닫기는 사용자 몫.)
+
 ## 10/15 04:30 게시판 4 저장 (사용자가 새벽에 직접 Save to File As)
 - build/GoodEvil.rbxlx = place/GoodEvil.rbxlx = 10/15 04:30:59, 45,059,343 B, SHA256 56145ea1…bb98. 소스 178개 일치(main 856a8540, 그 뒤 src 변경 없음), 거위 광장 Model 자식 23, 임시 시험 개체 0, 끝 `</roblox>`. 앞 판(10/14 20:22)을 새 판으로 덮음. 다음 = 사용자 Alt+P.
 - Studio: 10/15 00:20 시점 열려 있었음(Edit·미저장·Play 없음), PC 재시작 뒤엔 닫혀 있을 수 있음. 컴퓨터 제어 허락은 이전 설치 경로 Studio에만 걸려 있고 새 경로(packages\claude_…)는 사용자가 거부 → Save As는 계속 사용자 몫.

@@ -42,7 +42,15 @@ COUNT_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "WarPoin
 # bible §3 '유형은 주로 하는 행동': the main action of a quest (Type)
 QUEST_TYPES = {"Combat", "Skill", "Gather", "Craft", "Sell", "Investigate", "Recover", "Deliver", "Repair", "Install", "Escort",
                "Rescue", "Defend", "Claim", "Boast", "Prank", "Command", "Lure", "Tame", "Choice", "Display", "Test", "Visit"}
-REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet"}
+REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "Items", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet"}
+
+
+def reward_ids(reward: dict) -> list:
+    """every item id a reward pays (StoryQuestService rewardItems, 10/16): Item or Potion, then Reward.Items = { { Id, N } }"""
+    ids = [reward.get("Item") or reward.get("Potion")] if (reward.get("Item") or reward.get("Potion")) else []
+    for row in arr(reward.get("Items")):
+        ids.append(row.get("Id") if isinstance(row, dict) else None)
+    return ids
 # A23-207 (user 10/15) the harder, the better the reward: what each difficulty may pay at most (items by tier; Gold / XP in hunt
 # units, GoldN exact gold, XPBar a share of the level's bar), and what Hard / Challenge must pay at least
 DIFFICULTIES = ("Easy", "Normal", "Hard", "Challenge")
@@ -201,6 +209,13 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
                     add("reward-key", i, f"Reward.{k} is not a known reward")
             if reward.get("Item") is not None and reward.get("Item") not in items:
                 add("reward-item", i, f"Reward.Item {reward.get('Item')} is no item")
+            if reward.get("Items") is not None and not arr(reward.get("Items")):
+                add("reward-item", i, "Reward.Items is a list of { Id, N }")
+            for row in arr(reward.get("Items")):
+                n = row.get("N", 1) if isinstance(row, dict) else None
+                if not isinstance(row, dict) or row.get("Id") not in items or not isinstance(n, (int, float)) \
+                        or n != int(n) or not 1 <= n <= 99:
+                    add("reward-item", i, f"Reward.Items row {row} is no {{ Id = item / potion, N = 1..99 }}")
             if any(STAT_WORDS.search(str(k)) for k in reward):
                 add("reward-stat", i, "a reward sells a stat (A23-75)")
         if is_pack:
@@ -209,8 +224,10 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
                 add("difficulty", i, f"Difficulty {diff} is not Easy / Normal / Hard / Challenge (A23-207)")
             elif isinstance(reward, dict):
                 tier_max, units, gold_n, bar, special = CAPS[diff]
-                item = reward.get("Item") or reward.get("Potion")
-                tier = ITEM_TIER.get(item, 1) if item else -1
+                ids = reward_ids(reward)
+                tiers = [ITEM_TIER.get(x, 1) for x in ids]
+                tier = max(tiers) if tiers else -1
+                item = ids[tiers.index(tier)] if tiers else None
                 if tier > tier_max:
                     add("difficulty-reward", i, f"{diff} pays {item} (a tier-{tier} item: too good for it)")
                 if max(reward.get("Gold") or 0, reward.get("XP") or 0) > units or (reward.get("GoldN") or 0) > gold_n \
@@ -329,7 +346,8 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
         if not r:
             add("repeat-reward", i, "a repeat request pays something (A23-206)")
             continue
-        sig = r.get("Item") or r.get("Potion") or ("Gold" if r.get("Gold") or r.get("GoldN") else "XP")
+        # a bundle (Reward.Items, 10/16) = its whole set of kinds, so two bundles differ when their sets differ
+        sig = "+".join(sorted(str(x) for x in reward_ids(r))) or ("Gold" if r.get("Gold") or r.get("GoldN") else "XP")
         if sig in seen:
             add("repeat-reward-same", i, f"pays {sig} like {seen[sig]} (A23-206: every repeat a different kind)")
         seen[sig] = i
