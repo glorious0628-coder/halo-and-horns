@@ -1,0 +1,21 @@
+0 pick: picked main= st=None p=None claim=None offers=
+A scene: ok: Horns, Lv8, M1_4:3
+A main=M1_4 st=3 p=0 claim=False offers=Smokey,Tiny
+A1 go: at Smokey
+A1 Smokey: prompt TalkPrompt enabled=true key=G | mark=true sign=? | at=(-18,3,424)
+A1 window: panel=false [] | (no window)
+A1 no window on the first G - again
+A1b go: at Smokey
+A1b Smokey: prompt TalkPrompt enabled=true key=G | mark=true sign=? | at=(-18,3,424)
+A1b window: panel=true ['Close', 'TypeTap', 'StoryNext', 'StoryLater'] | Title:Magpie · A Light for the Lamp / StoryLine:Rose: Look at that! / StoryPage:1 / 2 / Label:Next / Label:Got it / Label:Later
+A2 after the talk: main=M1_4 st=3 p=0 claim=True
+A2 claim try 1 Players.Darugi_S2.PlayerGui.MainGui.HUD.QuestTracker clicked LocalPlayer.PlayerGui.MainGui.HUD.QuestTracker
+A3 chapter 1 done: main= st=None p=None claim=None offers=Kit,Rex,Smokey,Tiny
+B1 Smokey: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(-18,3,424)
+B1 rows: screen:Text='Talk to Rose' vis=true gui=MainGui(true) ; screen:Goal='Talk to Rose.' vis=true gui=MainGui(true)
+B1 marker: marker gui=true vis=false pos=(0,-58) dist=''
+B2#1 go: at Smokey
+B2#1 Smokey: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(-18,3,424)
+B2#1 window: panel=true ['Close', 'TypeTap', 'OfferAccept', 'OfferDecline'] | Title:Rose · The Crown in the Sky / OfferBefore:Dust made the old cleaners add my grand ribbon to their pile! / OfferLine:Rose: Will you stop the fuss and help our crown shine? / N:+36 / Label:Next / Label:Sure! / Label:Not now
+B2 -> OfferAccept clicked LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Content.Row.OfferAccept
+B2 after Accept: OfferAccept main=M2_1 st=1 p=0 claim=False offers=Kit,Rex,Smokey,Tiny

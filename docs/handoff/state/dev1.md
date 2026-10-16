@@ -1,6 +1,12 @@
 # 게임성 개발 1 — 인계 상태
 
-## 10/16 밤 3 — ▶ 큐 맨 앞 (최종 검수 local_cb4b05f8…, 최신)
+## 10/16 밤 4 — 0·1번 끝, 보고함 (최신)
+- 0번 2장 누름 확인 **통과**(빛·뿔): M1_4 끝(퀘스트 줄 받기) → 부탁자 '!'·'Talk to Bright/Rose' 줄 → The Crown in the Sky 수락 = M2_1 / Tiny M2_3 수락 → 분수에서 Tiny 말풍선(Npc_Tiny.Head, 빛 'Bright tied mine. I tied hers.', 뿔 'Bright kept my bad knot!') → 분수 선택 / Tiny M2_4 수락 → 몬스터 8~10마리 → St2 → Clatter 'I'll carry my tools. You lead.' + HH_ClatterScene + First.ClatterTools 저장. 로그 docs/art/verification_2026-10-16/ch2_flow/.
+  관찰: Tiny 첫 G = 'Lost & Found' 이야기 창, 두 번째 G에 M2_3 부탁 창. 뿔 Rose는 순간이동 직후 첫 G에 창 안 뜸(두 번 재현, 두 번째 G는 됨; 빛 Bright는 첫 G에 뜸).
+- 1번 무기 점검: 목록 docs/review/grip_check_2026-10-16.md(고치기 전), 시트 docs/art/verification_2026-10-16/grip_check/sheets/. 핵심 = 3D 칼 메시가 Handle 위에 어긋나 주먹이 날밑에 박힘. 뿔 사진은 Daily Gifts 창에 가려 다시 찍기 필요. 도구 build/dev1_tools/{h1016,ch2_1016,grip1016}.py(git 밖).
+- ▶ 다음: 최종 검수·GPT 판단 기다림 → 그 뒤 '10/16 밤' 큐 2~4번.
+
+## 10/16 밤 3 — 큐 맨 앞 (최종 검수 local_cb4b05f8…)
 - main ff1b809b에 2장 이야기 들어감(dev2-ch2-story dc088861): 2장 본편·지선 모두 부탁자에게 가서 수락(빛·뿔도 M2_3·M2_4·M2_6 부탁자 = 교차로 Tiny), H1/R1/N3 수락 뒤 1단계도 같은 NPC 대화, 분수 M2_3[2] Tiny 한 줄(On="Tiny"), Clatter M2_4 장면(Key "Tools", Move = CarrySalute + 상자).
 - **0번(맨 앞) 실제 누름 확인, 빛·뿔 둘 다:** 장면 명령(`py tools/scene.py`)으로 M1_4 끝 → M2_1 부탁자 '!'·'Talk to …' 줄·길 안내 → 부탁 창 수락 → M2_3 분수 Tiny 말풍선 → M2_4 끝 Clatter 장면. 값(서버 StoryOffers·단계, 화면 줄 글) 보고. 막힘은 바로 최종 검수에. 화면(Play) 신청은 최종 검수에 → '전달함, 시작' 뒤.
 - **1번(0번 다음, 또는 0번 화면 신청 안에서 같이) — 무기 쥐는 모습 정밀 점검.** 사용자: "무기 드는 것 좀 자세히 봐달라고 해. 완전 이상해." 방법(메모리 grip-pose-research-references-first):

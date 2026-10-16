@@ -1,0 +1,59 @@
+0 pick: picked main= st=None p=None claim=None offers=
+A scene: ok: Halo, Lv8, M1_4:3
+A main=M1_4 st=3 p=0 claim=False offers=Bright,Gleam,Tiny
+A1 go: at Bright
+A1 Bright: prompt TalkPrompt enabled=true key=G | mark=true sign=? | at=(18,3,-424)
+A1 window: panel=true ['Close', 'TypeTap', 'StoryNext', 'StoryLater'] | Title:Hallie · A Light for the Lamp / StoryLine:Bright: Look at that! / StoryPage:1 / 2 / Label:Next / Label:Got it / Label:Later
+A2 after the talk: main=M1_4 st=3 p=0 claim=True
+A2 claim try 1 Players.Darugi_S2.PlayerGui.MainGui.HUD.QuestTracker clicked LocalPlayer.PlayerGui.MainGui.HUD.QuestTracker
+A3 chapter 1 done: main= st=None p=None claim=None offers=Bright,Gleam,Kit,Tiny
+B1 Bright: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(18,3,-424)
+B1 rows: screen:Text='Talk to Bright' vis=true gui=MainGui(true) ; screen:Text='Talk to Tiny at the Crossroads' vis=true gui=MainGui(true) ; screen:Goal='Talk to Bright.' vis=true gui=MainGui(true)
+B1 marker: marker gui=true vis=false pos=(312,145) dist='7m'
+B2#1 go: at Bright
+B2#1 Bright: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(18,3,-424)
+B2#1 window: panel=true ['Close', 'TypeTap', 'OfferAccept', 'OfferDecline'] | Title:Bright · The Crown in the Sky / OfferBefore:Dust made our old fountain cleaners gather everyone's bags. / OfferLine:Bright: Will you stop the fuss and help our crown shine? / N:+36 / Label:Next / Label:Sure! / Label:Not now
+B2 -> OfferAccept clicked LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Content.Row.OfferAccept
+B2 after Accept: OfferAccept main=M2_1 st=1 p=0 claim=False offers=Bright,Gleam,Kit,Tiny
+C scene: ok: 
+C main= st=None p=None claim=None offers=Bright,Gleam,Kit,Tiny
+C1 Tiny: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(24,3,12)
+C1 rows: screen:Text='Talk to Tiny' vis=true gui=MainGui(true) ; screen:Text='Talk to Tiny at the Crossroads' vis=true gui=MainGui(true) ; screen:Goal='Talk to Tiny.' vis=true gui=MainGui(true)
+C2#1 go: at Tiny
+C2#1 Tiny: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(24,3,12)
+C2#1 window: panel=true ['Close', 'TypeTap', 'StoryNext', 'StoryLater'] | Title:Tiny · Lost & Found / StoryLine:Tiny: A Slime Prince swallowed a teddy bear! / StoryPage:1 / 2 / Label:Next / Label:Got it / Label:Later
+C2 not an offer window first: Title:Tiny · Lost & Found / StoryLine:Tiny: A Slime Prince swallowed a teddy bear! / StoryPage:1 / 2 / Label:Next / Label:Got it / Label:Later
+C2#2 go: at Tiny
+C2#2 Tiny: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(24,3,12)
+C2#2 window: panel=true ['Close', 'TypeTap', 'OfferNext'] | Title:Tiny · The Fountain of Balance / OfferBefore:Bright keeps hiding her wrist. Mine has the same knot. / OfferLine:Tiny: Will you take that dust to the fountain? / OfferPage:1 / 2 / N:+36 / Label:Next / Label:Sure! / Label:Not now
+C2 -> OfferAccept clicked LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Content.Row.OfferAccept
+C2 after Accept: OfferAccept main=M2_3 st=1 p=0 claim=False offers=Bright,Gleam,Kit,Tiny
+C3 to the fountain: ok: Landmark:Fountain
+C3 main=M2_3 st=2 p=0 claim=False offers=Bright,Gleam,Kit,Tiny
+C3 Tiny's line: world:Words='Bright tied mine. I tied hers.' vis=true gui=StoryFindBubble(true) on=Workspace.Map.NPCs.Npc_Tiny.Head
+C3 Tiny: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(24,3,12)
+C4 G at the fountain: panel=true ['Close', 'TypeTap', 'StoryNext'] Title:Fountain Shard · The Fountain of Balance / StoryLine:Bright tied Tiny's. Tiny tied hers. Both kept them. / StoryPage:1 / 3 / Label:Next / Label:Give it to the fountain / Label:Keep it
+C4 words: Title:Fountain Shard · The Fountain of Balance / StoryLine:Bright tied Tiny's. Tiny tied hers. Both kept them. / StoryPage:1 / 3 / Label:Next / Label:Give it to the fountain / Label:Keep it
+C4 choice -> StoryChoiceGood clicked LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Content.Row.StoryChoiceGood
+C5 after the fountain: StoryChoiceGood main= st=None p=None claim=None offers=Bright,Gleam,Kit,Tiny
+D scene: ok: 
+D main= st=None p=None claim=None offers=Bright,Gleam,Kit,Tiny
+D1#1 go: at Tiny
+D1#1 Tiny: prompt TalkPrompt enabled=true key=G | mark=true sign=! | at=(24,3,12)
+D1#1 window: panel=true ['Close', 'TypeTap', 'OfferNext'] | Title:Tiny · Supply Road Fund / OfferBefore:Dust made the old cleaners pile our road supplies in the way. / OfferLine:Tiny: Will you earn 60 gold from monsters on the road? / OfferPage:1 / 2 / N:+36 / Label:Next / Label:Sure! / Label:Not now
+D1 -> OfferAccept clicked LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Content.Row.OfferAccept
+D1 after Accept: OfferAccept main=M2_4 st=1 p=0 claim=False offers=Bright,Gleam,Kit,Tiny
+D2 field: ok: Zone:SlimeMeadow, 10 Slime
+D2 kill 0 ok: beat Slime -> M2_4 1 6
+D2 kill 5 ok: beat Slime -> M2_4 1 36
+D2 step 1 done after 10 kills: main=M2_4 st=2 p=0 claim=False
+D3 Clatter scene on screen: True
+D3 line: world:Words='I'll carry my tools. You lead.' vis=true gui=StoryFindBubble(true) on=Workspace.HH_ClatterScene.Skull
+D3 saved flag: True
+D4 to town: ok: Npc:Bright
+D4 main= st=None p=None claim=None offers=Bright,Gleam,Kit,Tiny
+  close: clicked LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Close
+console errors: [ServerErrorService] started
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[RankingService] read Infamy failed: You must publish this place to the web to access DataStore.
+[RankingService] read Artisan failed: You must publish this place to the web to access DataStore.
