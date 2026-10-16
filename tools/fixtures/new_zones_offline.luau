@@ -417,7 +417,7 @@ runGroup("loot", function()
 	-- a later round's own items are not this round's: gathering (게임성 개발 3, 2026-10-11) marks its materials Source = "Gather"
 	local function later(id)
 		local src = type(items[id]) == "table" and items[id].Source
-		return src == "Gather" or src == "Craft" or src == "Goose" or src == "Boss" -- gathering / crafting (게임성 개발 3), the egg hunt (A23-134), C1's boss materials
+		return src == "Gather" or src == "Craft" or src == "Goose" or src == "Boss" or src == "Deep" or src == "Quest" -- A23-215 deep shard / trial core; gathering / crafting (게임성 개발 3), the egg hunt (A23-134), C1's boss materials
 	end
 	local order = {}
 	for _, id in C.Loot.Order do if id ~= "SeaShell" and id ~= "CrystalShard" and not later(id) then table.insert(order, id) end end

@@ -23,7 +23,8 @@ local R = {
 	DN2 = { Item = "Glowcap", N = 8, GoldN = 100 }, -- Hard (the guild on)
 	DC1 = { XPBar = 0.03, GoldN = 60 }, -- Normal: 3% of the current level's bar
 	DC2 = { Items = { { Id = "Enh70", N = 1 }, { Id = "HP", N = 2 } }, GoldN = 100 }, -- Hard: the woods' fight costs more
-	DC3 = { Items = { { Id = "Enh30", N = 1 }, { Id = "Enh70", N = 1 } }, Title = "RecordKeeper", GoldN = 200 }, -- Challenge
+	DC3 = { Items = { { Id = "Enh30", N = 1 }, { Id = "Enh70", N = 1 } }, Title = "RecordKeeper", GoldN = 200, -- Challenge
+		Side = { Neutral = { Items = { { Id = "TrialCore", N = 1 } } } } }, -- A23-215: the artisans' Trial Core (one a day, bound)
 }
 
 -- how many, in ONE place (user 10/16 via 최종 검수: "슬라임 6마리 너무 적지 않아? 50마리에 표본 5개"): Kill = monsters to

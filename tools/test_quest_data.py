@@ -42,7 +42,18 @@ COUNT_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "WarPoin
 # bible §3 '유형은 주로 하는 행동': the main action of a quest (Type)
 QUEST_TYPES = {"Combat", "Skill", "Gather", "Craft", "Sell", "Investigate", "Recover", "Deliver", "Repair", "Install", "Escort",
                "Rescue", "Defend", "Claim", "Boast", "Prank", "Command", "Lure", "Tame", "Choice", "Display", "Test", "Visit"}
-REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "Items", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet"}
+REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "Items", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet",
+               "Side"}
+SIDES = {"Halo", "Horns", "Neutral"}
+
+
+def side_rows(reward: dict) -> list:
+    """A23-215 Reward.Side = { <faction> = { Items = { { Id, N } } } }: the rows one side gets on top (the artisans' Trial Core)"""
+    out = []
+    side = reward.get("Side")
+    for v in (side.values() if isinstance(side, dict) else []):
+        out.extend(arr(v.get("Items")) if isinstance(v, dict) else [])
+    return out
 
 
 def reward_counts(reward: dict) -> list:
@@ -50,7 +61,7 @@ def reward_counts(reward: dict) -> list:
     out = []
     if reward.get("Item") or reward.get("Potion"):
         out.append((reward.get("Item") or reward.get("Potion"), reward.get("N", 1)))
-    for row in arr(reward.get("Items")):
+    for row in arr(reward.get("Items")) + side_rows(reward):
         if isinstance(row, dict):
             out.append((row.get("Id"), row.get("N", 1)))
     return out
@@ -59,7 +70,7 @@ def reward_counts(reward: dict) -> list:
 def reward_ids(reward: dict) -> list:
     """every item id a reward pays (StoryQuestService rewardItems, 10/16): Item or Potion, then Reward.Items = { { Id, N } }"""
     ids = [reward.get("Item") or reward.get("Potion")] if (reward.get("Item") or reward.get("Potion")) else []
-    for row in arr(reward.get("Items")):
+    for row in arr(reward.get("Items")) + side_rows(reward):
         ids.append(row.get("Id") if isinstance(row, dict) else None)
     return ids
 # A23-207 (user 10/15) the harder, the better the reward: what each difficulty may pay at most (items by tier; Gold / XP in hunt
@@ -71,6 +82,7 @@ ITEM_TIER = {  # 0 = common (anyone), 1 = Hard and up, 2 = Challenge only
     "Enh10": 1, "Enh30": 1, "Enh70": 1, "Move10": 1, "Move30": 1, "Move70": 1, "Glowcap": 1, "IronOre": 1, "SilverOre": 1,
     "KnightCrest": 1, "CrystalShard": 1, "MightTonic": 1, "GuardTonic": 1, "LuckyTonic": 1, "WisdomTonic": 1, "CaptainBadge": 1,
     "MoonCrystal": 2, "ClatterGem": 2, "KingJelly": 2, "CrownDust": 2, "GoldenEgg": 2, "GooseFeather": 2,
+    "DeepMoonShard": 2, "TrialCore": 2,
 }
 CAPS = {  # difficulty -> (highest item tier, Gold/XP units, GoldN, XPBar, may give a title / pet)
     "Easy": (0, 1, 60, 0.25, False),
@@ -222,7 +234,11 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
                 add("reward-item", i, f"Reward.Item {reward.get('Item')} is no item")
             if reward.get("Items") is not None and not arr(reward.get("Items")):
                 add("reward-item", i, "Reward.Items is a list of { Id, N }")
-            for row in arr(reward.get("Items")):
+            side = reward.get("Side")
+            if side is not None and (not isinstance(side, dict) or any(k not in SIDES or not isinstance(v, dict)
+                                                                       or set(v) - {"Items"} for k, v in side.items())):
+                add("reward-side", i, "Reward.Side is { Halo / Horns / Neutral = { Items = { { Id, N } } } }")
+            for row in arr(reward.get("Items")) + side_rows(reward):
                 n = row.get("N", 1) if isinstance(row, dict) else None
                 if not isinstance(row, dict) or row.get("Id") not in items or not isinstance(n, (int, float)) \
                         or n != int(n) or not 1 <= n <= 99:
@@ -383,6 +399,9 @@ SELF_TESTS = [
     ("a requirement that does not exist", "Requires = { Done = { \"H_Band\", \"HX_Guard\" }, Level = 4 }", "Requires = { Done = { \"H_Nope\", \"HX_Guard\" }, Level = 4 }", "requires-unknown"),
     ("a requirement cycle", "Requires = { Done = { \"H_Band\", \"HX_Guard\" }, Level = 4 }", "Requires = { Done = { \"HX_Ribbon\", \"HX_Guard\" }, Level = 4 }", "requires-cycle"),
     ("an unknown reward key", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Gems = 5 }", "reward-key"),
+    ("a side reward for nobody", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Side = { Elves = { Items = { { Id = \"HP\", N = 1 } } } } }", "reward-side"),
+    ("a side reward of no item", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Side = { Neutral = { Items = { { Id = \"Nope\", N = 1 } } } } }", "reward-item"),
+    ("an easy quest that pays a trial core", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Side = { Neutral = { Items = { { Id = \"TrialCore\", N = 1 } } } } }", "difficulty-reward"),
     ("a stat for sale", "Reward = { GoldN = 40 }", "Reward = { GoldN = 40, Attack = 5 }", "reward-stat"),
     ("a sub not in Subs", "Subs = { \"HX_Ribbon\", \"HX_DailyLamp\" }", "Subs = { \"HX_DailyLamp\" }", "sub-unlisted"),
     ("a repeat that is not daily", "Repeat = \"Daily\"", "Repeat = \"Weekly\"", "repeat-kind"),

@@ -511,7 +511,8 @@ end
 -- 최종 검수 10/16 (④): every item a quest reward pays, in order = { { Id, N } }: Reward.Item or Reward.Potion ("HP" / "MP")
 -- x N (default 1), then Reward.Items = { { Id, N } } (several kinds in one reward; a potion id works there too). A row that
 -- is no Loot item / potion or has N < 1 is skipped; N is at most 99 (GrantItem's limit)
-local function rewardItems(r)
+-- side = the player's faction: A23-215 Reward.Side[side].Items pay only that side (the artisans' Trial Core)
+local function rewardItems(r, side)
 	local out = {}
 	if type(r) ~= "table" then return out end
 	local function add(id, n)
@@ -522,6 +523,10 @@ local function rewardItems(r)
 	end
 	add(r.Item or r.Potion, r.N)
 	for _, row in type(r.Items) == "table" and r.Items or {} do
+		if type(row) == "table" then add(row.Id, row.N) end
+	end
+	local mine = type(r.Side) == "table" and type(side) == "string" and r.Side[side] or nil
+	for _, row in type(mine) == "table" and type(mine.Items) == "table" and mine.Items or {} do
 		if type(row) == "table" then add(row.Id, row.N) end
 	end
 	return out
@@ -576,7 +581,7 @@ local function complete(player, data, id)
 		if ok and num(added) > 0 then notify(player, string.format(Config.BagSlots.Text.Gained, added), "reward", "None") end
 	end
 	-- Reward.Item / Potion / Items (e.g. Pip1's scroll, a daily's HP potion): one more line each under the reward line
-	for _, row in rewardItems(def.Reward) do
+	for _, row in rewardItems(def.Reward, faction(player)) do
 		local line = grantItem(player, row.Id, row.N)
 		if line then notify(player, line, "reward", "None") end
 	end
@@ -1839,7 +1844,7 @@ local function rewardPreview(player, def)
 	if num(r.XP) > 0 then x = select(2, Config.HuntValue(level, r.XP)) end
 	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
 	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
-	local list = rewardItems(r)
+	local list = rewardItems(r, faction(player))
 	for _, row in list do
 		local q = not Config.Loot.Items[row.Id] and type(Config.QuickSlots.Items) == "table" and Config.QuickSlots.Items[row.Id] or nil
 		row.Icon = type(q) == "table" and q.Icon or nil
