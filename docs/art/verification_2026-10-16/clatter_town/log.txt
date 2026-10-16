@@ -1,0 +1,19 @@
+picked
+fired Sorry
+saved t_Sorry_a
+Sorry parts=13 bubble=I broke the crown. I'm sorry. I'm here to help. fits=true
+console: [MonsterService] custom model for CaptainClatter: yes || [ServerErrorService] started || [ClatterScenes] started
+saved t_Sorry_b
+Sorry after stay no scene
+fired Hat
+saved t_Hat_a
+Hat parts=14 bubble=Caught it! Oh. That's my hat. fits=true
+console: [MonsterService] custom model for CaptainClatter: yes || [ServerErrorService] started || [ClatterScenes] started
+saved t_Hat_b
+Hat after stay no scene
+fired Carry
+saved t_Carry_a
+Carry parts=14 bubble=I'll carry this. You lead. fits=true
+console: [MonsterService] custom model for CaptainClatter: yes || [ServerErrorService] started || [ClatterScenes] started
+saved t_Carry_b
+Carry after stay no scene
