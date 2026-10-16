@@ -1,0 +1,17 @@
+picked
+1 step=0 faction=Halo | Hallie: prompt TalkPrompt enabled=true key=Enum.KeyCode.G story=Hallie | mark=true
+at Hallie
+2 near Hallie: prompt TalkPrompt enabled=true key=Enum.KeyCode.G story=Hallie | mark=true
+3 after E: step=0 faction=Halo panel=true welcomeNext=Players.Darugi_S2.PlayerGui.MainGui.PanelsModal.Window.Content.Row.WelcomeNext
+click LocalPlayer.PlayerGui.MainGui.PanelsModal.Window.Content.Row.WelcomeNext
+4 after I'm In: step=4 faction=Halo
+at Gleam
+5 near Gleam: prompt TalkPrompt enabled=true key=Enum.KeyCode.G story=Gleam | mark=true
+6 after Gleam E: step=3 faction=Halo panel=true welcomeNext=nil
+console: [ServerErrorService] started
+[RankingService] read Honor failed: You must publish this place to the web to access DataStore.
+[Roblox][CorePackages.Packages._Index.UIBlox.UIBlox.Logger] [UIBlox - Warning] - FoundationProvider not found. Please ensure that the FoundationProvider is present in the component tree.
+[Roblox][CorePackages.Packages._Index.UIBlox.UIBlox.Logger] [UIBlox - Warning] - FoundationProvider not found. Please ensure that the FoundationProvider is present in the component tree.
+[Roblox][CorePackages.Packages._Index.UIBlox.UIBlox.Logger] [UIBlox - Warning] - FoundationProvider not found. Please ensure that the FoundationProvider is present in the component tree.
+[Roblox][CorePackages.Packages._Index.UIBlox.UIBlox.Logger] [UIBlox - Warning] - FoundationProvider not found. Please ensure that the FoundationProvider is present in the component tree.
+[Roblox][CorePackages.Packages._Index.UIBlox.UIBlox.Logger] [UIBlox - Warning] - FoundationProvider not found. Please ensure that the FoundationProvider is present in the component tree.
