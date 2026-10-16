@@ -252,10 +252,10 @@ function PvPService.ScalePoints(points, mult)
 	return whole
 end
 
--- addendum A10-V3-3: inside a PvP zone, or combat-tagged (Config.PvP.CombatTagTime) anywhere outside a town
--- (Outskirts, bridges, safe hunting land), so a fight or a sack chase does not end at a zone edge
+-- A23-203 (user 10/15, 최종 검수 10/16 - GPT gameplay_r1 bug ①): danger only inside a red PvP zone. A combat tag no longer
+-- carries a fight out into the Outskirts / bridges / safe hunting land (was addendum A10-V3-3): outside = no PvP hit
 local function inPvP(p)
-	return S.ZoneService.IsPvPZone(p) or (not S.ZoneService.IsTown(p) and S.CombatService.IsInCombat(p))
+	return S.ZoneService.IsPvPZone(p) == true
 end
 
 local function rootPos(p)
