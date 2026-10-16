@@ -345,6 +345,33 @@ function WeaponPose.StowOf(kind)
 	return type(where) == "string" and type(W[where]) == "table" and where or nil
 end
 
+-- stow-fix (pure): the hip weapon's tip angle under level - want degrees, or less when a tip reach studs out from a
+-- point height studs over the floor would come nearer the floor than margin (never under 0)
+function WeaponPose.HipDown(want, height, reach, margin)
+	if not (type(reach) == "number" and reach > 0 and type(height) == "number") then return want end
+	local room = (height - (tonumber(margin) or 0)) / reach
+	if room >= math.sin(math.rad(want)) then return want end
+	return math.deg(math.asin(math.clamp(room, 0, 1)))
+end
+
+-- stow-fix: HipDown for this character: the reach = the weapon's far end along the Handle's +Y from the Handle's centre
+-- (the code parts and the mesh, the bow string left out), the height = the weld point over the floor under the root
+function WeaponPose.HipDownOf(char, tool, handle, part, at, row)
+	local reach = 0
+	for _, p in tool:GetDescendants() do
+		if p:IsA("BasePart") and p.Name ~= "String" then
+			local rel = handle.CFrame:ToObjectSpace(p.CFrame)
+			local half = (math.abs(rel.UpVector.Y) * p.Size.Y + math.abs(rel.RightVector.Y) * p.Size.X
+				+ math.abs(rel.LookVector.Y) * p.Size.Z) / 2
+			reach = math.max(reach, rel.Position.Y + half)
+		end
+	end
+	local root = char:FindFirstChild("HumanoidRootPart")
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	local floor = root.Position.Y - root.Size.Y / 2 - hum.HipHeight
+	return WeaponPose.HipDown(row.Down, (part.CFrame * at).Position.Y - floor, reach, row.Floor)
+end
+
 -- A23-223: the stowed weapon on (stow = true: the torso weld on, the engine's right grip and the bow's rest weld off) or
 -- back in the hand (the torso weld off; a sword's right grip on again, a bow's left weld is BowRest's). The own character
 -- hears Config.WeaponStow.Sound and sees a small glint at the weapon when it changes
@@ -358,6 +385,11 @@ function WeaponPose.StowApply(char, tool, handle, where, stow)
 	local grip = hand and hand:FindFirstChild("RightGrip")
 	local left = char:FindFirstChild("LeftHand")
 	local restBow = left and left:FindFirstChild(T.RestBow)
+	-- stow-fix: the bow's code string (two Beams on "String", off the mesh) shows only in the hand
+	local str = tool:FindFirstChild("String")
+	for _, b in str and str:GetChildren() or {} do
+		if b:IsA("Beam") and b.Enabled == stow then b.Enabled = not stow end
+	end
 	if stow then
 		if not (weld and weld:IsA("Weld")) then
 			weld = Instance.new("Weld")
@@ -366,9 +398,14 @@ function WeaponPose.StowApply(char, tool, handle, where, stow)
 		end
 		local h = part.Size / 2
 		local pos, turn = row.Pos or {}, row.Turn or {}
+		local at = CFrame.new((tonumber(pos[1]) or 0) * h.X, (tonumber(pos[2]) or 0) * h.Y, (tonumber(pos[3]) or 0) * h.Z)
+		local tx = tonumber(turn[1]) or 0
+		if type(row.Down) == "number" then
+			local okD, down = pcall(WeaponPose.HipDownOf, char, tool, handle, part, at, row)
+			tx = 90 + (okD and type(down) == "number" and down or row.Down)
+		end
 		weld.Part0, weld.Part1 = part, handle
-		weld.C0 = CFrame.new((tonumber(pos[1]) or 0) * h.X, (tonumber(pos[2]) or 0) * h.Y, (tonumber(pos[3]) or 0) * h.Z)
-			* CFrame.Angles(math.rad(tonumber(turn[1]) or 0), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
+		weld.C0 = at * CFrame.Angles(math.rad(tx), math.rad(tonumber(turn[2]) or 0), math.rad(tonumber(turn[3]) or 0))
 		weld.C1 = CFrame.identity
 		if grip and grip:IsA("JointInstance") and grip.Part1 == handle and grip.Enabled then grip.Enabled = false end
 		if restBow and restBow:IsA("JointInstance") and restBow.Enabled then restBow.Enabled = false end

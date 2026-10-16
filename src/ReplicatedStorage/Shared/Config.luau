@@ -7332,13 +7332,17 @@ Config.HoldMotion = { Blend = 0.16, In = 0.08, InBow = 0.06, Out = 0.18, WalkAt 
 -- HandSeconds after the last attack it goes back (WeaponPose.StowStep, this client, every character; a local weld on
 -- the torso part, the engine grip off). Pos = a share of the part's half size (x right, y up, z back), Turn = degrees
 -- X / Y / Z of the weapon's Handle there. The hammer, the baton, the staffs and the joke weapons stay in the hand.
--- On = false: always in the hand
+-- On = false: always in the hand.
+-- stow-fix (게임 플레이 4판 10/16: the Horns club stuck out behind the hip like a tail - Turn X 120 was only 30 degrees
+-- down): Down = the tip's degrees under level (Turn X = 90 + Down), less for a long weapon so its tip stays Floor studs
+-- over the floor (WeaponPose.HipDown); Turn Z > 0 leans the tip out past the left leg (no clipping when the leg swings
+-- back). A stowed bow hides its code string (the two Beams stood 0.8 stud off the mesh on the back)
 Config.WeaponStow = {
 	On = true,
 	HandSeconds = 5,
 	Kinds = { Bow = "Back", ShortBow = "Back", Sword = "Hip", DarkSword = "Hip" },
 	Back = { Part = "UpperTorso", Pos = { 0, 0, 1.3 }, Turn = { 0, 0, -35 } },
-	Hip = { Part = "LowerTorso", Pos = { -1.15, -0.2, -0.35 }, Turn = { 120, 0, -8 } },
+	Hip = { Part = "LowerTorso", Pos = { -1.15, -0.2, -0.35 }, Turn = { 155, 0, 4 }, Down = 65, Floor = 0.4 },
 	Sound = "Equip",
 }
 
