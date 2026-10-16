@@ -2061,7 +2061,16 @@ Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet",
 Config.HudReveal.FirstChapterLast = "M1_4"
 -- the locked tile's word (short, under the icon; %d = the level)
 Config.HudReveal.TileWords = { Character = "Lv 2", Skills = "Lv %d", Pet = "Get a pet", Ranking = "Story 1" }
-function Config.HudReveal.TileWord(id)
+-- 게임 플레이 2판 10/16 (Lv5 with the skills tile still saying "Lv 5"): the level reached but the tile still locked (the
+-- skill waits for the story's Lv5 test, A23-193 P1 ⑤) = this word instead
+Config.HudReveal.TileWordsAfter = { Skills = "Quest" }
+-- s = the reveal state (Level), optional
+function Config.HudReveal.TileWord(id, s)
+	local after = Config.HudReveal.TileWordsAfter[id]
+	if type(after) == "string" and type(s) == "table" and id == "Skills" then
+		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
+		if (tonumber(s.Level) or 1) >= q then return after end
+	end
 	local w = Config.HudReveal.TileWords[id]
 	if type(w) ~= "string" then return "" end
 	if string.find(w, "%%d") then

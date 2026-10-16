@@ -5666,7 +5666,7 @@ function L.RefreshLocks()
 			L.TileSeen[id] = false
 		end
 		local locked = not (open and opens)
-		local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id) -- (nothing to open: its name)
+		local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id, st) -- (nothing to open: its name)
 		if t.Lock and (t.Lock.Locked ~= locked or (locked and t.LockWord ~= word)) then
 			pcall(t.Lock.Set, locked, word)
 			t.LockWord = word
@@ -5676,7 +5676,7 @@ function L.RefreshLocks()
 		local open = L.TileSeen[f.Def.Id] ~= false
 		local opens = L.TileOpens(f.Def)
 		local locked = not (open and opens)
-		local word = (open and not opens) and f.Def.Text or Config.HudReveal.TileWord(f.Def.Id)
+		local word = (open and not opens) and f.Def.Text or Config.HudReveal.TileWord(f.Def.Id, st)
 		if f.Lock and (f.Lock.Locked ~= locked or (locked and f.LockWord ~= word)) then
 			pcall(f.Lock.Set, locked, word)
 			f.LockWord = word

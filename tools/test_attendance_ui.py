@@ -53,6 +53,7 @@ MUTATIONS = [
     ("opens many times a day", "\tif ctx.Day == nil or ctx.Day == ctx.OpenedDay then return false end\n", ""),
     ("opens during the first mission", "\tif type(ctx.Step) ~= \"number\" or ctx.Step ~= (tonumber(ctx.Done) or 99) then return false end\n", ""),
     ("a first claim opens at once", "\treturn int(ctx.Days) > 0 or (tonumber(ctx.Played) or 0) >= L.FirstWait\n", "\treturn true\n"),
+    ("opens in the middle of a hunt", "ctx.Busy == true or ctx.Town ~= true then return false end", "ctx.Busy == true then return false end"),
     ("a busy screen ignored", "\tctx.Busy = busy() -- (asked last: the checks above are cheap)\n", "\tctx.Busy = false\n"),
     ("a waiting pause card ignored", "\tfor _, fn in { \"IsOpen\", \"Waiting\" } do\n", "\tfor _, fn in { \"IsOpen\" } do\n"),
     ("opening by hand does not count", "\tS.OpenedDay = Config.DayIndex(os.time()) -- opened today", "\tlocal _ = Config.DayIndex(os.time()) -- opened today"),
