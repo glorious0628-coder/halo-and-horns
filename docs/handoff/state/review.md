@@ -448,3 +448,5 @@
 - 새 Claude 계정에서 최종 검수(Opus 5.5) 시작 → `new_account_2026-10-16.md` §2대로 메인 반영 1(Sonnet medium)·게임성 개발 1(Opus high)·게임성 개발 2(Opus high)·게임 플레이(Opus medium) 4개를 start_session으로 엶(id는 list_sessions로).
 - **회의실 https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1 = 옛 계정 것 → 새 계정에서 404**(watch·db 읽기 둘 다 안 됨). 새로 만들지 사용자에게 물음. 원본 `build/review_kit_1015/council.html`.
 - **새 회의실(10/16 밤, 사용자 "새로 만들어 줘"):** https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (db·user·comments·assets, 원본 `build/review_kit_1015/council_1016.html`). 목소리 4개: user·claude·gpt·api(API Opus, 10/22까지 GPT 대신). 글 = collection `chat` {who,text,img?,alt?,ts 실제 ms}, 첫 글 d1016_01. 옛 대화는 옛 계정 페이지에만 남음.
+- 병합 85754011 = dev1-stow-fix f82a25f0(허리 칼·몽둥이 아래로 65°·바닥 0.4 위, 등 활 시위 숨김; hold_pose2 49/0·변이 14/14, tool_grip 50/50, weapon_motion 269) → 메인 반영 1이 메인 Studio 열고 sync(오류 0) → 게임 플레이 5판 진행 중.
+- 개발 2: dev2-gold1000 e055c2a1(54a3be0d 위, 시험 7개 + 새 검사) = **개발 1 화면 짝과 한 번에 병합** 대기. 장인 2부(깊은 광맥 DeepVein.luau) 시작 OK — 부탁 NPC = Pip(폐허 입구 보관대·경사로, 바이블 M3_7·TR25와 같은 자리), KO = 지금 단계 처음부터, 하루 상한 없음(12분/개는 코스 길이로).
