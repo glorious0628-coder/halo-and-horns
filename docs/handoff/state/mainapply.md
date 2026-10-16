@@ -109,3 +109,5 @@ skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bri
 - 10/15: Save As 화면 제어가 필요하면 최종 검수에게 미리 신청(최종 검수가 사용자에게 알림).
 - 10/16 오후: 코드 == origin/main(`0 0`) → sync → PC·폰 첫 10분 재기(ForgeWalk 초, 막힌 곳 사진) → TextChatService(말풍선·VIP 채팅) 확인 → Save As `build/GoodEvil.rbxlx` → `place/` 복사·커밋. Publish는 사용자.
 - 그 전까지: 병합이 올 때 sync·사진만. 10/17~20 급한 고침만 sync. 10/21 주: 6단계 교체 → 10줄 점검 + 걷기 시간.
+
+- 10/16 종료 전: 메인 Studio 소스 = 2a3489d1, place/는 15:10 게시판 그대로, Save As 안 함(코드는 git).
