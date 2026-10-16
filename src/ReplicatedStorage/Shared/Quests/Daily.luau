@@ -23,9 +23,15 @@ local R = {
 	DC3 = { Item = "MoonCrystal", N = 8, GoldN = 200 }, -- Challenge (a cosmetic piece once it exists)
 }
 
--- Hard is really harder (최종 검수 10/16): Hard hunts = 6 slimes + 3 samples (Normal DN1 = 3 + 2), Hard / Challenge
--- repairs = three timing panels at the object after a long walk for the parts
-local HARD_KILLS = 6
+-- how many, in ONE place (user 10/16 via 최종 검수: "슬라임 6마리 너무 적지 않아? 50마리에 표본 5개"): Kill = monsters to
+-- beat, Pick = the things picked up after (the asker's line says the number). Hard / Challenge repairs = three timing
+-- panels at the object after a long walk for the parts (DN2 / DC3: three steps). Easy errands have no count
+local K = {
+	DH1 = { Kill = 50, Pick = 5 }, DR1 = { Kill = 50, Pick = 5 }, -- Hard (slimes)
+	DN1 = { Kill = 20, Pick = 3 }, -- Normal (slimes)
+	DC2 = { Kill = 30, Pick = 5 }, -- Hard (goblins)
+	DC3 = { Kill = 50 }, -- Challenge (ruins skeletons, then the three rests)
+}
 
 -- the last step: the asker's card with the small choice (Flag key = the quest id; Neutral players pick A / B)
 local function choice(npc, line, good, evil, flagGood, flagEvil, id, scene, text, short)
@@ -84,15 +90,15 @@ return {
 					Shared = "Your sealed envelopes still hold! These new ones need glue.",
 					Mine = "Your stamp is on every letter I sent! More need glue today.",
 					Default = "My new letters need glue. The slimes keep bouncing on it." },
-				Lines = { All = { "Bright: Will you beat six slimes and bring three glue samples?" } } },
+				Lines = { All = { string.format("Bright: Will you beat %d slimes and bring %d glue samples?", K.DH1.Kill, K.DH1.Pick) } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true,
 			Steps = {
-				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x6", Guide = "SlimeMeadow",
-					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = HARD_KILLS }, On = "Self",
+				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x" .. K.DH1.Kill, Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = K.DH1.Kill }, On = "Self",
 					Find = "Off my glue, you bouncy things!" },
 				{ Text = "Pick up the glue samples", ShortName = "Glue", Guide = "DH1Glue",
-					Obj = { Type = "Pickup", Spot = "DH1Glue", Radius = 8 }, On = "Self", Find = "Three sticky samples. Perfect!" },
+					Obj = { Type = "Pickup", Spot = "DH1Glue", Radius = 8 }, On = "Self", Find = "All the sticky samples. Perfect!" },
 				choice("Bright", "Bright: Seal the envelopes for everyone, or add your stamp?", "Seal them for everyone",
 					"Press my stamp on", "Shared", "Mine", "DH1", "Nod", "Back to Bright", "Bright"),
 			},
@@ -146,15 +152,15 @@ return {
 					Duet = "Our bell still rings softly. The new pads are pillows again!",
 					Solo = "Your solo still echoes! The slimes took the new pads too.",
 					Default = "My bell needs soft pads. The slimes use them as pillows." },
-				Lines = { All = { "Rascal Rex: Beat six slimes and grab three soft pads?" } } },
+				Lines = { All = { string.format("Rascal Rex: Beat %d slimes and grab %d soft pads?", K.DR1.Kill, K.DR1.Pick) } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true,
 			Steps = {
-				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x6", Guide = "SlimeMeadow",
-					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = HARD_KILLS }, On = "Self",
+				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x" .. K.DR1.Kill, Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = K.DR1.Kill }, On = "Self",
 					Find = "Hey! Those pads aren't pillows!" },
 				{ Text = "Pick up the soft pads", ShortName = "Soft pads", Guide = "DR1Pads",
-					Obj = { Type = "Pickup", Spot = "DR1Pads", Radius = 8 }, On = "Self", Find = "Three squishy pads. Got them." },
+					Obj = { Type = "Pickup", Spot = "DR1Pads", Radius = 8 }, On = "Self", Find = "All the squishy pads. Got them." },
 				choice("Rex", "Rascal Rex: Soft pads! A quiet duet, or my big solo?", "Play it together", "Your big solo",
 					"Duet", "Solo", "DR1", "Clap", "Back to Rascal Rex", "Rascal Rex"),
 			},
@@ -188,15 +194,15 @@ return {
 					Plain = "Your plain boxes went out fine! New parcels need seals.",
 					Mark = "People love your mark! New parcels need seals today.",
 					Default = "New parcels need seals. The slimes think they're hats." },
-				Lines = { All = { "Kit: Beat three slimes and bring two seal samples to Otto?" } } },
+				Lines = { All = { string.format("Kit: Beat %d slimes and bring %d seal samples to Otto?", K.DN1.Kill, K.DN1.Pick) } } },
 			Requires = { Done = { "M1_4" } },
 			Last = true,
 			Steps = {
-				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x3", Guide = "SlimeMeadow",
-					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = 3 }, On = "Self",
+				{ Text = "Beat slimes %d/%d", ShortName = "Slimes x" .. K.DN1.Kill, Guide = "SlimeMeadow",
+					Obj = { Type = "Kill", Kind = "Slime", Zone = "SlimeMeadow", Count = K.DN1.Kill }, On = "Self",
 					Find = "Those seals are not hats!" },
 				{ Text = "Pick up the seal samples", ShortName = "Seals", Guide = "DN1Seals",
-					Obj = { Type = "Pickup", Spot = "DN1Seals", Radius = 8 }, On = "Self", Find = "Two sticky seals. Nice." },
+					Obj = { Type = "Pickup", Spot = "DN1Seals", Radius = 8 }, On = "Self", Find = "All the sticky seals. Nice." },
 				choice("Otto", "Otto: Good seals! Plain boxes for all, or your own mark?", "Plain for everyone",
 					"Put my mark on", "Plain", "Mark", "DN1", "Nod", "Bring them to Otto", "Otto"),
 			},
@@ -256,15 +262,15 @@ return {
 					Clear = "Your clear path still works! The goblins raced again.",
 					Mark = "Your mark is still on the path! The goblins raced again.",
 					Default = "The goblins tried barrel racing. Our path is the finish line." },
-				Lines = { All = { "Pip: Beat three goblins and roll two barrels off our path?" } } },
+				Lines = { All = { string.format("Pip: Beat %d goblins and roll %d barrels off our path?", K.DC2.Kill, K.DC2.Pick) } } },
 			Requires = { Done = { "M1_4" }, Level = 10 },
 			Last = true,
 			Steps = {
-				{ Text = "Beat goblins %d/%d", ShortName = "Goblins x3", Guide = "GoblinWoods",
-					Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = 3 }, On = "Self",
+				{ Text = "Beat goblins %d/%d", ShortName = "Goblins x" .. K.DC2.Kill, Guide = "GoblinWoods",
+					Obj = { Type = "Kill", Kind = "Goblin", Zone = "GoblinWoods", Count = K.DC2.Kill }, On = "Self",
 					Find = "Goblin barrel racers! Stop!" },
 				{ Text = "Roll the barrels away", ShortName = "Barrels", Guide = "DC2Barrels",
-					Obj = { Type = "Pickup", Spot = "DC2Barrels", Radius = 8 }, On = "Self", Find = "Two barrels. Same funny sound." },
+					Obj = { Type = "Pickup", Spot = "DC2Barrels", Radius = 8 }, On = "Self", Find = "So many barrels. Same funny sound." },
 				choice("Pip", "Pip: A clear path for all, or leave your mark on it?", "Clear it for all", "Leave my mark",
 					"Clear", "Mark", "DC2", "Wave", "Back to Pip", "Pip"),
 			},
@@ -277,12 +283,15 @@ return {
 					Shared = "Our record stand still works! New pages need room again.",
 					Signed = "Your name is still on the stand! New pages need room.",
 					Default = "The old stand is fine. These new pages need more room." },
-				Lines = { All = { "Pip: Find three rests deep in the ruins and fit them on the record stand?" } } },
+				Lines = { All = { string.format("Pip: Beat %d skeletons, then fit three old rests on the record stand?", K.DC3.Kill) } } },
 			Requires = { Done = { "M1_4" }, Level = 25 },
 			Last = true,
 			Steps = {
 				{ Text = "Go to the record stand in the ruins", ShortName = "Record stand", Guide = "DC3Stand",
 					Obj = { Type = "Near", Spot = "DC3Stand", Radius = 10 }, On = "Self", Find = "An old stand. Still steady." },
+				{ Text = "Beat skeletons %d/%d", ShortName = "Skeletons x" .. K.DC3.Kill, Guide = "SkeletonRuins",
+					Obj = { Type = "Kill", Kind = "Skeleton", Zone = "SkeletonRuins", Count = K.DC3.Kill }, On = "Self",
+					Find = "Such tidy fighters!" },
 				{ Text = "Find the old rests deep in the ruins", ShortName = "Old rests", Guide = "DC3Rests",
 					Obj = { Type = "Pickup", Spot = "DC3Rests", Radius = 8 }, On = "Self", Find = "Three old rests. Heavy!" },
 				{ Text = "Fit the first rest", ShortName = "Rest 1", Guide = "DC3Stand",

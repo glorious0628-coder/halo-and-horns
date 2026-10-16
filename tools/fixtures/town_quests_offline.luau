@@ -3298,8 +3298,11 @@ runGroup("the daily pack", function()
 	check(C.QuestBefore(SQ.Defs.DH1, "Halo", d.Story.Flags) == SQ.Defs.DH1.Offer.BeforeBy.Default, "the first visit: the Default line", "")
 	-- 10/16: Hard is really harder - Hard hunts twice the Normal one, Hard / Challenge repairs = 3 timings after a long walk
 	local function kills(id) return SQ.Defs[id].Steps[1].Obj.Count end
-	check(kills("DH1") == 6 and kills("DR1") == 6 and kills("DN1") == 3, "Hard hunts 6 slimes, Normal DN1 3",
-		show({ kills("DH1"), kills("DR1"), kills("DN1") }))
+	-- user 10/16: Hard 50 slimes, Normal 20, the goblin race 30, the Challenge 50 ruins skeletons (Daily.luau's K table)
+	local dc3 = SQ.Defs.DC3.Steps[2].Obj
+	check(kills("DH1") == 50 and kills("DR1") == 50 and kills("DN1") == 20 and kills("DC2") == 30
+		and dc3.Type == "Kill" and dc3.Kind == "Skeleton" and dc3.Count == 50, "Hard 50 slimes, Normal DN1 20, DC2 30 goblins, DC3 50 skeletons",
+		show({ kills("DH1"), kills("DR1"), kills("DN1"), kills("DC2"), dc3.Count }))
 	for _, id in { "DN2", "DC3" } do
 		local def, timings, far = SQ.Defs[id], 0, 0
 		local home = def.Steps[1].Obj.Spot
@@ -3316,10 +3319,10 @@ runGroup("the daily pack", function()
 			Position = vec(150, 0, 0), WarPoints = 0 })
 		w:Flush()
 	end
-	for _ = 1, 5 do slime() end
-	check(w:Track(d, "DH1").St == 1, "5 slimes: still hunting (Hard = 6)", show(w:Track(d, "DH1")))
+	for _ = 1, 49 do slime() end
+	check(w:Track(d, "DH1").St == 1, "49 slimes: still hunting (Hard = 50)", show(w:Track(d, "DH1")))
 	slime()
-	check(w:Track(d, "DH1").St == 2, "6 slimes: on to the glue", show(w:Track(d, "DH1")))
+	check(w:Track(d, "DH1").St == 2, "50 slimes: on to the glue", show(w:Track(d, "DH1")))
 	w:MoveTo(p, SQ.Landmarks.DH1Glue + vec(2, 0, 0))
 	w:Act(p, "DH1", "Pickup")
 	check(w:Track(d, "DH1").St == 3, "the glue picked up at its spot: on to Bright", show(w:Track(d, "DH1")))
