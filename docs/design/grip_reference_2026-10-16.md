@@ -33,3 +33,16 @@
 - 카메라 Scriptable, 캐릭터 기준 앞·옆(오른쪽 = 무기 쪽)·뒤, 거리 9칸, 가슴 높이.
 - 서기 = 1.5초 쉼 뒤, 걷기 = Humanoid:Move 앞으로 0.7초 뒤, 공격 = F 누르고 0.15·0.35초.
 - 도구 `build/dev1_tools/grip1016.py`(git 밖), 결과 `docs/art/verification_2026-10-16/grip_check/`(사진·숫자 JSON·시트).
+
+## 4. 활 전투 대기 (사용자 10/16 "활이 문제인게 이게 대기하는 자세가 이상해")
+> 최종 검수가 본 것: 두 팔이 곧게 늘어지고 활이 왼다리 옆에 세로로 매달림 → '막대 든 마네킹', 옆에서는 활이 몸 뒤로 숨음. 사냥꾼 '들고 다니기'(§1 BattlBox)를 맞춘 게 원인 — 게임에서는 쏘는 사람으로 안 읽힘.
+
+| 무엇 | 핵심 | 출처 |
+|---|---|---|
+| 게임 궁수 동작 묶음 | 일반 대기(out of combat idle)와 활을 든 대기(bow idle, 상체 대기)·조준 걷기를 따로 둠 → 전투 중 대기는 '쏠 준비' 자세 | [Superhive "Stylized Archers Pack"](https://superhivemarket.com/products/stylized-archers-pack---animated-characters-male--female/docs), [kevdev "Human Archer Animations"](https://kevdev.itch.io/human-archer-animations) |
+| 2D 궁수 스프라이트 | 활을 드는 각도를 120·90·60·30°로 나눠 그림 — 활은 몸 앞에서 각도를 가진 채 들림 | [Game Developer Studio "Animated Archers"](https://gamedeveloperstudio.itch.io/animated-archers-character-pack) |
+| 3D 궁수 자세 모음 | '전투 준비(combat-ready)' 자세 = 활 팔을 몸 앞에 두고 다른 손은 시위·화살 근처 | [PoseMy.Art "Archer Pose Reference"](https://posemy.art/archer-pose-reference/) |
+| 화살 걸고 기다리기 | 사냥꾼은 쫓을 때 화살을 걸어 둔 채 활을 낮게 든다(바로 쏠 준비) | [Tactical: carrying arrows nocked](https://emilyleiapp.flothemes.com/when-should-you-carry-arrows-in-the-nocked-position/) |
+
+**목표(최종 검수 10/16):** 왼팔 팔꿈치 60~90° 굽혀 손이 왼쪽 허리~배 앞. 활은 몸 앞쪽으로 비스듬히(위 끝이 앞·바깥 25~40°). 오른손은 시위 근처나 허리. 앞·옆 어디서 봐도 활 모양이 보임.
+**안 2개(사진으로 고름):** A = 비스듬히 앞(위 끝 앞·바깥 25~40°) / B = 낮게 몸 앞 가로(배 앞, 거의 수평).
