@@ -517,7 +517,12 @@ MUTATIONS = [
      "\t\t\tif requirementsMet(player, data, def) then offers[npc] = true end", "\t\t\toffers[npc] = true"),
     ("P1: a main never offered", ST, "if main and offerNpc(player, DEFS[main]) == npcId and offerable(player, data, main) then table.insert(out, main) end", ""),
     ("P1: a practice swing from anywhere", ST, "Util.FlatDistance(ev.Pos, spot) > num(obj.Radius, 8) then return 0 end", "false then return 0 end"),
-    ("P1: a practice swing facing away", ST, "look.Unit:Dot(to.Unit) < num(SQ.PracticeFacing, 0.3) then return 0 end", "false then return 0 end"),
+    # A23-221 ①: no facing check any more (it refused hits at the dummy's side): a facing check put back must be caught
+    ("P1: the facing check is back (a swing facing away refused)", ST,
+     "Util.FlatDistance(ev.Pos, spot) > num(obj.Radius, 8) then return 0 end\n\t\treturn 1\n",
+     "Util.FlatDistance(ev.Pos, spot) > num(obj.Radius, 8) then return 0 end\n"
+     "\t\tif typeof(ev.Look) == \"Vector3\" and ev.Look.X * (spot.X - ev.Pos.X) + ev.Look.Z * (spot.Z - ev.Pos.Z) < 0 then return 0 end\n"
+     "\t\treturn 1\n"),
     ("P1: no PracticeTool", ST, "if player:GetAttribute(\"PracticeTool\") ~= practice then player:SetAttribute(\"PracticeTool\", practice) end", ""),
     ("P1: swings not heard", ST, "\t\tcombat.BasicSwing:Connect(onBasicSwing)\n", ""),
     ("P1: an emote anywhere", ST, "if not spot or not root or Util.FlatDistance(root.Position, spot) > num(obj.Radius, 10) then return end", "if false then return end"),
@@ -548,7 +553,8 @@ MUTATIONS = [
     ("P1: old Lunch1 saves not moved", ST, "\tmigrate(st)\n", ""),
     ("P1: the migration every join", ST, "\tif num(st.Schema, 1) < 2 then\n", "\tif true then\n"),
     ("P1: an old pond hunt loses its count", ST, "\t\tif old ~= 2 then tr.P, tr.T = 0, {} end\n", "\t\ttr.P, tr.T = 0, {}\n"),
-    ("P1: the band before Lv3", C, "\tRequires = { Done = { \"M1_1\" }, Level = 3 },\n\tOffer = { Npc = \"Bright\"", "\tRequires = { Done = { \"M1_1\" } },\n\tOffer = { Npc = \"Bright\""),
+    ("P1: the band before Lv3", C, "\tRequires = { Done = { \"M1_2\" }, Level = 3 }, -- A23-222: the band is found at the anvil in M1_2\n\tOffer = { Npc = \"Bright\"", "\tRequires = { Done = { \"M1_2\" } },\n\tOffer = { Npc = \"Bright\""),
+    ("A23-222: the band before the King's Hop", C, "\tRequires = { Done = { \"M1_2\" }, Level = 3 }, -- A23-222: the band is found at the anvil in M1_2\n\tOffer = { Npc = \"Bright\"", "\tRequires = { Done = { \"M1_1\" }, Level = 3 },\n\tOffer = { Npc = \"Bright\""),
     ("P1: the band's flag never written", C, "\t\t\t\tFlag = { Key = \"Band\", Good = \"Show\", Evil = \"Hide\" } } },", "\t\t\t\tFlag_ = { Key = \"Band\", Good = \"Show\", Evil = \"Hide\" } } },"),
     ("P1: the choice flag ignored", ST, "\t\t\tflagBySide(player, data, id, obj.Flag, option) -- P1 ①-4\n", ""),
     # --- quest P1 ⑤

@@ -186,10 +186,18 @@ runGroup("config", function()
 	check(TC.Text.Claimed == "+%s gold" and TC.Text.AutoClaimed == nil and TC.Text.ClaimedArmed == nil,
 		"A23-130: one claim line, the reward only", show({ TC.Text.Claimed, TC.Text.AutoClaimed }))
 	local M11 = C.StoryQuests.Defs.M1_1
+	-- A23-222 (user 10/16): M1_1 = the Slime Prince only; the scroll is used at Otto's anvil in M1_2 (the King's Hop), next
+	local nextOk = true
+	for _, side in { "Halo", "Horns", "Neutral" } do
+		if not (M11.Next and M11.Next[side] and M11.Next[side].Id == "M1_2") then nextOk = false end
+	end
 	check(M11.GiveWeapon == 1 and M11.Reward and M11.Reward.Gold == 1 and M11.Steps[1].Obj.Kind == "BigSlime" and M11.Steps[1].Obj.Count == 1
-		and M11.Steps[2].Obj.Name == "ScrollUsed" and M11.Steps[2].GiveItem == nil,
-		"M1_1 (A23-188): a Slime Prince, then the scroll used (no visit, no Forge scroll), Gold 1, the gift kept as the safety net",
-		show({ M11.GiveWeapon, M11.Reward }))
+		and #M11.Steps == 1 and nextOk,
+		"M1_1 (A23-188 / A23-222): one Slime Prince (no visit, no scroll step), Gold 1, the gift kept as the safety net, next M1_2",
+		show({ M11.GiveWeapon, M11.Reward, #M11.Steps, M11.Next }))
+	local anvil = C.StoryQuests.Defs.M1_2 and C.StoryQuests.Defs.M1_2.Steps[5]
+	check(anvil and anvil.Obj.Name == "ScrollUsed" and anvil.Obj.Past == true and anvil.Anvil == true and anvil.Npc == "Otto"
+		and anvil.GiveItem == nil, "M1_2 step 5: the scroll at Otto's anvil (ScrollUsed, Past; no step gift)", show(anvil))
 	local order = {}
 	for i, name in C.Analytics.Steps do order[name] = i end
 	check(order.FirstMissionAccept < order.ForgeArrive and order.ForgeArrive < order.FirstWeapon
@@ -271,29 +279,36 @@ runGroup("weapon first", function()
 	w:Walk(p, "SlimeMeadow")
 	for _ = 1, 5 do w:Drop(p, "Slime") end
 	check(d.TutorialKills == 0 and step(p) == 99 and d.BankGold == 150, "meadow slimes: no '5 slimes' mission any more", show({ d.TutorialKills, d.BankGold }))
+	local n5 = #w.Notices
 	w:Drop(p, "BigSlime")
 	w:Flush()
-	check(st.Main.Id == "M1_1" and st.Main.St == 2 and scrolls() >= 1 and bit32.btest(d.WeaponOwnedMask, 2),
-		"the first Slime Prince: the T2 weapon + the scroll; M1_1 step 2 'Use the Enhance Scroll'", show({ st.Main, scrolls(), d.WeaponOwnedMask }))
-	local had = scrolls()
-	local n5 = #w.Notices
-	w:Remote(p, "UseItem", "Enh70", 1)
-	check(st.Done.M1_1 == true and scrolls() == had - 1, "the scroll used from the bag right there finishes M1_1", show({ st.Done.M1_1, scrolls() }))
-	local lines = w:NoticesFor(p, n5)
+	check(st.Done.M1_1 == true and scrolls() >= 1 and bit32.btest(d.WeaponOwnedMask, 2),
+		"the first Slime Prince: the T2 weapon + the scroll; M1_1 done (A23-222: one step, the scroll waits for Otto's anvil)",
+		show({ st.Main, st.Done.M1_1, scrolls(), d.WeaponOwnedMask }))
+	local lines = w:NoticesFor(p, n5) -- the kill's notices: M1_1's reward line
 	local done = false
 	for _, line in lines do if string.find(line, " done!", 1, true) then done = true end end
 	check(done and d.BankGold > 150, "M1_1's reward line and a little gold (Reward Gold 1)", show(lines))
 	w.Story.Refresh(p)
-	check(st.Main.Id == "" and w.Config.StoryQuests.Defs.M1_2 == nil and w.Config.StoryQuests.Defs.M1_3.Requires.Level == 5,
-		"then M1_3 waits for Lv5 (quest P1 ⑤: the teacher's test; 10/15: no second Prince quest M1_2)", show(st.Main))
+	local M12 = w.Config.StoryQuests.Defs.M1_2
+	check(st.Main.Id == "M1_2" and st.Main.St == 1 and M12.Steps[1].Guide == "KingHill" and M12.Title == "The King's Hop"
+		and w.Config.StoryQuests.Defs.M1_3.Requires.Level == 5,
+		"then the King's Hop (main M1_2) starts at once on the King's hill row; M1_3 still waits for Lv5", show(st.Main))
+	-- the scroll used from the bag now does not skip the King: M1_2 stays on its first row (step 5 = Past: it passes later)
+	local had = scrolls()
+	w:Remote(p, "UseItem", "Enh70", 1)
+	check(scrolls() == had - 1 and st.Main.Id == "M1_2" and st.Main.St == 1,
+		"a scroll used from the bag right away: M1_2 still waits for the King's hop (step 1)", show({ st.Main, scrolls() }))
 end)
 
 ------------------------------------------------------------------ 2b. a step's gift (GiveItem: given once when the step opens, tried again at a join)
 runGroup("step gift", function()
 	local w = forgeWorld()
 	local T = w.Config.Tutorial
-	-- no step ships a GiveItem since A23-188; the engine keeps it (a test-only gift on M1_1 step 2)
-	w.Config.StoryQuests.Defs.M1_1.Steps[2].GiveItem = { Item = "Enh70", N = 1 }
+	-- no step ships a GiveItem since A23-188; the engine keeps it (a test-only gift on a test-only M1_1 step 2: A23-222 ships
+	-- M1_1 with one step)
+	w.Config.StoryQuests.Defs.M1_1.Steps[2] = { Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
+		Obj = { Type = "Event", Name = "ScrollUsed", Past = true }, GiveItem = { Item = "Enh70", N = 1 } }
 	local p, d = w:Newbie(2)
 	w:Accept(p)
 	w:Walk(p, "Crossroads")
@@ -346,6 +361,11 @@ runGroup("step gift", function()
 	lootSvc.GrantItem = grantItem
 	check(#asked == 1 and st.First.GiveM1_12 == true and d.Items.Enh70 == LT.ItemCap,
 		"a full stack: asked once, then marked given (no retry, no repeated 'full' line)", show({ asked, st.First.GiveM1_12 }))
+	-- 1-A #2: a scroll used on the weapon (LootService's Event ScrollUsed) passes the scroll step
+	check(st.Main.Id == "M1_1" and st.Main.St == 2, "still on the (test-only) scroll step", show(st.Main))
+	w:Remote(p, "UseItem", "Enh70", 1)
+	check(st.Done.M1_1 == true and d.Items.Enh70 == LT.ItemCap - 1, "a scroll used from the bag: ScrollUsed passes the step (M1_1 done)",
+		show({ st.Done.M1_1, st.Main, d.Items.Enh70 }))
 	local _ = T
 end)
 
@@ -587,33 +607,51 @@ runGroup("p1 guide and teacher", function()
 	rootOf(p).Position = vec(-12, 3, -374)
 	local n0 = #w.Fired
 	local said = w.Story.TalkToNpc(p, "Gleam")
-	check(said == "Offer:H_Basics" and step(p) == T.Steps.Forge and d.Story.First.TeacherMet == true and w:Panels(p, "Offer", n0) == 1,
-		"the talk to Sir Gleam: met (saved), the Forge step, and his lesson offered in the same talk", show({ said, step(p) }))
+	-- A23-221 ① (최종 검수 10/16): the lesson is the first mission's Practice step (5) now, not a side offer
+	check(said ~= "Welcome" and step(p) == T.Steps.Practice and T.Steps.Practice == 5 and d.TutorialStep == 5
+		and d.Story.First.TeacherMet == true and w:Panels(p, "Offer", n0) == 0,
+		"the talk to Sir Gleam: met (saved), the Practice step (5), no side offer (A23-221 ①)", show({ said, step(p) }))
+	check(SQ.Defs.H_Basics == nil and SQ.Defs.R_Basics == nil and table.find(SQ.Subs, "H_Basics") == nil
+		and table.find(SQ.Subs, "R_Basics") == nil and SQ.Defs.N_Basics ~= nil and T.Practice.Neutral == nil,
+		"Config: the Halo / Horns lessons are gone (the artisans keep Otto's N_Basics; no Neutral practice key)", show(T.Practice))
 	local keys = {}
 	for _, f in w:FxFor(p, "StoryScene", tfx) do
 		if f.Data.Id == "Tutorial" then table.insert(keys, f.Data.Key .. "=" .. tostring(f.Data.Value) .. "@" .. tostring(f.Data.St)) end
 	end
-	check(table.concat(keys, ",") == "Scene=Wave@Teacher,Find=Forge@Forge", "A23-208: met = Sir Gleam's wave, then the Forge step's Find",
+	check(table.concat(keys, ",") == "Scene=Wave@Teacher,Find=Practice@Practice", "A23-208: met = Sir Gleam's wave, then the Practice step's Find",
 		table.concat(keys, ","))
-	w:Remote(p, "StoryAction", "H_Basics", "Decline")
-	check(d.Story.Subs.H_Basics == nil and step(p) == T.Steps.Forge, "Decline the lesson: nothing saved, the Forge goes on", "")
-	local fx0 = #w.Fx
-	w:Remote(p, "StoryAction", "H_Basics", "Accept")
-	local demo, find = {}, {}
-	for _, f in w:FxFor(p, "StoryScene", fx0) do -- (A23-208: the first step's Find bubble comes with it)
-		table.insert(f.Data.Key == "Find" and find or demo, f)
-	end
-	check(d.Story.Subs.H_Basics ~= nil and #demo == 1 and demo[1].Data.Key == "Demo" and demo[1].Data.Value == "Gleam" and #find == 1,
-		"Accept the lesson: it starts + the teacher's demo scene (+ the first step's Find)", show(demo[1] and demo[1].Data))
 	w.Story.Refresh(p)
-	check(p:GetAttribute("PracticeTool") == "H_Basics", "the borrowed practice tool while the dummy step is open", p:GetAttribute("PracticeTool"))
+	check(p:GetAttribute("PracticeTool") == "Tutorial", "the borrowed practice tool while the dummy step is open (PracticeTool = Tutorial)",
+		p:GetAttribute("PracticeTool"))
+	row = w:Rows(p)[1] or {}
+	check(row.TutorialStep == 5 and row.Text == T.Text.Practice and row.ShortName == T.ShortNames.Practice and row.GuideSpot == "PracticeH"
+		and row.Practice == true and #T.ShortNames.Practice <= 14,
+		"the row: 'Hit the practice dummy', GuideSpot = PracticeH, Practice = true", show({ row.Text, row.ShortName, row.GuideSpot, row.Practice }))
 	local dummy = SQ.Landmarks.PracticeH
-	w.Registry.CombatService.BasicSwing:Fire(p, vec(dummy.X - 4, 0, dummy.Z), vec(1, 0, 0))
+	local swing = w.Registry.CombatService.BasicSwing
+	swing:Fire(p, vec(dummy.X - 15, 0, dummy.Z), vec(1, 0, 0))
 	w:Flush()
-	check(d.Story.Subs.H_Basics and d.Story.Subs.H_Basics.St == 2, "a basic swing at the dummy: hit", show(d.Story.Subs.H_Basics))
-	rootOf(p).Position = vec(-12, 3, -374)
-	w.Story.TalkToNpc(p, "Gleam")
-	check(d.Story.Done.H_Basics == true and (d.WeaponTier or 0) == 0, "the tool handed back: the lesson is done (no weapon given by it)", "")
+	check(step(p) == T.Steps.Practice, "a swing 15 studs from the dummy (facing it): nothing", step(p))
+	local other = w:Newbie(311, { Faction = "Halo" })
+	swing:Fire(other, vec(dummy.X - 4, 0, dummy.Z), vec(1, 0, 0))
+	w:Flush()
+	check(step(p) == T.Steps.Practice and step(other) == 0, "another player's swing at the dummy: nothing for me (nor for them)",
+		show({ step(p), step(other) }))
+	local sfx = #w.Fx
+	swing:Fire(p, vec(dummy.X - 4, 0, dummy.Z), vec(-1, 0, 0)) -- 4 studs away, facing AWAY from the dummy
+	w:Flush()
+	check(step(p) == T.Steps.Forge and (d.WeaponTier or 0) == 0,
+		"a swing 4 studs from the dummy facing AWAY counts (A23-221 ①: no facing check): bare-handed -> the Forge", step(p))
+	keys = {}
+	for _, f in w:FxFor(p, "StoryScene", sfx) do
+		if f.Data.Id == "Tutorial" then table.insert(keys, f.Data.Key .. "=" .. tostring(f.Data.Value) .. "@" .. tostring(f.Data.St)) end
+	end
+	check(table.concat(keys, ",") == "Scene=Bow@Practice,Find=Forge@Forge", "Sir Gleam's bow (the stick back), then the Forge step's Find",
+		table.concat(keys, ","))
+	check((p:GetAttribute("PracticeTool") or "") == "", "the stick is handed back (PracticeTool cleared)", p:GetAttribute("PracticeTool"))
+	swing:Fire(p, vec(dummy.X - 4, 0, dummy.Z), vec(1, 0, 0))
+	w:Flush()
+	check(step(p) == T.Steps.Forge, "a second swing changes nothing", step(p))
 	-- the Forge as before: the first weapon and the 150 gold once
 	w:Walk(p, "Crossroads")
 	rootOf(p).Position = vec(39, 3, 37)
@@ -642,6 +680,38 @@ runGroup("p1 guide and teacher", function()
 	check(step(r) == T.Steps.Forge, "no teacher body (Rose): no teacher step", step(r))
 	local s4, sd = w:Newbie(304, { Faction = "Horns", Tutorial = 4 })
 	check(step(s4) == T.Steps.Forge, "a save at the Teacher step whose teacher has no body: on to the Forge at the join", step(s4))
+	-- A23-221 ①: Rose's body: the talk -> Practice at PracticeR; the dummy's spot gone while the step waits -> on (never stuck)
+	local ROSE = vec(-30, 0, 410)
+	body("Smokey", ROSE)
+	local h, hd = w:Newbie(305, { Faction = "Horns" })
+	rootOf(h).Position = vec(-14, 3, -426) -- (the guide's lines open by the row while Magpie has no body)
+	w:Accept(h)
+	check(step(h) == T.Steps.Teacher, "Horns with Rose's body: the Teacher step", step(h))
+	rootOf(h).Position = vec(-28, 3, 412)
+	w.Story.TalkToNpc(h, "Smokey")
+	w.Story.Refresh(h)
+	check(step(h) == T.Steps.Practice and hd.Story.First.TeacherMet == true and h:GetAttribute("PracticeTool") == "Tutorial",
+		"Horns: met Rose -> the Practice step at PracticeR, the stick in hand", show({ step(h), h:GetAttribute("PracticeTool") }))
+	local spotR = SQ.Landmarks.PracticeR
+	SQ.Landmarks.PracticeR = nil
+	w:QuestTick()
+	check(step(h) == T.Steps.Forge, "the dummy's spot gone while the Practice step waits: on to the Forge (never stuck)", step(h))
+	local h2, hd2 = w:Newbie(306, { Faction = "Horns" })
+	w:Accept(h2)
+	rootOf(h2).Position = vec(-28, 3, 412)
+	w.Story.TalkToNpc(h2, "Smokey")
+	check(step(h2) == T.Steps.Forge and hd2.Story.First.TeacherMet == true,
+		"a side without a dummy spot: met -> straight to the Forge (no Practice step)", step(h2))
+	SQ.Landmarks.PracticeR = spotR
+	-- an armed Horns player: the dummy hit finishes the mission (TEACH.After: no Forge trip with a weapon in hand)
+	local h3, hd3 = w:Newbie(307, { Faction = "Horns", Tier = 1, Mask = 1 })
+	w:Accept(h3)
+	rootOf(h3).Position = vec(-28, 3, 412)
+	w.Story.TalkToNpc(h3, "Smokey")
+	check(step(h3) == T.Steps.Practice, "armed: met Rose -> the Practice step too", step(h3))
+	w.Registry.CombatService.BasicSwing:Fire(h3, vec(spotR.X + 6, 0, spotR.Z + 6), vec(1, 0, 0)) -- 8.5 studs, facing away
+	w:Flush()
+	check(step(h3) == 99 and hd3.BankGold == 150, "armed: the dummy hit finishes the first mission (+150)", show({ step(h3), hd3.BankGold }))
 end)
 
 ------------------------------------------------------------------ 5. old saves: never left bare-handed
@@ -722,7 +792,7 @@ runGroup("save", function()
 		fill(d, "P1")
 		return d.TutorialStep
 	end
-	for _, case in { { 3, 3 }, { 0, 0 }, { 1, 1 }, { 2, 2 }, { 99, 99 }, { 4, 4 }, { 5, 99 }, { -1, 99 } } do -- P1 ②: 4 = the Teacher step
+	for _, case in { { 3, 3 }, { 0, 0 }, { 1, 1 }, { 2, 2 }, { 99, 99 }, { 4, 4 }, { 5, 5 }, { 6, 99 }, { -1, 99 } } do -- P1 ②: 4 = the Teacher step; A23-221 ①: 5 = the dummy
 		check(load(case[1]) == case[2], "TutorialStep " .. case[1] .. " loads as " .. case[2], load(case[1]))
 	end
 end)

@@ -100,9 +100,10 @@ runGroup("config", function()
 	table.sort(names)
 	check(table.concat(names, ",") == "DailyVisit,FirstKO,KingDiary,LongRoad,PassShop,Social" and #names + 1 <= 10,
 		"6 funnels + the onboarding one (Roblox: at most 10)", table.concat(names, ","))
-	check(table.concat(A.Funnels.FirstKO.Steps, ",") == "KO,PotionBought,SlotSet,PotionUsed,KingWon" and A.Funnels.FirstKO.Once == true
-		and A.QuestFunnels.KO1 == "FirstKO" and #A.Funnels.FirstKO.Steps == #C.StoryQuests.Defs.KO1.Steps,
-		"FirstKO: the five steps of KO1 in order, once per account (A23-113 #2)", show(A.Funnels.FirstKO))
+	-- A23-222: the King's Hop is the main M1_2 (six steps: the scroll at Otto's anvil before the rematch)
+	check(table.concat(A.Funnels.FirstKO.Steps, ",") == "KO,PotionBought,SlotSet,PotionUsed,Enhanced,KingWon" and A.Funnels.FirstKO.Once == true
+		and A.QuestFunnels.M1_2 == "FirstKO" and A.QuestFunnels.KO1 == nil and #A.Funnels.FirstKO.Steps == #C.StoryQuests.Defs.M1_2.Steps,
+		"FirstKO: the six steps of M1_2 in order, once per account (A23-113 #2, A23-222)", show(A.Funnels.FirstKO))
 	check(A.TimeToLevel.Level == 5 and A.TimeToLevel.Event == "MinutesToLv5" and A.PvPResultGap >= 1, "MinutesToLv5 at Lv5; PvPResult at most once a second per killer", show(A.TimeToLevel))
 	check(A.PvPKOedDay.Event == "PvPKOedDay" and table.concat(A.PvPKOedDay.Steps, ",") == "1,3,5,10,20",
 		"PvPKOedDay: logged at the 1st, 3rd, 5th, 10th and 20th KO by players of a KST day", show(A.PvPKOedDay))
@@ -612,26 +613,28 @@ runGroup("FirstKO funnel (A23-113 #2)", function()
 	local w = metricsWorld()
 	local p = hero(w, 31, { Data = { Level = 4 } })
 	local sd = w.Reg.StoryQuestService.StepDone
-	sd:Fire(p, "KO1", 1)
+	sd:Fire(p, "M1_2", 1)
 	check(w:Steps(p, "FirstKO") == "1:KO", "the King's hit (step 1 done) = KO", w:Steps(p, "FirstKO"))
-	sd:Fire(p, "KO1", 1)
+	sd:Fire(p, "M1_2", 1)
 	check(w:Steps(p, "FirstKO") == "1:KO", "a step logs once per account", w:Steps(p, "FirstKO"))
-	for step = 2, 5 do sd:Fire(p, "KO1", step) end
-	check(w:Steps(p, "FirstKO") == "1:KO,2:PotionBought,3:SlotSet,4:PotionUsed,5:KingWon", "the five steps, in order: KO, PotionBought, SlotSet, PotionUsed, KingWon", w:Steps(p, "FirstKO"))
+	for step = 2, 6 do sd:Fire(p, "M1_2", step) end
+	check(w:Steps(p, "FirstKO") == "1:KO,2:PotionBought,3:SlotSet,4:PotionUsed,5:Enhanced,6:KingWon",
+		"the six steps, in order: KO, PotionBought, SlotSet, PotionUsed, Enhanced, KingWon", w:Steps(p, "FirstKO"))
 	check(w.Data[p].Telemetry.F.FirstKO.KO == true, "saved in data.Telemetry.F (once per account)", show(w.Data[p].Telemetry))
 	-- other quests, a step past the end, a bad quest id: nothing
 	local q = hero(w, 32, { Data = { Level = 4 } })
-	sd:Fire(q, "M1_2", 1)
-	sd:Fire(q, "KO1", 6)
-	sd:Fire(q, "KO1", 0)
+	sd:Fire(q, "KO1", 1) -- the old sub (gone since A23-222)
+	sd:Fire(q, "M1_1", 1)
+	sd:Fire(q, "M1_2", 7)
+	sd:Fire(q, "M1_2", 0)
 	sd:Fire(q, nil, 1)
-	sd:Fire(q, "KO1", nil)
-	check(w:Steps(q, "FirstKO") == "", "another quest / a step outside 1-5 / bad arguments log nothing", w:Steps(q, "FirstKO"))
+	sd:Fire(q, "M1_2", nil)
+	check(w:Steps(q, "FirstKO") == "", "another quest (the old KO1 too) / a step outside 1-6 / bad arguments log nothing", w:Steps(q, "FirstKO"))
 	-- a step passed out of order by the quest (Past) still logs in the quest's order, one at a time
-	sd:Fire(q, "KO1", 3)
+	sd:Fire(q, "M1_2", 3)
 	check(w:Steps(q, "FirstKO") == "3:SlotSet", "the funnel step index is the step's own number", w:Steps(q, "FirstKO"))
 	-- the other players' funnels stay apart
-	check(w:Steps(p, "FirstKO") == "1:KO,2:PotionBought,3:SlotSet,4:PotionUsed,5:KingWon", "players never share a funnel", w:Steps(p, "FirstKO"))
+	check(w:Steps(p, "FirstKO") == "1:KO,2:PotionBought,3:SlotSet,4:PotionUsed,5:Enhanced,6:KingWon", "players never share a funnel", w:Steps(p, "FirstKO"))
 end)
 
 local function brief(list) -- a readable line of logged events (never the player: it points back at the world)

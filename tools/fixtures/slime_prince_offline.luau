@@ -92,14 +92,27 @@ runGroup("quest texts", function()
 		end
 		check(named >= n, id .. ": its Slime Prince step says 'Slime Prince'", show(steps))
 	end
-	-- 최종 검수 10/15: M1_2 ("one more Prince") is gone; M1_1 ends with the band found, in the player's own words
-	check(DEFS.M1_2 == nil and DEFS.M1_1.Finish == nil and string.find(DEFS.M1_1.Steps[2].Find or "", "two colors", 1, true) ~= nil,
-		"M1_2 gone; M1_1 ends with the two-colour band (my own words, no Otto card)", tostring(DEFS.M1_1.Steps[2].Find))
+	-- A23-222 (user 10/16): M1_1 = the Slime Prince only (one step); M1_2 is the King's Hop (the real King Slime, not a second
+	-- Prince) and the two-colour band is found at its anvil step (5) in the player's own words (no Otto card)
+	local m2 = DEFS.M1_2
+	local anvil = m2 and m2.Steps[5]
+	check(#DEFS.M1_1.Steps == 1 and DEFS.M1_1.Finish == nil and m2 ~= nil and m2.Title == "The King's Hop"
+		and anvil ~= nil and anvil.Anvil == true and string.find(anvil.Find or "", "two colors", 1, true) ~= nil,
+		"M1_1 = the Prince only; M1_2 = the King's Hop, its anvil step finds the two-colour band (my own words, no Otto card)",
+		show({ #DEFS.M1_1.Steps, m2 and m2.Title, anvil and anvil.Find }))
+	local princeInM12 = false
+	for _, st in (m2 and m2.Steps or {}) do
+		if type(st.Obj) == "table" and st.Obj.Kind == "BigSlime" then princeInM12 = true end
+	end
+	check(not princeInM12, "M1_2 counts no Slime Prince (one more Prince felt like a repeat)", show(m2 and m2.Steps))
 	local s0 = princeSteps("S0")[1][2]
 	check(string.find(s0.Start or "", "A Slime Prince swallowed a shard!", 1, true) ~= nil, "S0: a Slime Prince swallowed the shard",
 		tostring(s0.Start))
-	local h1 = princeSteps("H1")[1][2]
-	check(string.find(h1.Start or "", "Slime Princes gobbled", 1, true) ~= nil, "H1: Slime Princes gobbled the sack", tostring(h1.Start))
+	-- 10/16 (story ch2 data, 81f00277): H1's old Start line ("Slime Princes gobbled ...") became Bright's Offer lines
+	local h1 = DEFS.H1
+	local h1Lines = table.concat((h1.Offer and h1.Offer.Lines and h1.Offer.Lines.All) or {}, " ")
+	check(string.find(h1Lines, "two princes", 1, true) ~= nil and string.find(string.lower(h1Lines), "king slime", 1, true) == nil,
+		"H1: Bright's offer asks to calm two princes (no 'King Slime')", h1Lines)
 	local tiny = DEFS.XR1.Steps[princeSteps("XR1")[1][1] - 1]
 	check(tiny and tiny.Lines and string.find(tiny.Lines.All[1], "Tiny: A Slime Prince swallowed a teddy bear!", 1, true) ~= nil,
 		"XR1: Tiny's line names the Slime Prince", show(tiny and tiny.Lines))

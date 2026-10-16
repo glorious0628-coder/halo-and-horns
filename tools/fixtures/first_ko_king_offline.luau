@@ -1,7 +1,8 @@
 -- first_ko_king_offline.luau : A23-110 the first KO King (FirstKOService, 게임성 개발 2), offline. Runs on
 -- tools/fixtures/dev2_world.luau (the real CombatService death pipeline, PvPService, GrudgeService, RankingService,
 -- LootService ...) with the real FirstKOService and FinisherService; the quest is a StoryQuestService double (CurrentStep /
--- Event) except in the group "quest KO1", which runs the real StoryQuestService with Config's KO1. MonsterService is a
+-- Event) except in the group "quest M1_2", which runs the real StoryQuestService with Config's King's Hop (the main M1_2 since
+-- A23-222; the sub KO1 before). MonsterService is a
 -- double for the world whose records are built by its real hook-field code and die through its real killRecord; its
 -- other A23-110 code is run cut out (landAttack, SpawnPersonal, RemovePersonal, GroundAt); PlayerService's real get-up
 -- code and QuestService's real kill handler too. No step number is written here: every one comes from Config.FirstKO.
@@ -23,7 +24,10 @@ end
 local FK0 = C0.FirstKOKing
 local FQ = C0.FirstKO
 local STEP, RETRY = FQ.Step, FQ.RematchStep -- game dev 3's rows (never numbers of our own)
-local MEADOW = vec(430, 0, 0) -- the middle of the SlimeMeadow zone
+-- A23-222: the first King comes only within FirstKOKing.Radius of the King's hill row's spot (Landmarks.KingHill), the rematch
+-- King within RetryRadius of the meadow's arrival spot (Landmarks.MeadowArrival): a hunter stands there unless told otherwise
+local MEADOW = C0.StoryQuests.Landmarks.KingHill -- the first King's spot (in the SlimeMeadow zone)
+local ARRIVAL = C0.StoryQuests.Landmarks.MeadowArrival -- the rematch King's spot
 local TOWN = vec(0, 0, 0) -- the Crossroads (a town)
 local PLAIN = C0.MonsterTypes.SlimeKing.Damage -- a plain King hit
 
@@ -196,8 +200,9 @@ local function fkWorld(o)
 		root.Position = pos
 		root.CFrame = { LookVector = vec(0, 0, -1), Position = pos }
 	end
-	-- a ready player in the meadow (o2.Pos; o2.Done = the account had its first KO). The double: on the quest's KO row
-	-- unless o2.Step (false = no step). The real story: a save that finished M1_1 with no potion (KO1 starts at join)
+	-- a ready player in the meadow (o2.Pos, else the King's hill spot; the double's rematch row: the arrival spot; o2.Done = the
+	-- account had its first KO). The double: on the quest's KO row unless o2.Step (false = no step). The real story: a save
+	-- that finished M1_1 (the main M1_2 starts at join)
 	function w:Hunter(userId, faction, o2)
 		o2 = o2 or {}
 		local tier = o2.Tier or 1
@@ -205,14 +210,15 @@ local function fkWorld(o)
 			WeaponOwnedMask = tier >= 1 and bit32.lshift(1, tier - 1) or 0 }
 		if self.Story then
 			data.TutorialStep = 99
-			data.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } }
+			-- (a save of today, Story.Schema 6: an older one past M1_1 skips the King's Hop)
+			data.Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true }, Schema = 6 }
 		end
 		for k, v in o2.Data or {} do data[k] = v end
 		local p = self:Join(userId, faction or "Halo", { Level = o2.Level or 3, Carried = o2.Carried, Data = data })
 		if not self.Story then
 			if o2.Step == nil then self.StepOf[p] = STEP elseif o2.Step ~= false then self.StepOf[p] = o2.Step end
 		end
-		self:Place(p, o2.Pos or MEADOW)
+		self:Place(p, o2.Pos or ((o2.Step == RETRY and not self.Story) and ARRIVAL or MEADOW))
 		self:Flush()
 		return p
 	end
@@ -273,9 +279,20 @@ runGroup("config", function()
 		"Config.FirstKO.RematchStep = one Personal kill of our King in its own zone (what a retry King's kill reports)", show(s2 and s2.Obj))
 	check(C0.MonsterTypes[FK0.Kind] ~= nil and FK0.Kind == "SlimeKing" and C0.MonsterTypes.SlimeKing.Boss == true,
 		"the King Slime (a boss kind, never in the regular pool)")
-	local req = def and def.Requires or {}
-	check(FK0.OneHitBelow == 10 and type(req.MaxLevel) == "number" and req.MaxLevel < FK0.OneHitBelow,
-		"one hit below Lv 10; the quest opens below that (its start level always gets the KO)", show({ FK0.OneHitBelow, req.MaxLevel }))
+	-- A23-222: the quest is the main M1_2 with no level keep: below OneHitBelow the KO, from it the row is told (never stuck)
+	check(FK0.OneHitBelow == 10 and def and def.Kind == "Main" and def.Requires == nil,
+		"one hit below Lv 10; the quest (main M1_2) has no level keep: a Lv 10+ save gets the told row", show({ FK0.OneHitBelow, def and def.Requires }))
+	local hill, arrival = C0.StoryQuests.Landmarks.KingHill, C0.StoryQuests.Landmarks.MeadowArrival
+	check(FK0.Landmark == "KingHill" and FK0.Radius == 30 and FK0.RetryLandmark == "MeadowArrival" and FK0.RetryRadius == 40
+		and hill and hill.X == 400 and hill.Z == -118 and arrival ~= nil,
+		"A23-222: the first King within 30 of KingHill (400, -118), the rematch King within 40 of MeadowArrival", show({ FK0.Landmark, FK0.Radius, FK0.RetryLandmark, FK0.RetryRadius }))
+	check(C0.ZoneAt(hill).Id == "SlimeMeadow" and C0.ZoneAt(hill).Town ~= true and C0.ZoneAt(arrival).Id == "SlimeMeadow"
+		and C0.ZoneAt(arrival + vec(0, 0, 39)).Id == "SlimeMeadow" and C0.ZoneAt(arrival + vec(41, 0, 0)).Id == "SlimeMeadow"
+		and C0.ZoneAt(hill + vec(31, 0, 0)).Id == "SlimeMeadow",
+		"setup: both spots (and the spots around them used below) lie in the meadow", show({ C0.ZoneAt(hill).Id, C0.ZoneAt(arrival).Id }))
+	local G = FK0.GetUp
+	check(G.Spot and G.Spot.X == 6 and G.Spot.Z == -30 and G.Face and G.Face.X == 12 and G.Face.Z == -34 and C0.ZoneAt(G.Spot).Id == "Crossroads",
+		"A23-222: the first KO gets up at GetUp.Spot (6, -30) in the Crossroads (beside Fizzby), facing (12, -34)", show({ G.Spot, G.Face }))
 	check(FK0.OneHitMult >= 10 and FK0.FirstHP >= C0.MonsterTypes.SlimeKing.HP, "x MaxHealth >= 10 (the Guard cap), the first King hard to kill", show(FK0))
 	check(FK0.RespawnIn <= C0.Player.RespawnTime and FK0.RespawnIn > 0, "the first KO gets up no later than a normal KO")
 	check(FK0.Zone == "SlimeMeadow" and C0.Zones[FK0.Zone] ~= nil and C0.Zones[FK0.Zone].Town == false, "the meadow (not a town)")
@@ -389,8 +406,9 @@ runGroup("spawn", function()
 	wtl:Hunter(116, "Halo", { Done = true })
 	wtl:FKTick()
 	check(#wtl.Spawns == 0, "the account had its KO (Tell): no King")
-	-- not in place: town, another zone, dead, not on a King row
-	local w2 = fkWorld()
+	-- not in place: town, another zone, dead, not on a King row (no landmark here: the zone rules alone, "anywhere in Zone")
+	local noMark = function(c) c.FirstKOKing.Landmark, c.FirstKOKing.RetryLandmark = nil, nil end
+	local w2 = fkWorld({ Edit = noMark })
 	local t = w2:Hunter(102, "Halo", { Pos = TOWN })
 	w2:Hunter(103, "Halo", { Pos = vec(840, 0, 95) }) -- the goblin woods
 	local d = w2:Hunter(104, "Halo")
@@ -399,9 +417,9 @@ runGroup("spawn", function()
 	w2:FKTick()
 	check(C0.ZoneAt(vec(840, 0, 95)).Id ~= "SlimeMeadow", "setup: another zone")
 	check(#w2.Spawns == 0, "no King in town / another zone / dead / off the King rows", tostring(#w2.Spawns))
-	w2:Place(t, MEADOW)
+	w2:Place(t, vec(560, 0, 150)) -- far from the King's hill: with no landmark anywhere in the meadow counts
 	w2:FKTick()
-	check(#w2.Spawns == 1 and w2.Spawns[1].P == t, "walking into the meadow brings it", tostring(#w2.Spawns))
+	check(#w2.Spawns == 1 and w2.Spawns[1].P == t, "walking into the meadow brings it (no landmark: anywhere in the zone)", tostring(#w2.Spawns))
 	-- the field King fights nearby: the personal King waits (a slime nearby does not matter)
 	local wb = fkWorld()
 	local field = { Kind = "SlimeKing", Owner = nil, Alive = true, Root = { Position = MEADOW + vec(FK0.BossClear - 4, 0, 0) } }
@@ -422,7 +440,7 @@ runGroup("spawn", function()
 	check(#wb.Spawns == 1 and wb.Spawns[1].P == hb,
 		"the field King 30 studs away (still by its hill marker): the personal King comes (a slime nearby is fine)")
 	-- the King's zone set to a town: still never in a town
-	local wt = fkWorld({ Edit = function(c) c.FirstKOKing.Zone = "Crossroads" end })
+	local wt = fkWorld({ Edit = function(c) noMark(c); c.FirstKOKing.Zone = "Crossroads" end })
 	wt:Hunter(110, "Halo", { Pos = TOWN })
 	wt:FKTick()
 	check(#wt.Spawns == 0, "never inside a town")
@@ -441,6 +459,27 @@ runGroup("spawn", function()
 	w3:Place(far, vec(500 - FK0.Radius + 5, 0, 60))
 	w3:FKTick()
 	check(#w3.Spawns == 2, "inside the Radius now", tostring(#w3.Spawns))
+	-- A23-222: the shipped landmarks: the first King within Radius (30) of KingHill only, the rematch King within RetryRadius
+	-- (40) of MeadowArrival only (each stage its own spot)
+	local wl = fkWorld()
+	local hillOut = wl:Hunter(130, "Halo", { Pos = MEADOW + vec(31, 0, 0) })
+	local hillIn = wl:Hunter(131, "Halo", { Pos = MEADOW + vec(0, 0, 29) })
+	wl:Hunter(132, "Halo", { Pos = ARRIVAL }) -- the first King's row at the rematch spot
+	wl:FKTick()
+	check(#wl.Spawns == 1 and wl.Spawns[1].P == hillIn, "the first King: 29 studs from KingHill yes; 31 studs or at the arrival spot no",
+		show({ #wl.Spawns, wl.Spawns[1] and wl.Spawns[1].P == hillIn }))
+	wl:Place(hillOut, MEADOW + vec(-30, 0, 0))
+	wl:FKTick()
+	check(#wl.Spawns == 2 and wl.Spawns[2].P == hillOut, "... exactly 30 studs: yes", tostring(#wl.Spawns))
+	local rOut = wl:Hunter(133, "Halo", { Step = RETRY, Pos = ARRIVAL + vec(41, 0, 0) })
+	local rIn = wl:Hunter(134, "Halo", { Step = RETRY, Pos = ARRIVAL + vec(0, 0, 39) })
+	wl:Hunter(135, "Halo", { Step = RETRY, Pos = MEADOW }) -- the rematch row on the King's hill
+	wl:FKTick()
+	check(#wl.Spawns == 3 and wl.Spawns[3].P == rIn, "the rematch King: 39 studs from MeadowArrival yes (RetryRadius 40); 41 studs or the hill no",
+		show({ #wl.Spawns }))
+	wl:Place(rOut, ARRIVAL + vec(0, 0, -40)) -- (x 190 would leave the meadow)
+	wl:FKTick()
+	check(#wl.Spawns == 4 and wl.Spawns[4].P == rOut, "... exactly 40 studs: yes", tostring(#wl.Spawns))
 	-- a failing spawn waits SpawnGap
 	local w4 = fkWorld()
 	w4.AllowWarn = "offline spawn failure"
@@ -500,7 +539,7 @@ runGroup("spawn", function()
 	wtw:FKTick()
 	check(ktw ~= nil and not ktw.Alive and wtw.Removed[#wtw.Removed] and wtw.Removed[#wtw.Removed].Rec == ktw
 		and wtw.Removed[#wtw.Removed].Leaving == true, "the owner in a town: its King goes home (leaving)", show(#wtw.Removed))
-	wtw:Place(ptw, MEADOW)
+	wtw:Place(ptw, ARRIVAL)
 	wtw:FKTick()
 	check(wtw:KingOf(ptw) == nil, "back in the meadow: not at once (SpawnGap)")
 	wtw:FKTick(FK0.SpawnGap)
@@ -864,25 +903,67 @@ end)
 
 ------------------------------------------------------------------ 7. the get-up near the fall, hurt
 runGroup("get-up", function()
+	-- A23-222: the first KO gets up at GetUp.Spot (beside Fizzby in the Crossroads: the potion is the next row), Lift above the
+	-- ground there (MonsterService.GroundAt), facing GetUp.Face (flat), after RespawnIn s
+	local G = FK0.GetUp
 	local w = fkWorld()
 	local p = w:Hunter(101, "Halo")
-	local rec = w:Meet(p)
-	local from = rec.Root.Position
+	w:Meet(p)
 	w:Die(p)
 	local up = w.FK.GetUp(p)
 	local at = up and up.CFrame and up.CFrame.Args[1]
 	local look = up and up.CFrame and up.CFrame.Args[2]
+	check(up and up.Delay == FK0.RespawnIn and up.CFrame and up.CFrame.Ctor == "lookAt", "a held get-up: delay + CFrame", show(up))
+	check(at and near(at.X, G.Spot.X, 1e-3) and near(at.Y, 1 + G.Lift, 1e-3) and near(at.Z, G.Spot.Z, 1e-3),
+		"at GetUp.Spot (6, -30), Lift above its ground (not where it fell in the meadow)", show(at))
+	check(look and near(look.X, G.Face.X, 1e-3) and near(look.Z, G.Face.Z, 1e-3) and near(look.Y, at.Y, 1e-3),
+		"facing GetUp.Face (12, -34), level", show(look))
+	-- the spot's ground: none hit (a bare place) = Y 0; water / no answer = the Spot's own Y; a GroundAt that throws = the Spot's Y
+	local function spotWorld(uid, setup)
+		local ws = fkWorld({ Edit = function(c) c.FirstKOKing.GetUp.Spot = vec(6, 7, -30) end })
+		local ps = ws:Hunter(uid, "Halo")
+		ws:Meet(ps)
+		setup(ws)
+		ws:Die(ps)
+		local u = ws.FK.GetUp(ps)
+		return u and u.CFrame and u.CFrame.Args[1], u
+	end
+	local atBare = spotWorld(110, function(ws) ws.NoGround = true end)
+	check(atBare and near(atBare.Y, G.Lift, 1e-3) and near(atBare.X, 6, 1e-3), "no ground hit at the spot: the flat floor (Y 0) + Lift", show(atBare))
+	local atWet = spotWorld(111, function(ws) ws.Ground["6:-30"] = "water" end)
+	check(atWet and near(atWet.Y, 7 + G.Lift, 1e-3), "no ground answer (water): the Spot's own Y + Lift", show(atWet))
+	local atBoom = spotWorld(112, function(ws)
+		ws.Registry.MonsterService.GroundAt = function() error("offline ground boom") end
+	end)
+	check(atBoom and near(atBoom.Y, 7 + G.Lift, 1e-3), "a GroundAt that throws: the Spot's own Y + Lift", show(atBoom))
+	-- a Face on the spot itself: no turn (CFrame.new)
+	local wf = fkWorld({ Edit = function(c) c.FirstKOKing.GetUp.Face = vec(6, 0, -30) end })
+	local pf = wf:Hunter(113, "Halo")
+	wf:Meet(pf)
+	wf:Die(pf)
+	local upf = wf.FK.GetUp(pf)
+	check(upf and upf.CFrame and upf.CFrame.Ctor == "new" and near(upf.CFrame.Args[1].X, 6, 1e-3), "a Face on the spot: stands there, no turn",
+		show(upf and upf.CFrame))
+	-- without a Spot (the A23-110 rule, kept for a Config without one): near the fall, away from the King, never in a town
+	local function noSpot(c) c.FirstKOKing.GetUp.Spot = nil end
+	local wo = fkWorld({ Edit = noSpot })
+	local po = wo:Hunter(114, "Halo")
+	local rec = wo:Meet(po)
+	local from = rec.Root.Position
+	wo:Die(po)
+	local upo = wo.FK.GetUp(po)
+	local ato = upo and upo.CFrame and upo.CFrame.Args[1]
+	local looko = upo and upo.CFrame and upo.CFrame.Args[2]
 	local fell = MEADOW
 	local away = vec(fell.X - from.X, 0, fell.Z - from.Z).Unit
 	local want = vec(fell.X + away.X * FK0.GetUp.Back, 1 + FK0.GetUp.Lift, fell.Z + away.Z * FK0.GetUp.Back)
-	check(up and up.Delay == FK0.RespawnIn and up.CFrame and up.CFrame.Ctor == "lookAt", "a held get-up: delay + CFrame", show(up))
-	check(at and near(at.X, want.X, 1e-3) and near(at.Y, want.Y, 1e-3) and near(at.Z, want.Z, 1e-3),
-		"Back studs from where it fell, away from the King, Lift above the ground", show({ at, want }))
-	check(look and (look - at).Magnitude > 0.5 and near(((look - at).Unit).Z, -away.Z, 1e-3), "facing where the King was")
-	check(C0.ZoneAt(at).Id == "SlimeMeadow" and (at - fell).Magnitude < FK0.GetUp.Back + FK0.GetUp.Lift + 1,
-		"in the meadow, right by the fall (not the town spawn)", show(at))
+	check(ato and near(ato.X, want.X, 1e-3) and near(ato.Y, want.Y, 1e-3) and near(ato.Z, want.Z, 1e-3),
+		"no Spot: Back studs from where it fell, away from the King, Lift above the ground", show({ ato, want }))
+	check(looko and (looko - ato).Magnitude > 0.5 and near(((looko - ato).Unit).Z, -away.Z, 1e-3), "no Spot: facing where the King was")
+	check(ato and C0.ZoneAt(ato).Id == "SlimeMeadow" and (ato - fell).Magnitude < FK0.GetUp.Back + FK0.GetUp.Lift + 1,
+		"no Spot: in the meadow, right by the fall (not the town spawn)", show(ato))
 	-- A23-113 ①: a King that leapt ON the player: away from where it leapt from (DropFrom), not from its body
-	local wd = fkWorld()
+	local wd = fkWorld({ Edit = noSpot })
 	local pd = wd:Hunter(109, "Halo")
 	wd:FKTick()
 	local rd = wd:KingOf(pd)
@@ -892,9 +973,9 @@ runGroup("get-up", function()
 	local upd = wd.FK.GetUp(pd)
 	local atd = upd and upd.CFrame and upd.CFrame.Args[1]
 	check(atd and near(atd.X, MEADOW.X - FK0.GetUp.Back, 1e-3) and near(atd.Z, MEADOW.Z, 1e-3),
-		"a leaping King: gets up Back studs away from its DropFrom", show(atd))
+		"no Spot: a leaping King: gets up Back studs away from its DropFrom", show(atd))
 	-- water at the Back spot: right where it fell
-	local w2 = fkWorld()
+	local w2 = fkWorld({ Edit = noSpot })
 	local q = w2:Hunter(102, "Halo")
 	local r2 = w2:Meet(q)
 	local away2 = vec(MEADOW.X - r2.Root.Position.X, 0, MEADOW.Z - r2.Root.Position.Z).Unit
@@ -902,23 +983,23 @@ runGroup("get-up", function()
 	w2.Ground[math.floor(bx + 0.5) .. ":" .. math.floor(bz + 0.5)] = "water"
 	w2:Die(q)
 	local at2 = w2.FK.GetUp(q).CFrame.Args[1]
-	check(near(at2.X, MEADOW.X, 1e-3) and near(at2.Z, MEADOW.Z, 1e-3), "water behind: gets up where it fell", show(at2))
+	check(near(at2.X, MEADOW.X, 1e-3) and near(at2.Z, MEADOW.Z, 1e-3), "no Spot: water behind: gets up where it fell", show(at2))
 	-- the ground there lies in a town: the normal spawn
-	local wtn = fkWorld()
+	local wtn = fkWorld({ Edit = noSpot })
 	local stn = wtn:Hunter(106, "Halo")
 	wtn:Meet(stn)
 	wtn.GroundInTown = true
 	wtn:Die(stn)
-	check(C0.ZoneAt(vec(0, 0, 0)).Town == true and wtn.FK.GetUp(stn) and wtn.FK.GetUp(stn).CFrame == nil, "never a get-up in a town")
+	check(C0.ZoneAt(vec(0, 0, 0)).Town == true and wtn.FK.GetUp(stn) and wtn.FK.GetUp(stn).CFrame == nil, "no Spot: never a get-up in a town")
 	-- a bare place (no ground hit): flat ground
-	local w3 = fkWorld()
+	local w3 = fkWorld({ Edit = noSpot })
 	w3.NoGround = true
 	local s3 = w3:Hunter(103, "Halo")
 	w3:Meet(s3)
 	w3:Die(s3)
-	check(w3.FK.GetUp(s3).CFrame.Args[1].Y == FK0.GetUp.Lift, "no ground hit: the flat floor (Y 0) + Lift")
+	check(w3.FK.GetUp(s3).CFrame.Args[1].Y == FK0.GetUp.Lift, "no Spot: no ground hit: the flat floor (Y 0) + Lift")
 	-- nowhere to stand: the normal spawn (no CFrame), the delay stays
-	local w4 = fkWorld()
+	local w4 = fkWorld({ Edit = noSpot })
 	local s4 = w4:Hunter(104, "Halo")
 	local r4 = w4:Meet(s4)
 	local away4 = vec(MEADOW.X - r4.Root.Position.X, 0, MEADOW.Z - r4.Root.Position.Z).Unit
@@ -926,7 +1007,7 @@ runGroup("get-up", function()
 	w4.Ground[math.floor(MEADOW.X + 0.5) .. ":" .. math.floor(MEADOW.Z + 0.5)] = "water"
 	w4:Die(s4)
 	local up4 = w4.FK.GetUp(s4)
-	check(up4 and up4.Delay == FK0.RespawnIn and up4.CFrame == nil, "no dry ground: the normal spawn after the same delay", show(up4))
+	check(up4 and up4.Delay == FK0.RespawnIn and up4.CFrame == nil, "no Spot: no dry ground: the normal spawn after the same delay", show(up4))
 	-- the get-up spawn: GetUp.HealthFrac of MaxHealth, once; a cosmetic swap keeps both the spot and the HP
 	local hum = w:Hum(p)
 	hum.Health, hum.MaxHealth = 150, 150 -- the new character, full
@@ -971,7 +1052,8 @@ runGroup("player service", function()
 	local api = execute("PlayerService.getup", PLAYER_GETUP_EXTRACT, w:Env(), w.Config, w.Util, w.Registry, ready, {}, PS,
 		function(name, err) table.insert(w.Warnings, tostring(name) .. ": " .. tostring(err)) end,
 		function(pl) table.insert(loads, { P = pl, At = w.Clock }) end,
-		function() return zoneCF end, function() return "SlimeMeadow" end, function() return false end)
+		function() return zoneCF end, function() return "SlimeMeadow" end, function() return false end,
+		function() return nil end) -- guideSpot (c5989cd4: the first spawn faces the guide; none here)
 	local function bind(pl)
 		local hum = w:Hum(pl)
 		hum.Died = { Once = function(_, fn) hum.OnDied = fn end }
@@ -1420,7 +1502,7 @@ runGroup("no boss credit", function()
 end)
 
 ------------------------------------------------------------------ 12. the quest KO1 with the real StoryQuestService
-runGroup("quest KO1", function()
+runGroup("quest M1_2", function()
 	local DEF = C0.StoryQuests.Defs[FQ.Quest]
 	-- reports every Event row between `from` and `to` (exclusive) the way the shop / quick slot / drink hooks do
 	local function passRows(w, p, from, to)
@@ -1437,7 +1519,7 @@ runGroup("quest KO1", function()
 	local function play(w, p, label)
 		local rematch = w.Config.FirstKO.RematchStep
 		local d = w.Data[p]
-		check(w.Story.CurrentStep(p, FQ.Quest) == STEP and w.FK.StageOf(p) == "First", label .. ": KO1 started at its KO row: the first King",
+		check(w.Story.CurrentStep(p, FQ.Quest) == STEP and w.FK.StageOf(p) == "First", label .. ": the King's Hop started at its KO row: the first King",
 			show({ w.Story.CurrentStep(p, FQ.Quest), w.FK.StageOf(p) }))
 		local gold0, xp0, lv0 = (d.CarriedGold or 0) + (d.BankGold or 0), d.XP, d.Level
 		local rec = w:Meet(p)
@@ -1446,7 +1528,7 @@ runGroup("quest KO1", function()
 		local ko = w:KOFx(p)
 		check(ko and ko.First == true and #w.FirstKOs == 1 and d.FirstKODone == true, label .. ": the short lossless KO screen", show(ko))
 		check(w.Story.CurrentStep(p, FQ.Quest) == STEP + 1 and d.Story.First.FirstKO == true,
-			label .. ": the KO moved KO1 to its next row (StoryQuestService.Event FirstKO)", tostring(w.Story.CurrentStep(p, FQ.Quest)))
+			label .. ": the KO moved the quest to its next row (StoryQuestService.Event FirstKO)", tostring(w.Story.CurrentStep(p, FQ.Quest)))
 		check((d.CarriedGold or 0) + (d.BankGold or 0) >= gold0 and d.XP == xp0 and d.Level == lv0, label .. ": nothing lost (the row's top-up may add gold)",
 			show({ d.CarriedGold, d.BankGold, gold0 }))
 		local hum = w:Hum(p)
@@ -1456,7 +1538,10 @@ runGroup("quest KO1", function()
 			tostring(hum.Health))
 		w:FKTick(FK0.SpawnGap + 0.1)
 		passRows(w, p, STEP, rematch)
-		check(w.Story.CurrentStep(p, FQ.Quest) == rematch, label .. ": the shop / drink rows passed: the rematch row", tostring(w.Story.CurrentStep(p, FQ.Quest)))
+		check(w.Story.CurrentStep(p, FQ.Quest) == rematch, label .. ": the shop / drink / anvil rows passed: the rematch row", tostring(w.Story.CurrentStep(p, FQ.Quest)))
+		w:FKTick(FK0.SpawnGap + 0.1)
+		check(w:KingOf(p) == nil, label .. ": the rematch row on the King's hill: no King (it waits at the meadow's arrival spot)")
+		w:Place(p, ARRIVAL) -- A23-222: the rematch King comes at the meadow's arrival spot (RetryRadius)
 		w:FKTick(FK0.SpawnGap + 0.1)
 		local king = w:KingOf(p)
 		check(king and king.Quiet == nil and king.Practice == FK0.Retry.PayAs and king.Model.Attrs.FirstKO == "Retry",
@@ -1464,7 +1549,7 @@ runGroup("quest KO1", function()
 		local items0, fx0, xpN = deepCopy(d.Items or {}), #w.Fx, #w.XP
 		local bank0 = d.BankGold or 0
 		w:KillKing(king, { Hits = 2, Manual = true }) -- two hits: below the King's RewardMinHits, still the owner's kill
-		check(d.Story.Done[FQ.Quest] == true and w.Story.CurrentStep(p, FQ.Quest) == nil, label .. ": its kill finishes KO1 (the Personal Kill row counted it)",
+		check(d.Story.Done[FQ.Quest] == true and w.Story.CurrentStep(p, FQ.Quest) == nil, label .. ": its kill finishes the quest (the Personal Kill row counted it)",
 			show({ d.Story.Done[FQ.Quest], w.Story.CurrentStep(p, FQ.Quest) }))
 		local it = d.Items or {}
 		check((d.BankGold or 0) > bank0 and #w.XP == xpN + 1 and (it.Enh70 or 0) == (items0.Enh70 or 0) + (DEF.Reward.N or 1),
@@ -1475,7 +1560,7 @@ runGroup("quest KO1", function()
 		check(w:KingOf(p) == nil and w.FK.StageOf(p) == nil, label .. ": quest done: no more Kings")
 	end
 	local w = fkWorld({ Story = true })
-	play(w, w:Hunter(201, "Halo", { Level = 4 }), "KO1")
+	play(w, w:Hunter(201, "Halo", { Level = 4 }), "M1_2")
 	-- game dev 3 adds a row before the rematch (RematchStep + 1): everything follows Config.FirstKO
 	local wx = fkWorld({ Story = true, Edit = function(c)
 		local steps = c.StoryQuests.Defs[c.FirstKO.Quest].Steps
@@ -1486,11 +1571,11 @@ runGroup("quest KO1", function()
 	local px = wx:Hunter(202, "Horns", { Level = 6 })
 	check(wx.Config.FirstKO.RematchStep == RETRY + 1 and wx.Config.StoryQuests.Defs[FQ.Quest].Steps[RETRY].Obj.Type == "Event",
 		"setup: an extra row before the rematch")
-	play(wx, px, "KO1 + a row")
-	-- an account that already had its KO starts KO1 again (a rejoin before the row moved): the row is told, no King
+	play(wx, px, "M1_2 + a row")
+	-- an account that already had its KO starts the quest again (a rejoin before the row moved): the row is told, no King
 	local wt = fkWorld({ Story = true })
 	local pt = wt:Hunter(203, "Halo", { Level = 4, Done = true })
-	check(wt.Story.CurrentStep(pt, FQ.Quest) == STEP and wt.FK.StageOf(pt) == "Tell", "setup: KO1 at its KO row, the KO already had")
+	check(wt.Story.CurrentStep(pt, FQ.Quest) == STEP and wt.FK.StageOf(pt) == "Tell", "setup: M1_2 at its KO row, the KO already had")
 	wt:FKTick()
 	check(#wt.Spawns == 0 and wt.Story.CurrentStep(pt, FQ.Quest) == STEP + 1, "the KO already had: the row passes at the next check (no King)",
 		tostring(wt.Story.CurrentStep(pt, FQ.Quest)))

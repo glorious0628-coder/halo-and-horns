@@ -82,7 +82,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     player = sources["PLAYER_SOURCE"]
     out["PLAYER_GETUP_EXTRACT"] = (
         "local Config, Util, S, ready, deathBound, PlayerService, loopWarn, loadCharacter, spawnCFrame, respawnZoneId, "
-        "firstMissionOpen = ...\n"
+        "firstMissionOpen, guideSpot = ...\n"
         + function_block(player, "local function getUp(") + function_block(player, "local function spawnSpot(")
         + function_block(player, "local function bindCharacterDeath(")
         + "\nreturn { GetUp = getUp, SpawnSpot = spawnSpot, Bind = bindCharacterDeath }\n")
@@ -123,7 +123,7 @@ MUTATIONS = [
     ("disabled strands the KO row", F, "return (fresh and not off) and \"First\" or \"Tell\" end",
      "return (not off) and (fresh and \"First\" or \"Tell\") or nil end"),
     ("another quest's step asked", F, "local ok, step = pcall(svc.CurrentStep, player, Q.Quest)",
-     "local ok, step = pcall(svc.CurrentStep, player, \"M1_2\")"),
+     "local ok, step = pcall(svc.CurrentStep, player, \"KO1\")"),
     ("a throwing CurrentStep breaks the stage", F, "local ok, step = pcall(svc.CurrentStep, player, Q.Quest)",
      "local ok, step = true, svc.CurrentStep(player, Q.Quest)"),
     ("one-shot twice (Done ignored)", F, "local fresh = data.FirstKODone ~= true and num(data.Level, 1)", "local fresh = num(data.Level, 1)"),
@@ -135,7 +135,25 @@ MUTATIONS = [
      "\tif zone.Town == true then return false end\n"),
     ("in town too", F, "\tif zone.Id ~= FK.Zone or zone.Town == true then return false end\n",
      "\tif zone.Id ~= FK.Zone then return false end\n"),
-    ("landmark radius ignored", F, "\tif spot ~= nil and Util.FlatDistance(pos, spot) > num(FK.Radius, 90) then return false end\n", ""),
+    ("landmark radius ignored", F, "\tif spot ~= nil and Util.FlatDistance(pos, spot) > radius then return false end\n", ""),
+    # A23-222: each stage its own spot and radius (the first King: Landmark / Radius; the rematch: RetryLandmark / RetryRadius)
+    ("the rematch King at the hill", F, "\tlocal id = stage == \"Retry\" and FK.RetryLandmark or FK.Landmark\n", "\tlocal id = FK.Landmark\n"),
+    ("the first King at the arrival spot", F, "\tlocal id = stage == \"Retry\" and FK.RetryLandmark or FK.Landmark\n", "\tlocal id = FK.RetryLandmark\n"),
+    ("the rematch King within the first radius", F,
+     "\tlocal radius = stage == \"Retry\" and num(FK.RetryRadius, num(FK.Radius, 90)) or num(FK.Radius, 90)\n",
+     "\tlocal radius = num(FK.Radius, 90)\n"),
+    ("the first King within the rematch radius", F,
+     "\tlocal radius = stage == \"Retry\" and num(FK.RetryRadius, num(FK.Radius, 90)) or num(FK.Radius, 90)\n",
+     "\tlocal radius = num(FK.RetryRadius, 90)\n"),
+    ("the place check forgets the stage", F, "\tif not inPlace(player, stage) then return end\n", "\tif not inPlace(player) then return end\n"),
+    ("Config: the old 90-stud radius", C, "Zone = \"SlimeMeadow\", Radius = 30, Landmark = \"KingHill\",",
+     "Zone = \"SlimeMeadow\", Radius = 90, Landmark = \"KingHill\","),
+    ("Config: no hill landmark (anywhere in the meadow)", C, "Zone = \"SlimeMeadow\", Radius = 30, Landmark = \"KingHill\",",
+     "Zone = \"SlimeMeadow\", Radius = 30,"),
+    ("Config: the rematch radius 30", C, "RetryRadius = 40, RetryLandmark = \"MeadowArrival\",", "RetryRadius = 30, RetryLandmark = \"MeadowArrival\","),
+    ("Config: the rematch at the hill", C, "RetryRadius = 40, RetryLandmark = \"MeadowArrival\",", "RetryRadius = 40, RetryLandmark = \"KingHill\","),
+    ("Config: the hill moved", C, "Config.StoryQuests.Landmarks.KingHill = Vector3.new(400, 0, -118)",
+     "Config.StoryQuests.Landmarks.KingHill = Vector3.new(430, 0, 0)"),
     ("joins the field King's fight", F, "if type(r) == \"table\" and r.Owner == nil and r.Kind == kingKind() then return false end",
      "if false then return false end"),
     ("any monster blocks it", F, "if type(r) == \"table\" and r.Owner == nil and r.Kind == kingKind() then return false end",
@@ -255,7 +273,20 @@ MUTATIONS = [
     # --- Config.FirstKOKing / FirstKORetry
     ("first KO from Lv 1 only", C, "\tOneHitBelow = 10,", "\tOneHitBelow = 2,"),
     ("BossClear wide again", C, "\tBossClear = 24,", "\tBossClear = 60,"),
-    ("gets up with full HP", C, "Keep = 20, HealthFrac = 0.4 }", "Keep = 20, HealthFrac = 1 }"),
+    ("gets up with full HP", C, "Keep = 20, HealthFrac = 0.4,", "Keep = 20, HealthFrac = 1,"),
+    # A23-222: the first KO gets up at GetUp.Spot beside Fizzby, facing GetUp.Face
+    ("Config: no get-up spot (back by the fall)", C, "HealthFrac = 0.4, Spot = Vector3.new(6, 0, -30), Face = Vector3.new(12, 0, -34) }",
+     "HealthFrac = 0.4 }"),
+    ("Config: the get-up spot moved", C, "Spot = Vector3.new(6, 0, -30), Face", "Spot = Vector3.new(20, 0, -30), Face"),
+    ("Config: no get-up face", C, ", Face = Vector3.new(12, 0, -34) }", " }"),
+    ("get-up: the Spot ignored", F, "\tif typeof(G.Spot) == \"Vector3\" then\n", "\tif false then\n"),
+    ("get-up: the Spot without Lift", F, "\t\tlocal at = ground + Vector3.new(0, num(G.Lift, 4), 0)\n", "\t\tlocal at = ground\n"),
+    ("get-up: the Spot's ground ignored", F, "local ground = (okG and typeof(g) == \"Vector3\") and g or", "local ground = false and g or"),
+    ("get-up: no ground hit = the Spot's Y", F, "okG and noHit == true and 0 or G.Spot.Y", "G.Spot.Y"),
+    ("get-up: no ground answer = Y 0", F, "okG and noHit == true and 0 or G.Spot.Y", "0"),
+    ("get-up: never turns to the Face", F, "\t\tif face and Util.FlatDistance(face, at) > 0.5 then return CFrame.lookAt(at, face) end\n", ""),
+    ("get-up: faces the Face's height", F, "Vector3.new(G.Face.X, at.Y, G.Face.Z)", "G.Face"),
+    ("get-up: turns to a Face on the spot", F, "if face and Util.FlatDistance(face, at) > 0.5 then", "if face then"),
     ("practice pays the King's own XP", C, "MinHP = 40, PayAs = \"BigSlime\" }", "MinHP = 40, PayAs = \"SlimeKing\" }"),
     ("save field missing", C, "Config.Data.Defaults.FirstKODone = false", "Config.Data.FirstKODoneX = false"),
     ("retry King too strong (the old 2-potion King)", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 18, HitPct = 0.09,"),
@@ -285,7 +316,7 @@ MUTATIONS = [
     ("strike hook ignored", MO, "\tif rec._strike then\n\t\t-- A23-110", "\tif false then\n\t\t-- A23-110"),
     ("quiet kill still pays", MO, "\tif rec.Quiet == true then\n\t\t-- A23-110", "\tif false then\n\t\t-- A23-110"),
     ("quiet kill not told", MO, "\t\t\tlocal ok, err = pcall(rec._onKilled, rec)\n", "\t\t\tlocal ok, err = true, nil\n"),
-    ("quiet kill no splat", MO, "\t\trec._manualAt = nil\n\t\tdeathPop(rec, true)\n", "\t\trec._manualAt = nil\n"),
+    ("quiet kill no splat", MO, "\t\trec._manualAt, rec._firstAt = nil, nil\n\t\tdeathPop(rec, true)\n", "\t\trec._manualAt, rec._firstAt = nil, nil\n"),
     ("a loud personal kill not told", MO, "\t\tif rec._onKilled then -- A23-110: its service hears it after the kill",
      "\t\tif false then -- A23-110: its service hears it after the kill"),
     ("quiet for a zone monster", MO, "Quiet = (owner ~= nil and opts.Quiet == true) or nil,", "Quiet = opts.Quiet == true or nil,"),

@@ -657,8 +657,11 @@ runGroup("clues", function()
 		check(not string.find(line, "two kids", 1, true) and not string.find(line, "Bright", 1, true), "the opening never tells the truth",
 			line)
 	end
-	check(SQ.Defs.M1_2 == nil and SQ.Defs.M1_1.Finish == nil and SQ.Defs.M1_1.Steps[2].Lines.Halo[1] == "Got the band! That knot is still holding.",
-		"the band closes M1_1 in my own words (10/15: no M1_2, no Otto card)", tostring(SQ.Defs.M1_1.Finish))
+	-- A23-222: M1_1 = the Prince only; the band is found at Otto's anvil (M1_2 step 5, the King's Hop) in my own words
+	local anvil = SQ.Defs.M1_2 and SQ.Defs.M1_2.Steps[5]
+	check(#SQ.Defs.M1_1.Steps == 1 and SQ.Defs.M1_1.Finish == nil and SQ.Defs.M1_2.Finish == nil and anvil and anvil.Anvil == true
+		and anvil.Lines.Halo[1] == "Got the band! That knot is still holding.",
+		"the band is found at Otto's anvil (M1_2 step 5) in my own words (no Otto card)", show(anvil and anvil.Lines))
 	check(string.find(SQ.Defs.M2_3.Finish or "", "Two kids", 1, true) ~= nil, "M2_3: two kids run off", SQ.Defs.M2_3.Finish)
 	-- story_ch2_r1 §3 (최종 검수 10/16): the old wristband Clue toasts are replaced by the knot story in the lines
 	check(SQ.Defs.H1.Clue == nil and SQ.Defs.R1.Clue == nil and SQ.Defs.N3.Clue == nil,
@@ -862,8 +865,9 @@ runGroup("artisan quests", function()
 		Subs = { N0 = { St = 2, P = 0, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
 	local _, oh = w:Join(1821, { Faction = "Neutral", Class = "Mage", Level = 3, Data = { TutorialStep = 99, Story = { Main = { Id = "" },
 		Subs = { N0A = { St = 1, P = 2, T = {}, Claim = false } }, Done = {}, Pick = {}, First = { Migrated = true }, Schema = 4 } } })
-	check(oc.Story.Subs.N0.St == 3 and oh.Story.Subs.N0A.St == 1 and oh.Story.Subs.N0A.P == 2 and oc.Story.Schema == 5,
-		"old N0 saves: on the craft -> the craft (3); still harvesting -> unchanged (Schema 5)", show({ oc.Story.Subs.N0, oh.Story.Subs.N0A }))
+	check(oc.Story.Subs.N0.St == 3 and oh.Story.Subs.N0A.St == 1 and oh.Story.Subs.N0A.P == 2 and oc.Story.Schema == 6,
+		"old N0 saves: on the craft -> the craft (3); still harvesting -> unchanged (Schema 5, then 6: A23-222)",
+		show({ oc.Story.Subs.N0, oh.Story.Subs.N0A, oc.Story.Schema }))
 	-- N4: after N2, two crafts, then the Crossroads
 	d.Story.Done.N2 = true
 	w.Story.Refresh(p)
@@ -2896,23 +2900,21 @@ runGroup("p1 core", function()
 	local scenes = fxOf(p, "StoryScene", fx0)
 	check(w:Track(d, "TP1A") ~= nil and #scenes == 1 and scenes[1].Id == "TP1A" and scenes[1].Key == "Demo" and scenes[1].Value == "TKidH",
 		"Accept: the quest starts + Fx StoryScene { Id, Key = 'Demo', Value = the NPC } (the teacher's demo)", show(scenes))
-	-- 2. Practice: PracticeTool while the step is open; a swing far / facing away does nothing; at the dummy facing it = done
+	-- 2. Practice: PracticeTool while the step is open; a swing far / another player's does nothing; at the dummy in ANY
+	-- direction = done (A23-221 ①: the facing check refused hits at the dummy's side; radius only)
 	w.Story.Refresh(p)
 	check(p:GetAttribute("PracticeTool") == "TP1A", "PracticeTool = the quest while its Practice step is open", p:GetAttribute("PracticeTool"))
 	local swing = w.Registry.CombatService.BasicSwing
 	swing:Fire(p, vec(0, 0, 0), vec(1, 0, 0))
 	w:Flush()
 	check(w:Track(d, "TP1A").St == 1, "a swing 40 studs from the dummy: nothing", show(w:Track(d, "TP1A")))
-	swing:Fire(p, vec(34, 0, 0), vec(-1, 0, 0))
-	w:Flush()
-	check(w:Track(d, "TP1A").St == 1, "a swing next to it facing away: nothing", show(w:Track(d, "TP1A")))
 	local q, dq = joinAfterM23(w, 9912, "Halo", { Pos = vec(2, 0, 2) })
 	swing:Fire(q, vec(34, 0, 0), vec(1, 0, 0))
 	w:Flush()
 	check(w:Track(d, "TP1A").St == 1 and w:Track(dq, "TP1A") == nil, "another player's swing counts for nobody", "")
-	swing:Fire(p, vec(34, 0, 0), vec(1, 0, 0))
+	swing:Fire(p, vec(34, 0, 0), vec(-1, 0, 0))
 	w:Flush()
-	check(w:Track(d, "TP1A").St == 2, "a swing next to the dummy facing it: the step is done", show(w:Track(d, "TP1A")))
+	check(w:Track(d, "TP1A").St == 2, "a swing next to the dummy facing AWAY: the step is done (no facing check)", show(w:Track(d, "TP1A")))
 	w.Story.Refresh(p)
 	check(p:GetAttribute("PracticeTool") == "", "the tool goes back when the Practice step ends", p:GetAttribute("PracticeTool"))
 	w:MoveTo(p, vec(2, 0, 2))
@@ -3099,7 +3101,16 @@ runGroup("p1 band and main offers", function()
 	check(d.Story.Main.Id == "M1_1" and d.Story.Main.St == 1 and (d.Story.Main.P or 0) == 0,
 		"Accept: M1_1 runs from 0 (the Prince before the Accept did not count)", show(d.Story.Main))
 	w:Kill(p, "BigSlime", 1)
-	check(d.Story.Main.St == 2, "a Slime Prince after the Accept: the scroll step", show(d.Story.Main))
+	w.Story.Refresh(p)
+	check(d.Story.Done.M1_1 == true and d.Story.Main.Id == "M1_2" and d.Story.Main.St == 1,
+		"a Slime Prince after the Accept: M1_1 done (one step, A23-222), the King's Hop (M1_2) starts", show(d.Story.Main))
+	-- A23-222: the band is found at the anvil in M1_2: while the King's Hop runs, Bright does not ask about it yet
+	local hb, hbd = w:Join(9931, { Faction = "Halo", Class = "Warrior", Level = 3, Pos = BRIGHT + vec(2, 0, 0),
+		Data = { TutorialStep = 99, Story = { Schema = 6, Main = { Id = "M1_2", St = 2, P = 0, T = {}, Claim = false }, Subs = {},
+			Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } } } })
+	w.Story.Refresh(hb)
+	check(hbd.Story.Main.Id == "M1_2" and string.find(hb:GetAttribute("StoryOffers") or "", "Bright", 1, true) == nil,
+		"Lv3 on the King's Hop (M1_2 running): Bright does not ask about the band yet", hb:GetAttribute("StoryOffers"))
 	-- H_Band: Halo, M1_1 done, Lv3, at Bright: show it (a record only: no gold, no score)
 	local h, hd = w:Join(9932, { Faction = "Halo", Class = "Warrior", Level = 2, Pos = BRIGHT + vec(2, 0, 0),
 		Data = { TutorialStep = 99, Story = { Main = { Id = "" }, Subs = {}, Done = { M1_1 = true }, Pick = {}, First = { Migrated = true } } } })
@@ -3247,16 +3258,20 @@ runGroup("p1 lamp and scenes", function()
 	-- A23-208 / A23-210 (chapter 1 story, r2 §2 + r4 §6): the words only; steps, goals and rewards as before
 	local C = w.Config
 	local D = SQ.Defs
-	check(#D.M1_1.Steps == 2 and #D.M1_3.Steps == 4 and #D.M1_4.Steps == 3 and D.M1_1.Reward.Gold == 1 and D.M1_3.Reward.Gold == 1,
-		"chapter 1 story: the step counts and rewards are unchanged", show({ #D.M1_1.Steps, #D.M1_3.Steps, #D.M1_4.Steps }))
-	check(C.QuestNext(D.M1_1, "Halo").Id == "H_Band" and C.QuestNext(D.M1_1, "Horns").Id == "R_Band"
-		and C.QuestNext(D.M1_1, "Neutral").Id == "M1_3" and C.QuestNext(D.M1_3, "Horns").Id == "M1_4" and D.M1_4.Last == true
-		and C.QuestNext(D.M1_4, "Halo") == nil, "chapter 1 story: each side's next hook; M1_4 ends the chapter (Last)", "")
+	-- A23-222: M1_1 = the Prince only (1 step), M1_2 = the King's Hop (6 steps: the scroll at Otto's anvil before the rematch)
+	check(#D.M1_1.Steps == 1 and #D.M1_2.Steps == 6 and #D.M1_3.Steps == 4 and #D.M1_4.Steps == 3 and D.M1_1.Reward.Gold == 1
+		and D.M1_2.Reward.Gold == 2 and D.M1_3.Reward.Gold == 1,
+		"chapter 1 story: M1_1 one step, M1_2 six; the other step counts and rewards are unchanged",
+		show({ #D.M1_1.Steps, #D.M1_2.Steps, #D.M1_3.Steps, #D.M1_4.Steps }))
+	check(C.QuestNext(D.M1_1, "Halo").Id == "M1_2" and C.QuestNext(D.M1_1, "Horns").Id == "M1_2" and C.QuestNext(D.M1_1, "Neutral").Id == "M1_2"
+		and C.QuestNext(D.M1_2, "Halo").Id == "H_Band" and C.QuestNext(D.M1_2, "Horns").Id == "R_Band"
+		and C.QuestNext(D.M1_2, "Neutral").Id == "M1_3" and C.QuestNext(D.M1_3, "Horns").Id == "M1_4" and D.M1_4.Last == true
+		and C.QuestNext(D.M1_4, "Halo") == nil, "chapter 1 story: M1_1 -> M1_2, then each side's hook; M1_4 ends the chapter (Last)", "")
 	check(string.find(C.QuestBefore(D.M1_1, "Horns", {}), "Shard dust", 1, true) ~= nil
 		and string.find(C.QuestBefore(D.M1_3, "Neutral", {}), "tool baskets", 1, true) ~= nil
-		and C.QuestBefore(D.H_Basics, "Halo", {}) == "There's room for two beside my shield.",
-		"chapter 1 story: the sides' situation lines (A23-210 shard-dust trouble)", "")
-	check(D.M1_1.Steps[1].On == "Self" and D.M1_1.Steps[2].On == "Self" and D.M1_3.Steps[1].On == "Self"
+		and C.QuestBefore(D.N_Basics, "Neutral", {}) == "This old dummy has met every new maker here." and D.H_Basics == nil,
+		"chapter 1 story: the sides' situation lines (A23-210 shard-dust trouble); the Halo / Horns lessons are the first mission's dummy now", "")
+	check(D.M1_1.Steps[1].On == "Self" and D.M1_2.Steps[5].On == "Self" and D.M1_3.Steps[1].On == "Self"
 		and D.M1_3.Steps[3].Scene == nil and D.M1_3.Steps[4].Horns.Scene == "Cheer" and D.N0.Steps[3].Scene == "Nod",
 		"chapter 1 story: the player's own words (On = Self); the Help flag scene stays the only reaction at the delivery", "")
 	check(C.ClientText.Intro.Lines[2] == "Some grew halos. Others grew horns."
@@ -3805,10 +3820,10 @@ runGroup("A23-218 scene setup", function()
 	check(string.sub(r, 1, 3) == "ok:" and d.Story.Main.Id == "M2_3" and d.Story.Main.St == 2 and (d.Items.Enh70 or 0) >= 2
 		and log.Gold[#log.Gold] == 500 and (log.Moved[#log.Moved] - vec(30 - 30 / 32.31 * 5, 4, -12 + 12 / 32.31 * 5)).Magnitude < 0.1,
 		"a JSON spec: main M2_3 step 2, items, gold, a place (5 studs toward the Crossroads middle)", r)
-	check(string.find(sc.Apply(p, '{"Main":"KO1:1"}'), "no main quest", 1, true) ~= nil, "a sub id as Main is refused", "")
+	check(string.find(sc.Apply(p, '{"Main":"N_Basics:1"}'), "no main quest", 1, true) ~= nil, "a sub id as Main is refused", "")
 	local names = 0
 	for _ in sc.PRESETS do names += 1 end
-	check(names == 11, "eleven presets (the five asked by game dev 1 + the six of A23-218)", names)
+	check(names == 15, "fifteen presets (the five asked by game dev 1 + the six of A23-218 + the four of A23-221 / A23-222)", names)
 end)
 
 finish()

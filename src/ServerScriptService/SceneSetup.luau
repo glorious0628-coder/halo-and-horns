@@ -28,7 +28,7 @@ local S = nil
 local ST = { Spawned = {} } -- Spawned[player] = the scene's monster records
 
 -- the presets game dev 1 / 최종 검수 asked for (A23-218 ②, 10/16)
-local DONE_CH1 = { "M1_1", "M1_3", "M1_4" }
+local DONE_CH1 = { "M1_1", "M1_2", "M1_3", "M1_4" }
 local ARTISAN = { NeutralFaction = true, Gathering = true, Crafting = true, Tonics = true, Research = true, Gear = true }
 local MATS = { Herb = 40, Jelly = 40, CopperOre = 30, SlimeCore = 20, Glowcap = 20, Petal = 20, OakLog = 20, GoblinTooth = 20,
 	MoonCrystal = 20 }
@@ -56,6 +56,17 @@ SceneSetup.PRESETS = {
 	-- the first mission: the Teacher step beside Gleam / the Forge step beside Otto's anvil
 	TutorialTeacher = { Faction = "Halo", Class = "Warrior", Level = 1, Tutorial = "Teacher", At = "Npc:Gleam" },
 	TutorialForge = { Faction = "Halo", Class = "Warrior", Level = 1, Tutorial = "Forge", At = "Anvil" },
+	-- A23-221 ① / A23-222 (최종 검수 10/16, the next playtest): the dummy step beside Sir Gleam; M1_2's start (the King's hill
+	-- row, the player at the hill: the personal King drops); M1_2's anvil step at Otto; M1_3's Tiny step (Horns: the snack
+	-- parcel in hand, beside Tiny)
+	TutorialPractice = { Faction = "Halo", Class = "Warrior", Level = 1, Tutorial = "Practice", Mark = { "TeacherMet" },
+		At = "Landmark:PracticeH" },
+	KingHop = { Faction = "Halo", Class = "Warrior", Level = 3, Tutorial = "Done", Done = { "M1_1" }, Main = "M1_2:1",
+		At = "Landmark:KingHill" },
+	KingAnvil = { Faction = "Halo", Class = "Warrior", Level = 4, Tutorial = "Done", Done = { "M1_1" }, Main = "M1_2:5",
+		Items = { Enh70 = 1 }, At = "Anvil" },
+	TinyParcel = { Faction = "Horns", Class = "Archer", Level = 5, Tutorial = "Done", Done = { "M1_1", "M1_2" }, Main = "M1_3:3",
+		At = "Npc:Tiny" },
 	-- an artisan at the workbench with materials (the artisan switches on for this server)
 	ArtisanAlch = { Features = ARTISAN, Faction = "Neutral", Class = "Mage", Level = 8, Tutorial = "Done", Items = MATS, Gold = 5000,
 		At = "Bench:Alch" },
