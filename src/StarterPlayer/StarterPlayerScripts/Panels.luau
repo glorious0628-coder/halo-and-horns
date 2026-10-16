@@ -3022,8 +3022,11 @@ end
 -- E2 (town_quests_server 8): the server's Var picks a step's lines by an earlier choice (LinesBy[Var], else Default);
 -- a step without LinesBy keeps its Lines. f = my faction (Lines[f], else Lines.All)
 function STORY.Lines(step, f, var)
-	local src = (type(step.LinesBy) == "table" and (step.LinesBy[var] or step.LinesBy.Default)) or step.Lines
-	return (type(src) == "table" and (src[f] or src.All)) or {}
+	-- 개발 2 (M2_3[2]): my side's step (step[f].LinesBy / .Lines) first; a plain list = for everyone
+	local over = type(f) == "string" and step[f] or nil
+	over = type(over) == "table" and (type(over.LinesBy) == "table" or type(over.Lines) == "table") and over or step
+	local src = (type(over.LinesBy) == "table" and (over.LinesBy[var] or over.LinesBy.Default)) or over.Lines
+	return (type(src) == "table" and (src[f] or src.All or (src[1] ~= nil and src))) or {}
 end
 
 -- A23-208 (pure; docs/design/quest_data_contract_2026-10-15.md §3-2): the last step's card ends with the hook to the

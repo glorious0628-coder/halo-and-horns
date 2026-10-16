@@ -61,7 +61,8 @@ function StoryNpcs.Offers(text)
 end
 
 -- A23-199 (pure): my rows' open Pickup steps -> { { Id, Spot, Pos, Radius } } (the step of each Story row, my side's
--- override first; the spot from Config.StoryQuests.Landmarks)
+-- override first; the spot from Config.StoryQuests.Landmarks). A Story.Offer row (개발 2 dev2-offer-row: "Talk to <asker>"
+-- while the next main waits, St = 1) is no step yet: skipped here, in Spots and WatchSteps; its asker gets a plain "!"
 function StoryNpcs.Pickups(entries, faction)
 	local sq = type(Config.StoryQuests) == "table" and Config.StoryQuests or {}
 	local defs = type(sq.Defs) == "table" and sq.Defs or {}
@@ -69,7 +70,7 @@ function StoryNpcs.Pickups(entries, faction)
 	local out, seen = {}, {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
-		local def = type(st) == "table" and type(st.Id) == "string" and defs[st.Id] or nil
+		local def = type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true and defs[st.Id] or nil
 		local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(st.St) or 0] or nil
 		if type(step) == "table" then
 			local over = type(faction) == "string" and step[faction] or nil
@@ -107,7 +108,7 @@ function StoryNpcs.Marks(entries, offers, teacher)
 			local step = steps[n]
 			local obj = type(step) == "table" and step.Obj or nil
 			local done = (n >= #steps and #steps > 0) or (type(obj) == "table" and obj.Type == "Deliver")
-			put(st.Npc, done, e.Kind == "Main")
+			put(st.Npc, done and st.Offer ~= true, e.Kind == "Main")
 		end
 	end
 	for id in type(offers) == "table" and offers or {} do put(id, false, false) end
@@ -233,7 +234,7 @@ function StoryNpcs.Spots(entries, faction)
 	local out, seen = {}, {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
-		local def = type(st) == "table" and type(st.Id) == "string" and defs[st.Id] or nil
+		local def = type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true and defs[st.Id] or nil
 		local step = type(def) == "table" and type(def.Steps) == "table" and def.Steps[tonumber(st.St) or 0] or nil
 		if type(step) == "table" and not seen[st.Id] then
 			local over = type(faction) == "string" and step[faction] or nil
@@ -693,6 +694,9 @@ function StoryNpcs.Scene(data)
 	local key, value = data.Key, data.Value
 	local me = game:GetService("Players").LocalPlayer
 	local root = me and me.Character and me.Character:FindFirstChild("HumanoidRootPart")
+	if data.Id == "Clatter" then -- A23-212: Captain Clatter's town moment (Sorry / Hat / Carry), this client only
+		return StoryNpcs.ClatterScene(key, data.Pos, data.Look)
+	end
 	if key == "Demo" then
 		return StoryNpcs.Hop(tostring(value or ""), 1, true)
 	elseif key == "Help" then
@@ -726,6 +730,166 @@ function StoryNpcs.Scene(data)
 		return StoryNpcs.PlayScene(data.Id, value, me and me:GetAttribute("Faction"), data.St)
 	end
 	return false
+end
+
+------------------------------------------------------------------ A23-212 Captain Clatter's town scenes
+-- 개발 2 dev2-clatter-guide (ClatterScenes): Fx StoryScene { Id = "Clatter", Key = Sorry | Hat | Carry, Pos, Look } to one
+-- player, once per character. His body here is the opening's sword-free part body (Intro.ClatterBody; A23-214: the
+-- borrowed knight mesh holds a sword and reads as a villain - the server's StoryProps.ClatterTown copy waits for his new
+-- model), standing on the ground at Pos facing Look; his Config.StoryQuests.Clatter.Scenes[Key].Move plays (times in s)
+-- and its Line shows in the story bubble over his head (Line s); he fades out (Fade s) after Config Stay.
+-- Scale (10/16 최종 검수): the opening's body is ~9.5 studs; in town he is about 1.3 x a player (~6.5 studs, a captain,
+-- not a giant). Every pose offset below is in the opening's body units and shrinks with it (the box too).
+T.Clatter = { Line = 4.5, Fade = 0.6, Scale = 0.68, Box = Vector3.new(1.6, 1.2, 1.2), BoxColor = Color3.fromRGB(176, 124, 72) }
+
+-- (pure) his pose at t s into move `move` from his feet `home` (facing -Z): { Root, Head (CFrame for the head), Aims =
+-- { left, right } (world), Hat (nil = on his head; else { Drop } studs down over his eyes, or World = a world CFrame when
+-- it is off his head), Box (world CFrame or nil) }
+function StoryNpcs.ClatterPose(move, t, home, scale)
+	local u = tonumber(scale) or 1
+	local function at(x, y, z) return home * CFrame.new(x * u, y * u, z * u) end
+	local function k(a, b) return math.clamp((t - a) / (b - a), 0, 1) end
+	local function bell(a, b) return math.sin(math.pi * k(a, b)) end
+	local root, head = home, CFrame.identity
+	local restL = (at(-1.9, 3.6, -0.4)).Position
+	local restR = (at(1.9, 3.6, -0.4)).Position
+	local out = { Aims = { restL, restR } }
+	local side, up1 = home.RightVector * u, home.UpVector * u
+	if move == "BowHatSlip" then
+		-- a deep sorry bow, the helmet slides over his eyes, he straightens and pushes it back up
+		local bow = k(0.3, 0.8) * (1 - k(1.8, 2.3))
+		root = home * CFrame.Angles(math.rad(-28 * bow), 0, 0)
+		local drop = 0.75 * k(0.7, 1.1) * (1 - k(2.5, 2.9))
+		out.Hat = { Drop = drop * u }
+		if t >= 2.2 and t < 3.0 then out.Aims[2] = (at(0.6, 8.6, -1.2)).Position end
+	elseif move == "CatchHat" then
+		-- a box flies at him; he reaches up, it bumps past, his helmet pops off and he catches only the helmet
+		local fly = k(0, 0.9)
+		local from = (at(-2, 9, -9)).Position
+		local over = (at(0, 8.5, -1)).Position
+		local land = (at(2.6, 0.6, 0.8)).Position
+		local boxAt
+		if t < 0.9 then
+			boxAt = from:Lerp(over, fly) + Vector3.new(0, math.sin(math.pi * fly) * 2 * u, 0)
+		else
+			boxAt = over:Lerp(land, k(0.9, 1.3))
+		end
+		out.Box = CFrame.new(boxAt) * CFrame.Angles(0, t * 3, t * 2 * (1 - k(0.9, 1.3)))
+		local up = (at(0, 9.4, -0.8)).Position
+		if t < 1.0 then
+			out.Aims = { restL:Lerp(up - side * 0.6, k(0.3, 0.8)), restR:Lerp(up + side * 0.6, k(0.3, 0.8)) }
+		end
+		if t >= 0.9 and t < 3.2 then
+			local hop = k(0.9, 1.7)
+			-- 10/16 최종 검수: caught up over his head (about to put it back on), not at his chest like a box
+			local caught = (at(0, 9.75, -0.6)).Position
+			local pos = (at(0, 9.0 + 3 * math.sin(math.pi * hop), -0.4)).Position:Lerp(caught, hop)
+			out.Hat = { World = CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)) * CFrame.Angles(t * 6 * (1 - hop), 0, 0) }
+			out.Aims = { caught - side * 1.55 - up1 * 0.75, caught + side * 1.55 - up1 * 0.75 }
+		elseif t >= 3.2 and t < 3.8 then
+			local back = (at(0, 8.95, 0)).Position
+			out.Aims = { back - side, back + side }
+		end
+		head = CFrame.Angles(math.rad(10 * bell(0.2, 1.0)), 0, 0)
+		if t >= 0.9 then out.BoxDown = true end
+	elseif move == "CarrySalute" then
+		-- both hands grip his repair box, then the left hand holds its handle and the right hand salutes
+		local turn = k(1.2, 1.8)
+		local front = at(0, 4.6, -1.6)
+		local left = at(-2.0, 3.4, -0.6)
+		local boxCF = front:Lerp(left, turn) * CFrame.Angles(0, 0, math.rad(4 * math.sin(t * 9) * (1 - turn)))
+		out.Box = boxCF
+		local handle = (boxCF * CFrame.new(0, 0.9 * u, 0)).Position
+		local l = (boxCF * CFrame.new(-0.85 * u, 0, 0)).Position:Lerp(handle, turn)
+		local r = (boxCF * CFrame.new(0.85 * u, 0, 0)).Position
+		local salute = (at(0.9, 8.4, -1.1)).Position
+		out.Aims = { l, turn < 1 and r or r:Lerp(salute, k(1.8, 2.2)) }
+		if t >= 2.2 then out.Aims[2] = salute end
+		root = home * CFrame.Angles(math.rad(-4 * turn), 0, 0)
+	end
+	out.Root, out.Head = root, head
+	return out
+end
+
+-- the ground under p (studs up / down), skipping characters, monsters and story props
+function StoryNpcs.GroundAt(p)
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local skip = {}
+	for _, pl in game:GetService("Players"):GetPlayers() do
+		if pl.Character then table.insert(skip, pl.Character) end
+	end
+	for _, name in { "Monsters", T.World.Folder } do
+		local f = workspace:FindFirstChild(name)
+		if f then table.insert(skip, f) end
+	end
+	params.FilterDescendantsInstances = skip
+	local hit = workspace:Raycast(p + Vector3.new(0, 12, 0), Vector3.new(0, -40, 0), params)
+	return hit and hit.Position.Y or p.Y
+end
+
+function StoryNpcs.ClatterScene(key, pos, look)
+	local K = type(Config.StoryQuests) == "table" and Config.StoryQuests.Clatter or nil
+	local sc = type(K) == "table" and type(K.Scenes) == "table" and K.Scenes[key] or nil
+	local intro = C and C.Intro
+	if type(sc) ~= "table" or typeof(pos) ~= "Vector3" or type(intro) ~= "table" or type(intro.ClatterBody) ~= "function" then
+		return false
+	end
+	local folder = Instance.new("Folder")
+	folder.Name = "HH_ClatterScene"
+	folder.Parent = workspace
+	local ok, c = pcall(intro.ClatterBody, folder, T.Clatter.Scale)
+	if not ok or type(c) ~= "table" then
+		folder:Destroy()
+		return false
+	end
+	local feet = Vector3.new(pos.X, StoryNpcs.GroundAt(pos), pos.Z)
+	local face = typeof(look) == "Vector3" and Vector3.new(look.X, feet.Y, look.Z) or feet + Vector3.new(0, 0, -1)
+	if (face - feet).Magnitude < 0.1 then face = feet + Vector3.new(0, 0, -1) end
+	local home = CFrame.lookAt(feet, face)
+	local box = nil
+	if sc.Move == "CatchHat" or sc.Move == "CarrySalute" then
+		box = block("ClatterBox", T.Clatter.Box * T.Clatter.Scale, T.Clatter.BoxColor, home, folder)
+		box.Anchored, box.CanCollide, box.CanQuery, box.CanTouch = true, false, false, false
+	end
+	local t0 = os.clock()
+	local stay = tonumber(K.Stay) or 8
+	local said = false
+	local conn
+	conn = game:GetService("RunService").Heartbeat:Connect(function()
+		local t = os.clock() - t0
+		if not folder.Parent then
+			conn:Disconnect()
+			return
+		end
+		local okP, pose = pcall(StoryNpcs.ClatterPose, sc.Move, t, home, T.Clatter.Scale)
+		if okP and type(pose) == "table" then
+			pcall(intro.PlaceClatter, c, pose.Root, pose.Head, pose.Aims)
+			local hat = pose.Hat
+			if type(hat) == "table" and hat.World then
+				c.Helmet.CFrame = hat.World
+				c.Badge.CFrame = hat.World * CFrame.Angles(0, 0, math.rad(-90)) * CFrame.new(0, 0.05 * c.Scale, -1.65 * c.Scale)
+			elseif type(hat) == "table" and (hat.Drop or 0) > 0 then
+				c.Helmet.CFrame = c.Helmet.CFrame * CFrame.new(-hat.Drop, 0, -hat.Drop * 0.4)
+				c.Badge.CFrame = c.Badge.CFrame * CFrame.new(0, -hat.Drop, -hat.Drop * 0.4)
+			end
+			if box and pose.Box then box.CFrame = pose.Box end
+		end
+		if not said and t >= 0.3 then
+			said = true
+			if type(sc.Line) == "string" and sc.Line ~= "" then pcall(StoryNpcs.Bubble, c.Head, sc.Line, T.Clatter.Line) end
+		end
+		if t >= stay then
+			conn:Disconnect()
+			for _, p in folder:GetDescendants() do
+				if p:IsA("BasePart") then
+					game:GetService("TweenService"):Create(p, TweenInfo.new(T.Clatter.Fade), { Transparency = 1 }):Play()
+				end
+			end
+			game:GetService("Debris"):AddItem(folder, T.Clatter.Fade + 0.1)
+		end
+	end)
+	return true
 end
 
 ------------------------------------------------------------------ A23-208 story fields (screen part)
@@ -863,12 +1027,14 @@ function StoryNpcs.Bubble(adornee, text, seconds)
 	return bb
 end
 
--- Fx StoryScene Find: the words of step n (Config, my side) over its NPC's head, else over its Guide / Obj.Spot place
+-- Fx StoryScene Find: the words of step n (Config, my side) over its NPC's head (On = an NPC id: hers), else over its
+-- Guide / Obj.Spot place
 function StoryNpcs.Find(id, n, faction)
 	local step = StoryNpcs.StepFor(id, n, faction)
 	local text = type(step) == "table" and step.Find or nil
 	if type(text) ~= "string" or text == "" then return false end
-	local body = type(step.Npc) == "string" and StoryNpcs.Body(step.Npc) or nil
+	local who = (type(step.On) == "string" and step.On ~= "" and step.On ~= "Self") and step.On or step.Npc -- 개발 2: On = an NPC id
+	local body = type(who) == "string" and StoryNpcs.Body(who) or nil
 	if step.On == "Self" then -- 10/15: my own words, over my head
 		local me = game:GetService("Players").LocalPlayer
 		body = me and me.Character or nil
@@ -909,13 +1075,15 @@ function StoryNpcs.MoveOffset(kind, k)
 end
 
 -- Fx StoryScene Scene: the NPC of step st (else StoryNpcs.SceneNpc) plays the move (anchored town bodies move on this
--- client only) + a round sparkle over her head; On = "Self" or no body near = my own avatar (emote / jump + sparkle)
+-- client only) + a round sparkle over her head; On = an NPC id = that NPC plays it; On = "Self" or no body near = my own
+-- avatar (emote / jump + sparkle)
 function StoryNpcs.PlayScene(id, scene, faction, st)
 	local SK = type(Config.StoryQuests) == "table" and Config.StoryQuests.SceneKeys or nil
 	if type(scene) ~= "string" or not (type(SK) == "table" and SK[scene]) then return false end
 	local step = st ~= nil and StoryNpcs.StepFor(id, st, faction) or nil
 	local mine = type(step) == "table" and step.On == "Self"
-	local npc = (type(step) == "table" and type(step.Npc) == "string" and step.Npc) or StoryNpcs.SceneNpc(id, scene, faction)
+	local on = type(step) == "table" and type(step.On) == "string" and step.On ~= "" and step.On ~= "Self" and step.On or nil
+	local npc = on or (type(step) == "table" and type(step.Npc) == "string" and step.Npc) or StoryNpcs.SceneNpc(id, scene, faction)
 	local m = (not mine and type(npc) == "string") and StoryNpcs.Body(npc) or nil
 	if not m then
 		local me = game:GetService("Players").LocalPlayer
@@ -1128,7 +1296,7 @@ function StoryNpcs.WatchSteps(entries, faction)
 	local now = {}
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
-		if type(st) == "table" and type(st.Id) == "string" then
+		if type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true then
 			now[st.Id] = { St = tonumber(st.St) or 0,
 				Done = (tonumber(e.Progress) or 0) >= (tonumber(e.Target) or math.huge) and e.CanClaim == true }
 		end

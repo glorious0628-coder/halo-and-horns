@@ -599,6 +599,9 @@ MUTATIONS = [
     ("A23-212: any step plays Hat", "CLATTER_SOURCE", "after.Quest == id and after.Type == t then", "after.Quest == id then"),
     ("A23-212: Sorry by the player, not the guide", "CLATTER_SOURCE", "local base = (key == \"Sorry\" and guideRoot(player)) or root", "local base = root"),
     ("A23-212: the switch ignored", "CLATTER_SOURCE", "\treturn type(K) == \"table\" and K.Enabled == true and type(K.Scenes) == \"table\"", "\treturn type(K) == \"table\" and type(K.Scenes) == \"table\""),
+    # 최종 검수 10/16 ①: the waiting main's pinned row
+    ("①: no row while the main waits", ST, "\tif st.Main.Id == \"\" then\n\t\tlocal id = num(data.TutorialStep)", "\tif st.Main.Id == \"\" then do return nil end\n\t\tlocal id = num(data.TutorialStep)"),
+    ("①: the waiting row guides nowhere", ST, "Story = { Id = id, St = 1, Npc = npc, Offer = true },", "Story = { Id = id, St = 1, Offer = true },"),
 ]
 
 

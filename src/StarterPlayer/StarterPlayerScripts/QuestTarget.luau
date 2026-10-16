@@ -560,6 +560,10 @@ local function npcEntry(st, myZone, pos)
 end
 
 local function storyEntry(st, myZone, faction, pos)
+	-- 개발 2 dev2-offer-row: "Talk to <asker>" while the next main waits (Story.Offer, St = 1 is no step yet) = the way to her
+	if st.Offer == true then
+		return (type(st.Npc) == "string" and st.Npc ~= "") and npcEntry(st, myZone, pos) or nil
+	end
 	if st.Panel then -- a talk / choice card: no place, unless it is talked through a town NPC in the world
 		if type(st.Npc) == "string" and st.Npc ~= "" then return npcEntry(st, myZone, pos) end
 		return nil

@@ -1,5 +1,12 @@
 # 메인 반영 1 — 인계 상태
 
+## 10/16 낮 현재 (최신)
+- 메인 Studio: build/GoodEvil.rbxlx 파일로 열림(창 id는 list_roblox_studios로 확인, 열 때마다 바뀜), **최소화 상태**(최소화 = 사진 하얗게 찍힘 → 사진 전 ShowWindow RESTORE(9), 끝나면 MINIMIZE(6); 모두 최종 검수 알림 뒤), Edit·Play 없음. 마지막 sync = main 912d4378(0 0).
+- **메인 Studio에 저장 안 된 변경:** Workspace.Map.Decor의 Tombstone 16개·SoulWisp 6개(PointLight 포함)를 ServerStorage/RetiredDecor_1016로 옮김(지운 것 아님, 되돌리려면 자식을 Decor로). 다음 Save As에 포함됨.
+- build/GoodEvil.rbxlx(10/15 21:29, 3611b9ac…) ≠ place/GoodEvil.rbxlx(56145ea1…): 아직 안 맞춤.
+- 사진: docs/art/verification_2026-10-16/main_b27db2ac(_v2 = 창 복원 뒤 정상), main_d75725e7. 새 저장 Play에서 Hallie TalkPrompt.Enabled=true 확인(fireproximityprompt 없음 → 프롬프트 발동 이후는 미확인).
+- Play 스크립트: tools/play_phone_round_photos.py first10 out=…; sync: HH_MAIN_STUDIO=1 STUDIO_ID=<id> py tools/sync_to_studio.py.
+
 ## 내일: 10/16 게시판
 - 최신 main sync·사진 → 사용자 Save As → place push → 사용자 Alt+P. (10/15 밤 상태: Studio 창 GoodEvil 열림, Edit·Play 없음·저장 X, main 45fbdb32 sync 완료. 10/15 캡처 막힘 원인 = 업데이트 전 Studio로 연 것 → 재오픈으로 해결. 사진 = docs/art/verification_2026-10-15/main_a1d06f69/. 강제 종료(Stop-Process)는 권한 거부됨 — 창 닫기는 사용자 몫.)
 

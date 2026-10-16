@@ -282,7 +282,7 @@ local function bareWorld(o)
 	prompt.Name = "HHC_BlacksmithPrompt"
 	local M = { CanBuyWeapon = function() return true end }
 	w.Shop = execute("ShopService.extract", SHOP_EXTRACT, w:Env(), cfg, w.Util, w.Net, reg, M,
-		{ PromptName = "HHC_BlacksmithPrompt", Distance = 12, PromptRate = 0.5 }, function() return nil, prompt end)
+		{ PromptName = "HHC_BlacksmithPrompt", Distance = 12, PromptRate = 0.5, StoryNpc = "Otto" }, function() return nil, prompt end)
 	w.Prompt = prompt
 	function w:Buy(p, tier)
 		self:Advance(1) -- RateLimits.UpgradeWeapon
