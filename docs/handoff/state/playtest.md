@@ -21,3 +21,4 @@
 - 못 한 것: 'Tiny 본편 먼저'(c2644158) — M1_3 Tiny 단계까지 못 감. 도구 문제: character_navigation이 (380,11,60) 대신 바닷가로 감 → 슬라임 0/4.
 - 도구: pt.py에 PT_ROUND 환경 변수(사진 폴더), intro_watch.py(1초 간격 IntroSeen·GUI), face.lua(가장 가까운 BigSlime 보기). Studio id는 매번 list_roblox_studios로(이번 34dfd4a5).
 - **다음 판:** 다음 sync 신호 → 'Tiny 본편 먼저'를 장면으로 + 빛 · 마법사 처음부터.
+- 최종 검수 10/16 저녁: 다음 판부터 보고서 '게임성' 칸에 한 줄 — "첫 10분 누구나 XP 2배를 아이가 알아챘나?"(칩 '2x XP · N min'을 봤나, 언제, 뜻을 알 만했나). 패스 끈 판에서만 보임. (2판 값: 첫 화면 0:08부터 '2x XP · 9 min' 칩이 위 가운데, 9:50 Daily Gifts 때는 없어짐. 글만 있고 눌러도 설명 없음 — 다음 판에 눌러 보기.)
