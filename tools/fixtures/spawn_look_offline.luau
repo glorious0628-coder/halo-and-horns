@@ -163,4 +163,56 @@ runGroup("PlayerService.spawnCFrame guards", function()
 	S.ZoneService = zs
 end)
 
+-- playtest r1 ③ (최종 검수 10/16): Hallie / Magpie stood behind the camera at the first spawn -> the spawn before the guide is
+-- met (TutorialStep 0) faces the side's guide. Angle = between the spawn's look and the way to the guide (flat)
+local function angleTo(cf, spot)
+	local p, t = cf.Args[1], cf.Args[2]
+	local ax, az = t.X - p.X, t.Z - p.Z
+	local bx, bz = spot.X - p.X, spot.Z - p.Z
+	local la, lb = math.sqrt(ax * ax + az * az), math.sqrt(bx * bx + bz * bz)
+	return math.deg(math.acos(math.clamp((ax * bx + az * bz) / (la * lb), -1, 1))), lb
+end
+
+runGroup("the first spawn faces the guide", function()
+	local w = spawnWorld()
+	local M = w.M
+	local spots = {}
+	for _, npc in C.TownNpcs.List do spots[npc.Id] = npc.At end
+	check(C.Tutorial.Guides.Halo == "Hallie" and C.Tutorial.Guides.Horns == "Magpie" and spots.Hallie and spots.Magpie,
+		"the guides Hallie / Magpie have fixed town spots", show({ spots.Hallie, spots.Magpie }))
+	local report = {}
+	for _, case in { { "Halo", halo, "Hallie" }, { "Horns", horns, "Magpie" } } do
+		local p = case[2](0)
+		local g = M.guideSpot(p)
+		check(g ~= nil and at(g, spots[case[3]].X, spots[case[3]].Y, spots[case[3]].Z), case[1] .. " step 0: the guide spot is " .. case[3] .. "'s", show(g))
+		for _, jitter in { { 0.5, 0.5 }, { 0, 0 }, { 1, 1 }, { 0, 1 }, { 1, 0 } } do
+			w.Rng.Script = { jitter[1], jitter[2] }
+			local zoneId = M.respawnZoneId(p)
+			local cf = M.spawnCFrame(zoneId, M.guideSpot(p) or M.firstMissionOpen(p))
+			local ang, dist = angleTo(cf, spots[case[3]])
+			check(cf.Ctor == "lookAt" and ang < 1 and dist < 30, case[1] .. " new player (jitter " .. jitter[1] .. "," .. jitter[2] .. "): faces "
+				.. case[3] .. " (angle < 1 deg, under 30 studs)", string.format("%.2f deg, %.1f studs", ang, dist))
+			w.Rng.Script = { jitter[1], jitter[2] }
+			local old = M.spawnCFrame(zoneId, M.firstMissionOpen(p))
+			table.insert(report, string.format("%s %s: was %.0f deg, now %.1f deg, %.1f studs", case[1], show(jitter), (angleTo(old, spots[case[3]])), ang, dist))
+		end
+	end
+	print("GUIDE_ANGLES " .. table.concat(report, " | "))
+	-- after the guide (the teacher, the Forge, the hunt, done): as before
+	for _, step in { 1, 2, 3, 4, 99 } do
+		check(M.guideSpot(halo(step)) == nil and M.guideSpot(horns(step)) == nil, "step " .. step .. ": no guide look (the old look)", "")
+	end
+	middle(w)
+	local t = halo(4)
+	local cf = M.spawnCFrame(M.respawnZoneId(t), M.guideSpot(t) or M.firstMissionOpen(t))
+	check(at(cf.Args[2], 0, 4, -330), "Halo at the teacher step (4): still faces the gate", describe(cf))
+	check(M.guideSpot(player({ TutorialStep = 0, Faction = "Neutral" })) == nil, "the artisans' guide Kit (at the anvil, no fixed spot): no guide look", "")
+	check(M.guideSpot(player({ TutorialStep = 0, Faction = "None" })) == nil, "no side yet: no guide look", "")
+	check(M.guideSpot(player(nil, {})) == nil, "no data, no side: nothing", "")
+	-- GetSpawnCFrame with a spot: the spot at the spawn's height
+	middle(w)
+	cf = w.M.ZoneService.GetSpawnCFrame("HaloTown", spots.Hallie)
+	check(cf.Ctor == "lookAt" and at(cf.Args[1], 0, 4, -420) and at(cf.Args[2], -16, 4, -428), "GetSpawnCFrame(zone, spot): looks at the spot, level", describe(cf))
+end)
+
 finish()

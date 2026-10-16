@@ -42,10 +42,12 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             + function_block(ply, "local function stat(") + "\n"
             + function_block(ply, "local function respawnZoneId(") + "\n"
             + function_block(ply, "local function firstMissionOpen(") + "\n"
+            + function_block(ply, "local function guideSpot(") + "\n"
             + function_block(ply, "local function spawnCFrame(") + "\n"
             + "local ZoneService = {}\n"
             + function_block(zone, "function ZoneService.GetSpawnCFrame(") + "\n"
-            + "return { stat = stat, respawnZoneId = respawnZoneId, firstMissionOpen = firstMissionOpen, spawnCFrame = spawnCFrame, "
+            + "return { stat = stat, respawnZoneId = respawnZoneId, firstMissionOpen = firstMissionOpen, guideSpot = guideSpot, "
+              "spawnCFrame = spawnCFrame, "
               "ZoneService = ZoneService }\n"),
     }
 
@@ -66,8 +68,14 @@ MUTATIONS = [
     ("zone: the look keeps its own height", Z, "local look = Vector3.new(target.X, pos.Y, target.Z)", "local look = Vector3.new(target.X, target.Y, target.Z)"),
     ("zone: no jitter", Z, "base.X + Util.Random:NextNumber(-SPAWN_JITTER, SPAWN_JITTER),", "base.X,"),
     # --- PlayerService
-    ("player: the look is never asked for", P, "pcall(zs.GetSpawnCFrame, zoneId, faceOut == true)", "pcall(zs.GetSpawnCFrame, zoneId, false)"),
-    ("player: the look is always asked for", P, "pcall(zs.GetSpawnCFrame, zoneId, faceOut == true)", "pcall(zs.GetSpawnCFrame, zoneId, true)"),
+    ("player: the look is never asked for", P, "typeof(faceOut) == \"Vector3\" and faceOut or faceOut == true)", "false)"),
+    ("player: the look is always asked for", P, "typeof(faceOut) == \"Vector3\" and faceOut or faceOut == true)", "true)"),
+    ("player: the guide spot is dropped", P, "typeof(faceOut) == \"Vector3\" and faceOut or faceOut == true)", "faceOut == true)"),
+    # --- playtest r1 ③: the first spawn faces the guide
+    ("guide: every step faces the guide", P, "if type(steps.Kill) ~= \"number\" or stat(player, \"TutorialStep\", 0) ~= steps.Kill then return nil end\n", ""),
+    ("guide: the other side's guide", P, "tut.Guides[stat(player, \"Faction\", \"None\")]", "tut.Guides.Horns"),
+    ("guide: any NPC's spot", P, "if npc.Id == id and typeof(npc.At)", "if typeof(npc.At)"),
+    ("zone: a spot is never faced", Z, "\tif typeof(faceOut) == \"Vector3\" then target = faceOut end", ""),
     ("player: a finished mission still looks out", P, "step < steps.Done", "step <= steps.Done"),
     ("player: only the first step looks out", P, "step < steps.Done", "step == 0"),
     ("player: nobody looks out", P, "step < steps.Done", "false"),
@@ -91,8 +99,8 @@ def static() -> tuple[int, list[str]]:
 
     ply = read(SSS / "PlayerService.luau")
     code = strip_comments(ply)
-    check(code.count("spawnCFrame(respawnZoneId(player), firstMissionOpen(player))") == 1,
-          "the only spawn of a new character passes the first-mission flag")
+    check(code.count("spawnCFrame(respawnZoneId(player), guideSpot(player) or firstMissionOpen(player))") == 1,
+          "the only spawn of a new character passes the guide spot, else the first-mission flag")
     check(code.count("spawnCFrame(") == 2, "spawnCFrame has the definition and one call")
     zone = strip_comments(read(SSS / "ZoneService.luau"))
     check("character:PivotTo(ZoneService.GetSpawnCFrame(zoneId))" in zone,
