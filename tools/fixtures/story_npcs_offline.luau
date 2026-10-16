@@ -121,6 +121,10 @@ SN.Refresh()
 local mk = markOf(bright)
 check(mk and mk.Enabled == true and bp.Enabled == true, "a row talks through Bright: her '!' and her Talk prompt show", mk and mk.Enabled)
 check(markOf(gleam).Enabled == false and gp.Enabled == false, "... Sir Gleam stays quiet")
+-- API first-10 audit 10/16: an NPC with something for me always shows its Talk, even next to a nearer prompt of the same
+-- key (Otto behind his anvil); other prompts keep theirs
+check(string.find(tostring(bp.Exclusivity), "AlwaysShow", 1, true) ~= nil and bOther.Exclusivity == nil,
+	"a called NPC's Talk prompt always shows (Exclusivity AlwaysShow); other prompts untouched", tostring(bp.Exclusivity))
 local label = mk and mk.Children[1]
 check(mk and mk.Adornee == bright:FindFirstChild("Head") and mk.MaxDistance <= 100 and label and label.Text == "!"
 	and mk.StudsOffsetWorldSpace and mk.StudsOffsetWorldSpace.Y >= 2,

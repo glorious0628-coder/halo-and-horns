@@ -33,7 +33,9 @@ OUT = ROOT / "docs/art/verification_2026-10-10/offline_story_npcs_2026-10-10.jso
 MUTATIONS = [
     ("NPC", "the first mission's guide is not called (no Talk prompt on Hallie, 10/16)", "if type(e) == \"table\" and type(e.GuideNpc) == \"string\" and e.GuideNpc ~= \"\" then out[e.GuideNpc] = true end", ""),
     ("NPC", "the '!' always shows", "\t\t\t\tbb.Enabled = on\n", "\t\t\t\tbb.Enabled = true\n"),
-    ("NPC", "the Talk prompt never hides", " and d.Enabled ~= on then d.Enabled = on end", " and false then d.Enabled = on end"),
+    ("NPC", "the Talk prompt never hides", "\t\t\t\t\tif d.Enabled ~= on then d.Enabled = on end", "\t\t\t\t\tif false then d.Enabled = on end"),
+    ("NPC", "a story Talk hides behind a nearer prompt of the same key (OnePerButton)",
+     "d.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow", "d.Exclusivity = Enum.ProximityPromptExclusivity.OnePerButton"),
     ("NPC", "every prompt is toggled", "d:IsA(\"ProximityPrompt\") and d:GetAttribute(\"StoryNpcId\") ~= nil", "d:IsA(\"ProximityPrompt\")"),
     ("NPC", "a new '!' every pass", "\tif bb then\n\t\t-- 검수 10/10 (API review", "\tif false then\n\t\t-- 검수 10/10 (API review"),
     ("NPC", "the '!' stays on the old head", "if head and bb.Adornee ~= head then bb.Adornee = head end", "local _ = head"),

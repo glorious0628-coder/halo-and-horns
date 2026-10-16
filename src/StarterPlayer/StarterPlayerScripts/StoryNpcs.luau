@@ -1208,7 +1208,15 @@ function StoryNpcs.Refresh()
 				if on then StoryNpcs.Paint(bb, marks[id] or { Text = T.MarkText, Main = false }) end
 			end
 			for _, d in model:GetDescendants() do
-				if d:IsA("ProximityPrompt") and d:GetAttribute("StoryNpcId") ~= nil and d.Enabled ~= on then d.Enabled = on end
+				if d:IsA("ProximityPrompt") and d:GetAttribute("StoryNpcId") ~= nil then
+					if d.Enabled ~= on then d.Enabled = on end
+					-- API first-10 audit 10/16: a story Talk shares the Interact key with a nearby shop / anvil prompt; the
+					-- default OnePerButton showed only the nearer one (Otto 4 studs behind his anvil) - an NPC with
+					-- something for me always shows its Talk (this client only)
+					if on and d.Exclusivity ~= Enum.ProximityPromptExclusivity.AlwaysShow then
+						d.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
+					end
+				end
 			end
 		end
 	end
