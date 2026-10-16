@@ -586,6 +586,11 @@ MUTATIONS = [
     ("A23-208: no Find on accept", ST, "\t\tfindScene(player, id, tr) -- A23-208: the first step's Find\n", ""),
     ("A23-208: no end Scene", ST, "\tif doneStep and type(doneStep.Scene) == \"string\" then scene(player, id, \"Scene\", doneStep.Scene) end\n", ""),
     ("P1: the Lv5 test before Lv5", C, "\t\t\tRequires = { Level = 5 },\n\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks", "\t\t\tSteps = {\n\t\t\t\t{ Text = \"Beat slimes using only basic attacks"),
+    # 10/16 ④ (최종 검수): every reward kind paid - Reward.Potion and Reward.Items, and the potion art key in the preview
+    ("④: Reward.Potion never paid", ST, "\tadd(r.Item or r.Potion, r.N)\n", "\tadd(r.Item, r.N)\n"),
+    ("④: Reward.Items ignored", ST, "\t\tif type(row) == \"table\" then add(row.Id, row.N) end\n", ""),
+    ("④: only the first reward item paid", ST, "\tfor _, row in rewardItems(def.Reward) do\n", "\tfor _, row in { rewardItems(def.Reward)[1] } do\n"),
+    ("④: a potion in the preview without its art key", ST, "\t\trow.Icon = type(q) == \"table\" and q.Icon or nil\n", ""),
 ]
 
 

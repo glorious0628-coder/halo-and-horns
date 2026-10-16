@@ -2721,7 +2721,7 @@ runGroup("a23-199 offer, pickup, deliver", function()
 			{ Text = "Find the box", Guide = "TestBox", Obj = { Type = "Pickup", Spot = "TestBox", Radius = 8 } },
 			{ Text = "Bring it to Tiny", Guide = "Crossroads", Npc = "TestKid", Obj = { Type = "Deliver" } },
 		},
-		Reward = { GoldN = 7 } }
+		Reward = { GoldN = 7, Potion = "HP", N = 2 } } -- 10/16 ④: a Reward.Potion is paid (the dailies' Easy rewards)
 	table.insert(SQ.Subs, "TOFFER")
 	w:Npc("TestKid", vec(0, 0, 0))
 	local p, d = joinAfterM23(w, 9901, "Halo", { Pos = vec(2, 0, 2) })
@@ -2763,8 +2763,10 @@ runGroup("a23-199 offer, pickup, deliver", function()
 	check(w:Track(d, "TOFFER").St == 2 and d.Story.Done.TOFFER == nil, "Deliver far from Tiny: refused", show(w:Track(d, "TOFFER")))
 	w:MoveTo(p, vec(2, 0, 2))
 	local bank = d.BankGold or 0
+	local hp = d.HPPotionCount or 0
 	check(w.Story.TalkToNpc(p, "TestKid") == "TOFFER" and d.Story.Done.TOFFER == true and (d.BankGold or 0) == bank + 7,
 		"talking to Tiny with the box: delivered, the quest ends (+7 gold)", show({ d.Story.Done.TOFFER, (d.BankGold or 0) - bank }))
+	check((d.HPPotionCount or 0) == hp + 2, "... and Reward.Potion HP x2 is really paid (10/16 ④)", show({ hp, d.HPPotionCount }))
 	check(w.Story.TalkToNpc(p, "TestKid") == nil, "done: Tiny has nothing more", "")
 	-- an Offer quest of another side / not met is never offered
 	local q, dq = joinAfterM23(w, 9902, "Horns", { Pos = vec(2, 0, 2) })
@@ -2797,7 +2799,7 @@ runGroup("p1 core", function()
 		Offer = { Npc = { Halo = "TKidH", Horns = "TKidR" }, AcceptScene = "Demo", Lines = { All = { "Kid: Help?" } } },
 		Steps = { { Text = "Hit the dummy", Guide = "TDummy", Obj = { Type = "Practice", Spot = "TDummy", Radius = 10, Count = 1 } },
 			{ Text = "Back to the kid", Npc = "TKidH", Obj = { Type = "Deliver" }, Horns = { Npc = "TKidR" } } },
-		Reward = { GoldN = 9, Item = "Enh70", N = 1 } }
+		Reward = { GoldN = 9, Item = "Enh70", N = 1, Items = { { Id = "MP", N = 1 }, { Id = "Jelly", N = 3 } } } } -- 10/16 ④: several kinds
 	table.insert(SQ.Subs, "TP1A")
 	SQ.Landmarks.TDummy = vec(40, 0, 0)
 	local p, d = joinAfterM23(w, 9911, "Halo", { Pos = vec(2, 0, 2) })
@@ -2817,6 +2819,9 @@ runGroup("p1 core", function()
 	check(type(arg.Reward) == "table" and arg.Reward.Gold == 9 and arg.Reward.XP == nil and type(arg.Reward.Items) == "table"
 		and arg.Reward.Items[1].Id == "Enh70" and arg.Reward.Items[1].N == 1,
 		"the offer shows what it really pays (rule 11): 9 gold, the scroll; no XP key", show(arg.Reward))
+	local its = type(arg.Reward) == "table" and arg.Reward.Items or {}
+	check(#its == 3 and its[2].Id == "MP" and its[2].N == 1 and its[2].Icon == "IconPotionMP" and its[3].Id == "Jelly" and its[3].N == 3
+		and its[1].Icon == nil, "... every kind of Reward.Items too, in order; a potion carries its art key (Icon)", show(its))
 	check(w.Story.TalkToNpc(p, "TKidR") == nil, "the Horns NPC asks a Halo player nothing", "")
 	local hr = joinAfterM23(w, 9918, "Horns", { Pos = vec(0, 0, 302) })
 	check(string.find(hr:GetAttribute("StoryOffers") or "", "TKidR", 1, true) ~= nil
@@ -2848,8 +2853,12 @@ runGroup("p1 core", function()
 	check(p:GetAttribute("PracticeTool") == "", "the tool goes back when the Practice step ends", p:GetAttribute("PracticeTool"))
 	w:MoveTo(p, vec(2, 0, 2))
 	local bank = d.BankGold or 0
+	local mp, jelly, enh = d.MPPotionCount or 0, (d.Items or {}).Jelly or 0, (d.Items or {}).Enh70 or 0
 	check(w.Story.TalkToNpc(p, "TKidH") == "TP1A" and d.Story.Done.TP1A == true and (d.BankGold or 0) == bank + 9,
 		"handed back at the NPC: done, paid once", show({ d.Story.Done.TP1A, (d.BankGold or 0) - bank }))
+	check((d.MPPotionCount or 0) == mp + 1 and d.Items.Jelly == jelly + 3 and d.Items.Enh70 == enh + 1
+		and d.ItemsBound.Jelly == 3 and d.ItemsBound.Enh70 == 1, "every reward kind is paid: the scroll, the MP potion, 3 jelly (items bound)",
+		show({ d.MPPotionCount, d.Items, d.ItemsBound }))
 	-- 3. a main can be offered: it waits at its NPC (Accept starts it); no body = it starts by itself as before
 	local mains = SQ.Main
 	SQ.Main = { "TP1M" }

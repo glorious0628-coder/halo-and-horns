@@ -507,6 +507,25 @@ local function grantItem(player, id, n)
 	return given > 1 and string.format(Config.Loot.Text.GotN, name, given) or string.format(Config.Loot.Text.Got, name)
 end
 
+-- 최종 검수 10/16 (④): every item a quest reward pays, in order = { { Id, N } }: Reward.Item or Reward.Potion ("HP" / "MP")
+-- x N (default 1), then Reward.Items = { { Id, N } } (several kinds in one reward; a potion id works there too). A row that
+-- is no Loot item / potion or has N < 1 is skipped; N is at most 99 (GrantItem's limit)
+local function rewardItems(r)
+	local out = {}
+	if type(r) ~= "table" then return out end
+	local function add(id, n)
+		n = math.floor(num(n, 1))
+		if type(id) == "string" and (Config.Loot.Items[id] or Config.PotionStockKey(id)) and n >= 1 then
+			table.insert(out, { Id = id, N = math.min(n, 99) })
+		end
+	end
+	add(r.Item or r.Potion, r.N)
+	for _, row in type(r.Items) == "table" and r.Items or {} do
+		if type(row) == "table" then add(row.Id, row.N) end
+	end
+	return out
+end
+
 -- A23-34: the blacksmith's free first weapon (M1_1 GiveWeapon = tier; paid once, LootService.GrantFirstWeapon), its own
 -- "전투력 X → Y" line. Gameplay plan 2026-10-13 1-A #2: paid when the first step ends (the visit), so a bare-handed save can
 -- use Otto's scroll on it in step 2, and again at the finish (a no-op once owned)
@@ -555,9 +574,9 @@ local function complete(player, data, id)
 		local ok, added = pcall(S.LootService.AddBagSlots, player, def.Reward.BagSlots)
 		if ok and num(added) > 0 then notify(player, string.format(Config.BagSlots.Text.Gained, added), "reward", "None") end
 	end
-	-- Reward.Item (e.g. Pip1's scroll): one more line under the reward line
-	if type(def.Reward) == "table" and def.Reward.Item then
-		local line = grantItem(player, def.Reward.Item, def.Reward.N)
+	-- Reward.Item / Potion / Items (e.g. Pip1's scroll, a daily's HP potion): one more line each under the reward line
+	for _, row in rewardItems(def.Reward) do
+		local line = grantItem(player, row.Id, row.N)
 		if line then notify(player, line, "reward", "None") end
 	end
 	-- A23-130: no def.Clue toast (lore)
@@ -1792,7 +1811,8 @@ local function offersOf(player, data, npcId)
 end
 
 -- P1 ①-1 (rule 11): what def really pays at this level, for the Offer window (nil = nothing): Gold / XP as payReward counts
--- them (before a 2x pass), Items = { { Id, N } }, BagSlots
+-- them (before a 2x pass), Items = { { Id, N, Icon? } } (rewardItems; Icon = the art key for a potion, which has no Loot
+-- item: Config.QuickSlots.Items[id].Icon), BagSlots
 local function rewardPreview(player, def)
 	local r = type(def) == "table" and def.Reward or nil
 	if type(r) ~= "table" then return nil end
@@ -1802,8 +1822,12 @@ local function rewardPreview(player, def)
 	if num(r.XP) > 0 then x = select(2, Config.HuntValue(level, r.XP)) end
 	if num(r.GoldN) > 0 then g += math.floor(num(r.GoldN)) end
 	if num(r.XPBar) > 0 then x += math.floor(Config.XPToNext(level) * num(r.XPBar)) end
-	local list = type(r.Item) == "string" and { { Id = r.Item, N = math.max(1, math.floor(num(r.N, 1))) } } or nil
-	local out = { Gold = g > 0 and math.floor(g) or nil, XP = x > 0 and math.floor(x) or nil, Items = list,
+	local list = rewardItems(r)
+	for _, row in list do
+		local q = not Config.Loot.Items[row.Id] and type(Config.QuickSlots.Items) == "table" and Config.QuickSlots.Items[row.Id] or nil
+		row.Icon = type(q) == "table" and q.Icon or nil
+	end
+	local out = { Gold = g > 0 and math.floor(g) or nil, XP = x > 0 and math.floor(x) or nil, Items = #list > 0 and list or nil,
 		BagSlots = num(r.BagSlots) > 0 and math.floor(r.BagSlots) or nil }
 	return next(out) ~= nil and out or nil
 end
