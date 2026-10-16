@@ -3,6 +3,7 @@
 ## 10/16 밤 6 — 자세 각도 가지 (최신)
 - #1·#5(dev1-grip-centre) **main 병합됨 f6af22e6**.
 - 가지 **dev1-hold-angles 3f8fa49f** (worktree ../Game-dev1grip): 지팡이 팔꿈치 80·Rest 15(서기 7°, 위팔 틈 0.7), 칼 걷기 손목 +2(앞 26°), WeaponPose.TuneStep(Studio 전용 Dev1Tune 자세 조정). 사진·값 docs/art/verification_2026-10-16/hold_tune/(sheets, tune.json). 도구 build/dev1_tools/tune1016.py.
+- 게임 플레이 3판(docs/review/playtest/2026-10-16_r3.md) 큐: ① 빛 첫 화면 카메라가 계단을 봄(몸은 할리 쪽 0°, 할리는 목표 칸 뒤 반쯤 가림; 뿔은 Magpie 봄) → 첫 스폰 때 카메라를 캐릭터 등 뒤로 ② 마법사 공격 순간 지팡이 위쪽이 머리 뒤·얼굴 선 지나고 끝 늘어짐(13_zoom) → #6에 포함 ③ 대장간 앞 땅 글 'Forge'·'Altar of Fate' 겹침 ④ 2배 칩 = A23-221 ⑦대로.
 - ▶ 기다림: 활 A/B 고름(최종 검수 → 사용자). 다음: 고른 안 값으로(A면 위 끝 바깥·손 높이 다듬기) → 걷기 안쪽 기울기(칼 17°, 지팡이 16°) → #3·#6 공격 겹침(지팡이 공격 겨누기 버릴지 최종 검수 결정) → 첫 12분·물약 화면 몫.
 
 ## 10/16 밤 5 — 무기 #1·#5 고침 가지
