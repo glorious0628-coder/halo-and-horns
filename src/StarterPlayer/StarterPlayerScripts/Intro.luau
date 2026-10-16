@@ -526,16 +526,18 @@ end
 -- under parent -> c (Head, Helmet, Badge, Hands, every part in c.All); Intro.PlaceClatter(c, root, head, aims) poses it
 function Intro.ClatterBody(parent)
 	local c = SCENE.Clatter()
-	c.All = {}
+	-- PhoneTest 10/16: filled in a separate list (c.All itself inside c grew while it was walked = an endless loop)
+	local all = {}
 	for _, v in c do
 		local list = type(v) == "table" and v or { v }
 		for _, p in list do
 			if typeof(p) == "Instance" and p:IsA("BasePart") then
 				p.Parent = parent
-				table.insert(c.All, p)
+				table.insert(all, p)
 			end
 		end
 	end
+	c.All = all
 	return c
 end
 
