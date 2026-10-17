@@ -1972,8 +1972,11 @@ end
 -- siren, the arrows and the status lines wait; the first [Claim] brings the event line in with a NEW! tag
 function V2.Fold()
 	local hud = C and C.HUD
-	if type(hud) ~= "table" or type(hud.RookieFold) ~= "function" then return false end
-	local ok, fold = pcall(hud.RookieFold)
+	if type(hud) ~= "table" then return false end
+	-- A23-221 ⑥: until the first story quest is done too (HUD.EventsWait), else the old rule
+	local fn = type(hud.EventsWait) == "function" and hud.EventsWait or hud.RookieFold
+	if type(fn) ~= "function" then return false end
+	local ok, fold = pcall(fn)
 	return ok and fold == true
 end
 

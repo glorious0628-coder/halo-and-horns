@@ -3767,6 +3767,17 @@ function L.RookieFold()
 end
 HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
 
+-- A23-221 ⑥ (game play r1: the goose chip and [Join] came at 5:39, before the Slime Prince): the event strip (EventHUD
+-- V2.Fold) also waits while the first story quest (M1_1) is still on my rows; once its row is gone it shows
+function HUD.EventsWait()
+	if L.RookieFold() then return true end
+	local first = "story:" .. tostring(type(Config.StoryQuests) == "table" and Config.StoryQuests.Main and Config.StoryQuests.Main[1] or "M1_1")
+	for _, e in questState.All or questState.Rows or {} do
+		if type(e) == "table" and e.Id == first then return true end
+	end
+	return false
+end
+
 -- 검수 2026-10-09 (UI clutter review ③, "show it when it is needed"): the crown war bar first shows after the Forge
 -- visit - hidden while the first mission is at its first fight or on the way to the Forge (TutorialStep Kill / Forge,
 -- A23-74 order Kill -> Forge -> Guide -> Quest -> Done); no step yet (not loaded) or any later step = shown, so it

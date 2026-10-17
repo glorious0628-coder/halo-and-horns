@@ -422,6 +422,8 @@ def statics(src: dict) -> list[tuple[str, bool, str]]:
          "Square (its Leave and egg bar stay; outside, the fold still waits for the first Claim)",
          "\tlocal folded = V2.Fold() and not V2.InSquare()\n" in hud and "function V2.InSquare()" in hud
          and "local ok, inside = pcall(e.Inside)\n\treturn ok and inside == true" in hud, ""),
+        ("A23-221 ⑥: the event strip (goose chip, [Join]) waits for the first story quest too (HUD.EventsWait, else RookieFold)",
+         'local fn = type(hud.EventsWait) == "function" and hud.EventsWait or hud.RookieFold' in hud, ""),
         ("QuestTarget: the goose / nest / cart target only inside the Goose Square (else none), the square's own homes first",
          "if not inSquare then return nil end" in qt and "eggFx.HomeFor(myFaction())" in qt and "QuestTarget.Reg = registry" in qt, ""),
         ("WorldMap: the nest / cart landmarks and the goose marker only while EggFx.Here (EggFx.Homes), none drawn at build",
