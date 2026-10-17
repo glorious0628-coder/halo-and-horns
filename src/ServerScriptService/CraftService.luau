@@ -242,6 +242,12 @@ local function room(player, data, r)
 	return have + math.max(1, math.floor(num(r.N, 1))) + 2 <= Config.Loot.ItemCap -- N + the best +N (2)
 end
 
+-- a bag item `id` held `held` times needs a new bag slot to come in (BagSlots.Counts kinds only)
+local function needsSlot(id, held)
+	local def = Config.Loot.Items[id]
+	return held < 1 and def ~= nil and Config.BagSlots.Counts[def.Kind] ~= nil
+end
+
 -- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }
 local function payOut(player, data, r, plus, blessed)
 	if r.Kind == "Pet" then
@@ -288,13 +294,20 @@ local function payOut(player, data, r, plus, blessed)
 	local T = K().Tools
 	local bItem = blessed == true and type(T) == "table" and Config.Loot.Items[T.BlessItem] and T.BlessItem or nil
 	if bItem then
+		-- API review (10/17 HIGH): never a part and then false (a pending craft pays again at every Settle). The Blessed Scroll
+		-- goes in first, alone; no room for it (cap or a new bag slot for it and the plain ones) = the whole craft pays plain
 		local held = type(data.Items) == "table" and math.floor(num(data.Items[bItem])) or 0
-		if held + 1 > Config.Loot.ItemCap then return false end
-		local list = { { Id = bItem, N = 1 } }
-		if n > 1 then table.insert(list, 1, { Id = r.Item, N = n - 1 }) end
-		pcall(S.LootService.GrantItems, player, list, nil, "Craft")
-		local now = type(data.Items) == "table" and math.floor(num(data.Items[bItem])) or 0
-		return have() - before >= n - 1 and now - held >= 1
+		local slots = (needsSlot(bItem, held) and 1 or 0) + ((n > 1 and needsSlot(r.Item, before)) and 1 or 0)
+		if held + 1 <= Config.Loot.ItemCap and Config.BagUsed(data) + slots <= Config.BagSlotsOf(data) then
+			pcall(S.LootService.GrantItems, player, { { Id = bItem, N = 1 } }, nil, "Craft")
+			local now = type(data.Items) == "table" and math.floor(num(data.Items[bItem])) or 0
+			if now - held >= 1 then
+				if n > 1 then pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n - 1 } }, nil, "Craft") end
+				-- checked above (cap + slot): a short grant here is only warned, never paid again
+				if have() - before < n - 1 then Util.Warn(TAG, "blessed craft: plain scrolls short " .. tostring(have() - before)) end
+				return true
+			end
+		end
 	end
 	pcall(S.LootService.GrantItems, player, { { Id = r.Item, N = n } }, nil, "Craft") -- A23-213: never bound
 	return have() - before >= n
@@ -518,7 +531,12 @@ function CraftService.TryStart(player, id)
 	local bless = nil
 	if type(T) == "table" and id == T.BlessRecipe and Config.Loot.Items[T.BlessItem] then
 		local b = num(type(T.Bless) == "table" and T.Bless[toolOf(c, role)])
-		if b > 0 and ST.Rng:NextNumber() < b then bless = true end
+		-- API review (10/17): no roll when the bag has no room for the Blessed Scroll next to the plain ones now
+		local heldB = type(data.Items) == "table" and math.floor(num(data.Items[T.BlessItem])) or 0
+		local heldR = type(data.Items) == "table" and math.floor(num(data.Items[r.Item])) or 0
+		local slots = (needsSlot(T.BlessItem, heldB) and 1 or 0) + (needsSlot(r.Item, heldR) and 1 or 0)
+		local fits = heldB + 1 <= Config.Loot.ItemCap and Config.BagUsed(data) + slots <= Config.BagSlotsOf(data)
+		if fits and b > 0 and ST.Rng:NextNumber() < b then bless = true end
 	end
 	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil, Bless = bless }
 	table.insert(recent, now)
@@ -655,12 +673,18 @@ function CraftService.UpgradeTool(player)
 		notify(player, "NotArtisan")
 		return "role"
 	end
-	if ST.Open[player] then
+	local c = craftOf(data)
+	-- API review (10/17): the same gates as TryStart (a craft open or pending, auto combat on)
+	if not ST.Open[player] and type(c.Pend) == "table" then CraftService.Settle(player, data) end
+	if ST.Open[player] or type(c.Pend) == "table" then
 		notify(player, "Busy")
 		return "busy"
 	end
+	if player:GetAttribute("AutoCombatUnlocked") == true and player:GetAttribute("AutoCombatEnabled") == true then
+		notify(player, "Auto")
+		return "auto"
+	end
 	local T = K().Tools
-	local c = craftOf(data)
 	local now = toolOf(c, role)
 	local name = type(T.Names) == "table" and T.Names[role] or role
 	local cost = now < math.floor(num(T.Max, 10)) and CraftService.ToolCost(role, now + 1) or nil
@@ -687,18 +711,20 @@ function CraftService.UpgradeTool(player)
 		notify(player, "NeedMats")
 		return "mats"
 	end
-	if not S.ProgressionService.SpendGold(player, cost.Gold, "CraftTool") then
+	-- API review (10/17): nothing here may throw between the gold and the roll (a paid try always rolls)
+	local okG, paid = pcall(S.ProgressionService.SpendGold, player, cost.Gold, "CraftTool")
+	if not okG or paid ~= true then
 		notify(player, "NeedGold")
 		return "gold"
 	end
-	for item, n in cost.Every do
-		if not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, "tool: take " .. item .. " failed after the check") end
+	local function take(item, n)
+		local okT, took = pcall(S.LootService.TakeItem, player, item, n)
+		if not okT or not took then Util.Warn(TAG, "tool: take " .. item .. " failed after the check") end
 	end
+	for item, n in cost.Every do take(item, n) end
 	local ok = ST.Rng:NextNumber() < cost.P
 	if ok then
-		for item, n in cost.Extra do
-			if not S.LootService.TakeItem(player, item, n) then Util.Warn(TAG, "tool: take " .. item .. " failed after the check") end
-		end
+		for item, n in cost.Extra do take(item, n) end
 		c["Tool" .. role] = now + 1 -- saved with the costs (one write)
 	end
 	local after = toolOf(c, role)

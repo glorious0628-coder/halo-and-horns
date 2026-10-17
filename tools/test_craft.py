@@ -39,6 +39,11 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # A23-219 craft tools + the Blessed Scroll (게임성 개발 2)
+    ("bless: no room check before the Blessed Scroll", R, "Config.BagUsed(data) + slots <= Config.BagSlotsOf(data) then\n\t\t\tpcall(", "true then\n\t\t\tpcall("),
+    ("bless: the old partial pay (false after the plain ones)", R, "\t\t\t\treturn true\n\t\t\tend\n\t\tend\n\tend\n", "\t\t\t\treturn false\n\t\t\tend\n\t\tend\n\tend\n"),
+    ("bless: the roll ignores the bag", R, "if fits and b > 0 and", "if b > 0 and"),
+    ("tool: no pending-craft gate", R, "\tif ST.Open[player] or type(c.Pend) == \"table\" then\n", "\tif ST.Open[player] then\n"),
+    ("tool: no auto gate", R, "\t\treturn \"auto\"\n\tend\n\tlocal T = K().Tools\n", "\tend\n\tlocal T = K().Tools\n"),
     ("tools: a fail lowers the tool", R, "\t\tc[\"Tool\" .. role] = now + 1 -- saved with the costs (one write)\n\tend\n",
      "\t\tc[\"Tool\" .. role] = now + 1 -- saved with the costs (one write)\n\telse\n\t\tc[\"Tool\" .. role] = math.max(0, now - 1)\n\tend\n"),
     ("tools: the extra taken on a fail too", R, "\tlocal ok = ST.Rng:NextNumber() < cost.P\n\tif ok then\n\t\tfor item, n in cost.Extra do",
@@ -53,8 +58,7 @@ MUTATIONS = [
     ("tools: the band one too high", R, "local band = target <= 3 and 1 or target <= 6 and 2 or 3", "local band = target <= 2 and 1 or target <= 5 and 2 or 3"),
     ("tools: +7 at 60%", C, "{ Lv = 10, P = 0.50, Gold = 2500,", "{ Lv = 10, P = 0.60, Gold = 2500,"),
     ("tools: a nested Tool table saved", R, "\t\tc[\"Tool\" .. role] = now + 1", "\t\tc.Tool = { [role] = now + 1 }; c[\"Tool\" .. role] = now + 1"),
-    ("bless: every scroll blessed", R, "\t\tlocal list = { { Id = bItem, N = 1 } }\n\t\tif n > 1 then table.insert(list, 1, { Id = r.Item, N = n - 1 }) end\n",
-     "\t\tlocal list = { { Id = bItem, N = n } }\n"),
+    ("bless: every scroll blessed", R, "{ { Id = bItem, N = 1 } }, nil, \"Craft\")", "{ { Id = bItem, N = n } }, nil, \"Craft\")"),
     ("bless: rolled at the end, not the start", R, "Bound = next(bound) ~= nil and bound or nil, Bless = bless }", "Bound = next(bound) ~= nil and bound or nil }"),
     ("bless: the kit's +N ignored", R, "T.Bless[toolOf(c, role)]", "T.Bless[10]"),
     ("bless: Enh70B is +1", C, "Chance = 0.7, Plus = 2, Color = Color3.fromRGB(255, 225, 120)", "Chance = 0.7, Plus = 1, Color = Color3.fromRGB(255, 225, 120)"),
@@ -103,7 +107,7 @@ MUTATIONS = [
     ("start: any role's recipe", R, "\tif not role or role ~= r.Role then\n", "\tif not role then\n"),
     ("start: two sessions", R, "\tif ST.Open[player] or type(craftOf(data).Pend) == \"table\" then\n", "\tif false then\n"),
     ("start: no minute cap", R, "\tif #recent >= K().StartsPerMinute then\n", "\tif false then\n"),
-    ("start: auto combat allowed", R, "\tif player:GetAttribute(\"AutoCombatUnlocked\") == true and player:GetAttribute(\"AutoCombatEnabled\") == true then\n", "\tif false then\n"),
+    ("start: auto combat allowed", R, "\t\treturn \"auto\"\n\tend\n\tif not nearBench(player, role) then\n", "\tend\n\tif not nearBench(player, role) then\n"),
     ("start: no distance", R, "\tif not root or not bench or (root.Position - bench.Position).Magnitude > K().Range then return nil end\n", "\tif not root or not bench then return nil end\n"),
     ("start: the tag ignored", R, "\t\tif part:IsA(\"BasePart\") and part:GetAttribute(\"Role\") == role then\n", "\t\tif false then\n"),
     ("start: no level check", R, "\tif roleRec(c, role).Lv < r.Lv then\n", "\tif false then\n"),

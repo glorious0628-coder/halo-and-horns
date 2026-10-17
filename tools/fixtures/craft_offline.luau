@@ -1267,6 +1267,62 @@ runGroup("tools", function()
 	startAndHammer(w, z, HONEST, { Recipe = "AS1" })
 	check(last(fired(w, "CraftResult", z)).Blessed == nil and (zd.Items.Enh70B or 0) == 0, "a +0 kit: Bless 0%, never blessed", "")
 	w.Script = {}
+	-- API review (10/17 HIGH): a full bag never pays a blessed craft in parts (a pending craft used to hand out the plain
+	-- scrolls again at every Settle). `free` = empty bag slots left after the fill
+	local function fullBag(id, items, free)
+		local q, qd = smith(w, id, { Items = items }, "Mage")
+		qd.Craft.Alch = { Lv = 3, XP = 0 }
+		local ids = {}
+		for item, def in C.Loot.Items do
+			if C.BagSlots.Counts[def.Kind] and qd.Items[item] == nil and item ~= "Enh70" and item ~= "Enh70B" then table.insert(ids, item) end
+		end
+		table.sort(ids)
+		local i = 1
+		while C.BagUsed(qd) + free < C.BagSlotsOf(qd) and ids[i] do
+			qd.Items[ids[i]] = 1
+			i += 1
+		end
+		check(C.BagUsed(qd) + free == C.BagSlotsOf(qd), "(setup: the bag filled to " .. free .. " free)", show({ C.BagUsed(qd), C.BagSlotsOf(qd) }))
+		return q, qd
+	end
+	local pend = { Id = "AS1", Plus = 1, Gold = 60, Mats = { Herb = 10, CopperOre = 8, SlimeCore = 2 }, Bless = true }
+	-- the plain scroll held, no slot left: the Blessed Scroll cannot come in -> the whole craft pays plain, once
+	local f1, fd1 = fullBag(65, { Enh70 = 3, Herb = 30 }, 0)
+	fd1.Craft.Pend = deepCopy(pend)
+	check(w.C.Settle(f1, fd1) == "done" and fd1.Items.Enh70 == 3 + 2 and (fd1.Items.Enh70B or 0) == 0 and fd1.Craft.Pend == nil,
+		"full bag + a blessed AS1 (+1): 2 plain scrolls, no Blessed Scroll, nothing pending", show({ fd1.Items.Enh70, fd1.Items.Enh70B, fd1.Craft.Pend }))
+	check(w.C.Settle(f1, fd1) == "none" and fd1.Items.Enh70 == 5, "a second Settle pays nothing (free scrolls: 0)", show(fd1.Items.Enh70))
+	-- one free slot, neither scroll held: the plain ones take it (never the Blessed Scroll alone and the rest lost)
+	local f2, fd2 = fullBag(66, { Herb = 30 }, 1)
+	fd2.Craft.Pend = deepCopy(pend)
+	check(w.C.Settle(f2, fd2) == "done" and fd2.Items.Enh70 == 2 and (fd2.Items.Enh70B or 0) == 0,
+		"one free slot, no scroll held: 2 plain scrolls (the Blessed Scroll would leave no slot for them)", show({ fd2.Items.Enh70, fd2.Items.Enh70B }))
+	-- two free slots: the Blessed Scroll + the rest plain, as before
+	local f3, fd3 = fullBag(67, { Herb = 30 }, 2)
+	fd3.Craft.Pend = deepCopy(pend)
+	check(w.C.Settle(f3, fd3) == "done" and fd3.Items.Enh70 == 1 and fd3.Items.Enh70B == 1,
+		"two free slots: 1 Blessed + 1 plain", show({ fd3.Items.Enh70, fd3.Items.Enh70B }))
+	-- the roll itself waits for room: a full bag (the plain scroll held) never rolls a blessing
+	local f4, fd4 = fullBag(68, { Enh70 = 1, Herb = 60, CopperOre = 40, SlimeCore = 12 }, 0)
+	fd4.Craft.ToolAlch = 10
+	w.Script = { 0.01 }
+	check(w.C.TryStart(f4, "AS1") == "ok" and fd4.Craft.Pend.Bless == nil, "a full bag at the start: no blessing rolled (+10 kit, 1%)", show(fd4.Craft.Pend))
+	w.Script = {}
+	-- the tool try: the same gates as a craft (a pending craft that cannot be paid, auto combat on)
+	local g, gd = smith(w, 69)
+	gd.BankGold = 100000
+	gd.Craft.Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { CopperOre = 2 } }
+	w.SpareFull = true
+	w:Advance(2)
+	check(w.C.UpgradeTool(g) == "busy" and (gd.Craft.ToolSmith or 0) == 0 and gd.BankGold == 100000, "a pending craft that does not fit: busy, nothing taken", "")
+	w.SpareFull = false
+	w:Advance(2)
+	g:SetAttribute("AutoCombatUnlocked", true)
+	g:SetAttribute("AutoCombatEnabled", true)
+	check(w.C.UpgradeTool(g) == "auto" and (gd.Craft.ToolSmith or 0) == 0, "auto combat on: auto (the pending one was paid first)", show(gd.Craft.Pend))
+	g:SetAttribute("AutoCombatEnabled", false)
+	w:Advance(2)
+	check(w.C.UpgradeTool(g) == "ok" and gd.Craft.ToolSmith == 1, "auto off: the try goes", "")
 	-- the repair: flat Tool<role> 0..10, anything else dropped
 	local fix = C.SanitizeCraft({ ToolSmith = 12, ToolAlch = -3, ToolTame = "x", Tool = { Smith = 5 } })
 	check(fix.ToolSmith == 10 and fix.ToolAlch == nil and fix.ToolTame == nil and fix.Tool == nil, "repair: 12 -> 10, -3 / 'x' / a table dropped", show(fix))
