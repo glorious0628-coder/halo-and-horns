@@ -404,7 +404,11 @@ function CraftView.OnResult(payload)
 		local ok, n = pcall(Config.WeaponName, math.floor(tonumber(payload.Tier)), class, faction)
 		name = ok and n or nil
 	elseif type(payload.Item) == "string" and Config.Loot.Items[payload.Item] then
-		name = tx(Config.Loot.Items[payload.Item], "Name")
+		-- game play r8 (A23-219): a blessed craft names the Blessed Scroll it gave (CraftResult.Item stays the recipe's)
+		local tools = type(Config.Craft) == "table" and Config.Craft.Tools or nil
+		local bless = payload.Blessed == true and type(tools) == "table" and tools.BlessItem or nil
+		local item = (type(bless) == "string" and Config.Loot.Items[bless]) and bless or payload.Item
+		name = tx(Config.Loot.Items[item], "Name")
 	elseif payload.Kind == "Potion" and type(payload.Potion) == "string" then -- AP1 / AP2 (Config.QuickSlots.Items)
 		local qs = type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Items) == "table" and Config.QuickSlots.Items or {}
 		name = type(qs[payload.Potion]) == "table" and tx(qs[payload.Potion], "Name") or nil
