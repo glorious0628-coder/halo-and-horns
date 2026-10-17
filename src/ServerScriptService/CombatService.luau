@@ -636,28 +636,25 @@ local function traceHit(victim, asked, applied, sourceKind, attacker, hum)
 		By = attacker and attacker.Name or "-", HP = hum.Health, Max = hum.MaxHealth, Where = where })
 	while #list > HitTrace.Max do table.remove(list, 1) end
 end
--- r9 (최종 검수 10/17: a warrior died at 158/182 with no DamagePlayer): Studio only, every player's Humanoid every 0.2 s
+-- r9 (최종 검수 10/17: a warrior died at 158/182 with no DamagePlayer): Studio only, every player's Humanoid every RegenTick (1 s)
 -- { T, HP, Max, Pos, Vel, State } (the last HitTrace.Samples), printed with the hits at a KO: a jump of HP without a hit,
 -- a MaxHealth change or a fall shows there
-HitTrace.Samples, HitTrace.SampleMax, HitTrace.SampleGap = {}, 40, 0.2
-function HitTrace.Sample()
-	for _, p in Players:GetPlayers() do
-		local hum, root = Util.GetHumanoid(p), Util.GetRoot(p)
-		if hum then
-			local list = HitTrace.Samples[p] or {}
-			HitTrace.Samples[p] = list
-			local okS, st = pcall(function() return hum:GetState().Name end)
-			table.insert(list, { T = os.clock(), HP = hum.Health, Max = hum.MaxHealth, Pos = root and root.Position or nil,
-				Vel = root and root.AssemblyLinearVelocity or nil, State = okS and st or "?" })
-			while #list > HitTrace.SampleMax do table.remove(list, 1) end
-		end
-	end
+HitTrace.Samples, HitTrace.SampleMax = {}, 20
+function HitTrace.SampleOne(p)
+	local hum, root = Util.GetHumanoid(p), Util.GetRoot(p)
+	if not hum then return end
+	local list = HitTrace.Samples[p] or {}
+	HitTrace.Samples[p] = list
+	local okS, st = pcall(function() return hum:GetState().Name end)
+	table.insert(list, { T = os.clock(), HP = hum.Health, Max = hum.MaxHealth, Pos = root and root.Position or nil,
+		Vel = root and root.AssemblyLinearVelocity or nil, State = okS and st or "?" })
+	while #list > HitTrace.SampleMax do table.remove(list, 1) end
 end
 local function printTrace(victim)
 	if not game:GetService("RunService"):IsStudio() then return end
 	local now = os.clock()
 	for _, s in HitTrace.Samples[victim] or {} do
-		if now - s.T <= 4 then
+		if now - s.T <= 6 then
 			print(string.format("[HitTrace] %s %.2fs ago sample hp=%.0f/%.0f state=%s pos=%s vel=%s", victim.Name, now - s.T, s.HP, s.Max,
 				tostring(s.State), s.Pos and string.format("%.1f,%.1f,%.1f", s.Pos.X, s.Pos.Y, s.Pos.Z) or "nil",
 				s.Vel and string.format("%.0f,%.0f,%.0f", s.Vel.X, s.Vel.Y, s.Vel.Z) or "nil"))
@@ -1882,6 +1879,7 @@ end
 
 ------------------------------------------------------------------ loops
 local function regenTick(p)
+	if game:GetService("RunService"):IsStudio() then pcall(HitTrace.SampleOne, p) end -- r9: Studio only, a sample every RegenTick
 	local hum = Util.GetHumanoid(p)
 	if not hum or hum.Health <= 0 or hum.Health >= hum.MaxHealth then
 		return
@@ -1954,14 +1952,6 @@ function CombatService.Init(registry)
 end
 
 function CombatService.Start()
-	if game:GetService("RunService"):IsStudio() then -- r9: Studio only, the Humanoid samples of HitTrace
-		task.spawn(function()
-			while true do
-				task.wait(HitTrace.SampleGap)
-				pcall(HitTrace.Sample)
-			end
-		end)
-	end
 	Net.Get("Swing").OnServerEvent:Connect(onSwingRemote)
 	Net.Get("Release").OnServerEvent:Connect(onReleaseRemote)
 	Net.Get("SetAutoAttack").OnServerEvent:Connect(onSetAutoAttackRemote)
