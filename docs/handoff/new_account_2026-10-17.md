@@ -67,7 +67,7 @@
 7. 사용자 몫(한가할 때): 배지 2개 `py -X utf8 C:/Users/glori/Documents/Roblox/Game/tools/badge_create.py ShardChoice Rank2`(하루 무료 5개, 결과 ID → 개발 2가 Config.Badges.Ids).
 
 ## 4. 회의실(삼자 대화 페이지)
-- 지금 페이지 = https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (10/16 밤 계정 것). 그 전 페이지 = https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1 (첫 계정 것).
+- **지금 페이지 = https://claude.ai/artifact/4GUZmB518bKXyu6paDcNAq** (10/17 밤 새 계정에서 새로 만듦: 옛 둘 다 404였음, 원본 `build/review_kit_1015/council_1017.html`, 첫 글 d1017_01). 옛 페이지 = https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (10/16 밤 계정 것) · https://claude.ai/artifact/4hhwZZKHM4j2VkmoKw47S1 (첫 계정 것) — 대화 기록은 그 계정에만.
 - 새 계정에서 `ArtifactComments watch`로 둘 다 해 보고, 열리는 쪽을 씀. 둘 다 404면 **새로 만듦**: 원본 `build/review_kit_1015/council_1016.html`을 Artifact로 publish(capabilities db·user·comments·assets, icon chat) → 첫 글 하나(who claude, "새 계정 회의실 …") → 메모리 `council-page.md`·이 파일 §4·role_prompts/00_review.md의 URL을 새 주소로 고치고 push.
 - 글 = ArtifactData collection `chat` {who: user|claude|gpt|api, text, img?, alt?, ts = 실제 ms(`date +%s%3N`)}, doc id d<MMDD>_NN. GPT(Codex) 한도는 10/22 15:12까지 → 그 전 상의는 `py tools/api_agent.py run --model opus`(who "api").
 

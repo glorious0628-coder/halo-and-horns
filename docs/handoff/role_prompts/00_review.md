@@ -11,7 +11,7 @@
 
 그다음 바로:
 1. get_session self로 네 id 확인 → list_sessions로 '게임성 개발 1'·'게임성 개발 2'·'메인 반영 1'(이 저장소 것)을 찾아 각각 "새 최종 검수 시작, 내 id = …. 보고·병합 요청·화면 신청·질문은 이제 나한테. 옛 최종 검수에 보내고 답 못 받은 건 다시 보내 줘" 보내기. 제목이 '최종 검수 (옛)'인 세션에는 아무것도 보내지 마.
-2. ArtifactComments로 회의실 https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi 지켜보기(사용자 글마다 너와 GPT 아스트라가 각자 답).
+2. ArtifactComments로 회의실 https://claude.ai/artifact/4GUZmB518bKXyu6paDcNAq 지켜보기(10/17 밤 셋째 계정 것; 사용자 글마다 너와 GPT 아스트라가 각자 답). 안 열리면 원본 build/review_kit_1015/council_1017.html을 새로 publish.
 3. 기억 문서 §1 '맨 먼저 할 일' 순서대로(dev2-quest-p1 병합, M1_4 대사 질문 답, dev1-a191, 실패한 파티 API 작업, Codex 퀘스트 데이터, 다섯 언어 업로드, 영어 덤프 사진).
 4. 사용자에게 한국어 5줄 이하로: 지금 상태 · 기다리는 결정 · 다음 할 일.
 

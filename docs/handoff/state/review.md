@@ -480,3 +480,10 @@
 - (덧붙임) 병합 대기 ④ dev1-dialog-box 59b8a80d = NPC 대화 상자 ①(A23-229; 이야기 카드·부탁·Welcome을 화면 아래 상자로, 얼굴은 승인 초상/첫 글자, 3D 얼굴은 ②) — 화면 눌러 보기 뒤. ②의 craft-optsb 전체 시험에 buff_bar 1개 새 실패(특제 강장제 Base 이름 → Buff_<id> 신호 없음) = 화요일 개발 1·2가 정리.
 - (덧붙임) 병합 대기 ⑤ dev1-detail-1 c37d9fb7 = 세세한 #1·#8·#9·#6·#13·#14(audio 재확인 필요). 개발 1 화요일 큐 = 물속 무기 → 칼 손에 → Neighbor 두 줄 → 화면 판 → 대화 상자 ② → audit 순서 (state/dev1.md '10/17 밤 멈춤'). 네 세션 모두 멈춤 확인.
 - (덧붙임) 사용자가 다른 계정으로 옮김 → 새 최종 검수용 글 = docs/handoff/new_account_2026-10-17.md(세션 4개 시작 글·모델 표·다음 순서·회의실 처리).
+
+## 10/17 밤 늦게 (셋째 계정 최종 검수) — 세션 다시 엶, 멈춤 끝
+- 사용자가 다른 Claude 계정으로 옮김(주간 0%, 리셋 10/18 19:00 KST) + "똑똑한 모델로 써도 됨" → 화요일까지 멈춤은 끝. 나 = Opus 5.5 xhigh(local_c0b776d8).
+- `new_account_2026-10-17.md` §2대로 4개 시작: 메인 반영 1(Sonnet 5.5 medium, local_f1fea79f) · 게임성 개발 1(Opus 5.5 xhigh, local_04158d07) · 게임성 개발 2(Opus 5.5 xhigh, local_833201ed) · 게임 플레이(Opus 5.5 high, local_071b6f40; 표의 Sonnet 대신 재미 판단 때문에 Opus). id는 바뀔 수 있으니 list_sessions로.
+- **회의실:** 옛 둘(Nmsz2E84…·4hhw…) 다 404 → 새로 만듦 https://claude.ai/artifact/4GUZmB518bKXyu6paDcNAq (원본 build/review_kit_1015/council_1017.html, db·user·comments·assets, 첫 글 d1017_01). 지켜보기 연결됨.
+- 가지 끝(origin) 확인: dev1-dialog-box 59b8a80d · dev1-codex-next 459a37ea · dev1-detail-1 c37d9fb7 · dev2-detail 1a5ac2ac · dev2-craft-optsb cef2e7f3. main = 20ba142b.
+- 다음 = new_account 파일 §3 순서(개발 1 ①②③ → dev2-detail과 같이 병합 → sync → 화면 판 → 게임 플레이 11판 → buff_bar → craft-optsb).
