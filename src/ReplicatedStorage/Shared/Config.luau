@@ -11386,7 +11386,13 @@ Config.ClientText.CraftWindow = {
 	Checking = "Checking…",
 	None = "Nothing to make yet.",
 	-- the tamer (⑤, 개발 3 dev3-tamer: summons + research; only while Config.Features.Research is on)
-	Tabs = { Make = "Make", Research = "Research" },
+	Tabs = { Make = "Make", Research = "Research", Tool = "Tool" },
+	-- A23-219 the Tool tab (my role tool: CraftWindow.ToolView; the result lines are Config.Craft.Text ToolUp / ToolSame)
+	ToolName = "%s +%d",
+	ToolStep = "+%d → +%d · %s%%",
+	Upgrade = "Upgrade",
+	Bless = "Blessed Scroll %s%%", -- the Mixing Kit's chance per Enhance Scroll craft (Config.Craft.Tools.Bless)
+	BlessNext = "Blessed Scroll %s%% → %s%%",
 	PetSpeed = "Speed +%d–%d%%", -- a summon's random walk speed range (the hammer adds up to +2)
 	ResearchNeed = "%s research %s / %s",
 	Stage = "Stage %d",

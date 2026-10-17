@@ -251,6 +251,7 @@ check(find(root, "Result").Text == "", "a result for another session is ignored"
 resultR.OnClientEvent:Fire({ Id = 7, Plus = 1, Kind = "Weapon", Tier = 3, Grades = {} })
 check(find(root, "Result").Text == "+1 " .. Config.WeaponName(3, "Warrior", "Halo"), "the one result line", find(root, "Result").Text)
 check(find(root, "Skip").Visible == false and sounds[#sounds] == "CraftDone", "Skip hides, the done sound")
+check(find(root, "Bless") and find(root, "Bless").Text == "", "no Blessed line on a plain craft")
 CLOCK += 2
 View.Step(NOW)
 check(not View.IsOpen() and root.Destroyed and jumpOn == true and liveJumps() == 0, "it closes after the result (jumping back on)")
@@ -336,5 +337,18 @@ resultR.OnClientEvent:Fire({ Id = 13, Plus = 1, Kind = "Pet", Grades = {}, Pet =
 petLine = find(find(gui, "CraftRing"), "Result")
 check(petLine and petLine.Text == "Dragon +6% speed", "a species the client does not know: its id, still one line", petLine and petLine.Text)
 View.Close()
+-- A23-219: a blessed Enhance Scroll craft (CraftResult.Blessed): the gold Blessed Scroll line under the result, held longer
+NOW = 12000
+sessionR.OnClientEvent:Fire({ Id = 14, StartAt = NOW + 0.8 })
+resultR.OnClientEvent:Fire({ Id = 14, Plus = 1, Kind = "Item", Item = "Enh70", Grades = {}, Blessed = true })
+local blessLine = find(find(gui, "CraftRing"), "Bless")
+check(blessLine and blessLine.Text == "A Blessed Scroll! (70%: +2)", "a blessed craft: the Blessed Scroll line (%% read as %)",
+	blessLine and blessLine.Text)
+CLOCK += 2
+View.Step(NOW)
+check(View.IsOpen(), "a blessed result stays past the plain 1.6 s")
+CLOCK += 1
+View.Step(NOW)
+check(not View.IsOpen(), "and closes after 2.8 s")
 
 print(string.format("CRAFT_VIEW_SUMMARY checks=%d failed=%d", checks, failed))
