@@ -73,3 +73,4 @@
 - 좋아짐: Quick[1], Prince 자리, Lost bag 표시, 쉼 회복(초원 1%), 맵 끝 안개, 지팡이, Health 스크립트 없음, 'Your King' 이름. 그대로: 두 번째 King 셋 다 짐(HitTrace = FirstKOService land/strike 1줄뿐), 물약 1개 사서 바로 마심, KO 그림이 글 가림.
 - 도구: flow.py 봇 = 내 King만·HP 50% 아래 물약·HitTrace 덤프, `BUY5=1`이면 물약 5개. nohup으로 띄우고 Monitor로 `<직업>_flow.txt` 따라감.
 - **다음 판:** 두 번째 King 고침 뒤 세 직업.
+- 10/17 밤: 봇 NaN 고침(flow.py 몸 돌리기 평면 0.5 미만 건너뜀). 8·9판 '두 번째 King 짐'은 봇 탓 가능 → 10판에서 다시.
