@@ -334,9 +334,24 @@ local function withSeasonBadge(c)
 end
 
 runGroup("badges", function()
+	-- 10/17: the shipped ids = five real badges (ChoseSide, FirstSlime, LostLunchbox, Stronger, FirstSkill); ShardChoice / Rank2
+	-- still 0 (made tomorrow): a 0 id is never asked, a real id is asked once (pcall'd AwardBadge, saved)
 	local w0 = retWorld()
-	local p0 = hero(w0, 1, { Data = { TotalKills = 5 } })
-	check(#w0.Badges == 0, "ids 0 (badges not made yet): BadgeService is never asked", show(w0.Badges))
+	local IDS = w0.Config.Badges.Ids
+	check(IDS.ChoseSide == 3229869679939433 and IDS.FirstSlime == 1242395415063351 and IDS.LostLunchbox == 1549249493507326
+		and IDS.Stronger == 3582734064293994 and IDS.FirstSkill == 1387192213788506 and IDS.ShardChoice == 0 and IDS.Rank2 == 0,
+		"shipped Config.Badges.Ids: the five made badges, ShardChoice / Rank2 = 0", show(IDS))
+	local p0, d0 = hero(w0, 1, { Data = { TotalKills = 5, Honor = w0.Config.Titles.Thresholds[2],
+		Story = { Main = { Id = "" }, Subs = {}, Done = { S0 = true }, Pick = {}, First = {} } } })
+	local asked = {}
+	for _, b in w0.Badges do asked[b] = (asked[b] or 0) + 1 end
+	check(asked["1:" .. IDS.FirstSlime] == 1 and asked["1:0"] == nil and d0.Return.Badges.FirstSlime ~= nil
+		and d0.Return.Badges.ShardChoice == nil and d0.Return.Badges.Rank2 == nil,
+		"shipped ids: the first slime's real badge asked once; Shard Choice / Rank 2 (id 0) never asked", show(w0.Badges))
+	w0:RunSpawned()
+	local again = 0
+	for _, b in w0.Badges do if b == "1:" .. IDS.FirstSlime then again += 1 end end
+	check(again == 1, "a real id is never asked twice", again)
 	local _ = p0
 	local w = retWorld({ EditConfig = withBadges })
 	local p, d = w:Arrive(1, { Data = { Faction = "None" } })
@@ -503,7 +518,8 @@ runGroup("opt-in moment", function()
 end)
 
 runGroup("broken saves are repaired", function()
-	local w = retWorld()
+	-- (ids 0 here: the repair alone, no award at the join adding ChoseSide back - the shipped ids are real since 10/17)
+	local w = retWorld({ EditConfig = function(c) for k in c.Badges.Ids do c.Badges.Ids[k] = 0 end end })
 	local p, d = hero(w, 1, { Data = { Return = "x", Diary = 5 } })
 	check(type(d.Return) == "table" and type(d.Return.Badges) == "table" and d.Return.OptIn == "" and d.Return.OptInAt == 0,
 		"a non-table Return starts fresh", show(d.Return))
