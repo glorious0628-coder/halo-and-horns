@@ -56,7 +56,11 @@ local U = C0.Combat.Unarmed
 -- o: Hit = true (the target picker treats every player as a valid PvP target)
 local function bareWorld(o)
 	o = o or {}
-	local w = newWorld({ Time = 1791342000, Clock = 5000, EditConfig = function(c) c.Combat.CritChance = 0 end })
+	-- o.EditConfig(c): more Config changes before the services load (장인 2부: tools/fixtures/deep_vein_offline.luau adds its pack)
+	local w = newWorld({ Time = 1791342000, Clock = 5000, EditConfig = function(c)
+		c.Combat.CritChance = 0
+		if o.EditConfig then o.EditConfig(c) end
+	end })
 	local cfg = w.Config
 	local Signal = w.Util.Signal
 	w.Data, w.Mana, w.Damage, w.Announced, w.Monsters, w.Opened, w.Shoves = {}, {}, {}, {}, {}, {}, {}

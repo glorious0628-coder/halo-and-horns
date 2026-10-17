@@ -43,7 +43,7 @@ COUNT_TYPES = {"Kill", "BasicKill", "SafeKill", "AutoKill", "SkillHit", "WarPoin
 QUEST_TYPES = {"Combat", "Skill", "Gather", "Craft", "Sell", "Investigate", "Recover", "Deliver", "Repair", "Install", "Escort",
                "Rescue", "Defend", "Claim", "Boast", "Prank", "Command", "Lure", "Tame", "Choice", "Display", "Test", "Visit"}
 REWARD_KEYS = {"Gold", "XP", "GoldN", "XPBar", "Item", "Potion", "N", "Items", "BagSlots", "Title", "TitleBy", "EquipCrafted", "Pet",
-               "Side"}
+               "Side", "FreeItems"}  # 장인 2부: FreeItems = rows paid NOT bound (the deep vein's shard)
 SIDES = {"Halo", "Horns", "Neutral"}
 
 
@@ -61,7 +61,7 @@ def reward_counts(reward: dict) -> list:
     out = []
     if reward.get("Item") or reward.get("Potion"):
         out.append((reward.get("Item") or reward.get("Potion"), reward.get("N", 1)))
-    for row in arr(reward.get("Items")) + side_rows(reward):
+    for row in arr(reward.get("Items")) + side_rows(reward) + arr(reward.get("FreeItems")):
         if isinstance(row, dict):
             out.append((row.get("Id"), row.get("N", 1)))
     return out
@@ -70,7 +70,7 @@ def reward_counts(reward: dict) -> list:
 def reward_ids(reward: dict) -> list:
     """every item id a reward pays (StoryQuestService rewardItems, 10/16): Item or Potion, then Reward.Items = { { Id, N } }"""
     ids = [reward.get("Item") or reward.get("Potion")] if (reward.get("Item") or reward.get("Potion")) else []
-    for row in arr(reward.get("Items")) + side_rows(reward):
+    for row in arr(reward.get("Items")) + side_rows(reward) + arr(reward.get("FreeItems")):
         ids.append(row.get("Id") if isinstance(row, dict) else None)
     return ids
 # A23-207 (user 10/15) the harder, the better the reward: what each difficulty may pay at most (items by tier; Gold / XP in hunt
@@ -238,7 +238,7 @@ def check(tree: dict, strict: set[str]) -> list[tuple[str, str, str]]:
             if side is not None and (not isinstance(side, dict) or any(k not in SIDES or not isinstance(v, dict)
                                                                        or set(v) - {"Items"} for k, v in side.items())):
                 add("reward-side", i, "Reward.Side is { Halo / Horns / Neutral = { Items = { { Id, N } } } }")
-            for row in arr(reward.get("Items")) + side_rows(reward):
+            for row in arr(reward.get("Items")) + side_rows(reward) + arr(reward.get("FreeItems")):
                 n = row.get("N", 1) if isinstance(row, dict) else None
                 if not isinstance(row, dict) or row.get("Id") not in items or not isinstance(n, (int, float)) \
                         or n != int(n) or not 1 <= n <= 99:

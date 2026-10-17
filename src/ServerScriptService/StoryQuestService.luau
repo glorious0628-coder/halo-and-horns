@@ -103,11 +103,25 @@ local function story(data)
 		st = {}
 		data.Story = st
 	end
-	for _, k in { "Subs", "Done", "Pick", "First", "Flags" } do
+	for _, k in { "Subs", "Done", "Pick", "First", "Flags", "Runs" } do
 		if type(st[k]) ~= "table" then st[k] = {} end
 	end
 	if type(st.Main) ~= "table" then st.Main = { Id = "" } end
 	return st
+end
+
+-- A23-215 장인 2부 (the deep vein): a run quest (def.Run = { Group, Turn, Of }) can be done again and again, outside the day's
+-- RepeatDailyMax; the defs of one Group take turns (route A, B, C, A, ...): data.Story.Runs[Group] = runs finished, and only
+-- the def whose Turn = Runs % Of + 1 is offered. Never marked Done
+local function isRun(def)
+	return type(def) == "table" and type(def.Run) == "table" and type(def.Run.Group) == "string"
+end
+
+local function runTurnOk(st, def)
+	if not isRun(def) then return true end
+	local runs = type(st.Runs) == "table" and math.floor(num(st.Runs[def.Run.Group])) or 0
+	local of = math.max(1, math.floor(num(def.Run.Of, 1)))
+	return runs % of + 1 == math.floor(num(def.Run.Turn, 1))
 end
 
 -- A23-205 (user 10/15): the daily repeat requests (Defs with Repeat = "Daily"). data.Story.Daily = { Day = KST day index, Taken =
@@ -222,6 +236,10 @@ local function sanitize(data)
 		if not DEFS[id] then st.Done[id] = nil end
 	end
 	if st.LastSide ~= "Good" and st.LastSide ~= "Evil" then st.LastSide = nil end -- E2: the side of the last real pick
+	-- 장인 2부: run counts are whole numbers >= 0 under short group names
+	for k, v in st.Runs do
+		if type(k) ~= "string" or #k > 24 or num(v, -1) < 0 then st.Runs[k] = nil else st.Runs[k] = math.floor(v) end
+	end
 	-- P1 ①-4: personal scene results are short words under short keys
 	for k, v in st.Flags do
 		if type(k) ~= "string" or type(v) ~= "string" or #k > 24 or #v > 24 or string.find(k, "[,=]") or string.find(v, "[,=]") then
@@ -496,10 +514,11 @@ end
 ------------------------------------------------------------------ rewards / finishing
 -- E6 / Reward.Item: an item or potions through LootService.GrantItem (its caps and full notices); the "+Name" part of the
 -- reward line, or nil when nothing was given
-local function grantItem(player, id, n)
+local function grantItem(player, id, n, source)
 	local loot = S.LootService
 	if type(id) ~= "string" or type(loot) ~= "table" or type(loot.GrantItem) ~= "function" then return nil end
-	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)), "Reward") -- a reward fits a full bag (10/14)
+	-- a reward fits a full bag (10/14); "RewardFree" (장인 2부 Reward.FreeItems) = the same, but not bound (tradeable)
+	local ok, res = pcall(loot.GrantItem, player, id, math.floor(num(n, 1)), source or "Reward")
 	if not ok then Util.Warn(TAG, "GrantItem: " .. tostring(res)) end
 	local given = ok and math.floor(num(res)) or 0
 	if given <= 0 then return nil end
@@ -529,6 +548,13 @@ local function rewardItems(r, side)
 	for _, row in type(mine) == "table" and type(mine.Items) == "table" and mine.Items or {} do
 		if type(row) == "table" then add(row.Id, row.N) end
 	end
+	-- 장인 2부: Reward.FreeItems = { { Id, N } } are paid NOT bound (the deep vein's shard is a tradeable material, A23-215);
+	-- their rows carry Free = true (complete grants them with source "RewardFree")
+	local first = #out
+	for _, row in type(r.FreeItems) == "table" and r.FreeItems or {} do
+		if type(row) == "table" then add(row.Id, row.N) end
+	end
+	for i = first + 1, #out do out[i].Free = true end
 	return out
 end
 
@@ -565,7 +591,13 @@ local function complete(player, data, id)
 	local st = story(data)
 	local def = DEFS[id]
 	-- saved first: the quest can never be finished (or paid) twice (A23-205: a daily repeat is done for today)
-	if isRepeat(def) then dailyOf(st).Done[id] = true else st.Done[id] = true end
+	if isRepeat(def) then
+		dailyOf(st).Done[id] = true
+	elseif isRun(def) then
+		st.Runs[def.Run.Group] = math.floor(num(st.Runs[def.Run.Group])) + 1 -- 장인 2부: the next route's turn
+	else
+		st.Done[id] = true
+	end
 	if st.Main.Id == id then st.Main = { Id = "" } end
 	st.Subs[id] = nil
 	local msg = payReward(player, def) or string.format(TXT.Done, def.Title)
@@ -582,7 +614,7 @@ local function complete(player, data, id)
 	end
 	-- Reward.Item / Potion / Items (e.g. Pip1's scroll, a daily's HP potion): one more line each under the reward line
 	for _, row in rewardItems(def.Reward, faction(player)) do
-		local line = grantItem(player, row.Id, row.N)
+		local line = grantItem(player, row.Id, row.N, row.Free and "RewardFree" or nil)
 		if line then notify(player, line, "reward", "None") end
 	end
 	-- A23-130: no def.Clue toast (lore)
@@ -867,6 +899,7 @@ local function requirementsMet(player, data, def)
 	-- finished stays (this check gates new offers only: the caller skips Done / taken ids first)
 	if def.Factions and def.Factions.Neutral and not def.Factions.Halo and not def.Factions.Horns
 		and not Config.FeatureOn("NeutralFaction") then return false end
+	if not runTurnOk(st, def) then return false end -- 장인 2부: another route of this run group is next
 	if req.ClassChosen and data.ClassChosen ~= true then return false end
 	-- 최종 검수 10/15: Classes = only these classes (the artisan's first harvest per class: N0 / N0A / N0T)
 	if type(req.Classes) == "table" and not (data.ClassChosen == true and req.Classes[data.Class] == true) then return false end
@@ -1103,6 +1136,68 @@ function MOVER.Drop(player)
 	MOVER.Live[player] = nil
 end
 
+-- 장인 2부 (the deep vein's guards): a Kill step with Spawn = { Kind, Spot, Radius } brings ONE personal monster of that kind
+-- (MonsterService.SpawnPersonal Near: in front of the player) while the step is open and the player stands within Radius
+-- (default 40) of the landmark Spot (no Spot = anywhere); the step's Obj is Personal = true, so only that kill counts, and the
+-- next guard comes on a later tick until Count is reached. Rec[Player] = the living record (never saved: a rejoin brings a
+-- new one)
+local GUARD = { Rec = {} }
+function GUARD.Drop(player)
+	local rec = GUARD.Rec[player]
+	GUARD.Rec[player] = nil
+	local ms = S.MonsterService
+	if type(rec) == "table" and type(ms) == "table" and type(ms.RemovePersonal) == "function" then
+		local ok, err = pcall(ms.RemovePersonal, rec, true)
+		if not ok then Util.Warn(TAG, "RemovePersonal: " .. tostring(err)) end
+	end
+end
+
+function GUARD.Step(player, step)
+	local sp = step.Spawn
+	if type(sp) ~= "table" or type(sp.Kind) ~= "string" or Config.MonsterTypes[sp.Kind] == nil then return end
+	local rec = GUARD.Rec[player]
+	if type(rec) == "table" and rec.Alive then return end
+	GUARD.Rec[player] = nil
+	local root = Util.GetRoot(player)
+	if not root then return end
+	local spot = sp.Spot ~= nil and landmark(sp.Spot) or nil
+	if sp.Spot ~= nil and (spot == nil or Util.FlatDistance(root.Position, spot) > num(sp.Radius, 40)) then return end
+	local ms = S.MonsterService
+	if type(ms) ~= "table" or type(ms.SpawnPersonal) ~= "function" then return end
+	local ok, _, made = pcall(ms.SpawnPersonal, player, sp.Kind, { Near = true })
+	if ok and type(made) == "table" then GUARD.Rec[player] = made end
+end
+
+-- 장인 2부: a quest with ResetOnKO = true starts its CURRENT step over when its player goes down (최종 검수 10/16: the marks
+-- already passed stay - '실패해도 괜찮다' A23-203; nothing held is lost, the shard comes only at the end): the step's count
+-- (P / T) back to 0, its guard gone, its Near.Stay count and open Timing / Match panel closed. True when something went back
+local function resetOnKO(player)
+	local data = getData(player)
+	if not data then return false end
+	local st = story(data)
+	local back = false
+	for id, tr in st.Subs do
+		local def = DEFS[id]
+		if def and def.ResetOnKO == true and type(tr) == "table" and not tr.Claim then
+			if num(tr.P) > 0 or next(type(tr.T) == "table" and tr.T or {}) ~= nil then back = true end
+			tr.P, tr.T = 0, {}
+			local key = id .. ":" .. tostring(tr.St)
+			for _, list in { stays[player], panels[player] } do
+				if list[key] ~= nil then
+					list[key] = nil
+					back = true
+				end
+			end
+			if GUARD.Rec[player] ~= nil then back = true end
+		end
+	end
+	if back then
+		GUARD.Drop(player)
+		dirty(player)
+	end
+	return back
+end
+
 -- an Escort event's kills (near the waiting mover)
 function MOVER.Kill(player, info)
 	for _, m in MOVER.Live[player] or {} do
@@ -1241,10 +1336,15 @@ local function refresh(player)
 	if player:GetAttribute("StoryOffersDim") ~= dimAttr then player:SetAttribute("StoryOffersDim", dimAttr) end
 	-- state-driven steps
 	MOVER.Shown[player] = nil -- P1 ⑧ (the first open mover of this refresh is the one shown)
+	local guarding = false -- 장인 2부: a Kill step with Spawn is open
 	for _, t in tracks(data) do
 		local def, tr = DEFS[t.Id], t.Track
 		local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
 		local obj = step and step.Obj
+		if obj and obj.Type == "Kill" and type(step.Spawn) == "table" and not guarding then
+			guarding = true
+			GUARD.Step(player, step)
+		end
 		if obj then
 			local done = false
 			if obj.Type == "State" then
@@ -1317,6 +1417,7 @@ local function refresh(player)
 		local step = (not t.Track.Claim) and stepOf(player, DEFS[t.Id], t.Track.St) or nil
 		if step and type(step.Obj) == "table" and (step.Obj.Type == "Escort" or step.Obj.Type == "Chase") then moving = true end
 	end
+	if not guarding and GUARD.Rec[player] ~= nil then GUARD.Drop(player) end -- 장인 2부: the guard step is over / gone
 	if not moving then
 		MOVER.Drop(player)
 		if player:GetAttribute("StoryMover") ~= "" and player:GetAttribute("StoryMover") ~= nil then player:SetAttribute("StoryMover", "") end
@@ -2247,6 +2348,15 @@ function StoryQuestService.Start()
 		end)
 	end
 	connect("ZoneService", "ZoneChanged", function(player) pcall(refresh, player) end)
+	-- 장인 2부: going down sends a ResetOnKO quest (the deep vein) back to its first step
+	-- (looked up softly: a world without the signal connects nothing, with no warning)
+	local died = S.PlayerService and S.PlayerService.CharacterDied
+	if type(died) == "table" and type(died.Connect) == "function" then
+		died:Connect(function(player)
+			local ok, err = pcall(function() if resetOnKO(player) then refresh(player) end end)
+			if not ok then Util.Warn(TAG, "CharacterDied: " .. tostring(err)) end
+		end)
+	end
 	connect("ProgressionService", "LeveledUp", function(player) pcall(refresh, player) end)
 	connect("PlayerService", "PlayerReady", function(player)
 		local data = getData(player)
@@ -2315,6 +2425,9 @@ function StoryQuestService.Start()
 			end
 			for p in MOVER.Live do
 				if p.Parent == nil then MOVER.Drop(p) end -- P1 ⑧ movers of players who left (their attackers go home)
+			end
+			for p in GUARD.Rec do
+				if p.Parent == nil then GUARD.Drop(p) end -- 장인 2부: the guard of a player who left goes
 			end
 		end
 	end)
