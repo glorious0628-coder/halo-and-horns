@@ -79,6 +79,8 @@ STATIC = [
     ("#8 VitalsUI.Request says whether the drink went out", "VIT", ["\treturn requestPotion(kind)\n", "\t\treturn false, label\n"]),
     ("#8 a refused potion press shakes the slot (key and button)", "QS", [
         "\t\t\tif ok and sent == false then QuickSlots.Refuse(i) end", "return pcall(kit.Refuse, w.Button)"]),
+    ("r11 ②: the phone's round potion button shakes on a refused drink too (cooldown, full, none)", "VIT", [
+        "\t\t\telseif not requestPotion(kind) then\n", "\t\t\t\tpcall(UIKit.Refuse, button)\n", "\t\tlocal button\n\t\tbutton = UIKit.ArtButton("]),
     ("#9 an empty slot: the key opens the bag when I hold a potion", "QS", [
         "local panels = QuickSlots.EmptyOpens(button, potions) and C and C.Panels"]),
     ("#6 the low-HP warning runs every frame: heart sound + the potion slot shines", "FX", [
@@ -95,6 +97,7 @@ MUTATIONS = [
     ("FX", "#6 no 20 s gap", "(tonumber(lastAt) or -math.huge) >= MOTION.LowWarn.Gap", "(tonumber(lastAt) or -math.huge) >= 0"),
     ("QS", "#9 the key never opens the bag", "\treturn button == true or (tonumber(potions) or 0) > 0", "\treturn button == true"),
     ("QS", "#8 no shake", "\t\t\tif ok and sent == false then QuickSlots.Refuse(i) end", "\t\t\tlocal _ = 0"),
+    ("VIT", "r11 ② the round potion button silent on a refusal", "\t\t\t\tpcall(UIKit.Refuse, button)\n", "\t\t\t\tlocal _ = 0\n"),
     ("FX", "#13 the coin on every kill again", "\tif asNum(data.Gold, 0) > 0 then Fx.PlaySound(\"Coin\") end", "\tFx.PlaySound(\"Coin\")"),
 ]
 
