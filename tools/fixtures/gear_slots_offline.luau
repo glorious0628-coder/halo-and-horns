@@ -282,6 +282,34 @@ runGroup("equip", function()
 end)
 
 ------------------------------------------------------------------ the rules
+-- A23-219 ② (save v7): a crafted gear key "T:P:O" is worn like any other; its option is in the bonus (never past the next
+-- tier +0); a pet's XP = PetArmor (+ option) + PetAcc's option (its walk bonus unchanged)
+runGroup("crafted options", function()
+	local w = gWorld()
+	local C = w.Config
+	local p, d = gearer(w, 7, bag({ ["Armor:3:2:5"] = 1, ["Ring:3:2:5"] = 1, ["Ring:1:0:3"] = 1 }))
+	check(w.G.Equip(p, "Armor", "3:2:5") == "ok" and d.Gear.On.Armor == "3:2:5" and d.Gear.Own["Armor:3:2:5"] == nil, "Equip \"3:2:5\": worn", show(d.Gear))
+	check(w.G.Equip(p, "Ring", "3:2:5") == "ok", "the ring \"3:2:5\"", "")
+	check(near(p:GetAttribute("GearHp"), 1.24) and near(p:GetAttribute("GearAtk"), 1.15), "GearHp 1.24 (22% + 2%p), GearAtk 1.15 (14% + 1%p)",
+		show({ p:GetAttribute("GearHp"), p:GetAttribute("GearAtk") }))
+	check(w.G.Equip(p, "Ring", "1:0:3") == "ok" and d.Gear.Own["Ring:3:2:5"] == 1 and near(p:GetAttribute("GearAtk"), 1.046),
+		"swap to \"1:0:3\": the \"3:2:5\" back in Own with its option, GearAtk 1.046", show(d.Gear.Own))
+	check(w.G.Equip(p, "Ring", "1:0") == "notyours", "\"1:0\" (no option) is another key: not yours", "")
+	-- the weapon in hand's option on top of the ring (Config.GearMultsOf)
+	p:SetAttribute("WeaponOpt", 5)
+	local a = C.GearMultsOf(p)
+	check(near(a, 1.046 * 1.04), "GearMultsOf atk = ring x the weapon option (1.046 x 1.04)", tostring(a))
+	p:SetAttribute("WeaponOpt", 9)
+	check(near(C.GearMultsOf(p), 1.046), "a broken WeaponOpt (9) = no option", tostring(C.GearMultsOf(p)))
+	-- pets
+	local gear = { Pet = { u1 = { PetArmor = "1:2:5", PetAcc = "1:0:5" }, u2 = { PetArmor = "3:2:5", PetAcc = "3:2" } } }
+	check(near(C.PetGearBonus(gear, "u1", "PetXP"), 0.40 + 0.10) and near(C.PetGearBonus(gear, "u1", "PetAcc"), 0.01),
+		"pet XP: T1 +2 armor 40% + 20%p capped at T2 +0 (40%) + the acc's 10%p = 50%; the acc's walk 1% unchanged",
+		show({ C.PetGearBonus(gear, "u1", "PetXP"), C.PetGearBonus(gear, "u1", "PetAcc") }))
+	check(near(C.PetGearBonus(gear, "u2", "PetXP"), 1.0) and near(C.PetGearBonus(gear, "u2", "PetArmor"), 1.0),
+		"T3 +2 pet armor with option 5: 80% + 20%p = 100% (the top tier has no next to cap at)", show(C.PetGearBonus(gear, "u2", "PetXP")))
+end)
+
 runGroup("rules", function()
 	local w = gWorld()
 	local p, d = gearer(w, 1, bag({ ["Armor:1:0"] = 1, ["Armor:2:0"] = 1, ["Armor:3:0"] = 1, ["Ring:1:0"] = 1 }), { Level = 9 })
@@ -418,6 +446,13 @@ runGroup("pets", function()
 	local x3 = lvXP(d.Pets.List[u2])
 	w.P.AddPetXP(p, u2, 20)
 	check(lvXP(d.Pets.List[u2]) - x3 == 36 and near(p:GetAttribute("PetAcc"), 0.04), "20 x 1.8 = 36; PetAcc follows the pet that follows (P1)", tostring(lvXP(d.Pets.List[u2]) - x3))
+	-- A23-219 ②: a crafted PetAcc's option is pet XP (+2%p x size): T3 +2 armor 80% + the acc's 10%p = x1.9
+	d.Gear.Own["PetAcc:1:0:5"] = 1
+	check(w.G.EquipPet(p, u2, "PetAcc", "1:0:5") == "ok", "the second pet wears a PetAcc with option 5", show(d.Gear.Pet[u2]))
+	local x5 = lvXP(d.Pets.List[u2])
+	w.P.AddPetXP(p, u2, 20)
+	check(lvXP(d.Pets.List[u2]) - x5 == 38, "20 x (1 + 0.8 + 0.1) = 38 (the acc's option is pet XP)", tostring(lvXP(d.Pets.List[u2]) - x5))
+	check(w.G.EquipPet(p, u2, "PetAcc", "") == "ok" and d.Gear.Own["PetAcc:1:0:5"] == 1, "(taken off again: back in Own with its option)", show(d.Gear.Own))
 	-- a kill: XPPerKill (1) x 1.5 floors to 1 (the bonus is for bigger gains)
 	local x4 = lvXP(d.Pets.List.P1)
 	w.Reg.MonsterService.MonsterKilled:Fire(p, { Kind = "Slime", XP = 10, Gold = 5 })

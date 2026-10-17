@@ -3146,6 +3146,71 @@ runGroup("bag slots", function()
 		and C.BagSlotsOf({ BagSlots = 0 / 0 }) == 12, "a saved value is clamped to 12..20", "")
 end)
 
+------------------------------------------------------------------ A23-219 ② crafted weapon options (게임성 개발 2, 10/17)
+runGroup("craft options", function()
+	local f = fixture()
+	local C, Lo = f.Config, f.Loot
+	f.Data.BagSlots = 20
+	f.Data.Spares = {}
+	check(Lo.AddSpare(f.Player, 4, 2, 3) == true and f.Data.Spares["4:2:3"] == 1, "AddSpare with o 3: Spares[\"4:2:3\"]", show(f.Data.Spares))
+	check(Lo.AddSpare(f.Player, 4, 2) == true and f.Data.Spares["4:2"] == 1, "no o: the plain key \"4:2\"", show(f.Data.Spares))
+	check(Lo.AddSpare(f.Player, 4, 2, 6) == false and Lo.AddSpare(f.Player, 4, 2, 1.5) == false, "o 6 / 1.5: refused", show(f.Data.Spares))
+	check(Lo.TakeSpare(f.Player, 4, 2, 1, 1) == false and f.Data.Spares["4:2:3"] == 1, "TakeSpare of another option: nothing taken", "")
+	-- a tier not owned: owned with its +N and option; the hand shows the option (attribute WeaponOpt -> GearMultsOf atk)
+	check(Lo.UnpackSpare(f.Player, 4, 2, 3) == true and f.Data.WeaponEnhance[4] == 2 and f.Data.WeaponOpt[4] == 3 and f.Data.Spares["4:2:3"] == nil,
+		"UnpackSpare \"4:2:3\": tier 4 owned at +2 with option 3", show({ f.Data.WeaponEnhance[4], f.Data.WeaponOpt[4] }))
+	f:Set("WeaponTier", 4)
+	f:Flush()
+	local atk = C.GearMultsOf(f.Player)
+	check(f.Player:GetAttribute("WeaponOpt") == 3 and math.abs(atk - 1.024) < 1e-9, "in hand: WeaponOpt 3, atk x1.024 (with or without the gear switch)",
+		show({ f.Player:GetAttribute("WeaponOpt"), atk }))
+	local pl = f:LastPayload()
+	check(pl and pl.Opt[4] == 3, "Inventory.Opt[4] = 3", pl and show(pl.Opt) or "nil")
+	-- the plain +2 spare of the same tier: not better (the same +N, no option) -> stays a spare
+	check(Lo.UnpackSpare(f.Player, 4, 2, 0) == "Owned" and f.Data.Spares["4:2"] == 1 and f.Data.WeaponOpt[4] == 3, "the same +N without option: Owned, nothing swapped", "")
+	-- the same +N with a better option swaps in; the old one goes back as a spare with its option
+	Lo.AddSpare(f.Player, 4, 2, 5)
+	check(Lo.UnpackSpare(f.Player, 4, 2, 5) == true and f.Data.WeaponOpt[4] == 5 and f.Data.Spares["4:2:3"] == 1 and f.Data.Spares["4:2:5"] == nil,
+		"the same +N with option 5: swapped in, the option 3 one is a spare now", show(f.Data.Spares))
+	-- a +3 plain beats +2 option 5 (1.3 > 1.2 x 1.04)
+	Lo.AddSpare(f.Player, 4, 3)
+	check(Lo.UnpackSpare(f.Player, 4, 3, 0) == true and f.Data.WeaponEnhance[4] == 3 and f.Data.WeaponOpt[4] == 0 and f.Data.Spares["4:2:5"] == 1,
+		"+3 plain beats +2 option 5 (the hit decides)", show({ f.Data.WeaponEnhance[4], f.Data.WeaponOpt[4], f.Data.Spares }))
+	f:Flush()
+	check(f.Player:GetAttribute("WeaponOpt") == 0, "WeaponOpt back to 0 in hand", "")
+	-- the Transfer Scroll / an enhance never touch the option: an option stays on its tier
+	-- packing takes the option with it; a tier not owned has none
+	Lo.UnpackSpare(f.Player, 4, 2, 5) -- (not better: Owned)
+	f:Set("WeaponTier", 1)
+	f.Data.WeaponOpt[4] = 2
+	check(Lo.PackWeapon(f.Player, 4) == true and f.Data.Spares["4:3:2"] == 1 and f.Data.WeaponOpt[4] == 0 and f.Data.WeaponEnhance[4] == 0,
+		"PackWeapon: \"4:3:2\" (+3, option 2), tier 4's option cleared", show(f.Data.Spares))
+	-- the market's grant: a tier not owned comes with its option, an owned tier as a spare with it
+	check(Lo.GrantMarketWeapon(f.Player, 5, 1, 4) == "Owned" and f.Data.WeaponOpt[5] == 4, "GrantMarketWeapon o 4: owned with option 4", "")
+	check(Lo.GrantMarketWeapon(f.Player, 5, 1, 2) == "Spare" and f.Data.Spares["5:1:2"] == 1, "... an owned tier: a spare \"5:1:2\"", show(f.Data.Spares))
+	-- a sale (ShopService) clears the tier's option; ClearWeaponOpt never clears an owned tier
+	Lo.ClearWeaponOpt(f.Player, 5)
+	check(f.Data.WeaponOpt[5] == 4, "ClearWeaponOpt on a tier still owned: kept", "")
+	f:Set("WeaponOwnedMask", bit32.band(f.Data.WeaponOwnedMask, bit32.bnot(bit32.lshift(1, 4))))
+	Lo.ClearWeaponOpt(f.Player, 5)
+	check(f.Data.WeaponOpt[5] == 0, "... sold (bit gone): cleared", "")
+	-- the load repair: a tier not owned keeps no option, a broken one is 0
+	local function saved(extra)
+		local row = deepCopy(DEFAULT_ROW)
+		row.Version = 7
+		for k, v in extra do row[k] = v end
+		return { Saved = row }
+	end
+	local g = fixture(saved({ WeaponOwnedMask = 1 + 8, WeaponOpt = { 0, 0, 0, 5, 3, 0, 0, 0, 0, 0, 0 } }))
+	check(g.Data.WeaponOpt[4] == 5 and g.Data.WeaponOpt[5] == 0 and #g.Data.WeaponOpt == C.MaxWeaponTier, "load: owned tier 4 keeps 5, tier 5 (not owned) 0", show(g.Data.WeaponOpt))
+	local h = fixture(saved({ WeaponOwnedMask = 1 + 8, WeaponOpt = { 0, 0, 0, 9 } }))
+	check(h.Data.WeaponOpt[4] == 0, "load: option 9 -> 0", show(h.Data.WeaponOpt))
+	-- EquipBestSpare takes the option into account for the same tier
+	local e = fixture(saved({ Level = 30, WeaponOwnedMask = 1, BagSlots = 20, Spares = { ["4:1"] = 1, ["4:1:5"] = 1 } }))
+	check(e.Loot.EquipBestSpare(e.Player) == 4 and e.Data.WeaponOpt[4] == 5 and e.Data.Spares["4:1"] == 1,
+		"EquipBestSpare: the +1 with option 5 (not the plain +1)", show({ e.Data.WeaponOpt[4], e.Data.Spares }))
+end)
+
 ------------------------------------------------------------------ 8. rebirth (A23-14: only Level and XP reset)
 runGroup("rebirth", function()
 	local saved = deepCopy(DEFAULT_ROW)

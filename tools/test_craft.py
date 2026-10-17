@@ -38,6 +38,17 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-219 ② crafted options (게임성 개발 2)
+    ('opt: +10 at 70%', C, '\t\tP = { [0] = 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60 },', '\t\tP = { [0] = 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.70 },'),
+    ('opt: +9 size 5', C, '\t\tR = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 5 },', '\t\tR = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5 },'),
+    ('opt: weapon 1% a step (5% max)', C, 'Size = { Weapon = 0.008,', 'Size = { Weapon = 0.01,'),
+    ('opt: gear past the next tier', C, 'if opt > 0 then x = math.max(x, math.min(x + opt, def.Base[tier + 1] or math.huge)) end', 'if opt > 0 then x += opt end'),
+    ('opt: every craft gets one', R, '\tif p <= 0 or size < 1 or ST.Rng:NextNumber() >= p then return 0 end\n', '\tif p <= 0 or size < 1 then return 0 end\n'),
+    ('opt: never rolled', R, '\tlocal opt = rollOpt(c, role, r)\n', '\tlocal opt = 0\n'),
+    ('opt: not saved in Pend (a Settle loses it)', R, '\t\tOpt = opt > 0 and opt or nil }\n', '\t\tOpt = nil }\n'),
+    ('opt: the spare without it', R, 'pcall(S.LootService.AddSpare, player, r.Tier, plus, o) -- A23-219', 'pcall(S.LootService.AddSpare, player, r.Tier, plus) -- A23-219'),
+    ('opt: the gear key without it', R, '\t\tlocal key = gearKey(r, plus, o) -- A23-219', '\t\tlocal key = gearKey(r, plus) -- A23-219'),
+    ('opt: an item recipe rolls too', R, 'if type(O) ~= "table" or (r.Kind ~= "Weapon" and r.Kind ~= "Gear") then return 0 end', 'if type(O) ~= "table" then return 0 end'),
     # A23-219 craft tools + the Blessed Scroll (게임성 개발 2)
     ("bless: no room check before the Blessed Scroll", R, "Config.BagUsed(data) + slots <= Config.BagSlotsOf(data) then\n\t\t\tpcall(", "true then\n\t\t\tpcall("),
     ("bless: the old partial pay (false after the plain ones)", R, "\t\t\t\treturn true\n\t\t\tend\n\t\tend\n\tend\n", "\t\t\t\treturn false\n\t\t\tend\n\t\tend\n\tend\n"),
@@ -59,16 +70,16 @@ MUTATIONS = [
     ("tools: +7 at 60%", C, "{ Lv = 10, P = 0.50, Gold = 2500,", "{ Lv = 10, P = 0.60, Gold = 2500,"),
     ("tools: a nested Tool table saved", R, "\t\tc[\"Tool\" .. role] = now + 1", "\t\tc.Tool = { [role] = now + 1 }; c[\"Tool\" .. role] = now + 1"),
     ("bless: every scroll blessed", R, "{ { Id = bItem, N = 1 } }, nil, \"Craft\")", "{ { Id = bItem, N = n } }, nil, \"Craft\")"),
-    ("bless: rolled at the end, not the start", R, "Bound = next(bound) ~= nil and bound or nil, Bless = bless }", "Bound = next(bound) ~= nil and bound or nil }"),
+    ("bless: rolled at the end, not the start", R, "Bound = next(bound) ~= nil and bound or nil, Bless = bless,\n", "Bound = next(bound) ~= nil and bound or nil,\n"),
     ("bless: the kit's +N ignored", R, "T.Bless[toolOf(c, role)]", "T.Bless[10]"),
     ("bless: Enh70B is +1", C, "Chance = 0.7, Plus = 2, Color = Color3.fromRGB(255, 225, 120)", "Chance = 0.7, Plus = 1, Color = Color3.fromRGB(255, 225, 120)"),
-    ("bless: the repair drops Pend.Bless", C, "\t\t\tBless = p.Bless == true or nil } -- A23-219", "\t\t\tBless = nil } -- A23-219"),
+    ("bless: the repair drops Pend.Bless", C, "\t\t\tBless = p.Bless == true or nil, -- A23-219", "\t\t\tBless = nil, -- A23-219"),
     ("tools: the repair keeps 12", C, "local v = V4.int(src[k], 0, max)", "local v = V4.int(src[k], 0, 99)"),
     ("⑤: Crafting back on reads nobody", "CRAFT_SOURCE", "\t\t\tif k ~= \"Crafting\" then return end\n", "\t\t\tdo return end\n"),
     ("bench: prompts stay when switched off", "CRAFT_SOURCE", "\t\t\t\t\tpcall(function() prompt:Destroy() end)\n", ""),
     ("GPT ①: SpareRoom ignores the freed slots", "LOOT_SOURCE", "Config.BagUsed(data) - math.max(0, math.floor(num(freed))) >= Config.BagSlotsOf(data) then return false end",
      "Config.BagUsed(data) >= Config.BagSlotsOf(data) then return false end"),
-    ("GPT ①: a weapon recipe frees no slot", "CRAFT_SOURCE", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, 0)"),
+    ("GPT ①: a weapon recipe frees no slot", "CRAFT_SOURCE", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed, o)", "\t\t\tlocal ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, 0, o)"),
     # 장인 ④ (2026-10-14): the benches
     ("bench: a second one over WorldKit's", R, "\t\tif type(role) == \"string\" then have[role] = true end\n", ""),
     ("bench: not tagged", R, "\t\t\tCollectionService:AddTag(part, K().StationTag)\n", ""),
@@ -112,10 +123,10 @@ MUTATIONS = [
     ("start: the tag ignored", R, "\t\tif part:IsA(\"BasePart\") and part:GetAttribute(\"Role\") == role then\n", "\t\tif false then\n"),
     ("start: no level check", R, "\tif roleRec(c, role).Lv < r.Lv then\n", "\tif false then\n"),
     ("start: no materials check", R, "\tif not hasMats(data, r) then\n", "\tif false then\n"),
-    ("start: no room check", R, "\tif not room(player, data, r) then\n", "\tif false then\n"),
+    ("start: no room check", R, "\tif not room(player, data, r, opt) then\n", "\tif false then\n"),
     ("start: gold never paid", R, "\tif not S.ProgressionService.SpendGold(player, r.Gold, \"Craft\") then\n", "\tif false then\n"),
     ("start: materials kept", R, "\t\tif not S.LootService.TakeItem(player, item, n) then\n", "\t\tif false then\n"),
-    ("start: nothing pending in the save", R, "\tc.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil, Bless = bless }\n", ""),
+    ("start: nothing pending in the save", R, "\tc.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil, Bless = bless,\n\t\tOpt = opt > 0 and opt or nil }\n", ""),
     # A23-206 / A23-213 bound materials (10/16): crafts use them, results are free, a refund gives them back bound
     ("bound: a craft result is bound", R, "{ { Id = r.Item, N = n } }, nil, \"Craft\")", "{ { Id = r.Item, N = n, Bound = true } }, nil, \"Craft\")"),
     ("bound: a refund comes back free", R, "N = math.min(99, left), Bound = part[2] or nil })", "N = math.min(99, left) })"),

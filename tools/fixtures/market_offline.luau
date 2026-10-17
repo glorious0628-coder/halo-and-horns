@@ -1052,6 +1052,43 @@ runGroup("better plus", function()
 	local _ = n0
 end)
 
+-- A23-219 ② (save v7): a crafted weapon keeps its option through the market ("W:T:P:O"); a tier owned may be bought at the
+-- same +N when the option is better (the hit decides)
+runGroup("crafted options", function()
+	local mem, stores = {}, {}
+	local a = marketWorld({ Mem = mem, Stores = stores })
+	local b = marketWorld({ Mem = mem, Stores = stores })
+	local s, sd = hero(a, 120, { WeaponOwnedMask = 31, WeaponTier = 3, WeaponEnhance = { 0, 0, 0, 2, 0, 0, 0, 0, 0 },
+		WeaponOpt = { 0, 0, 0, 3, 0, 0, 0, 0, 0 }, Spares = {} })
+	a.Gap = 1.1
+	a:Remote("PackWeapon", s, 4)
+	check(sd.Spares["4:2:3"] == 1 and sd.WeaponOpt[4] == 0, "packed with its option: '4:2:3'", show(sd.Spares))
+	a.Gap = 6.1
+	a:Remote("MarketList", s, "W", "4:2:3", 1, 6000)
+	local id = onlyId(sd.Market.Out)
+	check(id and sd.Market.Out[id].K == "W:4:2:3" and sd.Spares["4:2:3"] == nil, "listed as W:4:2:3", show(sd.Market.Out))
+	-- a buyer owning T4 +2 without option: the option one is better -> allowed, it comes as a spare with its option
+	local buyer, bd = hero(b, 121, { WeaponOwnedMask = 15, WeaponEnhance = { 0, 0, 0, 2, 0, 0, 0, 0, 0 }, BankGold = 10000, Spares = {} })
+	b:Remote("MarketBuy", buyer, id, 6000)
+	check(bd.BankGold == 4000 and bd.Spares["4:2:3"] == 1, "owning T4 +2 (no option): T4 +2 option 3 may be bought, a spare '4:2:3'", show({ bd.BankGold, bd.Spares }))
+	b.Gap = 1.1
+	b:Remote("UnpackSpare", buyer, "4:2:3")
+	check(bd.WeaponOpt[4] == 3 and bd.WeaponEnhance[4] == 2 and bd.Spares["4:2"] == 1, "unpacked: owned +2 option 3, the plain +2 a spare", show({ bd.WeaponOpt, bd.Spares }))
+	-- the same weapon to someone holding T4 +2 option 5: refused (not better)
+	local s2, sd2 = hero(a, 122, { WeaponOwnedMask = 31, Spares = { ["4:2:3"] = 1 } })
+	a.Gap = 6.1
+	a:Remote("MarketList", s2, "W", "4:2:3", 1, 6000)
+	local id2 = onlyId(sd2.Market.Out)
+	local c, cd = hero(b, 123, { WeaponOwnedMask = 15, WeaponEnhance = { 0, 0, 0, 2, 0, 0, 0, 0, 0 }, WeaponOpt = { 0, 0, 0, 5, 0, 0, 0, 0, 0 }, BankGold = 10000 })
+	b.Gap = 6.1
+	b:Remote("MarketBuy", c, id2, 6000)
+	check(cd.BankGold == 10000, "owning T4 +2 option 5: T4 +2 option 3 is refused (Owned)", show(cd.BankGold))
+	-- a tier not owned: owned with its option
+	local d, dd = hero(b, 124, { WeaponOwnedMask = 7, BankGold = 10000 })
+	b:Remote("MarketBuy", d, id2, 6000)
+	check(bit32.btest(dd.WeaponOwnedMask, 8) and dd.WeaponEnhance[4] == 2 and dd.WeaponOpt[4] == 3, "a tier not owned: owned +2 with option 3", show({ dd.WeaponOpt }))
+end)
+
 runGroup("switch off", function()
 	local mem, stores = {}, {}
 	local a = marketWorld({ Mem = mem, Stores = stores })

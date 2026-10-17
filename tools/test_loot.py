@@ -62,6 +62,15 @@ JACKPOT_BRANCH = ('local name = weaponName(player, tier)\n\ttable.insert(gained,
 
 # (name, source key, exact text, replacement): each must match exactly once in the current source
 MUTATIONS = [
+    # A23-219 ② crafted options (게임성 개발 2)
+    ('opt: packing drops the option', "LOOT_SOURCE", '\tlocal key = spareKey(tier, plus, o) -- A23-219 ②: the option goes with it ("T:P:O")', '\tlocal key = spareKey(tier, plus) -- A23-219 ②: the option goes with it ("T:P:O")'),
+    ('opt: packing keeps the tier option', "LOOT_SOURCE", '\tdata.WeaponEnhance[tier] = 0\n\tsetOpt(data, tier, 0)\n', '\tdata.WeaponEnhance[tier] = 0\n'),
+    ('opt: unpack ignores the option', "LOOT_SOURCE", '\t\tif not betterThan(plus, o, cur, curO) then return "Owned" end', '\t\tif plus <= cur then return "Owned" end'),
+    ('opt: no attribute', "LOOT_SOURCE", '\tplayer:SetAttribute("WeaponOpt", optOf(data, math.floor(num(data.WeaponTier, 1)))) -- A23-219 ② (Config.GearMultsOf)\n', ''),
+    ('opt: a tier not owned keeps it at load', "LOOT_SOURCE", '\t\topt[tier] = (owns(data, tier) and o >= 1 and o <= omax) and o or 0', '\t\topt[tier] = (o >= 1 and o <= omax) and o or 0'),
+    ('opt: ClearWeaponOpt clears owned', "LOOT_SOURCE", 'if not data or not validTier(tier) or owns(data, tier) then return end\n\tsetOpt(data, tier, 0)', 'if not data or not validTier(tier) then return end\n\tsetOpt(data, tier, 0)'),
+    ('opt: the market grant without it', "LOOT_SOURCE", '\tsetOpt(data, tier, o or 0) -- A23-219 ②', ''),
+    ('opt: no Opt in the payload', "LOOT_SOURCE", 'Enhance = enh, Opt = opt, Seen', 'Enhance = enh, Seen'),
     ("GPT ③: an owned first drop gives nothing", "LOOT_SOURCE", "\t\telseif validTier(fw.Tier) then\n\t\t\townedInstead(fw.Tier)\n", ""),
     ("GPT ③: no spare with the scroll", "LOOT_SOURCE", "\t\tpcall(LootService.AddSpare, player, tier, 0)\n", ""),
     # C2: the first Prince's weapon, duplicates -> Spares, the retuned rows
@@ -101,7 +110,7 @@ MUTATIONS = [
     ("enhance failure always drops", "LOOT_SOURCE",
      "elseif before > 0 and rng:NextNumber() < LOOT.FailDropChance then", "elseif before > 0 then"),
     ("enhance success chance off by 10%", "LOOT_SOURCE",
-     "local success = rng:NextNumber() < def.Chance\n\tlocal after = before", "local success = rng:NextNumber() < def.Chance + 0.1\n\tlocal after = before"),
+     "local success = sure or rng:NextNumber() < def.Chance\n\tlocal after = before", "local success = sure or rng:NextNumber() < def.Chance + 0.1\n\tlocal after = before"),
     ("scroll at +10 consumed", "LOOT_SOURCE",
      "if before >= LOOT.MaxEnhance then", "if before > LOOT.MaxEnhance then"),
     ("enhance on an unowned tier", "LOOT_SOURCE",
@@ -138,8 +147,8 @@ MUTATIONS = [
     ("bag: a held kind refused too", "LOOT_SOURCE",
      "\tif have < 1 and not anySlot and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n",
      "\tif not anySlot and Config.BagSlots.Counts[def.Kind] and not Config.BagHasRoom(data) then\n"),
-    ("bag: a reward refused when full", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, false, source == \"Reward\")\n"),
-    ("bag: every source skips the slots", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, true, source == \"Reward\")\n"),
+    ("bag: a reward refused when full", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\" or source == \"RewardFree\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, false, source == \"Reward\")\n"),
+    ("bag: every source skips the slots", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\" or source == \"RewardFree\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, true, source == \"Reward\")\n"),
     ("bag: no Full line", "LOOT_SOURCE", "\t\tfullNotice(player, \"Bag\", Config.BagSlots.Text.Full)\n", ""),
     ("bag: spares never full", "LOOT_SOURCE",
      "and Config.BagUsed(data) - math.max(0, math.floor(num(freed))) >= Config.BagSlotsOf(data) then return false end",
@@ -318,7 +327,7 @@ MUTATIONS = [
     ("remote rate limit bypassed", "LOOT_SOURCE",
      "and Util.RateLimit(player, key, Config.RateLimits[key] or 0.5)", "and true"),
     ("WeaponEnhance attribute not refreshed on equip", "LOOT_SOURCE",
-     "if d then player:SetAttribute(\"WeaponEnhance\"", "if false then player:SetAttribute(\"WeaponEnhance\""),
+     "\t\t\tif d then\n\t\t\t\tplayer:SetAttribute(\"WeaponEnhance\"", "\t\t\tif false then\n\t\t\t\tplayer:SetAttribute(\"WeaponEnhance\""),
     # P7 seen monsters (LootFlags "Seen:<kind>" -> Inventory payload Seen)
     ("first kill never marks the kind seen", "LOOT_SOURCE",
      "data.LootFlags[seenKey] = true", "local _ = seenKey"),
@@ -419,7 +428,7 @@ MUTATIONS = [
      "local dmg = Config.WeaponDamage(tier, level, numAttr(attacker, \"WeaponEnhance\", 0))",
      "local dmg = Config.WeaponDamage(tier, level, 0)"),
     # --- A23-206 bound quest rewards
-    ("A23-206: rewards not bound", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, source == \"Reward\", false)\n"),
+    ("A23-206: rewards not bound", "LOOT_SOURCE", "\tlocal given = addItem(player, data, id, n, source == \"Reward\" or source == \"RewardFree\", source == \"Reward\")\n", "\tlocal given = addItem(player, data, id, n, source == \"Reward\" or source == \"RewardFree\", false)\n"),
     ("A23-206: the market takes bound ones", "LOOT_SOURCE", "\tif freeOnly and have - before < n then return false end\n", ""),
     ("A23-206: a use takes free ones first", "LOOT_SOURCE", "\t\tBOUND.Used(data, id, n, before)\n\tend\n\tpublish(player, data)", "\t\tBOUND.Set(data, id, math.min(before, math.floor(num(data.Items[id]))))\n\tend\n\tpublish(player, data)"),
     ("A23-206: the Forge sells bound ones", "LOOT_SOURCE", "\tif BOUND.Free(data, id) < n then notify(player, TXT.SellBound or TXT.SellItemNone, \"bad\"); return end\n", ""),

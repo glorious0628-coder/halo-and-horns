@@ -55,6 +55,11 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-219 ② crafted options (게임성 개발 2)
+    ('opt: GearParse ignores the option', C, '\tif Config.GearKey(t, p, o) ~= key then return nil end\n\treturn t, p, o', '\tif Config.GearKey(t, p, o) ~= key then return nil end\n\treturn t, p, 0'),
+    ('opt: the weapon option outside GearMultsOf', C, '\tlocal w = 1 + Config.CraftOptBonus("Weapon", okO and o or nil)\n', '\tlocal w = 1\n'),
+    ('opt: PetXP without the acc option', C, '\t\treturn Config.GearBonusOf("PetArmor", row.PetArmor) + Config.CraftOptBonus("PetAcc", o)', '\t\treturn Config.GearBonusOf("PetArmor", row.PetArmor)'),
+    ('opt: pet XP by the armor only', PE, '\tlocal exact = n * (1 + petGear(data, uid, "PetXP")) + (rems and rems[uid] or 0)', '\tlocal exact = n * (1 + petGear(data, uid, "PetArmor")) + (rems and rems[uid] or 0)'),
     ("⑤: Gear back on reads nobody", "GEAR_SOURCE", "\t\t\tif k ~= \"Gear\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
     # --- the table (Config)
     ("config: on by default", C, "Config.Features.Gear = false\nConfig.Gear = {", "Config.Features.Gear = true\nConfig.Gear = {"),
@@ -73,12 +78,12 @@ MUTATIONS = [
     ("config: PetAccMax 5%", C, "\tPetAccMax = 0.04,", "\tPetAccMax = 0.05,"),
     ("config: equip every 0.1 s", C, "Config.RateLimits.EquipGear = 0.5\n", "Config.RateLimits.EquipGear = 0.1\n"),
     ("config: GearMult lets a loss through", C, "or v == math.huge or v < 1 then return 1 end", "or v == math.huge then return 1 end"),
-    ("config: GearMultsOf ignores the switch", C, "\tif not Config.FeatureOn(\"Gear\") then return 1, 1 end\n\tlocal ok, a, h", "\tlocal ok, a, h"),
-    ("config: GearMultsOf swaps the two", C, "return Config.GearMult(a), Config.GearMult(h)", "return Config.GearMult(h), Config.GearMult(a)"),
+    ("config: GearMultsOf ignores the switch", C, "\tif not Config.FeatureOn(\"Gear\") then return w, 1 end\n\tlocal ok, a, h", "\tlocal ok, a, h"),
+    ("config: GearMultsOf swaps the two", C, "return Config.GearMult(a) * w, Config.GearMult(h)", "return Config.GearMult(h) * w, Config.GearMult(a)"),
     ("config: GearBonus without the plus cap", C, "or plus < 0 or plus > Config.Gear.MaxPlus then return 0 end", "or plus < 0 then return 0 end"),
     ("config: GearBonus without the tier cap", C, "if tier < 1 or tier > Config.Gear.MaxTier or plus", "if tier < 1 or plus"),
     ("config: GearBonus takes fractions", C, " or tier ~= math.floor(tier) or plus ~= math.floor(plus) then return 0 end", " then return 0 end"),
-    ("config: GearParse keeps leading zeros", C, "\tif string.format(\"%d:%d\", t, p) ~= key then return nil end\n", ""),
+    ("config: GearParse keeps leading zeros", C, "\tif Config.GearKey(t, p, o) ~= key then return nil end\n\treturn t, p, o", "\treturn t, p, o"),
     ("config: GearParse plus up to the scroll's +10", C, "or p > Config.Gear.MaxPlus then return nil end", "or p > Config.Loot.MaxEnhance then return nil end"),
     ("config: PetGearBonus ignores the switch", C, "\tif not Config.FeatureOn(\"Gear\") or type(gear) ~= \"table\"", "\tif type(gear) ~= \"table\""),
     ("config: the save repair keeps plus up to +10", C, "\tGearMaxPlus = 2,", "\tGearMaxPlus = 10,"),
@@ -108,8 +113,9 @@ MUTATIONS = [
     ("hook: PvP ratio from the armor", CO, " * gearAtk(attacker) * aAtk\n", " * select(2, Config.GearMultsOf(attacker)) * aAtk\n"),
     ("hook: PvP ratio without the clamp", CO, "\tratio = math.clamp(ratio, floor, Config.PvP.PowerRatioMax)\n", "\tratio = math.max(ratio, floor)\n"),
     ("hook: PvP base grows with the victim's armor", CO, "vAlloc.H) * Config.PvP.HitPctOfMaxHP\n", "vAlloc.H) * Config.PvP.HitPctOfMaxHP * select(2, Config.GearMultsOf(victim))\n"),
-    ("hook: the power watch misses GearAtk", J, "\"StatHp\", \"GearAtk\", \"GearHp\" } do", "\"StatHp\", \"GearHp\" } do"),
-    ("hook: the power watch misses GearHp", J, "\"StatHp\", \"GearAtk\", \"GearHp\" } do", "\"StatHp\", \"GearAtk\" } do"),
+    ("hook: the power watch misses GearAtk", J, "\"StatHp\", \"GearAtk\", \"GearHp\", \"WeaponOpt\" } do", "\"StatHp\", \"GearHp\", \"WeaponOpt\" } do"),
+    ("hook: the power watch misses GearHp", J, "\"StatHp\", \"GearAtk\", \"GearHp\", \"WeaponOpt\" } do", "\"StatHp\", \"GearAtk\", \"WeaponOpt\" } do"),
+    ("hook: the power watch misses WeaponOpt (A23-219 ②)", J, "\"StatHp\", \"GearAtk\", \"GearHp\", \"WeaponOpt\" } do", "\"StatHp\", \"GearAtk\", \"GearHp\" } do"),
     # --- PetService (the pet's side)
     ("pet: publish sets no PetAcc", PE, "\tplayer:SetAttribute(\"PetAcc\", acc > 0 and acc or nil)\n", ""),
     ("pet: PetAcc from the armor", PE, "\tlocal acc = petGear(data, uid, \"PetAcc\")\n", "\tlocal acc = petGear(data, uid, \"PetArmor\")\n"),
@@ -117,9 +123,9 @@ MUTATIONS = [
     ("pet: PetAcc after the speed refresh", PE,
      "\tplayer:SetAttribute(\"PetAcc\", acc > 0 and acc or nil)\n\t-- A23-194: the following pet's bonus kind and size (nil = none / a look-only pet; the walk speed stays PetLv / PetRoll).\n\t-- The value is the pet's own: the server uses 0 in a PvP zone or the Crown Pit (PetService.Bonus; ZonePvP tells the UI)\n\tlocal def = p and PETS.Species[p.Sp] or nil\n\tlocal kind = type(def) == \"table\" and type(def.Bonus) == \"table\" and def.Bonus.Type or nil\n\tlocal size = (kind and kind ~= \"None\") and Config.PetBonus(p.Sp, p.Lv, kind, p.Roll and p.Roll.Spd) or 0\n\tplayer:SetAttribute(\"PetBonusType\", (kind and kind ~= \"None\") and kind or nil)\n\tplayer:SetAttribute(\"PetBonus\", size > 0 and size or nil)\n\trefreshSpeed(player)\n",
      "\t-- A23-194: the following pet's bonus kind and size (nil = none / a look-only pet; the walk speed stays PetLv / PetRoll).\n\t-- The value is the pet's own: the server uses 0 in a PvP zone or the Crown Pit (PetService.Bonus; ZonePvP tells the UI)\n\tlocal def = p and PETS.Species[p.Sp] or nil\n\tlocal kind = type(def) == \"table\" and type(def.Bonus) == \"table\" and def.Bonus.Type or nil\n\tlocal size = (kind and kind ~= \"None\") and Config.PetBonus(p.Sp, p.Lv, kind, p.Roll and p.Roll.Spd) or 0\n\tplayer:SetAttribute(\"PetBonusType\", (kind and kind ~= \"None\") and kind or nil)\n\tplayer:SetAttribute(\"PetBonus\", size > 0 and size or nil)\n\trefreshSpeed(player)\n\tplayer:SetAttribute(\"PetAcc\", acc > 0 and acc or nil)\n"),
-    ("pet: no XP bonus", PE, "\tlocal exact = n * (1 + petGear(data, uid, \"PetArmor\")) + (rems and rems[uid] or 0)\n", "\tlocal exact = n + (rems and rems[uid] or 0)\n"),
+    ("pet: no XP bonus", PE, "\tlocal exact = n * (1 + petGear(data, uid, \"PetXP\")) + (rems and rems[uid] or 0)\n", "\tlocal exact = n + (rems and rems[uid] or 0)\n"),
     ("pet: the XP bonus not floored", PE, "\tlocal whole = math.floor(exact + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)\n", "\tlocal whole = exact\n"),
-    ("pet: the XP bonus from the accessory", PE, "uid, \"PetArmor\")) + (rems and rems[uid] or 0)", "uid, \"PetAcc\")) + (rems and rems[uid] or 0)"),
+    ("pet: the XP bonus from the accessory", PE, "uid, \"PetXP\")) + (rems and rems[uid] or 0)", "uid, \"PetAcc\")) + (rems and rems[uid] or 0)"),
     ("pet: a kill without the bonus", PE, "giveXP(p, gearXP(player, data, uid, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1)))))", "giveXP(p, math.max(0, math.floor(num((Config.Pets or {}).XPPerKill, 1))))"),
     ("pet: AddPetXP without the bonus", PE, "\tn = gearXP(player, data, uid, n) -- ⑥ gear (게임성 개발 3): PetArmor of this pet\n", ""),
     ("pet: Refresh never republishes", PE, "\tpublish(player, data)\n\treturn true\nend", "\treturn true\nend"),

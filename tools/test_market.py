@@ -34,12 +34,16 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-219 ② crafted options (게임성 개발 2)
+    ('opt: the owned check by +N only', X, '\t\tif theirs <= mine + 1e-9 then return note(player, "Owned") end', '\t\tif info.Plus <= cur then return note(player, "Owned") end'),
+    ('opt: a sold weapon loses its option', X, 'pcall(S.LootService.GrantMarketWeapon, player, info.Tier, info.Plus, info.Opt)', 'pcall(S.LootService.GrantMarketWeapon, player, info.Tier, info.Plus)'),
+    ('opt: listing takes the plain spare', X, 'S.LootService.TakeSpare(player, info.Tier, info.Plus, n, info.Opt)', 'S.LootService.TakeSpare(player, info.Tier, info.Plus, n)'),
     # 장인 ③ (2026-10-14): the live kill switch
     ("kill switch: the live switch ignored", X, "\tlocal ok, value = pcall(sw.On, \"Market\")\n\treturn not ok or value ~= false\n", "\treturn true\n"),
     ("kill switch: the build switch ignored", X, "\tif not (type(Config.FeatureOn) == \"function\" and Config.FeatureOn(\"Market\") == true) then return false end\n", ""),
     ("kill switch: a failed read is off", X, "\treturn not ok or value ~= false\n", "\treturn ok and value ~= false\n"),
-    ("GPT ②: an owned tier never bought again", "MARKET_SOURCE", "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand info.Plus <= ", "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand -1 <= "),
-    ("GPT ②: a better +N stays a spare", "LOOT_SOURCE", "\t\tif plus <= cur then return \"Owned\" end\n", "\t\tdo return \"Owned\" end\n"),
+    ("GPT ②: an owned tier never bought again", "MARKET_SOURCE", "\t\tif theirs <= mine + 1e-9 then return note(player, \"Owned\") end", "\t\tdo return note(player, \"Owned\") end"),
+    ("GPT ②: a better +N stays a spare", "LOOT_SOURCE", "\t\tif not betterThan(plus, o, cur, curO) then return \"Owned\" end\n", "\t\tdo return \"Owned\" end\n"),
     # bag slots (2026-10-14)
     ("bag: a market buy ignores the slots", X, "\t\tif have < 1 and def and counts[def.Kind] and not Config.BagHasRoom(data) then return false end\n", ""),
     # A23-186: the joke weapons are never traded
@@ -63,17 +67,17 @@ MUTATIONS = [
     ("config: market gold 2x", C, "for name, s in { MarketIndex = 1,", "Config.PassBoost.GoldSources.Market = true\nfor name, s in { MarketIndex = 1,"),
     ("config: tonics cannot be listed", C, "Kinds = { Material = true, Enhance = true, Transfer = true, Tonic = true, Treat = true },",
      "Kinds = { Material = true, Enhance = true, Transfer = true, Treat = true },"),
-    ("config: tier 1 can be listed", C, "if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier", "if not tier or not plus or tier < 1 or tier > Config.MaxWeaponTier"),
-    ("config: no plus cap", C, "or plus > Config.Loot.MaxEnhance then return nil end\n\tif Config.Weapons[tier].Meme", "then return nil end\n\tif Config.Weapons[tier].Meme"),
+    ("config: tier 1 can be listed", C, "if not tier or tier < 2 or tier > Config.MaxWeaponTier then return nil end", "if not tier or tier < 1 or tier > Config.MaxWeaponTier then return nil end"),
+    ("config: no plus cap", C, "or t > Config.SaveV4.SpareTierMax or p > Config.Loot.MaxEnhance then return nil end", "or t > Config.SaveV4.SpareTierMax then return nil end"),
     ("config: a material's Min below its Sell", C, "return sell * M.MaterialRef, sell, sell * M.MaterialMax", "return sell * M.MaterialRef, 1, sell * M.MaterialMax"),
     ("config: weapon Ref without the plus", C, "local ref = math.floor(base * (1 + M.PlusRef * info.Plus))", "local ref = math.floor(base)"),
     # --- LootService helpers
     ("loot: TakeSpare takes more than there is", L, "\tif have < n then return false end\n\tdata.Spares[key] = have > n", "\tdata.Spares[key] = have > n"),
-    ("loot: a bought weapon without its +N", L, "\tdata.WeaponEnhance[tier] = plus\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\"", "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\""),
+    ("loot: a bought weapon without its +N", L, "\tdata.WeaponEnhance[tier] = plus\n\tsetOpt(data, tier, o or 0)", "\tsetOpt(data, tier, o or 0)"),
     ("loot: pack the weapon in hand", L, "\tif math.floor(num(data.WeaponTier, 0)) == tier then return \"InHand\" end\n", ""),
     ("loot: pack keeps the tier owned", L, "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(", "\tlocal _ = (bit32.band("),
-    ("loot: pack keeps the +N on the tier", L, "\tdata.WeaponEnhance[tier] = 0\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(",
-     "\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band("),
+    ("loot: pack keeps the +N on the tier", L, "\tdata.WeaponEnhance[tier] = 0\n\tsetOpt(data, tier, 0)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band(",
+     "\tsetOpt(data, tier, 0)\n\tS.PlayerService.SetStat(player, \"WeaponOwnedMask\", bit32.band("),
     ("loot: unpack an owned tier", L, "\tif owns(data, tier) then\n\t\t-- GPT review ②", "\tif false then\n\t\t-- GPT review ②"),
     # --- gates
     ("gate: no buy level", X, "\tif level < M.BuyLevel then\n\t\tg.Buy = \"NeedLevelBuy\"\n\telseif", "\tif false then\n\t\tg.Buy = \"NeedLevelBuy\"\n\telseif"),
@@ -95,7 +99,7 @@ MUTATIONS = [
     # --- buy
     ("buy: my own listing", X, "\tif rec.Seller == player.UserId then return note(player, \"Own\") end\n", ""),
     ("buy: any price", X, "\tif math.floor(num(rec.Price, -1)) ~= price then return note(player, \"PriceChanged\") end\n", ""),
-    ("buy: an owned weapon tier", X, "\tif info.Kind == \"W\" and ownsTier(data, info.Tier)\n\t\tand info.Plus <= ", "\tif false and ownsTier(data, info.Tier)\n\t\tand info.Plus <= "),
+    ("buy: an owned weapon tier", X, "\tif info.Kind == \"W\" and ownsTier(data, info.Tier) then\n\t\tlocal cur", "\tif false then\n\t\tlocal cur"),
     ("buy: no room check", X, "\tif info.Kind == \"I\" and not hasRoom(data, rec.K, n) then return note(player, \"CantReceive\") end\n", ""),
     ("buy: no pair limit", X, "\tif math.floor(num(m[pairKey], 0)) >= M.PairDay then return note(player, \"PairLimit\") end\n", ""),
     ("buy: one unit's price for the row", X, "\tlocal total = price * n\n", "\tlocal total = price\n"),
