@@ -63,16 +63,23 @@ local L = {
 	Anvil = { "Map", "Landmarks", "ArtisanGuild", "Anvil" }, -- the server's fallback bench (ShopService.Anvil)
 	Prompt = "CraftPrompt", ActionKey = "ActionKey", ObjectKey = "ObjectKey", -- the bench's prompt (CraftService)
 	UnpackTimeout = 3, -- s: [Use it] waits this long for the weapon bit (no bit = the server's notice said why)
+	-- A23-219 tools: the slot art per role (no approved art = the name's first letter), the refusals in the server's order
+	-- (CraftService.UpgradeTool), the wait after a try (Config.RateLimits.CraftTool drops a 2nd try inside it, no reply)
+	ToolIcon = { Smith = "IconHammer" },
+	ToolReasons = { "Busy", "Auto", "Far", "NeedLevel", "NeedMats", "NeedGold" },
+	ToolGap = 0.15, ToolWait = 3, -- s over the rate limit; s without CraftToolResult -> the button comes back
+	Pop = 0.35, Shake = 8, -- the result's slot feedback: a success pops (UIScale), a fail shakes (px)
 }
 
 -- state: Info = the last CraftInfo (validated); Sel = the picked recipe id; Await = a start sent { Id, At, Phase =
 -- "sent" | "ring" } (the ring screen opened -> this window comes back after it); ReadyAt = os.clock() of the next start
 local S = { Ready = false, Info = nil, InfoVer = 0, Sel = nil, Await = nil, ReadyAt = 0, LastArg = nil, Started = false,
 	Unpack = nil, -- [Use it] sent: { Tier, Key, At, Equip } until the weapon bit comes (then EquipWeapon) or L.UnpackTimeout
-	Tamer = nil, TamerVer = 0, Tab = "Make", -- the last TamerInfo; the tamer's tab (Make | Research)
+	Tamer = nil, TamerVer = 0, Tab = "Make", -- the last TamerInfo; the open tab (Make | Research (tamer) | Tool)
+	ToolAt = nil, ToolResult = nil, ToolVer = 0, -- A23-219: a try sent (os.clock); the last CraftToolResult (+ At)
 	Stations = {} } -- [bench part] = its ChildAdded connection (the prompt the server adds)
 local VIEW = {} -- the open window: Kit, Parent, Head, Body, Bottom, List, Detail, Sig
-local drawTabs, drawResearch -- (defined with the drawing below)
+local drawTabs, drawResearch, drawTool -- (defined with the drawing below)
 
 ---------------------------------------------------------------------------------------------------- small helpers
 local function num(v, d)
@@ -294,6 +301,98 @@ function CraftWindow.LevelView(ctx)
 		Fraction = math.clamp(xp / need, 0, 1) }
 end
 
+---------------------------------------------------------------------------------------------------- A23-219 tools (pure)
+-- my role tool's +N (CraftInfo.Tool when the info is for my role; +0 before it came) and its top
+local function toolOf(ctx, role)
+	local T = Config.Craft.Tools
+	local max = type(T) == "table" and math.max(0, math.floor(num(T.Max, 10))) or 0
+	local info = type(ctx.Info) == "table" and ctx.Info or {}
+	if info.Role ~= role then return 0, max end
+	return math.clamp(math.floor(num(info.Tool, 0)), 0, max), max
+end
+
+-- one try +N -> target (the server's CraftService.ToolCost): every try Gold + Common + the role's band material
+-- (+1..3 / +4..6 / +7..10), Extra only taken on a success (held before the try) -> { Lv, P, Gold, Every, Extra } | nil
+function CraftWindow.ToolCost(role, target)
+	local T = Config.Craft.Tools
+	local step = type(T) == "table" and type(T.Steps) == "table" and T.Steps[target] or nil
+	local mats = type(T) == "table" and type(T.RoleMats) == "table" and T.RoleMats[role] or nil
+	if type(step) ~= "table" or type(mats) ~= "table" then return nil end
+	local band = target <= 3 and 1 or target <= 6 and 2 or 3
+	local every = {}
+	for item, n in type(step.Common) == "table" and step.Common or {} do every[item] = (every[item] or 0) + n end
+	if type(mats[band]) == "string" and num(step.Role, 0) > 0 then
+		every[mats[band]] = (every[mats[band]] or 0) + math.floor(step.Role)
+	end
+	local extra = {}
+	for item, n in type(step.Extra) == "table" and step.Extra or {} do extra[item] = n end
+	return { Lv = math.floor(num(step.Lv, 1)), P = num(step.P, 0), Gold = math.floor(num(step.Gold, 0)), Every = every, Extra = extra }
+end
+
+local function pctText(p)
+	return string.format("%g", math.floor(num(p, 0) * 1000 + 0.5) / 10)
+end
+
+-- the Tool tab (ctx += { Busy = a craft start waiting, ToolWait = a try sent, Result = the last CraftToolResult }) ->
+-- nil (not an artisan / no tools) or { Role, Name, Icon, Plus, Max, Title, Lines, Mats, Gold?, Status?, Action?, Result? }.
+-- The reasons in the server's order (CraftService.UpgradeTool): Busy, Auto, ToolMax, Far, NeedLevel, NeedMats, NeedGold
+function CraftWindow.ToolView(ctx)
+	ctx = type(ctx) == "table" and ctx or {}
+	local role = CraftWindow.RoleOf(ctx)
+	local T = Config.Craft.Tools
+	if not role or type(T) ~= "table" then return nil end
+	local now, max = toolOf(ctx, role)
+	local name = tx(T.Names or {}, role)
+	if name == "" then name = role end
+	local K = Config.Craft.Text
+	local v = { Role = role, Name = name, Icon = L.ToolIcon[role] or ("Tool" .. role), Plus = now, Max = max,
+		Title = tx(TXT, "ToolName", name, now), Lines = {}, Mats = {} }
+	local r = type(ctx.Result) == "table" and ctx.Result or nil
+	if r and r.Role == role then
+		v.Result = { Ok = r.Ok == true, Text = tx(K, r.Ok == true and "ToolUp" or "ToolSame", name,
+			math.clamp(math.floor(num(r.Tool, now)), 0, max)),
+			Color = r.Ok == true and "Gold" or "Sub" }
+	end
+	local cost = now < max and CraftWindow.ToolCost(role, now + 1) or nil
+	-- the Mixing Kit's Blessed Scroll chance (A23-219: the only tool effect today), now -> after one more step
+	if role == "Alch" and type(T.Bless) == "table" then
+		local b = num(T.Bless[now], 0)
+		local text = cost and tx(TXT, "BlessNext", pctText(b), pctText(num(T.Bless[now + 1], b))) or tx(TXT, "Bless", pctText(b))
+		table.insert(v.Lines, { Text = text, Color = "Text" })
+	end
+	if not cost then
+		v.Status = { Text = tx(K, "ToolMax", name), Color = "Gold" }
+		return v
+	end
+	table.insert(v.Lines, 1, { Text = tx(TXT, "ToolStep", now, now + 1, pctText(cost.P)), Color = "Gold" })
+	local lv = levelOf(ctx, role)
+	table.insert(v.Lines, { Text = tx(TXT, "NeedLv", cost.Lv), Color = lv < cost.Lv and "Bad" or "Sub" })
+	local need = table.clone(cost.Every)
+	for item, n in cost.Extra do need[item] = (need[item] or 0) + n end
+	local known = {}
+	for item, n in need do
+		if Config.Loot.Items[item] then known[item] = n end
+	end
+	local short = false
+	for _, m in matsOf({ Mats = known }, type(ctx.Items) == "table" and ctx.Items or {}) do
+		m.Text = tx(TXT, "Have", Util.FormatInt(m.Have), Util.FormatInt(m.Need))
+		short = short or m.Short
+		table.insert(v.Mats, m)
+	end
+	local goldShort = num(ctx.Gold, 0) < cost.Gold
+	v.Gold = { Text = Util.FormatInt(cost.Gold), Short = goldShort }
+	local why = { Busy = ctx.Busy == true, Auto = ctx.Auto == true, Far = ctx.Far == true, NeedLevel = lv < cost.Lv,
+		NeedMats = short, NeedGold = goldShort }
+	local reason = nil
+	for _, key in L.ToolReasons do
+		if why[key] then reason = key break end
+	end
+	if reason then v.Status = { Text = tx(K, reason), Color = "Bad" } end
+	v.Reason = reason
+	v.Action = { Text = tx(TXT, "Upgrade"), Enabled = reason == nil and ctx.ToolWait ~= true }
+	return v
+end
+
 -- the detail column of a recipe. ctx += { Level (hunting), Pending (a start waiting), Gap (the start's interval) }
 -- artisan contract ③ (pure): the spares of a weapon recipe's tier (Spares "T:P" -> n, made weapons wait there).
 -- -> nil (not a weapon, none in the bag, or the server has no UnpackSpare: ctx.UnpackOn) or { Key = the best +N's "T:P",
@@ -464,6 +563,18 @@ function CraftWindow.OnTamer(payload)
 	if VIEW.Kit then CraftWindow.Redraw() end
 end
 
+-- A23-219 s->c CraftToolResult { Role, Tool = the +N now, Ok, Name }: the try's answer (the server's sound only, A23-191 -
+-- the line is this window's). The +N goes into the info at once (CraftInfo follows)
+function CraftWindow.OnToolResult(payload)
+	if type(payload) ~= "table" or type(payload.Role) ~= "string" then return end
+	local tool = math.max(0, math.floor(num(payload.Tool, 0)))
+	S.ToolAt = nil
+	S.ToolResult = { Role = payload.Role, Tool = tool, Ok = payload.Ok == true, At = os.clock() }
+	if type(S.Info) == "table" and S.Info.Role == payload.Role then S.Info.Tool = tool end
+	S.ToolVer += 1
+	if VIEW.Kit then CraftWindow.Redraw() end
+end
+
 ---------------------------------------------------------------------------------------------------- data
 -- s->c CraftInfo { Role, Lv, XP, Need, Made = { [recipeId] = n }, On? = { recipeIds } | { [recipeId] = true } }
 function CraftWindow.OnInfo(payload)
@@ -481,7 +592,8 @@ function CraftWindow.OnInfo(payload)
 	end
 	local lv = math.clamp(math.floor(num(payload.Lv, 1)), 1, Config.Craft.MaxLv)
 	S.Info = { Role = payload.Role, Lv = lv, XP = math.max(0, math.floor(num(payload.XP, 0))),
-		Need = math.max(0, math.floor(num(payload.Need, Config.CraftXPToNext(lv)))), Made = made, On = on }
+		Need = math.max(0, math.floor(num(payload.Need, Config.CraftXPToNext(lv)))), Made = made, On = on,
+		Tool = math.max(0, math.floor(num(payload.Tool, 0))) } -- A23-219: my role tool's +N
 	S.InfoVer += 1
 	if VIEW.Kit then CraftWindow.Redraw() end
 end
@@ -534,6 +646,10 @@ local function context()
 		Level = num(attr("Level"), 1),
 		Auto = attr("AutoCombatUnlocked") == true and attr("AutoCombatEnabled") == true,
 		Pending = pending(), Gap = os.clock() < S.ReadyAt }
+	-- A23-219 tools: a craft start waiting = Busy; a try sent and no answer yet; the last result
+	ctx.Busy = S.Await ~= nil
+	ctx.ToolWait = S.ToolAt ~= nil and os.clock() - S.ToolAt < L.ToolWait
+	ctx.Result = S.ToolResult
 	-- contract ③: the spares, my weapons, my power now / with a tier (Config.CombatPowerOf, as the bag shows it)
 	ctx.Spares, ctx.Mask, ctx.Unpacking = inventoryOf("Spares"), num(attr("WeaponOwnedMask"), 0), S.Unpack ~= nil
 	ctx.UnpackOn = type(Net) == "table" and type(Net.Names) == "table" and table.find(Net.Names, "UnpackSpare") ~= nil
@@ -805,16 +921,18 @@ local function drawBottom(bottom)
 		Position = UDim2.new(0, L.CoinW + 6, 0.5, 0), Size = UDim2.new(0.5, 0, 1, 0), TextWrapped = false, Style = "Number" })
 end
 
--- the tamer's tabs (the Panels capsules, gold = open: the bag's look); hidden for everyone else
-function drawTabs(show)
+-- the tabs (the Panels capsules, gold = open: the bag's look): Make · Research (the tamer, research on) · Tool (A23-219)
+function drawTabs(ids)
 	local frame, kit = VIEW.Tabs, VIEW.Kit
 	if not (frame and kit) then return end
 	clear(frame)
-	frame.Visible = show == true
+	local show = type(ids) == "table" and #ids > 1
+	frame.Visible = show
 	if not show then return end
 	listLayout(frame, 6, false).FillDirection = Enum.FillDirection.Horizontal
-	for i, id in { "Make", "Research" } do
-		local b = kit.Button(frame, tx(TXT.Tabs, id), kit.Palette.Button, UDim2.new(0.5, -3, 1, 0), function()
+	local n = #ids
+	for i, id in ids do
+		local b = kit.Button(frame, tx(TXT.Tabs, id), kit.Palette.Button, UDim2.new(1 / n, -math.ceil(6 * (n - 1) / n), 1, 0), function()
 			CraftWindow.ShowTab(id)
 		end)
 		b.Name = "Tab_" .. id
@@ -856,10 +974,98 @@ function drawResearch(body)
 	end
 end
 
+-- the result's feedback on the tool slot, once per result: a success pops, a fail shakes (BagUI's enhance result rule)
+local function toolFeedback(box, r)
+	if not (box and r) or S.ToolFelt == r.At then return end
+	S.ToolFelt = r.At
+	if r.Ok then
+		local sc = Instance.new("UIScale")
+		sc.Scale = 1.18
+		sc.Parent = box
+		pcall(function()
+			game:GetService("TweenService"):Create(sc, TweenInfo.new(L.Pop, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+				{ Scale = 1 }):Play()
+		end)
+	else
+		task.spawn(function()
+			task.wait() -- after the list layout placed it
+			local base = box.Position
+			for _, dx in { L.Shake, -L.Shake, L.Shake * 0.5, -L.Shake * 0.5, 0 } do
+				if not box.Parent then return end
+				box.Position = base + UDim2.fromOffset(dx, 0)
+				task.wait(0.04)
+			end
+		end)
+	end
+end
+
+-- the Tool tab (A23-219): left = my tool (slot, "Craft Hammer +3", the last result, the next step's chance, the Mixing
+-- Kit's Blessed Scroll chance, the craft level it needs); right = one try's cost (materials, gold), why not, [Upgrade]
+function drawTool(body, ctx)
+	local kit = VIEW.Kit
+	local v = CraftWindow.ToolView(ctx)
+	VIEW.ToolView = v
+	if not v then return end
+	local function column(name, x, w)
+		local f = Instance.new("ScrollingFrame")
+		f.Name = name
+		f.BackgroundTransparency = 1
+		f.BorderSizePixel = 0
+		f.Position = UDim2.fromOffset(x, 0)
+		f.Size = w and UDim2.new(0, w, 1, 0) or UDim2.new(1, -x, 1, 0)
+		f.CanvasSize = UDim2.new()
+		f.AutomaticCanvasSize = Enum.AutomaticSize.Y
+		f.ScrollingDirection = Enum.ScrollingDirection.Y
+		f.ScrollBarThickness = 4
+		f.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+		f.Parent = body
+		listLayout(f, 6, true)
+		return f
+	end
+	local left = column("Tool", 0, L.ListW)
+	local right = column("Cost", L.ListW + L.Split, nil)
+	local order = 0
+	local function nextOrder()
+		order += 1
+		return order
+	end
+	local function line(parent, name, text, size, color, style)
+		return label(parent, text, size, colorOf(color), { Name = name, Size = UDim2.new(1, 0, 0, 0),
+			AutomaticSize = Enum.AutomaticSize.Y, TextXAlignment = Enum.TextXAlignment.Center, LayoutOrder = nextOrder(), Style = style })
+	end
+	-- the slot holds the box's place in the list (a shake moves only the slot inside it)
+	local holder = Instance.new("Frame")
+	holder.Name = "BigHolder"
+	holder.BackgroundTransparency = 1
+	holder.Size = UDim2.fromOffset(L.Big, L.Big)
+	holder.LayoutOrder = nextOrder()
+	holder.Parent = left
+	local big = slot(holder, v.Plus > 0 and "Fine" or nil, v.Icon, L.Big, "Big", { Text = v.Name, Color = colorOf("Gold") })
+	line(left, "Name", v.Title, L.Size.Name, v.Plus > 0 and "Gold" or "Text", "Title")
+	if v.Result then line(left, "Result", v.Result.Text, L.Size.Body, v.Result.Color) end
+	for i, ln in v.Lines do line(left, "Line" .. i, ln.Text, ln.Color == "Sub" and L.Size.Small or L.Size.Body, ln.Color) end
+	order = 0
+	for _, m in v.Mats do matRow(right, m, nextOrder()) end
+	if v.Gold then goldRow(right, v.Gold, nextOrder()) end
+	if v.Status then line(right, "Status", v.Status.Text, L.Size.Body, v.Status.Color) end
+	if v.Action then
+		local palette = kit.Palette or {}
+		local b = kit.Button(right, v.Action.Text, palette.Buy or palette.Button, UDim2.new(1, 0, 0, L.BtnH), function()
+			CraftWindow.UpgradeTool()
+		end)
+		b.Name = "Upgrade"
+		b.LayoutOrder = nextOrder()
+		kit.SetEnabled(b, v.Action.Enabled)
+	end
+	local r = S.ToolResult
+	if r and os.clock() - r.At < 1 then toolFeedback(big, r) end
+end
+
 -- what the window shows depends on (the redraw signature: the update redraws when it changes)
 local function sigOf(ctx, list)
 	local parts = { tostring(ctx.Faction), tostring(ctx.Class), tostring(ctx.ClassChosen), S.InfoVer, ctx.Gold, ctx.Level,
 		tostring(ctx.Auto), tostring(ctx.Far), tostring(ctx.Pending), tostring(ctx.Gap), tostring(S.Sel), S.TamerVer, S.Tab,
+		S.ToolVer, tostring(ctx.ToolWait), tostring(ctx.Busy),
 		ctx.Mask, tostring(ctx.Unpacking), tostring(ctx.PowerNow) }
 	local spareKeys = {}
 	for key, n in type(ctx.Spares) == "table" and ctx.Spares or {} do table.insert(spareKeys, tostring(key) .. "=" .. tostring(n)) end
@@ -895,14 +1101,19 @@ function CraftWindow.Redraw()
 	clear(body)
 	VIEW.List, VIEW.Detail = nil, nil
 	if VIEW.Bottom then drawBottom(VIEW.Bottom) end
-	-- the tamer's two tabs (research on only): Make (the recipes) · Research (the families)
-	local tabs = CraftWindow.RoleOf(ctx) == "Tame" and CraftWindow.ResearchOn()
-	local top = L.HeadH + L.RowGap + (tabs and (L.TabH + L.RowGap) or 0)
+	-- the tabs: Make (the recipes) · Research (the tamer's families, research on only) · Tool (A23-219, my role tool)
+	local tabs = CraftWindow.Tabs(ctx)
+	if not table.find(tabs, S.Tab) then S.Tab = "Make" end
+	local top = L.HeadH + L.RowGap + (#tabs > 1 and (L.TabH + L.RowGap) or 0)
 	body.Position = UDim2.fromOffset(0, top)
 	body.Size = UDim2.new(1, 0, 1, -(top + L.BarH + L.RowGap))
 	drawTabs(tabs)
-	if tabs and S.Tab == "Research" then
+	if S.Tab == "Research" then
 		drawResearch(body)
+		return
+	end
+	if S.Tab == "Tool" then
+		drawTool(body, ctx)
 		return
 	end
 	if #list == 0 then
@@ -946,8 +1157,18 @@ function CraftWindow.Redraw()
 	drawDetail(detail, picked, ctx)
 end
 
+-- (pure) the tabs for this player: none for a non-artisan
+function CraftWindow.Tabs(ctx)
+	local role = CraftWindow.RoleOf(ctx)
+	if not role then return {} end
+	local ids = { "Make" }
+	if role == "Tame" and CraftWindow.ResearchOn() then table.insert(ids, "Research") end
+	if type(Config.Craft.Tools) == "table" then table.insert(ids, "Tool") end
+	return ids
+end
+
 function CraftWindow.ShowTab(id)
-	if id ~= "Make" and id ~= "Research" then return end
+	if id ~= "Make" and id ~= "Research" and id ~= "Tool" then return end
 	S.Tab = id
 	CraftWindow.Redraw()
 end
@@ -972,6 +1193,19 @@ function CraftWindow.Forge(id)
 	kit.Fire("CraftStart", id)
 	S.ReadyAt = now + math.max(0, num(Config.RateLimits.CraftStart, 3)) + L.GapMargin
 	S.Await = { Id = id, At = now, Phase = "sent" }
+	CraftWindow.Redraw()
+	return true
+end
+
+-- A23-219 [Upgrade]: c->s CraftTool() once per rate-limit interval while no try waits and the client sees no reason
+function CraftWindow.UpgradeTool()
+	local kit = VIEW.Kit
+	local now = os.clock()
+	if not kit or (S.ToolAt and now - S.ToolAt < L.ToolWait) then return false end
+	local v = CraftWindow.ToolView(context())
+	if not (v and v.Action and v.Action.Enabled) then return false end
+	kit.Fire("CraftTool")
+	S.ToolAt = now
 	CraftWindow.Redraw()
 	return true
 end
@@ -1041,6 +1275,8 @@ local function build(parent, kit, arg)
 	-- Panels hands every rebuild the arg of its last Open: one arg table is applied once
 	if arg == S.LastArg then arg = nil else S.LastArg = arg end
 	if type(arg) == "table" and type(arg.Select) == "string" and Config.Craft.Recipes[arg.Select] then S.Sel = arg.Select end
+	if type(arg) == "table" and arg.Tab == "Tool" then S.Tab = "Tool" end
+	S.ToolResult = nil -- a result line is for the open window only
 	local head = Instance.new("Frame")
 	head.Name = "Head"
 	head.BackgroundTransparency = 1
@@ -1208,6 +1444,7 @@ function CraftWindow.Init(registry)
 	C = registry
 	hook("CraftInfo", CraftWindow.OnInfo) -- before any Start: the join's CraftInfo is never missed
 	hook("TamerInfo", CraftWindow.OnTamer) -- the tamer's research (no remote = research is not on this server)
+	hook("CraftToolResult", CraftWindow.OnToolResult) -- A23-219 (no remote = tools are not on this server)
 	local panels = C and C.Panels
 	if type(panels) ~= "table" or type(panels.Register) ~= "function" then
 		Util.Warn(TAG, "Panels.Register is missing; the craft window is off")
