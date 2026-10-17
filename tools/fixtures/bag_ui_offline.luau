@@ -633,8 +633,14 @@ find(root, "Act_Drink").OnClick()
 check(#fired == before + 1 and fired[#fired][1] == "UsePotion" and fired[#fired][2] == "HP", "Drink sends UsePotion(HP)")
 find(root, "Quick2").OnClick()
 check(quick[2] == "HP", "a quick slot button puts it there")
+local sets = 0
+local realSet = QuickSlots.Set
+QuickSlots.Set = function(i, item) sets += 1 return realSet(i, item) end
 find(root, "Quick2").OnClick()
-check(quick[2] == "", "again = takes it out")
+check(quick[2] == "HP" and sets == 0, "game play r8: again = stays (no toggle, nothing sent)", quick[2])
+find(root, "Quick1").OnClick()
+check(quick[1] == "HP" and sets == 1, "another slot's button moves it there")
+QuickSlots.Set = realSet
 -- sort + size
 local sorts = {}
 for _ = 1, 4 do

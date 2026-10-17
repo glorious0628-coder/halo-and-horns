@@ -1575,8 +1575,10 @@ function BagUI.Act(id, cell)
 		local i = tonumber(string.sub(id, 6))
 		local qs = C and C.QuickSlots
 		if i and type(qs) == "table" and type(qs.Set) == "function" then
+			-- game play r8 (a second [1] took the potion out again and the 'Drink potion' goal was stuck): pressing the slot
+			-- that already holds it changes nothing (no toggle); another slot's button moves it there
 			local cur = type(qs.Get) == "function" and qs.Get() or {}
-			pcall(qs.Set, i, cur[i] == cell.Id and "" or cell.Id)
+			if cur[i] ~= cell.Id then pcall(qs.Set, i, cell.Id) end
 		end
 		BagUI.Redraw()
 	elseif id == "Use" and type(cell) == "table" and (cell.Kind == "Enhance" or cell.Kind == "Transfer") then
