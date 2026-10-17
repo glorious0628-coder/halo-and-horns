@@ -59,6 +59,7 @@ MUTATIONS = [
     ("FIT", "signs never hide each other", "then hide = true break end\n\t\t\tend\n\t\tend\n\t\tif hide",
      "then hide = false break end\n\t\t\tend\n\t\tend\n\t\tif hide"),
     ("FIT", "no room to come back", "local pad = T.Pad + (e.Hid and T.Back or 0)", "local pad = T.Pad"),
+    ("FIT", "the top chips forgotten", 'StatusChips = "Children", GooseChip = "Self", ', ""),
     ("MAIN", "never loaded", "\"LightCap\", \"SignFit\",", "\"LightCap\","),
 ]
 
@@ -79,6 +80,9 @@ def run(src: dict) -> tuple[int, str]:
     ok = order is not None and '"SignFit"' in order.group(1)
     out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + "ClientMain loads SignFit"
     failed += 0 if ok else 1
+    keep = all(k in src["FIT"] for k in ('QuestTracker = "Self"', 'StatusChips = "Children"', 'GooseChip = "Self"', 'WarMeter = "Self"'))
+    out += ("\nSTATIC_OK " if keep else "\nSTATIC_FAIL ") + "the fixed HUD kept clear (goal, top chips, war meter, goose chip)"
+    failed += 0 if keep else 1
     skip = all(k in src["FIT"] for k in ("Nametag = true", "StoryNpcMark = true", "StoryFindBubble = true"))
     out += ("\nSTATIC_OK " if skip else "\nSTATIC_FAIL ") + "name tags / story marks never hidden"
     failed += 0 if skip else 1

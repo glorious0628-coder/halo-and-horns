@@ -2,8 +2,9 @@
 -- '→ Goblin Woods (Lv 10+)', 'Altar of Fate', the forge / shop / nest labels under workspace.Map) were drawn on top of
 -- each other ('Forge' over 'Altar of Fate') and over the left quest goal ('To Otto' under a pad sign). Every Every s
 -- this client measures each sign on screen (its TextLabel's text box, else the billboard's box) and, nearest to the
--- camera first, hides one that would overlap a nearer sign or the quest goal (Enabled = false on this screen only; only
--- the signs this module hid come back, with Pad px of room so they do not blink at the edge).
+-- camera first, hides one that would overlap a nearer sign or the fixed HUD (the quest goal, the top chips, the war
+-- meter, the event chips: T.Keep; Enabled = false on this screen only; only the signs this module hid come back, with
+-- Pad px of room so they do not blink at the edge). 최종 검수 10/17 (2차 사진: 'Altar of Fate' under the goose chip).
 -- Assumes: the server never toggles these signs' Enabled after building them (it builds them on).
 -- Public API: SignFit.Init(C), SignFit.Start(), SignFit.Plan(list, keepOut) -> { [key] = true } (pure: list =
 -- { { Key, D, X, Y, W, H, Hid } } centre + size in px, keepOut = { { X, Y, W, H } } top-left + size), SignFit.Pass().
@@ -16,7 +17,10 @@ local T = {
 	Every = 0.25, -- s between passes
 	Pad = 4, -- px: two boxes this close count as touching
 	Back = 8, -- px more room a hidden sign needs before it shows again
-	Goal = "QuestTracker", -- HUD's left quest goal (keep clear)
+	-- the fixed HUD kept clear: name -> "Self" (its own box) | "Children" (each shown child: the status chip row is a wide
+	-- frame, only its chips count)
+	Keep = { QuestTracker = "Self", WarMeter = "Self", StatusChips = "Children", GooseChip = "Self", PumpkinKingChip = "Self",
+		KaijuChip = "Self" },
 	-- billboards that are not map signs (name tags, the story marks and bubbles: never hidden)
 	Skip = { Nametag = true, StoryNpcMark = true, StoryFindBubble = true, BarkBubble = true, PetNameTag = true },
 }
@@ -61,16 +65,45 @@ local function whereOf(bb)
 	return nil
 end
 
--- the quest goal's box in viewport px (its ScreenGui may sit under the top bar)
-local function goalBox()
+-- a shown GuiObject's box in viewport px (its ScreenGui may sit under the top bar), else nil
+local function boxOf(g)
+	if not (g and g:IsA("GuiObject") and g.Visible and g.AbsoluteSize.X > 0) then return nil end
+	local x = g.Parent
+	while x and not x:IsA("LayerCollector") do
+		if x:IsA("GuiObject") and not x.Visible then return nil end
+		x = x.Parent
+	end
+	if not (x and x:IsA("ScreenGui") and x.Enabled) then return nil end
+	local top = x.IgnoreGuiInset and Vector2.zero or GuiService:GetGuiInset()
+	return { X = g.AbsolutePosition.X + top.X, Y = g.AbsolutePosition.Y + top.Y, W = g.AbsoluteSize.X, H = g.AbsoluteSize.Y }
+end
+
+-- the fixed HUD's boxes (T.Keep; the instances found once and kept while they live)
+S.Found = {}
+local function keepBoxes()
 	local me = Players.LocalPlayer
 	local pg = me and me:FindFirstChildOfClass("PlayerGui")
-	local g = pg and pg:FindFirstChild(T.Goal, true)
-	if not (g and g:IsA("GuiObject") and g.Visible and g.AbsoluteSize.X > 0) then return nil end
-	local sg = g:FindFirstAncestorWhichIsA("ScreenGui")
-	if not sg or not sg.Enabled then return nil end
-	local top = sg.IgnoreGuiInset and Vector2.zero or GuiService:GetGuiInset()
-	return { X = g.AbsolutePosition.X + top.X, Y = g.AbsolutePosition.Y + top.Y, W = g.AbsoluteSize.X, H = g.AbsoluteSize.Y }
+	local out = {}
+	if not pg then return out end
+	for name, how in T.Keep do
+		local g = S.Found[name]
+		if not (g and g.Parent) then
+			g = pg:FindFirstChild(name, true)
+			S.Found[name] = g
+		end
+		if g and how == "Children" then
+			if boxOf(g) then
+				for _, ch in g:GetChildren() do
+					local b = boxOf(ch)
+					if b then table.insert(out, b) end
+				end
+			end
+		else
+			local b = boxOf(g)
+			if b then table.insert(out, b) end
+		end
+	end
+	return out
 end
 
 -- one pass
@@ -102,8 +135,7 @@ function SignFit.Pass()
 		if tb and tb.Y > 0 and tb.Y < h then h = tb.Y end
 		table.insert(list, { Key = bb, D = d, X = p.X, Y = p.Y, W = w, H = h, Hid = S.Hid[bb] == true })
 	end
-	local box = goalBox()
-	local hide = SignFit.Plan(list, box and { box } or {})
+	local hide = SignFit.Plan(list, keepBoxes())
 	for _, e in list do
 		local bb = e.Key
 		if hide[bb] and bb.Enabled then
