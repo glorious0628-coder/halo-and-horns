@@ -2011,7 +2011,10 @@ local function update()
 	if not built then return end
 	local folded = V2.Fold() and not V2.InSquare()
 	if folded then V2.WasFolded = true end
-	if pickersOpen() or folded then
+	-- game play r7 (the big 'KO!' sat on the goose chip): the event row steps aside while the KO screen is up
+	local ds = C and C.DeathScreen
+	local ko = type(ds) == "table" and type(ds.IsOpen) == "function" and ds.IsOpen() == true
+	if pickersOpen() or folded or ko then
 		setVisible(ui.Arrows, false)
 		setVisible(ui.Strip, false)
 		setVisible(ui.Luck, false)
