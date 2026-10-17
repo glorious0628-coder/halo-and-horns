@@ -773,12 +773,12 @@ end
 do
 	local cfg = execute(CONFIG_SOURCE, configEnv)
 	-- C1 made the version 4 (tier 9 + Spares / Market), A23-153 5 (the codex); A23-186 6 (the joke weapons); every older record runs up to 6
-	check(cfg.Data.Version == 6 and cfg.Data.Defaults.Version == 6, "Config.Data.Version / Defaults.Version is not 6")
+	check(cfg.Data.Version == 7 and cfg.Data.Defaults.Version == 7, "Config.Data.Version / Defaults.Version is not 7")
 	check(cfg.Data.Defaults.DailyLevel == 0, "additive DailyLevel default is not 0")
 	local fresh = fixture()
-	check(fresh.Data.Version == 6, "fresh record is not Version 6")
+	check(fresh.Data.Version == 7, "fresh record is not Version 7")
 	local record = fresh:SaveAndRejoin()
-	check(record.Version == 6 and fresh.Data.Version == 6, "fresh record did not save as Version 6")
+	check(record.Version == 7 and fresh.Data.Version == 7, "fresh record did not save as Version 7")
 	check(type(record.Stats) == "table" and record.Stats.Auto == true and record.Stats.Order == "",
 		"fresh record did not save the default Stats (A23-69)")
 	-- v2 record with a legendary, enhancement, items and loot flags: only Version changes
@@ -788,48 +788,48 @@ do
 	v2.Items = { Jelly = 4, Enh70 = 2 }
 	v2.LootFlags = { FirstScroll = true }
 	local f = fixture(v2)
-	check(f.Data.Version == 6, "v2 record did not migrate to Version 6")
+	check(f.Data.Version == 7, "v2 record did not migrate to Version 7")
 	check(f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135 and f.Data.Level == 7
 		and f.Data.CarriedGold == 33 and f.Data.BankGold == 444, "v2 -> v3 changed weapon/level/gold fields")
 	check(encode(f.Data.WeaponEnhance) == encode(v2.WeaponEnhance) and encode(f.Data.Items) == encode(v2.Items)
 		and f.Data.LootFlags.FirstScroll == true, "v2 -> v3 changed enhancement/items/loot flags")
 	local stored = f:SaveAndRejoin()
-	check(stored.Version == 6 and stored.WeaponTier == 8 and stored.WeaponOwnedMask == 135, "v5 record serialized wrong")
-	check(f.Data.Version == 6 and f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135, "v5 reload not idempotent")
+	check(stored.Version == 7 and stored.WeaponTier == 8 and stored.WeaponOwnedMask == 135, "v5 record serialized wrong")
+	check(f.Data.Version == 7 and f.Data.WeaponTier == 8 and f.Data.WeaponOwnedMask == 135, "v5 reload not idempotent")
 	-- A23-69: a v3 record from before the stat points gains Stats only (still Version 3); a picked build survives the
 	-- round trip (its letters A-Z kept, the rest dropped)
 	local v3 = saved(99, 5)
 	v3.Version, v3.Level, v3.WeaponTier, v3.WeaponOwnedMask, v3.BankGold = 3, 12, 3, 7, 321
 	local s3 = fixture(v3)
-	check(s3.Data.Version == 6 and s3.Data.Stats.Auto == true and s3.Data.Stats.Order == "" and s3.Data.Level == 12
+	check(s3.Data.Version == 7 and s3.Data.Stats.Auto == true and s3.Data.Stats.Order == "" and s3.Data.Level == 12
 		and s3.Data.WeaponTier == 3 and s3.Data.BankGold == 321, "a v3 record without Stats got more than the default Stats")
 	s3.Data.Stats = { Auto = false, Order = "AHAXa1" }
 	local kept = s3:SaveAndRejoin()
-	check(kept.Version == 6 and kept.Stats.Auto == false and s3.Data.Stats.Auto == false and s3.Data.Stats.Order == "AHAX",
+	check(kept.Version == 7 and kept.Stats.Auto == false and s3.Data.Stats.Auto == false and s3.Data.Stats.Order == "AHAX",
 		"a saved build did not come back (repaired: its letters A-Z kept, the rest dropped)")
 	-- v1 record (SwordTier) runs both steps
 	local v1 = { Version = 1, Level = 6, SwordTier = 3, Faction = "Halo", TutorialStep = 99 }
 	local g = fixture(v1)
-	check(g.Data.Version == 6 and g.Data.WeaponTier == 3 and g.Data.SwordTier == nil and g.Data.WeaponOwnedMask == 5,
+	check(g.Data.Version == 7 and g.Data.WeaponTier == 3 and g.Data.SwordTier == nil and g.Data.WeaponOwnedMask == 5,
 		"v1 -> v2 -> v3 -> v4 -> v5 migration lost the renamed weapon tier or the version")
 	-- C1: a v4 record with the Mythic tier 9 equipped and all 9 bits owned loads as it is
 	local v4 = saved(99, 5)
 	v4.Version, v4.Level, v4.WeaponTier, v4.WeaponOwnedMask = 4, 60, 9, 511
 	local m = fixture(v4)
-	check(m.Data.Version == 6 and m.Data.WeaponTier == 9 and m.Data.WeaponOwnedMask == 511, "a v4 record lost tier 9 / the 9-bit mask")
+	check(m.Data.Version == 7 and m.Data.WeaponTier == 9 and m.Data.WeaponOwnedMask == 511, "a v4 record lost tier 9 / the 9-bit mask")
 	-- A23-153: a v4 record with a kill record loads as v5 with its cards (from KillLog.ByKind, no reward) and keeps them
 	local k4 = saved(99, 5)
 	k4.Version, k4.Level, k4.BankGold = 4, 20, 700
 	k4.KillLog = { Total = 160, M = 160, A = 0, Golden = 1, ByKind = { Slime = 150, Goblin = 10 }, ByTier = {} }
 	local kc = fixture(k4)
-	check(kc.Data.Version == 6 and kc.Data.Codex.Slime.Kills == 150 and kc.Data.Codex.Slime.Stage == 2 and kc.Data.Codex.Slime.First == 0
+	check(kc.Data.Version == 7 and kc.Data.Codex.Slime.Kills == 150 and kc.Data.Codex.Slime.Stage == 2 and kc.Data.Codex.Slime.First == 0
 		and kc.Data.Codex.Goblin.Kills == 10 and kc.Data.Codex.Goblin.Stage == 1 and kc.Data.BankGold == 700,
 		"a v4 record did not get its codex cards from its kill record (or got a reward)")
 	local back = kc:SaveAndRejoin()
-	check(back.Version == 6 and back.Codex.Slime.Kills == 150 and back.Codex.Goblin.Stage == 1 and kc.Data.Codex.Slime.Stage == 2,
+	check(back.Version == 7 and back.Codex.Slime.Kills == 150 and back.Codex.Goblin.Stage == 1 and kc.Data.Codex.Slime.Stage == 2,
 		"the v5 codex did not survive the save round trip")
 	-- newer-than-this-server records are refused and never rewritten
-	for _, version in { 7, 99 } do
+	for _, version in { 8, 99 } do
 		local newer = saved(99, 5); newer.Version, newer.WeaponTier, newer.WeaponOwnedMask = version, 10, 1023
 		local h = fixture(newer, { AllowRefused = true })
 		local row = h.Rows["P_" .. h.Player.UserId]

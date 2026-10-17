@@ -31,7 +31,7 @@ runGroup("config", function()
 	local C = cfg()
 	local D = C.Data.Defaults
 	-- C1 (게임성 개발 2) bumped the version to 4 on top of these tables (tier 9, Spares, Market)
-	check(C.Data.Version == 6 and D.Version == 6, "the save version is 4 (게임성 개발 2's C1), Data and Defaults equal",
+	check(C.Data.Version == 7 and D.Version == 7, "the save version is 4 (게임성 개발 2's C1), Data and Defaults equal",
 		show({ C.Data.Version, D.Version }))
 	check(sameTable(D.Craft, { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {} }),
 		"Craft: a level per role (Smith / Alch / Tame) + Rep + Made", show(D.Craft))
@@ -232,7 +232,7 @@ runGroup("load", function()
 		WeaponOwnedMask = 7, BankGold = 300 }
 	local d = load(v3)
 	local D = C.Data.Defaults
-	check(d.Version == 6 and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300 and d.WeaponOwnedMask == 7,
+	check(d.Version == 7 and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300 and d.WeaponOwnedMask == 7,
 		"a v3 save becomes v4 (C1) and keeps everything it had", show({ d.Version, d.Level }))
 	check(sameTable(d.Craft, D.Craft) and sameTable(d.Research, D.Research) and sameTable(d.Gather, D.Gather)
 		and sameTable(d.Gear, D.Gear) and sameTable(d.Buffs, D.Buffs) and sameTable(d.Shop, D.Shop) and d.EggHonorAt == 0,
@@ -255,12 +255,51 @@ runGroup("load", function()
 	check(sameTable(fixed.Gear, { Own = { ["Armor:1:0"] = 3 }, On = { Armor = "", Ring = "" }, Pet = {} }),
 		"the load repairs a Gear table of the right type (keys written plainly, bad things dropped, slots filled)",
 		show(fixed.Gear))
+	-- A23-219 ②: a v6 record becomes v7 and keeps its "T:P" keys (O 0)
+	local v6 = load({ Version = 6, Level = 12, Faction = "Halo", Class = "Mage", ClassChosen = true, TutorialStep = 99, WeaponTier = 3,
+		WeaponOwnedMask = 7, Spares = { ["4:2"] = 1 }, Gear = { Own = { ["Armor:1:2"] = 1 }, On = { Armor = "1:0" } } })
+	check(v6.Version == 7 and v6.Spares["4:2"] == 1 and v6.Gear.Own["Armor:1:2"] == 1 and v6.Gear.On.Armor == "1:0",
+		"a v6 save becomes v7 and keeps its plain keys (no option)", show({ v6.Version, v6.Spares, v6.Gear }))
 	local fresh = load(deepCopy(D))
-	check(fresh.Version == 6 and sameTable(fresh.Gear, D.Gear) and sameTable(fresh.Craft, D.Craft)
+	check(fresh.Version == 7 and sameTable(fresh.Gear, D.Gear) and sameTable(fresh.Craft, D.Craft)
 		and sameTable(fresh.Spares, D.Spares) and sameTable(fresh.Market, D.Market), "a brand-new save is v4 with the defaults", "")
 end)
 
 ------------------------------------------------------------------ PetService.Sanitize keeps Roll
+-- A23-219 ② (save v7, 최종 검수 10/17): the crafted option = a third key field "T:P:O" (O 1..Opt.Max); "T:P" = O 0, "T:P:0"
+-- is written "T:P", a broken O drops the key (never made up)
+runGroup("craft options (save v7)", function()
+	local C = cfg()
+	local sp = C.SanitizeSpares({ ["4:2:3"] = 1, ["4:2:0"] = 2, ["4:2"] = 1, ["4:2:6"] = 1, ["4:2:x"] = 1, ["04:2:05"] = 1, ["5:0:-1"] = 1 })
+	check(sp["4:2:3"] == 1 and sp["4:2"] == 3 and sp["4:2:0"] == nil and sp["4:2:6"] == nil and sp["4:2:5"] == 1 and count(sp) == 3,
+		"Spares: \"4:2:3\" kept, \"4:2:0\" + \"4:2\" merged into \"4:2\", O 6 / x / -1 dropped, \"04:2:05\" -> \"4:2:5\"", show(sp))
+	local g = C.SanitizeGear({ Own = { ["Armor:1:2:5"] = 1, ["Armor:1:2:0"] = 1, ["Armor:1:2"] = 1, ["Ring:3:1:6"] = 1 },
+		On = { Armor = "2:1:4", Ring = "1:0:9" }, Pet = { u1 = { PetArmor = "3:2:5", PetAcc = "1:0:2" } } })
+	check(g.Own["Armor:1:2:5"] == 1 and g.Own["Armor:1:2"] == 2 and g.Own["Ring:3:1:6"] == nil and count(g.Own) == 2,
+		"Gear.Own: \"Armor:1:2:5\" kept, \"Armor:1:2:0\" merged into \"Armor:1:2\", O 6 dropped", show(g.Own))
+	check(g.On.Armor == "2:1:4" and g.On.Ring == "" and g.Pet.u1.PetArmor == "3:2:5" and g.Pet.u1.PetAcc == "1:0:2",
+		"Gear.On / Pet keep \"T:P:O\"; a broken O = empty", show({ g.On, g.Pet }))
+	local m = C.SanitizeMarket({ Out = { a = { K = "W:4:2:3", N = 1, Price = 10, St = "Open" }, b = { K = "W:4:2:6", N = 1, Price = 10, St = "Open" },
+		c = { K = "W:4:2", N = 1, Price = 10, St = "Open" } } })
+	check(m.Out.a and m.Out.a.K == "W:4:2:3" and m.Out.b == nil and m.Out.c and m.Out.c.K == "W:4:2", "Market K \"W:T:P:O\" kept, O 6 dropped", show(m.Out))
+	local p = C.SanitizeCraft({ Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { CopperOre = 2 }, Opt = 4 } })
+	local p6 = C.SanitizeCraft({ Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { CopperOre = 2 }, Opt = 6 } })
+	local p0 = C.SanitizeCraft({ Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { CopperOre = 2 }, Opt = 0 } })
+	check(p.Pend.Opt == 4 and p6.Pend.Opt == 5 and p0.Pend.Opt == nil, "Craft.Pend.Opt 1..5 kept (6 cut to 5, 0 = none)", show({ p.Pend.Opt, p6.Pend.Opt, p0.Pend.Opt }))
+	-- the parsers every service and screen use
+	local t, pl, o = C.SpareParse("4:2:3")
+	local t0, p0b, o0 = C.SpareParse("4:2")
+	check(t == 4 and pl == 2 and o == 3 and t0 == 4 and p0b == 2 and o0 == 0 and C.SpareParse("4:2:0") == nil and C.SpareParse("04:2") == nil,
+		"Config.SpareParse: \"4:2:3\" -> 4, 2, 3; \"4:2\" -> O 0; \"4:2:0\" / \"04:2\" are not keys", "")
+	check(C.SpareKey(4, 2, 0) == "4:2" and C.SpareKey(4, 2, 3) == "4:2:3" and C.SpareKey(4, 2, 6) == nil, "Config.SpareKey", "")
+	local gt, gp, go = C.GearParse("3:2:5")
+	check(gt == 3 and gp == 2 and go == 5 and select(3, C.GearParse("3:2")) == 0 and C.GearParse("3:2:0") == nil and C.GearParse("3:3:1") == nil,
+		"Config.GearParse: \"3:2:5\" -> 3, 2, 5; \"3:2\" -> O 0; \"3:2:0\" / +3 are not keys", "")
+	local w = C.MarketParse("W:4:2:3")
+	check(w and w.Tier == 4 and w.Plus == 2 and w.Opt == 3 and C.MarketParse("W:4:2").Opt == 0 and C.MarketKey("W", "4:2:5") == "W:4:2:5"
+		and C.MarketKey("W", "4:2:0") == "W:4:2" and C.MarketKey("W", "4:2:6") == nil, "Config.MarketParse / MarketKey carry Opt (\"4:2:0\" = \"W:4:2\")", show(w))
+end)
+
 runGroup("pet roll", function()
 	local C = cfg()
 	local Sanitize = execute("PetService.extract", PET_EXTRACT, nativeEnv(), C)

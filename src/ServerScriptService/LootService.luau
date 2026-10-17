@@ -118,6 +118,15 @@ local function sanitize(data)
 		enh[tier] = math.clamp(math.floor(num(old[tier])), 0, LOOT.MaxEnhance)
 	end
 	data.WeaponEnhance = enh
+	-- A23-219 ② (save v7): the owned weapon's crafted option 0..Opt.Max per tier; a tier not owned has none (0)
+	local opt = {}
+	local oldOpt = type(data.WeaponOpt) == "table" and data.WeaponOpt or {}
+	local omax = Config.Craft.Tools.Opt.Max
+	for tier = 1, Config.MaxWeaponTier do
+		local o = math.floor(num(oldOpt[tier]))
+		opt[tier] = (owns(data, tier) and o >= 1 and o <= omax) and o or 0
+	end
+	data.WeaponOpt = opt
 	if type(data.LootFlags) ~= "table" then data.LootFlags = {} end
 	for k, v in data.LootFlags do
 		if type(k) ~= "string" or v ~= true then data.LootFlags[k] = nil end
@@ -131,7 +140,7 @@ end
 
 local function ensureTables(data)
 	if type(data.Items) ~= "table" or type(data.WeaponEnhance) ~= "table" or type(data.LootFlags) ~= "table"
-		or type(data.WeaponPity) ~= "table" or type(data.ItemsBound) ~= "table" then
+		or type(data.WeaponPity) ~= "table" or type(data.ItemsBound) ~= "table" or type(data.WeaponOpt) ~= "table" then
 		sanitize(data)
 	end
 end
@@ -139,6 +148,27 @@ end
 local function enhanceOf(data, tier)
 	local enh = data.WeaponEnhance
 	return type(enh) == "table" and math.clamp(math.floor(num(enh[tier])), 0, LOOT.MaxEnhance) or 0
+end
+
+-- A23-219 ②: the crafted option of an owned tier (0 = none, or not owned)
+local function optOf(data, tier)
+	local opt = data.WeaponOpt
+	if type(opt) ~= "table" or not owns(data, tier) then return 0 end
+	local o = math.floor(num(opt[tier]))
+	return (o >= 1 and o <= Config.Craft.Tools.Opt.Max) and o or 0
+end
+
+-- A23-219 ②: set (or clear: 0) the option of a tier
+local function setOpt(data, tier, o)
+	if type(data.WeaponOpt) ~= "table" then data.WeaponOpt = {} end
+	data.WeaponOpt[tier] = math.max(0, math.floor(num(o)))
+end
+
+-- A23-219 ②: (plus, o) beats (plus2, o2) when its hit is bigger (+N first: EnhanceMult x the option's x)
+local function betterThan(plus, o, plus2, o2)
+	local a = Config.EnhanceMult(plus) * (1 + Config.CraftOptBonus("Weapon", o))
+	local b = Config.EnhanceMult(plus2) * (1 + Config.CraftOptBonus("Weapon", o2))
+	return a > b + 1e-9
 end
 
 -- the SHARED CONTRACT payload: known item ids with count >= 1, and +N for every weapon tier (array 1..MaxWeaponTier)
@@ -152,9 +182,10 @@ local function inventoryPayload(data)
 			end
 		end
 	end
-	local enh = {}
+	local enh, opt = {}, {}
 	for tier = 1, Config.MaxWeaponTier do
 		enh[tier] = enhanceOf(data, tier)
+		opt[tier] = optOf(data, tier) -- A23-219 ②: the crafted option per tier (0 = none)
 	end
 	-- P7: monsters this player has defeated (LootFlags "Seen:<kind>") -> the item list shows only their drop tables
 	local seen = {}
@@ -182,7 +213,7 @@ local function inventoryPayload(data)
 		local b = BOUND.Of(data, id)
 		if b > 0 then bound[id] = b end
 	end
-	return { Items = items, Enhance = enh, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq, Spares = spares, Bound = bound }
+	return { Items = items, Enhance = enh, Opt = opt, Seen = seen, ItemSeq = itemSeq, WeaponSeq = weaponSeq, Spares = spares, Bound = bound }
 end
 
 local function pushInventory(player)
@@ -199,6 +230,7 @@ local function publish(player, data)
 	data = data or getData(player)
 	if not data then return end
 	player:SetAttribute("WeaponEnhance", enhanceOf(data, math.floor(num(data.WeaponTier, 1))))
+	player:SetAttribute("WeaponOpt", optOf(data, math.floor(num(data.WeaponTier, 1)))) -- A23-219 ② (Config.GearMultsOf)
 	if STATE.Pending[player] then return end
 	STATE.Pending[player] = true
 	task.defer(function()
@@ -918,7 +950,10 @@ function LootService.Start()
 		LootService.FitWeaponToLevel(player) -- A23-28: a save from before the rule may hold a weapon above the level
 		player:GetAttributeChangedSignal("WeaponTier"):Connect(function()
 			local d = getData(player)
-			if d then player:SetAttribute("WeaponEnhance", enhanceOf(d, math.floor(num(d.WeaponTier, 1)))) end
+			if d then
+				player:SetAttribute("WeaponEnhance", enhanceOf(d, math.floor(num(d.WeaponTier, 1))))
+				player:SetAttribute("WeaponOpt", optOf(d, math.floor(num(d.WeaponTier, 1)))) -- A23-219 ②
+			end
 		end)
 		-- A23-32 '얻은 순': potions and weapons reach the save from many services (shop, quests, story, drops); a rise of
 		-- the mirrored stat is the one place every path passes, so it is noted here
@@ -989,11 +1024,12 @@ end
 ------------------------------------------------------------------ spare weapons (C1, save v4)
 -- data.Spares["T:P"] = n: weapons kept beside the owned mask (CraftService's results; duplicates later). The writers keep
 -- the caps: at most Config.SaveV4.SpareKeyMax of one key and SpareSum of all keys (the save repair never cuts the sum).
--- nil = a bad tier (integer 1..MaxWeaponTier) or plus (integer 0..MaxEnhance)
-local function spareKey(tier, plus)
+-- nil = a bad tier (integer 1..MaxWeaponTier) or plus (integer 0..MaxEnhance). A23-219 ②: o = the crafted option (nil / 0 =
+-- none: the "T:P" key; 1..Opt.Max = "T:P:O"), a broken o = nil
+local function spareKey(tier, plus, o)
 	if not validTier(tier) then return nil end
 	if type(plus) ~= "number" or plus ~= plus or plus ~= math.floor(plus) or plus < 0 or plus > LOOT.MaxEnhance then return nil end
-	return string.format("%d:%d", tier, plus)
+	return Config.SpareKey(tier, plus, o or 0)
 end
 
 -- room for one more of that key (key below SpareKeyMax, all keys below SpareSum)
@@ -1010,17 +1046,17 @@ local function spareFits(data, key, freed)
 	return math.floor(num(spares[key])) < Config.SaveV4.SpareKeyMax and sum < Config.SaveV4.SpareSum
 end
 
-function LootService.SpareRoom(player, tier, plus, freed)
-	local key = spareKey(tier, plus)
+function LootService.SpareRoom(player, tier, plus, freed, o)
+	local key = spareKey(tier, plus, o)
 	local data = key and getData(player)
 	if not data then return false end
 	return spareFits(data, key, freed)
 end
 
--- adds one spare of tier +plus and publishes the inventory; false (nothing changed) on a bad argument, no data or no
--- room. No notice here: the caller says it
-function LootService.AddSpare(player, tier, plus)
-	local key = spareKey(tier, plus)
+-- adds one spare of tier +plus (option o, A23-219 ②) and publishes the inventory; false (nothing changed) on a bad
+-- argument, no data or no room. No notice here: the caller says it
+function LootService.AddSpare(player, tier, plus, o)
+	local key = spareKey(tier, plus, o)
 	local data = key and getData(player)
 	if not data or not spareFits(data, key) then return false end
 	if type(data.Spares) ~= "table" then data.Spares = {} end
@@ -1042,9 +1078,9 @@ function LootService.AddBagSlots(player, n)
 	return after - before
 end
 
--- C-5 market (게임성 개발 2, 2026-10-13): takes `n` spares of tier +plus; false = not that many (nothing taken)
-function LootService.TakeSpare(player, tier, plus, n)
-	local key = spareKey(tier, plus)
+-- C-5 market (게임성 개발 2, 2026-10-13): takes `n` spares of tier +plus (option o); false = not that many (nothing taken)
+function LootService.TakeSpare(player, tier, plus, n, o)
+	local key = spareKey(tier, plus, o)
 	local data = key and getData(player)
 	n = math.floor(num(n, 1))
 	if not data or n < 1 or type(data.Spares) ~= "table" then return false end
@@ -1055,17 +1091,19 @@ function LootService.TakeSpare(player, tier, plus, n)
 	return true
 end
 
--- C-5 market: a weapon bought (tier +plus). A tier not owned yet becomes owned with that +N ("Owned"); a tier owned
--- already (a drop came in between) becomes a Spare ("Spare"); nil = a bad tier / plus, no data or no room
-function LootService.GrantMarketWeapon(player, tier, plus)
-	local key = spareKey(tier, plus)
+-- C-5 market: a weapon bought (tier +plus, option o). A tier not owned yet becomes owned with that +N and option
+-- ("Owned"); a tier owned already (a drop came in between) becomes a Spare ("Spare"); nil = a bad tier / plus / o, no data
+-- or no room
+function LootService.GrantMarketWeapon(player, tier, plus, o)
+	local key = spareKey(tier, plus, o)
 	local data = key and getData(player)
 	if not data then return nil end
 	ensureTables(data)
 	if owns(data, tier) then
-		return LootService.AddSpare(player, tier, plus) and "Spare" or nil
+		return LootService.AddSpare(player, tier, plus, o) and "Spare" or nil
 	end
 	data.WeaponEnhance[tier] = plus
+	setOpt(data, tier, o or 0) -- A23-219 ②
 	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.bor(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, tier - 1)))
 	if not STATE.Watching[player] then Config.NoteGained(data, nil, tier) end
 	publish(player, data)
@@ -1079,10 +1117,11 @@ function LootService.PackWeapon(player, tier)
 	if not data or type(tier) ~= "number" or tier < 2 or not owns(data, tier) then return "NoItem" end
 	if math.floor(num(data.WeaponTier, 0)) == tier then return "InHand" end
 	ensureTables(data)
-	local plus = enhanceOf(data, tier)
-	local key = spareKey(tier, plus)
+	local plus, o = enhanceOf(data, tier), optOf(data, tier)
+	local key = spareKey(tier, plus, o) -- A23-219 ②: the option goes with it ("T:P:O")
 	if not key or not spareFits(data, key) then return "CantReceive" end
 	data.WeaponEnhance[tier] = 0
+	setOpt(data, tier, 0)
 	S.PlayerService.SetStat(player, "WeaponOwnedMask", bit32.band(math.floor(num(data.WeaponOwnedMask, 0)), bit32.bnot(bit32.lshift(1, tier - 1))))
 	if type(data.Spares) ~= "table" then data.Spares = {} end
 	data.Spares[key] = math.max(0, math.floor(num(data.Spares[key]))) + 1
@@ -1090,28 +1129,39 @@ function LootService.PackWeapon(player, tier)
 	return true
 end
 
--- C-5 market: a Spare tier +plus -> owned with that +N (only a tier not owned). true = done; else a refusal key
-function LootService.UnpackSpare(player, tier, plus)
-	local key = spareKey(tier, plus)
+-- C-5 market: a Spare tier +plus (option o) -> owned with that +N and option (only a tier not owned). true = done; else a
+-- refusal key
+function LootService.UnpackSpare(player, tier, plus, o)
+	o = o or 0
+	local key = spareKey(tier, plus, o)
 	local data = key and getData(player)
 	if not data or type(data.Spares) ~= "table" or math.floor(num(data.Spares[key])) < 1 then return "NoItem" end
 	if owns(data, tier) then
 		-- GPT review ② (10/14): a better +N of a tier owned swaps in (the weapon owned keeps its place, its old +N goes to
-		-- the spares); the same or a lower +N stays a spare
+		-- the spares); the same or a lower +N stays a spare. A23-219 ②: better = a bigger hit (+N, then the option: the same
+		-- +N with a better option swaps in too)
 		ensureTables(data)
-		local cur = math.floor(num(data.WeaponEnhance[tier]))
-		if plus <= cur then return "Owned" end
-		LootService.TakeSpare(player, tier, plus, 1)
-		if not LootService.AddSpare(player, tier, cur) then
-			LootService.AddSpare(player, tier, plus) -- no room for the old one: put the new one back, nothing changed
+		local cur, curO = math.floor(num(data.WeaponEnhance[tier])), optOf(data, tier)
+		if not betterThan(plus, o, cur, curO) then return "Owned" end
+		LootService.TakeSpare(player, tier, plus, 1, o)
+		if not LootService.AddSpare(player, tier, cur, curO) then
+			LootService.AddSpare(player, tier, plus, o) -- no room for the old one: put the new one back, nothing changed
 			return "CantReceive"
 		end
 		data.WeaponEnhance[tier] = plus
+		setOpt(data, tier, o)
 		publish(player, data)
 		return true
 	end
-	LootService.TakeSpare(player, tier, plus, 1)
-	return LootService.GrantMarketWeapon(player, tier, plus) == "Owned" or "NoItem"
+	LootService.TakeSpare(player, tier, plus, 1, o)
+	return LootService.GrantMarketWeapon(player, tier, plus, o) == "Owned" or "NoItem"
+end
+
+-- A23-219 ②: a tier left the owned mask (ShopService's sale): its option goes too (a tier not owned has none)
+function LootService.ClearWeaponOpt(player, tier)
+	local data = getData(player)
+	if not data or not validTier(tier) or owns(data, tier) then return end
+	setOpt(data, tier, 0)
 end
 
 -- 장인 ② (N0's end): the best spare weapon (by Damage, usable at this level, a tier not owned yet, never a joke weapon)
@@ -1121,17 +1171,16 @@ function LootService.EquipBestSpare(player)
 	if not data or type(data.Spares) ~= "table" then return nil end
 	local held = Config.Weapons[math.floor(num(data.WeaponTier, 0))]
 	local bestDamage = type(held) == "table" and num(held.Damage) or 0
-	local best, bestPlus = nil, 0
+	local best, bestPlus, bestO = nil, 0, 0
 	for key, c in data.Spares do
-		local t, p = string.match(tostring(key), "^(%d+):(%d+)$")
-		local tier, plus = tonumber(t), tonumber(p)
+		local tier, plus, o = Config.SpareParse(key) -- A23-219 ②: "T:P[:O]"
 		local def = tier and Config.Weapons[tier] or nil
 		if def and not def.Meme and math.floor(num(c)) >= 1 and not owns(data, tier) and Config.WeaponUsable(tier, num(data.Level, 1))
-			and (num(def.Damage) > bestDamage or (best == tier and plus > bestPlus)) then
-			best, bestPlus, bestDamage = tier, plus, num(def.Damage)
+			and (num(def.Damage) > bestDamage or (best == tier and betterThan(plus, o, bestPlus, bestO))) then
+			best, bestPlus, bestO, bestDamage = tier, plus, o, num(def.Damage)
 		end
 	end
-	if not best or LootService.UnpackSpare(player, best, bestPlus) ~= true then return nil end
+	if not best or LootService.UnpackSpare(player, best, bestPlus, bestO) ~= true then return nil end
 	S.PlayerService.SetStat(player, "WeaponTier", best)
 	Net.Fx(player, "Upgrade", { Tier = best, Source = "Craft" }) -- feedback_audit #6: a crafted weapon into the hand
 	publish(player, data)

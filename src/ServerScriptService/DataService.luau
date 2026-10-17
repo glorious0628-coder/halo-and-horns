@@ -180,6 +180,12 @@ local function migrate(d, player)
 		end
 		d.Version = 6
 	end
+	-- A23-219 ② (save v7): crafted options (WeaponOpt, a third key field "T:P:O" in Spares / Gear / Market K). A v6 record
+	-- changes nothing (its "T:P" keys are O = 0, WeaponOpt comes from the defaults); the bump makes a v6 server refuse v7
+	-- records (CR-L3) instead of dropping the option keys its shape check does not read
+	if (tonumber(d.Version) or 1) < 7 then
+		d.Version = 7
+	end
 end
 
 -- A23-109 (검수 10/10): a brand-new record - a first DataStore record AND every in-memory (Studio) record - starts with

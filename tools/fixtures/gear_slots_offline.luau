@@ -629,7 +629,8 @@ runGroup("max hp / speed / watch", function()
 		return { Connect = function() return { Disconnect = function() end } end }
 	end })
 	table.sort(seen)
-	check(table.concat(seen, ",") == "GearAtk,GearHp,Level,StatAtk,StatHp,WeaponEnhance,WeaponTier", "POWER.Watch: Level, WeaponTier, WeaponEnhance, StatAtk, StatHp + GearAtk, GearHp", table.concat(seen, ","))
+	check(table.concat(seen, ",") == "GearAtk,GearHp,Level,StatAtk,StatHp,WeaponEnhance,WeaponOpt,WeaponTier",
+		"POWER.Watch: Level, WeaponTier, WeaponEnhance, StatAtk, StatHp + GearAtk, GearHp + WeaponOpt (A23-219 ②)", table.concat(seen, ","))
 	-- the power the bully rule reads includes the gear (Config.CombatPowerOf)
 	local pl = fake({ Level = 30, WeaponTier = 3, WeaponEnhance = 0, GearAtk = 1.14, GearHp = 1.22 })
 	check(C.CombatPowerOf(pl) > C.CombatPower(30, 3, 0), "CombatPowerOf (the CombatPower attribute, the bully rule) includes the gear", "")

@@ -170,6 +170,8 @@ local function onSellWeapon(player, selectedTier)
 	-- Remove ownership before emitting any gold signal: a repeated or reentrant sale cannot pay twice.
 	local leftMask = bit32.band(ownedMask, bit32.bnot(selectedBit))
 	S.PlayerService.SetStat(player, "WeaponOwnedMask", leftMask)
+	-- A23-219 ②: a sold tier's crafted option goes with it (a later copy of that tier starts without one)
+	if S.LootService and type(S.LootService.ClearWeaponOpt) == "function" then pcall(S.LootService.ClearWeaponOpt, player, selectedTier) end
 	-- A23-34: selling the equipped weapon equips the best weapon still owned and usable (0 = bare hands), never an
 	-- unowned tier 1
 	if tier == selectedTier then S.PlayerService.SetStat(player, "WeaponTier", Config.BestUsableWeapon(leftMask, data.Level)) end

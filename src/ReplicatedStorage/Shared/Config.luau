@@ -138,7 +138,10 @@ Config.Data = {
 	-- A23-153 (save v5): 5 = the monster codex (Codex; DataService.migrate fills it once from KillLog.ByKind).
 	-- A23-186 (save v6): 6 = weapon tiers 10 / 11 (the Forge's joke weapons: an 11-bit mask, WeaponEnhance[10..11]); a v5
 	-- server would read such a mask as corrupted and wipe it, so it must refuse v6 records (CR-L3)
-	Version = 6,
+	-- A23-219 ② (save v7, 최종 검수 10/17): 7 = crafted options - WeaponOpt[tier] and a third key field "T:P:O" in Spares /
+	-- Gear (Own / On / Pet) / Market K; a v6 server would drop those keys (its shape check reads "T:P" only), so it must
+	-- refuse v7 records (CR-L3). An older "T:P" reads as O = 0 (no option)
+	Version = 7,
 	AutosaveInterval = 60,
 	LockTimeout = 120, -- seconds; a lock older than this is considered dead
 	-- A23-48 batch (검수 2026-10-06): a locked / failed load retries every 6 s, 5 tries (the last one takes the lock:
@@ -147,7 +150,7 @@ Config.Data = {
 	LoadRetryDelay = 6,
 	SaveRetries = 3,
 	Defaults = {
-		Version = 6,
+		Version = 7,
 		Level = 1,
 		XP = 0,
 		BankGold = 1000, -- A23-222 (user 10/16 "기본 1000 코인을 주자."): a new save starts with 1000 in the bank (never lost to PvP)
@@ -203,6 +206,7 @@ Config.Data = {
 		-- version bump: an old save has none bound = every item free, as before)
 		ItemsBound = {},
 		WeaponEnhance = {},
+		WeaponOpt = {}, -- A23-219 ② (save v7): [tier] = the owned weapon's crafted option size 0..5 (0 = none; not owned = 0)
 		LootFlags = {},
 		HideAnnounceName = false, -- P5: server-wide chat announcements show "<faction> 한 명" instead of my name
 		LuckDay = 0, -- A23-18 오늘의 운: Config.DayIndex of LuckEvents (another day -> 0)
@@ -10278,7 +10282,34 @@ Config.Craft.Tools = {
 	BlessRecipe = "AS1",
 	BlessItem = "Enh70B",
 	Bless = { [0] = 0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05 },
+	-- A23-219 ② (최종 검수 10/17; craft_tools_r1 §2): a weapon / gear craft rolls ONCE at its start (Craft.Pend.Opt, never
+	-- again: a stop, a rejoin or a full bag pays the same) with P[tool +N] for an extra option; a hit is size R[tool +N]
+	-- (1..Max). The option stays on that thing for good (a scroll, the Transfer Scroll, packing, the market never move or
+	-- reroll it). Size = the bonus of one R step: Weapon = its damage x (1 + 0.8% x R) (max +4%), Armor = HP +0.4%p x R
+	-- (max 2%p), Ring = hit +0.2%p x R (max 1%p), PetArmor = pet XP +4%p x R (max 20%p), PetAcc = pet XP +2%p x R (max 10%p;
+	-- its walk bonus and PetAccMax stay). Checked: the best +9 weapon (x1.04, ring +1%p) stays below a plain +10 (1.9 x 1.04 x
+	-- 1.01 = 1.996 < 2); a low tier's armor / ring + its best option never passes the next tier +0
+	Opt = {
+		P = { [0] = 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60 },
+		R = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 5 },
+		Max = 5,
+		Size = { Weapon = 0.008, Armor = 0.004, Ring = 0.002, PetArmor = 0.04, PetAcc = 0.02 },
+	},
 }
+-- A23-219 ②: the bonus of option size o (0..Opt.Max) on a thing of `kind` (Weapon / Armor / Ring / PetArmor / PetAcc), a
+-- fraction; 0 for no option, an unknown kind or a broken o
+function Config.CraftOptBonus(kind, o)
+	local T = Config.Craft.Tools.Opt
+	local size = type(kind) == "string" and T.Size[kind] or nil
+	if type(size) ~= "number" or type(o) ~= "number" or o ~= math.floor(o) or o < 1 or o > T.Max then return 0 end
+	return math.floor(size * o * 10000 + 0.5) / 10000
+end
+-- the option field of a key: "" for o = 0 (the old "T:P" key IS the no-option key), else ":o"; nil for a broken o
+function Config.OptSuffix(o)
+	if o == nil or o == 0 then return "" end
+	if type(o) ~= "number" or o ~= math.floor(o) or o < 1 or o > Config.Craft.Tools.Opt.Max then return nil end
+	return ":" .. tostring(o)
+end
 -- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly
 -- "Artisan Fame" board, A23-24 / A23-135). A finished craft by an artisan of the recipe's role now (the craft XP rule,
 -- A23-139) earns Fame = the band of the recipe's craft Lv (the first row whose Lv it reaches) + PerfectBonus at the
@@ -10480,46 +10511,69 @@ function Config.GearMult(v)
 	return v
 end
 
--- "T:P" written plainly (no leading zeros) -> tier, plus; nil for anything else (tier 1..MaxTier, plus 0..MaxPlus)
+-- "T:P" / "T:P:O" written plainly (no leading zeros; A23-219 ②: O 1..Opt.Max = the crafted option, "T:P" = O 0, never
+-- "T:P:0") -> tier, plus, o; nil for anything else (tier 1..MaxTier, plus 0..MaxPlus)
 function Config.GearParse(key)
-	if type(key) ~= "string" or #key > 8 then return nil end
-	local t, p = string.match(key, "^(%d+):(%d+)$")
-	t, p = tonumber(t), tonumber(p)
-	if not t or not p or t < 1 or t > Config.Gear.MaxTier or p > Config.Gear.MaxPlus then return nil end
-	if string.format("%d:%d", t, p) ~= key then return nil end
-	return t, p
+	if type(key) ~= "string" or #key > 10 then return nil end
+	local t, p, o = string.match(key, "^(%d+):(%d+):?(%d*)$")
+	t, p, o = tonumber(t), tonumber(p), (o == "" and 0 or tonumber(o))
+	if not t or not p or not o or t < 1 or t > Config.Gear.MaxTier or p > Config.Gear.MaxPlus then return nil end
+	if Config.GearKey(t, p, o) ~= key then return nil end
+	return t, p, o
+end
+
+-- the key of tier +plus with option o ("T:P" when o = 0); nil for a broken o
+function Config.GearKey(t, p, o)
+	local suffix = Config.OptSuffix(o)
+	if not suffix then return nil end
+	return string.format("%d:%d", t, p) .. suffix
 end
 
 -- the x of the table: Base[tier] + Step x plus (0 for an unknown slot, a tier outside 1..MaxTier or a plus outside
 -- 0..MaxPlus: a bigger +N is never gear)
-function Config.GearBonus(slot, tier, plus)
+-- A23-219 ②: + the option o's bonus on Armor / Ring / PetArmor (PetAcc's option is pet XP: Config.PetGearBonus "PetXP")
+function Config.GearBonus(slot, tier, plus, o)
 	local def = Config.GearDef(slot)
 	if not def or type(tier) ~= "number" or type(plus) ~= "number" or tier ~= math.floor(tier) or plus ~= math.floor(plus) then return 0 end
 	if tier < 1 or tier > Config.Gear.MaxTier or plus < 0 or plus > Config.Gear.MaxPlus then return 0 end
-	return math.floor((def.Base[tier] + def.Step * plus) * 10000 + 0.5) / 10000
+	local opt = slot ~= "PetAcc" and Config.CraftOptBonus(slot, o) or 0
+	local x = def.Base[tier] + def.Step * plus
+	-- A23-219 ② (최종 검수 10/17): an option never lifts a gear past the next tier +0 (PetArmor's 20%p would: T1 +2 = 40%
+	-- + 20%p > T2 +0 = 40%), so it fills up to that and no further
+	if opt > 0 then x = math.max(x, math.min(x + opt, def.Base[tier + 1] or math.huge)) end
+	return math.floor(x * 10000 + 0.5) / 10000
 end
 
--- the bonus of a worn "T:P" (0 for none / a broken key)
+-- the bonus of a worn "T:P[:O]" (0 for none / a broken key)
 function Config.GearBonusOf(slot, key)
-	local t, p = Config.GearParse(key)
+	local t, p, o = Config.GearParse(key)
 	if not t then return 0 end
-	return Config.GearBonus(slot, t, p)
+	return Config.GearBonus(slot, t, p, o)
 end
 
 -- (atkMult, hpMult) of a player from the attributes GearService keeps (GearAtk = the ring, GearHp = the armor; missing /
--- NaN / below 1 = 1); (1, 1) while Config.Features.Gear is off. Server and client alike.
+-- NaN / below 1 = 1); (1, 1) while Config.Features.Gear is off. A23-219 ②: atk x the weapon in hand's crafted option
+-- (attribute WeaponOpt 0..5, LootService; on with or without the gear switch). Server and client alike.
 function Config.GearMultsOf(player)
-	if not Config.FeatureOn("Gear") then return 1, 1 end
+	local okO, o = pcall(function() return player:GetAttribute("WeaponOpt") end)
+	local w = 1 + Config.CraftOptBonus("Weapon", okO and o or nil)
+	if not Config.FeatureOn("Gear") then return w, 1 end
 	local ok, a, h = pcall(function() return player:GetAttribute("GearAtk"), player:GetAttribute("GearHp") end)
-	if not ok then return 1, 1 end
-	return Config.GearMult(a), Config.GearMult(h)
+	if not ok then return w, 1 end
+	return Config.GearMult(a) * w, Config.GearMult(h)
 end
 
 -- the bonus (a fraction) a pet's worn PetArmor / PetAcc gives: gear = data.Gear, 0 while the switch is off
+-- A23-219 ②: slot "PetXP" = the pet's whole XP bonus: PetArmor's (with its option) + PetAcc's option (pet XP)
 function Config.PetGearBonus(gear, uid, slot)
 	if not Config.FeatureOn("Gear") or type(gear) ~= "table" or type(gear.Pet) ~= "table" or type(uid) ~= "string" then return 0 end
 	local row = gear.Pet[uid]
-	if type(row) ~= "table" or Config.Gear.PetSlots[slot] == nil then return 0 end
+	if type(row) ~= "table" then return 0 end
+	if slot == "PetXP" then
+		local _, _, o = Config.GearParse(row.PetAcc)
+		return Config.GearBonusOf("PetArmor", row.PetArmor) + Config.CraftOptBonus("PetAcc", o)
+	end
+	if Config.Gear.PetSlots[slot] == nil then return 0 end
 	return Config.GearBonusOf(slot, row[slot])
 end
 
@@ -10600,12 +10654,14 @@ end
 
 -- "T:P" -> "T:P" written plainly (tier 1..GearMaxTier, plus 0..maxPlus = Config.SaveV4.GearMaxPlus: gear only gets the
 -- hammer's +0..+2), or nil
+-- A23-219 ② (save v7): "T:P:O" too (O 1..Opt.Max; "T:P:0" -> "T:P"; a broken O = dropped, never made up)
 function V4.tierPlus(s)
-	if type(s) ~= "string" or #s > 12 then return nil end
-	local t, p = string.match(s, "^(%d+):(%d+)$")
-	t, p = tonumber(t), tonumber(p)
-	if not t or not p or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.SaveV4.GearMaxPlus then return nil end
-	return string.format("%d:%d", t, p)
+	if type(s) ~= "string" or #s > 14 then return nil end
+	local t, p, o = string.match(s, "^(%d+):(%d+):?(%d*)$")
+	t, p, o = tonumber(t), tonumber(p), (o == "" and 0 or tonumber(o))
+	if not t or not p or not o or t < 1 or t > Config.SaveV4.GearMaxTier or p > Config.SaveV4.GearMaxPlus then return nil end
+	local suffix = Config.OptSuffix(o)
+	return suffix and (string.format("%d:%d", t, p) .. suffix) or nil
 end
 
 -- the keys of a table that pass `ok`, sorted (the same save always keeps the same ones when a map is cut)
@@ -10667,7 +10723,8 @@ function Config.SanitizeCraft(t)
 		local bound = V4.countMap(p.Bound, L.MaxCount)
 		out.Pend = { Id = p.Id, Plus = V4.int(p.Plus, -1, 2) or -1, Gold = V4.int(p.Gold, 0, L.MaxCount) or 0,
 			Mats = V4.countMap(p.Mats, L.MaxCount), Bound = next(bound) ~= nil and bound or nil,
-			Bless = p.Bless == true or nil } -- A23-219: the Blessed Scroll rolled at the start
+			Bless = p.Bless == true or nil, -- A23-219: the Blessed Scroll rolled at the start
+			Opt = (function() local o = V4.int(p.Opt, 0, Config.Craft.Tools.Opt.Max); return (o and o > 0) and o or nil end)() } -- ②
 	end
 	-- A23-219 tools: flat Tool<role> = 0..Tools.Max (a broken value = none = +0)
 	for _, role in L.CraftRoles do
@@ -10779,13 +10836,28 @@ function Config.SanitizeEggHonorAt(v, now)
 	return math.min(at, now)
 end
 
--- C1: a spare weapon key "T:P" written plainly (T 1..SpareTierMax, a later tier kept; P 0..MaxEnhance), or nil
+-- C1: a spare weapon key "T:P" written plainly (T 1..SpareTierMax, a later tier kept; P 0..MaxEnhance), or nil.
+-- A23-219 ② (save v7): "T:P:O" too (O 1..Opt.Max = the crafted option; "T:P:0" -> "T:P"; a broken O = nil)
 function V4.spareKey(s)
-	if type(s) ~= "string" or #s > 12 then return nil end
-	local t, p = string.match(s, "^(%d+):(%d+)$")
-	t, p = tonumber(t), tonumber(p)
-	if not t or not p or t < 1 or t > Config.SaveV4.SpareTierMax or p > Config.Loot.MaxEnhance then return nil end
-	return string.format("%d:%d", t, p) -- "04:0" -> "4:0"
+	if type(s) ~= "string" or #s > 14 then return nil end
+	local t, p, o = string.match(s, "^(%d+):(%d+):?(%d*)$")
+	t, p, o = tonumber(t), tonumber(p), (o == "" and 0 or tonumber(o))
+	if not t or not p or not o or t < 1 or t > Config.SaveV4.SpareTierMax or p > Config.Loot.MaxEnhance then return nil end
+	local suffix = Config.OptSuffix(o)
+	return suffix and (string.format("%d:%d", t, p) .. suffix) or nil -- "04:0" -> "4:0"
+end
+-- A23-219 ②: a spare / market weapon key "T:P[:O]" -> tier, plus, o (the same rule as the repair); nil for anything else
+function Config.SpareParse(key)
+	local k = V4.spareKey(key)
+	if k == nil or k ~= key then return nil end
+	local t, p, o = string.match(k, "^(%d+):(%d+):?(%d*)$")
+	return tonumber(t), tonumber(p), (o == "" and 0 or tonumber(o))
+end
+-- the spare key of tier +plus with option o; nil for a broken one
+function Config.SpareKey(t, p, o)
+	if type(t) ~= "number" or type(p) ~= "number" then return nil end
+	local k = string.format("%d:%d", t, p) .. (Config.OptSuffix(o) or "?")
+	return V4.spareKey(k) == k and k or nil
 end
 
 -- Spares { ["T:P"] = n }: n 1..SpareKeyMax (0 / broken = key dropped), "04:0" + "4:0" merged, at most MaxKeys keys
@@ -11234,22 +11306,22 @@ function Config.MarketKey(kind, id)
 		return nil
 	end
 	if kind ~= "W" then return nil end
-	local t, p = string.match(id, "^(%d+):(%d+)$")
-	local tier, plus = tonumber(t), tonumber(p)
-	if not tier or not plus or tier < 2 or tier > Config.MaxWeaponTier or plus > Config.Loot.MaxEnhance then return nil end
+	local tier, plus, o = Config.SpareParse(V4.spareKey(id)) -- A23-219 ②: "T:P:O" = a weapon with its crafted option ("04:2" -> "4:2")
+	if not tier or tier < 2 or tier > Config.MaxWeaponTier then return nil end
 	if Config.Weapons[tier].Meme then return nil end -- A23-186: the joke weapons are the Forge's only, never traded
-	return string.format("W:%d:%d", tier, plus)
+	return "W:" .. Config.SpareKey(tier, plus, o)
 end
 
--- a market key -> { Kind = "I", Id } | { Kind = "W", Tier, Plus } (nil = not a key that may be listed)
+-- a market key -> { Kind = "I", Id } | { Kind = "W", Tier, Plus, Opt } (nil = not a key that may be listed; A23-219 ②:
+-- Opt = the crafted option 0..5, "W:T:P" = 0)
 function Config.MarketParse(key)
 	if type(key) ~= "string" then return nil end
 	local id = string.match(key, "^I:(.+)$")
 	if id then return Config.MarketKey("I", id) == key and { Kind = "I", Id = id } or nil end
 	local tp = string.match(key, "^W:(.+)$")
 	if tp and Config.MarketKey("W", tp) == key then
-		local t, p = string.match(tp, "^(%d+):(%d+)$")
-		return { Kind = "W", Tier = tonumber(t), Plus = tonumber(p) }
+		local t, p, o = Config.SpareParse(tp)
+		return { Kind = "W", Tier = t, Plus = p, Opt = o }
 	end
 	return nil
 end

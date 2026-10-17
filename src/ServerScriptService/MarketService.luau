@@ -376,7 +376,7 @@ local function giveThing(player, data, key, n)
 	end
 	local left = n
 	while left > 0 do
-		local ok, got = pcall(S.LootService.AddSpare, player, info.Tier, info.Plus)
+		local ok, got = pcall(S.LootService.AddSpare, player, info.Tier, info.Plus, info.Opt) -- A23-219 ②: with its option
 		if not ok or got ~= true then break end
 		left -= 1
 	end
@@ -399,7 +399,7 @@ local function hasRoom(data, key, n)
 	local spares = type(data.Spares) == "table" and data.Spares or {}
 	local sum = 0
 	for _, c in spares do sum += math.max(0, math.floor(num(c, 0))) end
-	local key2 = string.format("%d:%d", info.Tier, info.Plus)
+	local key2 = Config.SpareKey(info.Tier, info.Plus, info.Opt) -- A23-219 ②: "T:P[:O]"
 	-- bag slots (10/14): a new spare key needs a free slot (a tier not owned yet is owned, no slot)
 	local owned = bit32.btest(math.floor(num(data.WeaponOwnedMask, 0)), bit32.lshift(1, info.Tier - 1))
 	if owned and math.floor(num(spares[key2], 0)) < 1 and counts.Spare and not Config.BagHasRoom(data) then return false end
@@ -540,7 +540,7 @@ local function deliver(player, data, id, row)
 	local left = 0
 	if info and info.Kind == "W" then
 		for _ = 1, n do
-			local ok, got = pcall(S.LootService.GrantMarketWeapon, player, info.Tier, info.Plus)
+			local ok, got = pcall(S.LootService.GrantMarketWeapon, player, info.Tier, info.Plus, info.Opt)
 			if not ok or got == nil then left += 1 end
 		end
 	elseif info then
@@ -680,6 +680,12 @@ local function plusOf(key)
 	return info and info.Kind == "W" and info.Plus or 0
 end
 
+-- A23-219 ②: the crafted option size of a weapon key (0 = none)
+local function optOf(key)
+	local info = Config.MarketParse(key)
+	return info and info.Kind == "W" and info.Opt or 0
+end
+
 local function sendMine(player)
 	local data = dataOf(player)
 	if not data then return end
@@ -695,7 +701,7 @@ local function sendMine(player)
 	for _, id in ids do
 		local r = m.Out[id]
 		local state = r.St == "Open" and "Open" or (r.St == "Paid" and "Sold" or r.St)
-		table.insert(rows, { Id = id, Key = r.K, N = r.N, Plus = plusOf(r.K), Price = r.Price, State = state,
+		table.insert(rows, { Id = id, Key = r.K, N = r.N, Plus = plusOf(r.K), Opt = optOf(r.K), Price = r.Price, State = state,
 			Left = state == "Open" and math.max(0, num(r.Exp, now) - now) or 0, Paid = r.St == "Paid" })
 	end
 	local waiting = 0
@@ -748,7 +754,7 @@ local function sendPage(player, key, page)
 	local out = {}
 	for i = (page - 1) * M.PageRows + 1, math.min(#mine, page * M.PageRows) do
 		local r = mine[i]
-		table.insert(out, { Id = r.Id, Price = r.Price, N = r.N, Plus = plusOf(key), Left = math.max(0, num(r.X, now) - now) })
+		table.insert(out, { Id = r.Id, Price = r.Price, N = r.N, Plus = plusOf(key), Opt = optOf(key), Left = math.max(0, num(r.X, now) - now) })
 	end
 	Net.Get("MarketPage"):FireClient(player, { Key = key, Page = page, Pages = pages, Rows = out, Ref = ref, Min = lo, Max = hi })
 end
@@ -785,7 +791,7 @@ local function doList(player, data, kind, id, n, price)
 		if okB and type(free) == "number" and free < n then return note(player, "Bound") end
 		if not S.LootService.TakeItem(player, info.Id, n, "Trade") then return note(player, "NoItem") end
 	else
-		if not S.LootService.TakeSpare(player, info.Tier, info.Plus, n) then return note(player, "NoItem") end
+		if not S.LootService.TakeSpare(player, info.Tier, info.Plus, n, info.Opt) then return note(player, "NoItem") end
 	end
 	local m = marketOf(data)
 	-- review 10/14b: the save keeps at most SaveV4.MarketRows rows a side; one more would be dropped at the next load
@@ -852,10 +858,14 @@ local function doBuy(player, data, id, price)
 	local info = Config.MarketParse(rec.K)
 	local n = math.floor(num(rec.N, 0))
 	if not info or n < 1 then return note(player, "AlreadySold") end
-	-- GPT review ② (10/14): a tier owned may still be bought at a higher +N (it comes as a spare: UnpackSpare swaps it in)
-	if info.Kind == "W" and ownsTier(data, info.Tier)
-		and info.Plus <= math.floor(num(type(data.WeaponEnhance) == "table" and data.WeaponEnhance[info.Tier])) then
-		return note(player, "Owned")
+	-- GPT review ② (10/14): a tier owned may still be bought at a higher +N (it comes as a spare: UnpackSpare swaps it in).
+	-- A23-219 ②: better = a bigger hit (+N x the crafted option): the same +N with a better option may be bought too
+	if info.Kind == "W" and ownsTier(data, info.Tier) then
+		local cur = math.floor(num(type(data.WeaponEnhance) == "table" and data.WeaponEnhance[info.Tier]))
+		local curO = math.floor(num(type(data.WeaponOpt) == "table" and data.WeaponOpt[info.Tier]))
+		local mine = Config.EnhanceMult(cur) * (1 + Config.CraftOptBonus("Weapon", curO))
+		local theirs = Config.EnhanceMult(info.Plus) * (1 + Config.CraftOptBonus("Weapon", info.Opt))
+		if theirs <= mine + 1e-9 then return note(player, "Owned") end
 	end
 	if info.Kind == "I" and not hasRoom(data, rec.K, n) then return note(player, "CantReceive") end
 	local pairKey = "P" .. tostring(math.floor(num(rec.Seller, 0)))
@@ -997,7 +1007,7 @@ local HANDLERS = {
 		local data = begin(player, "UnpackSpare")
 		-- review 10/14: a crafted weapon is taken out with Crafting on, the market switched off or not
 		if not data or not (switchOn() or Config.FeatureOn("Crafting")) then return end
-		local r = S.LootService.UnpackSpare(player, info.Tier, info.Plus)
+		local r = S.LootService.UnpackSpare(player, info.Tier, info.Plus, info.Opt)
 		if r ~= true then note(player, r) end
 	end,
 }

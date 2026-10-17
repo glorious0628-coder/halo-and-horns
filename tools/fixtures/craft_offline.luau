@@ -86,9 +86,9 @@ local function cWorld(o)
 	if o.NoSpare then
 		L.AddSpare, L.SpareRoom = nil, nil -- a LootService without the spares API (the guard in RecipeOn)
 	elseif not o.RealSpare then
-		function L.AddSpare(p, tier, plus)
+		function L.AddSpare(p, tier, plus, o)
 			if w.SpareFull then return false end
-			table.insert(w.Spares, { P = p, Tier = tier, Plus = plus })
+			table.insert(w.Spares, { P = p, Tier = tier, Plus = plus, Opt = o })
 			return true
 		end
 		function L.SpareRoom(p, tier, plus) return not w.SpareFull end
@@ -1326,6 +1326,95 @@ runGroup("tools", function()
 	-- the repair: flat Tool<role> 0..10, anything else dropped
 	local fix = C.SanitizeCraft({ ToolSmith = 12, ToolAlch = -3, ToolTame = "x", Tool = { Smith = 5 } })
 	check(fix.ToolSmith == 10 and fix.ToolAlch == nil and fix.ToolTame == nil and fix.Tool == nil, "repair: 12 -> 10, -3 / 'x' / a table dropped", show(fix))
+end)
+
+------------------------------------------------------------------ A23-219 ② crafted options (게임성 개발 2, 최종 검수 10/17)
+runGroup("opts", function()
+	local function herb(p, d) d.Items.Herb = 60; return p, d end -- (W2 takes Herb)
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local O = C.Craft.Tools.Opt
+	check(O.P[0] == 0.10 and O.P[5] == 0.35 and O.P[10] == 0.60 and O.R[0] == 1 and O.R[2] == 1 and O.R[3] == 2 and O.R[6] == 3
+		and O.R[9] == 4 and O.R[10] == 5 and O.Max == 5, "P 10% -> 60% (+5% a step), R 1/2/3 at +0/+3/+6, 4 at +9, 5 at +10", show(O))
+	check(C.CraftOptBonus("Weapon", 5) == 0.04 and C.CraftOptBonus("Armor", 5) == 0.02 and C.CraftOptBonus("Ring", 5) == 0.01
+		and C.CraftOptBonus("PetArmor", 5) == 0.2 and C.CraftOptBonus("PetAcc", 5) == 0.1 and C.CraftOptBonus("Weapon", 1) == 0.008
+		and C.CraftOptBonus("Weapon", 0) == 0 and C.CraftOptBonus("Weapon", 6) == 0 and C.CraftOptBonus("Potion", 3) == 0,
+		"sizes: weapon 4%, armor 2%p, ring 1%p, pet armor 20%p, pet acc 10%p (pet XP) at R5", "")
+	-- never past the next step (A23-219): the best +9 with the best weapon and ring options stays under a plain +10
+	local best9 = C.EnhanceMult(9) * (1 + C.CraftOptBonus("Weapon", 5)) * (1 + C.CraftOptBonus("Ring", 5))
+	check(best9 < C.EnhanceMult(10), "+9 x1.04 x1.01 < plain +10", tostring(best9))
+	for _, slot in { "Armor", "Ring", "PetArmor" } do
+		for t = 1, C.Gear.MaxTier - 1 do
+			check(C.GearBonus(slot, t, C.Gear.MaxPlus, O.Max) <= C.GearBonus(slot, t + 1, 0, 0) + 1e-9,
+				slot .. " T" .. t .. " +2 with the best option never passes T" .. (t + 1) .. " +0", "")
+		end
+	end
+	check(C.GearBonusOf("Armor", "3:2:5") == 0.24 and C.GearBonusOf("Ring", "3:2:5") == 0.15 and C.GearBonusOf("PetArmor", "3:2:5") == 1.0
+		and C.GearBonusOf("PetAcc", "3:2:5") == C.GearBonusOf("PetAcc", "3:2"), "worn bonus: armor 22%+2, ring 14%+1, pet armor 80%+20; pet acc walk unchanged", "")
+
+	-- a weapon craft rolls once at its start with the hammer's +N (W2, +10: 60% for size 5)
+	local w = cWorld()
+	local p, d = herb(smith(w, 81))
+	d.Craft.ToolSmith = 10
+	w.Script = { 0.59 }
+	local st = w.C.TryStart(p, "W2")
+	check(st == "ok" and d.Craft.Pend.Opt == 5, "+10 hammer, a 59% roll: size 5 saved in Craft.Pend.Opt", show({ st, d.Craft.Pend }))
+	hammer(w, p, HONEST)
+	local res = last(fired(w, "CraftResult", p))
+	check(last(w.Spares).Opt == 5 and res.Opt == 5 and d.Craft.Pend == nil, "the spare comes with option 5 (AddSpare o), CraftResult.Opt 5", show({ last(w.Spares).Opt, res.Opt }))
+	w.Script = { 0.61 }
+	w:Advance(61)
+	startAndHammer(w, p, HONEST, { Recipe = "W2" })
+	check((last(w.Spares).Opt or 0) == 0 and last(fired(w, "CraftResult", p)).Opt == nil, "a 61% roll: no option", tostring(last(w.Spares).Opt))
+	-- +0 hammer: 10% for size 1
+	local q, e = herb(smith(w, 82))
+	w.Script = { 0.09 }
+	check(w.C.TryStart(q, "W2") == "ok" and e.Craft.Pend.Opt == 1, "+0 hammer, a 9% roll: size 1", show(e.Craft.Pend))
+	-- +6: 40% for size 3
+	local r6, d6 = herb(smith(w, 83))
+	d6.Craft.ToolSmith = 6
+	w.Script = { 0.39 }
+	check(w.C.TryStart(r6, "W2") == "ok" and d6.Craft.Pend.Opt == 3, "+6 hammer, a 39% roll: size 3", show(d6.Craft.Pend))
+	-- the roll stays through a full bag and a rejoin's Settle (never rolled again)
+	local f, fd = herb(smith(w, 84))
+	fd.Craft.ToolSmith = 10
+	w.Script = { 0.2 }
+	w.C.TryStart(f, "W2")
+	w.SpareFull = true
+	hammer(w, f, HONEST)
+	check(type(fd.Craft.Pend) == "table" and fd.Craft.Pend.Opt == 5, "no room at the end: pending with its option", show(fd.Craft.Pend))
+	w.SpareFull = false
+	w.Script = { 0.99 } -- a new roll would say none
+	check(w.C.Settle(f, fd) == "done" and last(w.Spares).Opt == 5, "the Settle pays the same option (no second roll)", tostring(last(w.Spares).Opt))
+	w.Script = {}
+	-- AS1 (an item) never rolls an option (its own Blessed Scroll only)
+	local a, ad = smith(w, 85, { Items = { Herb = 60, CopperOre = 40, SlimeCore = 12 } }, "Mage")
+	ad.Craft.Alch = { Lv = 3, XP = 0 }
+	ad.Craft.ToolAlch = 10
+	w.Script = { 0.5 } -- (>= 5%: no blessing; an option roll would eat it)
+	check(w.C.TryStart(a, "AS1") == "ok" and ad.Craft.Pend.Opt == nil and ad.Craft.Pend.Bless == nil, "AS1: no option roll", show(ad.Craft.Pend))
+	w.Script = {}
+
+	-- the real spares: the key "T:P:O"
+	local wr = cWorld({ RealSpare = true, EditConfig = function(c) c.Features.Gear = true end })
+	local s, sd = herb(smith(wr, 86))
+	sd.Craft.ToolSmith = 10
+	wr.Script = { 0.1 }
+	local sr = startAndHammer(wr, s, HONEST, { Recipe = "W2" })
+	check(last(fired(wr, "CraftResult", s)) ~= nil, "(setup: the real-spare craft finished)", tostring(sr))
+	local plus = (last(fired(wr, "CraftResult", s)) or {}).Plus
+	check(sd.Spares[string.format("2:%d:5", plus)] == 1, "LootService.AddSpare: Spares[\"2:P:5\"]", show(sd.Spares))
+	-- gear: Own "<Slot>:T:P:O"
+	local g, gd = herb(smith(wr, 87))
+	gd.Craft.Smith = { Lv = 8, XP = 0 }
+	gd.Items.Glowcap = 10 -- (R1 takes Glowcap)
+	gd.Craft.ToolSmith = 3
+	wr.Script = { 0.24 }
+	wr:Advance(61)
+	local gs = startAndHammer(wr, g, HONEST, { Recipe = "R1" })
+	check(last(fired(wr, "CraftResult", g)) ~= nil, "(setup: the ring craft finished)", tostring(gs))
+	local gp = (last(fired(wr, "CraftResult", g)) or {}).Plus or -1
+	check(gd.Gear.Own[string.format("Ring:1:%d:2", gp)] == 1, "a +3 hammer ring with a 24% roll: Own[\"Ring:1:P:2\"]", show(gd.Gear.Own))
+	wr.Script = {}
 end)
 
 finish()

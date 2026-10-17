@@ -909,10 +909,10 @@ runGroup("sanitize", function()
 	local keys = 0
 	for k in payload or {} do
 		keys += 1
-		check(k == "Items" or k == "Enhance" or k == "Seen" or k == "ItemSeq" or k == "WeaponSeq" or k == "Spares" or k == "Bound",
-			"Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq, C1 Spares, A23-206 Bound)", tostring(k))
+		check(k == "Items" or k == "Enhance" or k == "Seen" or k == "ItemSeq" or k == "WeaponSeq" or k == "Spares" or k == "Bound" or k == "Opt",
+			"Inventory payload has only Items, Enhance, Seen (+ A23-32 ItemSeq, WeaponSeq, C1 Spares, A23-206 Bound, A23-219 ② Opt)", tostring(k))
 	end
-	check(keys == 7, "Inventory payload shape { Items, Enhance, Seen, ItemSeq, WeaponSeq, Spares, Bound }", keys)
+	check(keys == 8, "Inventory payload shape { Items, Enhance, Opt, Seen, ItemSeq, WeaponSeq, Spares, Bound }", keys)
 	check(payload and type(payload.Seen) == "table" and next(payload.Seen) == nil, "P7 no kills yet: payload Seen = {}", show(payload and payload.Seen))
 	check(f.Player:GetAttribute("WeaponEnhance") == 10, "WeaponEnhance attribute = +N of the equipped tier (4)", f.Player:GetAttribute("WeaponEnhance"))
 	-- unknown ids can never be used, sold or given
@@ -964,7 +964,7 @@ runGroup("sanitize", function()
 	local n = fixture({ Fresh = true })
 	local np = n:LastPayload()
 	check(deepEqual(n.Data.Items, {}) and #n.Data.WeaponEnhance == 11 and n.Player:GetAttribute("WeaponEnhance") == 0
-		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Seen = {}, ItemSeq = {},
+		and np and deepEqual(np, { Items = {}, Enhance = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Opt = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Seen = {}, ItemSeq = {},
 			WeaponSeq = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Spares = {}, Bound = {} }),
 		"new player: empty items, 11 tiers, Inventory pushed and WeaponEnhance attribute 0", show(np))
 	-- a burst of changes in one frame is one push; a player who left gets none; a real spawn resends (safety net)

@@ -191,12 +191,24 @@ local function hasMats(data, r)
 	return true
 end
 
-local function gearKey(r, plus)
-	return string.format("%s:%d:%d", r.Slot, r.Tier, plus)
+-- A23-219 ②: o = the crafted option (0 / nil = none: "<Slot>:T:P"; 1..Opt.Max = "<Slot>:T:P:O")
+local function gearKey(r, plus, o)
+	return r.Slot .. ":" .. (Config.GearKey(r.Tier, plus, o or 0) or string.format("%d:%d", r.Tier, plus))
 end
 
--- room for the result at any +N (0..2), checked before anything is taken
-local function room(player, data, r)
+-- A23-219 ② (최종 검수 10/17): the option of a weapon / gear craft, rolled ONCE at its start with the role tool's +N now
+-- (Tools.Opt.P / R; saved in Craft.Pend.Opt: a stop, a rejoin or a full bag pays the same). 0 = none (any other recipe too)
+local function rollOpt(c, role, r)
+	local O = type(K().Tools) == "table" and K().Tools.Opt or nil
+	if type(O) ~= "table" or (r.Kind ~= "Weapon" and r.Kind ~= "Gear") then return 0 end
+	local t = toolOf(c, role)
+	local p, size = num(O.P[t]), math.floor(num(O.R[t]))
+	if p <= 0 or size < 1 or ST.Rng:NextNumber() >= p then return 0 end
+	return math.min(size, math.floor(num(O.Max, 5)))
+end
+
+-- room for the result at any +N (0..2) with option o (A23-219 ②), checked before anything is taken
+local function room(player, data, r, o)
 	if r.Kind == "Weapon" then
 		-- GPT review ① (10/14): a material this recipe uses up frees its slot for the spare it makes
 		local freed = 0
@@ -206,7 +218,7 @@ local function room(player, data, r)
 			if mdef and Config.BagSlots.Counts[mdef.Kind] and held >= 1 and held <= n then freed += 1 end
 		end
 		for plus = 0, 2 do
-			local ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)
+			local ok, yes = pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed, o)
 			if not ok or yes ~= true then return false end
 		end
 		return true
@@ -216,7 +228,7 @@ local function room(player, data, r)
 		for _, n in own do sum += math.floor(num(n)) end
 		if sum >= ST.GearSum then return false end
 		for plus = 0, 2 do
-			if math.floor(num(own[gearKey(r, plus)])) >= Config.SaveV4.OwnKeyMax then return false end
+			if math.floor(num(own[gearKey(r, plus, o)])) >= Config.SaveV4.OwnKeyMax then return false end
 		end
 		return true
 	elseif r.Kind == "Pet" then
@@ -249,7 +261,7 @@ local function needsSlot(id, held)
 end
 
 -- the result goes in; false = it did not fit (the craft stays pending). A summon also returns { Uid, Species, Spd }
-local function payOut(player, data, r, plus, blessed)
+local function payOut(player, data, r, plus, blessed, o)
 	if r.Kind == "Pet" then
 		local spd = nil -- A23-194: no Spd = no roll (the species' own Bonus line)
 		if type(r.Spd) == "table" then
@@ -263,7 +275,7 @@ local function payOut(player, data, r, plus, blessed)
 		if not okS then Util.Warn(TAG, "AddSummon: " .. tostring(err)) end
 		return true, { Uid = uid, Species = r.Species, Spd = spd }
 	elseif r.Kind == "Weapon" then
-		local ok, yes = pcall(S.LootService.AddSpare, player, r.Tier, plus)
+		local ok, yes = pcall(S.LootService.AddSpare, player, r.Tier, plus, o) -- A23-219 ②: with its option
 		return ok and yes == true
 	elseif r.Kind == "Potion" then
 		-- 장인 ⑤: all of it or nothing (the cap again at the end: the stock may have grown during the hammer)
@@ -276,7 +288,7 @@ local function payOut(player, data, r, plus, blessed)
 	elseif r.Kind == "Gear" then
 		if type(data.Gear) ~= "table" then data.Gear = Config.SanitizeGear(data.Gear) end
 		local own = data.Gear.Own
-		local key = gearKey(r, plus)
+		local key = gearKey(r, plus, o) -- A23-219 ②: with its option
 		local sum = 0
 		for _, n in own do sum += math.floor(num(n)) end
 		-- the caps again at the end (the bag may have filled during the hammer): all of it or nothing
@@ -355,7 +367,8 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	-- an earned +N is kept in the save if the result does not fit now (the next try pays that +N, never less)
 	if type(c.Pend) == "table" and c.Pend.Id == recipeId then c.Pend.Plus = plus end
 	local blessed = type(c.Pend) == "table" and c.Pend.Id == recipeId and c.Pend.Bless == true -- A23-219 (rolled at the start)
-	local paid, pet = payOut(player, data, r, plus, blessed)
+	local opt = type(c.Pend) == "table" and c.Pend.Id == recipeId and math.floor(num(c.Pend.Opt)) or 0 -- ② (rolled at the start)
+	local paid, pet = payOut(player, data, r, plus, blessed, opt)
 	if not paid then return false end
 	c.Pend = nil
 	c.Made[recipeId] = math.floor(num(c.Made[recipeId])) + 1
@@ -388,7 +401,8 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if player.Parent == Players then
 		fire(player, "CraftResult", { Id = sid or 0, Recipe = recipeId, Kind = r.Kind, Tier = r.Tier, Slot = r.Slot, Item = r.Item, Potion = r.Potion,
-			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet, Fame = fame, Blessed = blessed or nil })
+			Plus = plus, Grades = grades, XP = xp, Lv = lv, LvUp = up, Pet = pet, Fame = fame, Blessed = blessed or nil,
+			Opt = opt > 0 and opt or nil }) -- A23-219 ②: the option size the thing came with
 		sendInfo(player, data)
 	end
 	if r.Kind == "Gear" and S.GearService and type(S.GearService.SendInfo) == "function" then -- ⑥ the gear window's list
@@ -506,7 +520,9 @@ function CraftService.TryStart(player, id)
 		notify(player, "NeedMats")
 		return "mats"
 	end
-	if not room(player, data, r) then
+	-- A23-219 ②: the option first (the room is for that very key); a refused start shows nothing and keeps nothing
+	local opt = rollOpt(c, role, r)
+	if not room(player, data, r, opt) then
 		notify(player, "Full")
 		return "full"
 	end
@@ -538,7 +554,8 @@ function CraftService.TryStart(player, id)
 		local fits = heldB + 1 <= Config.Loot.ItemCap and Config.BagUsed(data) + slots <= Config.BagSlotsOf(data)
 		if fits and b > 0 and ST.Rng:NextNumber() < b then bless = true end
 	end
-	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil, Bless = bless }
+	c.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil, Bless = bless,
+		Opt = opt > 0 and opt or nil }
 	table.insert(recent, now)
 	ST.Serial += 1
 	local T = CraftMini.T

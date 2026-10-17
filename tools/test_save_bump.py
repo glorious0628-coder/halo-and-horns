@@ -59,11 +59,11 @@ def problems(config: str, data: str, onboard: str) -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
-    ("data", "\tif (tonumber(d.Version) or 1) < 6 then\n", "\tif (tonumber(d.Version) or 1) < 66 then\n"),
-    ("data", "\t\td.Version = 6\n", "\t\td.Version = 5\n"),
-    ("config", "\n\tVersion = 6,", "\n\tVersion = 7,"),
+    ("data", "\tif (tonumber(d.Version) or 1) < 7 then\n", "\tif (tonumber(d.Version) or 1) < 77 then\n"),
+    ("data", "\t\td.Version = 7\n", "\t\td.Version = 6\n"),
+    ("config", "\n\tVersion = 7,", "\n\tVersion = 8,"),
     ("data", "\t\t\t\treturn nil\n\t\t\tend\n\t\t\tif not final and", "\t\t\tend\n\t\t\tif not final and"),
-    ("onboard", "for _, version in { 7, 99 } do", "for _, version in { 99 } do"),
+    ("onboard", "for _, version in { 8, 99 } do", "for _, version in { 99 } do"),
 ]
 
 

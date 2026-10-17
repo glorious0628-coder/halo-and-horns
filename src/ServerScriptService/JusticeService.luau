@@ -236,7 +236,7 @@ end
 function POWER.Watch(player)
 	POWER.Drop(player)
 	local list = {}
-	for _, attr in { "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp", "GearAtk", "GearHp" } do -- ⑥ gear (게임성 개발 3)
+	for _, attr in { "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp", "GearAtk", "GearHp", "WeaponOpt" } do -- ⑥ gear (게임성 개발 3)
 		table.insert(list, player:GetAttributeChangedSignal(attr):Connect(function() POWER.Schedule(player) end))
 	end
 	POWER.Conns[player] = list

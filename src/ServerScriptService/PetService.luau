@@ -499,7 +499,8 @@ end
 -- AddPetXP both go through it before giveXP). 0 / no gear = n as it is.
 local function gearXP(player, data, uid, n)
 	local rems = GEARREM[player]
-	local exact = n * (1 + petGear(data, uid, "PetArmor")) + (rems and rems[uid] or 0)
+	-- A23-219 ②: "PetXP" = PetArmor (with its option) + PetAcc's option
+	local exact = n * (1 + petGear(data, uid, "PetXP")) + (rems and rems[uid] or 0)
 	local whole = math.floor(exact + 1e-9) -- (1e-9: 20 x 1.2 is 24, not 23.999..)
 	local rest = exact - whole
 	if rest > 1e-9 then
