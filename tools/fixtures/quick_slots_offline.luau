@@ -116,7 +116,10 @@ check(s1.Item == "MP" and s1.Count == 4 and s1.Left == 5 and s1.Length == Config
 check(QS.Slot(2).Count == 0 and QS.Slot(2).Ready == false and QS.Slot(3).Def == nil, "no HP potions: not ready; slot 3 empty", "")
 -- using
 check(QS.Use(1) == true and REQUESTS[1] == "MP", "using slot 1 asks VitalsUI for the MP potion (the server checks)", REQUESTS[1])
-check(QS.Use(3) == false and #REQUESTS == 1, "an empty slot does nothing", #REQUESTS)
+-- 세세한 게임성 #9: an empty slot's KEY opens the bag like its button when I hold a potion (slot 1's MP: 4)
+check(QS.Use(3) == true and #REQUESTS == 1 and OPENED and OPENED.Id == "Bag" and OPENED.Arg.Tab == "Use",
+	"#9 an empty slot's key (I hold potions): the bag on Use, nothing drunk", #REQUESTS)
+OPENED = nil
 QS.Start()
 check(type(HOOK) == "function", "Start hooks the HUD's slot presses (HUD.OnQuickSlot)", "")
 if HOOK then HOOK(3) end

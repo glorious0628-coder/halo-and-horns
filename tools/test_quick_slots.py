@@ -75,7 +75,7 @@ def statics(src: dict) -> list[dict]:
         {"check": "VitalsUI leaves its potion keys to the quick slots", "ok":
          "if type(quick) == \"table\" and type(quick.OwnsKeys) == \"function\" and quick.OwnsKeys() then return end" in src["VITALS"]},
         {"check": "VitalsUI.Request(kind) = the potion button's request", "ok": "function VitalsUI.Request(kind)" in src["VITALS"]
-         and "\trequestPotion(kind)\n" in src["VITALS"]},
+         and "\treturn requestPotion(kind)\n" in src["VITALS"]},
         {"check": "the bag (Items, no scroll chosen) shows the quick items rows", "ok":
          "if not mode and C and type(C.QuickSlots) == \"table\" and type(C.QuickSlots.BagRows) == \"function\" then" in src["PANELS"]
          and "pcall(C.QuickSlots.BagRows, parent, REG.Kit())" in src["PANELS"]},

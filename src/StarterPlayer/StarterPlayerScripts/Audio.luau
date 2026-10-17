@@ -381,7 +381,8 @@ function Audio.Plan(kind, data, ctx)
 		-- A23-211: no death sound of any kind - the shard dust's pop for every monster
 		add(out, "KillPop", 0)
 		if golden then add(out, "GoldenKill", 0) end
-		add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed })
+		-- 세세한 게임성 #13: the (combo-pitched) coin only when the kill paid gold; an XP-only kill is the pop alone
+		if num(data.Gold, 0) > 0 then add(out, "ComboCoin", golden and 0.1 or 0.05, { Speed = speed }) end
 		if MILESTONES[combo] then add(out, "ComboMilestone", 0.15) end
 	elseif kind == "Choice" then -- the story choice itself (sound_spec §4-1; the server sends it to the chooser only)
 		if data.Option == "Good" then

@@ -90,11 +90,22 @@ end
 -- use slot i (a press on it or its key): a potion goes through VitalsUI (the server checks); a PRESS (button = true) on
 -- an empty slot opens the bag on its Use tab with the first potion picked - its [1] [2] [3] put it in a slot (game play
 -- r6: nobody found how); its key does nothing
+-- (pure) #9: an empty slot's key opens the bag like its button does when I hold a potion (else it does nothing)
+function QuickSlots.EmptyOpens(button, potions)
+	return button == true or (tonumber(potions) or 0) > 0
+end
+
 function QuickSlots.Use(i, button)
 	local slot = QuickSlots.Slot(i)
 	local def = slot.Def
 	if type(def) ~= "table" then
-		local panels = button == true and C and C.Panels
+		local potions = 0
+		for _, item in T.Items do
+			if type(item) == "table" and type(item.Stock) == "string" and LocalPlayer then
+				potions += math.max(0, math.floor(num(LocalPlayer:GetAttribute(item.Stock), 0)))
+			end
+		end
+		local panels = QuickSlots.EmptyOpens(button, potions) and C and C.Panels
 		if type(panels) == "table" and type(panels.Open) == "function" then
 			local order = type(Q.Order) == "table" and Q.Order or { "HP", "MP" }
 			pcall(panels.Open, "Bag", { Tab = "Use", Select = "P:" .. tostring(order[1] or "HP") })
@@ -105,8 +116,10 @@ function QuickSlots.Use(i, button)
 	if def.Use == "Potion" then
 		local vitals = C and C.VitalsUI
 		if type(vitals) == "table" and type(vitals.Request) == "function" then
-			local ok = pcall(vitals.Request, def.Kind)
-			return ok
+			local ok, sent = pcall(vitals.Request, def.Kind)
+			-- #8: a cooldown, a full bar, no potion ... = the slot shakes with the Deny sound (the key too)
+			if ok and sent == false then QuickSlots.Refuse(i) end
+			return ok and sent ~= false
 		end
 	end
 	return false
@@ -144,6 +157,17 @@ local function hud(name, ...)
 	end
 	return nil
 end
+
+-- 세세한 게임성 #8 (detail_audit_2026-10-17, A23-196: a press that cannot work answers on the button): slot i shakes red
+-- with the Deny sound (UIKit.Refuse)
+function QuickSlots.Refuse(i)
+	local slots = hud("QuickSlots")
+	local w = type(slots) == "table" and slots[i] or nil
+	local kit = C and C.UIKit
+	if type(w) ~= "table" or not w.Button or type(kit) ~= "table" or type(kit.Refuse) ~= "function" then return false end
+	return pcall(kit.Refuse, w.Button)
+end
+
 
 local function artId(key)
 	local kit = C and C.UIKit

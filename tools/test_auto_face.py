@@ -42,7 +42,8 @@ CUT_END = "\n-- one Swing for one press"
 
 STATIC = [
     ("the attack button / F key / world click swing goes at once with my pick", "HUD",
-     ["function L.SwingFaced()\n\tlocal _, target = L.FaceTarget(\"Swing\")\n\tfire(\"Swing\", target)\nend\n"]),
+     ["function L.SwingFaced()\n\tif not L.SwingGate() then return end\n\tlocal _, target = L.FaceTarget(\"Swing\")\n",
+      "\tif type(fx) == \"table\" and type(fx.PredictSwing) == \"function\" then pcall(fx.PredictSwing) end\n\tfire(\"Swing\", target)\nend\n"]),
     ("skill Q turns first (TurnTime), then goes with my pick", "HUD",
      ["\tlocal turned, target = L.FaceTarget(\"Release\") -- the skill waits for the turn (TurnTime)\n",
       "function() fire(\"Release\", target) end)\n\telse\n\t\tfire(\"Release\", target)\n"]),
@@ -89,8 +90,9 @@ def cut(hud: str) -> str:
     b = hud.find(CUT_END, a)
     if a < 0 or b < 0:
         raise ValueError("HUD.PickTarget .. L.SwingFaced block missing; update the cutter")
-    sf = hud.find("\nfunction L.SwingFaced()\n", b)
-    sf_end = hud.find("\nend\n", sf) + 5
+    # 세세한 게임성 #1 (10/18): SwingFaced goes through L.SwingGate (L.SwingBuffer, HUD.SwingPlan) right above it
+    sf = hud.find("\nL.SwingBuffer = {", b)
+    sf_end = hud.find("\nend\n", hud.find("\nfunction L.SwingFaced()\n", b)) + 5
     return hud[a:b] + "\n" + hud[sf:sf_end]
 
 

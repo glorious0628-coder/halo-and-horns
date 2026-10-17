@@ -90,14 +90,16 @@ function WAY.Show()
 	if typeof(target) == "Instance" and target:IsA("BasePart") then pcall(hud.ShowGuide, target, WAY.Label) end
 end
 
+-- -> true when the drink went to the server, else false and why (potionState's label: a cooldown 'Ns', Full, Buy ...)
 local function requestPotion(kind)
 	local count, label, available = potionState(kind)
 	if not available then
 		if count <= 0 and label == "Buy" then WAY.Show() end -- no potions: show the way to the merchant
-		return
+		return false, label
 	end
 	-- Display checks only: the server alone consumes stock, heals, charges MP and applies the deadline.
 	Net.Get("UsePotion"):FireServer(kind)
+	return true, label
 end
 
 -- HP / MP bars (BarTrack art). Built at their v2 heights (the fill's rounded caps follow the build height); HUD places
@@ -376,10 +378,10 @@ function VitalsUI.ShowShopWay()
 end
 
 -- A23-109: a quick slot's potion (QuickSlots.Use) - the same request as the potion button (the server checks)
+-- -> sent (the drink went to the server), why not (potionState's label) - 세세한 게임성 #8: QuickSlots shakes the slot
 function VitalsUI.Request(kind)
 	if kind ~= "HP" and kind ~= "MP" then return false end
-	requestPotion(kind)
-	return true
+	return requestPotion(kind)
 end
 
 -- 최종 검수 10/15 (feedback_audit #4; server Fx "Drink" { Kind, From, To, Max } = a real drink only): the part of the bar

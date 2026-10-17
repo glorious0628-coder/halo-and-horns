@@ -59,7 +59,8 @@ def hud_checks(hud: str):
     m_hold = re.search(r"\nlocal function startHold\(source\)\n(.*?)\nend\n", hud, re.S)
     return [
         ("L.SwingFaced faces my target, starts my body's swing (Fx.PredictSwing, 손맛 ① 10/16), then swings at once with it (no delay: the server aims itself, bd3d6bd)",
-         m_fn is not None and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][0] == 'local _, target = L.FaceTarget("Swing")'
+         m_fn is not None and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][0] == 'if not L.SwingGate() then return end'
+         and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][1] == 'local _, target = L.FaceTarget("Swing")'
          and [ln.strip() for ln in m_fn.group(1).strip().splitlines()][-1] == 'fire("Swing", target)'
          and "pcall(fx.PredictSwing)" in m_fn.group(1)
          and "task.delay" not in m_fn.group(1)),
