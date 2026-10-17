@@ -1,5 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/20 — 다른 계정 새 세션 (최신)
+- **가지 dev1-water-hand c02d2925** (push, worktree ../Game-dev1water): ① A23-231 물속 무기 숨김 — WeaponPose.Swimming(Humanoid 상태 Swimming) + WaterHide(무기 부품·데칼 LocalTransparencyModifier 1, 빛·반짝이·활 시위 끔 = 켜져 있던 것만, 나오면 그대로 되돌림; 모든 캐릭터, 이 클라마다), 헤엄 중 PoseStep 자세 안 씀(팔 = 헤엄 몸짓), 물속에서 등에 넣은 활은 나와도 시위 숨김 유지, 숨겨진 무기는 넣기 소리·반짝 없음. HUD L.Swimming: F·공격 버튼(startHold)·화면 클릭(PrimaryClick) 물속이면 안 휘두름(글 X). ② A23-232 Config.WeaponStow.Kinds = 활만(Bow·ShortBow), 허리 코드·Hip 줄은 남김. 시험 hold_pose2 65/0·변이 24/24(물속·칼 손에 13개 새로), camera_input 43/43(화면 클릭 줄 맞춤), tool_grip 369/0. HUD/WeaponPose 읽는 시험 66개 스윕: 새 실패 0(auto_face·walk_forge_client·crown_points MISSED 2·attendance_ui는 main에도 같은 실패, map_v2는 sparse에 docs 없음). detail-1과 합친 판에서 camera_input·hold_pose2·auto_face·detail_batch1 통과. 병합 충돌 없음(main·detail-1·dialog-box·codex-next·dev2-detail·craft-optsb).
+- **가지 dev1-neighbor d0f5a1f6** (push, ../Game-dev1nb): StoryNpcs Who.Bag·등불 Common 손 흔들기 = "Neighbor" — **dev2-detail과 같이 병합**(이웃 몸은 개발 2 가지). StoryNpcs 시험 7개 통과.
+- **dev1-detail-1 b8259b1b** (c37d9fb7 위에 덧붙임): r11 ② 물약 쿨다운 중 누름 — 퀵슬롯 길(키 1·슬롯 터치)은 #8에 이미 있음(UIKit.Refuse = 흔들림 + 빨간 테두리 + Deny '응-응'), 폰 둥근 물약 버튼(VitalsUI BtnPotion)도 거절이면 흔들림. detail_batch1 9/9·8/8, quick_slots·keys_settings 350·phone_first10 등 통과(english 1·MISSED 3은 main도 같음).
+- 남은 것: 자동 전투(서버 CombatService autoReady)는 물속도 휘두름 = 개발 2 몫(최종 검수에 알림). 스킬 Q/Z/X 물속 막기는 SPEC에 없어 안 함.
+- **④ 화면 판 준비 끝:** 합친 판 = ../wt_dev1base1020 로컬 커밋 31047ade(main 589e4e34 + dialog-box + codex-next + detail-1 b8259b1b + water-hand c02d2925; push 안 함). 도구 `build/dev1_tools/check1020.py` (A 대화 상자 Welcome·스승·Bye / E 도감 Go / S 칼 손에 빛·뿔 / W 물 블록 만들어 헤엄 숨김·F 서버 Swing 수·궁수 시위 / P 쿨다운 누름 흔들림 값), 사진·로그 docs/art/verification_2026-10-20/screen_1020/. 순서: 최종 검수 '전달함, 시작' → PhoneTest_1015 열기 → `cd ../wt_dev1base1020 && STUDIO_ID=… py tools/sync_to_studio.py` → `STUDIO_ID=… py build/dev1_tools/check1020.py` → Play 멈춤 → 창 닫기 → "끝".
+- **▶ 다음:** ④ 화면 판 → ⑤ 대화 상자 ② 3D 얼굴 → ⑥ detail audit 순서 → ⑦ 제작 옵션 화면 + buff_bar(개발 2와).
+
 ## 10/17 밤 멈춤 (최신; 사용자 "잠깐 정리하자, 화요일 오전부터 작업하자")
 - 병합됨: dev1-r9-small(KO 그림 자리·King 물약 반짝·tool_grip 해시), dev1-staff-tilt, dev1-your-king, dev1-nan-guard(d54ee16c).
 - **가지(push, 병합 전):** dev1-dialog-box 59b8a80d (대화 상자 ①, 화요일 화면 눌러 보기 뒤 병합; loot 716/0·audio 364/0 통과, loot MISSED 4개는 main에도 같은 옛 패턴) · dev1-codex-next 459a37ea (도감 [Go], 화면 확인 대기) · dev1-detail-1 c37d9fb7 (세세한 묶음 1: #1·#8·#9·#6·#13·#14, worktree ../Game-dev1detail; audio 시험 #13 고침 뒤 다시 돌려 확인 필요).
