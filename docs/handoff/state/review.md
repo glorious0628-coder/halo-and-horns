@@ -450,3 +450,7 @@
 - **새 회의실(10/16 밤, 사용자 "새로 만들어 줘"):** https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (db·user·comments·assets, 원본 `build/review_kit_1015/council_1016.html`). 목소리 4개: user·claude·gpt·api(API Opus, 10/22까지 GPT 대신). 글 = collection `chat` {who,text,img?,alt?,ts 실제 ms}, 첫 글 d1016_01. 옛 대화는 옛 계정 페이지에만 남음.
 - 병합 85754011 = dev1-stow-fix f82a25f0(허리 칼·몽둥이 아래로 65°·바닥 0.4 위, 등 활 시위 숨김; hold_pose2 49/0·변이 14/14, tool_grip 50/50, weapon_motion 269) → 메인 반영 1이 메인 Studio 열고 sync(오류 0) → 게임 플레이 5판 진행 중.
 - 개발 2: dev2-gold1000 e055c2a1(54a3be0d 위, 시험 7개 + 새 검사) = **개발 1 화면 짝과 한 번에 병합** 대기. 장인 2부(깊은 광맥 DeepVein.luau) 시작 OK — 부탁 NPC = Pip(폐허 입구 보관대·경사로, 바이블 M3_7·TR25와 같은 자리), KO = 지금 단계 처음부터, 하루 상한 없음(12분/개는 코스 길이로).
+
+## 10/17 아침 (최종 검수)
+- PC 꺼짐으로 끊긴 일 다시: 개발 2 = PracticeH 자리(패드 10.8칸 → 20칸+)·Tiny 대화·M1_3 표시·Lv5 KO 숫자·first12c를 gold1000 위 한 묶음 / 개발 1 = dev1-first12 7671b89f(카메라 Magpie·KO 뒤 선물 창 30초) + SignFit 위 칩 + A23-221 ⑥ 화면 + #1 실패 원인 그 자리. 두 묶음 오면 같이 시험·병합.
+- **배지:** Open Cloud 키에 배지 권한이 없어 403(Scope not authorized) → 사용자가 키에 legacy badge manage 권한 추가 → 5개 생성(공개 API 확인): ChoseSide 3229869679939433, FirstSlime 1242395415063351, LostLunchbox 1549249493507326, Stronger 3582734064293994, FirstSkill 1387192213788506. **ShardChoice·Rank2 = 10/18 사용자 실행**(`py -X utf8 C:/Users/glori/Documents/Roblox/Game/tools/badge_create.py ShardChoice Rank2`, 전체 경로로). Config.Badges.Ids = 개발 2 dev2-badge-ids 가지.
