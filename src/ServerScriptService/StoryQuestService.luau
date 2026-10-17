@@ -42,6 +42,7 @@ local TXT = SQ.Text
 local DEFS = SQ.Defs
 local TUT_DONE = Config.Tutorial.Steps.Done -- 99
 local findScene -- A23-208 (defined next to advance)
+local requirementsMet -- (defined below; 장인 2부: complete()'s run chain asks it)
 local MAIN_INDEX = {}
 for i, id in SQ.Main do MAIN_INDEX[id] = i end
 local TICK = 1
@@ -642,7 +643,8 @@ local function complete(player, data, id)
 	if isRun(def) and def.Run.Chain == true then
 		for _, nid in SQ.Subs do
 			local nd = DEFS[nid]
-			if nid ~= id and isRun(nd) and nd.Run.Group == def.Run.Group and st.Subs[nid] == nil and runTurnOk(st, nd) then
+			-- (API review 10/17: the whole gate again - Level, Crafting, M1_4 - not only the turn)
+			if nid ~= id and isRun(nd) and nd.Run.Group == def.Run.Group and st.Subs[nid] == nil and requirementsMet(player, data, nd) then
 				st.Subs[nid] = { St = 1, P = 0, T = {}, Claim = false }
 				findScene(player, nid, st.Subs[nid])
 				break
@@ -903,7 +905,7 @@ local function kingOff()
 	return type(k) == "table" and k.Enabled == false
 end
 
-local function requirementsMet(player, data, def)
+function requirementsMet(player, data, def)
 	local req = def.Requires or {}
 	local st = story(data)
 	if def.Factions and not def.Factions[faction(player)] then return false end
@@ -1170,13 +1172,20 @@ function GUARD.Step(player, step)
 	local rec = GUARD.Rec[player]
 	if type(rec) == "table" and rec.Alive then return end
 	GUARD.Rec[player] = nil
+	if not Util.IsAlive(player) then return end -- (API review 10/17: never a new guard beside a KO'd body)
 	local root = Util.GetRoot(player)
 	if not root then return end
 	local spot = sp.Spot ~= nil and landmark(sp.Spot) or nil
 	if sp.Spot ~= nil and (spot == nil or Util.FlatDistance(root.Position, spot) > num(sp.Radius, 40)) then return end
 	local ms = S.MonsterService
 	if type(ms) ~= "table" or type(ms.SpawnPersonal) ~= "function" then return end
-	local ok, _, made = pcall(ms.SpawnPersonal, player, sp.Kind, { Near = true })
+	-- API review 10/17: a guard is no farm - Pay = the kind whose XP / gold it pays (MonsterService Practice: no drops, no finisher
+	-- card, no daily job; its quest kill still counts as its own kind), HPMult = x its HP (the run's length lever, K in the pack)
+	local def = Config.MonsterTypes[sp.Kind]
+	local opts = { Near = true }
+	if type(sp.Pay) == "string" and Config.MonsterTypes[sp.Pay] then opts.Practice = sp.Pay end
+	if num(sp.HPMult) > 0 then opts.HP = math.floor(num(def.HP, 1) * num(sp.HPMult)) end
+	local ok, _, made = pcall(ms.SpawnPersonal, player, sp.Kind, opts)
 	if ok and type(made) == "table" then GUARD.Rec[player] = made end
 end
 
@@ -1329,6 +1338,11 @@ local function refresh(player)
 			changed = true
 		elseif st.Subs[id] and type(def.Requires) == "table" and def.Requires.KingOn and kingOff() then
 			st.Subs[id] = nil -- the personal King was switched off: the quest that needs it leaves (it starts again when it is back)
+			changed = true
+		elseif st.Subs[id] and isRun(def) and not requirementsMet(player, data, def) then
+			-- 장인 2부 (API review 10/17): a running run whose gate broke (Crafting switched off, a level reset under Lv25) leaves
+			-- (nothing paid; Story.Runs keeps its turn, so the same route is offered again once the gate is back)
+			st.Subs[id] = nil
 			changed = true
 		end
 	end
@@ -2042,7 +2056,8 @@ local function openMini(player, id, tr, step)
 		pcall(function() Net.Get("OpenPanel"):FireClient(player, "Match", { Id = id, Target = obj.Target, Options = options }) end)
 		return true
 	elseif obj.Type == "Timing" then
-		mine[key] = { Kind = "Timing", At = os.clock() }
+		-- First = when this step's panel first opened this session (장인 2부 Obj.MinSeconds counts from it; a KO / the step's end clears it)
+		mine[key] = { Kind = "Timing", At = os.clock(), First = (type(mine[key]) == "table" and mine[key].First) or os.clock() }
 		pcall(function() Net.Get("OpenPanel"):FireClient(player, "Timing", { Id = id }) end)
 		return true
 	end
@@ -2073,6 +2088,7 @@ local function answerMini(player, data, id, tr, step, action, option)
 	if not good or not tries then return end
 	local pass = tries == math.floor(num(SQ.TimingTries, 5)) and good <= tries and good >= math.floor(num(SQ.TimingPass, 3))
 		and os.clock() - num(p.At) >= num(SQ.TimingMinSeconds, 2)
+		and os.clock() - num(p.First, p.At) >= num(step.Obj.MinSeconds) -- 장인 2부 (API review 10/17): the vein's own minimum
 	if pass then
 		pcall(Net.Fx, player, "TimingHit", { Id = id })
 		advance(player, data, id, tr)

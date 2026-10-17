@@ -115,7 +115,7 @@ local function runRoute(w, p, d, id)
 	end
 	w:Move(p, def.Steps[5].Obj.Spot)
 	w:Act(p, id, "Open")
-	w:Advance(3)
+	w:Advance(9) -- (the vein's MinSeconds 8)
 	w:Act(p, id, "Timing", "3/5")
 	w:Move(p, FLINT) -- back to Pip for the next run
 end
@@ -143,6 +143,8 @@ runGroup("config", function()
 			local spot = step.Obj.Spot or (step.Spawn and step.Spawn.Spot)
 			local at = spot and PACK.Landmarks[spot]
 			check(at ~= nil and at.X >= 1260 and at.X <= 1780 and at.Z >= -290 and at.Z <= 290, id .. " step " .. i .. ": its spot is inside the ruins", show(at))
+			-- API review 10/17: never inside the Crown Pit PvP area (a PvP KO would keep resetting the step)
+			check(at ~= nil and C0.PvPAreaAt(at) == nil, id .. " step " .. i .. ": outside the Crown Pit", show(at))
 			check(#step.ShortName <= 14, id .. " step " .. i .. ": a phone short name", step.ShortName)
 		end
 	end
@@ -195,6 +197,36 @@ runGroup("gates", function()
 	check(offers(r) == "", "Crafting off: no run offered", offers(r))
 	local x = joinVein(w, 3104, { Runs = { Vein = 4 } })
 	check(offers(x) == "Pip", "Runs.Vein 4 = DV2's turn: offered", offers(x))
+	-- API review 10/17: a RUNNING run re-checks its gate every refresh (Crafting switched off / a level reset under Lv25: it
+	-- leaves, nothing paid, its turn kept), and the chain starts the next route only through the whole gate
+	local y, dy = joinVein(w, 3105)
+	w:Act(y, "DV1", "Accept")
+	w.Config.Features.Crafting = false
+	w.Story.Refresh(y)
+	check(w:Track(dy, "DV1") == nil and math.floor(tonumber(dy.Story.Runs.Vein) or 0) == 0, "Crafting off mid-run: the run leaves, its turn kept",
+		show(dy.Story.Subs))
+	w.Config.Features.Crafting = true
+	w.Story.Refresh(y)
+	check(offers(y) == "Pip", "Crafting back on: DV1 offered again", offers(y))
+	local z, dz = joinVein(w, 3106)
+	w:Act(z, "DV1", "Accept")
+	w.PS.SetStat(z, "Level", 20)
+	w.Story.Refresh(z)
+	check(w:Track(dz, "DV1") == nil, "a level reset under Lv25 mid-run: the run leaves", show(dz.Story.Subs))
+	-- the chain: DV1 finished while the level dropped just before the end -> no DV2 starts
+	local c, dc = joinVein(w, 3107)
+	w:Act(c, "DV1", "Accept")
+	local cdef = w.Config.StoryQuests.Defs.DV1
+	for i = 1, 3 do w:Move(c, cdef.Steps[i].Obj.Spot) end
+	w:Move(c, cdef.Steps[4].Spawn.Spot)
+	for _ = 1, 3 do w.Story.Refresh(c); w:KillGuard(c) end
+	w:Move(c, cdef.Steps[5].Obj.Spot)
+	w:Act(c, "DV1", "Open")
+	w:Advance(9)
+	dc.Level = 20 -- (straight into the save: no refresh in between)
+	w:Act(c, "DV1", "Timing", "3/5")
+	check(w:Track(dc, "DV1") == nil and dc.Story.Runs.Vein == 1 and w:Track(dc, "DV2") == nil, "the chain checks the whole gate: Lv20 = no next route",
+		show({ dc.Story.Runs, dc.Story.Subs }))
 end)
 
 ------------------------------------------------------------------ 4. the run, step by step
@@ -213,6 +245,9 @@ runGroup("run", function()
 	check(w:Track(d, "DV1").St == 4 and #w.Spawns == 0, "mark 3 reached: the guards' step; far from their spot no guard yet", show({ w:Track(d, "DV1"), #w.Spawns }))
 	w:Move(p, def.Steps[4].Spawn.Spot)
 	check(#w.Spawns == 1 and w.Spawns[1].Kind == "SkeletonKnight" and w.Spawns[1].Opts.Near == true, "at the guard spot: one personal Skeleton Knight (Near)", tostring(w.Spawns[1] and w.Spawns[1].Kind))
+	-- API review 10/17: no farm - it pays a plain Skeleton's XP / gold (MonsterService Practice: no drops) and has 3x a knight's HP
+	local o1 = w.Spawns[1].Opts
+	check(o1.Practice == "Skeleton" and o1.HP == C0.MonsterTypes.SkeletonKnight.HP * 3, "the guard pays as a Skeleton (no drops), 3x HP", show({ o1.Practice, o1.HP }))
 	w.Story.Refresh(p)
 	check(#w.Spawns == 1, "while it lives: no second guard", #w.Spawns)
 	w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "SkeletonKnight", ZoneId = "SkeletonRuins", Personal = false, Position = vec(0, 0, 0), WarPoints = 0 })
@@ -236,9 +271,13 @@ runGroup("run", function()
 	w:Move(p, def.Steps[5].Obj.Spot)
 	w:Act(p, "DV1", "Open")
 	w:Advance(3)
+	w:Act(p, "DV1", "Timing", "5/5")
+	check(w:Track(d, "DV1") ~= nil and w:Track(d, "DV1").St == 5, "5 of 5 only 4 s after the panel first opened: not yet (MinSeconds 8)", show(w:Track(d, "DV1")))
+	w:Advance(3)
 	w:Act(p, "DV1", "Timing", "2/5")
 	check(w:Track(d, "DV1") ~= nil and w:Track(d, "DV1").St == 5, "2 of 5: try again (the run stays at the vein)", show(w:Track(d, "DV1")))
 	local before = #w.Granted
+	w:Act(p, "DV1", "Open") -- (opened again: the 8 s still count from the first open)
 	w:Advance(3)
 	w:Act(p, "DV1", "Timing", "3/5")
 	check(w:Track(d, "DV1") == nil, "3 of 5: the run is done", show(d.Story.Subs))
@@ -260,8 +299,13 @@ runGroup("ko", function()
 	w.Story.Refresh(p)
 	check(w:Track(d, "DV1").St == 4 and w:Track(d, "DV1").P == 1 and #w.Spawns == 2, "at the guards, 1/3, the second guard up", show(w:Track(d, "DV1")))
 	local alive = w.Spawns[2]
+	local hum = p.Character:FindFirstChild("Humanoid")
+	hum.Health = 0
 	w.PS.CharacterDied:Fire(p, p.Character)
 	w:Flush()
+	w.Story.Refresh(p)
+	check(#w.Spawns == 2, "API review 10/17: KO'd = no new guard beside the body", #w.Spawns)
+	hum.Health = 100 -- up again
 	-- 최종 검수 10/16: going down starts the CURRENT step over (the marks passed stay)
 	check(w:Track(d, "DV1") ~= nil and w:Track(d, "DV1").St == 4 and w:Track(d, "DV1").P == 0, "down: the guards' step again from 0/3 (marks kept)", show(w:Track(d, "DV1")))
 	check(table.find(w.Removed, alive) ~= nil and alive.Alive == false, "the living guard goes away", #w.Removed)

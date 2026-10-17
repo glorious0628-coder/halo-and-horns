@@ -194,7 +194,7 @@ Config.Data = {
 		AutoCombatUnlocked = false, -- A23-1: set once by the crown-shard quest
 		AutoCombatEnabled = false, -- A23-1: the player's saved ON/OFF (starts OFF, never auto-enabled)
 		-- story quests (StoryQuestService): active main + subs, finished ids, choices, one-time firsts
-		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {} },
+		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {}, Runs = {} }, -- Runs: 장인 2부 run counts (StoryQuestService)
 		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
 		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first Slime Prince scroll)
 		Items = {},
