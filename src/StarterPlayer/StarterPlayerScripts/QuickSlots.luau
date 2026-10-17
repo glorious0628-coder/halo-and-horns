@@ -158,6 +158,12 @@ function QuickSlots.Refresh()
 			local s = QuickSlots.Slot(i)
 			local def = s.Def
 			pcall(function()
+				-- game play r8 (slots 1 / 2 did nothing when empty): VitalsUI may have switched its potion squares off
+				-- (Active / Disabled) before this module took them; every slot stays pressable (an empty one opens the bag)
+				if w.Button then
+					if w.Button.Active ~= true then w.Button.Active = true end
+					if w.Button:GetAttribute("Disabled") == true then w.Button:SetAttribute("Disabled", false) end
+				end
 				if w.Icon then
 					local id = def and artId(def.Icon) or ""
 					if w.Icon.Image ~= id then w.Icon.Image = id end

@@ -82,7 +82,10 @@ local REQUESTS, HOOK, OPENED = {}, nil, nil
 local function widgets()
 	local out = {}
 	for i = 1, 3 do
-		out[i] = { Button = {}, Icon = { Image = "x", ImageTransparency = 0 }, Count = { Text = "?" }, Key = { Text = "" },
+		local b = { Active = false, Attr = { Disabled = true } } -- VitalsUI switched its empty potion square off
+		function b:GetAttribute(k) return self.Attr[k] end
+		function b:SetAttribute(k, v) self.Attr[k] = v end
+		out[i] = { Button = b, Icon = { Image = "x", ImageTransparency = 0 }, Count = { Text = "?" }, Key = { Text = "" },
 			Cooldown = { Visible = true, Size = nil }, Status = { Visible = true } }
 	end
 	return out
@@ -146,6 +149,8 @@ check(W[2].Icon.ImageTransparency > 0 and W[2].Count.Text == "0", "no HP potions
 check(W[3].Icon.Image == "" and W[3].Count.Text == "" and W[3].Cooldown.Visible == false and W[3].Key.Text == "3",
 	"an empty slot is blank (its key badge stays)", show({ W[3].Icon.Image, W[3].Count.Text }))
 check(W[1].Status.Visible == false, "no status word over the slots", "")
+check(W[2].Button.Active == true and W[2].Button.Attr.Disabled == false and W[3].Button.Active == true,
+	"game play r8: every slot pressable again (VitalsUI's off switch undone; an empty slot opens the bag)", "")
 -- putting items in slots
 check(QS.Set(3, "MP") == true and show(QS.Get()) == ",HP,MP", "no server yet: MP into slot 3 moves it there (slot 1 empties)", show(QS.Get()))
 check(QS.Set(4, "HP") == false and QS.Set(1, "Bogus") == false, "a slot outside 1-3 or an unknown item is refused", "")
