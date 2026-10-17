@@ -86,7 +86,7 @@ def main():
          "local dropOnly = info ~= nil and not sells and not info.Owned and ui.Tier > 1" in panels
          and "ui.Buttons.Visible = not dropOnly" in panels and "if dropOnly then buyReason = nil end" in panels
          and "(dropOnly and string.format(T.WeaponFromF, Config.WeaponSource(ui.Tier)))" in panels
-         and "ui.Sale.Visible = ui.Tier > 1 and not dropOnly" in panels),
+         and "ui.Sale" not in panels),
         ("Panels: owned weapons keep [Equip] (DisplayedAction) and the level line",
          'ui.DisplayedAction = info.Owned and "Equip" or (not dropOnly and "Buy" or nil)' in panels
          and "or string.format(T.WeaponLevelF, info.MinLevel, info.Level)" in panels),
@@ -96,7 +96,10 @@ def main():
         ("Panels: the forge window has no explanation lines (note, far line, first weapon's price / reason)",
          "T.WeaponNote" not in panels and "T.WeaponFarDrop" not in panels and "T.WeaponFar" not in panels
          and "T.WeaponStarter\n" not in panels and '\t\taccessLabel.Text = far and "" or (access or "")\n' in panels
-         and "ui.Price.Visible, ui.Sale.Visible = info ~= nil and ui.Tier > 1, info ~= nil" in panels
+         and "ui.Price.Visible = info ~= nil and ui.Tier > 1" in panels and "T.WeaponSaleNoteF" not in panels
+         and "T.WeaponSaleEquipped" not in panels
+         and "ui.Sell.Visible = info ~= nil and info.Owned == true and ui.Tier > 1" in panels
+         and "local closed = WSHOP.Closed(ui.Tier, info)" in panels and 'UIKit.ArtImage("IconLock", { Name = "ForgeLock",' in panels
          and "ui.Reason.Text = (ui.Tier > 1 and buyReason ~= T.WeaponEquipped and buyReason) or \"\"" in panels),
         ("HUD keeps the server's GoalKind and asks QuestTarget.IronGold for the anvil trip",
          'GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil' in hud

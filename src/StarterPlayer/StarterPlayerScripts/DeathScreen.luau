@@ -227,13 +227,30 @@ function DeathScreen.KindOf(name)
 	return found
 end
 
+-- (pure) game play r7 (KO by the King Slime: no picture - there is no IconMonSlimeKing): the head art of a kind, else of
+-- the kind its model comes from (Config.MonsterTypes[kind].ModelFrom: the King = the Slime Prince's); has(key) = the art
+-- exists; nil = none
+function DeathScreen.IconKey(kind, has)
+	if type(kind) ~= "string" or type(has) ~= "function" then return nil end
+	local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[kind] or nil
+	for _, k in { kind, type(def) == "table" and def.ModelFrom or nil } do
+		if type(k) == "string" and has("IconMon" .. k) then return "IconMon" .. k end
+	end
+	return nil
+end
+
 -- 최종 검수 #1: the monster's head (IconMon<kind>, the art the codex / the quest rows use) just left of the KO's cause
 -- words (no art = the words alone); its place follows the words' width
 local function causeIcon(ui, causeLabel, data)
 	if type(data) ~= "table" or data.By ~= "Monster" or not causeLabel or not ui or type(ui.ArtImage) ~= "function" then return end
 	local kind = type(data.Kind) == "string" and data.Kind or DeathScreen.KindOf(data.Name)
 	if not kind then return end
-	local ok, img = pcall(ui.ArtImage, "IconMon" .. kind, { Name = "CauseIcon", AnchorPoint = Vector2.new(1, 0.5),
+	local key = DeathScreen.IconKey(kind, function(k)
+		local okId, id = pcall(ui.ArtId, k)
+		return okId and type(id) == "string" and id ~= ""
+	end)
+	if not key then return end
+	local ok, img = pcall(ui.ArtImage, key, { Name = "CauseIcon", AnchorPoint = Vector2.new(1, 0.5),
 		Size = UDim2.fromScale(1.6, 1.6), SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = T.ZIndex + 2,
 		Parent = causeLabel })
 	if not (ok and img) then return end

@@ -115,6 +115,12 @@ do
 	local kind = DS.KindOf("King Slime")
 	check(kind ~= nil and Config.MonsterTypes[kind].Name == "King Slime" and DS.KindOf("Nobody") == nil and DS.KindOf(nil) == nil,
 		"#1: KindOf finds the monster kind by its Name (nil for none)", tostring(kind))
+	-- game play r7: no IconMonSlimeKing art -> the art of the kind its model comes from (BigSlime)
+	local have = { IconMonBigSlime = true, IconMonSlime = true }
+	local function has(k) return have[k] == true end
+	check(DS.IconKey("SlimeKing", has) == "IconMonBigSlime" and DS.IconKey("Slime", has) == "IconMonSlime"
+		and DS.IconKey("Nobody", has) == nil and DS.IconKey("Goblin", has) == nil,
+		"r7: IconKey = its own head, else its ModelFrom's, else none", tostring(DS.IconKey("SlimeKing", has)))
 end
 check(DS.Lines({ By = "Other" }, 2).Cause == "You were knocked out" and DS.Lines({ By = "Player" }, 2).Cause == "You were knocked out",
 	"no name: the plain line", "")
