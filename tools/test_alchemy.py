@@ -33,6 +33,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-219 ② B special potions / tonics / treats (게임성 개발 2)
+    ('B: a special runs as itself (two of one effect)', B, '\tdata.Buffs[base] = ends\n', '\tdata.Buffs[id] = ends\n'),
+    ('B: no Extra time', B, '+ math.max(0, math.floor(num(tonic.Extra, 0)))', '+ 0'),
     # --- the table
     ("config: on by default", C, "Config.Features.Tonics = false\n", "Config.Features.Tonics = true\n"),
     ("config: 4 minutes", C, "Config.Alchemy = {\n\tDuration = 180,", "Config.Alchemy = {\n\tDuration = 240,"),
@@ -41,9 +44,9 @@ MUTATIONS = [
     ("config: Guard helps in PvP too", C, "GuardTonic = { Stat = \"MonsterHurt\", Mult = 0.90 },", "GuardTonic = { Stat = \"AnyHurt\", Mult = 0.90 },"),
     ("config: Lucky x1.5", C, "LuckyTonic = { Stat = \"MaterialDrop\", Mult = 1.25 },", "LuckyTonic = { Stat = \"MaterialDrop\", Mult = 1.5 },"),
     ("config: Wisdom on gold", C, "WisdomTonic = { Stat = \"HuntXP\", Mult = 1.10 },", "WisdomTonic = { Stat = \"HuntGold\", Mult = 1.10 },"),
-    ("config: tonics sold at the Forge", C, "Icon = \"IconMightTonic\", Source = \"Craft\",", "Icon = \"IconMightTonic\","),
+    ("config: tonics sold at the Forge", C, "Icon = \"IconMightTonic\", Source = \"Craft\", Desc = \"Hit monsters harder for 3 minutes.\"", "Icon = \"IconMightTonic\", Desc = \"Hit monsters harder for 3 minutes.\""),
     ("config: A1 at craft Lv2", C, "Item = \"MightTonic\", N = 1, Lv = 1, Gold = 20,", "Item = \"MightTonic\", N = 1, Lv = 2, Gold = 20,"),
-    ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\", \"PetTreat\" },", "\t\t\"PetTreat\" },"),
+    ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\", \"PetTreat\",\n", "\t\t\"PetTreat\",\n"),
     # --- drinking
     ("use: the switch not checked", B, "\tif not on() then return \"off\" end\n\tlocal tonic", "\tlocal tonic"),
     ("use: any item drinks", B, "\tif type(tonic) ~= \"table\" or not Config.Loot.Items[id] then return \"tonic\" end\n", "\tif type(tonic) ~= \"table\" then tonic = { Stat = \"x\", Mult = 1 } end\n"),
@@ -51,11 +54,11 @@ MUTATIONS = [
     ("use: KO'd players drink", B, "\tif not data or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return \"state\" end\n", "\tif not data or not S.PlayerService.IsReady(player) then return \"state\" end\n"),
     ("use: no bottle needed", B, "\tif have < 1 then\n", "\tif false then\n"),
     ("use: no limit of two", B, "\tif others >= num(A().MaxActive, 2) then\n", "\tif false then\n"),
-    ("use: the same tonic counts against the limit", B, "\t\tif other ~= id then others += 1 end\n", "\t\tothers += 1\n"),
+    ("use: the same tonic counts against the limit", B, "\t\tif other ~= base then others += 1 end\n", "\t\tothers += 1\n"),
     ("use: the bottle stays", B, "\tif not S.LootService.TakeItem(player, id, 1) then return \"none\" end\n", ""),
-    ("use: no end time", B, "\tdata.Buffs[id] = ends\n", ""),
-    ("use: no attribute", B, "\tdata.Buffs[id] = ends\n\tpublish(player)\n", "\tdata.Buffs[id] = ends\n"),
-    ("use: never runs out on screen", B, "\twatch(player, id, ends)\n\tif S.PlayerService.MarkActive", "\tif S.PlayerService.MarkActive"),
+    ("use: no end time", B, "\tdata.Buffs[base] = ends\n", ""),
+    ("use: no attribute", B, "\tdata.Buffs[base] = ends\n\tpublish(player)\n", "\tdata.Buffs[base] = ends\n"),
+    ("use: never runs out on screen", B, "\twatch(player, base, ends)\n\tif S.PlayerService.MarkActive", "\tif S.PlayerService.MarkActive"),
     ("use: no telemetry", B, "\tif S.TelemetryService and S.TelemetryService.Custom then pcall(S.TelemetryService.Custom, player, \"TonicUse\", 1, id) end\n", ""),
     # --- running / mult
     ("mult: ended tonics still count", B, "\t\tif type(A().Tonics[id]) == \"table\" and num(ends) > now then out[id] = num(ends) end\n", "\t\tif type(A().Tonics[id]) == \"table\" then out[id] = num(ends) end\n"),

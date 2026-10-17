@@ -38,6 +38,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-219 ② B special potions / tonics / treats (게임성 개발 2)
+    ('B: consumables never roll', R, '\tif r.Kind ~= "Weapon" and r.Kind ~= "Gear" and not sp then return 0 end\n', '\tif r.Kind ~= "Weapon" and r.Kind ~= "Gear" then return 0 end\n'),
+    ('B: no special potion stock', R, '\t\tif spKey then pcall(S.PlayerService.SetStat, player, spKey, spHave + 1) end\n', ''),
+    ('B: a tonic special never swapped in', R, '\t\tif type(sp) == "string" and sp ~= r.Item and Config.Loot.Items[sp] then bItem = sp end\n', ''),
     # A23-219 ② crafted options (게임성 개발 2)
     ('opt: +10 at 70%', C, '\t\tP = { [0] = 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60 },', '\t\tP = { [0] = 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.70 },'),
     ('opt: +9 size 5', C, '\t\tR = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 5 },', '\t\tR = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 5, 5 },'),
@@ -48,7 +52,7 @@ MUTATIONS = [
     ('opt: not saved in Pend (a Settle loses it)', R, '\t\tOpt = opt > 0 and opt or nil }\n', '\t\tOpt = nil }\n'),
     ('opt: the spare without it', R, 'pcall(S.LootService.AddSpare, player, r.Tier, plus, o) -- A23-219', 'pcall(S.LootService.AddSpare, player, r.Tier, plus) -- A23-219'),
     ('opt: the gear key without it', R, '\t\tlocal key = gearKey(r, plus, o) -- A23-219', '\t\tlocal key = gearKey(r, plus) -- A23-219'),
-    ('opt: an item recipe rolls too', R, 'if type(O) ~= "table" or (r.Kind ~= "Weapon" and r.Kind ~= "Gear") then return 0 end', 'if type(O) ~= "table" then return 0 end'),
+    ('opt: an item recipe rolls too', R, '\tif r.Kind ~= "Weapon" and r.Kind ~= "Gear" and not sp then return 0 end\n', '\tif not sp and r.Kind == "Item" and false then return 0 end\n'),
     # A23-219 craft tools + the Blessed Scroll (게임성 개발 2)
     ("bless: no room check before the Blessed Scroll", R, "Config.BagUsed(data) + slots <= Config.BagSlotsOf(data) then\n\t\t\tpcall(", "true then\n\t\t\tpcall("),
     ("bless: the old partial pay (false after the plain ones)", R, "\t\t\t\treturn true\n\t\t\tend\n\t\tend\n\tend\n", "\t\t\t\treturn false\n\t\t\tend\n\t\tend\n\tend\n"),
@@ -195,7 +199,7 @@ MUTATIONS = [
     ("config: S1 at research stage 1", C, "Species = \"BabySlime\", Family = \"Slime\", Research = 150,", "Species = \"BabySlime\", Family = \"Slime\", Research = 50,"),
     ("config: T1 makes two", C, "Item = \"PetTreat\", N = 3,", "Item = \"PetTreat\", N = 2,"),
     ("config: treats from petals (hunting only)", C, "Item = \"PetTreat\", N = 3, Lv = 1, Gold = 10, Mats = { Herb = 3 },", "Item = \"PetTreat\", N = 3, Lv = 1, Gold = 10, Mats = { Petal = 3 },"),
-    ("config: Pet Treats sold at the Forge", C, "Icon = \"IconPetTreat\", Source = \"Craft\",", "Icon = \"IconPetTreat\","),
+    ("config: Pet Treats sold at the Forge", C, "Icon = \"IconPetTreat\", Source = \"Craft\", Desc = \"Feed it to your pet for pet XP.\"", "Icon = \"IconPetTreat\", Desc = \"Feed it to your pet for pet XP.\""),
     ("pet: on without the research switch", R, "\t\tif not (Config.FeatureOn(\"Research\") and type(r.Species) == \"string\"", "\t\tif not (type(r.Species) == \"string\""),
     ("pet: on without PetService", R, "\t\t\tand P and type(P.SummonPet) == \"function\"\n\t\t\tand type(P.HasRoom) == \"function\" and T", "\t\t\tand T"),
     ("pet: no research check", R, "\tif r.Kind == \"Pet\" then\n\t\tlocal ok, pts = pcall(S.TamerService.Points, player, r.Family)\n\t\tif not ok or num(pts) < num(r.Research) then\n", "\tif false then\n\t\tlocal ok, pts = pcall(S.TamerService.Points, player, r.Family)\n\t\tif not ok or num(pts) < num(r.Research) then\n"),

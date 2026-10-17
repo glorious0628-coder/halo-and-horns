@@ -317,6 +317,14 @@ runGroup("feed", function()
 	check(w.T.Feed(k, kid) == "state" and dk.Items.PetTreat == 1, "not ready: no", "")
 	w.Ready[k] = true
 	check(w.T.Feed(k, 5) == "state" and w.T.Feed(nil, kid) == "state", "junk: no", "")
+	-- A23-219 ② B (최종 검수 10/17): the special treat goes first (20 x 1.2 = 24 pet XP)
+	check(C.Research.TreatPlus == "PetTreatPlus" and C.Research.TreatPlusBonus == 0.2 and C.Loot.Items.PetTreatPlus.Kind == "Treat",
+		"Pet Treat+: a Treat item, +20% pet XP", "")
+	local s, ds = player(w, 3, nil, nil, { Items = { PetTreat = 1, PetTreatPlus = 1 } })
+	local fs = #w.Notices
+	check(w.T.Feed(s, "P1") == "ok" and (ds.Items.PetTreatPlus or 0) == 0 and ds.Items.PetTreat == 1 and ds.Pets.List.P1.Lv == 2 and ds.Pets.List.P1.XP == 9
+		and noticesFor(w, s, fs)[1].Args[1] == "24", "the special first: +24 pet XP (Lv1 15 -> Lv2 with 9), the plain one stays", show(ds.Pets.List.P1))
+	check(w.T.Feed(s, "P1") == "ok" and (ds.Items.PetTreat or 0) == 0, "then the plain one", "")
 	-- the remote: one argument, one feed a half second
 	d.Pets.List.P1.Lv = 3
 	d.Items.PetTreat = 5

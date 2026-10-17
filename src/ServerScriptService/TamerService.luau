@@ -157,12 +157,16 @@ function TamerService.Feed(player, uid)
 		return "max"
 	end
 	local R = Config.Research
-	if not S.LootService.TakeItem(player, R.Treat, 1) then
+	-- A23-219 ② B: the special treat first when held (TreatXP x (1 + TreatPlusBonus))
+	local held = type(data.Items) == "table" and type(R.TreatPlus) == "string" and math.floor(num(data.Items[R.TreatPlus])) or 0
+	local item = held >= 1 and R.TreatPlus or R.Treat
+	local xp = held >= 1 and math.floor(num(R.TreatXP) * (1 + num(R.TreatPlusBonus, 0)) + 0.5) or R.TreatXP
+	if not S.LootService.TakeItem(player, item, 1) then
 		notify(player, "NoTreat")
 		return "none"
 	end
-	P.AddPetXP(player, uid, R.TreatXP) -- my pet below MaxLv (checked above, nothing yields in between)
-	notify(player, "Fed", { tostring(R.TreatXP) }, "reward")
+	P.AddPetXP(player, uid, xp) -- my pet below MaxLv (checked above, nothing yields in between)
+	notify(player, "Fed", { tostring(xp) }, "reward")
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	return "ok"
 end

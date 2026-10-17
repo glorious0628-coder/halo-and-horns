@@ -76,11 +76,11 @@ runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local A = C.Alchemy
 	check(C.Features.Tonics == false and C.FeatureOn("Tonics") == false, "Config.Features.Tonics is off", "")
-	check(A.Duration == 180 and A.Duration == C.SaveV4.BuffSeconds and A.MaxActive == 2 and A.MaxActive == C.SaveV4.BuffMax
+	check(A.Duration == 180 and A.Duration + 30 == C.SaveV4.BuffSeconds and A.MaxActive == 2 and A.MaxActive == C.SaveV4.BuffMax
 		and C.RateLimits.UseTonic == 1, "3 minutes, two at a time (the same numbers as the save repair), one drink a second", show(A))
 	local want = { MightTonic = { "MonsterDamage", 1.10 }, GuardTonic = { "MonsterHurt", 0.90 }, LuckyTonic = { "MaterialDrop", 1.25 },
 		WisdomTonic = { "HuntXP", 1.10 } }
-	check(count(A.Tonics) == 4, "four tonics (no speed tonic in the beta)", tostring(count(A.Tonics)))
+	check(count(A.Tonics) == 8, "four tonics + their four specials (A23-219 ② B; no speed tonic in the beta)", tostring(count(A.Tonics)))
 	local order = {}
 	for i, id in C.Loot.Order do order[id] = i end
 	for id, x in want do
@@ -138,6 +138,25 @@ runGroup("use", function()
 	local tl = 0
 	for _, t in w.Tele do if t.Name == "TonicUse" and t.P == p then tl += 1 end end
 	check(tl == 5, "every drink logs TonicUse", tostring(tl))
+end)
+
+-- A23-219 ② B (최종 검수 10/17): a special tonic runs as its Base for Duration + Extra (30 s): never two of one effect
+runGroup("special tonics", function()
+	local w = aWorld()
+	local C = w.Config
+	for _, base in { "MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic" } do
+		local sp = C.Alchemy.Tonics[base .. "Plus"]
+		check(sp and sp.Base == base and sp.Extra == 30 and sp.Stat == C.Alchemy.Tonics[base].Stat and sp.Mult == C.Alchemy.Tonics[base].Mult
+			and C.Loot.Items[base .. "Plus"] and C.Loot.Items[base .. "Plus"].Kind == "Tonic", base .. "Plus: the same effect, 30 s more, a Tonic item", show(sp))
+	end
+	local p, d = drinker(w, 7, { Items = { MightTonicPlus = 1, MightTonic = 1, GuardTonic = 1, LuckyTonic = 1 } })
+	check(w.B.Use(p, "MightTonicPlus") == "ok" and d.Buffs.MightTonic == w.Time + 210 and d.Buffs.MightTonicPlus == nil and (d.Items.MightTonicPlus or 0) == 0,
+		"Might Tonic+: runs as Might Tonic for 3:30 (one bottle)", show(d.Buffs))
+	check(math.abs(w.B.Mult(p, "MonsterDamage") - 1.10) < 1e-9, "the same x1.10 (never x1.21 with a plain one)", tostring(w.B.Mult(p, "MonsterDamage")))
+	check(w.B.Use(p, "MightTonic") == "ok" and d.Buffs.MightTonic == w.Time + 180 and math.abs(w.B.Mult(p, "MonsterDamage") - 1.10) < 1e-9,
+		"a plain one after it restarts the same effect (3:00)", show(d.Buffs))
+	check(w.B.Use(p, "GuardTonic") == "ok" and w.B.Use(p, "LuckyTonic") == "two", "a special counts as its Base for 'two at a time'", "")
+	check(C.SanitizeBuffs({ MightTonic = 1000 + 210 }, 1000).MightTonic == 1210, "the save repair keeps a 3:30 end", "")
 end)
 
 ------------------------------------------------------------------ the multipliers

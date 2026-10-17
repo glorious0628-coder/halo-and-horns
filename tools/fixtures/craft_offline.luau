@@ -1417,4 +1417,40 @@ runGroup("opts", function()
 	wr.Script = {}
 end)
 
+-- A23-219 ② B (최종 검수 10/17): a potion / tonic / treat craft rolls the same P once; a hit = ONE special result, the rest plain
+runGroup("specials", function()
+	local wr = cWorld({ RealSpare = true })
+	local mats = { Herb = 60, Jelly = 30, CopperOre = 30, SlimeCore = 10, Petal = 20 }
+	-- AP1 (HP potions, N 2): +10 kit, 59% -> one special + the rest plain
+	local a, ad = smith(wr, 91, { Items = deepCopy(mats) }, "Mage")
+	ad.Craft.ToolAlch = 10
+	wr.Script = { 0.59 }
+	check(wr.C.TryStart(a, "AP1") == "ok" and ad.Craft.Pend.Opt == 1, "AP1 +10 kit, a 59% roll: a special (Pend.Opt 1)", show(ad.Craft.Pend))
+	hammer(wr, a, HONEST)
+	local r = last(fired(wr, "CraftResult", a))
+	local made = 2 + r.Plus
+	check((ad.HPPotionPlusCount or 0) == 1 and (ad.HPPotionCount or 0) == made - 1 and r.Opt == 1,
+		"one special HP potion (its own stock), the rest plain", show({ ad.HPPotionPlusCount, ad.HPPotionCount, made }))
+	-- A1 (Might Tonic): a 61% roll = all plain
+	wr:Advance(61)
+	wr.Script = { 0.61 }
+	startAndHammer(wr, a, HONEST, { Recipe = "A1" })
+	check((ad.Items.MightTonicPlus or 0) == 0 and (ad.Items.MightTonic or 0) >= 1, "A1 with a 61% roll: plain tonics only", show(ad.Items.MightTonic))
+	wr:Advance(61)
+	wr.Script = { 0.05 }
+	local before = ad.Items.MightTonic or 0
+	startAndHammer(wr, a, HONEST, { Recipe = "A1" })
+	local p2 = last(fired(wr, "CraftResult", a)).Plus
+	check(ad.Items.MightTonicPlus == 1 and (ad.Items.MightTonic or 0) - before == p2, "A1 with a 5% roll: one Might Tonic+, the hammer's +N plain", show(ad.Items))
+	-- T1 (Pet Treats, N 3) by a tamer: +0 tool, a 9% roll
+	local t, td = smith(wr, 92, { Items = deepCopy(mats) }, "Archer")
+	wr.Script = { 0.09 }
+	startAndHammer(wr, t, HONEST, { Recipe = "T1" })
+	local p3 = last(fired(wr, "CraftResult", t)).Plus
+	check(td.Items.PetTreatPlus == 1 and td.Items.PetTreat == 3 + p3 - 1, "T1 +0 tool, 9%: one Pet Treat+, the rest plain", show(td.Items))
+	-- AS1 (a scroll) never gets a special roll; a weapon keeps its sizes
+	check(wr.Config.Craft.Tools.Opt.Special.Enh70 == nil and wr.Config.Craft.Tools.Opt.Special.HP == "HP", "no special scrolls", "")
+	wr.Script = {}
+end)
+
 finish()

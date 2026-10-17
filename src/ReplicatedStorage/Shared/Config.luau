@@ -89,6 +89,7 @@ Config.Vitals = {
 	ReleaseCost = 20,
 	HPRecovery = 0.30,
 	MPRecovery = 0.40,
+	PotionPlusBonus = 0.2, -- A23-219 ② B: a special potion (a craft's, Config.PotionPlusKey stock) restores 20% more
 	PotionCooldown = 10, -- HP and MP have independent server deadlines
 	PotionPrices = { HP = 25, MP = 25 }, -- gold per bottle (user 2026-10-06)
 	PotionInventoryCap = 99,
@@ -110,6 +111,13 @@ Config.Vitals = {
 function Config.PotionStockKey(kind)
 	if kind == "HP" then return "HPPotionCount" end
 	if kind == "MP" then return "MPPotionCount" end
+	return nil
+end
+-- A23-219 ② B (최종 검수 10/17): the special potions a craft may make (Vitals.PotionPlusBonus more each), kept apart
+-- from the plain stock and drunk first (the same quick slot, the same cooldown)
+function Config.PotionPlusKey(kind)
+	if kind == "HP" then return "HPPotionPlusCount" end
+	if kind == "MP" then return "MPPotionPlusCount" end
 	return nil
 end
 
@@ -167,6 +175,8 @@ Config.Data = {
 		Nickname = "", -- filtered cache only; NicknameService's global directory is authoritative
 		HPPotionCount = 0,
 		MPPotionCount = 0,
+		HPPotionPlusCount = 0, -- A23-219 ② B: special potions (additive flat counts, no version bump)
+		MPPotionPlusCount = 0,
 		Rebirths = 0,
 		RebirthBonus = 0, -- sum of per-rebirth bonuses (0.25 or 0.40 each); v1 data: Rebirths * 0.25
 		FallMarks = 0, -- "타락" stacks (Halo -> Horns at rebirth), max Config.Rebirth.MarkMax
@@ -262,7 +272,7 @@ Config.Data = {
 	Mirrored = {
 		"Level", "XP", "BankGold", "CarriedGold", "WeaponTier", "WeaponOwnedMask", "BlacksmithVisited", "Faction", "Class", "ClassChosen",
 		"CharacterGender",
-		"HPPotionCount", "MPPotionCount", "HideAnnounceName", "LuckEvents", "TitleSel",
+		"HPPotionCount", "MPPotionCount", "HPPotionPlusCount", "MPPotionPlusCount", "HideAnnounceName", "LuckEvents", "TitleSel",
 		"Rebirths", "RebirthBonus", "FallMarks", "RedeemMarks", "Honor", "Infamy", "SwitchCount",
 		"LastSwitchTime", "PlaytimeSeconds", "TotalKills", "DailyDay", "DailyClaims",
 		"VacationDays", "VacationGold", "VacationXP", "CheerStars",
@@ -6447,6 +6457,13 @@ Config.Loot = {
 		WisdomTonic = { Kind = "Tonic", Name = "Wisdom Tonic", Sell = 60, Color = Color3.fromRGB(175, 120, 235), Icon = "IconWisdomTonic", Source = "Craft", Desc = "More XP from monsters for 3 minutes." },
 		-- ⑤ tamers make it (recipe T1); anyone feeds it to a pet (FeedPet: pet XP + Config.Research.TreatXP)
 		PetTreat = { Kind = "Treat", Name = "Pet Treat", Sell = 10, Color = Color3.fromRGB(240, 170, 90), Icon = "IconPetTreat", Source = "Craft", Desc = "Feed it to your pet for pet XP." },
+		-- A23-219 ② B (최종 검수 10/17): the specials a craft may make with the role's tool (Craft.Tools.Opt.Special): one size
+		-- each (the most), the tool's +N only raises the chance. Their own ids: never stacked with the plain ones
+		MightTonicPlus = { Kind = "Tonic", Name = "Might Tonic+", Sell = 30, Color = Color3.fromRGB(235, 90, 70), Icon = "IconMightTonic", Source = "Craft", Desc = "Hit monsters harder for 3 and a half minutes." },
+		GuardTonicPlus = { Kind = "Tonic", Name = "Guard Tonic+", Sell = 40, Color = Color3.fromRGB(90, 150, 235), Icon = "IconGuardTonic", Source = "Craft", Desc = "Monsters hurt you less for 3 and a half minutes." },
+		LuckyTonicPlus = { Kind = "Tonic", Name = "Lucky Tonic+", Sell = 80, Color = Color3.fromRGB(110, 210, 110), Icon = "IconLuckyTonic", Source = "Craft", Desc = "More materials from monsters for 3 and a half minutes." },
+		WisdomTonicPlus = { Kind = "Tonic", Name = "Wisdom Tonic+", Sell = 120, Color = Color3.fromRGB(175, 120, 235), Icon = "IconWisdomTonic", Source = "Craft", Desc = "More XP from monsters for 3 and a half minutes." },
+		PetTreatPlus = { Kind = "Treat", Name = "Pet Treat+", Sell = 20, Color = Color3.fromRGB(240, 170, 90), Icon = "IconPetTreat", Source = "Craft", Desc = "Feed it to your pet for extra pet XP." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
 		-- A23-219: an alchemist's Blessed Scroll (Config.Craft.Tools.Bless): the same 70% and the same fail rule, +2 on a success
 		-- (+9 -> +10 at most). Made only by a craft (Source Craft); trades like any craft
@@ -6463,7 +6480,8 @@ Config.Loot = {
 	Order = { "Enh70", "Enh70B", "Enh30", "Enh10", "Move70", "Move30", "Move10",
 		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "DeepMoonShard", "TrialCore", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
-		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
+		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat",
+		"MightTonicPlus", "GuardTonicPlus", "LuckyTonicPlus", "WisdomTonicPlus", "PetTreatPlus" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
 	-- | { Weapon = tier, P }. Provisional numbers (A23-12: tune after play; drop income is measured separately).
 	-- Review B2 (2026-10-05): scroll chances rise with the zone (Enh70 / Enh30 / Enh10 per row), transfer scrolls are
@@ -10310,6 +10328,11 @@ Config.Craft.Tools = {
 		R = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 5 },
 		Max = 5,
 		Size = { Weapon = 0.008, Armor = 0.004, Ring = 0.002, PetArmor = 0.04, PetAcc = 0.02 },
+		-- A23-219 ② B (최종 검수 10/17): a potion / tonic / treat craft rolls the same P[+N] once; a hit makes ONE of its results
+		-- the special (the rest plain), always the full size: a potion heals / restores Vitals.PotionPlusBonus more, a tonic runs
+		-- Alchemy.Tonics[special].Extra s longer, a treat gives Research.TreatPlusBonus more pet XP
+		Special = { HP = "HP", MP = "MP", MightTonic = "MightTonicPlus", GuardTonic = "GuardTonicPlus", LuckyTonic = "LuckyTonicPlus",
+			WisdomTonic = "WisdomTonicPlus", PetTreat = "PetTreatPlus" },
 	},
 }
 -- A23-219 ②: the bonus of option size o (0..Opt.Max) on a thing of `kind` (Weapon / Armor / Ring / PetArmor / PetAcc), a
@@ -10422,6 +10445,11 @@ Config.Alchemy = {
 		GuardTonic = { Stat = "MonsterHurt", Mult = 0.90 },
 		LuckyTonic = { Stat = "MaterialDrop", Mult = 1.25 },
 		WisdomTonic = { Stat = "HuntXP", Mult = 1.10 },
+		-- A23-219 ② B: a special tonic = its Base's effect for Duration + Extra s (it runs as the Base: never two of one effect)
+		MightTonicPlus = { Stat = "MonsterDamage", Mult = 1.10, Base = "MightTonic", Extra = 30 },
+		GuardTonicPlus = { Stat = "MonsterHurt", Mult = 0.90, Base = "GuardTonic", Extra = 30 },
+		LuckyTonicPlus = { Stat = "MaterialDrop", Mult = 1.25, Base = "LuckyTonic", Extra = 30 },
+		WisdomTonicPlus = { Stat = "HuntXP", Mult = 1.10, Base = "WisdomTonic", Extra = 30 },
 	},
 	Text = {
 		TwoMax = "Only two tonics at a time.",
@@ -10443,6 +10471,8 @@ Config.Research = {
 	InfoEvery = 1, -- TamerInfo goes at most once a second (a new stage at once)
 	Treat = "PetTreat", -- FeedPet(uid): one of these -> that pet gets TreatXP pet XP (anyone with a pet)
 	TreatXP = 20,
+	-- A23-219 ② B: the special treat (fed first when held): TreatXP x (1 + TreatPlusBonus)
+	TreatPlus = "PetTreatPlus", TreatPlusBonus = 0.2,
 	-- the kinds that are not their own family (the rest: Config.QuestKind, e.g. a pumpkin slime is a Slime already)
 	Family = {
 		BigSlime = "Slime", FlowerSlime = "Slime", SlimeKing = "Slime",
@@ -10614,7 +10644,7 @@ Config.SaveV4 = {
 	GearMaxPlus = 2, -- Gear: P (the hammer's +N) is 0..2 and nothing else; a scroll never reaches gear (⑥, 게임성 검수 10/12)
 	OwnKeyMax = 20, -- Gear.Own: at most this many of one "<kind>:T:P" key
 	BuffMax = 2, -- Buffs: at most two tonics at once
-	BuffSeconds = 180, -- one tonic lasts 3 minutes: a saved end is never later than now + this
+	BuffSeconds = 210, -- one tonic lasts 3 minutes (A23-219 ② B: a special one 30 s more): a saved end is never later than now + this
 	ShopDayMax = 50, -- Shop.N: Otto's cheap materials a KST day (게임성 개발 2)
 	PetRollSpd = { 5, 10 }, -- Pets.List[uid].Roll.Spd: a summoned pet's walk bonus in whole % (PetService.Sanitize)
 	-- C1 (게임성 개발 2): spare weapons and the market ledger

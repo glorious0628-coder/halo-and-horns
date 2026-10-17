@@ -550,6 +550,23 @@ do
 	f.Vitals.DebugSetMana(f.Player,99);f:Use("MP")
 	check(f.Attrs.Mana==100 and f.Data.MPPotionCount==1,"capped MP recovery not charged exactly1")
 end
+-- A23-219 ② B (최종 검수 10/17): a special potion (its own stock) is drunk first and restores PotionBonus (20%) more
+do
+	local f=fixture();f:Stock(2,2);f.Vitals.DebugSetMana(f.Player,20)
+	f.Registry.PlayerService.SetStat(f.Player,"HPPotionPlusCount",1);f.Registry.PlayerService.SetStat(f.Player,"MPPotionPlusCount",1)
+	check(f.Config.PotionPlusKey("HP")=="HPPotionPlusCount" and f.Config.PotionPlusKey("MP")=="MPPotionPlusCount" and f.Config.PotionPlusKey("X")==nil
+		and f.Config.Vitals.PotionPlusBonus==0.2,"special stock keys + 20%")
+	f:Use("HP");check(f.Humanoid.Health==86 and f.Data.HPPotionPlusCount==0 and f.Data.HPPotionCount==2,"the special HP first: 50 -> 86 (30 x 1.2), plain stock kept")
+	f:Use("MP");check(f.Attrs.Mana==68 and f.Data.MPPotionPlusCount==0 and f.Data.MPPotionCount==2,"the special MP first: 20 -> 68 (40 x 1.2)")
+	local sp={}
+	for _,e in f.FxLog do if e.Kind=="Drink" and e.Data.Special==true then table.insert(sp,e) end end
+	check(#sp==2,"Fx Drink says Special")
+	f.Now=110;f.Humanoid.Health=50;f:Use("HP")
+	check(f.Humanoid.Health==80 and f.Data.HPPotionCount==1,"no special left: the plain one (30)")
+	local g=fixture();g.Registry.PlayerService.SetStat(g.Player,"HPPotionPlusCount",1)
+	g:Use("HP");check(g.Humanoid.Health==86 and g.Data.HPPotionPlusCount==0,"a special alone (no plain stock) still drinks")
+	check(table.find(g.Config.Data.Mirrored,"HPPotionPlusCount")~=nil and g.Config.Data.Defaults.HPPotionPlusCount==0,"saved + mirrored (the bag / slot can show it)")
+end
 for _,kind in {"HP","MP"} do
 	for _,mutate in {
 		function(f) f:Stock(0,0) end,

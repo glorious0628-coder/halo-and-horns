@@ -116,10 +116,12 @@ function BuffService.Use(player, id)
 		notify(player, "NoTonic")
 		return "none"
 	end
+	-- A23-219 ② B: a special tonic runs as its Base (never two of one effect), Extra s longer
+	local base = type(tonic.Base) == "string" and A().Tonics[tonic.Base] and tonic.Base or id
 	local running = BuffService.Running(player)
 	local others = 0
 	for other in running do
-		if other ~= id then others += 1 end
+		if other ~= base then others += 1 end
 	end
 	if others >= num(A().MaxActive, 2) then
 		notify(player, "TwoMax")
@@ -130,10 +132,10 @@ function BuffService.Use(player, id)
 	for other in data.Buffs do
 		if not running[other] then data.Buffs[other] = nil end -- ended ones go
 	end
-	local ends = os.time() + math.floor(num(A().Duration, 180))
-	data.Buffs[id] = ends
+	local ends = os.time() + math.floor(num(A().Duration, 180)) + math.max(0, math.floor(num(tonic.Extra, 0)))
+	data.Buffs[base] = ends
 	publish(player)
-	watch(player, id, ends)
+	watch(player, base, ends)
 	if S.PlayerService.MarkActive then pcall(S.PlayerService.MarkActive, player) end
 	if S.TelemetryService and S.TelemetryService.Custom then pcall(S.TelemetryService.Custom, player, "TonicUse", 1, id) end
 	BuffService.Drank:Fire(player, id)

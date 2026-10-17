@@ -79,11 +79,19 @@ local function usePotion(player, kind)
 	local stockKey = Config.PotionStockKey(kind)
 	local data = S.PlayerService.GetData(player)
 	local count = type(data) == "table" and data[stockKey]
-	if type(count) ~= "number" or count ~= count or count < 1 or count > TUNE.PotionInventoryCap
+	-- A23-219 ② B: a special potion (its own stock) is drunk first: PotionBonus more
+	local plusKey = type(Config.PotionPlusKey) == "function" and Config.PotionPlusKey(kind) or nil
+	local plusCount = plusKey and type(data) == "table" and data[plusKey] or nil
+	local special = type(plusCount) == "number" and plusCount == plusCount and plusCount >= 1 and plusCount <= TUNE.PotionInventoryCap
+		and plusCount == math.floor(plusCount)
+	if special then
+		stockKey, count = plusKey, plusCount
+	elseif type(count) ~= "number" or count ~= count or count < 1 or count > TUNE.PotionInventoryCap
 		or count ~= math.floor(count) then
 		Net.Notify(player, Config.Text.PotionNone, "bad")
 		return
 	end
+	local boost = special and 1 + math.max(0, tonumber(TUNE.PotionPlusBonus) or 0) or 1
 	local humanoid = Util.GetHumanoid(player)
 	if not humanoid or humanoid.Health <= 0 then return end
 	local drink = nil -- feedback_audit #4: what this drink really restored (Fx Drink below)
@@ -99,7 +107,7 @@ local function usePotion(player, kind)
 		local okP, more = false, 0
 		if type(pet) == "table" and type(pet.Bonus) == "function" then okP, more = pcall(pet.Bonus, player, "Potion") end
 		local mult = 1 + ((okP and type(more) == "number" and more == more and more > 0) and math.min(more, 0.1) or 0)
-		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery * mult)
+		humanoid.Health = math.min(humanoid.MaxHealth, before + humanoid.MaxHealth * TUNE.HPRecovery * mult * boost)
 		if humanoid.Health <= before then return end -- a failed/no-op heal consumes neither stock nor the deadline
 		drink = { Kind = "HP", From = math.floor(before), To = math.floor(humanoid.Health), Max = math.floor(humanoid.MaxHealth) }
 	else
@@ -109,7 +117,7 @@ local function usePotion(player, kind)
 			return
 		end
 		local before = st.Mana
-		st.Mana = math.min(TUNE.MaxMana, before + TUNE.MaxMana * TUNE.MPRecovery)
+		st.Mana = math.min(TUNE.MaxMana, before + TUNE.MaxMana * TUNE.MPRecovery * boost)
 		if st.Mana <= before then return end
 		drink = { Kind = "MP", From = math.floor(before), To = math.floor(st.Mana), Max = math.floor(TUNE.MaxMana) }
 	end
@@ -120,7 +128,10 @@ local function usePotion(player, kind)
 	S.PlayerService.MarkActive(player) -- A23-130: no "Used a potion" line (the bar, the slot count and the Potion sound say it)
 	-- feedback_audit #4 (최종 검수 10/15): a real drink only (a revive's potion cost goes through ReviveService, never here):
 	-- Fx Drink { Kind = "HP" | "MP", From, To, Max } so the bar can light just the part that came back
-	if drink then pcall(Net.Fx, player, "Drink", drink) end
+	if drink then
+		drink.Special = special or nil -- A23-219 ② B: a special potion was drunk (the client may sparkle)
+		pcall(Net.Fx, player, "Drink", drink)
+	end
 	-- A23-110: the King's Hop quest waits for the first drink (only a real use gets here)
 	local story = S.StoryQuestService
 	if type(story) == "table" and type(story.Event) == "function" then

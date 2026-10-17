@@ -235,7 +235,7 @@ local function fillDefaults(d, playerName)
 	if d.CharacterGender ~= "M" and d.CharacterGender ~= "F" then d.CharacterGender = "M" end
 	-- Never re-save a cached name before today's filter and global claim check. The separate directory is authoritative.
 	d.Nickname = ""
-	for _, key in { "HPPotionCount", "MPPotionCount" } do
+	for _, key in { "HPPotionCount", "MPPotionCount", "HPPotionPlusCount", "MPPotionPlusCount" } do
 		d[key] = Config.NormalizePotionCount(d[key])
 	end
 	d.Level = math.clamp(math.floor(tonumber(d.Level) or 1), 1, Config.Levels.MaxLevel)

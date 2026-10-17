@@ -200,10 +200,14 @@ end
 -- (Tools.Opt.P / R; saved in Craft.Pend.Opt: a stop, a rejoin or a full bag pays the same). 0 = none (any other recipe too)
 local function rollOpt(c, role, r)
 	local O = type(K().Tools) == "table" and K().Tools.Opt or nil
-	if type(O) ~= "table" or (r.Kind ~= "Weapon" and r.Kind ~= "Gear") then return 0 end
+	if type(O) ~= "table" then return 0 end
+	-- ② B: a potion / tonic / treat craft rolls the same P for ONE special result (always the full size: 1 = yes)
+	local sp = type(O.Special) == "table" and ((r.Kind == "Potion" and O.Special[r.Potion]) or (r.Kind == "Item" and O.Special[r.Item])) or nil
+	if r.Kind ~= "Weapon" and r.Kind ~= "Gear" and not sp then return 0 end
 	local t = toolOf(c, role)
 	local p, size = num(O.P[t]), math.floor(num(O.R[t]))
 	if p <= 0 or size < 1 or ST.Rng:NextNumber() >= p then return 0 end
+	if sp then return 1 end
 	return math.min(size, math.floor(num(O.Max, 5)))
 end
 
@@ -282,9 +286,17 @@ local function payOut(player, data, r, plus, blessed, o)
 		local n = math.max(1, math.floor(num(r.N, 1))) + math.max(0, math.floor(num(plus)))
 		local key = Config.PotionStockKey(r.Potion)
 		local before = key and math.floor(num(data[key])) or 0
-		if not key or before + n > Config.Vitals.PotionInventoryCap then return false end
-		pcall(S.LootService.GrantItem, player, r.Potion, n, "Reward")
-		return math.floor(num(data[key])) - before >= n
+		-- A23-219 ② B: a special roll makes ONE of them the special potion (its own stock, drunk first); no room in that
+		-- stock = all plain
+		local spKey = (o or 0) > 0 and type(Config.PotionPlusKey) == "function" and Config.PotionPlusKey(r.Potion) or nil
+		local spHave = spKey and math.floor(num(data[spKey])) or 0
+		if spKey and spHave + 1 > Config.Vitals.PotionInventoryCap then spKey = nil end
+		local plain = spKey and n - 1 or n
+		if not key or before + plain > Config.Vitals.PotionInventoryCap then return false end
+		if plain > 0 then pcall(S.LootService.GrantItem, player, r.Potion, plain, "Reward") end
+		if math.floor(num(data[key])) - before < plain then return false end
+		if spKey then pcall(S.PlayerService.SetStat, player, spKey, spHave + 1) end
+		return true
 	elseif r.Kind == "Gear" then
 		if type(data.Gear) ~= "table" then data.Gear = Config.SanitizeGear(data.Gear) end
 		local own = data.Gear.Own
@@ -305,6 +317,12 @@ local function payOut(player, data, r, plus, blessed, o)
 	-- A23-219: a blessed craft swaps ONE of its scrolls for the Blessed Scroll (the rest plain)
 	local T = K().Tools
 	local bItem = blessed == true and type(T) == "table" and Config.Loot.Items[T.BlessItem] and T.BlessItem or nil
+	-- A23-219 ② B: a special roll swaps ONE of a tonic / treat craft's results for its special the same way (the same
+	-- room rule: no room for it = all plain)
+	if not bItem and (o or 0) > 0 and type(T) == "table" and type(T.Opt) == "table" and type(T.Opt.Special) == "table" then
+		local sp = T.Opt.Special[r.Item]
+		if type(sp) == "string" and sp ~= r.Item and Config.Loot.Items[sp] then bItem = sp end
+	end
 	if bItem then
 		-- API review (10/17 HIGH): never a part and then false (a pending craft pays again at every Settle). The Blessed Scroll
 		-- goes in first, alone; no room for it (cap or a new bag slot for it and the plain ones) = the whole craft pays plain

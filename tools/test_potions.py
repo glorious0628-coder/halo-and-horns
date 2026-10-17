@@ -70,6 +70,9 @@ def costume_removal_checks() -> tuple[int, list[str]]:
 # zone_check_halo #34: each mutant must make the fixture fail (exact search text, matched once, in-memory sources only)
 SHOP, CONF, VIT = "SHOP_SOURCE", "CONFIG_SOURCE", "VITALS_SOURCE"
 MUTATIONS = [
+    # A23-219 ② B special potions / tonics / treats (게임성 개발 2)
+    ('B: the special never first', VIT, '\tif special then\n\t\tstockKey, count = plusKey, plusCount\n', '\tif false then\n\t\tstockKey, count = plusKey, plusCount\n'),
+    ('B: no special boost', VIT, '\tlocal boost = special and 1 + math.max(0, tonumber(TUNE.PotionPlusBonus) or 0) or 1\n', '\tlocal boost = 1\n'),
     ("#34 tagged sellers ignored (Crossroads only)", SHOP, "for _, merchant in tagged do add(merchant) end", "local _ = tagged"),
     ("#34 the Crossroads seller's old path dropped", SHOP, "if legacy and legacy.Parent == npcs then add(legacy) end",
      "local _ = legacy"),

@@ -43,9 +43,9 @@ runGroup("config", function()
 	check(sameTable(D.Buffs, {}) and sameTable(D.Shop, { Day = 0, N = 0 }) and D.EggHonorAt == 0,
 		"Buffs = {}, Shop = { Day, N }, EggHonorAt = 0", show({ D.Buffs, D.Shop, D.EggHonorAt }))
 	local L = C.SaveV4
-	check(L.CraftMaxLv == 30 and L.GearMaxTier == 16 and L.OwnKeyMax == 20 and L.BuffMax == 2 and L.BuffSeconds == 180
+	check(L.CraftMaxLv == 30 and L.GearMaxTier == 16 and L.OwnKeyMax == 20 and L.BuffMax == 2 and L.BuffSeconds == 210
 		and L.ShopDayMax == 50 and L.PetRollSpd[1] == 5 and L.PetRollSpd[2] == 10 and L.KeyLen == 32 and L.MaxKeys == 64,
-		"limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of 180 s, Otto 50 a day, pet roll 5..10%, ids 32, 64 keys", show(L))
+		"limits: craft Lv30, gear tier 16, 20 a key, 2 buffs of up to 210 s (A23-219 ② B special tonics), Otto 50 a day, pet roll 5..10%, ids 32, 64 keys", show(L))
 	local mirrored = {}
 	for _, k in C.Data.Mirrored do mirrored[k] = true end
 	check(not (mirrored.Craft or mirrored.Research or mirrored.Gather or mirrored.Gear or mirrored.Buffs or mirrored.Shop
@@ -188,7 +188,7 @@ runGroup("buffs", function()
 	check(b.Might == NOW + 100, "a buff still running keeps its end", show(b))
 	check(b.Guard == nil and b.Lucky == nil, "an ended buff (in the past or ending now) is dropped", show(b))
 	check(sameTable(C.SanitizeBuffs({ Old = NOW - 5, Now = NOW }, NOW), {}), "only ended buffs -> {} (none comes back)", "")
-	check(b.Wise == NOW + 180, "an end later than now + 180 is cut to now + 180 (never a longer buff)", show(b))
+	check(b.Wise == NOW + 210, "an end later than now + 210 (a special tonic's 3:30) is cut to now + 210 (never a longer buff)", show(b))
 	local three = C.SanitizeBuffs({ A = NOW + 10, B = NOW + 50, C = NOW + 30 }, NOW)
 	check(sameTable(three, { B = NOW + 50, C = NOW + 30 }), "at most two: the ones that end last", show(three))
 	local tie = C.SanitizeBuffs({ Z = NOW + 50, Y = NOW + 50, X = NOW + 50 }, NOW)
@@ -247,7 +247,7 @@ runGroup("load", function()
 	local broken = load({ Version = 3, Level = 3, TutorialStep = 99, Craft = "oops", Gear = 5, Buffs = { Might = 1790009999 },
 		EggHonorAt = 1790009999, Shop = { N = 99 }, Gather = { N = -1, FirstBloom = 1 } })
 	check(sameTable(broken.Craft, D.Craft) and sameTable(broken.Gear, D.Gear), "a broken table becomes its default", "")
-	check(broken.Buffs.Might == 1790000180 and broken.EggHonorAt == 1790000000 and broken.Shop.N == 50 and broken.Gather.N == 0
+	check(broken.Buffs.Might == 1790000210 and broken.EggHonorAt == 1790000000 and broken.Shop.N == 50 and broken.Gather.N == 0
 		and broken.Gather.FirstBloom == false, "the load uses the server clock: a long buff is cut, a future egg hour is cut to now",
 		show({ broken.Buffs, broken.EggHonorAt }))
 	local fixed = load({ Version = 3, Level = 3, TutorialStep = 99, Gear = { Own = { ["Armor:01:0"] = 3, ["Ring:0:0"] = 1 },

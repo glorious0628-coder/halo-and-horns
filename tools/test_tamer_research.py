@@ -32,6 +32,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-219 ② B special potions / tonics / treats (게임성 개발 2)
+    ('B: the special treat never first', T, '\tlocal item = held >= 1 and R.TreatPlus or R.Treat\n', '\tlocal item = R.Treat\n'),
+    ('B: no extra pet XP', T, '\tlocal xp = held >= 1 and math.floor(num(R.TreatXP) * (1 + num(R.TreatPlusBonus, 0)) + 0.5) or R.TreatXP\n', '\tlocal xp = R.TreatXP\n'),
     # --- the table
     ("config: on by default", C, "Config.Features.Research = false\n", "Config.Features.Research = true\n"),
     ("config: stage 2 at 100", C, "\tStages = { 50, 150, 400, 1000, 2500 },", "\tStages = { 50, 100, 400, 1000, 2500 },"),
@@ -87,9 +90,9 @@ MUTATIONS = [
     ("feed: the switch not checked", T, "\tif not on() then return \"off\" end\n\tif typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") or type(uid) ~= \"string\" then return \"state\" end\n", "\tif typeof(player) ~= \"Instance\" or not player:IsA(\"Player\") or type(uid) ~= \"string\" then return \"state\" end\n"),
     ("feed: not ready", T, "\tif not data or not S.PlayerService.IsReady(player) then return \"state\" end\n\tlocal P = S.PetService", "\tif not data then return \"state\" end\n\tlocal P = S.PetService"),
     ("feed: MaxLv eats the treat", T, "\tif P.XPToNext(pet.Lv) <= 0 then\n", "\tif false then\n"),
-    ("feed: the treat stays", T, "\tif not S.LootService.TakeItem(player, R.Treat, 1) then\n", "\tif (S.LootService.GrantItem(player, \"Jelly\", 0) or 0) < 0 then\n"),
-    ("feed: no XP", T, "\tP.AddPetXP(player, uid, R.TreatXP) -- my pet", "\tlocal _ = P.AddPetXP -- my pet"),
-    ("feed: no line", T, "\tnotify(player, \"Fed\", { tostring(R.TreatXP) }, \"reward\")\n", ""),
+    ("feed: the treat stays", T, "\tif not S.LootService.TakeItem(player, item, 1) then\n", "\tif (S.LootService.GrantItem(player, \"Jelly\", 0) or 0) < 0 then\n"),
+    ("feed: no XP", T, "\tP.AddPetXP(player, uid, xp) -- my pet", "\tlocal _ = P.AddPetXP -- my pet"),
+    ("feed: no line", T, "\tnotify(player, \"Fed\", { tostring(xp) }, \"reward\")\n", ""),
     ("feed: extra arguments taken", T, "\tif select(\"#\", ...) ~= 1 then return end\n\tif not Util.RateLimit(player, \"FeedPet\"", "\tif not Util.RateLimit(player, \"FeedPet\""),
     ("feed: no rate limit", T, "\tif not Util.RateLimit(player, \"FeedPet\", num(Config.RateLimits.FeedPet, 0.5)) then return end\n", ""),
     ("config: a treat gives 30", C, "\tTreatXP = 20,\n", "\tTreatXP = 30,\n"),
