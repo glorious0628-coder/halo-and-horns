@@ -137,8 +137,8 @@ MUTATIONS = [
      "\tif zone.Id ~= FK.Zone then return false end\n"),
     ("landmark radius ignored", F, "\tif spot ~= nil and Util.FlatDistance(pos, spot) > radius then return false end\n", ""),
     # A23-222: each stage its own spot and radius (the first King: Landmark / Radius; the rematch: RetryLandmark / RetryRadius)
-    ("the rematch King at the hill", F, "\tlocal id = stage == \"Retry\" and FK.RetryLandmark or FK.Landmark\n", "\tlocal id = FK.Landmark\n"),
-    ("the first King at the arrival spot", F, "\tlocal id = stage == \"Retry\" and FK.RetryLandmark or FK.Landmark\n", "\tlocal id = FK.RetryLandmark\n"),
+    # A23-227: Landmark and RetryLandmark are both KingHill, so swapping them in the code is equivalent; the Config
+    # mutation "the rematch back at the meadow's arrival" guards the shipped value
     ("the rematch King within the first radius", F,
      "\tlocal radius = stage == \"Retry\" and num(FK.RetryRadius, num(FK.Radius, 90)) or num(FK.Radius, 90)\n",
      "\tlocal radius = num(FK.Radius, 90)\n"),
@@ -150,8 +150,8 @@ MUTATIONS = [
      "Zone = \"SlimeMeadow\", Radius = 90, Landmark = \"KingHill\","),
     ("Config: no hill landmark (anywhere in the meadow)", C, "Zone = \"SlimeMeadow\", Radius = 30, Landmark = \"KingHill\",",
      "Zone = \"SlimeMeadow\", Radius = 30,"),
-    ("Config: the rematch radius 30", C, "RetryRadius = 40, RetryLandmark = \"MeadowArrival\",", "RetryRadius = 30, RetryLandmark = \"MeadowArrival\","),
-    ("Config: the rematch at the hill", C, "RetryRadius = 40, RetryLandmark = \"MeadowArrival\",", "RetryRadius = 40, RetryLandmark = \"KingHill\","),
+    ("Config: the rematch radius 30", C, "RetryRadius = 40, RetryLandmark = \"KingHill\",", "RetryRadius = 30, RetryLandmark = \"KingHill\","),
+    ("Config: the rematch back at the meadow's arrival (A23-227)", C, "RetryRadius = 40, RetryLandmark = \"KingHill\",", "RetryRadius = 40, RetryLandmark = \"MeadowArrival\","),
     ("Config: the hill moved", C, "Config.StoryQuests.Landmarks.KingHill = Vector3.new(400, 0, -118)",
      "Config.StoryQuests.Landmarks.KingHill = Vector3.new(430, 0, 0)"),
     ("joins the field King's fight", F, "if type(r) == \"table\" and r.Owner == nil and r.Kind == kingKind() then return false end",

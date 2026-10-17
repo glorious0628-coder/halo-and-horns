@@ -27,7 +27,7 @@ local STEP, RETRY = FQ.Step, FQ.RematchStep -- game dev 3's rows (never numbers 
 -- A23-222: the first King comes only within FirstKOKing.Radius of the King's hill row's spot (Landmarks.KingHill), the rematch
 -- King within RetryRadius of the meadow's arrival spot (Landmarks.MeadowArrival): a hunter stands there unless told otherwise
 local MEADOW = C0.StoryQuests.Landmarks.KingHill -- the first King's spot (in the SlimeMeadow zone)
-local ARRIVAL = C0.StoryQuests.Landmarks.MeadowArrival -- the rematch King's spot
+local ARRIVAL = C0.StoryQuests.Landmarks[C0.FirstKOKing.RetryLandmark] -- the rematch King's spot (A23-227: KingHill)
 local TOWN = vec(0, 0, 0) -- the Crossroads (a town)
 local PLAIN = C0.MonsterTypes.SlimeKing.Damage -- a plain King hit
 
@@ -283,9 +283,9 @@ runGroup("config", function()
 	check(FK0.OneHitBelow == 10 and def and def.Kind == "Main" and def.Requires == nil,
 		"one hit below Lv 10; the quest (main M1_2) has no level keep: a Lv 10+ save gets the told row", show({ FK0.OneHitBelow, def and def.Requires }))
 	local hill, arrival = C0.StoryQuests.Landmarks.KingHill, C0.StoryQuests.Landmarks.MeadowArrival
-	check(FK0.Landmark == "KingHill" and FK0.Radius == 30 and FK0.RetryLandmark == "MeadowArrival" and FK0.RetryRadius == 40
+	check(FK0.Landmark == "KingHill" and FK0.Radius == 30 and FK0.RetryLandmark == "KingHill" and FK0.RetryRadius == 40
 		and hill and hill.X == 400 and hill.Z == -118 and arrival ~= nil,
-		"A23-222: the first King within 30 of KingHill (400, -118), the rematch King within 40 of MeadowArrival", show({ FK0.Landmark, FK0.Radius, FK0.RetryLandmark, FK0.RetryRadius }))
+		"A23-222 / A23-227: the first King within 30 of KingHill (400, -118), the rematch King within 40 of KingHill too", show({ FK0.Landmark, FK0.Radius, FK0.RetryLandmark, FK0.RetryRadius }))
 	check(C0.ZoneAt(hill).Id == "SlimeMeadow" and C0.ZoneAt(hill).Town ~= true and C0.ZoneAt(arrival).Id == "SlimeMeadow"
 		and C0.ZoneAt(arrival + vec(0, 0, 39)).Id == "SlimeMeadow" and C0.ZoneAt(arrival + vec(41, 0, 0)).Id == "SlimeMeadow"
 		and C0.ZoneAt(hill + vec(31, 0, 0)).Id == "SlimeMeadow",
@@ -439,6 +439,20 @@ runGroup("spawn", function()
 	wb:FKTick()
 	check(#wb.Spawns == 1 and wb.Spawns[1].P == hb,
 		"the field King 30 studs away (still by its hill marker): the personal King comes (a slime nearby is fine)")
+	-- A23-227: the rematch King comes on the same hill: the field King standing there within BossClear (24) keeps it away too
+	local wr = fkWorld()
+	local fieldR = { Kind = "SlimeKing", Owner = nil, Alive = true, Root = { Position = ARRIVAL + vec(FK0.BossClear - 1, 0, 0) } }
+	wr.Registry.MonsterService.GetMonstersInRadius = function(pos, radius)
+		if fieldR.Alive and wr.Util.FlatDistance(fieldR.Root.Position, pos) <= radius then return { fieldR } end
+		return {}
+	end
+	local hr = wr:Hunter(114, "Halo", { Step = RETRY, Pos = ARRIVAL })
+	wr:FKTick()
+	check(#wr.Spawns == 0, "the rematch row on the hill, the field King 23 studs away: no rematch King yet", tostring(#wr.Spawns))
+	fieldR.Root.Position = ARRIVAL + vec(FK0.BossClear + 1, 0, 0)
+	wr:FKTick()
+	check(#wr.Spawns == 1 and wr.Spawns[1].P == hr and wr.Spawns[1].Opts.Near == true,
+		"... the field King 25 studs away: the rematch King comes by the player (24+ from the field King's body)", tostring(#wr.Spawns))
 	-- the King's zone set to a town: still never in a town
 	local wt = fkWorld({ Edit = function(c) noMark(c); c.FirstKOKing.Zone = "Crossroads" end })
 	wt:Hunter(110, "Halo", { Pos = TOWN })
@@ -459,25 +473,25 @@ runGroup("spawn", function()
 	w3:Place(far, vec(500 - FK0.Radius + 5, 0, 60))
 	w3:FKTick()
 	check(#w3.Spawns == 2, "inside the Radius now", tostring(#w3.Spawns))
-	-- A23-222: the shipped landmarks: the first King within Radius (30) of KingHill only, the rematch King within RetryRadius
-	-- (40) of MeadowArrival only (each stage its own spot)
+	-- A23-222 / A23-227: the shipped landmarks: the first King within Radius (30) of KingHill, the rematch King within RetryRadius
+	-- (40) of KingHill too (the hill the kid walks back to)
 	local wl = fkWorld()
 	local hillOut = wl:Hunter(130, "Halo", { Pos = MEADOW + vec(31, 0, 0) })
 	local hillIn = wl:Hunter(131, "Halo", { Pos = MEADOW + vec(0, 0, 29) })
-	wl:Hunter(132, "Halo", { Pos = ARRIVAL }) -- the first King's row at the rematch spot
+	wl:Hunter(132, "Halo", { Pos = C0.StoryQuests.Landmarks.MeadowArrival }) -- the first King's row at the meadow's arrival
 	wl:FKTick()
-	check(#wl.Spawns == 1 and wl.Spawns[1].P == hillIn, "the first King: 29 studs from KingHill yes; 31 studs or at the arrival spot no",
+	check(#wl.Spawns == 1 and wl.Spawns[1].P == hillIn, "the first King: 29 studs from KingHill yes; 31 studs or the arrival spot no",
 		show({ #wl.Spawns, wl.Spawns[1] and wl.Spawns[1].P == hillIn }))
 	wl:Place(hillOut, MEADOW + vec(-30, 0, 0))
 	wl:FKTick()
 	check(#wl.Spawns == 2 and wl.Spawns[2].P == hillOut, "... exactly 30 studs: yes", tostring(#wl.Spawns))
 	local rOut = wl:Hunter(133, "Halo", { Step = RETRY, Pos = ARRIVAL + vec(41, 0, 0) })
 	local rIn = wl:Hunter(134, "Halo", { Step = RETRY, Pos = ARRIVAL + vec(0, 0, 39) })
-	wl:Hunter(135, "Halo", { Step = RETRY, Pos = MEADOW }) -- the rematch row on the King's hill
+	wl:Hunter(135, "Halo", { Step = RETRY, Pos = C0.StoryQuests.Landmarks.MeadowArrival }) -- the rematch row at the old spot
 	wl:FKTick()
-	check(#wl.Spawns == 3 and wl.Spawns[3].P == rIn, "the rematch King: 39 studs from MeadowArrival yes (RetryRadius 40); 41 studs or the hill no",
+	check(#wl.Spawns == 3 and wl.Spawns[3].P == rIn, "the rematch King: 39 studs from KingHill yes (RetryRadius 40); 41 studs or the meadow's arrival no",
 		show({ #wl.Spawns }))
-	wl:Place(rOut, ARRIVAL + vec(0, 0, -40)) -- (x 190 would leave the meadow)
+	wl:Place(rOut, ARRIVAL + vec(0, 0, -40))
 	wl:FKTick()
 	check(#wl.Spawns == 4 and wl.Spawns[4].P == rOut, "... exactly 40 studs: yes", tostring(#wl.Spawns))
 	-- a failing spawn waits SpawnGap
@@ -1537,11 +1551,12 @@ runGroup("quest M1_2", function()
 		check(hum.Health == math.max(1, math.floor(hum.MaxHealth * FK0.GetUp.HealthFrac + 0.5)), label .. ": gets up hurt (a potion to buy and drink)",
 			tostring(hum.Health))
 		w:FKTick(FK0.SpawnGap + 0.1)
+		w:Place(p, C0.StoryQuests.Landmarks.MeadowArrival) -- walked back to the meadow's arrival (A23-227: away from the hill)
 		passRows(w, p, STEP, rematch)
 		check(w.Story.CurrentStep(p, FQ.Quest) == rematch, label .. ": the shop / drink / anvil rows passed: the rematch row", tostring(w.Story.CurrentStep(p, FQ.Quest)))
 		w:FKTick(FK0.SpawnGap + 0.1)
-		check(w:KingOf(p) == nil, label .. ": the rematch row on the King's hill: no King (it waits at the meadow's arrival spot)")
-		w:Place(p, ARRIVAL) -- A23-222: the rematch King comes at the meadow's arrival spot (RetryRadius)
+		check(w:KingOf(p) == nil, label .. ": the rematch row at the meadow's arrival: no King (A23-227: it waits on the King's hill)")
+		w:Place(p, ARRIVAL) -- A23-227: the rematch King comes on the King's hill (RetryLandmark / RetryRadius)
 		w:FKTick(FK0.SpawnGap + 0.1)
 		local king = w:KingOf(p)
 		check(king and king.Quiet == nil and king.Practice == FK0.Retry.PayAs and king.Model.Attrs.FirstKO == "Retry",

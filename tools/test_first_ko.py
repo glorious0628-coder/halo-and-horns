@@ -84,7 +84,7 @@ MUTATIONS = [
     ("M1_2 the anvil row waits for the wrong happening", C, DEF_STEP_ANVIL, 'Obj = { Type = "Event", Name = "PotionUsed", Past = true },'),
     ("M1_2 the anvil row is not Otto's", C, 'Npc = "Otto", Anvil = true,', 'Npc = "Kit", Anvil = true,'),
     ("M1_2 the anvil row opens no window", C, 'Npc = "Otto", Anvil = true,', 'Npc = "Otto",'),
-    ("M1_2 the rematch guides to the King's hill", C, 'Guide = "MeadowArrival",\n', 'Guide = "KingHill",\n'),
+    ("M1_2 the rematch guides to the meadow's arrival (A23-227: the hill)", C, 'ShortName = "Defeat King", Guide = "KingHill",\n', 'ShortName = "Defeat King", Guide = "MeadowArrival",\n'),
     ("M1_2 rematch counts any King", C, DEF_STEP5,
      'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Count = 1 } },'),
     ("M1_2 rematch in any zone", C, DEF_STEP5, 'Obj = { Type = "Kill", Kind = "SlimeKing", Personal = true, Count = 1 } },'),
