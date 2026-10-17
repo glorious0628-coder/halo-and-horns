@@ -281,8 +281,8 @@ runGroup("recipes", function()
 	local KR = w.Config.Craft.Recipes
 	local w6 = KR.W6.Mats
 	local w9 = KR.W9.Mats
-	check(w6.CaptainBadge == nil and KR.W7.Mats.CaptainBadge == nil and w9.CaptainBadge == nil and w6.DeepMoonShard == 4
-		and KR.W7.Mats.DeepMoonShard == 16 and KR.W7.Mats.TrialCore == 4 and w9.DeepMoonShard == 40 and w9.TrialCore == 10
+	check(w6.CaptainBadge == nil and KR.W7.Mats.CaptainBadge == nil and w9.CaptainBadge == nil and w6.DeepMoonShard == 12
+		and KR.W7.Mats.DeepMoonShard == 48 and KR.W7.Mats.TrialCore == 4 and w9.DeepMoonShard == 120 and w9.TrialCore == 10
 		and w9.ClatterGem == 8 and w9.KingJelly == 10,
 		"A23-215: no Captain's Badge in W6 / W7 / W9; deep shards 4 / 16 / 40, trial cores 4 / 10, W9 8 gems + 10 royal jelly", show(w9))
 	local gp = smith(nogem, 8)

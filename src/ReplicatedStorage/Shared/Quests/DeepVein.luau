@@ -10,8 +10,9 @@
 -- character): his one body (Daily pack, Npcs) - no second Pip body.
 -- How many, in ONE place (API review 10/17: the guards pay a plain Skeleton's XP / gold and drop nothing - never a farm;
 -- HPMult / GUARDS / VeinSeconds = the run's length levers, see the contract doc for the minutes):
-local GUARDS = 3 -- personal Skeleton Knights per run (one at a time)
-local K = { GuardPay = "Skeleton", GuardHPMult = 3, VeinSeconds = 8 }
+-- 최종 검수 10/17: one run ~4 min (5 guards x 9x HP ~36 s each at Lv25 T5 + ~50 s walking and the vein); recipes ask 3x shards
+local GUARDS = 5 -- personal Skeleton Knights per run (one at a time)
+local K = { GuardPay = "Skeleton", GuardHPMult = 9, VeinSeconds = 8 }
 
 local function route(turn, tag, title, short, marks, guard, vein)
 	local steps = {}

@@ -9,6 +9,7 @@ local function pack(c)
 	return p
 end
 local PACK = pack(execute("Config", CONFIG_SOURCE, nativeEnv()))
+local G = PACK.Defs.DV1.Steps[4].Obj.Count -- guards per run (최종 검수 10/17: 5)
 
 -- a started story world with the pack; the 1 s loop is never run (Refresh by hand). w.Spawns = SpawnPersonal calls,
 -- w.Removed = RemovePersonal calls; w.Feature[name] = false switches a Config.Features flag off
@@ -109,7 +110,7 @@ local function runRoute(w, p, d, id)
 	local def = w.Config.StoryQuests.Defs[id]
 	for i = 1, 3 do w:Move(p, def.Steps[i].Obj.Spot) end
 	w:Move(p, def.Steps[4].Spawn.Spot)
-	for _ = 1, 3 do
+	for _ = 1, G do
 		w.Story.Refresh(p)
 		w:KillGuard(p)
 	end
@@ -134,8 +135,8 @@ runGroup("config", function()
 		check(req.Level == 25 and req.Feature == "Crafting" and req.Done[1] == "M1_4", id .. ": Lv25, only while Crafting is on, after M1_4", show(req))
 		local s = def.Steps
 		check(#s == 5 and s[1].Obj.Type == "Near" and s[2].Obj.Type == "Near" and s[3].Obj.Type == "Near", id .. ": three marks (Near)", "")
-		check(s[4].Obj.Type == "Kill" and s[4].Obj.Kind == "SkeletonKnight" and s[4].Obj.Personal == true and s[4].Obj.Count == 3
-			and s[4].Spawn.Kind == "SkeletonKnight" and s[4].Spawn.Spot == s[4].Guide, id .. ": three personal Skeleton Knight guards, spawned at the guard spot", show(s[4]))
+		check(s[4].Obj.Type == "Kill" and s[4].Obj.Kind == "SkeletonKnight" and s[4].Obj.Personal == true and s[4].Obj.Count == 5
+			and s[4].Spawn.Kind == "SkeletonKnight" and s[4].Spawn.Spot == s[4].Guide, id .. ": five personal Skeleton Knight guards, spawned at the guard spot", show(s[4]))
 		check(s[5].Obj.Type == "Timing" and s[5].Obj.Spot ~= nil, id .. ": the vein = a Timing panel at its spot", show(s[5].Obj))
 		check(#def.Reward.FreeItems == 1 and def.Reward.FreeItems[1].Id == "DeepMoonShard" and def.Reward.FreeItems[1].N == 1
 			and def.Reward.Items == nil and def.Reward.Gold == nil, id .. ": one Deep Moon Shard, paid free (not bound), nothing else", show(def.Reward))
@@ -219,7 +220,7 @@ runGroup("gates", function()
 	local cdef = w.Config.StoryQuests.Defs.DV1
 	for i = 1, 3 do w:Move(c, cdef.Steps[i].Obj.Spot) end
 	w:Move(c, cdef.Steps[4].Spawn.Spot)
-	for _ = 1, 3 do w.Story.Refresh(c); w:KillGuard(c) end
+	for _ = 1, G do w.Story.Refresh(c); w:KillGuard(c) end
 	w:Move(c, cdef.Steps[5].Obj.Spot)
 	w:Act(c, "DV1", "Open")
 	w:Advance(9)
@@ -245,9 +246,9 @@ runGroup("run", function()
 	check(w:Track(d, "DV1").St == 4 and #w.Spawns == 0, "mark 3 reached: the guards' step; far from their spot no guard yet", show({ w:Track(d, "DV1"), #w.Spawns }))
 	w:Move(p, def.Steps[4].Spawn.Spot)
 	check(#w.Spawns == 1 and w.Spawns[1].Kind == "SkeletonKnight" and w.Spawns[1].Opts.Near == true, "at the guard spot: one personal Skeleton Knight (Near)", tostring(w.Spawns[1] and w.Spawns[1].Kind))
-	-- API review 10/17: no farm - it pays a plain Skeleton's XP / gold (MonsterService Practice: no drops) and has 3x a knight's HP
+	-- API review 10/17: no farm - it pays a plain Skeleton's XP / gold (MonsterService Practice: no drops) and has 9x a knight's HP
 	local o1 = w.Spawns[1].Opts
-	check(o1.Practice == "Skeleton" and o1.HP == C0.MonsterTypes.SkeletonKnight.HP * 3, "the guard pays as a Skeleton (no drops), 3x HP", show({ o1.Practice, o1.HP }))
+	check(o1.Practice == "Skeleton" and o1.HP == C0.MonsterTypes.SkeletonKnight.HP * 9, "the guard pays as a Skeleton (no drops), 9x HP", show({ o1.Practice, o1.HP }))
 	w.Story.Refresh(p)
 	check(#w.Spawns == 1, "while it lives: no second guard", #w.Spawns)
 	w.Registry.MonsterService.MonsterKilled:Fire(p, { Kind = "SkeletonKnight", ZoneId = "SkeletonRuins", Personal = false, Position = vec(0, 0, 0), WarPoints = 0 })
@@ -258,11 +259,10 @@ runGroup("run", function()
 	w.Story.Refresh(p)
 	check(#w.Spawns == 2, "the next guard comes on the next tick", #w.Spawns)
 	w:KillGuard(p)
+	for _ = 3, G do w.Story.Refresh(p); w:KillGuard(p) end
+	check(w:Track(d, "DV1").St == 5 and #w.Spawns == G, "every guard down: the vein step, no extra guard", show({ w:Track(d, "DV1"), #w.Spawns }))
 	w.Story.Refresh(p)
-	w:KillGuard(p)
-	check(w:Track(d, "DV1").St == 5 and #w.Spawns == 3, "three guards down: the vein step, no fourth guard", show({ w:Track(d, "DV1"), #w.Spawns }))
-	w.Story.Refresh(p)
-	check(#w.Spawns == 3, "still no fourth guard on the vein step", #w.Spawns)
+	check(#w.Spawns == G, "still no extra guard on the vein step", #w.Spawns)
 	-- the vein: open far = nothing; at the spot a Timing panel; 2/5 fails (try again), 3/5 passes
 	w:Act(p, "DV1", "Open")
 	w:Advance(3)
@@ -313,7 +313,8 @@ runGroup("ko", function()
 	w.Story.Refresh(p)
 	check(#w.Spawns == 3, "back at the guard spot: a new first guard", #w.Spawns)
 	-- down at the vein with its Timing panel open: the panel closes, the step stays
-	w:KillGuard(p); w.Story.Refresh(p); w:KillGuard(p); w.Story.Refresh(p); w:KillGuard(p)
+	w:KillGuard(p)
+	for _ = 2, G do w.Story.Refresh(p); w:KillGuard(p) end
 	w:Move(p, def.Steps[5].Obj.Spot)
 	w:Act(p, "DV1", "Open")
 	w.PS.CharacterDied:Fire(p, p.Character)

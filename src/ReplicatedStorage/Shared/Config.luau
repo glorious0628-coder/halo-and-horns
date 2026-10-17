@@ -6346,6 +6346,7 @@ Config.Loot = {
 		-- time). Icons not drawn yet (no Config.UIArt part: the bag's code fallback until image gen 2 -> image dev)
 		KingJelly = { Kind = "Material", Name = "Royal Jelly", Sell = 60, Color = Color3.fromRGB(255, 140, 190), Icon = "IconKingJelly", Source = "Boss", Feature = "Crafting", Desc = "Artisans craft with it." },
 		ClatterGem = { Kind = "Material", Name = "Old Crown Gem", Sell = 400, Color = Color3.fromRGB(120, 200, 230), Icon = "IconClatterGem", Source = "Boss", Feature = "Crafting", Desc = "Artisans craft with it." }, -- Feature: drops only while that switch is on
+		-- (최종 검수 10/17: one deep vein run = ~4 min, so every recipe asks 3x the shards - one shard's 12 min target kept)
 		-- A23-215 (craft_curve_r1 §2): the top recipes' hard gates. DeepMoonShard = the guarded vein run in the ruins (one sure per
 		-- run, never bought from an NPC; tradeable); TrialCore = the artisans' Challenge daily (one a day, bound like every quest
 		-- item). Icons not drawn yet (no Config.UIArt part: the bag's code fallback)
@@ -10081,9 +10082,9 @@ Config.Craft = {
 		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 4, Jelly = 18, CopperOre = 8 }, XP = 60 },
 		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 30, BruteHorn = 14, IronOre = 16, OakLog = 8 }, XP = 150 },
 		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 80, KnightCrest = 40, IronOre = 30, OakLog = 18 }, XP = 400 },
-		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 70, Bone = 150, SilverOre = 40, ClatterGem = 1, DeepMoonShard = 4 }, XP = 900 },
-		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 140, Bone = 280, SilverOre = 80, ClatterGem = 3, DeepMoonShard = 16, TrialCore = 4 }, XP = 2000 },
-		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 300, Bone = 500, MoonCrystal = 160, ClatterGem = 8, KingJelly = 10, DeepMoonShard = 40, TrialCore = 10 }, XP = 4000 },
+		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 70, Bone = 150, SilverOre = 40, ClatterGem = 1, DeepMoonShard = 12 }, XP = 900 },
+		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 140, Bone = 280, SilverOre = 80, ClatterGem = 3, DeepMoonShard = 48, TrialCore = 4 }, XP = 2000 },
+		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 300, Bone = 500, MoonCrystal = 160, ClatterGem = 8, KingJelly = 10, DeepMoonShard = 120, TrialCore = 10 }, XP = 4000 },
 		-- alchemist tonics (④, crafting_market §4 + the gathered herbs; Kind Item = N bottles + the hammer's +N)
 		A1 = { Role = "Alch", Kind = "Item", Item = "MightTonic", N = 1, Lv = 1, Gold = 20, Mats = { Herb = 3, Jelly = 5 }, XP = 10 },
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
@@ -10113,16 +10114,16 @@ Config.Craft = {
 		-- jelly, petals, herbs -> goblin tooth -> bone, knight crest). Gold / XP sit between the weapon rows.
 		G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 8, Gold = 450, Mats = { IronOre = 6, OakLog = 4, GoblinTooth = 10 }, XP = 100 },
 		G2 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 2, Lv = 16, Gold = 3500, Mats = { MoonCrystal = 8, IronOre = 12, KnightCrest = 10, Bone = 20 }, XP = 500 },
-		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 16, KnightCrest = 30, Bone = 45, ClatterGem = 1, DeepMoonShard = 2 }, XP = 1400 }, -- A23-215: 75 min
+		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 16, KnightCrest = 30, Bone = 45, ClatterGem = 1, DeepMoonShard = 6 }, XP = 1400 }, -- A23-215: 75 min
 		R1 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 1, Lv = 8, Gold = 400, Mats = { CopperOre = 6, Glowcap = 4, GoblinTooth = 8 }, XP = 90 },
 		R2 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 2, Lv = 16, Gold = 3200, Mats = { SilverOre = 6, Glowcap = 8, BruteHorn = 10, Bone = 15 }, XP = 450 },
-		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 12, Glowcap = 12, KnightCrest = 24, ClatterGem = 1, DeepMoonShard = 2 }, XP = 1300 }, -- A23-215: 75 min
+		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 12, Glowcap = 12, KnightCrest = 24, ClatterGem = 1, DeepMoonShard = 6 }, XP = 1300 }, -- A23-215: 75 min
 		PA1 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 1, Lv = 5, Gold = 150, Mats = { Jelly = 20, Herb = 4, SlimeCore = 4 }, XP = 50 },
 		PA2 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 2, Lv = 12, Gold = 900, Mats = { GoblinTooth = 20, Herb = 10, BruteHorn = 6, OakLog = 6 }, XP = 160 },
-		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 30, KnightCrest = 15, Herb = 15, KingJelly = 2, DeepMoonShard = 2 }, XP = 700 }, -- A23-215: 60 min
+		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 30, KnightCrest = 15, Herb = 15, KingJelly = 2, DeepMoonShard = 6 }, XP = 700 }, -- A23-215: 60 min
 		PC1 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 1, Lv = 5, Gold = 120, Mats = { Petal = 10, Herb = 3, Jelly = 12 }, XP = 45 },
 		PC2 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 2, Lv = 12, Gold = 800, Mats = { GoblinTooth = 15, Petal = 15, Glowcap = 6 }, XP = 150 },
-		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 22, KnightCrest = 11, Glowcap = 9, KingJelly = 2, DeepMoonShard = 2 }, XP = 650 }, -- A23-215: 60 min
+		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 22, KnightCrest = 11, Glowcap = 9, KingJelly = 2, DeepMoonShard = 6 }, XP = 650 }, -- A23-215: 60 min
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",
