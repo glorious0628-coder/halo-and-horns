@@ -44,6 +44,7 @@ T.LocalWait = 3
 -- turns gray (ZeroCount); CountColor = each count label's own colour, given back when it has potions again
 T.ZeroCount = Color3.fromRGB(150, 150, 160)
 S.CountColor = setmetatable({}, { __mode = "k" })
+T.KingWarn = { Share = 0.4, Stage = "Retry" } -- QuickSlots.KingWarnStep (the rematch King, 최종 검수 10/18)
 T.Glow = { Color = Color3.fromRGB(255, 214, 72), Thick = 5, Time = 1.4, Pop = 1.15 } -- QuickSlots.Glow (after a KO)
 
 local function num(v, d)
@@ -196,6 +197,40 @@ function QuickSlots.Refresh()
 	return true
 end
 
+-- 최종 검수 10/18 (user: "물약 산 다음에 킹슬라임 잡을 때는 물약을 먹으면서 해야지"): in the rematch with MY King (the model
+-- FirstKOService marks FirstKO = "Retry", OwnerUserId = me, alive) my HP going under KingWarn.Share of its max the first
+-- time in that fight makes the HP potion slot shine once (QuickSlots.Glow: nothing without a potion; no text). Pure:
+-- due when that King is out, not warned for it yet and hp < Share x max
+function QuickSlots.KingWarnDue(king, warned, hp, maxHp)
+	if king == nil or king == warned then return false end
+	hp, maxHp = tonumber(hp), tonumber(maxHp)
+	if not hp or not maxHp or maxHp <= 0 or hp <= 0 then return false end
+	return hp < maxHp * T.KingWarn.Share
+end
+
+-- my living rematch King (workspace.Monsters), nil when none
+function QuickSlots.MyRetryKing()
+	local folder = workspace:FindFirstChild("Monsters")
+	if not folder or not LocalPlayer then return nil end
+	for _, m in folder:GetChildren() do
+		if m:GetAttribute("FirstKO") == T.KingWarn.Stage and m:GetAttribute("OwnerUserId") == LocalPlayer.UserId then
+			local root = m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")
+			if root and not root.Anchored then return m end -- an anchored root = it is dying (MonsterService)
+		end
+	end
+	return nil
+end
+
+-- the poll's check: once per rematch King (S.KingWarned = that model)
+function QuickSlots.KingWarnStep()
+	local king = QuickSlots.MyRetryKing()
+	local char = LocalPlayer and LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	if not (king and hum) or not QuickSlots.KingWarnDue(king, S.KingWarned, hum.Health, hum.MaxHealth) then return false end
+	S.KingWarned = king
+	return QuickSlots.Glow()
+end
+
 -- 최종 검수 #1 (game play r5: KO'd, nothing said what helps): the first HP potion slot I hold a potion in shines once -
 -- a gold rim that fades and a small pop (none with reduced motion); nothing without a potion. True when it shone
 function QuickSlots.Glow()
@@ -316,6 +351,8 @@ function QuickSlots.Start()
 			if not S.Hooked then hook() end
 			local ok, err = pcall(QuickSlots.Refresh)
 			if not ok then Util.Warn(TAG, "refresh failed: " .. tostring(err)) end
+			local okK, errK = pcall(QuickSlots.KingWarnStep)
+			if not okK then Util.Warn(TAG, "king warn failed: " .. tostring(errK)) end
 			task.wait(T.Poll)
 		end
 	end)
