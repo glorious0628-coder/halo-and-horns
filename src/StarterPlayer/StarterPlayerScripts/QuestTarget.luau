@@ -570,6 +570,9 @@ local function storyEntry(st, myZone, faction, pos)
 		return nil
 	end
 	local guide = st.Guide
+	-- 개발 2 r5 (M1_3 'To Tiny' / 'Return bag' had no mark): a step with no Guide but an NPC (a Deliver to Tiny / Folk1)
+	-- = the way to that NPC
+	if (type(guide) ~= "string" or guide == "") and type(st.Npc) == "string" and st.Npc ~= "" then return npcEntry(st, myZone, pos) end
 	if type(guide) ~= "string" or guide == "" then return nil end
 	local zone = guideZone(guide, faction)
 	local t = QuestTarget.Story(guide, myZone, pos, faction)

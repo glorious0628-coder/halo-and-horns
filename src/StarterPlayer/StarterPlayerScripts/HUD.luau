@@ -3875,7 +3875,10 @@ end
 function HUD.QuestGoal(text, serverGoal)
 	if type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end
 	if type(text) ~= "string" or text == "" then return nil end
-	local main = string.match(text, "^(.-)%s+·%s") or text
+	local head, rest = string.match(text, "^(.-)%s+·%s+(.+)$")
+	-- 개발 2 r5 ('Next goal · Learn a skill: meet Rose' showed 'Next goal.'): every Config.Tutorial.Text.Next* row starts
+	-- with the 'Next goal' tag - its goal is the part after it
+	local main = (head and string.lower(head) == "next goal") and rest or head or text
 	main = string.gsub(main, "%s+$", "")
 	if main == "" then return nil end
 	-- 최종 검수 10/14 (Korean client: 'Go to Otto's Forge in the Crossroads.' stayed English): the table's Source is the
@@ -5231,6 +5234,11 @@ function L.StoryTap(st, zone, panels)
 		return
 	end
 	local g = st.Guide
+	-- 개발 2 r5: no Guide but an NPC (M1_3's delivery to Tiny / Folk1) = the way to that NPC
+	if (g == nil or g == "") and type(st.Npc) == "string" and st.Npc ~= "" then
+		L.NpcWalk(st.Npc, zone, panels)
+		return
+	end
 	if g == nil then return end
 	if g == "Blacksmith" then
 		doUpgrade()
