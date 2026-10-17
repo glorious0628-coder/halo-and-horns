@@ -111,3 +111,5 @@ skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bri
 - 그 전까지: 병합이 올 때 sync·사진만. 10/17~20 급한 고침만 sync. 10/21 주: 6단계 교체 → 10줄 점검 + 걷기 시간.
 
 - 10/16 종료 전: 메인 Studio 소스 = 2a3489d1, place/는 15:10 게시판 그대로, Save As 안 함(코드는 git).
+
+- 10/17 밤 멈춤: 메인 Studio 창 하나(2:57에 연 창, 복구 창은 사용자가 닫음), 마지막 sync = d54ee16c(코드 == origin/main), Save As·게시 안 함(place/ = 10/16 15:10 dce0db87 그대로). 화요일 오전 재개: 창 개수 먼저 확인.
