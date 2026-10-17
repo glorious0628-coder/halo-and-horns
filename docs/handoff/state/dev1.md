@@ -1,5 +1,10 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/17 오전 — 앱 재시작 여러 번 (최신; 긴 명령은 끊김 → 덩어리마다 바로 커밋·push)
+- **dev1-first12 da277a7f** (push) = 10/16 밤 10 내용 + b81ee81c SignFit 위 칩도 피함 / 7be8d91a 거위 칩·[Join]은 M1_1 줄 사라질 때까지(HUD.EventsWait) / a7155259 Guide 없는 Npc 단계(M1_3 To Tiny·Return bag) 표시·누르기 = 그 NPC, 'Next goal ·' 줄 목표 글 / 0283a181 거리 글 테두리 진하게·마을 사람 말풍선 AlwaysOnTop / da277a7f #1 KO 화면 몬스터 머리 그림(DeathScreen.KindOf, 서버 Kind 오면 그것)·일어나면 HP 물약 칸 한 번 반짝(QuickSlots.Glow). 모두 최종 검수에 보고함.
+- 스윕(../Game-dev1grip vs ../wt_d1base, build/sw/_summary.txt, 이어 돌리기 = scratchpad sweep_rest.sh 방식: 요약에 없는 시험만): 197/253까지 새 실패 = test_audio(고침)뿐.
+- **▶ 다음 (최종 검수 10/17):** 개발 2 묶음(PracticeH 자리·Tiny·M1_3) 오면 같이 시험·병합(허수아비 F 한 대 → step 넘어가는지 다시) → dev1.md 큐: #2 폰 실기 확인(화면 신청) → 닫힌 문 판자·투명 벽 → 보이는 울타리(MapBuilder = 개발 2와 나눔) → #7 도감 빈 카드 획득처·진척 → #11 왕관 막대 내 기여 → #8 친구 위치.
+
 ## 10/16 밤 10 — 새 계정 세션 (최신)
 - **병합됨:** dev1-stow-fix f82a25f0 → main 85754011 (허리 무기 Down 65·바닥 0.4칸·Turn Z +4, 등 활 시위 Beam 숨김). 엔진 값: 뿔 몽둥이 끝 36°(걷기 28°) 바닥 위 0.25칸, 칼 40° — 허리 낮은 아바타라 바닥 규칙이 각도를 줄임.
 - **가지 dev1-first12 7671b89f** (push, ../Game-dev1grip, **dev2-first12 54a3be0d 합쳐 있음 → 서버와 한 번에 병합**): 2274799f 선물 창 마을에서만·Lv5 자물쇠 글 'Quest'·SignFit(땅 글 겹침 숨김, ORDER LightCap 다음) / e339aa98 허수아비(Practice 줄 GuideSpot, Scale 1.4·흔들림 24°)·OpenPanel 'Enhance' → 가방 스크롤 단계 무기 고른 채·M1_2 표시 'King Slime' / faf77e9c 머리 위 들기(Fx.HoldUp, 첫 무기·무기/스크롤/Gear 드롭)·레벨업 싸움 끝 묶음(Feel.levelQueue, HUD.LevelHold/LevelCount)·XP ×2(Fx Reward XPMult, 서버 아직)·2배 칩 한 번 반짝(HUD.PulseBoost) / 842cf8e4 test_audio 변이 / 7671b89f 5판: 첫 미션 진영·직업 고른 뒤 카메라 재스냅, 다시 태어난 뒤 30초 선물 창 안 뜸.
