@@ -1084,7 +1084,14 @@ end
 local function quiet()
 	if not LocalPlayer or LocalPlayer:GetAttribute("DataLoaded") ~= true then return false end
 	local hold = call("ShouldHoldBanners")
-	return hold ~= true
+	if hold == true then return false end
+	-- game play r8 (a card 'Defeated: 1 · Silver at 100' over the big KO!): the card waits until I am up again
+	local ds = C and C.DeathScreen
+	if type(ds) == "table" and type(ds.IsOpen) == "function" then
+		local ok, open = pcall(ds.IsOpen)
+		if ok and open == true then return false end
+	end
+	return true
 end
 
 -- one moment: the card in the middle (Reveal: from its silhouette / its card to the foil; Evolve: the old stage sways

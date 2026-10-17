@@ -468,10 +468,11 @@ check(lineWith(v, "Pick a weapon.") and action(v, "Cancel") and not action(v, "E
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 } })
 check(lineWith(v, "\n+3 → +4 · 70% chance") and action(v, "Enhance").Enabled, "enhance confirm: before → after + the chance before sending",
 	v.Lines[1] and v.Lines[1].Text)
-check(lineWith(v, "If it fails, it may drop by 1.") ~= nil and lineWith(v, "never break") == nil,
-	"a +1 or more weapon: a fail may drop it one step (no 'never break' line, user 10/14)")
+check(lineWith(v, "If it fails") == nil and lineWith(v, "never break") == nil and #v.Lines == 1
+	and v.Lines[1].Color == ((Config.Loot.FailDropChance or 0) > 0 and "Bad" or "Gold"),
+	"game play r8: no 'If it fails' line - a +1 weapon's chance is red when a fail may take a step", v.Lines[1] and v.Lines[1].Color)
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 1 } })
-check(lineWith(v, TXT.FailKeep) ~= nil, "a +0 weapon: nothing changes on a fail")
+check(#v.Lines == 1 and v.Lines[1].Color == "Gold", "a +0 weapon: the chance in gold (a fail changes nothing)", v.Lines[1] and v.Lines[1].Color)
 v = detail(nil, { Mode = { Item = "Enh70", Tier = 2 }, Pending = { Kind = "Use", Answered = false } })
 check(action(v, "Enhance").Text == "Checking…" and not action(v, "Enhance").Enabled, "a scroll use waiting: Checking…")
 v = detail(nil, { Mode = { Item = "Move30", From = 4, To = 1 } })
@@ -611,7 +612,10 @@ check(find(root, "Act_Enhance").Text == "Checking…", "the confirm waits")
 lastResult, lastAt = { Tier = 2, Before = 3, After = 4, Success = true }, CLOCK + 0.1
 CLOCK += 1
 update()
-check(T.S.Pending == nil and T.S.Mode and T.S.Mode.Tier == 2, "a result answers it; the same step stays for one-tap retries")
+check(T.S.Pending == nil and T.S.Mode == nil and T.S.Sel == "W:2" and find(root, "Act_Enhance") == nil,
+	"game play r8: a result answers it and ends the step - the weapon picked, no [Enhance] right away", T.S.Sel)
+T.S.Mode = { Item = "Enh70", Tier = 2 } -- the scroll picked again, then Cancel
+BagUI.Redraw()
 find(root, "Act_Cancel").OnClick()
 check(T.S.Mode == nil and T.S.Tab == "Scroll" and T.S.Sel == "I:Enh70", "Cancel goes back to the scroll")
 -- potions + quick slots

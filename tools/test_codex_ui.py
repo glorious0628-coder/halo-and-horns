@@ -116,6 +116,8 @@ def static(src: dict) -> list[tuple[str, bool]]:
         ("the back's lines and a slot's name are whole (each box as tall as its wrapped words, never a fixed box)",
          "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextWrapped = true," in cx
          and "AutomaticSize = Enum.AutomaticSize.Y, TextScaled = false, TextSize = 14, TextWrapped = true," in cx),
+        ("game play r8: a card moment waits while the KO screen is up (DeathScreen.IsOpen), then shows",
+         "local ok, open = pcall(ds.IsOpen)\n\t\tif ok and open == true then return false end" in cx),
     ]
 
 
@@ -201,7 +203,8 @@ MUTATIONS = [
      "\treturn type(name) == \"string\" and name or \"\""),
     ("CODEX", "the top bar inset ignored", "if ok and typeof(inset) == \"Vector2\" then pos += inset end", ""),
     ("CODEX", "the motion left running after closing", "local function cleanup()\n\tdisconnect()\n", "local function cleanup()\n"),
-    ("CODEX", "moments over the tutorial", "\treturn hold ~= true\n", "\treturn true\n"),
+    ("CODEX", "moments over the tutorial", "\tif hold == true then return false end\n", ""),
+    ("CODEX", "a card over the KO screen", "\t\tif ok and open == true then return false end\n", ""),
     ("CODEX", "moments before my data", '\tif not LocalPlayer or LocalPlayer:GetAttribute("DataLoaded") ~= true then return false end\n', ""),
     ("CODEX", "a new card shown in colour at once", '\tif payload.Event == "Card" then\n\t\tbefore = CodexUI.View(kind, nil, faction(), false)\n',
      '\tif payload.Event == "Card" then\n\t\tbefore = after\n'),
