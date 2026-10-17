@@ -45,8 +45,9 @@ MUTATIONS = [
     # A23-222: M1_1 = the Prince only, then the King's Hop (M1_2)
     ("A23-222: M1_1 leads to M1_3 again (the King's Hop skipped)", C, "Next = { Halo = { Id = \"M1_2\", Line = \"His big dad is up on the hill!\" },",
      "Next = { Halo = { Id = \"M1_3\", Line = \"His big dad is up on the hill!\" },"),
-    ("A23-222: M1_2's first row guides to the meadow", C, "{ Text = \"Defeat the King Slime\", ShortName = \"Defeat King\", Guide = \"KingHill\",",
-     "{ Text = \"Defeat the King Slime\", ShortName = \"Defeat King\", Guide = \"SlimeMeadow\","),
+    # (A23-227: the rematch row 6 guides to KingHill too: the pattern names row 1's FirstKO objective)
+    ("A23-222: M1_2's first row guides to the meadow", C, "ShortName = \"Defeat King\", Guide = \"KingHill\", Obj = { Type = \"Event\", Name = \"FirstKO\" } },",
+     "ShortName = \"Defeat King\", Guide = \"SlimeMeadow\", Obj = { Type = \"Event\", Name = \"FirstKO\" } },"),
     ("A23-222: the anvil step forgets a bag scroll used before (Past)", C,
      "Anvil = true,\n\t\t\tObj = { Type = \"Event\", Name = \"ScrollUsed\", Past = true },",
      "Anvil = true,\n\t\t\tObj = { Type = \"Event\", Name = \"ScrollUsed\" },"),

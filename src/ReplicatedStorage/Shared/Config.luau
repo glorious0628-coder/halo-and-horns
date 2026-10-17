@@ -2573,7 +2573,10 @@ Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
 	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
 	-- old "King Slime": its quests, the first 70% scroll and the dailies stay) the eldest, the King Slime the dad
-	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
+	-- r8 play (최종 검수 10/17): the Princes live around the meadow's entrance (M1_1's marker, MeadowArrival): spawn within 45,
+	-- home = that spot, never farther than 50 (MonsterService NEAR)
+	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235),
+		Near = { Spot = "MeadowArrival", Radius = 45, Leash = 50 } },
 	-- A23-87: 3 of the 10 woods goblin slots are Slingshot Goblins, 3 of the 8 ruins skeleton slots Skeleton Archers (the
 	-- zone totals stay); the meadow keeps its 12 green slimes (the first 10 minutes) and adds 2 hidden Flower Slimes
 	-- (Config.MonsterDensity.GlobalCap + 4 for them)

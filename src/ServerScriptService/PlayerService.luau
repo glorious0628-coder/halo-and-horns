@@ -484,6 +484,14 @@ local function onCharacterAdded(player, character)
 	local humanoid = character:WaitForChild("Humanoid", CHILD_TIMEOUT)
 	if not humanoid or not humanoid:IsA("Humanoid") then return end
 	bindCharacterDeath(player, character, humanoid)
+	-- r8 play (최종 검수 10/17: a Horns mage healed +2.3 HP/s at once = Roblox's default 1 %/s (1.28) + our rest 1 %/s): the
+	-- engine's default "Health" regen script never runs here (CombatService owns every regen). StarterCharacterScripts'
+	-- empty "Health" replaces it; any "Health" script in a character is removed anyway (now or when it comes later)
+	local function dropRegen(child)
+		if child.Name == "Health" and child:IsA("Script") then pcall(child.Destroy, child) end
+	end
+	for _, child in character:GetChildren() do dropRegen(child) end
+	character.ChildAdded:Connect(dropRegen)
 	-- A deferred engine callback must never turn an expired cosmetic request into a fresh spawn.
 	if character:GetAttribute("HHC_RestoreCancelled") then return end
 	if context and context.Native then

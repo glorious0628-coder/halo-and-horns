@@ -917,6 +917,22 @@ end
 -- every try was crowded the first crowded ground point is used (the AI slides them apart), so density never starves.
 -- A23-129: a try with a map prop inside the body (groundPoint def) is skipped like water, never even as the crowded
 -- fallback; every try blocked = nil (no spawn this pass, the next pass tries again).
+-- r8 play (최종 검수 10/17: the Slime Princes had all walked 250+ studs east of the quest marker at the meadow's entrance):
+-- def.Near = { Spot = a Config.StoryQuests.Landmarks key, Radius = n, Leash = n } = a kind that lives around a story
+-- marker: it spawns within Radius of the spot, its home IS the spot and it never wanders / chases farther than Leash from it
+local NEAR = {}
+function NEAR.Spot(def)
+	local n = type(def) == "table" and def.Near or nil
+	local L = type(Config.StoryQuests) == "table" and Config.StoryQuests.Landmarks or nil
+	local spot = type(n) == "table" and type(L) == "table" and L[n.Spot] or nil
+	return typeof(spot) == "Vector3" and spot or nil
+end
+function NEAR.Leash(rec)
+	local n = type(rec) == "table" and type(rec.Def) == "table" and rec.Def.Near or nil
+	local leash = type(n) == "table" and tonumber(n.Leash) or nil
+	return (leash and leash > 0) and leash or MC.LeashRadius
+end
+
 local function pickSpawnPoint(def, kind)
 	local zone = Config.Zones[def.Zone]
 	if not zone then return nil end
@@ -931,6 +947,22 @@ local function pickSpawnPoint(def, kind)
 			crowded = crowded or g
 		end
 		return nil
+	end
+	-- r8: a Near kind spawns around its marker (inside the zone's spawn inset), else the usual rules below
+	local near = NEAR.Spot(def)
+	if near then
+		local r = math.max(5, tonumber(def.Near.Radius) or 40)
+		for _ = 1, SPAWN_TRIES do
+			local a = Util.Random:NextNumber(0, math.pi * 2)
+			local d = Util.Random:NextNumber(0, r)
+			-- kept inside the zone's spawn inset (a marker on the zone's edge, like the meadow's entrance, has half its circle
+			-- outside: those tries land on the inset line instead of being wasted)
+			local hx, hz = math.max(0, zone.Size.X / 2 - inset), math.max(0, zone.Size.Z / 2 - inset)
+			local pt = Vector3.new(math.clamp(near.X + math.cos(a) * d, zone.Center.X - hx, zone.Center.X + hx), 0,
+				math.clamp(near.Z + math.sin(a) * d, zone.Center.Z - hz, zone.Center.Z + hz))
+			local g = try(pt)
+			if g then return g end
+		end
 	end
 	-- A23-45 pack kinds (def.Pack = { Max, Radius }, the ghost minions in 3-4s): next to a living one of the kind whose
 	-- pack (members within Radius x 1.5) is not full yet, else a free spot below = a new pack
@@ -1387,7 +1419,7 @@ local function spawnMonster(kind, opts)
 		HP = maxHP,
 		MaxHP = maxHP,
 		Golden = golden,
-		Home = point,
+		Home = (owner == nil and NEAR.Spot(def)) or point, -- r8: a Near kind's home is its marker
 		Alive = true,
 		Owner = owner,
 		Event = opts.Event == true or nil, -- spawned by SpawnEvent: outside the regular pool, never respawns
@@ -1926,7 +1958,7 @@ function MonsterService.Displace(record, mode, fromPosition, studs, player)
 		local ok = Config.ZoneAt(dest).Id == here
 		if ok and zone then
 			ok = insideZone(zone, dest, ZONE_MOVE_INSET)
-				and (typeof(record.Home) ~= "Vector3" or Util.FlatDistance(dest, record.Home) <= MC.LeashRadius)
+				and (typeof(record.Home) ~= "Vector3" or Util.FlatDistance(dest, record.Home) <= NEAR.Leash(record))
 		end
 		if ok then
 			local g, noHit = groundPoint(dest.X, dest.Z)
@@ -3630,7 +3662,7 @@ local function aiStep(rec, plist, now)
 
 	-- leash: go home and do not re-aggro for a moment (anti-jitter). (A monster standing in a town is out of its zone
 	-- and already handled above.)
-	if homeDist > MC.LeashRadius then
+	if homeDist > NEAR.Leash(rec) then
 		rec._returning = true
 		rec._target = nil
 		rec._noAggroUntil = math.max(rec._noAggroUntil, now + NO_REAGGRO_SECONDS)
@@ -3673,7 +3705,7 @@ local function aiStep(rec, plist, now)
 	end
 
 	if rec._returning then
-		if homeDist <= RETURN_DONE_DIST or (now >= rec._noAggroUntil and homeDist <= MC.LeashRadius * 0.75) then
+		if homeDist <= RETURN_DONE_DIST or (now >= rec._noAggroUntil and homeDist <= NEAR.Leash(rec) * 0.75) then
 			rec._returning = false
 		else
 			steer(rec, clampToZone(zone, rec.Home), pos, now)
