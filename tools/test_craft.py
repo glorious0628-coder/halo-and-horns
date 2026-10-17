@@ -69,7 +69,7 @@ MUTATIONS = [
     ("config: 10 starts a minute", C, "\tStartsPerMinute = 6,\n", "\tStartsPerMinute = 10,\n"),
     ("config: W2 costs 80", C, "Tier = 2, Lv = 1, Gold = 40,", "Tier = 2, Lv = 1, Gold = 80,"),
     ("config: W3 at craft Lv1", C, "Tier = 3, Lv = 5, Gold = 200,", "Tier = 3, Lv = 1, Gold = 200,"),
-    ("config: Sea Shell back in W3", C, "Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }", "Mats = { SlimeCore = 6, Jelly = 20, SeaShell = 10 }"),
+    ("config: Sea Shell back in W3", C, "Mats = { SlimeCore = 4, Jelly = 18, CopperOre = 8 }", "Mats = { SlimeCore = 4, Jelly = 18, SeaShell = 8 }"),
     ("config: XP at Lv30 goes on", C, "\tif l ~= l or l >= K.MaxLv then return 0 end\n", "\tif l ~= l then return 0 end\n"),
     # --- recipes on / off
     ("recipe: unknown materials allowed", R, "\t\tif not Config.Loot.Items[item] then return nil end\n", ""),

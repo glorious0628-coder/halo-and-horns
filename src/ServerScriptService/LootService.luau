@@ -474,8 +474,9 @@ function LootService.GrantItem(player, id, n, source)
 		return #gained
 	end
 	if not LOOT.Items[id] then return 0 end
-	-- A23-206: a quest / story reward ("Reward") is bound to the character
-	local given = addItem(player, data, id, n, source == "Reward", source == "Reward")
+	-- A23-206: a quest / story reward ("Reward") is bound to the character; 장인 2부 "RewardFree" (the deep vein's shard)
+	-- fits a full bag the same way but stays free (tradeable)
+	local given = addItem(player, data, id, n, source == "Reward" or source == "RewardFree", source == "Reward")
 	if given > 0 then publish(player, data) end
 	return given
 end

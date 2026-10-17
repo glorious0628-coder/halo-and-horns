@@ -2789,7 +2789,8 @@ runGroup("a23-199 offer, pickup, deliver", function()
 			{ Text = "Find the box", Guide = "TestBox", Obj = { Type = "Pickup", Spot = "TestBox", Radius = 8 } },
 			{ Text = "Bring it to Tiny", Guide = "Crossroads", Npc = "TestKid", Obj = { Type = "Deliver" } },
 		},
-		Reward = { GoldN = 7, Potion = "HP", N = 2 } } -- 10/16 ④: a Reward.Potion is paid (the dailies' Easy rewards)
+		Reward = { GoldN = 7, Potion = "HP", N = 2, -- 10/16 ④: a Reward.Potion is paid (the dailies' Easy rewards)
+			Side = { Halo = { Items = { { Id = "Enh30", N = 1 } } }, Horns = { Items = { { Id = "Enh10", N = 1 } } } } } } -- A23-215
 	table.insert(SQ.Subs, "TOFFER")
 	w:Npc("TestKid", vec(0, 0, 0))
 	local p, d = joinAfterM23(w, 9901, "Halo", { Pos = vec(2, 0, 2) })
@@ -2800,6 +2801,10 @@ runGroup("a23-199 offer, pickup, deliver", function()
 	check(w.Story.TalkToNpc(p, "TestKid") == "Offer:TOFFER" and #panels == before + 1 and panels[#panels].Kind == "Offer"
 		and panels[#panels].Arg.Id == "TOFFER" and panels[#panels].Arg.Npc == "TestKid",
 		"talking to Tiny: OpenPanel 'Offer' { Id, Npc } ([Accept] / [Decline])", show(panels[#panels] and panels[#panels].Arg))
+	local preview = {}
+	for _, row in (panels[#panels].Arg.Reward or {}).Items or {} do preview[row.Id] = row.N end
+	check(preview.HP == 2 and preview.Enh30 == 1 and preview.Enh10 == nil,
+		"A23-215 the offer's reward shows my side's extra (Reward.Side.Halo: Enh30), not the other side's", show(preview))
 	w:Act(p, "TOFFER", "Decline")
 	check(w:Track(d, "TOFFER") == nil and d.Story.Done.TOFFER == nil, "Decline: nothing saved", show(d.Story.Subs.TOFFER))
 	check(w.Story.TalkToNpc(p, "TestKid") == "Offer:TOFFER", "... and the next talk asks again", "")
@@ -2835,6 +2840,8 @@ runGroup("a23-199 offer, pickup, deliver", function()
 	check(w.Story.TalkToNpc(p, "TestKid") == "TOFFER" and d.Story.Done.TOFFER == true and (d.BankGold or 0) == bank + 7,
 		"talking to Tiny with the box: delivered, the quest ends (+7 gold)", show({ d.Story.Done.TOFFER, (d.BankGold or 0) - bank }))
 	check((d.HPPotionCount or 0) == hp + 2, "... and Reward.Potion HP x2 is really paid (10/16 ④)", show({ hp, d.HPPotionCount }))
+	check((d.Items or {}).Enh30 == 1 and (d.Items or {}).Enh10 == nil and (d.ItemsBound or {}).Enh30 == 1,
+		"A23-215 Reward.Side: a Halo player gets the Halo row (Enh30, bound), never the Horns row", show({ d.Items, d.ItemsBound }))
 	check(w.Story.TalkToNpc(p, "TestKid") == nil, "done: Tiny has nothing more", "")
 	-- an Offer quest of another side / not met is never offered
 	local q, dq = joinAfterM23(w, 9902, "Horns", { Pos = vec(2, 0, 2) })

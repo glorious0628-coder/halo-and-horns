@@ -194,7 +194,7 @@ Config.Data = {
 		AutoCombatUnlocked = false, -- A23-1: set once by the crown-shard quest
 		AutoCombatEnabled = false, -- A23-1: the player's saved ON/OFF (starts OFF, never auto-enabled)
 		-- story quests (StoryQuestService): active main + subs, finished ids, choices, one-time firsts
-		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {} },
+		Story = { Main = { Id = "" }, Subs = {}, Done = {}, Pick = {}, First = {}, Runs = {} }, -- Runs: 장인 2부 run counts (StoryQuestService)
 		-- A23-12 drops (LootService): item id -> count, scroll enhancement per weapon tier (array, kept through
 		-- rebirth), one-time loot flags (e.g. FirstScroll = the guaranteed first Slime Prince scroll)
 		Items = {},
@@ -6390,6 +6390,12 @@ Config.Loot = {
 		-- time). Icons not drawn yet (no Config.UIArt part: the bag's code fallback until image gen 2 -> image dev)
 		KingJelly = { Kind = "Material", Name = "Royal Jelly", Sell = 60, Color = Color3.fromRGB(255, 140, 190), Icon = "IconKingJelly", Source = "Boss", Feature = "Crafting", Desc = "Artisans craft with it." },
 		ClatterGem = { Kind = "Material", Name = "Old Crown Gem", Sell = 400, Color = Color3.fromRGB(120, 200, 230), Icon = "IconClatterGem", Source = "Boss", Feature = "Crafting", Desc = "Artisans craft with it." }, -- Feature: drops only while that switch is on
+		-- (최종 검수 10/17: one deep vein run = ~4 min, so every recipe asks 3x the shards - one shard's 12 min target kept)
+		-- A23-215 (craft_curve_r1 §2): the top recipes' hard gates. DeepMoonShard = the guarded vein run in the ruins (one sure per
+		-- run, never bought from an NPC; tradeable); TrialCore = the artisans' Challenge daily (one a day, bound like every quest
+		-- item). Icons not drawn yet (no Config.UIArt part: the bag's code fallback)
+		DeepMoonShard = { Kind = "Material", Name = "Deep Moon Shard", Sell = 20, Color = Color3.fromRGB(120, 105, 230), Icon = "IconDeepMoonShard", Source = "Deep", Feature = "Crafting", Desc = "Artisans craft with it." },
+		TrialCore = { Kind = "Material", Name = "Trial Core", Sell = 30, Color = Color3.fromRGB(240, 120, 90), Icon = "IconTrialCore", Source = "Quest", Feature = "Crafting", Desc = "Artisans craft with it." },
 		Candy = { Kind = "Material", Name = "Candy", Sell = 5, Color = Color3.fromRGB(255, 140, 60), Icon = "IconCandy" }, -- Halloween kinds
 		-- NewZones (A23-123): one material per new field, priced between its level neighbours (Jelly 2 / Goblin Tooth 6 /
 		-- Old Bone 14). Icons not drawn yet (TODO image gen 2 -> image dev; until then the code fallback)
@@ -6425,7 +6431,7 @@ Config.Loot = {
 	},
 	-- display order in the item list
 	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
-		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "Candy",
+		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "DeepMoonShard", "TrialCore", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
 		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
 	-- per monster Kind: rows rolled independently. { Item = id, P = chance, N = count } | { Potion = "HP"|"MP", P }
@@ -10152,12 +10158,15 @@ Config.Craft = {
 	Recipes = {
 		-- 장인 ② (최종 검수 10/14): no W1 (tier 1 is the free class weapon); W2 = the first craft, from N0's harvest only
 		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Herb = 3, CopperOre = 2 }, XP = 20 },
-		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 6, Jelly = 20, CopperOre = 10 }, XP = 60 },
-		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 20, BruteHorn = 10, IronOre = 8, OakLog = 4 }, XP = 150 },
-		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 30, KnightCrest = 12, IronOre = 15, OakLog = 6 }, XP = 400 },
-		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 30, Bone = 60, CaptainBadge = 1, SilverOre = 12 }, XP = 900 },
-		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 60, Bone = 100, CaptainBadge = 2, ClatterGem = 1, SilverOre = 25 }, XP = 2000 },
-		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 100, CaptainBadge = 6, ClatterGem = 3, KingJelly = 10, MoonCrystal = 20 }, XP = 4000 },
+		-- A23-215 (craft_curve_r1 §2-1, activity targets 12 / 30 / 75 / 180 / 450 / 1125 min): W3..W9 harder by other kinds of
+		-- effort (boss gems, the deep vein, the Challenge daily), not by more of the easy ones; no Captain's Badge (no waiting
+		-- six weeks); XP as before (the re-base waits for the weekly gift)
+		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 4, Jelly = 18, CopperOre = 8 }, XP = 60 },
+		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 30, BruteHorn = 14, IronOre = 16, OakLog = 8 }, XP = 150 },
+		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 80, KnightCrest = 40, IronOre = 30, OakLog = 18 }, XP = 400 },
+		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 70, Bone = 150, SilverOre = 40, ClatterGem = 1, DeepMoonShard = 12 }, XP = 900 },
+		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 140, Bone = 280, SilverOre = 80, ClatterGem = 3, DeepMoonShard = 48, TrialCore = 4 }, XP = 2000 },
+		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 300, Bone = 500, MoonCrystal = 160, ClatterGem = 8, KingJelly = 10, DeepMoonShard = 120, TrialCore = 10 }, XP = 4000 },
 		-- alchemist tonics (④, crafting_market §4 + the gathered herbs; Kind Item = N bottles + the hammer's +N)
 		A1 = { Role = "Alch", Kind = "Item", Item = "MightTonic", N = 1, Lv = 1, Gold = 20, Mats = { Herb = 3, Jelly = 5 }, XP = 10 },
 		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
@@ -10168,7 +10177,7 @@ Config.Craft = {
 		-- 최종 검수 10/15: AP1 / T1 = herbs only (the alchemist's / tamer's N0 harvest, no hunting before the first craft)
 		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 8 },
 		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
-		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 5, CopperOre = 3 }, XP = 20 },
+		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 10, CopperOre = 8, SlimeCore = 2 }, XP = 20 }, -- A23-215: 8-12 min
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
 		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
@@ -10187,16 +10196,16 @@ Config.Craft = {
 		-- jelly, petals, herbs -> goblin tooth -> bone, knight crest). Gold / XP sit between the weapon rows.
 		G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 8, Gold = 450, Mats = { IronOre = 6, OakLog = 4, GoblinTooth = 10 }, XP = 100 },
 		G2 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 2, Lv = 16, Gold = 3500, Mats = { MoonCrystal = 8, IronOre = 12, KnightCrest = 10, Bone = 20 }, XP = 500 },
-		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 20, MoonCrystal = 15, KnightCrest = 40, Bone = 60 }, XP = 1400 },
+		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 16, KnightCrest = 30, Bone = 45, ClatterGem = 1, DeepMoonShard = 6 }, XP = 1400 }, -- A23-215: 75 min
 		R1 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 1, Lv = 8, Gold = 400, Mats = { CopperOre = 6, Glowcap = 4, GoblinTooth = 8 }, XP = 90 },
 		R2 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 2, Lv = 16, Gold = 3200, Mats = { SilverOre = 6, Glowcap = 8, BruteHorn = 10, Bone = 15 }, XP = 450 },
-		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 15, MoonCrystal = 12, Glowcap = 15, KnightCrest = 30 }, XP = 1300 },
+		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 12, Glowcap = 12, KnightCrest = 24, ClatterGem = 1, DeepMoonShard = 6 }, XP = 1300 }, -- A23-215: 75 min
 		PA1 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 1, Lv = 5, Gold = 150, Mats = { Jelly = 20, Herb = 4, SlimeCore = 4 }, XP = 50 },
 		PA2 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 2, Lv = 12, Gold = 900, Mats = { GoblinTooth = 20, Herb = 10, BruteHorn = 6, OakLog = 6 }, XP = 160 },
-		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 40, KnightCrest = 20, Herb = 20 }, XP = 700 },
+		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 30, KnightCrest = 15, Herb = 15, KingJelly = 2, DeepMoonShard = 6 }, XP = 700 }, -- A23-215: 60 min
 		PC1 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 1, Lv = 5, Gold = 120, Mats = { Petal = 10, Herb = 3, Jelly = 12 }, XP = 45 },
 		PC2 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 2, Lv = 12, Gold = 800, Mats = { GoblinTooth = 15, Petal = 15, Glowcap = 6 }, XP = 150 },
-		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 30, KnightCrest = 15, Glowcap = 12 }, XP = 650 },
+		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 22, KnightCrest = 11, Glowcap = 9, KingJelly = 2, DeepMoonShard = 6 }, XP = 650 }, -- A23-215: 60 min
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",

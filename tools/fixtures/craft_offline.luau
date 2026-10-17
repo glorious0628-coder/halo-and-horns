@@ -242,8 +242,8 @@ runGroup("config", function()
 		check(r and r.Role == "Smith" and r.Kind == "Weapon" and r.Tier == x[1] and r.Lv == x[2] and r.Gold == x[3] and r.XP == x[4],
 			"recipe tier / craft Lv / gold / XP as the design table", id .. " " .. show(r))
 	end
-	check(K.Recipes.W2.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 8 and K.Recipes.W6.Mats.SilverOre == 12
-		and K.Recipes.W9.Mats.MoonCrystal == 20 and K.Recipes.W3.Mats.SeaShell == nil and K.Recipes.W5.Mats.CrystalShard == nil,
+	check(K.Recipes.W2.Mats.CopperOre == 2 and K.Recipes.W4.Mats.IronOre == 16 and K.Recipes.W6.Mats.SilverOre == 40
+		and K.Recipes.W9.Mats.MoonCrystal == 160 and K.Recipes.W3.Mats.SeaShell == nil and K.Recipes.W5.Mats.CrystalShard == nil,
 		"gathered ores in the ladder (copper, iron, silver, moon crystal); no Sea Shell / Crystal Shard (one new zone only)", "")
 	for _, key in { "NotArtisan", "NeedLevel", "NeedMats", "NeedGold", "Far", "Busy", "Full", "Auto" } do
 		check(type(K.Text[key]) == "string" and K.Text[key] ~= "", "a short text for every refusal", key)
@@ -273,13 +273,23 @@ runGroup("recipes", function()
 	end })
 	check(gem.C.RecipeOn("W7") ~= nil and gem.C.RecipeOn("W9") ~= nil, "the new drops (and T9) switch W7 / W9 on by themselves", "")
 	local nogem = cWorld({ EditConfig = function(c) c.Loot.Items.ClatterGem = nil end })
-	check(nogem.C.RecipeOn("W7") == nil and nogem.C.RecipeOn("W9") == nil and nogem.C.RecipeOn("W6") ~= nil,
-		"without the Clatter Gem item W7 / W9 are off again (the item check stays)", "")
+	check(nogem.C.RecipeOn("W6") == nil and nogem.C.RecipeOn("W7") == nil and nogem.C.RecipeOn("W9") == nil and nogem.C.RecipeOn("W5") ~= nil,
+		"without the Clatter Gem item W6 / W7 / W9 are off again (A23-215: W6 needs a gem too; the item check stays)", "")
+	local noshard = cWorld({ EditConfig = function(c) c.Loot.Items.DeepMoonShard = nil end })
+	check(noshard.C.RecipeOn("W6") == nil and noshard.C.RecipeOn("G3") == nil and noshard.C.RecipeOn("W5") ~= nil,
+		"A23-215: without the Deep Moon Shard item its recipes (W6.., G3 ..) are off", "")
+	local KR = w.Config.Craft.Recipes
+	local w6 = KR.W6.Mats
+	local w9 = KR.W9.Mats
+	check(w6.CaptainBadge == nil and KR.W7.Mats.CaptainBadge == nil and w9.CaptainBadge == nil and w6.DeepMoonShard == 12
+		and KR.W7.Mats.DeepMoonShard == 48 and KR.W7.Mats.TrialCore == 4 and w9.DeepMoonShard == 120 and w9.TrialCore == 10
+		and w9.ClatterGem == 8 and w9.KingJelly == 10,
+		"A23-215: no Captain's Badge in W6 / W7 / W9; deep shards 4 / 16 / 40, trial cores 4 / 10, W9 8 gems + 10 royal jelly", show(w9))
 	local gp = smith(nogem, 8)
 	startAndHammer(nogem, gp, HONEST)
 	local ginfo = last(fired(nogem, "CraftInfo", gp))
-	check(ginfo and type(ginfo.On) == "table" and table.concat(ginfo.On, ",") == "W1,W2,W3,W4,W5,W6",
-		"CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W7 / W9)", ginfo and show(ginfo.On) or "")
+	check(ginfo and type(ginfo.On) == "table" and table.concat(ginfo.On, ",") == "W1,W2,W3,W4,W5",
+		"CraftInfo.On leaves out the recipes that are off (no Clatter Gem: no W6 / W7 / W9)", ginfo and show(ginfo.On) or "")
 	-- C1: LootService's real AddSpare / SpareRoom (no doubles)
 	local real = cWorld({ RealSpare = true })
 	check(real.C.RecipeOn("W1") ~= nil and real.C.RecipeOn("W9") ~= nil, "the real LootService.AddSpare / SpareRoom switch the weapon recipes on", "")
@@ -619,11 +629,11 @@ runGroup("alchemist goods", function()
 	local K0 = C0.Craft.Recipes
 	check(K0.AP1.Role == "Alch" and K0.AP1.Kind == "Potion" and K0.AP1.Potion == "HP" and K0.AP1.N == 2 and K0.AP1.Mats.Herb == 3
 		and K0.AP1.Mats.Jelly == nil and K0.AP2.Potion == "MP" and K0.AS1.Kind == "Item" and K0.AS1.Item == "Enh70"
-		and K0.AS1.Mats.Herb == 5 and K0.AS1.Mats.CopperOre == 3 and K0.AS1.Lv == 3,
+		and K0.AS1.Mats.Herb == 10 and K0.AS1.Mats.CopperOre == 8 and K0.AS1.Mats.SlimeCore == 2 and K0.AS1.Lv == 3,
 		"Config: HP potions from 3 herbs (최종 검수 10/15), MP potions and the 70% scroll (Alch)", show({ K0.AP1, K0.AS1 }))
 	check(w.C.RecipeOn("AP1") ~= nil and w.C.RecipeOn("AS1") ~= nil and w.C.RecipeOn("APX") == nil,
 		"a Potion recipe is on only for a real potion (HP / MP)", "")
-	local stock = { Herb = 40, Jelly = 20, CopperOre = 10, Petal = 10 }
+	local stock = { Herb = 40, Jelly = 20, CopperOre = 10, Petal = 10, SlimeCore = 4 }
 	local p, d = smith(w, 11, { Items = deepCopy(stock) }, "Mage")
 	local hp = C0.PotionStockKey("HP")
 	local before = d[hp] or 0
@@ -643,8 +653,9 @@ runGroup("alchemist goods", function()
 	local enh = d.Items.Enh70 or 0
 	startAndHammer(w, p, HONEST, { Recipe = "AS1" })
 	local res2 = last(fired(w, "CraftResult", p))
-	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 32 and d.Items.CopperOre == 7,
-		"AS1 at Lv3: 70% scrolls (1 + the hammer's +N) from 5 herbs + 3 copper", show({ res2, d.Items }))
+	check(res2 and res2.Item == "Enh70" and (d.Items.Enh70 or 0) == enh + 1 + res2.Plus and d.Items.Herb == 27 and d.Items.CopperOre == 2
+		and d.Items.SlimeCore == 2,
+		"AS1 at Lv3: 70% scrolls (1 + the hammer's +N) from 10 herbs + 8 copper + 2 slime cores (A23-215)", show({ res2, d.Items }))
 	-- a blacksmith cannot make them
 	local s = smith(w, 12, { Items = deepCopy(stock) })
 	check(w.C.TryStart(s, "AP1") == "role" and w.C.TryStart(s, "AS1") == "role", "a blacksmith cannot brew", "")
