@@ -535,6 +535,55 @@ runGroup("anvil", function()
 	check(#w.Granted == g0 and sd.Story.First.AnvilScroll == nil, "not on the anvil row: Otto's talk grants no scroll", "")
 end)
 
+------------------------------------------------------------------ 3b2. A23-225: the story's first enhance always succeeds (once a save)
+runGroup("sure first enhance", function()
+	local w = koWorld()
+	local SF = w.Config.Loot.SureFirst
+	check(type(SF) == "table" and SF.Quest == "M1_2" and SF.Item == "Enh70" and SF.Flag == "SureEnhance", "Config.Loot.SureFirst = M1_2 / Enh70 / SureEnhance", show(SF))
+	local function use(p, item, tier)
+		w:Advance(1) -- RateLimits.UseItem
+		w.Net.Get("UseItem").OnServerEvent:Fire(p, item, tier)
+		w:Flush()
+	end
+	-- on the anvil row: the first 70% scroll succeeds even on a roll that would fail
+	local p, d = joinKO(w, 1271, "Halo", { Tier = 2, Mask = 3, Data = { Items = { Enh70 = 2 }, QuickSlots = ",," } })
+	toAnvil(w, p)
+	check(w:Track(d, ID).St == 5, "at the anvil row", "")
+	w.Script = { 0.99 }
+	use(p, "Enh70", 2)
+	check(d.WeaponEnhance[2] == 1 and d.LootFlags.SureEnhance == true and w:Track(d, ID).St == 6,
+		"the first 70% scroll on the anvil row: +0 -> +1 even on a 0.99 roll, the flag saved, on to the rematch", show({ d.WeaponEnhance[2], d.LootFlags }))
+	-- the second one keeps its 70% and the fail rule (0.99 fails, 0.0 = the 50% drop)
+	w.Script = { 0.99, 0.0 }
+	use(p, "Enh70", 2)
+	check(d.WeaponEnhance[2] == 0 and (d.Items.Enh70 or 0) == 0, "the next scroll: the usual 70% (a 0.99 roll fails and drops +1 -> +0)", show(d.WeaponEnhance))
+	w.Script = {}
+	-- not on the anvil row (row 1): the usual chance
+	local q, qd = joinKO(w, 1272, "Horns", { Tier = 2, Mask = 3, Data = { Items = { Enh70 = 1 }, QuickSlots = ",," } })
+	w.Script = { 0.99, 0.9 }
+	use(q, "Enh70", 2)
+	check(qd.WeaponEnhance[2] == 0 and qd.LootFlags.SureEnhance == nil, "row 1 (before the anvil row): no sure success, no flag", show(qd.WeaponEnhance))
+	-- another scroll kind on the anvil row: its own chance
+	local r, rd = joinKO(w, 1273, "Neutral", { Tier = 2, Mask = 3, Data = { Items = { Enh30 = 1 }, QuickSlots = ",," } })
+	toAnvil(w, r)
+	w.Script = { 0.99, 0.9 }
+	use(r, "Enh30", 2)
+	check(rd.WeaponEnhance[2] == 0 and rd.LootFlags.SureEnhance == nil, "a 30% scroll on the anvil row: its own chance (only the 70% one is sure)", show(rd.WeaponEnhance))
+	-- an old save past M1_2: never
+	local s, sd = joinKO(w, 1274, "Halo", { Tier = 2, Mask = 3, Done = { M1_1 = true, M1_2 = true }, Data = { Items = { Enh70 = 1 }, QuickSlots = ",," } })
+	w.Script = { 0.99, 0.9 }
+	use(s, "Enh70", 2)
+	check(sd.WeaponEnhance[2] == 0 and sd.LootFlags.SureEnhance == nil, "a save past M1_2: the usual chance", show(sd.WeaponEnhance))
+	-- once a save: a flag already set = the usual chance even on the anvil row
+	local t, td = joinKO(w, 1275, "Halo", { Tier = 2, Mask = 3, Data = { Items = { Enh70 = 1 }, QuickSlots = ",,", LootFlags = { SureEnhance = true } } })
+	toAnvil(w, t)
+	w.Script = { 0.99, 0.9 }
+	use(t, "Enh70", 2)
+	check(td.WeaponEnhance[2] == 0, "the flag already set (used once before): the usual chance", show(td.WeaponEnhance))
+	w.Script = {}
+	local _ = { q, r, s, t }
+end)
+
 ------------------------------------------------------------------ 3c. the personal King switched off (Config.FirstKOKing.Enabled = false)
 -- the rematch row (6) can only be finished by the personal King: with the King off it passes by itself (the main never sticks);
 -- the KO row is told by FirstKOService ("Tell": Event FirstKO, checked in tools/fixtures/first_ko_king_offline.luau)

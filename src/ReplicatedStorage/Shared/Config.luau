@@ -6366,6 +6366,10 @@ Config.Loot = {
 	MaxEnhance = 10, -- +10 = attack x2
 	EnhancePerLevel = 0.10, -- +1 = attack +10% (Config.EnhanceMult)
 	FailDropChance = 0.5, -- a failed enhance scroll: 50% the weapon loses one level (never below +0), 50% it stays
+	-- A23-225 (최종 검수 추천 "꼭 성공", user 10/17 "이어서 해줘"): the story's first enhance - an Item scroll used while Quest's
+	-- current step is its Anvil step (Otto's window or the bag alike) - always succeeds, ONCE per save (LootFlags[Flag], saved
+	-- before the result). Every other use keeps its chance and the fail rule (A23-11); no pity anywhere (A23-203)
+	SureFirst = { Quest = "M1_2", Item = "Enh70", Flag = "SureEnhance" },
 	ItemCap = 999, -- per item id
 	FullNoticeSeconds = 300, -- review B7: a "가득 찼어요" notice repeats at most once per item id per 5 minutes
 	GoldenMult = 3, -- golden monsters: every drop chance x3 (capped at 100%)

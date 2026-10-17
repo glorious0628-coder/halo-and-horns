@@ -47,6 +47,12 @@ MAIN_HEAD = 'Kind = "Main", Chapter = 1, Type = "Combat", Title = "The King\'s H
 MUTATIONS = [
     # the definition (A23-222: the King's Hop is the main M1_2, six rows, no keeps; the old sub KO1 is gone)
     ("M1_2 out of the main chain", C, 'Main = { "M1_1", "M1_2", "M1_3",', 'Main = { "M1_1", "M1_3",'),
+    # A23-225: the story's first enhance always succeeds, once a save
+    ("A23-225: never sure", "LOOT_SOURCE", "\tlocal success = sure or rng:NextNumber() < def.Chance\n", "\tlocal success = rng:NextNumber() < def.Chance\n"),
+    ("A23-225: any scroll is sure", "LOOT_SOURCE", "if type(SF) == \"table\" and id == SF.Item and", "if type(SF) == \"table\" and"),
+    ("A23-225: sure on any step", "LOOT_SOURCE", "if type(step) == \"table\" and step.Anvil == true then", "if okS and type(st) == \"number\" then"),
+    ("A23-225: sure every time (no flag check)", "LOOT_SOURCE", " and data.LootFlags[SF.Flag] ~= true\n", "\n"),
+    ("A23-225: the flag never saved", "LOOT_SOURCE", "\t\t\tdata.LootFlags[SF.Flag] = true -- saved with the scroll taken, before the result\n", ""),
     ("M1_2 gets the old Lv cap back", C, MAIN_HEAD, MAIN_HEAD + ' Requires = { MaxLevel = 8 },'),
     ("M1_2 waits for no potion yet", C, MAIN_HEAD, MAIN_HEAD + ' Requires = { NoPotionYet = true },'),
     ("M1_2 needs the King on", C, MAIN_HEAD, MAIN_HEAD + ' Requires = { KingOn = true },'),
