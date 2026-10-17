@@ -27,6 +27,7 @@ local function leapWorld(opts)
 	local w = newWorld({ EditConfig = opts.EditConfig })
 	local C = w.Config
 	w.Hits, w.Strikes, w.Town, w.Dead, w.RootOf, w.Pivots, w.Faces = {}, {}, {}, {}, {}, {}, {}
+	w.DataOf = {}
 	w.Ground = opts.Ground or function(x, z) return vec(x, 1, z), false end
 	local util = setmetatable({
 		IsAlive = function(p) return not w.Dead[p] end,
@@ -39,7 +40,9 @@ local function leapWorld(opts)
 		FACE = { Active = w.Faces, Keep = 0.6 },
 		S = { CombatService = { DamagePlayer = function(p, dmg, _, crit, kind)
 			table.insert(w.Hits, { P = p, Dmg = dmg, Crit = crit, Kind = kind })
-		end } },
+		end },
+			-- A23-227: the saves the field King's shield reads (w.DataOf[p]; none = no story yet)
+			PlayerService = { GetData = function(p) return w.DataOf[p] end } },
 		Players = w.Players,
 		isPlayerInTown = function(p) return w.Town[p] == true end,
 		warnThrottled = function(_, msg) table.insert(w.Warnings, tostring(msg)) end,
@@ -172,6 +175,62 @@ runGroup("the circle", function()
 	w:Try(king, a)
 	w:Advance(1.01)
 	check(w:HitsOf(a) == 1 and w:HitsOf(b) == 1 and w:HitsOf(c) == 0, "every valid player in the circle is hit once; outside nobody")
+end)
+
+-- A23-227 (최종 검수 10/17, r6 play): the FIELD King never targets or hits a player below FirstKOKing.FieldSafeBelow (10) whose
+-- story has not done FieldSafeUntil (M1_2, the King's Hop); a personal King is not the field King
+runGroup("field king shield (A23-227)", function()
+	local C = leapWorld().Config
+	local F = C.FirstKOKing
+	check(F.FieldSafeUntil == "M1_2" and F.FieldSafeBelow == 10 and F.Kind == "SlimeKing", "Config: FieldSafeUntil M1_2, FieldSafeBelow 10", show(F))
+	local m = zoneCenter(C, "SlimeMeadow")
+	local spot = vec(m.X + 6, 1, m.Z)
+	local function landWith(level, done)
+		local w = leapWorld()
+		local king = w:Rec("SlimeKing", m)
+		local p = w:Player(1, m + vec(6, 3, 0), { Level = level, PlaytimeSeconds = 3600 })
+		if done ~= nil then w.DataOf[p] = { Story = { Done = { M1_2 = done or nil } } } end
+		w:Try(king, p)
+		w:Move(p, spot + vec(1, 3, 0))
+		w:Advance(1.01)
+		return w:HitsOf(p)
+	end
+	check(landWith(5, false) == 0, "Lv5 on the King's Hop (M1_2 not done): the field King's landing does not hit")
+	check(landWith(5, nil) == 0, "Lv5 with no story yet: not hit either")
+	check(landWith(9, false) == 0, "Lv9, M1_2 not done: not hit")
+	check(landWith(5, true) == 1, "Lv5 with M1_2 done: hit as before")
+	check(landWith(10, false) == 1, "Lv10 (FieldSafeBelow): hit even without the story (an old save is not shielded forever)")
+	-- not even picked: the AI's targetable() says no (no chasing, no swings, no leaps aimed at them)
+	local function picks(level, done, owner)
+		local w = leapWorld()
+		local p = w:Player(1, m + vec(6, 3, 0), { Level = level, PlaytimeSeconds = 3600 })
+		if done ~= nil then w.DataOf[p] = { Story = { Done = { M1_2 = done or nil } } } end
+		local king = w:Rec("SlimeKing", m, owner and p or nil)
+		return w.Leap._targetable(king, { Player = p, Pos = m + vec(6, 3, 0), Town = false, Zone = "SlimeMeadow" })
+	end
+	check(picks(5, false) == false and picks(5, nil) == false and picks(9, false) == false,
+		"the field King does not pick a Lv5-9 player before M1_2 is done", show({ picks(5, false), picks(5, nil), picks(9, false) }))
+	check(picks(5, true) == true and picks(10, false) == true, "... M1_2 done, or Lv10: picked as before", show({ picks(5, true), picks(10, false) }))
+	-- another boss in the meadow is not touched by this rule (FirstKOKing.Kind only)
+	local w0 = leapWorld()
+	local other
+	for kind, def in C.MonsterTypes do
+		if def.Boss == true and kind ~= F.Kind and def.Zone == "SlimeMeadow" then other = kind break end
+	end
+	if other then
+		local p0 = w0:Player(1, m + vec(6, 3, 0), { Level = 5, PlaytimeSeconds = 3600 })
+		local r0 = w0:Rec(other, m)
+		check(w0.Leap._targetable(r0, { Player = p0, Pos = m + vec(6, 3, 0), Town = false, Zone = "SlimeMeadow" }) == true,
+			"another meadow boss (" .. other .. ") still picks a Lv5 before M1_2")
+	end
+	-- a personal King (Owner set) is the player's own fight: struck through its own strike, shield or not
+	local w = leapWorld()
+	local p = w:Player(2, m + vec(6, 3, 0), { Level = 5, PlaytimeSeconds = 3600 })
+	local mine = w:Rec("SlimeKing", m, p)
+	mine._strike = function(rec, target, mult) table.insert(w.Strikes, { Rec = rec, T = target, Mult = mult }) end
+	w:Try(mine, p)
+	w:Advance(1.01)
+	check(#w.Strikes == 1 and w.Strikes[1].T == p, "a personal King still lands on its Lv5 owner before M1_2 (the rematch itself)", tostring(#w.Strikes))
 end)
 
 runGroup("personal king", function()

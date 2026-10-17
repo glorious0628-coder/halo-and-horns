@@ -228,8 +228,8 @@ runGroup("config", function()
 		"step 5 (A23-221 ②): the scroll at Otto's anvil = ScrollUsed (Past: a bag use first counts), the band's Find / Lines moved here",
 		show(s[5]))
 	check(s[6].Text == "Defeat the King Slime" and s[6].Obj.Type == "Kill" and s[6].Obj.Kind == "SlimeKing" and s[6].Obj.Personal == true
-		and s[6].Obj.Count == 1 and s[6].Obj.Zone == "SlimeMeadow" and s[6].Guide == "MeadowArrival",
-		"step 6: the rematch = one personal King Slime kill in the meadow, guided to the meadow's arrival spot", show(s[6]))
+		and s[6].Obj.Count == 1 and s[6].Obj.Zone == "SlimeMeadow" and s[6].Guide == "KingHill",
+		"step 6: the rematch = one personal King Slime kill in the meadow, guided to the King's hill (A23-227)", show(s[6]))
 	check(KO.Reward.Gold == 2 and KO.Reward.XP == 2 and KO.Reward.Item == "Enh70" and KO.Reward.N == 1 and KO.Finish == nil
 		and KO.Start == nil and KO.Pop == nil and KO.Claim == nil, "two minutes of hunting + one 70% scroll; no Start / Finish / Pop / Claim (A23-99: no popups, no toasts)", show(KO.Reward))
 	for i, step in s do
@@ -420,8 +420,8 @@ runGroup("flow", function()
 		-- 5. the scroll (LootService's ScrollUsed, success or not)
 		check(w.Story.Event(p, "ScrollUsed", { Tier = 1, Success = false }) == true and tr.St == 6, faction .. ": ScrollUsed moves step 5 to 6", show(tr))
 		row = rowOf(w, p, d, ID)
-		check(row.Text == "Defeat the King Slime" and row.Story.St == 6 and row.Story.Guide == "MeadowArrival" and row.CanClaim == false,
-			faction .. ": row 6 reads 'Defeat the King Slime' again (guide: the meadow's arrival spot)", show(row))
+		check(row.Text == "Defeat the King Slime" and row.Story.St == 6 and row.Story.Guide == "KingHill" and row.CanClaim == false,
+			faction .. ": row 6 reads 'Defeat the King Slime' again (guide: the King's hill, A23-227)", show(row))
 		-- 6. the rematch: only a personal King Slime kill in the meadow; the King on = never by itself
 		for _ = 1, 3 do w.Story.Refresh(p) end
 		w:Kill(p, "SlimeKing", { Personal = false })

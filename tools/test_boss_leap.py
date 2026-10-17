@@ -49,11 +49,15 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             + out_y.group(0) + "\n"
             + function_block(mon, "local function targetable(")
             + between(mon, SECTION, NEXT)
-            + "\nreturn LEAP\n"),
+            + "\nLEAP._targetable = targetable -- the test asks the AI's pick rule too (A23-227)\nreturn LEAP\n"),
     }
 
 
 MUTATIONS = [
+    # A23-227 the field King's shield
+    ("A23-227: no shield", M, "\t\t\tif not done then return false end\n", ""),
+    ("A23-227: shield at any level", M, "\t\t\tand lv < (tonumber(F.FieldSafeBelow) or 0) then\n", "\t\t\tthen\n"),
+    ("A23-227: shield until another quest", M, "st.Done[F.FieldSafeUntil] == true", "st.Done.M1_1 == true"),
     # who is hit
     ("no dodge (anyone near)", M, "if Util.FlatDistance(pos, J.Spot) > math.max(0, J.Radius - math.max(0, LEAP.Num(B.Grace, 0.5))) then return false end",
      "if Util.FlatDistance(pos, J.Spot) > 40 then return false end"),

@@ -2246,6 +2246,16 @@ local function targetable(rec, info)
 		local lv = tonumber(info.Player:GetAttribute("Level")) or 1
 		local played = tonumber(info.Player:GetAttribute("PlaytimeSeconds")) or 0
 		if lv < (tonumber(H.SafeBelowLevel) or 0) or played < (tonumber(H.SafePlaySeconds) or 0) then return false end
+		-- A23-227 (a): the field King leaves a player alone until their story's King's Hop is done (Config.FirstKOKing
+		-- FieldSafeUntil, below FieldSafeBelow): the rematch is their own King on the same hill
+		local F = Config.FirstKOKing
+		if type(F) == "table" and type(F.FieldSafeUntil) == "string" and rec.Kind == F.Kind and rec.Owner == nil
+			and lv < (tonumber(F.FieldSafeBelow) or 0) then
+			local okD, data = pcall(S.PlayerService.GetData, info.Player)
+			local st = okD and type(data) == "table" and data.Story or nil
+			local done = type(st) == "table" and type(st.Done) == "table" and st.Done[F.FieldSafeUntil] == true
+			if not done then return false end
+		end
 	end
 	-- user 2026-10-05: monsters always attack as usual (no window / rest state may become a safe spot to exploit)
 	return not info.Town and info.Zone == rec.ZoneId and info.Pos.Y >= OUT_Y

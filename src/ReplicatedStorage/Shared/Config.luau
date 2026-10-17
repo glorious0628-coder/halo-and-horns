@@ -4738,7 +4738,8 @@ Config.StoryQuests.Defs.M1_2 = {
 				Neutral = { "That knot looks bent. But it held on tight." } },
 			Horns = { Find = "Two knots? Fancy hat!", Scene = "Laugh" },
 			Neutral = { Find = "Two knots. Someone tried hard." } },
-		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "MeadowArrival",
+		-- A23-227: the rematch on the King's hill (Config.FirstKOKing.RetryLandmark)
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "KingHill",
 			Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },
 	},
 	Next = { Halo = { Id = "H_Band", Line = "Bright has a ribbon like this." },
@@ -9971,7 +9972,12 @@ Config.FirstKOKing = {
 	OneHitBelow = 10, -- Lv 10+ is never one-shot (A7-2: the early levels end at 10; KO1 opens up to Lv 8)
 	-- A23-222: the first King comes within Radius of Landmark (the hill row's spot), the rematch King within RetryRadius of
 	-- RetryLandmark (the meadow's arrival spot); a Landmarks key, nil = anywhere in Zone
-	Zone = "SlimeMeadow", Radius = 30, Landmark = "KingHill", RetryRadius = 40, RetryLandmark = "MeadowArrival",
+	-- A23-227 (최종 검수 10/17, r6 play: the kid fought the field King on the hill while the rematch waited at the meadow's
+	-- arrival): the rematch King comes on the hill too (BossClear keeps it clear of a field King standing there)
+	Zone = "SlimeMeadow", Radius = 30, Landmark = "KingHill", RetryRadius = 40, RetryLandmark = "KingHill",
+	-- A23-227 (a): the FIELD King (Kind, Owner nil) never targets or hits a player whose story has not done FieldSafeUntil
+	-- (the King's Hop), below FieldSafeBelow (a save that never had the story is not shielded at any level past it)
+	FieldSafeUntil = "M1_2", FieldSafeBelow = 10,
 	-- studs: no personal King while the field King stands this close (bodies apart). Small on purpose: the field King
 	-- stays 300 s of every 480 s on its hill and never targets Lv < 5 / < 600 s players (A23-27), so a wide gap would
 	-- leave a new player at the hill marker without a King for minutes

@@ -1,7 +1,7 @@
 -- FirstKOService.luau : A23-110 the first KO (게임성 개발 2; user 2026-10-10 "한 번 죽자. 초반 퀘스트 하면서 그래서 물약 사게
 -- 하고, 퀵슬롯 하게 하자" + "죽게 만드는 거에서는 킹 슬라임을 잡자"). Config.FirstKOKing (the numbers) + Config.FirstKO (the
 -- quest "The King's Hop", the main M1_2 since A23-222: Quest, Step, RematchStep; never a step number of our own). A23-222: the
--- first King comes at the hill row's spot (Landmark / Radius), the rematch King at the meadow's arrival (RetryLandmark /
+-- first King comes at the hill row's spot (Landmark / Radius), the rematch King on the same hill (A23-227: RetryLandmark /
 -- RetryRadius); the first KO gets up beside Fizzby in the Crossroads (GetUp.Spot / Face).
 -- The stage comes from StoryQuestService.CurrentStep(player, Config.FirstKO.Quest):
 --   == Step        "First": a quiet personal King Slime (MonsterService.SpawnPersonal Quiet: only its owner sees and hits
