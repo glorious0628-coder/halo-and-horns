@@ -1,6 +1,9 @@
 # 게임성 개발 2 — 상태 (2026-10-17 낮, 새 계정: 첫 12분 묶음 + 배지 + 장인 2부)
 
 ## 지금 (10/17 낮 — 새 대화는 여기부터; 세션이 자주 끊기니 덩어리마다 커밋·push)
+- **10/17 오후**: 병합됨 = dev2-vein 55568fdf(main 66cdb70d), 배지. 보고함·병합 대기 = **dev2-rookie-regen 6dc0c3c7**(A23-224 최종: 뿔만 초원 5초 뒤 1%/초, 빛 그대로; 중립 RegenPerSec 0 — SPEC 문장 '1%'와 다름 알림), **dev2-sure-enhance 14ffd03a**(A23-225 M1_2 모루 첫 70% 꼭 성공, 저장마다 한 번).
+  **dev2-craft-tools 40d9336f**(push, ../wt_tools, 작업 중): 도구 ① = Craft.Tools 표(craft_tools_r1 §1)·평평한 저장 Craft.Tool<role>(옛 서버 keepExtra는 표를 버리므로 평평하게)·UpgradeTool/ToolCost·원격 CraftTool/CraftToolResult·AS1 축복 Enh70B(시작 때 한 번 굴림, Pend.Bless). craft 288·159/159. 남은 것: 전체 sweep → 보고. ②(옵션 크기·키 셋째 칸 = 저장 모양 바뀜)는 최종 검수 답 기다림.
+  **6판 ①②** = 무엇인지 최종 검수에 다시 물음(메시지 끊김; 추정 r6 TOP5 1번 두 번째 King KO·빛 마을 부활 + 4번 단계 표시).
 - **10/17 낮**: 장인 2부 **dev2-vein 5901ce75 보고함**(Pip 첫 수락만·Run.Chain·지금 단계만 리셋, 107·21/21, sweep 원래 실패만). 첫 12분 묶음 = 최종 검수 병합 중, Lv5 회복 안 = 사용자 답 대기(숫자 넣지 말 것). 다음 = ⓑ 제작 도구 강화(build/codex/craft_tools_r1.md, 옵션 무기 4%·반지 1%p·갑옷 2%p, 역전 0) → ⓒ 장인 주간 선물 → 주간 진영 승부(저장 형식 먼저 최종 검수). 스크래치 sweep.py는 세션 scratchpad에 다시 만듦(Temp 지워짐).
 - **10/17 오전 끝**: 첫 12분 묶음 **dev2-first12c 298e70d8 보고함**(a23_14 멈춤 = FORGE.Near가 모루 없이도 Util.GetRoot 호출 → 고침, 6469/6469). Lv5 KO 숫자 안(a)/(b)·Pip 몸 자리 질문 = 최종 검수 답 기다림. 배지 b488b666 = main 병합됨(d0a6559c). 다음 = dev2-vein 전체 sweep 결과 보고 → ⓑ 도구 → ⓒ 주간 선물 → ⑤ 주간 진영 승부(저장 형식 먼저 최종 검수).
 - 첫 12분 묶음 = 가지 사슬 dev2-first12 54a3be0d ← dev2-gold1000 e055c2a1(보고함: 시험 7개·251개 원래 실패 12만) ← **dev2-first12c 154cabd4**(push, ../wt_f12c; 옛 263df90a를 gold 위로 옮김 = force-with-lease, 보고 전 가지):
