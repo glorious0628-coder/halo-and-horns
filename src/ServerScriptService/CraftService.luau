@@ -198,9 +198,17 @@ end
 
 -- A23-219 ② (최종 검수 10/17): the option of a weapon / gear craft, rolled ONCE at its start with the role tool's +N now
 -- (Tools.Opt.P / R; saved in Craft.Pend.Opt: a stop, a rejoin or a full bag pays the same). 0 = none (any other recipe too)
+-- the size a weapon / gear option of this recipe would have now (the tool's R; 0 for any other recipe)
+local function optSize(c, role, r)
+	local O = type(K().Tools) == "table" and K().Tools.Opt or nil
+	if type(O) ~= "table" or O.On ~= true or (r.Kind ~= "Weapon" and r.Kind ~= "Gear") then return 0 end
+	return math.clamp(math.floor(num(O.R[toolOf(c, role)])), 0, math.floor(num(O.Max, 5)))
+end
+
 local function rollOpt(c, role, r)
 	local O = type(K().Tools) == "table" and K().Tools.Opt or nil
-	if type(O) ~= "table" then return 0 end
+	-- API review 10/17: Opt.On = the switch (off until game dev 1's screens read the "T:P:O" keys)
+	if type(O) ~= "table" or O.On ~= true then return 0 end
 	-- ② B: a potion / tonic / treat craft rolls the same P for ONE special result (always the full size: 1 = yes)
 	local sp = type(O.Special) == "table" and ((r.Kind == "Potion" and O.Special[r.Potion]) or (r.Kind == "Item" and O.Special[r.Item])) or nil
 	if r.Kind ~= "Weapon" and r.Kind ~= "Gear" and not sp then return 0 end
@@ -538,12 +546,15 @@ function CraftService.TryStart(player, id)
 		notify(player, "NeedMats")
 		return "mats"
 	end
-	-- A23-219 ②: the option first (the room is for that very key); a refused start shows nothing and keeps nothing
-	local opt = rollOpt(c, role, r)
-	if not room(player, data, r, opt) then
+	-- A23-219 ② (API review 10/17, HIGH): room for BOTH outcomes (no option and the tool's size) before the roll, so a
+	-- refused start never depends on the roll (no rerolling by retrying, no forcing an option with a full key / bag); the roll
+	-- then goes straight into Pend with the payment below
+	local size = optSize(c, role, r)
+	if not room(player, data, r, 0) or (size > 0 and not room(player, data, r, size)) then
 		notify(player, "Full")
 		return "full"
 	end
+	local opt = rollOpt(c, role, r)
 	-- pay: the gold (SpendGold is the gold check: it takes nothing when short), then the materials (checked above;
 	-- nothing yields in between)
 	if not S.ProgressionService.SpendGold(player, r.Gold, "Craft") then

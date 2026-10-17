@@ -1373,7 +1373,10 @@ function Config.CombatPowerOf(player, tierOverride, enhOverride, levelOverride, 
 	end
 	local enhance = enhOverride
 	if enhance == nil then enhance = tonumber(player:GetAttribute("WeaponEnhance")) or 0 end
-	local gearAtk, gearHp = Config.GearMultsOf(player) -- ⑥ gear (게임성 개발 3): (1, 1) while Config.Features.Gear is off
+	-- ⑥ gear (게임성 개발 3): (1, 1) while Config.Features.Gear is off; A23-219 ②: another tier than the one in hand = without the
+	-- hand's crafted option
+	local held = tonumber(player:GetAttribute("WeaponTier")) or 0
+	local gearAtk, gearHp = Config.GearMultsOf(player, tierOverride ~= nil and tierOverride ~= held)
 	local alloc = type(allocOverride) == "table" and allocOverride or Config.StatAllocOf(player)
 	return Config.CombatPower(math.max(1, level), tier, enhance, alloc, { A = gearAtk, H = gearHp })
 end
@@ -10324,6 +10327,9 @@ Config.Craft.Tools = {
 	-- its walk bonus and PetAccMax stay). Checked: the best +9 weapon (x1.04, ring +1%p) stays below a plain +10 (1.9 x 1.04 x
 	-- 1.01 = 1.996 < 2); a low tier's armor / ring + its best option never passes the next tier +0
 	Opt = {
+		-- API review 10/17: no option is rolled while this is off (the bag / market / craft screens read "T:P" only until
+		-- game dev 1's change; an option spare would take a slot and not show). 최종 검수 turns it on with that branch
+		On = false,
 		P = { [0] = 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60 },
 		R = { [0] = 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 5 },
 		Max = 5,
@@ -10600,9 +10606,10 @@ end
 -- (atkMult, hpMult) of a player from the attributes GearService keeps (GearAtk = the ring, GearHp = the armor; missing /
 -- NaN / below 1 = 1); (1, 1) while Config.Features.Gear is off. A23-219 ②: atk x the weapon in hand's crafted option
 -- (attribute WeaponOpt 0..5, LootService; on with or without the gear switch). Server and client alike.
-function Config.GearMultsOf(player)
+function Config.GearMultsOf(player, noWeaponOpt)
 	local okO, o = pcall(function() return player:GetAttribute("WeaponOpt") end)
-	local w = 1 + Config.CraftOptBonus("Weapon", okO and o or nil)
+	-- API review 10/17: noWeaponOpt = a preview of another weapon (the option belongs to the one in hand)
+	local w = noWeaponOpt == true and 1 or 1 + Config.CraftOptBonus("Weapon", okO and o or nil)
 	if not Config.FeatureOn("Gear") then return w, 1 end
 	local ok, a, h = pcall(function() return player:GetAttribute("GearAtk"), player:GetAttribute("GearHp") end)
 	if not ok then return w, 1 end
@@ -10617,7 +10624,13 @@ function Config.PetGearBonus(gear, uid, slot)
 	if type(row) ~= "table" then return 0 end
 	if slot == "PetXP" then
 		local _, _, o = Config.GearParse(row.PetAcc)
-		return Config.GearBonusOf("PetArmor", row.PetArmor) + Config.CraftOptBonus("PetAcc", o)
+		local armor = Config.GearBonusOf("PetArmor", row.PetArmor)
+		-- API review 10/17: with the acc's option the sum still never passes the next armor tier +0 (no armor = T1 +0)
+		local t = Config.GearParse(row.PetArmor) or 0
+		local cap = Config.Gear.PetSlots.PetArmor.Base[t + 1]
+		local sum = armor + Config.CraftOptBonus("PetAcc", o)
+		if cap then sum = math.max(armor, math.min(sum, cap)) end
+		return math.floor(sum * 10000 + 0.5) / 10000
 	end
 	if Config.Gear.PetSlots[slot] == nil then return 0 end
 	return Config.GearBonusOf(slot, row[slot])

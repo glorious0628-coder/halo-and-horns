@@ -55,10 +55,13 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # API review 10/17 (craftopts_review): the switch, room for both outcomes, the pet XP cap, another tier's power
+    ('review: the pet XP sum uncapped', C, '\t\tif cap then sum = math.max(armor, math.min(sum, cap)) end\n', ''),
+    ("review: another tier keeps the hand's option", C, '\tlocal gearAtk, gearHp = Config.GearMultsOf(player, tierOverride ~= nil and tierOverride ~= held)\n', '\tlocal gearAtk, gearHp = Config.GearMultsOf(player, false)\n'),
     # A23-219 ② crafted options (게임성 개발 2)
     ('opt: GearParse ignores the option', C, '\tif Config.GearKey(t, p, o) ~= key then return nil end\n\treturn t, p, o', '\tif Config.GearKey(t, p, o) ~= key then return nil end\n\treturn t, p, 0'),
-    ('opt: the weapon option outside GearMultsOf', C, '\tlocal w = 1 + Config.CraftOptBonus("Weapon", okO and o or nil)\n', '\tlocal w = 1\n'),
-    ('opt: PetXP without the acc option', C, '\t\treturn Config.GearBonusOf("PetArmor", row.PetArmor) + Config.CraftOptBonus("PetAcc", o)', '\t\treturn Config.GearBonusOf("PetArmor", row.PetArmor)'),
+    ('opt: the weapon option outside GearMultsOf', C, '\tlocal w = noWeaponOpt == true and 1 or 1 + Config.CraftOptBonus("Weapon", okO and o or nil)\n', '\tlocal w = 1\n'),
+    ('opt: PetXP without the acc option', C, '\t\tlocal sum = armor + Config.CraftOptBonus("PetAcc", o)\n', '\t\tlocal sum = armor\n'),
     ('opt: pet XP by the armor only', PE, '\tlocal exact = n * (1 + petGear(data, uid, "PetXP")) + (rems and rems[uid] or 0)', '\tlocal exact = n * (1 + petGear(data, uid, "PetArmor")) + (rems and rems[uid] or 0)'),
     ("⑤: Gear back on reads nobody", "GEAR_SOURCE", "\t\t\tif k ~= \"Gear\" or value ~= true then return end\n", "\t\t\tdo return end\n"),
     # --- the table (Config)

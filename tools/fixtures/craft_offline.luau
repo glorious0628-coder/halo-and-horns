@@ -1333,6 +1333,7 @@ runGroup("opts", function()
 	local function herb(p, d) d.Items.Herb = 60; return p, d end -- (W2 takes Herb)
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local O = C.Craft.Tools.Opt
+	check(O.On == false, "API review 10/17: the option switch is off until game dev 1's screens (Opt.On)", tostring(O.On))
 	check(O.P[0] == 0.10 and O.P[5] == 0.35 and O.P[10] == 0.60 and O.R[0] == 1 and O.R[2] == 1 and O.R[3] == 2 and O.R[6] == 3
 		and O.R[9] == 4 and O.R[10] == 5 and O.Max == 5, "P 10% -> 60% (+5% a step), R 1/2/3 at +0/+3/+6, 4 at +9, 5 at +10", show(O))
 	check(C.CraftOptBonus("Weapon", 5) == 0.04 and C.CraftOptBonus("Armor", 5) == 0.02 and C.CraftOptBonus("Ring", 5) == 0.01
@@ -1351,8 +1352,16 @@ runGroup("opts", function()
 	check(C.GearBonusOf("Armor", "3:2:5") == 0.24 and C.GearBonusOf("Ring", "3:2:5") == 0.15 and C.GearBonusOf("PetArmor", "3:2:5") == 1.0
 		and C.GearBonusOf("PetAcc", "3:2:5") == C.GearBonusOf("PetAcc", "3:2"), "worn bonus: armor 22%+2, ring 14%+1, pet armor 80%+20; pet acc walk unchanged", "")
 
+	-- the switch off (shipped): no roll at all
+	local ON = function(c) c.Craft.Tools.Opt.On = true end
+	local wo = cWorld()
+	local po, dpo = herb(smith(wo, 80))
+	dpo.Craft.ToolSmith = 10
+	wo.Script = { 0.01 }
+	check(wo.C.TryStart(po, "W2") == "ok" and dpo.Craft.Pend.Opt == nil and #wo.Script == 1, "Opt.On false: no option, no roll drawn", show(dpo.Craft.Pend))
+	wo.Script = {}
 	-- a weapon craft rolls once at its start with the hammer's +N (W2, +10: 60% for size 5)
-	local w = cWorld()
+	local w = cWorld({ EditConfig = ON })
 	local p, d = herb(smith(w, 81))
 	d.Craft.ToolSmith = 10
 	w.Script = { 0.59 }
@@ -1395,7 +1404,7 @@ runGroup("opts", function()
 	w.Script = {}
 
 	-- the real spares: the key "T:P:O"
-	local wr = cWorld({ RealSpare = true, EditConfig = function(c) c.Features.Gear = true end })
+	local wr = cWorld({ RealSpare = true, EditConfig = function(c) c.Features.Gear = true; ON(c) end })
 	local s, sd = herb(smith(wr, 86))
 	sd.Craft.ToolSmith = 10
 	wr.Script = { 0.1 }
@@ -1415,11 +1424,28 @@ runGroup("opts", function()
 	local gp = (last(fired(wr, "CraftResult", g)) or {}).Plus or -1
 	check(gd.Gear.Own[string.format("Ring:1:%d:2", gp)] == 1, "a +3 hammer ring with a 24% roll: Own[\"Ring:1:P:2\"]", show(gd.Gear.Own))
 	wr.Script = {}
+	-- API review 10/17 (HIGH): the room is checked for both outcomes BEFORE the roll - a full key / a full bag refuses with no
+	-- roll drawn, so retrying never rerolls and an option can never be forced
+	local k1, kd1 = herb(smith(wr, 93))
+	kd1.Craft.ToolSmith = 10
+	kd1.Spares = { ["2:0"] = 20 } -- the plain key at its cap (20): a plain result would not fit
+	wr.Script = { 0.01 }
+	wr:Advance(61)
+	check(wr.C.TryStart(k1, "W2") == "full" and #wr.Script == 1 and kd1.Craft.Pend == nil, "the plain key full: refused before the roll (an option would fit, still refused)", "")
+	check(wr.C.TryStart(k1, "W2") == "full" and #wr.Script == 1, "... and again: still no roll (never rerolled by retrying)", "")
+	wr.Script = {}
+	local k2, kd2 = herb(smith(wr, 94))
+	kd2.Craft.ToolSmith = 10 -- size 5
+	kd2.Spares = { ["2:0:5"] = 1, ["2:1:5"] = 1, ["2:2:5"] = 1 } -- the option keys held, the plain ones would need new slots
+	kd2.BagSlots = wr.Config.BagUsed(kd2) -- the bag full
+	wr.Script = { 0.01 }
+	check(wr.C.TryStart(k2, "W2") == "full" and #wr.Script == 1, "a full bag holding the option keys: refused before the roll (no forced option)", "")
+	wr.Script = {}
 end)
 
 -- A23-219 ② B (최종 검수 10/17): a potion / tonic / treat craft rolls the same P once; a hit = ONE special result, the rest plain
 runGroup("specials", function()
-	local wr = cWorld({ RealSpare = true })
+	local wr = cWorld({ RealSpare = true, EditConfig = function(c) c.Craft.Tools.Opt.On = true end })
 	local mats = { Herb = 60, Jelly = 30, CopperOre = 30, SlimeCore = 10, Petal = 20 }
 	-- AP1 (HP potions, N 2): +10 kit, 59% -> one special + the rest plain
 	local a, ad = smith(wr, 91, { Items = deepCopy(mats) }, "Mage")

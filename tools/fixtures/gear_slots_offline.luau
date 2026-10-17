@@ -301,11 +301,21 @@ runGroup("crafted options", function()
 	check(near(a, 1.046 * 1.04), "GearMultsOf atk = ring x the weapon option (1.046 x 1.04)", tostring(a))
 	p:SetAttribute("WeaponOpt", 9)
 	check(near(C.GearMultsOf(p), 1.046), "a broken WeaponOpt (9) = no option", tostring(C.GearMultsOf(p)))
+	-- API review 10/17: a power preview of another weapon leaves the hand's option out
+	p:SetAttribute("WeaponTier", 2)
+	p:SetAttribute("WeaponOpt", 5)
+	local held, other = C.CombatPowerOf(p), C.CombatPowerOf(p, 3)
+	check(C.CombatPowerOf(p, 2) == held, "the same tier: the option counts", "")
+	p:SetAttribute("WeaponOpt", 0)
+	check(other == C.CombatPowerOf(p, 3) and held > C.CombatPowerOf(p), "another tier: without the hand's option (the held one with it)", show({ held, other }))
 	-- pets
 	local gear = { Pet = { u1 = { PetArmor = "1:2:5", PetAcc = "1:0:5" }, u2 = { PetArmor = "3:2:5", PetAcc = "3:2" } } }
-	check(near(C.PetGearBonus(gear, "u1", "PetXP"), 0.40 + 0.10) and near(C.PetGearBonus(gear, "u1", "PetAcc"), 0.01),
-		"pet XP: T1 +2 armor 40% + 20%p capped at T2 +0 (40%) + the acc's 10%p = 50%; the acc's walk 1% unchanged",
+	check(near(C.PetGearBonus(gear, "u1", "PetXP"), 0.40) and near(C.PetGearBonus(gear, "u1", "PetAcc"), 0.01),
+		"pet XP: T1 +2 armor (40% + 20%p) + the acc's 10%p, all capped at T2 +0 (40%; API review 10/17); the acc's walk 1% unchanged",
 		show({ C.PetGearBonus(gear, "u1", "PetXP"), C.PetGearBonus(gear, "u1", "PetAcc") }))
+	local g3 = { Pet = { u3 = { PetArmor = "1:0", PetAcc = "1:0:5" }, u4 = { PetAcc = "1:0:5" } } }
+	check(near(C.PetGearBonus(g3, "u3", "PetXP"), 0.30) and near(C.PetGearBonus(g3, "u4", "PetXP"), 0.10),
+		"T1 +0 armor 20% + the acc's 10%p = 30% (under T2 +0); no armor: the acc's 10%p (under T1 +0)", "")
 	check(near(C.PetGearBonus(gear, "u2", "PetXP"), 1.0) and near(C.PetGearBonus(gear, "u2", "PetArmor"), 1.0),
 		"T3 +2 pet armor with option 5: 80% + 20%p = 100% (the top tier has no next to cap at)", show(C.PetGearBonus(gear, "u2", "PetXP")))
 end)

@@ -38,6 +38,11 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # API review 10/17 (craftopts_review): the switch, room for both outcomes, the pet XP cap, another tier's power
+    ('review: the switch ignored', R, '\tif type(O) ~= "table" or O.On ~= true then return 0 end\n', '\tif type(O) ~= "table" then return 0 end\n'),
+    ('review: rolled before the room (the old order)', R, '\tif not room(player, data, r, 0) or (size > 0 and not room(player, data, r, size)) then\n', '\tif not room(player, data, r, rollOpt(c, role, r)) then\n'),
+    ('review: the option key not checked', R, '\tif not room(player, data, r, 0) or (size > 0 and not room(player, data, r, size)) then\n', '\tif not room(player, data, r, size) then\n'),
+    ('review: shipped switched on', C, '\t\tOn = false,\n\t\tP = { [0] = 0.10,', '\t\tOn = true,\n\t\tP = { [0] = 0.10,'),
     # A23-219 ② B special potions / tonics / treats (게임성 개발 2)
     ('B: consumables never roll', R, '\tif r.Kind ~= "Weapon" and r.Kind ~= "Gear" and not sp then return 0 end\n', '\tif r.Kind ~= "Weapon" and r.Kind ~= "Gear" then return 0 end\n'),
     ('B: no special potion stock', R, '\t\tif spKey then pcall(S.PlayerService.SetStat, player, spKey, spHave + 1) end\n', ''),
@@ -127,7 +132,7 @@ MUTATIONS = [
     ("start: the tag ignored", R, "\t\tif part:IsA(\"BasePart\") and part:GetAttribute(\"Role\") == role then\n", "\t\tif false then\n"),
     ("start: no level check", R, "\tif roleRec(c, role).Lv < r.Lv then\n", "\tif false then\n"),
     ("start: no materials check", R, "\tif not hasMats(data, r) then\n", "\tif false then\n"),
-    ("start: no room check", R, "\tif not room(player, data, r, opt) then\n", "\tif false then\n"),
+    ("start: no room check", R, "\tif not room(player, data, r, 0) or (size > 0 and not room(player, data, r, size)) then\n", "\tif false then\n"),
     ("start: gold never paid", R, "\tif not S.ProgressionService.SpendGold(player, r.Gold, \"Craft\") then\n", "\tif false then\n"),
     ("start: materials kept", R, "\t\tif not S.LootService.TakeItem(player, item, n) then\n", "\t\tif false then\n"),
     ("start: nothing pending in the save", R, "\tc.Pend = { Id = id, Plus = -1, Gold = r.Gold, Mats = table.clone(r.Mats), Bound = next(bound) ~= nil and bound or nil, Bless = bless,\n\t\tOpt = opt > 0 and opt or nil }\n", ""),
