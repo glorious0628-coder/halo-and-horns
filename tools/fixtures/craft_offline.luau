@@ -1589,11 +1589,15 @@ runGroup("week", function()
 		"tier 1 with HP 98 / MP 99: 1 HP now, 4 HP + 5 MP wait", show(fd.Craft))
 	local infoF = last(fired(w, "CraftInfo", f))
 	check(infoF and infoF.Week.Wait and infoF.Week.Wait.HP == 4 and infoF.Week.Wait.MP == 5, "CraftInfo.Week.Wait shows what waits", infoF and show(infoF.Week) or "")
-	local nf2 = #w.Notices
+	local LS = w.Reg.LootService
+	local realGrant, asked = LS.GrantItem, 0
+	LS.GrantItem = function(pl, id, n, src)
+		if pl == f then asked += 1 end
+		return realGrant(pl, id, n, src)
+	end
 	w:Tick(60)
-	local spam = 0
-	for i = nf2 + 1, #w.Notices do if w.Notices[i].Player == f then spam += 1 end end
-	check(spam == 0 and fd.Craft.Gift_HP == 4, "still full a minute later: nothing asked, no 'full' notice every minute", tostring(spam))
+	LS.GrantItem = realGrant
+	check(asked == 0 and fd.Craft.Gift_HP == 4, "still full a minute later: LootService not asked (no 'full' notice every minute)", tostring(asked))
 	fd.HPPotionCount, fd.MPPotionCount = 90, 90
 	w:Tick(60)
 	check(fd.HPPotionCount == 94 and fd.MPPotionCount == 95 and fd.Craft.Gift_HP == nil and fd.Craft.Gift_MP == nil, "room again: the rest is paid", show(fd.Craft))
