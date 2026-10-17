@@ -7417,10 +7417,13 @@ Config.HoldMotion = { Blend = 0.16, In = 0.08, InBow = 0.06, Out = 0.18, WalkAt 
 -- down): Down = the tip's degrees under level (Turn X = 90 + Down), less for a long weapon so its tip stays Floor studs
 -- over the floor (WeaponPose.HipDown); Turn Z > 0 leans the tip out past the left leg (no clipping when the leg swings
 -- back). A stowed bow hides its code string (the two Beams stood 0.8 stud off the mesh on the back)
+-- A23-232 (user 10/17 "칼집 왜케 질질 끌려" -> "칼·몽둥이는 그냥 손에 들고, 활만 등에 메게 해. 검집은 디자인 때 다시
+-- 보자"): Sword / DarkSword left out of Kinds = always in the hand; the Hip row and its code stay for the scabbard design
+-- (Kinds Sword = "Hip", DarkSword = "Hip" brings it back)
 Config.WeaponStow = {
 	On = true,
 	HandSeconds = 5,
-	Kinds = { Bow = "Back", ShortBow = "Back", Sword = "Hip", DarkSword = "Hip" },
+	Kinds = { Bow = "Back", ShortBow = "Back" },
 	Back = { Part = "UpperTorso", Pos = { 0, 0, 1.3 }, Turn = { 0, 0, -35 } },
 	Hip = { Part = "LowerTorso", Pos = { -1.15, -0.2, -0.35 }, Turn = { 155, 0, 4 }, Down = 65, Floor = 0.4 },
 	Sound = "Equip",

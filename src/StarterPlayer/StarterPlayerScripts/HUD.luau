@@ -4871,6 +4871,15 @@ local function clearHolds()
 	pressScale(ui.attack, false)
 end
 
+-- A23-231 (user 10/17): while my character swims its weapon is hidden (WeaponPose.WaterHide) and an attack press does
+-- nothing (no words, no banner)
+function L.Swimming()
+	local wp = C and C.WeaponPose
+	if type(wp) ~= "table" or type(wp.Swimming) ~= "function" then return false end
+	local ok, v = pcall(wp.Swimming, LocalPlayer.Character)
+	return ok and v == true
+end
+
 -- One deliberate press sends one Swing; holding no longer attacks repeatedly.
 local function startHold(source)
 	if source == nil then return end
@@ -4880,7 +4889,7 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
-	L.SwingFaced()
+	if not L.Swimming() then L.SwingFaced() end
 end
 
 local function stopHold(source)
@@ -6454,7 +6463,7 @@ function HUD.Start()
 	-- A23-51: a left press on the world attacks once (holding or dragging never repeats); the camera turns with the
 	-- right mouse drag only (Roblox's default camera).
 	C.CameraFollow.PrimaryClick:Connect(function()
-		if inputAllowed() then L.SwingFaced() end
+		if inputAllowed() and not L.Swimming() then L.SwingFaced() end
 	end)
 
 	task.spawn(function()
