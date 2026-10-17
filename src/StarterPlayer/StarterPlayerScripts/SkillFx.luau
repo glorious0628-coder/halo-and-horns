@@ -250,8 +250,15 @@ function SkillFx.Arrow(a, b, time, color, len)
 	p.Size = Vector3.new(0.2, 0.2, len)
 	p.Color = color
 	p.Transparency = 0
+	-- 최종 검수 10/18 (9판: the server's CFrame.lookAt of one point = NaN, a body flew off): a and b on one spot (a target
+	-- standing in the muzzle) = a short arrow pointing ahead, never a NaN frame
+	local dir = b - a
+	if dir.Magnitude < 0.05 then
+		dir = Vector3.new(0, 0, -1)
+		b = a + dir * 0.05
+	end
 	p.CFrame = CFrame.lookAt(a, b)
-	tween(p, time, { CFrame = CFrame.lookAt(b, b + (b - a).Unit) }, Enum.EasingStyle.Linear)
+	tween(p, time, { CFrame = CFrame.lookAt(b, b + dir.Unit) }, Enum.EasingStyle.Linear)
 	tween(p, 0.2, { Transparency = 1 }, Enum.EasingStyle.Linear, Enum.EasingDirection.In, time)
 	return p
 end
@@ -629,6 +636,7 @@ function Z.Warrior_Halo(c)
 			local tip = c.Env.Muzzle() or (c.From + Vector3.new(0, 2, 0))
 			local to = loop.Position
 			local d = (to - tip).Magnitude
+			if d < 0.05 then return end -- one spot: keep the last frame (CFrame.lookAt of one point = NaN)
 			rope.Size = Vector3.new(0.25, 0.25, math.max(0.1, d))
 			rope.CFrame = CFrame.lookAt((tip + to) / 2, to)
 		end)
@@ -817,7 +825,8 @@ local function lineArrow(c, look)
 		tr.WidthScale = NumberSequence.new(1, 0)
 		tr.Parent = arrow
 		if look.Tip then
-			local tip = SkillFx.Fly(start + (stop - start).Unit * 2.6, stop + (stop - start).Unit * 2.6, 0.15, 0.8, look.Tip, { Linger = 0.2 })
+			local way = (stop - start).Magnitude > 0.05 and (stop - start).Unit or c.Dir -- never the Unit of a zero vector (NaN)
+			local tip = SkillFx.Fly(start + way * 2.6, stop + way * 2.6, 0.15, 0.8, look.Tip, { Linger = 0.2 })
 			tip.Material = Enum.Material.Neon
 		end
 		for i = 1, 3 do
