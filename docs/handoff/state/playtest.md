@@ -52,3 +52,4 @@
 - **도구가 옮겨짐:** scratchpad가 지워져서 `build/playtest_tools/`(git 밖, 재부팅에도 남음)에 다시 만듦 — pt.py(PT_DATE·PT_ROUND·STUDIO_ID), pose.py(idle/walk/atk PRE → 시트), intro_watch.py, face.lua(NAME). 열기: place/ → build/PlayTest.rbxlx 복사 → Start-Process(pid는 build/playtest_tools/pid.txt).
 - 도구 주의: 길 찾기는 KO 뒤에도 다음 지점으로 걸어감 → KO 장면 볼 땐 KO 뒤 nav 멈추기. 빛 Gleam 동상 옆에서 nav가 'Success'만 하고 안 움직임 → W로 빼기.
 - **다음 판:** 다음 sync 신호 → King 첫 KO 뒤 Fizzby 옆·KO 화면 몬스터 그림, M1_3·Tiny, 대장간 잠금 글.
+- 다음 판에 같이 볼 것: f6507381 맵 끝 투명 벽 흐린 막(EdgeHint, 클라만) — 맵 끝까지 걸어가서 막이 보이나·이상한가.
