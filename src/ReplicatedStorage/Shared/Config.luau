@@ -622,11 +622,12 @@ Config.Combat = {
 	LevelDamagePerLevel = 0.02, -- weapon damage * (1 + 0.02 * (level - 1))
 	AutoTick = 0.2, -- A23-1 auto-combat loop (unlocked by the crown-shard quest, never by level)
 	TownRegenPerSec = 0.10, -- fraction of max HP per second inside Town zones (all factions)
-	-- A23-224 (user 10/17 "(a)로 해" / "레벨 없이!" / "5초는 뿔 1초는 빛"): rest regen - inside these zones (any level), once the
-	-- player took no damage for Wait[faction] s (Default for any other side), +PerSec of max HP a second; any damage stops it and
-	-- the wait starts again. Stack = added to the side's own RegenPerSec (user 10/17 "빛은 원래 회복에 더해서": Halo 2% + 2% = 4%/s;
-	-- false = only the bigger one). Never in a town (TownRegenPerSec) or for an Active kaiju. No text, no banner
-	RestRegen = { Zones = { SlimeMeadow = true }, Wait = { Halo = 1, Horns = 5, Default = 5 }, PerSec = 0.02, Stack = true },
+	-- A23-224 (user 10/17, final: "너무 빨리 차 … 빛 1초에 2%(원래 회복 그대로, 더하는 것 없음), 뿔 1초에 1%"): rest regen -
+	-- inside these zones (any level), a side listed in Wait, once it took no damage for Wait[side] s: PerSec of max HP a second;
+	-- any damage stops it and the wait starts again. Stack false = the bigger of it and the side's own RegenPerSec (never
+	-- added). Only the Horns are listed (Halo keeps its own 2%, the guild its own). Never in a town (TownRegenPerSec) or for an
+	-- Active kaiju. No text, no banner
+	RestRegen = { Zones = { SlimeMeadow = true }, Wait = { Horns = 5 }, PerSec = 0.01, Stack = false },
 	AutoLoopInterval = 0.1,
 	RegenTick = 1,
 	ChargeTick = 0.1, -- perfect-window watcher interval
