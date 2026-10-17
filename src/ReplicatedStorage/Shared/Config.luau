@@ -3543,7 +3543,9 @@ Config.StoryQuests = {
 			-- A23-188 (user 10/14): no second Forge trip. A23-222 (user 10/16): M1_1 = the Slime Prince only (the first one always
 			-- drops the T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll); the scroll is used at Otto's
 			-- anvil in M1_2 (a save on the old step 2 goes on to M1_2, Story.Schema 6)
-			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "SlimeMeadow",
+			-- r6 play (최종 검수 10/17): Guide = the meadow's arrival spot (a zone Guide pointed at the meadow's travel pad by the Forge,
+			-- so walking over the bridge took the marker farther away)
+			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "MeadowArrival",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 },
 					On = "Self", Find = "That's not a snack!", Scene = "Sparkle",
 					Horns = { Find = "A hat goes on your head!", Scene = "Laugh" },
