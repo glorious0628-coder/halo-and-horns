@@ -711,8 +711,9 @@ end
 -- the player stands within Forge.Near studs of the anvil (no trip needed)
 function FORGE.Near(player)
 	local anvil = FORGE.Anvil()
+	if anvil == nil then return false end -- (no anvil: no body asked for; the Forge row's 'Talk to Otto' check runs every publish)
 	local root = Util.GetRoot(player)
-	return anvil ~= nil and root ~= nil and Util.FlatDistance(root.Position, anvil.Position) <= num(FORGE.Cfg.Near, 24)
+	return root ~= nil and Util.FlatDistance(root.Position, anvil.Position) <= num(FORGE.Cfg.Near, 24)
 end
 
 -- the blacksmith's gift without the Forge visit (no anvil in the world, or an old save past the Forge step):
