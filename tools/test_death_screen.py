@@ -64,6 +64,7 @@ local function obj(c)
 		rawset(t, k, v)
 		if k == "Parent" and type(v) == "table" and v.Children then table.insert(v.Children, t) end
 	end })
+	o.GetPropertyChangedSignal = function() return signal() end
 	o.Destroy = function(self)
 		local p = rawget(self, "Parent")
 		if p then local i = table.find(p.Children, self) if i then table.remove(p.Children, i) end end
@@ -185,10 +186,44 @@ check(DS.PromptOn("Halo", 9, "Halo", 7) and not DS.PromptOn("Horns", 9, "Halo", 
 local nToasts = #TOASTS
 FX.OnClientEvent:Fire("Revived", { By = 42 })
 check(#TOASTS == nToasts, "helped up: no toast (A23-191, user 10/14)", tostring(TOASTS[#TOASTS]))
+-- game play r9 (the King's head lay over 'Knocked'): the head has its own slot left of the words - a centred row
+do
+	local kit = { Gui = GUI, ReducedMotion = function() return true end, Toast = function() end,
+		ArtId = function(k) return k == "IconMonBigSlime" and "rbxassetid://1" or "" end,
+		ArtImage = function(k, props)
+			local img = obj("ImageLabel")
+			img.Name = props.Name
+			img.Image = k
+			img.LayoutOrder = props.LayoutOrder
+			img.Size = props.Size
+			img.Parent = props.Parent
+			return img
+		end }
+	DS.Init({ UIKit = kit })
+	FX.OnClientEvent:Fire("KO", { By = "Monster", Name = "King Slime", Kind = "SlimeKing", RespawnIn = 3 })
+	local screen = nil
+	for _, ch in GUI.Children do if ch.Name == "DeathScreen" then screen = ch end end
+	local box = nil
+	for _, ch in screen and screen.Children or {} do if ch.Name == "Lines" then box = ch end end
+	local row, icon, words = nil, nil, nil
+	for _, ch in box and box.Children or {} do
+		if ch.Name == "CauseRow" then row = ch elseif ch.Name == "Cause" then words = ch end
+	end
+	for _, ch in row and row.Children or {} do if ch.Name == "CauseIcon" then icon = ch end end
+	-- (this double never lists a re-parented child under its new parent: the words' Parent is the proof)
+	if words and rawget(words, "Parent") ~= row then words = nil end
+	check(row ~= nil and row.LayoutOrder == 2 and icon ~= nil and words ~= nil, "r9: the KO cause is a row in the box (head + words)")
+	check(icon and words and icon.LayoutOrder < words.LayoutOrder and words.AutomaticSize == "AutomaticSize.X"
+		and words.TextWrapped == false and words.Text == "Knocked out by King Slime",
+		"r9: the head sits LEFT of the words in its own slot, the words sized to their text (pushed right)", words and words.Text)
+	DS.Hide()
+end
 print(("DEATH_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 
 MUTATIONS = [
+    ("DS", "r9: the head over the words again", "\tcauseLabel.Parent = row\n", ""),
+    ("DS", "r9: the head right of the words", "LayoutOrder = 1,\n\t\tZIndex = T.ZIndex + 2, Parent = row })", "LayoutOrder = 3,\n\t\tZIndex = T.ZIndex + 2, Parent = row })"),
     ("DS", "the fun tip shown", "\telseif type(left) == \"number\" and left > 0 then\n", "\telseif type(left) == \"number\" and left > 0 then\n\t\tout.Tip = data.Tip\n"),
     ("DS", "pouch gold lost reads as nothing lost", "\telseif lost >= 1 then\n", "\telseif false then\n"),
     ("DS", "nothing lost: no line", "\t\tout.Lost = txt(\"LostNone\")", "\t\tout.Lost = nil"),

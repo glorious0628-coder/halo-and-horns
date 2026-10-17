@@ -181,4 +181,12 @@ local p2 = obj("Frame")
 QS.BagRows(p2, KIT)
 buttons(p2.Children[1])[1].OnClick()
 check(FIRED[1] and FIRED[1][1] == 1 and FIRED[1][2] == "", "a press on the lit slot takes the item out (empty)", FIRED[1] and show(FIRED[1]))
+-- 최종 검수 10/18: the rematch King fight - the potion slot shines once when my HP first goes under 40%
+local king = {}
+check(QS.KingWarnDue(king, nil, 39, 100) == true, "rematch King out, HP 39 / 100: the potion slot shines")
+check(QS.KingWarnDue(king, nil, 40, 100) == false and QS.KingWarnDue(king, nil, 0, 100) == false,
+	"HP 40 (not under 40%) or 0 (KO): nothing")
+check(QS.KingWarnDue(king, king, 10, 100) == false, "once per King (that fight warned already)")
+check(QS.KingWarnDue(nil, nil, 10, 100) == false and QS.KingWarnDue({}, king, 10, 100) == true,
+	"no King: nothing; a new King (a new fight): again")
 print(("QUICK_SLOTS_SUMMARY checks=%d failed=%d"):format(checks, failed))
