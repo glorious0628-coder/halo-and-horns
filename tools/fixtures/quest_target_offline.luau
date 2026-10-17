@@ -506,6 +506,30 @@ do
 	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
 	check(g, "M1_2 rematch in the meadow -> the arrival spot, 'King Slime' (never off inside the meadow)", type(e) == "table"
 		and e.Travel == false and e.Label == "King Slime", e and encode({ Label = e.Label }) or "nil")
+	-- game play r8: the field King and my rematch King on one hill -> once MY King (OwnerUserId = me) is out, the mark rides
+	-- its body, 'Your King'; the field King alone never takes the mark; a dying King (anchored root) gives it back
+	PLAYER.UserId = 77
+	local mons = add(WORKSPACE, inst("Folder", "Monsters"))
+	local field = add(mons, inst("Model", "SlimeKing", { Attrs = { MonsterKind = "SlimeKing" } }))
+	add(field, inst("Part", "HumanoidRootPart", { Position = vec(402, 3, -120) }))
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "r8: only the field King out -> the spot, 'King Slime'", type(e) == "table" and e.Label == "King Slime"
+		and e.Part ~= field.Children[1], e and encode({ Label = e.Label }) or "nil")
+	local mine = add(mons, inst("Model", "SlimeKing", { Attrs = { MonsterKind = "SlimeKing", OwnerUserId = 77 } }))
+	local mineRoot = add(mine, inst("Part", "HumanoidRootPart", { Position = vec(390, 3, -110) }))
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "r8: my King out -> the mark on its body, 'Your King'", type(e) == "table" and e.Part == mineRoot
+		and e.Label == "Your King" and e.Travel == false, e and encode({ Label = e.Label }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 1, Guide = "KingHill" } }, "SlimeMeadow", "Halo", vec(300, 3, 0))
+	check(g, "r8: the King's hill step with my King out -> my King too", type(e) == "table" and e.Part == mineRoot)
+	mineRoot.Anchored = true
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "r8: my King dying (anchored) -> back to the spot", type(e) == "table" and e.Part ~= mineRoot and e.Label == "King Slime")
+	mineRoot.Anchored = false
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "r8: from the Crossroads with my King out -> still the trip", type(e) == "table" and e.Travel == true)
+	table.remove(WORKSPACE.Children, table.find(WORKSPACE.Children, mons))
+	PLAYER.UserId = nil
 	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "Crossroads", "Halo", vec(0, 3, 0))
 	check(g, "M1_2 rematch from the Crossroads -> a trip to the meadow", type(e) == "table" and e.Travel == true
 		and e.Zone == "SlimeMeadow", e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")

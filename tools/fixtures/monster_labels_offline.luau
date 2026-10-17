@@ -83,7 +83,7 @@ local root = inst("Part", "HumanoidRootPart", { Position = vec(0, 3, 0) })
 local char = inst("Model", "Character")
 root.Parent = char
 local services = {
-	Players = { LocalPlayer = { Character = char } },
+	Players = { LocalPlayer = { Character = char, UserId = 77 } },
 	ReplicatedStorage = { WaitForChild = function() return { WaitForChild = function(_, n) return { __module = n } end } end },
 	TweenService = { Create = function() return { Play = function() end } end },
 }
@@ -155,4 +155,25 @@ check(nameShown(alive), "a living slime next to a dying one gets the name (the d
 dying.Enabled = true -- a tag this client turned on before the death replicated
 ML.Tick()
 check(dying.Enabled == false, "a tag still on when the body is already anchored is turned off", tostring(dying.Enabled))
+-- game play r8: my rematch King (OwnerUserId = me) and the field King on one hill: mine is "Your King", the other keeps
+-- its name; another player's King too
+folder.Children = {}
+local mine, mineBB = monster("SlimeKing", vec(0, 0, -6))
+mine.Attrs.OwnerUserId = 77
+mineBB:FindFirstChild("NameLabel").Text = "King Slime"
+local _, fieldBB = monster("SlimeKing", vec(4, 0, -6))
+fieldBB:FindFirstChild("NameLabel").Text = "King Slime"
+local other, otherBB = monster("SlimeKing", vec(-6, 0, -6))
+other.Attrs.OwnerUserId = 5
+otherBB:FindFirstChild("NameLabel").Text = "King Slime"
+ML.Tick()
+check(mineBB:FindFirstChild("NameLabel").Text == "Your King", "my own King's tag says Your King",
+	mineBB:FindFirstChild("NameLabel").Text)
+check(fieldBB:FindFirstChild("NameLabel").Text == "King Slime" and otherBB:FindFirstChild("NameLabel").Text == "King Slime",
+	"the field King and another player's King keep King Slime")
+local _, slimeBB = monster("Slime", vec(0, 0, -3))
+slimeBB:FindFirstChild("NameLabel").Text = "Slime"
+folder.Children[#folder.Children].Attrs.OwnerUserId = 77
+ML.Tick()
+check(slimeBB:FindFirstChild("NameLabel").Text == "Slime", "a personal monster that is no boss keeps its name")
 print("MONSTER_LABELS_SUMMARY checks=" .. checks .. " failed=" .. failed)

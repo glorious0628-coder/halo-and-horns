@@ -29,6 +29,10 @@ MUTATIONS = [
     # A23-74 (user 2026-10-07): a dying monster (anchored root) shows no tag and takes no name slot
     ("a dying monster gets its tag back (no anchored check)", "and root.Anchored then", "and false then"),
     ("a tag left on over a dying body stays on", "\t\t\tif bb.Enabled then bb.Enabled = false end\n", ""),
+    # game play r8: my rematch King's tag
+    ("my King never named", "\t\t\tS.Mine(r)\n", ""),
+    ("every King is mine", "or model:GetAttribute(\"OwnerUserId\") ~= LocalPlayer.UserId then return end", "then return end"),
+    ("any personal monster is a King", "if not (model and r.Boss and LocalPlayer)", "if not (model and LocalPlayer)"),
 ]
 
 

@@ -11490,10 +11490,13 @@ Config.ClientText.PlayerListUI = {
 	Friend = "Add friend",
 	Block = "Block",
 }
+-- game play r8 (the field King and my rematch King on one hill, both "King Slime"): my own King's name tag
+Config.ClientText.MonsterLabels = { YourKing = "Your King" }
 Config.ClientText.QuestTarget = {
 	Blacksmith = "Forge",
 	Dummy = "Dummy", -- A23-221 ①: the first mission's practice dummy
 	King = "King Slime", -- A23-222: M1_2's King's hill / rematch mark in the meadow
+	YourKing = "Your King", -- game play r8: the mark on MY rematch King's body (model OwnerUserId = me)
 	Pond = "Slime Pond",
 	Fountain = "Fountain",
 	Goose = "Golden Goose Nest",
