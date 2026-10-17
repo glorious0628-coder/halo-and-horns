@@ -677,7 +677,21 @@ local function useEnhance(player, data, id, def, tier)
 	if before >= LOOT.MaxEnhance then notify(player, string.format(TXT.EnhanceMax, LOOT.MaxEnhance), "bad"); return end
 	if not takeItem(data, id) then notify(player, TXT.NoItem, "bad"); return end
 	local name = weaponName(player, tier)
-	local success = rng:NextNumber() < def.Chance
+	-- A23-225: the story's first enhance (Config.Loot.SureFirst: its quest on its Anvil step, that scroll, once a save) succeeds
+	local sure = false
+	local SF = LOOT.SureFirst
+	local story = S.StoryQuestService
+	if type(SF) == "table" and id == SF.Item and type(data.LootFlags) == "table" and data.LootFlags[SF.Flag] ~= true
+		and type(story) == "table" and type(story.CurrentStep) == "function" then
+		local okS, st = pcall(story.CurrentStep, player, SF.Quest)
+		local qdef = Config.StoryQuests and Config.StoryQuests.Defs[SF.Quest]
+		local step = okS and type(st) == "number" and type(qdef) == "table" and qdef.Steps[st] or nil
+		if type(step) == "table" and step.Anvil == true then
+			sure = true
+			data.LootFlags[SF.Flag] = true -- saved with the scroll taken, before the result
+		end
+	end
+	local success = sure or rng:NextNumber() < def.Chance
 	local after = before
 	if success then
 		after = math.min(LOOT.MaxEnhance, before + def.Plus)
