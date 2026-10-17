@@ -435,6 +435,17 @@ do
 	-- M1_1's scroll step (게임성 개발 2): Guide "Bag" has no place in the world (the row opens the bag)
 	check(g, "Guide Bag -> no world target", QT.Story("Bag", "Crossroads", vec(0, 3, 0), "Halo") == nil
 		and QT.ForEntry({ Story = { Id = "M1_1", St = 2, Guide = "Bag" } }, "SlimeMeadow", "Halo", vec(330, 3, 0)) == nil)
+	-- r7 play (최종 검수 10/17): M1_3's rows point at the meadow entrance and at the lost bag itself (the bag's spot is meadow
+	-- land, not the river by the bridge = Outskirts, whose trip pointed ~54 studs off)
+	local bag = Config.StoryQuests.Landmarks.LostBag
+	check(g, "the lost bag lies in the meadow (its own zone)", Config.ZoneAt(bag).Id == "SlimeMeadow", Config.ZoneAt(bag).Id)
+	t = QT.Story("Lv5Slimes", "HaloTown", vec(0, 3, -515), "Halo")
+	check(g, "M1_3 accepted in Halo town: the slimes row points somewhere (the way to the meadow)", t ~= nil, where(t))
+	e = QT.ForEntry({ Story = { Id = "M1_3", St = 2, Guide = "LostBag" } }, "SlimeMeadow", "Halo", vec(250, 3, 0))
+	local bp = e and (e.Part or e.Position)
+	bp = typeof(bp) == "Vector3" and bp or (type(bp) == "table" and bp.Position or nil)
+	check(g, "M1_3 'Lost bag' from the slimes: over the bag itself (within 4 studs flat), no trip", type(e) == "table" and e.Travel ~= true
+		and bp ~= nil and math.abs(bp.X - bag.X) <= 4 and math.abs(bp.Z - bag.Z) <= 4, e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
 	ATTR.BlacksmithVisited, ATTR.Level = nil, nil
 	-- daily rows have no place; a story pond step labels in English
 	check(g, "daily row -> nil", QT.ForEntry({ Kind = "Daily", Progress = 0, Target = 3, CanClaim = true }, "Crossroads", "Halo",

@@ -108,6 +108,7 @@ TELL = "\t\tST.NextAt[player] = now + num(FK.SpawnGap, 4)\n\t\treport(player, fa
 HOOKS = "Distance = num(FK.SpawnDistance, 6), Strike = strike, OnKilled = onKilled, Near = true,"
 
 MUTATIONS = [
+    ("r7: the first KO has no Kind", CO, "First = true, Kind = def and src.Kind or nil }", "First = true }"),
     # --- FirstKOService: the stage comes from the quest's CurrentStep (never a step number of our own)
     ("any quest step is the KO step", F, "\tif step == Q.Step then return (fresh and not off) and \"First\" or \"Tell\" end",
      "\tif step ~= nil then return (fresh and not off) and \"First\" or \"Tell\" end"),
@@ -306,10 +307,10 @@ MUTATIONS = [
     ("first KO runs the whole pipeline", CO, "\t\tlastSource[victim] = nil\n\t\treturn\n\tend\n", "\t\tlastSource[victim] = nil\n\tend\n"),
     ("first KO keeps the King as the source", CO, "\t\tlastPvPAttacker[victim] = nil\n\t\tlastSource[victim] = nil\n\t\treturn",
      "\t\tlastPvPAttacker[victim] = nil\n\t\treturn"),
-    ("no First flag", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true }",
-     "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime }"),
-    ("first KO screen with the normal wait", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true }",
-     "RespawnIn = Config.Player.RespawnTime, First = true }"),
+    ("no First flag", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true,",
+     "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime,"),
+    ("first KO screen with the normal wait", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true,",
+     "RespawnIn = Config.Player.RespawnTime, First = true,"),
     ("first KO screen to everyone", CO, "\tNet.Fx(victim, \"KO\", fx)", "\tNet.Fx(nil, \"KO\", fx)"),
     ("first KO not telemetry", CO, "\tCombatService.KnockedOut:Fire(victim, def and \"Monster\" or \"Other\")\n", ""),
     # --- MonsterService: the hooks, the practice kill, Near / Hold / the lifetime

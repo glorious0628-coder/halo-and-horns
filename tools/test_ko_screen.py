@@ -18,6 +18,8 @@ FILES = dict(RANKING_FILES)
 CO, C, K = "COMBAT_SOURCE", "CONFIG_SOURCE", "KAIJU_SOURCE"
 
 MUTATIONS = [
+    ("r7: no Kind on a monster KO", CO, "Config.MonsterTypes[src.Kind].Name, src.Kind\n", "Config.MonsterTypes[src.Kind].Name, nil\n"),
+    ("r7: Kind on every KO", CO, "RespawnIn = Config.Player.RespawnTime, Tip = tip, Kind = kind })", "RespawnIn = Config.Player.RespawnTime, Tip = tip, Kind = src and src.Kind })"),
     ("the source kind is never recorded", CO,
      'if attacker == nil and type(sourceKind) == "string" then lastSource[victim] = { Kind = sourceKind, T = now } end', ""),
     ("a player's hit records a monster source", CO,
@@ -38,7 +40,7 @@ MUTATIONS = [
     # EG05 Fun Tips
     ("the KO is never counted", CO, 'local okKO, koCount = pcall(S.PlayerService.AddStat, victim, "KOs", 1)', 'local okKO, koCount = true, 1'),
     ("the KO counts two", CO, 'pcall(S.PlayerService.AddStat, victim, "KOs", 1)', 'pcall(S.PlayerService.AddStat, victim, "KOs", 2)'),
-    ("the tip is never sent", CO, "RespawnIn = Config.Player.RespawnTime, Tip = tip })", "RespawnIn = Config.Player.RespawnTime })"),
+    ("the tip is never sent", CO, "RespawnIn = Config.Player.RespawnTime, Tip = tip, Kind = kind })", "RespawnIn = Config.Player.RespawnTime, Kind = kind })"),
     ("the roll is the pick", CO, "pcall(Config.FunTip, koCount, Util.Random:NextNumber(), Util.Random:NextNumber())",
      "pcall(Config.FunTip, koCount, Util.Random:NextNumber(), 0)"),
     ("the count is not passed", CO, "pcall(Config.FunTip, koCount, Util.Random:NextNumber(), Util.Random:NextNumber())",
@@ -57,7 +59,7 @@ MUTATIONS = [
      'by, name, killerFaction = "Player", Util.PlayerDisplayName(killer), faction(killer)'),
     ("kaiju KO named as a monster", CO, 'elseif recent and src.Kind == "Kaiju" then', 'elseif false then'),
     ("no KO payload", CO, '\tpipelineCall("CombatService.sendKO", sendKO, victim, killer, koCtx, carriedBefore, died or {})\n', ""),
-    ("RespawnIn missing", CO, "\t\tRespawnIn = Config.Player.RespawnTime, Tip = tip })", "\t\tRespawnIn = nil, Tip = tip })"),
+    ("RespawnIn missing", CO, "\t\tRespawnIn = Config.Player.RespawnTime, Tip = tip, Kind = kind })", "\t\tRespawnIn = nil, Tip = tip, Kind = kind })"),
 ]
 
 

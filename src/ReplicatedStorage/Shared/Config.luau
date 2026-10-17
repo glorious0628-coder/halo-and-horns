@@ -4932,7 +4932,9 @@ table.insert(Config.StoryQuests.Subs, "N_Basics")
 Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
 -- P1 ⑤ the Lv5 test's help: the neighbour's bag lies at the meadow entrance (Halo), Rose's snack parcel beside her (Horns); the
 -- neighbour is Folk1 of Halo town (now a quest NPC too: it keeps its TownFolk bubbles)
-Config.StoryQuests.Landmarks.LostBag = Vector3.new(188, 0, -12)
+-- r7 play (최종 검수 10/17): (188, -12) was beside the bridge over the river (x 150..210, no zone = Outskirts), so the
+-- client's guide pointed at a trip to the Outskirts ~54 studs off; now on the meadow shore by the road (SlimeMeadow)
+Config.StoryQuests.Landmarks.LostBag = Vector3.new(224, 0, -16)
 Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
 -- r5 play (최종 검수 10/16): the Lv5 test's slimes = the meadow entrance (just past the bridge from the Crossroads), so the
 -- row's marker leads there instead of to the meadow's travel pad by the Forge (Guide "SlimeMeadow" = a zone = its pad)

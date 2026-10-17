@@ -660,8 +660,8 @@ runGroup("lossless", function()
 	w:Die(p)
 	local ko = w:KOFx(p)
 	check(ko and ko.First == true and ko.By == "Monster" and ko.Name == C0.MonsterTypes.SlimeKing.Name and ko.Lost == 0
-		and ko.Sack == false and ko.Tip == nil and ko.RespawnIn == 2 and ko.Faction == "",
-		"KO fx: First, the King's name, nothing lost, no tip, RespawnIn", show(ko))
+		and ko.Sack == false and ko.Tip == nil and ko.RespawnIn == 2 and ko.Faction == "" and ko.Kind == "SlimeKing",
+		"KO fx: First, the King's name and Kind (r7: the picture), nothing lost, no tip, RespawnIn", show(ko))
 	check(w:CountKOFx(p) == 1, "one KO fx")
 	local ev = w:EventsOf(p)
 	check(#ev == 1 and ev[1].Name == "FirstKO" and ev[1].Info.Kind == "SlimeKing" and ev[1].Info.Beaten == nil,
