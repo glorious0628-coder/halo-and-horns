@@ -67,7 +67,7 @@ check(t2 == Config.WarInfo.Text.NoRound, "war window: no round -> NoRound, never
 
 -- ② the status chips
 local danger = { Bully = true, Outlaw = true, Wanted = true }
-local buffs = { "Boost", "Luck", "Blessing", "Rookie", "Private", "Protected", "Size" }
+local buffs = { "Boost", "Luck", "Blessing", "Rookie", "Private", "Size" }
 local iconOK = { Zone = true, Boost = true, Luck = true, Rookie = true, Private = true, Blessing = true }
 local function plan(keys, open, fit, town, pvp, icons)
 	local p = HUD.ChipPlan(keys, danger, icons or iconOK, buffs, open, fit, town, pvp)
@@ -164,7 +164,12 @@ def run(src: dict) -> tuple[int, int, str]:
 
 def statics(src: dict) -> list[tuple[str, bool]]:
     h, e, u = src["HUD"], src["EV"], src["UIKIT"]
+    c = src["CONFIG"]
+    order = re.search(r"L\.ChipOrder = \{([^}]*)\}", h)
     return [
+        ("최종 검수 10/17 (user: 'too long in the middle'): no 'Revive Shield' chip - not in the chip order, never drawn, no words",
+         order is not None and '"Protected"' not in order.group(1) and "ui.chip.Protected" not in h and "TXT.Protected" not in h
+         and "Revive Shield" not in c),
         ("① LayoutWar places every piece from HUD.WarGeometry; the crown follows the split over the track; no NEW! on the bar",
          "local g = HUD.WarGeometry(wf, h, currentScale(), IS_TOUCH)" in h and "L.WarCrownX = L.WarCrownFrac(frac)" in h
          and "pcall(UIKit.NewTag, ui.war)" not in h and "pcall(UIKit.NewTag, ui.warBar)" not in h and "ui.warTime" not in h),
@@ -191,6 +196,7 @@ def statics(src: dict) -> list[tuple[str, bool]]:
 
 
 STATIC_MUTATIONS = [
+    ("HUD", "the Revive Shield chip comes back", '"Rookie", "Blessing",', '"Rookie", "Protected", "Blessing",'),
     ("HUD", "the status row on the war meter", "(wm.Y + L.WarGeo.Bottom + CT.Gap / s)", "(wm.Y)"),
     ("EV", "the NEW! sticks out again", 'chip:SetAttribute("NewTagInside",', 'chip:SetAttribute("NewTagOutside",'),
     ("EV", "the kaiju line wraps again", "ui.KaijuChipText.TextWrapped = false", "ui.KaijuChipText.TextWrapped = true"),
