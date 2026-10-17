@@ -3553,7 +3553,7 @@ Config.StoryQuests = {
 				Neutral = { "Otto: For my test, beat four slimes with basic attacks.", "Otto: Make Tiny's order, help her, then come back to me." } } },
 			Requires = { Level = 5 },
 			Steps = {
-				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "SlimeMeadow",
+				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "Lv5Slimes",
 					Obj = { Type = "BasicKill", Kind = "Slime", Count = 4 },
 					On = "Self", Find = "Hey! That's someone's bag!",
 					Horns = { Find = "You can't eat a ribbon!" }, Neutral = { Find = "That's a tool basket, not lunch!" } },
@@ -4903,6 +4903,9 @@ Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
 -- neighbour is Folk1 of Halo town (now a quest NPC too: it keeps its TownFolk bubbles)
 Config.StoryQuests.Landmarks.LostBag = Vector3.new(188, 0, -12)
 Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
+-- r5 play (최종 검수 10/16): the Lv5 test's slimes = the meadow entrance (just past the bridge from the Crossroads), so the
+-- row's marker leads there instead of to the meadow's travel pad by the Forge (Guide "SlimeMeadow" = a zone = its pad)
+Config.StoryQuests.Landmarks.Lv5Slimes = Vector3.new(250, 0, 0)
 -- P1 ⑦ the lamps of the first chapter's ending (a placed StoryLandmark model with the same Spot moves them)
 Config.StoryQuests.Landmarks.LampH = Vector3.new(30, 0, -440)
 Config.StoryQuests.Landmarks.LampR = Vector3.new(-30, 0, 440)
