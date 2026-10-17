@@ -98,6 +98,11 @@ end
 
 local function lerp(a, b, t) return a + (b - a) * t end
 
+-- A23-221 (5): my screen in the first-day window (Config.FirstDay: the clock at noon-ish, no night lift)
+local function firstDay()
+	return type(Config.FirstDayFor) == "function" and Config.FirstDayFor(LocalPlayer:GetAttribute("PlaytimeSeconds")) == true
+end
+
 local function tint()
 	if S.Tint and S.Tint.Parent == Lighting then return S.Tint end
 	local cc = Instance.new("ColorCorrectionEffect")
@@ -176,7 +181,8 @@ local function compose(f, base)
 		OutdoorAmbient = scale(base.OutdoorAmbient, f.Amb),
 		ExposureCompensation = base.ExposureCompensation + f.Exp,
 		EnvironmentSpecularScale = f.Spec or base.EnvironmentSpecularScale,
-		ClockTime = dusk.ClockTime, FogColor = dusk.FogColor, FogStart = dusk.FogStart, FogEnd = dusk.FogEnd,
+		ClockTime = (firstDay() and tonumber(Config.FirstDay.Clock)) or dusk.ClockTime,
+		FogColor = dusk.FogColor, FogStart = dusk.FogStart, FogEnd = dusk.FogEnd,
 	}, { TintColor = f.Tint, Saturation = f.Sat, Contrast = f.Con, Brightness = f.CC }
 end
 
@@ -539,7 +545,7 @@ function ZoneLook.Start()
 		-- running takes the new goal, else one write (never a new 1.5 s ease each step)
 		local function onNight()
 			local v = tonumber(gs:GetAttribute("NightLevel"))
-			S.Night = (v and v == v) and math.clamp(v, 0, 1) or 0
+			S.Night = (v and v == v and not firstDay()) and math.clamp(v, 0, 1) or 0
 			local goal = factorsFor(S.Preview or S.Zone, S.Night)
 			if S.Easing then
 				S.Goal = goal
@@ -549,6 +555,15 @@ function ZoneLook.Start()
 			end
 		end
 		gs:GetAttributeChangedSignal("NightLevel"):Connect(function()
+			local ok, err = pcall(onNight)
+			if not ok then Util.Warn("ZoneLook", tostring(err)) end
+		end)
+		-- A23-221 (5): leaving the first-day window brings the server's clock and night back (one write)
+		local was = firstDay()
+		LocalPlayer:GetAttributeChangedSignal("PlaytimeSeconds"):Connect(function()
+			local now = firstDay()
+			if now == was then return end
+			was = now
 			local ok, err = pcall(onNight)
 			if not ok then Util.Warn("ZoneLook", tostring(err)) end
 		end)

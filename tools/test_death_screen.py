@@ -110,6 +110,12 @@ local seen = false
 for _, v in L do if type(v) == "string" and string.find(v, "Tip", 1, true) then seen = true end end
 check(not seen, "no tip line, not even the server's fun tip (A23-99 / A23-110)", "")
 check(DS.Lines({ By = "Fall" }, 2).Cause == "You fell", "a fall: You fell", "")
+-- 최종 검수 #1: the KO's monster kind from its name (the head icon next to the cause), nil for none
+do
+	local kind = DS.KindOf("King Slime")
+	check(kind ~= nil and Config.MonsterTypes[kind].Name == "King Slime" and DS.KindOf("Nobody") == nil and DS.KindOf(nil) == nil,
+		"#1: KindOf finds the monster kind by its Name (nil for none)", tostring(kind))
+end
 check(DS.Lines({ By = "Other" }, 2).Cause == "You were knocked out" and DS.Lines({ By = "Player" }, 2).Cause == "You were knocked out",
 	"no name: the plain line", "")
 check(DS.Lines({ By = "Player", Name = "Bo", Lost = 120 }, 1).Lost == "Lost 120 pouch gold", "pouch gold lost: its line", "")

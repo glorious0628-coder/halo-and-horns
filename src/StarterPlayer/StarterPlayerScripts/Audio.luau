@@ -835,6 +835,8 @@ function Audio.MusicStep(dt)
 	local zv = num(Z.Volume, 0.25)
 	local zd = zv / math.max(0.05, num(Z.Fade, 1.5)) * math.clamp(num(dt, 0), 0, 0.5)
 	local phase = S.GameState and S.GameState:GetAttribute("DayPhase") or nil
+	-- A23-221 (5): the first 10 minutes sound like day too
+	if type(Config.FirstDayFor) == "function" and Config.FirstDayFor(Players.LocalPlayer:GetAttribute("PlaytimeSeconds")) then phase = "Day" end
 	local air, target = MUSIC.Air, zv * sfxMult() * Audio.AirMult(MUSIC.Zone, phase)
 	if air then air.Volume = air.Volume < target and math.min(target, air.Volume + zd) or math.max(target, air.Volume - zd) end
 	fadeOut(MUSIC.AirFading, zd)
@@ -1171,7 +1173,8 @@ local function watchGame()
 	end
 	watch(gs, "DayPhase", function(prev, v)
 		-- 13차: dusk, the lamps come on (WeatherFx switches the LampLight lights; not the phase that came with the join)
-		if v == "Dusk" and prev ~= nil and prev ~= "Dusk" and fresh() then Audio.Play("LanternOn") end
+		local day = type(Config.FirstDayFor) == "function" and Config.FirstDayFor(Players.LocalPlayer:GetAttribute("PlaytimeSeconds"))
+		if v == "Dusk" and prev ~= nil and prev ~= "Dusk" and fresh() and not day then Audio.Play("LanternOn") end
 	end)
 	watch(gs, "KaijuPhase", function(prev, v)
 		-- B5: the kaiju alarm (its 3-2-1 comes from pollWorld)

@@ -544,7 +544,7 @@ function L.PowerValue()
 end
 
 function L.PowerText(n)
-	local lv = math.floor(num("Level", 1))
+	local lv = L.LvShown() or math.floor(num("Level", 1))
 	if L.Pow.Short then return L.Tx(TXT, "PowerLineShort", lv, Util.FormatInt(n)) end
 	return L.Tx(TXT, "PowerLine", lv, TXT.PowerWord, Util.FormatInt(n))
 end
@@ -710,7 +710,73 @@ end
 -- 최종 검수 10/15 (feedback_audit #2, one moment; server Fx LevelUp From / PowerFrom / PowerTo): my level-up on the
 -- HUD at the same moment as Fx's ring and stars - the level badge pops (bigger, then back with a little overshoot) and
 -- the power number counts up with its "+N" (the settle after it stays quiet: no second "+N")
-L.LevelPop = { Up = 1.6, In = 0.15, Out = 0.35 }
+L.LevelPop = { Up = 1.6, In = 0.15, Out = 0.35, Step = 0.16, HoldMax = 20 }
+
+-- A23-221 ③: while Fx holds my level-ups (a fight) the badge and the power line keep the level from before (Lv.Hold,
+-- never longer than HoldMax s); LevelCount then ticks the badge From -> To, one short tick sound per level
+L.Lv = { Hold = nil, At = 0, Seq = 0 }
+function L.LvShown()
+	local H = L.Lv
+	if H.Hold == nil or os.clock() - H.At > L.LevelPop.HoldMax then return nil end
+	return H.Hold
+end
+
+function HUD.LevelHold(from)
+	from = tonumber(from)
+	if not from then return end
+	L.Lv.Hold, L.Lv.At = math.floor(from), os.clock()
+	L.Lv.Seq += 1
+	if ui.level then ui.level.Text = tostring(L.Lv.Hold) end
+end
+
+function HUD.LevelCount(from, to)
+	from, to = math.floor(tonumber(from) or 0), math.floor(tonumber(to) or 0)
+	L.Lv.Seq += 1
+	local seq = L.Lv.Seq
+	local function done()
+		L.Lv.Hold = nil
+		if ui.level then ui.level.Text = tostring(math.floor(num("Level", 1))) end
+		if ui.power then ui.power.Text = L.PowerText(L.Pow.Shown or L.PowerValue()) end
+	end
+	if to - from <= 1 or UIKit.ReducedMotion() then
+		done()
+		return
+	end
+	task.spawn(function()
+		for v = from + 1, to do
+			if L.Lv.Seq ~= seq then return end
+			L.Lv.Hold, L.Lv.At = v, os.clock()
+			if ui.level then ui.level.Text = tostring(v) end
+			if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, "CountTick") end
+			task.wait(L.LevelPop.Step)
+		end
+		if L.Lv.Seq == seq then done() end
+	end)
+end
+
+-- A23-221 ⑦: the '2x XP · N min' chip shines once, at the first XP of the session in the first minutes (a small pop +
+-- a brighter rim for a moment; no words, no banner); it goes quietly when the minutes end (L.RefreshBoost)
+function HUD.PulseBoost()
+	if L.BoostPulsed or L.EarlyXPLeft() == nil then return false end
+	local chip = ui.chip and ui.chip.Boost
+	if not (chip and chip.Frame and chip.Frame.Visible) then return false end
+	L.BoostPulsed = true
+	if UIKit.ReducedMotion() then return true end
+	local f = chip.Frame
+	local sc = f:FindFirstChild("BoostPop") or Instance.new("UIScale")
+	sc.Name, sc.Scale, sc.Parent = "BoostPop", 1, f
+	local up = TweenService:Create(sc, TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = 1.18 })
+	up.Completed:Connect(function()
+		TweenService:Create(sc, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	end)
+	up:Play()
+	if chip.Stroke then
+		local th = chip.Stroke.Thickness
+		chip.Stroke.Thickness = th + 2.5
+		TweenService:Create(chip.Stroke, TweenInfo.new(0.7, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { Thickness = th }):Play()
+	end
+	return true
+end
 function HUD.LevelUpMoment(d)
 	if type(d) ~= "table" then return end
 	local holder = ui.badgeHolder
@@ -783,6 +849,11 @@ end
 function L.FirstWeapon()
 	local F = L.First
 	if C and type(C.Audio) == "table" and type(C.Audio.Play) == "function" then pcall(C.Audio.Play, "PowerUp") end
+	-- A23-221 ③: the new weapon rises over my head for a moment (Fx.HoldUp: a round glow, my cheer out of a fight)
+	pcall(function()
+		local key = Config.WeaponArtKey(num("WeaponTier", 1), attr("Class", nil), getFaction())
+		if key and C and type(C.Fx) == "table" and type(C.Fx.HoldUp) == "function" then C.Fx.HoldUp(key) end
+	end)
 	-- A23-191: no "Stronger!" banner (the sparkles + the power count-up say it)
 	-- gold sparkles bursting from me (Roblox's own sparkle texture; no new art)
 	local root = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -3235,7 +3306,7 @@ end
 local function refreshStats()
 	local level = math.floor(num("Level", 1))
 	L.RefreshBadge()
-	if ui.level then ui.level.Text = tostring(level) end
+	if ui.level then ui.level.Text = tostring(L.LvShown() or level) end
 
 	local xp = math.max(0, num("XP", 0))
 	if level >= Config.Levels.MaxLevel then
@@ -3696,6 +3767,17 @@ function L.RookieFold()
 end
 HUD.RookieFold = L.RookieFold -- EventHUD reads the same rule
 
+-- A23-221 ⑥ (game play r1: the goose chip and [Join] came at 5:39, before the Slime Prince): the event strip (EventHUD
+-- V2.Fold) also waits while the first story quest (M1_1) is still on my rows; once its row is gone it shows
+function HUD.EventsWait()
+	if L.RookieFold() then return true end
+	local first = "story:" .. tostring(type(Config.StoryQuests) == "table" and Config.StoryQuests.Main and Config.StoryQuests.Main[1] or "M1_1")
+	for _, e in questState.All or questState.Rows or {} do
+		if type(e) == "table" and e.Id == first then return true end
+	end
+	return false
+end
+
 -- 검수 2026-10-09 (UI clutter review ③, "show it when it is needed"): the crown war bar first shows after the Forge
 -- visit - hidden while the first mission is at its first fight or on the way to the Forge (TutorialStep Kill / Forge,
 -- A23-74 order Kill -> Forge -> Guide -> Quest -> Done); no step yet (not loaded) or any later step = shown, so it
@@ -3793,7 +3875,10 @@ end
 function HUD.QuestGoal(text, serverGoal)
 	if type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end
 	if type(text) ~= "string" or text == "" then return nil end
-	local main = string.match(text, "^(.-)%s+·%s") or text
+	local head, rest = string.match(text, "^(.-)%s+·%s+(.+)$")
+	-- 개발 2 r5 ('Next goal · Learn a skill: meet Rose' showed 'Next goal.'): every Config.Tutorial.Text.Next* row starts
+	-- with the 'Next goal' tag - its goal is the part after it
+	local main = (head and string.lower(head) == "next goal") and rest or head or text
 	main = string.gsub(main, "%s+$", "")
 	if main == "" then return nil end
 	-- 최종 검수 10/14 (Korean client: 'Go to Otto's Forge in the Crossroads.' stayed English): the table's Source is the
@@ -3859,6 +3944,10 @@ local function parseQuests()
 				GoalKind = type(e.GoalKind) == "string" and e.GoalKind or nil, -- A23-48: which next goal (QuestTarget.IronGold)
 				-- quest P1 ②: the first mission's guide / teacher (its NpcId): the row walks there, the talk opens the lines
 				GuideNpc = (type(e.GuideNpc) == "string" and e.GuideNpc ~= "") and e.GuideNpc or nil,
+				-- A23-221 ① (dev2-first12): the first mission's practice step = its dummy's Landmarks key (StoryNpcs draws the
+				-- dummy there, QuestTarget points at it)
+				GuideSpot = (type(e.GuideSpot) == "string" and e.GuideSpot ~= "") and e.GuideSpot or nil,
+				Practice = e.Practice == true,
 				Story = type(e.Story) == "table" and e.Story or nil, -- story rows: { Id, St, Panel, Guide }
 				Unit = type(e.Unit) == "string" and e.Unit or nil, -- Kill/Golden quests: the monster kind (icon)
 				-- review 2026-10-07: the server's short name (English, <= 14 letters, game dev 2) for the phone lines
@@ -5109,6 +5198,18 @@ function L.NpcWalk(id, zone, panels)
 	return true
 end
 
+-- A23-221 ①: a row whose place is a spot (the practice dummy): QuestTarget.ForEntry's place (a trip from another zone
+-- opens Travel); false = no place
+function L.SpotWalk(e, zone, panels)
+	local qt = C and C.QuestTarget
+	if type(qt) ~= "table" or type(qt.ForEntry) ~= "function" then return false end
+	local ok, r = pcall(qt.ForEntry, e, zone)
+	if not ok or type(r) ~= "table" then return false end
+	if r.Travel and panels and panels.Open then panels.Open("Travel") end
+	local target = r.Part or localAnchor(tostring(r.Tag), r.Position)
+	return showGuide(target, tostring(r.Label or ""), tostring(r.Tag), 30)
+end
+
 function L.StoryTap(st, zone, panels)
 	-- 개발 2 dev2-offer-row: "Talk to <asker>" (Story.Offer) = the way to her; her prompt opens the request
 	if st.Offer == true then
@@ -5133,6 +5234,11 @@ function L.StoryTap(st, zone, panels)
 		return
 	end
 	local g = st.Guide
+	-- 개발 2 r5: no Guide but an NPC (M1_3's delivery to Tiny / Folk1) = the way to that NPC
+	if (g == nil or g == "") and type(st.Npc) == "string" and st.Npc ~= "" then
+		L.NpcWalk(st.Npc, zone, panels)
+		return
+	end
 	if g == nil then return end
 	if g == "Blacksmith" then
 		doUpgrade()
@@ -5274,6 +5380,8 @@ function L.PinnedTap(e, r)
 		L.StoryTap(e.Story, zone, panels)
 		return
 	end
+	-- A23-221 ①: "Hit the practice dummy" - the tap shows the way to the dummy (QuestTarget's place)
+	if e.Practice and e.GuideSpot and L.SpotWalk(e, zone, panels) then return end
 	-- quest P1 ②: "Talk to Hallie" / "Meet Sir Gleam at the town gate" - the tap only shows the way (the talk opens it)
 	if e.GuideNpc and L.NpcWalk(e.GuideNpc, zone, panels) then return end
 	-- quest P1 ⑤ / A23-193: "Take Sir Gleam's test" / "Learn a skill" -> the way to my side's teacher
@@ -5666,7 +5774,7 @@ function L.RefreshLocks()
 			L.TileSeen[id] = false
 		end
 		local locked = not (open and opens)
-		local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id) -- (nothing to open: its name)
+		local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id, st) -- (nothing to open: its name)
 		if t.Lock and (t.Lock.Locked ~= locked or (locked and t.LockWord ~= word)) then
 			pcall(t.Lock.Set, locked, word)
 			t.LockWord = word
@@ -5676,7 +5784,7 @@ function L.RefreshLocks()
 		local open = L.TileSeen[f.Def.Id] ~= false
 		local opens = L.TileOpens(f.Def)
 		local locked = not (open and opens)
-		local word = (open and not opens) and f.Def.Text or Config.HudReveal.TileWord(f.Def.Id)
+		local word = (open and not opens) and f.Def.Text or Config.HudReveal.TileWord(f.Def.Id, st)
 		if f.Lock and (f.Lock.Locked ~= locked or (locked and f.LockWord ~= word)) then
 			pcall(f.Lock.Set, locked, word)
 			f.LockWord = word

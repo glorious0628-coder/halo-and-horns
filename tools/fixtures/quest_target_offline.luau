@@ -499,10 +499,32 @@ do
 		and e.Label == "Potion shop" and at(e.Part, -12, -20), e and encode({ Label = e.Label }) or "nil")
 	check(g, "the quick slot steps have no place in the world",
 		QT.ForEntry({ Story = { Id = "M1_2", St = 3, Guide = "QuickSlot" } }, "Crossroads", "Halo", vec(0, 3, 0)) == nil, "")
+	-- A23-222 (dev2-first12): M1_2's King's hill / rematch in the meadow -> the spot, labelled the King (not the zone)
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 1, Guide = "KingHill" } }, "SlimeMeadow", "Halo", vec(300, 3, 0))
+	check(g, "M1_2 King's hill in the meadow -> its spot, 'King Slime'", type(e) == "table" and e.Travel == false
+		and e.Label == "King Slime" and at(e.Part, 400, -118), e and encode({ Label = e.Label, Travel = e.Travel }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "M1_2 rematch in the meadow -> the arrival spot, 'King Slime' (never off inside the meadow)", type(e) == "table"
+		and e.Travel == false and e.Label == "King Slime", e and encode({ Label = e.Label }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "M1_2 rematch from the Crossroads -> a trip to the meadow", type(e) == "table" and e.Travel == true
+		and e.Zone == "SlimeMeadow", e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
+	-- A23-221 ① (dev2-first12): the first mission's practice row -> its dummy
+	local prac = { Pinned = true, TutorialStep = 5, Practice = true, GuideSpot = "PracticeH" }
+	local ps = Config.StoryQuests.Landmarks.PracticeH
+	local pz = Config.ZoneAt(ps).Id
+	e = QT.ForEntry(prac, pz, "Halo", vec(ps.X + 30, 3, ps.Z))
+	check(g, "the practice row -> over the dummy, 'Dummy'", type(e) == "table" and e.Travel == false and e.Label == "Dummy"
+		and math.abs(e.Position.X - ps.X) < 0.01 and math.abs(e.Position.Z - ps.Z) < 0.01 and e.Position.Y > 6,
+		e and encode({ Label = e.Label, Y = e.Position.Y }) or "nil")
+	e = QT.ForEntry(prac, "SlimeMeadow", "Halo", vec(300, 3, 0))
+	check(g, "... from another zone -> a trip to the dummy's zone", type(e) == "table" and e.Travel == true and e.Zone == pz,
+		e and encode({ Zone = e.Zone }) or "nil")
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -470))
 	check(g, "a plain zone guide inside its zone -> still nothing", e == nil, e and encode({ Tag = e.Tag }) or "nil")
 	-- 빛 마을 점검 #1 / #22 / #25 / #30 (2026-10-10): a talk step through a story NPC in the world (dev3 TownNpcs)
 	local talk = { Story = { Id = "H1", St = 1, Panel = true, Guide = "HaloTown", Npc = "Bright" } }
+	local deliver = { Story = { Id = "M1_3", St = 3, Npc = "Bright" } } -- 개발 2 r5: no Guide, an NPC (a delivery)
 	e = QT.ForEntry(talk, "HaloTown", "Halo", vec(0, 3, -420))
 	check(g, "no Bright in the world yet -> a talk row has no place (as before)", e == nil, e and encode({ Tag = e.Tag }) or "nil")
 	local bright = add(WORKSPACE, inst("Model", "Npc_Bright", { Attrs = { NpcId = "Bright" } }))
@@ -519,6 +541,12 @@ do
 		e and encode({ Zone = e.Zone, T = e.Travel }) or "nil")
 	e = QT.ForEntry(talk, "HaloTown", "Halo", vec(14, 3, -448))
 	check(g, "... standing by her (her Talk prompt is right there) -> no marker", e == nil, e and encode({ Tag = e.Tag }) or "nil")
+	e = QT.ForEntry(deliver, "HaloTown", "Halo", vec(0, 3, -400))
+	check(g, "개발 2 r5: a delivery step with no Guide (Npc only) -> the marker over that NPC", type(e) == "table" and e.Part == head
+		and e.Tag == "story:npc", e and encode({ Tag = e.Tag }) or "nil")
+	e = QT.ForEntry(deliver, "SlimeMeadow", "Halo", vec(330, 3, 0))
+	check(g, "... from the meadow -> a trip to her town", type(e) == "table" and e.Travel == true and e.Zone == "HaloTown",
+		e and encode({ Zone = e.Zone }) or "nil")
 	e = QT.ForEntry({ Story = { Id = "H3", St = 2, Panel = true, Guide = "HaloTown", Npc = "Gleam" } }, "HaloTown", "Halo", vec(0, 3, -400))
 	check(g, "a talk through an NPC not in the world (Gleam) -> no place", e == nil, e and encode({ Tag = e.Tag }) or "nil")
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Panel = true, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -400))

@@ -127,6 +127,13 @@ local function readState()
 		if type(w) == "string" and w ~= "" then weather = w end
 		if type(p) == "string" and p ~= "" then phase = p end
 	end
+	-- A23-221 (5): the first 10 minutes are a clear day on my screen (no rain, the lamps off; Config.FirstDayFor)
+	local lp = Players.LocalPlayer
+	local okC, Config = pcall(function() return require(ReplicatedStorage:FindFirstChild("Shared"):FindFirstChild("Config")) end)
+	if lp and okC and type(Config) == "table" and type(Config.FirstDayFor) == "function"
+		and Config.FirstDayFor(lp:GetAttribute("PlaytimeSeconds")) then
+		return "Clear", "Day"
+	end
 	return (type(weather) == "string" and weather or "Clear"), (type(phase) == "string" and phase or nil)
 end
 

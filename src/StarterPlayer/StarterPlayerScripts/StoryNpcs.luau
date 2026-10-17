@@ -205,8 +205,10 @@ end
 -- All client-only parts in workspace.StoryProps: no collision, no query, no art, round glows only (no rays).
 T.World = {
 	Folder = "StoryProps",
+	-- A23-221 ① (playtest r1: the dummy was small and barely moved): Scale = every part's size (the post 6.2 studs), a hit
+	-- tips it Wobble degrees and it rocks for Time s
 	Dummy = { Post = Color3.fromRGB(122, 84, 52), Body = Color3.fromRGB(214, 178, 120), Band = Color3.fromRGB(196, 62, 58),
-		Height = 4.4, Wobble = 14, Time = 0.45, Pad = 1.5 },
+		Height = 4.4, Scale = 1.4, Wobble = 24, Time = 0.7, Pad = 2.5 },
 	Tool = { Name = "HH_PracticeTool", Size = Vector3.new(0.28, 2.8, 0.28), Color = Color3.fromRGB(176, 128, 78),
 		Grip = { 0, -0.15, -1.25, -90 } }, -- the stick from the hand: x, y, z (studs), the tip forward (degrees about X)
 	Ring = { Size = 7, Color = Color3.fromRGB(255, 214, 72), Alpha = 0.45 },
@@ -232,6 +234,15 @@ function StoryNpcs.Spots(entries, faction)
 	local defs = type(sq.Defs) == "table" and sq.Defs or {}
 	local marks = type(sq.Landmarks) == "table" and sq.Landmarks or {}
 	local out, seen = {}, {}
+	-- A23-221 ① (dev2-first12): the first mission's practice row (Practice, GuideSpot = the dummy's Landmarks key)
+	local tp = type(Config.Tutorial) == "table" and type(Config.Tutorial.Practice) == "table" and Config.Tutorial.Practice or {}
+	for _, e in type(entries) == "table" and entries or {} do
+		local key = type(e) == "table" and e.Practice == true and e.GuideSpot or nil
+		if type(key) == "string" and typeof(marks[key]) == "Vector3" and not seen.Tutorial then
+			seen.Tutorial = true
+			table.insert(out, { Id = "Tutorial", Type = "Practice", Spot = key, Pos = marks[key], Radius = tonumber(tp.Radius) or 10 })
+		end
+	end
 	for _, e in type(entries) == "table" and entries or {} do
 		local st = type(e) == "table" and e.Story or nil
 		local def = type(st) == "table" and type(st.Id) == "string" and st.Offer ~= true and defs[st.Id] or nil
@@ -343,14 +354,16 @@ end
 -- the practice dummy: a post, a straw body with a red band, a round head; its base is its pivot (it wobbles about it)
 local function makeDummy(s)
 	local D = T.World.Dummy
+	local k = tonumber(D.Scale) or 1
+	local h = D.Height * k
 	local m = Instance.new("Model")
 	local y = groundAt(s.Pos)
 	local base = CFrame.new(s.Pos.X, y, s.Pos.Z)
-	local post = block("Post", Vector3.new(0.35, D.Height, 0.35), D.Post, base * CFrame.new(0, D.Height / 2, 0), m)
-	block("Body", Vector3.new(1.6, 2, 0.9), D.Body, base * CFrame.new(0, D.Height * 0.62, 0), m)
-	block("Band", Vector3.new(1.65, 0.3, 0.95), D.Band, base * CFrame.new(0, D.Height * 0.62, 0), m)
-	block("Arms", Vector3.new(3, 0.35, 0.35), D.Post, base * CFrame.new(0, D.Height * 0.72, 0), m)
-	block("Head", Vector3.new(1.1, 1.1, 1.1), D.Body, base * CFrame.new(0, D.Height + 0.45, 0), m, Enum.PartType.Ball)
+	local post = block("Post", Vector3.new(0.35, D.Height, 0.35) * k, D.Post, base * CFrame.new(0, h / 2, 0), m)
+	block("Body", Vector3.new(1.6, 2, 0.9) * k, D.Body, base * CFrame.new(0, h * 0.62, 0), m)
+	block("Band", Vector3.new(1.65, 0.3, 0.95) * k, D.Band, base * CFrame.new(0, h * 0.62, 0), m)
+	block("Arms", Vector3.new(3, 0.35, 0.35) * k, D.Post, base * CFrame.new(0, h * 0.72, 0), m)
+	block("Head", Vector3.new(1.1, 1.1, 1.1) * k, D.Body, base * CFrame.new(0, h + 0.45 * k, 0), m, Enum.PartType.Ball)
 	m.PrimaryPart = post
 	m:SetAttribute("Base", base)
 	return m

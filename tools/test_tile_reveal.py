@@ -136,6 +136,7 @@ ATTR.Level = q - 1
 check(string.find(pick(), "Skills") ~= nil, "skills still locked one level before the first skill", locked())
 ATTR.Level = q
 check(string.find(pick(), "Skills") ~= nil, "A23-193: the level alone does not open the skills tile", locked())
+check(tile("Skills").Lock.Word == "Quest", "playtest r2: at the level, still locked: 'Quest' (not 'Lv 5')", tostring(tile("Skills").Lock.Word))
 ATTR.SkillLearnReady = 1
 check(string.find(pick(), "Skills") == nil, "A23-193: a skill waiting at the teacher opens the skills tile", locked())
 ATTR.Level = 1
@@ -227,8 +228,9 @@ MUTATIONS = [
     ("a tile with nothing to open shows open ('Coming soon!' again)",
      "\t\tlocal locked = not (open and opens)\n\t\tlocal word = (open and not opens) and t.Def.Text",
      "\t\tlocal locked = not open\n\t\tlocal word = (open and not opens) and t.Def.Text"),
-    ("its level word stays after the level", "local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id)",
-     "local word = Config.HudReveal.TileWord(id)"),
+    ("its level word stays after the level", "local word = (open and not opens) and t.Def.Text or Config.HudReveal.TileWord(id, st)",
+     "local word = Config.HudReveal.TileWord(id, st)"),
+    ("'Lv 5' stays at Lv 5", "Config.HudReveal.TileWord(id, st) -- (nothing to open", "Config.HudReveal.TileWord(id) -- (nothing to open"),
     ("pops while still locked", "if was == false and ready and opens then L.TilePop(t.Button) end", "if was == false and ready then L.TilePop(t.Button) end"),
     ("the join timer only on change", "local ready = L.RevealReady() -- every check", "local ready = true -- every check"),
     ("pops with reduced motion", "if not btn or UIKit.ReducedMotion() then return end", "if not btn then return end"),

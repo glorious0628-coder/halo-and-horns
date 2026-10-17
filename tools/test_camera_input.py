@@ -202,6 +202,14 @@ def main():
     static.append(("A23-91: Config.CameraFollow = FOLLOW's names and values (" + ", ".join(sorted(pairs_cfg)) + ")", same))
     static.append(("A23-91: Start copies Config.CameraFollow over FOLLOW",
                    "if type(value) == \"number\" and type(FOLLOW[key]) == \"number\" then FOLLOW[key] = value end" in source))
+    # 게임 플레이 3판 ① / 5판: the camera behind a new character once, and again after a side / class pick in the first mission
+    src = source.replace("\r\n", "\n")
+    static.append(("playtest r3: once per character the camera turns behind it (SnapBehind after the Custom camera has it)",
+                   "if humanoid and FOLLOW.SnappedFor ~= character then" in src and "pcall(FOLLOW.SnapBehind, character)" in src))
+    static.append(("playtest r5: a side / class pick in the first mission snaps it behind again",
+                   'for _, name in { "Faction", "ClassChosen" } do' in src
+                   and 'if (tonumber(LocalPlayer:GetAttribute("TutorialStep")) or 0) ~= 0 then return end' in src
+                   and "task.delay(after, function() pcall(FOLLOW.SnapBehind, LocalPlayer.Character) end)" in src))
     for name, good in static:
         print(("STATIC ok   " if good else "STATIC FAIL ") + name)
     for name, old, new in HUD_MUTATIONS:

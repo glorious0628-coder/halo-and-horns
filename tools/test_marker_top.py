@@ -82,7 +82,8 @@ def run(src: str) -> tuple[int, int, str]:
         proc = subprocess.run([str(BINARY), str(p)], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
     out = proc.stdout + proc.stderr
     m = re.search(r"MARKER_TOP_SUMMARY checks=(\d+) failed=(\d+)", out)
-    static_ok = CALL in src
+    # A23-221 ⑥: the distance's navy rim bolder over a white floor (once per new value, never growing)
+    static_ok = CALL in src and "pcall(boldRim, ui.text)" in src and "if s.Thickness == last then return end" in src
     if not m:
         return 0, 1, out
     return int(m[1]), int(m[2]) + (0 if static_ok else 1), out + ("" if static_ok else "\nSTATIC_FAIL moveStep call")

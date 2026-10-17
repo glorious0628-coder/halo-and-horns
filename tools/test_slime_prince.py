@@ -65,7 +65,7 @@ def static() -> tuple[int, list[str]]:
             # A23-127 (plan 10/13 §1-A #2): the iron weapon is the real King Slime's first drop - the drop goal / its short
             # name (게임성 개발 1), the tier-3 source line, the first King's weapon lines (게임성 개발 2)
             drop = re.search(r"\b(NextIronDrop|IronDrop|FirstKingWeapon|FirstKingEquip) = ", code) \
-                or 'Source = "King Slime drop' in code
+                or 'Source = "King Slime drop' in code or 'King = "King Slime",' in code  # A23-222: M1_2's King mark
             if re.search(r"king slime(?! hill)", code, re.I) and "SlimeKing" not in code and 'Text = "Defeat the King Slime"' not in code \
                     and not drop:
                 hits.append(f"{path.relative_to(ROOT).as_posix()}:{n}")

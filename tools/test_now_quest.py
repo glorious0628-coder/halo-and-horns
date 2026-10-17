@@ -38,7 +38,9 @@ MUTATIONS = [
     ("the first unfinished, not the closest", "\t\t\tif share > bestShare then best, bestShare = i, share end\n",
      "\t\t\tif best == nil then best, bestShare = i, share end\n"),
     ("the story waiting ignored", "\tif callIndex and rows[callIndex] then return callIndex end\n", ""),
-    ("the tail kept", '\tlocal main = string.match(text, "^(.-)%s+·%s") or text\n', "\tlocal main = text\n"),
+    ("the tail kept", '\tlocal main = (head and string.lower(head) == "next goal") and rest or head or text\n', "\tlocal main = text\n"),
+    ("'Next goal' kept as the goal", 'local main = (head and string.lower(head) == "next goal") and rest or head or text',
+     "local main = head or text"),
     ("no full stop", '\tif not string.find(main, "[%.!%?。]$") then main ..= "." end\n', ""),
     ("the server's Goal ignored", '\tif type(serverGoal) == "string" and serverGoal ~= "" then return serverGoal end\n', ""),
 ]
@@ -77,6 +79,9 @@ check("a full stop is not doubled", G("Meet the guide!") == "Meet the guide!" an
 check("plain words get a full stop", G("Defeat Slime ×5") == "Defeat Slime ×5.")
 check("the server's Goal wins", G("x · y", "Defeat 5 slimes in Squishy Meadow.") == "Defeat 5 slimes in Squishy Meadow.")
 check("no words: nil", G("", nil) == nil and G(nil, nil) == nil)
+check("개발 2 r5: a 'Next goal · ...' row's goal is the part after the tag", G("Next goal · Learn a skill: meet Rose")
+	== "Learn a skill: meet Rose." and G("Next goal · Iron weapon at Lv5 (now Lv3)") == "Iron weapon at Lv5 (now Lv3).",
+	G("Next goal · Learn a skill: meet Rose"))
 print(("NOW_SUMMARY checks=%d failed=%d"):format(checks, failed))
 '''
 

@@ -240,6 +240,9 @@ function TownReact.Say(npc, line)
 		TownReact.SizeFor(game:GetService("UserInputService").TouchEnabled == true))
 	if not ok or not bubble then return end
 	bubble.Name = "TownReactBubble"
+	-- A23-221 ⑥ (game play r1: Hallie's / the teacher's words hid behind the big statues): a town person's line draws over
+	-- the world (the monsters' barks keep theirs behind walls)
+	bubble.AlwaysOnTop = true
 	local show = num(R.Show, 4)
 	if fadeOut then task.delay(math.max(0, show - (num(B.Out, 0.18))), fadeOut) end
 	task.delay(show, function()

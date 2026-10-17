@@ -3857,6 +3857,15 @@ function Panels.Open(id, arg)
 		STORY.Timing(arg)
 		return
 	end
+	-- A23-221 ② (dev2-first12, M1_2's anvil step): OpenPanel "Enhance" { Item = the scroll, Tier = the weapon in hand } = the
+	-- bag's scroll step with that weapon picked (BagUI arg Use / Tier: the chance and [Enhance] at once; its result plays
+	-- on the weapon cell - the gold flash up, the grey shake down); no scroll = the bag's Gear tab
+	if id == "Enhance" then
+		local a = type(arg) == "table" and arg or {}
+		local item = type(a.Item) == "string" and Config.Loot.Items[a.Item] and a.Item or nil
+		Panels.Open("Bag", item and { Use = item, Tier = tonumber(a.Tier) } or { Tab = "Gear" })
+		return
+	end
 	if type(id) ~= "string" or BUILDERS[id] == nil then
 		Util.Warn(TAG, "unknown panel id: " .. tostring(id))
 		return

@@ -40,6 +40,7 @@ local T = {
 -- Local = this session's own slots (no server yet, or a change the server has not answered within LocalWait s)
 local S = { Local = nil, LocalAt = 0, LocalRemote = false, Started = false, Hooked = false }
 T.LocalWait = 3
+T.Glow = { Color = Color3.fromRGB(255, 214, 72), Thick = 5, Time = 1.4, Pop = 1.15 } -- QuickSlots.Glow (after a KO)
 
 local function num(v, d)
 	v = tonumber(v)
@@ -166,6 +167,40 @@ function QuickSlots.Refresh()
 			end)
 		end
 	end
+	return true
+end
+
+-- 최종 검수 #1 (game play r5: KO'd, nothing said what helps): the first HP potion slot I hold a potion in shines once -
+-- a gold rim that fades and a small pop (none with reduced motion); nothing without a potion. True when it shone
+function QuickSlots.Glow()
+	local slots = hud("QuickSlots")
+	if type(slots) ~= "table" then return false end
+	local pick = nil
+	for i = 1, T.Count do
+		local s = QuickSlots.Slot(i)
+		if s.Def and s.Def.Kind == "HP" and s.Count > 0 then pick = i break end
+	end
+	local w = pick and slots[pick]
+	local btn = type(w) == "table" and w.Button or nil
+	if not (btn and btn:IsA("GuiObject")) then return false end
+	local kit = C and C.UIKit
+	if type(kit) == "table" and type(kit.ReducedMotion) == "function" and kit.ReducedMotion() then return true end
+	local TweenService = game:GetService("TweenService")
+	local rim = btn:FindFirstChild("KOGlow") or Instance.new("UIStroke")
+	rim.Name = "KOGlow"
+	rim.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	rim.Color, rim.Thickness, rim.Transparency, rim.Enabled = T.Glow.Color, T.Glow.Thick, 0, true
+	rim.Parent = btn
+	TweenService:Create(rim, TweenInfo.new(T.Glow.Time, Enum.EasingStyle.Sine, Enum.EasingDirection.Out),
+		{ Transparency = 1, Thickness = 1 }):Play()
+	local sc = btn:FindFirstChild("KOGlowPop") or Instance.new("UIScale")
+	sc.Name, sc.Scale, sc.Parent = "KOGlowPop", 1, btn
+	local up = TweenService:Create(sc, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Scale = T.Glow.Pop })
+	up.Completed:Connect(function()
+		TweenService:Create(sc, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { Scale = 1 }):Play()
+	end)
+	up:Play()
+	task.delay(T.Glow.Time + 0.1, function() if rim.Parent then rim.Enabled = false end end)
 	return true
 end
 

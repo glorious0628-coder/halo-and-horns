@@ -48,6 +48,7 @@ local Config = { StoryQuests = {
 	} },
 	WeaponGrades = { Common = { Stars = 1, Color = C3("grey") }, Fine = { Stars = 2, Color = C3("green") }, Rare = { Stars = 3, Color = C3("blue") },
 		Epic = { Stars = 4, Color = C3("purple") } } }
+Config.Tutorial = { Practice = { Halo = "PracticeH", Radius = 10 } }
 local STORY, StoryNpcs = {}, {}
 __FUNC__
 local fails = 0
@@ -71,6 +72,12 @@ check("a choice step with a Lamp guide: the lamp stays", sp[1] and sp[1].Type ==
 sp = StoryNpcs.Spots({ row("B", 1), row("B", 1) }, "Halo")
 check("one place per quest", #sp == 1)
 check("nothing: an empty list, never an error", #StoryNpcs.Spots(nil, nil) == 0)
+-- A23-221 ① (dev2-first12): the first mission's practice row (no Story: Practice + GuideSpot)
+sp = StoryNpcs.Spots({ { Kind = "Main", Pinned = true, Practice = true, GuideSpot = "PracticeH" } }, "Halo")
+check("the first mission's practice row: the dummy at its GuideSpot, Tutorial.Practice.Radius", #sp == 1 and sp[1].Type == "Practice"
+	and sp[1].Id == "Tutorial" and sp[1].Spot == "PracticeH" and sp[1].Radius == 10, #sp)
+check("... a practice row with an unknown spot / no Practice flag: nothing",
+	#StoryNpcs.Spots({ { Practice = true, GuideSpot = "Nowhere" }, { GuideSpot = "PracticeH" } }, "Halo") == 0)
 local f = StoryNpcs.FlagsOf("Crown=Paper,Lamp=Mine")
 check("StoryFlags: every Key=Value", f.Crown == "Paper" and f.Lamp == "Mine")
 check("StoryFlags empty / nil: none", next(StoryNpcs.FlagsOf("")) == nil and next(StoryNpcs.FlagsOf(nil)) == nil)
@@ -104,6 +111,16 @@ def statics(s: dict) -> list[tuple[str, bool]]:
     scene = block(npc, "StoryNpcs.Scene")
     world = block(npc, "StoryNpcs.RefreshWorld")
     return [
+        ("A23-221: the row keeps GuideSpot / Practice", "GuideSpot = (type(e.GuideSpot) == \"string\" and e.GuideSpot ~= \"\") and e.GuideSpot or nil," in hud
+         and "Practice = e.Practice == true," in hud),
+        ("A23-221: the practice row's tap walks to the dummy (before the GuideNpc walk)",
+         "if e.Practice and e.GuideSpot and L.SpotWalk(e, zone, panels) then return end" in hud
+         and hud.find("L.SpotWalk(e, zone, panels) then return end") < hud.find("if e.GuideNpc and L.NpcWalk")
+         and 'entry.Practice == true and type(entry.GuideSpot) == "string"' in qt),
+        ("A23-221: the dummy is big (Scale) and rocks harder", "Scale = 1.4, Wobble = 24, Time = 0.7" in npc
+         and "Vector3.new(0.35, D.Height, 0.35) * k" in npc),
+        ("A23-221 ②: OpenPanel Enhance = the bag's scroll step with the weapon picked",
+         'Panels.Open("Bag", item and { Use = item, Tier = tonumber(a.Tier) } or { Tab = "Gear" })' in panels),
         ("the row keeps GuideNpc", "GuideNpc = (type(e.GuideNpc) == \"string\" and e.GuideNpc ~= \"\") and e.GuideNpc or nil," in hud),
         ("a guide / teacher with a body: the tap walks there before RequestTutorial",
          "if e.GuideNpc and L.NpcWalk(e.GuideNpc, zone, panels) then return end" in hud
@@ -141,6 +158,9 @@ MUTATIONS = [
     ("PANELS", "Hard shown as Easy", "local g = type(diff) == \"string\" and type(Config.WeaponGrades) == \"table\" and Config.WeaponGrades[map[diff] or \"\"] or nil",
      "local g = type(diff) == \"string\" and type(Config.WeaponGrades) == \"table\" and Config.WeaponGrades.Common or nil"),
     ("HUD", "the tap asks for the tutorial again", "\tif e.GuideNpc and L.NpcWalk(e.GuideNpc, zone, panels) then return end\n", ""),
+    ("NPC", "the practice row ignored", 'local key = type(e) == "table" and e.Practice == true and e.GuideSpot or nil',
+     "local key = nil"),
+    ("PANELS", "the anvil's Enhance opens nothing", 'Panels.Open("Bag", item and { Use = item, Tier = tonumber(a.Tier) } or { Tab = "Gear" })', ""),
     ("NPC", "no wobble", "\t\t\ttask.delay(math.max(0, tonumber(data.ContactDelay) or 0.1), function() StoryNpcs.Wobble(m) end)\n", ""),
     ("NPC", "the emote never sent", 'if ok and remote then remote:FireServer(id, "Emote", name) end', ""),
     ("NPC", "a brush only when standing on it", "<= math.min(T.Pickup.Brush, s.Radius) then return s end", "<= 0.5 then return s end"),

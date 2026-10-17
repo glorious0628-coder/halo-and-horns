@@ -1765,6 +1765,18 @@ Config.Sky.ClockForwardMax = 18
 -- short way to StartClock and stays, the look with it unless a war sky covers it (live once Config.Switches.Defs lists
 -- it; until then always on). Enabled = false: WarService keeps the fixed Neutral afternoon and the preset war clocks.
 -- Studio: DebugCommand ("", "Clock", 21) / ("", "DayState") - no player, no save (under a war sky only the clock jumps).
+-- SPEC A23-221 (5) (최종 검수 10/16, the first 10 minutes): a new player's own screen is always day - the clock shown
+-- (Lighting.ClockTime), the night level ZoneLook lifts by, the day phase WeatherFx (rain, the lamps) and Audio (the
+-- night air, the lamps' sound) read - while PlaytimeSeconds < Seconds; nobody else's sky changes (client only)
+Config.FirstDay = { Seconds = 600, Clock = 13 }
+
+-- (pure) a player's screen still in the first-day window (playtime = their PlaytimeSeconds; unknown = no)
+function Config.FirstDayFor(playtime)
+	local fd = Config.FirstDay
+	local t = tonumber(playtime)
+	return type(fd) == "table" and t ~= nil and t >= 0 and t < (tonumber(fd.Seconds) or 0)
+end
+
 Config.DayCycle = {
 	-- on: ZoneLook C1 (night lift by NightLevel) + C2 (hollow dusk without the 6:00 jump) landed with it (game dev 1;
 	-- tools/test_day_cycle.py checks the pair)
@@ -2064,7 +2076,16 @@ Config.HudReveal.Tiles = { Character = "LevelUp", Skills = "Skill", Pet = "Pet",
 Config.HudReveal.FirstChapterLast = "M1_4"
 -- the locked tile's word (short, under the icon; %d = the level)
 Config.HudReveal.TileWords = { Character = "Lv 2", Skills = "Lv %d", Pet = "Get a pet", Ranking = "Story 1" }
-function Config.HudReveal.TileWord(id)
+-- 게임 플레이 2판 10/16 (Lv5 with the skills tile still saying "Lv 5"): the level reached but the tile still locked (the
+-- skill waits for the story's Lv5 test, A23-193 P1 ⑤) = this word instead
+Config.HudReveal.TileWordsAfter = { Skills = "Quest" }
+-- s = the reveal state (Level), optional
+function Config.HudReveal.TileWord(id, s)
+	local after = Config.HudReveal.TileWordsAfter[id]
+	if type(after) == "string" and type(s) == "table" and id == "Skills" then
+		local q = type(Config.Skills) == "table" and type(Config.Skills.Unlock) == "table" and tonumber(Config.Skills.Unlock.Q) or 5
+		if (tonumber(s.Level) or 1) >= q then return after end
+	end
 	local w = Config.HudReveal.TileWords[id]
 	if type(w) ~= "string" then return "" end
 	if string.find(w, "%%d") then
@@ -11396,6 +11417,8 @@ Config.ClientText.PlayerListUI = {
 }
 Config.ClientText.QuestTarget = {
 	Blacksmith = "Forge",
+	Dummy = "Dummy", -- A23-221 ①: the first mission's practice dummy
+	King = "King Slime", -- A23-222: M1_2's King's hill / rematch mark in the meadow
 	Pond = "Slime Pond",
 	Fountain = "Fountain",
 	Goose = "Golden Goose Nest",

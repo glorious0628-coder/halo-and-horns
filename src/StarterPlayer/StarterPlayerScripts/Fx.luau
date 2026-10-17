@@ -4416,17 +4416,23 @@ end
 function Feel.rewardNow(data)
 	bumpCombo()
 	Fx.PlaySound("Coin")
+	local xp = asNum(data.XP, 0)
+	-- A23-221 ⑦: the first XP of the first minutes' 2x makes the '2x XP · N min' chip shine once (HUD.PulseBoost)
+	local hud = C and C.HUD
+	if xp > 0 and type(hud) == "table" and type(hud.PulseBoost) == "function" then pcall(hud.PulseBoost) end
 	local pos = asVec(data.Pos)
 	if not pos or not nearCamera(pos) then return end
 	local gold = asNum(data.Gold, 0)
-	local xp = asNum(data.XP, 0)
+	-- A23-221 ⑦: the server's XP multiplier (XPMult, dev2: the first minutes' 2x / a pass) shows on the number: '+12 XP ×2'
+	local mult = math.floor(asNum(data.XPMult, 1) + 0.5)
 	local golden = data.Golden == true
 	local rx, rz = rng:NextNumber(-0.5, 0.5), rng:NextNumber(-0.5, 0.5)
 	if gold > 0 then
 		showAmount(pos + Vector3.new(rx, 3.2, rz), gold, { Key = "RG", Prefix = "+", Suffix = " G", Color = COLOR_GOLD, Scale = golden and 1.6 or 1 })
 	end
 	if xp > 0 then
-		showAmount(pos + Vector3.new(rx, 2.0, rz), xp, { Key = "RX", Prefix = "+", Suffix = " XP", Color = COLOR_XP, Scale = golden and 1.2 or 0.85 })
+		showAmount(pos + Vector3.new(rx, 2.0, rz), xp, { Key = mult >= 2 and "RX" .. mult or "RX", Prefix = "+",
+			Suffix = mult >= 2 and (" XP ×" .. mult) or " XP", Color = COLOR_XP, Scale = golden and 1.2 or 0.85 })
 	end
 	if golden then
 		burst(pos + Vector3.new(0, 1.5, 0), COLOR_GOLD, 40, {
@@ -4480,6 +4486,101 @@ function Feel.lootNow(data)
 		if rare then ring(pos, 8, COLOR_GOLD, { Grow = 0.25, Fade = 0.5, Transparency = 0.3 }) end
 	end
 	if rare then Fx.PlaySound("Coin") end
+	-- A23-221 ③: the first notable thing of this drop (a weapon, a scroll, a ring / armour) rises over my head
+	for _, it in items do
+		local icon = Feel.holdIcon(it)
+		if icon then
+			pcall(Feel.holdUp, icon)
+			break
+		end
+	end
+end
+
+-- A23-221 ③: the held-up thing (Feel.holdUp): Time s over the head (Lift studs up, Size studs wide, round glow at
+-- GlowAlpha), pop In / fade Out, Sparks round sparkles, the cheer emote only Calm s after the last hit, Gap s between two
+MOTION.HOLD = { Time = 1.0, Lift = 2.6, Size = 2.2, GlowAlpha = 0.55, In = 0.18, Out = 0.3, Sparks = 22, Calm = 1.5, Gap = 0.8,
+	Emote = "cheer", Kinds = { Enhance = true, Transfer = true, Gear = true } }
+
+-- A23-221 ③ (pure-ish): a loot entry's art key worth holding up (a weapon: its class / side icon; an Enhance / Transfer
+-- scroll, a ring, armour: the item), else nil (jelly, potions, materials: the number line is enough)
+function Feel.holdIcon(it)
+	if type(it) ~= "table" then return nil end
+	if it.Weapon ~= nil then
+		local fn = Config.WeaponArtKey
+		local tier = math.floor(asNum(it.Weapon, 0))
+		return type(fn) == "function" and fn(tier, LocalPlayer and LocalPlayer:GetAttribute("Class"),
+			LocalPlayer and LocalPlayer:GetAttribute("Faction")) or nil
+	end
+	local def = type(it.Item) == "string" and Config.Loot and Config.Loot.Items[it.Item] or nil
+	if type(def) == "table" and MOTION.HOLD.Kinds[def.Kind] then return it.Item end
+	return nil
+end
+
+-- A23-221 ③ (body reaction, no banner / text strip): the thing rises over my head for HOLD.Time s in a round soft glow
+-- with round sparkles; out of a fight (HOLD.Calm s since the last hit) my character cheers (the free Roblox emote: arms
+-- up; a move ends it, nothing is blocked). Called only after the server saved the thing (Loot / the first weapon)
+function Feel.holdUp(icon)
+	local H = MOTION.HOLD
+	local char = LocalPlayer and LocalPlayer.Character
+	local head = char and char:FindFirstChild("Head")
+	if not (head and head:IsA("BasePart")) then return false end
+	local now = os.clock()
+	if Feel.HoldAt and now - Feel.HoldAt < H.Gap then return false end
+	Feel.HoldAt = now
+	local gui = Instance.new("BillboardGui")
+	gui.Name = "FxHoldUp"
+	gui.Adornee = head
+	gui.Size = UDim2.fromScale(H.Size, H.Size)
+	gui.StudsOffsetWorldSpace = Vector3.new(0, H.Lift, 0)
+	gui.LightInfluence = 0
+	gui.AlwaysOnTop = true
+	local glow = Instance.new("Frame")
+	glow.Name = "Glow"
+	glow.AnchorPoint = Vector2.new(0.5, 0.5)
+	glow.Position = UDim2.fromScale(0.5, 0.5)
+	glow.Size = UDim2.fromScale(1, 1)
+	glow.BackgroundColor3 = COLOR_GOLD
+	glow.BackgroundTransparency = H.GlowAlpha
+	glow.BorderSizePixel = 0
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.5, 0)
+	corner.Parent = glow
+	glow.Parent = gui
+	local ui = C and C.UIKit
+	if type(icon) == "string" and type(ui) == "table" and type(ui.ItemIcon) == "function" then
+		pcall(ui.ItemIcon, icon, { Name = "Thing", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5),
+			Size = UDim2.fromScale(0.8, 0.8), BackgroundTransparency = 1, Parent = gui })
+	end
+	local sc = Instance.new("UIScale")
+	sc.Parent = glow
+	local pg = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+	gui.Parent = pg or head
+	local still = not MOTION.ShakeAllowed() -- (Settings Shake off / reduced motion: no pop)
+	if not still then
+		sc.Scale = 0.3
+		tween(sc, H.In, { Scale = 1 }, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+	end
+	burst(head.Position + Vector3.new(0, H.Lift, 0), COLOR_GOLD, H.Sparks, { Size = 0.5, SpeedMin = 3, SpeedMax = 8,
+		LifeMin = 0.4, LifeMax = 0.9, Acceleration = Vector3.new(0, 4, 0), LightEmission = 1 })
+	if now - asNum(Fx.LastFightAt, -math.huge) >= H.Calm then
+		local animate = char:FindFirstChild("Animate")
+		local play = animate and animate:FindFirstChild("PlayEmote")
+		if play and play:IsA("BindableFunction") then pcall(function() play:Invoke(H.Emote) end) end
+	end
+	task.delay(H.Time, function()
+		if not gui.Parent then return end
+		for _, d in gui:GetDescendants() do
+			if d:IsA("ImageLabel") then tween(d, H.Out, { ImageTransparency = 1 }) end
+		end
+		tween(glow, H.Out, { BackgroundTransparency = 1 })
+		Debris:AddItem(gui, H.Out + 0.1)
+	end)
+	return true
+end
+
+-- A23-221 ③: the first weapon (HUD L.FirstWeapon) and anything else that wants the same moment
+function Fx.HoldUp(icon)
+	return Feel.holdUp(icon)
 end
 
 -- A23-12: my scroll result { Success, Before, After, Move? } -> a gold burst on success, a small grey puff on failure
@@ -4512,32 +4613,67 @@ local function eventPos(data)
 	return getPlayerRootPos(data.UserId) or p
 end
 
+-- A23-221 ③ (several level-ups = one moment after the fight): my own level-ups wait while I fight (Fx.LastFightAt) and
+-- play once Calm s after the last hit (at least Min s after the first, at most Max s): one ring + stars, the HUD's badge
+-- ticks From -> To (HUD.LevelHold / LevelCount) and the power counts up once
+MOTION.LVQ = { Min = 0.35, Calm = 1.2, Max = 12, Poll = 0.2 }
+function Feel.levelQueue(data, level)
+	local q = Feel.LvQ
+	if q then
+		q.To = math.max(q.To, level)
+		q.PowerTo = asNum(data.PowerTo, q.PowerTo)
+		return q
+	end
+	q = { From = asNum(data.From, level - 1), To = level, PowerFrom = asNum(data.PowerFrom, nil), PowerTo = asNum(data.PowerTo, nil),
+		At = os.clock() }
+	Feel.LvQ = q
+	local hud = C and C.HUD
+	if type(hud) == "table" and type(hud.LevelHold) == "function" then pcall(hud.LevelHold, q.From) end
+	task.spawn(function()
+		local W = MOTION.LVQ
+		while true do
+			task.wait(W.Poll)
+			local now = os.clock()
+			if now - q.At >= W.Min and (now - asNum(Fx.LastFightAt, -math.huge) >= W.Calm or now - q.At >= W.Max) then break end
+		end
+		if Feel.LvQ == q then Feel.LvQ = nil end
+		local ok, err = pcall(Feel.levelMoment, q)
+		if not ok then warnThrottled("level moment failed: " .. tostring(err)) end
+	end)
+	return q
+end
+
+function Feel.levelMoment(q)
+	local pos = LocalPlayer and getPlayerRootPos(LocalPlayer.UserId)
+	if pos and nearCamera(pos) then
+		-- 최종 검수 10/15 (feedback_audit #2: one moment): a gold ring of light at my feet, then stars round my body
+		ring(pos, 6, COLOR_GOLD, { Grow = 0.3, Fade = 0.6, Transparency = 0.2 })
+		task.delay(0.15, function()
+			burst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30, { Size = 0.6, SpeedMin = 4, SpeedMax = 9, LifeMin = 0.5,
+				LifeMax = 0.9, Acceleration = Vector3.new(0, 6, 0), LightEmission = 1 })
+		end)
+	end
+	announceLevelUp(q.To)
+	local hud = C and C.HUD
+	if type(hud) ~= "table" then return end
+	if type(hud.LevelUpMoment) == "function" then
+		pcall(hud.LevelUpMoment, { Level = q.To, From = q.From, PowerFrom = q.PowerFrom, PowerTo = q.PowerTo })
+	end
+	if type(hud.LevelCount) == "function" then pcall(hud.LevelCount, q.From, q.To) end
+end
+
 handlers.LevelUp = function(data)
 	local own = isOwn(data)
-	local pos = eventPos(data)
-	if pos and nearCamera(pos) then
-		if own then
-			-- 최종 검수 10/15 (feedback_audit #2: one moment): a gold ring of light at my feet, then stars round my body;
-			-- the HUD's level badge and the power number move at the same time (HUD.LevelUpMoment)
-			ring(pos, 6, COLOR_GOLD, { Grow = 0.3, Fade = 0.6, Transparency = 0.2 })
-			task.delay(0.15, function()
-				burst(pos + Vector3.new(0, 2, 0), COLOR_GOLD, 30, { Size = 0.6, SpeedMin = 4, SpeedMax = 9, LifeMin = 0.5,
-					LifeMax = 0.9, Acceleration = Vector3.new(0, 6, 0), LightEmission = 1 })
-			end)
-		else
-			pillar(pos, 40, 4, COLOR_PILLAR, 1.0)
-			burst(pos, COLOR_PILLAR, 25, { Size = 0.7, SpeedMin = 6, SpeedMax = 14, Acceleration = Vector3.new(0, 8, 0), LightEmission = 1 })
-		end
-	end
 	local level = asNum(data.Level, nil)
 	if own and level then
-		announceLevelUp(level)
-		local hud = C and C.HUD
-		if type(hud) == "table" and type(hud.LevelUpMoment) == "function" then
-			pcall(hud.LevelUpMoment, { Level = level, From = asNum(data.From, nil), PowerFrom = asNum(data.PowerFrom, nil),
-				PowerTo = asNum(data.PowerTo, nil) })
-		end
+		Feel.levelQueue(data, level)
+		return
 	end
+	-- someone else's level-up: the old pillar
+	local pos = eventPos(data)
+	if own or not (pos and nearCamera(pos)) then return end
+	pillar(pos, 40, 4, COLOR_PILLAR, 1.0)
+	burst(pos, COLOR_PILLAR, 25, { Size = 0.7, SpeedMin = 6, SpeedMax = 14, Acceleration = Vector3.new(0, 8, 0), LightEmission = 1 })
 end
 
 handlers.Plunder = function(data)
