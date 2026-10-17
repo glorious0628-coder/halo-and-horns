@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/17 밤 멈춤 (최신; 사용자 "잠깐 정리하자, 화요일 오전부터 작업하자")
+- 병합됨: dev1-r9-small(KO 그림 자리·King 물약 반짝·tool_grip 해시), dev1-staff-tilt, dev1-your-king, dev1-nan-guard(d54ee16c).
+- **가지(push, 병합 전):** dev1-dialog-box 59b8a80d (대화 상자 ①, 화요일 화면 눌러 보기 뒤 병합; loot 716/0·audio 364/0 통과, loot MISSED 4개는 main에도 같은 옛 패턴) · dev1-codex-next 459a37ea (도감 [Go], 화면 확인 대기) · dev1-detail-1 c37d9fb7 (세세한 묶음 1: #1·#8·#9·#6·#13·#14, worktree ../Game-dev1detail; audio 시험 #13 고침 뒤 다시 돌려 확인 필요).
+- 화면 판 안 함(Studio 안 엶). 도구 build/dev1_tools/check1019.py(도감 [Go]·KO·King 반짝) 준비됨.
+- **▶ 화요일 남은 큐:** ① 물속 무기 숨김 A23-231(헤엄 = 숨김, 나오면 다시, 물속 F 무시) ② 칼·몽둥이 손에 A23-232(Config.WeaponStow.Kinds에서 Sword·DarkSword 빼기, 허리 코드는 둠, hold_pose2·tool_grip 맞춤) ③ Neighbor 두 줄(StoryNpcs Who.Bag "Folk1"→"Neighbor", Hop("Folk1",1)→Hop("Neighbor",1); 개발 2 dev2-detail과 같이) ④ 화면 판: 도감 [Go]·KO 그림·King 40% 반짝·물속 무기 ⑤ 대화 상자 ② 3D 얼굴 ⑥ detail audit 순서: #21 → #24·#26 → #15 → #3·#2 → #16 → #17 → #25 → #29·#30 → #31·#32 → #27·#28, + #5(슬라임 AttackSeq 몸짓 그리는지)·#19(스승 Find 말풍선 안 보이는 원인) ⑦ buff_bar 시험은 개발 2와.
+
 ## 10/18 — 8판 묶음 끝 (최신)
 - **병합됨(main):** fix/quick-first-put(첫 넣기 다시 보내기 + 가방 Quick 같은 칸 다시 눌러도 안 빠짐) · dev1-craft-tool(제작 창 Tool 탭·강화·결과·축복 줄, A23-219) · dev1-r8-small 1b39f497(물약 0개 아이콘 또렷·숫자만 회색, 축복 판 첫 줄 Blessed Scroll) · dev1-your-king 0c192861(내 King 'Your King' 이름 + M1_2 표시가 내 King 몸에, A23-228).
 - **가지 dev1-staff-tilt 7411479b** (push, 병합 전): Config.WeaponGrips Staff/CrookStaff/FlaskStaff Turn·Rest Z -12(지팡이 끝 손 오른쪽 = 머리 밖). 근거 값(시험 Play, docs/art/verification_2026-10-18/r8_checks/): 머리 중심~지팡이 축 1단 +0.15, 2단 휘두름 -0.02(스침), 4단 코드 지팡이 끝 공 -0.30(박힘). test_tool_grip 방향 확인(손 오른쪽 쪽으로 12도). **Studio 확인 = 게임 플레이 9판 뒤 화면 차례**(`py build/dev1_tools/check1018.py D`: 2·3·4단 쉼/휘두름 거리 + 사진).
