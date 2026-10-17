@@ -175,6 +175,11 @@ for _, hand in HANDS do
 			local tilt = angleDeg(handle.CFrame.UpVector, fistUp)
 			if kind == "ShortBow" then
 				ok.axis = ok.axis and math.abs(tilt - 15) < 1e-3 and math.abs(handle.CFrame.UpVector:Dot(fistZ)) < 1e-6
+			elseif kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff" then
+				-- staff-head (10/18): 12 degrees off the knuckle line toward the fist's +X (the hand's right = away from the head)
+				local fistRight = (right.CFrame * att.CFrame).RightVector
+				ok.axis = ok.axis and math.abs(tilt - 12) < 1e-3 and handle.CFrame.UpVector:Dot(fistRight) > 0.2
+					and handle.CFrame.UpVector:Dot(right.CFrame.RightVector) > 0.2
 			else
 				ok.axis = ok.axis and tilt < 1e-3
 			end
@@ -227,7 +232,9 @@ for _, hand in HANDS do
 		check(ok.weld, tag .. ": the parts sit where the engine's RightGrip holds the Handle")
 		check(worst.onAxis < 1e-6, tag .. ": the grip point on the Handle's axis", worst.onAxis)
 		check(worst.point < 1e-6, tag .. ": the fist " .. POINTS[kind] .. " up the Handle (the user's table)", worst.point)
-		check(ok.axis, tag .. (kind == "ShortBow" and ": the short bow canted 15 degrees about the forearm" or ": the Handle along the knuckle line (upright, the arm forward)"))
+		check(ok.axis, tag .. (kind == "ShortBow" and ": the short bow canted 15 degrees about the forearm"
+			or (kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff") and ": the staff 12 degrees out of the knuckle line, toward the hand's right (away from the head)"
+			or ": the Handle along the knuckle line (upright, the arm forward)"))
 		check(ok.len, tag .. ": the length a share of the avatar's height (A23-133 / A23-142)")
 		if kind == "Sword" or kind == "DarkSword" or kind == "Hammer" then check(ok.hand, tag .. ": the hand's share up from the end") end
 		if kind == "Staff" or kind == "CrookStaff" or kind == "FlaskStaff" then check(ok.clear, tag .. ": the orb >= 1.2 over the hand") end
@@ -270,7 +277,7 @@ do
 	local okStaff = true
 	for _, k in { "Staff", "CrookStaff", "FlaskStaff" } do
 		local r = Config.WeaponGrips[k].Rest
-		okStaff = okStaff and r[1] == 15 and r[2] == 0 and r[3] == 0
+		okStaff = okStaff and r[1] == 15 and r[2] == 0 and r[3] == -12 -- staff-head 10/18: 12 out
 	end
 	local staffPose = Config.HoldPoses.Staff
 	check(okStaff and staffPose.Stand.RightElbow[1] >= 70 and staffPose.Stand.RightElbow[1] <= 100,

@@ -7323,9 +7323,13 @@ Config.WeaponGrips = {
 	-- hold-angles (10/16 grip_check #4, build/codex/grip_r1.md: the elbow bent, not the staff turned in the fist): with the
 	-- forearm forward the staff stands up from a small turn (tuned in the test Play: 7 degrees off upright, 0.7 studs from
 	-- the upper arm, the hand at the low chest, the elbow 80; was 81 here = the staff along a hanging forearm, on the arm)
-	Staff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
-	CrookStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
-	FlaskStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
+	-- staff-head (최종 검수 r8 checks 10/18: head centre to the shaft 1단 +0.15 / 2단 -0.02 on the cast / the 4단 code
+	-- staff's tip ball -0.30 at rest = in the head): the shaft tilted 12 out, away from the head, at rest and in the attack
+	-- (Z about the grip attachment's Z = the forearm: negative = the tip to the hand's +X, the character's right; ~0.4
+	-- studs at the tip 1.9 studs over the fist)
+	Staff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },
+	CrookStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },
 	Hammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },
 	-- grip-4 (main photos 10/15: the baton held low by the hip): the hand at the chest, the tip up and forward 45 (HoldTest:
 	-- 44 standing, 46..51 walking)
