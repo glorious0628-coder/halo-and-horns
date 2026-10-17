@@ -1,6 +1,7 @@
 # 게임성 개발 2 — 상태 (2026-10-17 낮, 새 계정: 첫 12분 묶음 + 배지 + 장인 2부)
 
 ## 지금 (10/17 낮 — 새 대화는 여기부터; 세션이 자주 끊기니 덩어리마다 커밋·push)
+- **10/17 저녁**: 병합됨 = sure-enhance(fee70fc8), rookie-regen 313b52f9(2e4e83e1, 중립도 5초 1%). 보고함·대기 = **dev2-craft-tools ac62f9c7**(도구 ① + 축복 Enh70B, craft 288·159/159, 계약 docs/design/craft_tools_server_2026-10-17.md), **dev2-r6-guide 53d44463**(M1_1 Prince Guide = MeadowArrival). 결정 대기 = 6판 ① (a) M1_2 전엔 필드 King이 안 노림 / (b) 재대결도 KingHill, 도구 ② 저장 모양(키 셋째 칸) + 물약·펫 옵션 크기.
 - **10/17 오후**: 병합됨 = dev2-vein 55568fdf(main 66cdb70d), 배지. 보고함·병합 대기 = **dev2-rookie-regen 6dc0c3c7**(A23-224 최종: 뿔만 초원 5초 뒤 1%/초, 빛 그대로; 중립 RegenPerSec 0 — SPEC 문장 '1%'와 다름 알림), **dev2-sure-enhance 14ffd03a**(A23-225 M1_2 모루 첫 70% 꼭 성공, 저장마다 한 번).
   **dev2-craft-tools 40d9336f**(push, ../wt_tools, 작업 중): 도구 ① = Craft.Tools 표(craft_tools_r1 §1)·평평한 저장 Craft.Tool<role>(옛 서버 keepExtra는 표를 버리므로 평평하게)·UpgradeTool/ToolCost·원격 CraftTool/CraftToolResult·AS1 축복 Enh70B(시작 때 한 번 굴림, Pend.Bless). craft 288·159/159. 남은 것: 전체 sweep → 보고. ②(옵션 크기·키 셋째 칸 = 저장 모양 바뀜)는 최종 검수 답 기다림.
   **6판 ①②** = 무엇인지 최종 검수에 다시 물음(메시지 끊김; 추정 r6 TOP5 1번 두 번째 King KO·빛 마을 부활 + 4번 단계 표시).
