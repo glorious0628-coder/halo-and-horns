@@ -84,7 +84,7 @@ MUTATIONS = [
     ("BAG", "a +Max step never drops back", "\t\tif mode.Tier and (not w or w.Plus >= max) then return { Item = mode.Item } end\n", ""),
     ("BAG", "the confirm hides the chance", "tx(TXT, \"ConfirmEnh\", w.Name, w.Plus, math.min(max, w.Plus + plus), pct(sdef.Chance))",
      "tx(TXT, \"ConfirmEnh\", w.Name, w.Plus, math.min(max, w.Plus + plus), 0)"),
-    ("BAG", "no fail line", "\t\t\t\tline(failLine(w.Plus), \"Sub\")\n", ""),
+    ("BAG", "the risk colour gone", "pct(sdef.Chance)), riskColor(w.Plus))", "pct(sdef.Chance)), \"Gold\")"),
     ("BAG", "scrolls during a fight", "\t\t\telseif ctx.Combat then\n\t\t\t\tact(go, tx(TXT, \"InFight\"), false, \"Free\")",
      "\t\t\telseif false then\n\t\t\t\tact(go, tx(TXT, \"InFight\"), false, \"Free\")"),
     ("BAG", "equip below MinLevel", "\t\telseif not Config.WeaponUsable(cell.Tier, level) then\n", "\t\telseif false then\n"),

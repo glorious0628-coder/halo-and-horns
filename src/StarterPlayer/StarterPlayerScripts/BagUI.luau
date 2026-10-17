@@ -392,10 +392,11 @@ local function validMode(mode, cells)
 end
 BagUI.ValidMode = validMode
 
-local function failLine(before)
-	if before <= 0 then return tx(TXT, "FailKeep") end
-	if num(Config.Loot.FailDropChance, 0) <= 0 then return tx(TXT, "FailKeep") end
-	return tx(TXT, "FailDown")
+-- game play r8 (A23-191: no 'If it fails, ...' line): the risk is the chance's colour - gold when a fail changes nothing,
+-- red when a fail may take a step off (FailDropChance > 0 and the weapon is +1 or more)
+local function riskColor(before)
+	if before > 0 and num(Config.Loot.FailDropChance, 0) > 0 then return "Bad" end
+	return "Gold"
 end
 
 local function pct(x)
@@ -465,8 +466,7 @@ function BagUI.Detail(cell, ctx)
 			local w = mode.Tier and byTier[mode.Tier]
 			if w then
 				local plus = math.max(0, math.floor(num(sdef.Plus, 0)))
-				line(tx(TXT, "ConfirmEnh", w.Name, w.Plus, math.min(max, w.Plus + plus), pct(sdef.Chance)), "Gold")
-				line(failLine(w.Plus), "Sub")
+				line(tx(TXT, "ConfirmEnh", w.Name, w.Plus, math.min(max, w.Plus + plus), pct(sdef.Chance)), riskColor(w.Plus))
 				go = "Enhance"
 			else
 				line(tx(TXT, "PickEnhance"), "Gold")
@@ -475,7 +475,6 @@ function BagUI.Detail(cell, ctx)
 			local from, to = mode.From and byTier[mode.From], mode.To and byTier[mode.To]
 			if from and to then
 				line(tx(TXT, "ConfirmMove", from.Name, from.Plus, to.Name, math.min(max, to.Plus + from.Plus), pct(sdef.Chance)), "Gold")
-				line(tx(TXT, "FailKeep"), "Sub")
 				go = "Move"
 			elseif from then
 				line(tx(TXT, "PickTo", from.Plus), "Gold")
@@ -757,6 +756,11 @@ local function pollResult()
 	local ok, r, at = pcall(panels.LastEnhance)
 	if not ok or type(r) ~= "table" or type(at) ~= "number" or at <= S.ResultAt then return false end
 	S.Result, S.ResultAt = r, at
+	-- game play r8 (a success showed the next '+1 → +2 · 70%' + [Enhance] at once - one more press could lose a step):
+	-- the result ends the scroll step; the weapon is picked (its new +N); the next try = pick the scroll again
+	if type(r.Tier) == "number" then
+		S.Mode, S.Sel = nil, "W:" .. tostring(r.Tier)
+	end
 	-- user 10/15 ("강화가 된 건지 안 된 건지 모르겠어", 최종 검수 feedback ⑥): the result shows on that weapon's cells
 	task.delay(BagUI.RES.Wait, function() pcall(BagUI.PlayResult, r) end)
 	return true
