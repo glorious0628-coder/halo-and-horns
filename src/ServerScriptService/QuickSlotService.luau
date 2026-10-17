@@ -79,11 +79,16 @@ local function onSet(player, slot, item, ...)
 	if type(slot) ~= "number" or slot ~= math.floor(slot) or slot < 1 or slot > Q.Count then return end -- NaN fails floor
 	if item ~= "" and not known(item) then return end
 	if player.Parent ~= Players or not S.PlayerService.IsReady(player) then return end
-	if not Util.RateLimit(player, "SetQuickSlot", T.Rate) then return end
 	local data = S.PlayerService.GetData(player)
 	if type(data) ~= "table" then return end
 	local slots = parse(data.QuickSlots)
-	if slots[slot] == item then return end
+	-- game play r8 (게임성 개발 1: the bag's first [1] left the HUD slot empty - the client shows its own pick until the
+	-- attribute answers): a refused (too fast) or no-change request publishes the slots again, so the screen always
+	-- returns to the truth at once instead of a stale attribute
+	if not Util.RateLimit(player, "SetQuickSlot", T.Rate) or slots[slot] == item then
+		publish(player, slots)
+		return
+	end
 	local from = item ~= "" and table.find(slots, item) or nil
 	if from then slots[from] = slots[slot] end -- the item moves here; what was here goes to its old slot
 	slots[slot] = item
