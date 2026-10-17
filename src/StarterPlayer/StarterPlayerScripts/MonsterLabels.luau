@@ -81,6 +81,16 @@ local function isBoss(kind)
 	return type(def) == "table" and def.Boss == true
 end
 
+-- game play r8 (the field King and my rematch King stood on one hill, both "King Slime"): a boss that is MINE (the server's
+-- model attribute OwnerUserId = my UserId - a personal rematch King) is named "Your King" (Config.ClientText.MonsterLabels)
+function S.Mine(r)
+	local model = r.Model
+	if not (model and r.Boss and LocalPlayer) or model:GetAttribute("OwnerUserId") ~= LocalPlayer.UserId then return end
+	local t = Config.ClientText.MonsterLabels
+	local text = type(t) == "table" and t.YourKing or nil
+	if type(text) == "string" and r.Name.Text ~= text then r.Name.Text = text end
+end
+
 -- A23-74 (user 2026-10-07 "몬스터마다 다른 말풍선 그려야지" / "말풍선 가로로 길쭉한 거 말고"): the round bubble art keys
 -- to try for a monster kind, in order: its own "BarkBubble<Kind>", then its family's (Config.Barks.BubbleFamily ->
 -- BubbleArt; a kind not listed uses its Config.QuestKind's family) - each only while its Id is uploaded (not "") and it
@@ -369,7 +379,10 @@ local function tick()
 		local show = name or bar
 		if r.BB.Enabled ~= show then r.BB.Enabled = show end
 		if r.Name and r.Name.Visible ~= name then r.Name.Visible = name end
-		if name and r.Name then S.Danger(r) end
+		if name and r.Name then
+			S.Danger(r)
+			S.Mine(r)
+		end
 		if r.Back and r.Back.Visible ~= bar then r.Back.Visible = bar end
 	end
 	-- forget bars of monsters that are gone
