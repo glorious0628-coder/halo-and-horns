@@ -479,3 +479,4 @@
 - 세션 설정(10/17 밤, 주간 71%): 메인 반영 1 Sonnet low, 게임 플레이 Sonnet medium, 개발 1 Opus medium, 개발 2 Opus high. 회의실 https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (d1017_01~03 = 세세한 점검 요약).
 - (덧붙임) 병합 대기 ④ dev1-dialog-box 59b8a80d = NPC 대화 상자 ①(A23-229; 이야기 카드·부탁·Welcome을 화면 아래 상자로, 얼굴은 승인 초상/첫 글자, 3D 얼굴은 ②) — 화면 눌러 보기 뒤. ②의 craft-optsb 전체 시험에 buff_bar 1개 새 실패(특제 강장제 Base 이름 → Buff_<id> 신호 없음) = 화요일 개발 1·2가 정리.
 - (덧붙임) 병합 대기 ⑤ dev1-detail-1 c37d9fb7 = 세세한 #1·#8·#9·#6·#13·#14(audio 재확인 필요). 개발 1 화요일 큐 = 물속 무기 → 칼 손에 → Neighbor 두 줄 → 화면 판 → 대화 상자 ② → audit 순서 (state/dev1.md '10/17 밤 멈춤'). 네 세션 모두 멈춤 확인.
+- (덧붙임) 사용자가 다른 계정으로 옮김 → 새 최종 검수용 글 = docs/handoff/new_account_2026-10-17.md(세션 4개 시작 글·모델 표·다음 순서·회의실 처리).
