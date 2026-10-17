@@ -129,7 +129,7 @@ def static() -> tuple[int, list[str]]:
     check(top_locals < 190, f"Config's top chunk stays well under 200 locals ({top_locals})")
     data_block = re.search(r"^Config\.Data = \{(.*?)^\}", config, re.M | re.S)
     versions = re.findall(r"^\t{1,2}Version = (\d+),", data_block.group(1), re.M) if data_block else []
-    check(versions == ["6", "6"], f"Config.Data.Version and Defaults.Version are both 6 (A23-186; A23-153 made it 5, C1 4) ({versions})")
+    check(versions == ["7", "7"], f"Config.Data.Version and Defaults.Version are both 7 (A23-219 ②; A23-186 made it 6, A23-153 5, C1 4) ({versions})")
     check("Config.WeaponShop = { MaxSoldTier = 3," in config, "the Forge's MaxSoldTier stays 3")
     data = read(SSS / "DataService.luau")
     mig = function_block(data, "local function migrate(")
@@ -139,7 +139,7 @@ def static() -> tuple[int, list[str]]:
     add = function_block(loot, "function LootService.AddSpare(")
     check("notify(" not in strip_comments(add) and "Net.Notify" not in add, "AddSpare says nothing (the caller does)")
     craft = read(SSS / "CraftService.luau")
-    check("pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed)" in craft and "pcall(S.LootService.AddSpare, player, r.Tier, plus)" in craft,
+    check("pcall(S.LootService.SpareRoom, player, r.Tier, plus, freed, o)" in craft and "pcall(S.LootService.AddSpare, player, r.Tier, plus, o)" in craft,
           "CraftService calls SpareRoom / AddSpare through pcall (the API it needs)")
     return count, failures
 
