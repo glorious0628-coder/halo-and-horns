@@ -464,3 +464,7 @@
 - **병합 66cdb70d** = dev2-vein 55568fdf(장인 1·2부: 제작 곡선 + 깊은 광맥 길; API 지적 4개 고침 9cf0821d, 한 판 ≈4분 = 경비 5 × HP ×9, 드롭 0·XP/골드 65, 자리 전부 왕관 구덩이 밖, 레시피 DeepMoonShard ×3 = 단위 12분 유지). 저장: data.Story.Runs 새 칸 — 옛 서버도 안 지움, **'모든 서버 종료' 필요 없음**(개발 2). Live는 Features.Crafting = false.
 - A23-224 쉼 회복: 레벨 없이·뿔 5초/빛 1초·빛은 더하기 → 사용자 "너무 빨리 차, 1초에 2퍼 1초에 1퍼" → 빛/뿔 어느 쪽인지 되물음. 가지 dev2-rookie-regen e66f8b6b(지금 PerSec 0.02, test_rest_regen 26·변이 10/10) 값만 바꾸면 병합.
 - main 새 정적 실패: auto_translate·english 'no player words hard-coded' = SignFit.luau:22·23 "Children"/"Self"(d4c4b483) → 개발 1 작은 가지.
+- **오후 병합(10/17):** b823a57c SignFit 값 → 9fc11a21 dev1-feel2(누를 때 직업 소리 G1·빈 퀵슬롯→가방 Use·강화 실패 몸짓·Daily Gifts M1_3 뒤; audio 362) → fee70fc8 첫 이야기 강화 꼭 성공(A23-225, Loot.SureFirst) → 4fc5875f Revive Shield 칩 삭제(A23-226) → 2e4e83e1 쉼 회복(A23-224 최종: 초원, 뿔·장인 5초 뒤 1%/초, 빛 그대로, Stack false).
+- 메인 Studio 창이 닫혀 있음(사용자 쪽에서 닫힌 듯) → 게임 플레이 7판 끝나면 메인 반영 1 열기+sync+전체 대조 → 그다음 개발 1 PhoneTest(궁수 XP×2 값·빈 퀵슬롯·EdgeHint 사진 + 꾸민 아바타 공격 점검 build/dev1_tools/avatar1017.py, 'mine' = 사용자 아바타).
+- 사용자 "아바타를 좀 꾸몄는데 때리는 모션이 좀 이상해" — 직업·사진 물음.
+- 개발 2: 6판 ①② (두 번째 King 숫자·Prince/King 단계 표시) → 도구 강화 ①(dev2-craft-tools 40d9336f WIP), ②는 저장 판 올림 + 게시 때 '모든 서버 종료'.
