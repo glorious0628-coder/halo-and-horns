@@ -2048,6 +2048,15 @@ function WSHOP.IsMeme(tier)
 	return type(def) == "table" and def.Meme ~= nil
 end
 
+-- game play r7 (A23-222): the Forge has not opened `tier` for me yet - the server's ForgeOpen mask (bit tier-1) is off and
+-- I do not own it; no mask yet (an old server) = open
+function WSHOP.Closed(tier, info)
+	if type(info) == "table" and info.Owned == true then return false end
+	local mask = tonumber(player:GetAttribute("ForgeOpen"))
+	if not mask or type(tier) ~= "number" or tier <= 1 then return false end
+	return not bit32.btest(math.floor(mask), bit32.lshift(1, tier - 1))
+end
+
 function WSHOP.Sells()
 	local shop = Config.WeaponShop
 	return not (type(shop) == "table" and shop.Buy == false)
@@ -2829,9 +2838,12 @@ BUILDERS.WeaponShop = function(parent)
 				Color = theme.SubText }) or nil,
 			Price = addText(row, "", { Size = 16 }),
 			Effect = addText(row, "", { Size = 16, Color = theme.Good or theme.Text }),
-			Sale = addText(row, "", { Size = 16, Color = theme.SubText }),
 			Reason = addText(row, "", { Size = 16, Color = theme.Bad }),
 		}
+		-- game play r7 (A23-222): a tier the Forge has not opened for me yet (ForgeOpen bit off, not owned) = its name and a
+		-- lock picture, nothing else (no words)
+		ui.Lock = UIKit and type(UIKit.ArtImage) == "function" and UIKit.ArtImage("IconLock", { Name = "ForgeLock",
+			Size = UDim2.fromOffset(28, 28), Visible = false, Parent = row }) or nil
 		local buttons = addRow(row, 60, 10)
 		ui.Buttons = buttons -- A23-127: hidden for a weapon the Forge does not sell and I do not own
 		ui.Buy = makeButton(buttons, "", PALETTE.Free, UDim2.new(0.5, -5, 0, 60), function()
@@ -2860,7 +2872,6 @@ BUILDERS.WeaponShop = function(parent)
 			end
 			local plus = ITEMS.Enh(ITEMS.Data.Enhance, tier)
 			local body = string.format(T.WeaponSellConfirmF, info.Name .. ITEMS.PlusText(plus), exactNumber(info.SellPrice))
-			if info.Equipped then body ..= "\n" .. T.WeaponSaleEquipped end
 			-- B14: the tier's +N stays in the save (A23-12) and comes back when the weapon is owned again
 			if plus > 0 then body ..= "\n" .. string.format(ITEMS.T.SellKeepEnhF, plus) end
 			confirm(T.WeaponSellTitle, body, T.WeaponSellConfirm, function()
@@ -2909,7 +2920,7 @@ BUILDERS.WeaponShop = function(parent)
 				.. " · " .. (info.Equipped and T.WeaponEquipped or (info.Owned and T.WeaponOwned or T.WeaponUnowned))) or T.WeaponInvalid
 			ui.Name.TextColor3 = Config.WeaponGrade(ui.Tier).Color -- design §1 B2: grade color everywhere a weapon is listed
 			-- A23-191 (English dump 10/15): the first weapon has no price line ('First weapon · free to re-equip ...')
-			ui.Price.Visible, ui.Sale.Visible = info ~= nil and ui.Tier > 1, info ~= nil
+			ui.Price.Visible = info ~= nil and ui.Tier > 1
 			-- A23-127: a weapon I do not own and the Forge does not sell = where it comes from, no buttons
 			local dropOnly = info ~= nil and not sells and not info.Owned and ui.Tier > 1
 			ui.Buttons.Visible = not dropOnly
@@ -2920,9 +2931,6 @@ BUILDERS.WeaponShop = function(parent)
 					or (sells and string.format(T.WeaponPriceF, exactNumber(info.Price), info.MinLevel, info.Level))
 					or (dropOnly and string.format(T.WeaponFromF, Config.WeaponSource(ui.Tier)))
 					or string.format(T.WeaponLevelF, info.MinLevel, info.Level)
-				ui.Sale.Text = ui.Tier == 1 and "" or (string.format(T.WeaponSaleNoteF, exactNumber(info.SellPrice))
-					.. (info.Equipped and ("\n" .. T.WeaponSaleEquipped) or ""))
-				ui.Sale.Visible = ui.Tier > 1 and not dropOnly
 				local cls = currentClass()
 				local now = Config.SwingHitsToKill(info.EquippedTier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, info.EquippedTier))
 				local with = Config.SwingHitsToKill(ui.Tier, info.Level, cls, "Slime", myFaction(), ITEMS.Enh(enh, ui.Tier))
@@ -2947,6 +2955,13 @@ BUILDERS.WeaponShop = function(parent)
 			ui.Reason.Visible = ui.Reason.Text ~= ""
 			setEnabled(ui.Buy, info ~= nil and not blocked and buyReason == nil)
 			setEnabled(ui.Sell, info ~= nil and not blocked and sellReason == nil)
+			-- game play r7: [Sell] only on a weapon I own (never the first one); a tier still closed shows its lock only
+			ui.Sell.Visible = info ~= nil and info.Owned == true and ui.Tier > 1
+			local closed = WSHOP.Closed(ui.Tier, info)
+			if ui.Lock then ui.Lock.Visible = closed end
+			if closed then
+				ui.Buttons.Visible, ui.Price.Visible, ui.Effect.Visible, ui.Reason.Visible = false, false, false, false
+			end
 		end
 	end
 	return function()
