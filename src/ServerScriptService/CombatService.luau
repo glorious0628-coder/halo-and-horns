@@ -1427,7 +1427,7 @@ end
 -- BB14: the cause, the gold this KO took and the sack, to the victim only (Net.Fx "KO"; Config.Death)
 local function sendKO(victim, killer, ctx, carriedBefore, died)
 	local D = Config.Death
-	local by, name, killerFaction = "Other", "", ""
+	local by, name, killerFaction, kind = "Other", "", "", nil
 	local src = lastSource[victim]
 	local recent = src ~= nil and ctx.At - src.T <= D.SourceSeconds
 	local A = S.AnnounceService
@@ -1445,7 +1445,7 @@ local function sendKO(victim, killer, ctx, carriedBefore, died)
 		local okK, k = pcall(function() return K and K.GetActive and K.GetActive() end)
 		by, name = "Kaiju", (okK and typeof(k) == "Instance") and publicName(k) or ""
 	elseif recent and Config.MonsterTypes[src.Kind] then
-		by, name = "Monster", Config.MonsterTypes[src.Kind].Name
+		by, name, kind = "Monster", Config.MonsterTypes[src.Kind].Name, src.Kind
 	elseif died.Freefall or died.Pos == nil
 		or died.Pos.Y < (Config.ZoneAt(died.Pos).Center.Y or 0) - D.FallBelowFloor then
 		by = "Fall" -- falling, the body already gone (the void) or far below its zone's floor
@@ -1458,8 +1458,9 @@ local function sendKO(victim, killer, ctx, carriedBefore, died)
 		local okTip, line = pcall(Config.FunTip, koCount, Util.Random:NextNumber(), Util.Random:NextNumber())
 		if okTip then tip = line end
 	end
+	-- r7 play (최종 검수 10/17): Kind = the monster's Config.MonsterTypes key (the KO card's picture), monsters only
 	Net.Fx(victim, "KO", { By = by, Name = name, Faction = killerFaction, Lost = lost, Sack = ctx.HadSack == true,
-		RespawnIn = Config.Player.RespawnTime, Tip = tip })
+		RespawnIn = Config.Player.RespawnTime, Tip = tip, Kind = kind })
 	CombatService.KnockedOut:Fire(victim, by)
 end
 
@@ -1483,7 +1484,7 @@ local function sendFirstKO(victim, first)
 	local src = lastSource[victim]
 	local def = src and Config.MonsterTypes[src.Kind]
 	local fx = { By = def and "Monster" or "Other", Name = def and def.Name or "", Faction = "", Lost = 0, Sack = false,
-		RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true }
+		RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true, Kind = def and src.Kind or nil } -- r7: the picture
 	Net.Fx(victim, "KO", fx)
 	CombatService.KnockedOut:Fire(victim, def and "Monster" or "Other")
 end

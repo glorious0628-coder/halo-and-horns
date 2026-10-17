@@ -108,6 +108,7 @@ TELL = "\t\tST.NextAt[player] = now + num(FK.SpawnGap, 4)\n\t\treport(player, fa
 HOOKS = "Distance = num(FK.SpawnDistance, 6), Strike = strike, OnKilled = onKilled, Near = true,"
 
 MUTATIONS = [
+    ("r7: the first KO has no Kind", CO, "First = true, Kind = def and src.Kind or nil }", "First = true }"),
     # --- FirstKOService: the stage comes from the quest's CurrentStep (never a step number of our own)
     ("any quest step is the KO step", F, "\tif step == Q.Step then return (fresh and not off) and \"First\" or \"Tell\" end",
      "\tif step ~= nil then return (fresh and not off) and \"First\" or \"Tell\" end"),
@@ -287,16 +288,19 @@ MUTATIONS = [
     ("get-up: never turns to the Face", F, "\t\tif face and Util.FlatDistance(face, at) > 0.5 then return CFrame.lookAt(at, face) end\n", ""),
     ("get-up: faces the Face's height", F, "Vector3.new(G.Face.X, at.Y, G.Face.Z)", "G.Face"),
     ("get-up: turns to a Face on the spot", F, "if face and Util.FlatDistance(face, at) > 0.5 then", "if face then"),
-    ("practice pays the King's own XP", C, "MinHP = 40, PayAs = \"BigSlime\" }", "MinHP = 40, PayAs = \"SlimeKing\" }"),
+    ("practice pays the King's own XP", C, "MinHP = 40, PayAs = \"BigSlime\", LeapCycle = 3 }", "MinHP = 40, PayAs = \"SlimeKing\", LeapCycle = 3 }"),
     ("save field missing", C, "Config.Data.Defaults.FirstKODone = false", "Config.Data.FirstKODoneX = false"),
-    ("retry King too strong (the old 2-potion King)", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 18, HitPct = 0.09,"),
-    ("retry King hits a bit harder", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 17, HitPct = 0.08,"),
-    ("retry King hits a bit softer", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 17, HitPct = 0.07,"),
-    ("retry King too weak", C, "Retry = { Seconds = 17, HitPct = 0.075,", "Retry = { Seconds = 14, HitPct = 0.075,"),
+    ("retry King too strong", C, "Retry = { Seconds = 17, HitPct = 0.13,", "Retry = { Seconds = 18, HitPct = 0.15,"),
+    ("retry King hits a bit harder", C, "Retry = { Seconds = 17, HitPct = 0.13,", "Retry = { Seconds = 17, HitPct = 0.14,"),
+    ("retry King hits a bit softer", C, "Retry = { Seconds = 17, HitPct = 0.13,", "Retry = { Seconds = 17, HitPct = 0.12,"),
+    ("retry King too weak", C, "Retry = { Seconds = 17, HitPct = 0.13,", "Retry = { Seconds = 14, HitPct = 0.13,"),
+    # r8 (최종 검수 10/17): the retry King leaps every 3 s
+    ("r8: the retry King back to 1.5 s leaps", C, "PayAs = \"BigSlime\", LeapCycle = 3 },", "PayAs = \"BigSlime\", LeapCycle = 1.5 },"),
+    ("r8: the spawn ignores LeapCycle", F, "\t\topts.LeapCycle = num(R.LeapCycle, 0) > 0 and num(R.LeapCycle, 0) or nil", "\t\topts.LeapCycle = nil"),
     ("retry ignores the +N", C, "Config.WeaponDamage(tonumber(tier), lv, tonumber(enhance) or 0)", "Config.WeaponDamage(tonumber(tier), lv, 0)"),
     ("FirstKORetry reads the quest's table", C, "\tlocal FK = Config.FirstKOKing\n\tlocal R = FK.Retry",
      "\tlocal FK = Config.FirstKO\n\tlocal R = FK.Retry"),
-    ("retry ignores regen", C, "return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }",
+    ("retry ignores regen", C, "return { HP = hp, Hit = R.HitPct + regen * (tonumber(R.LeapCycle) or Config.Monsters.AttackCooldown) }",
      "return { HP = hp, Hit = R.HitPct }"),
     ("retry ignores the faction bonus", C, "tonumber(enhance) or 0) * (c.Damage or 1) * (1 + bonus)", "tonumber(enhance) or 0) * (c.Damage or 1)"),
     ("retry ignores the class", C, "tonumber(enhance) or 0) * (c.Damage or 1) * (1 + bonus)", "tonumber(enhance) or 0) * (1 + bonus)"),
@@ -306,10 +310,10 @@ MUTATIONS = [
     ("first KO runs the whole pipeline", CO, "\t\tlastSource[victim] = nil\n\t\treturn\n\tend\n", "\t\tlastSource[victim] = nil\n\tend\n"),
     ("first KO keeps the King as the source", CO, "\t\tlastPvPAttacker[victim] = nil\n\t\tlastSource[victim] = nil\n\t\treturn",
      "\t\tlastPvPAttacker[victim] = nil\n\t\treturn"),
-    ("no First flag", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true }",
-     "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime }"),
-    ("first KO screen with the normal wait", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true }",
-     "RespawnIn = Config.Player.RespawnTime, First = true }"),
+    ("no First flag", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true,",
+     "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime,"),
+    ("first KO screen with the normal wait", CO, "RespawnIn = tonumber(first.RespawnIn) or Config.Player.RespawnTime, First = true,",
+     "RespawnIn = Config.Player.RespawnTime, First = true,"),
     ("first KO screen to everyone", CO, "\tNet.Fx(victim, \"KO\", fx)", "\tNet.Fx(nil, \"KO\", fx)"),
     ("first KO not telemetry", CO, "\tCombatService.KnockedOut:Fire(victim, def and \"Monster\" or \"Other\")\n", ""),
     # --- MonsterService: the hooks, the practice kill, Near / Hold / the lifetime

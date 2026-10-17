@@ -60,3 +60,10 @@
 - 확인됨: 뿔 첫 화면 카메라, King 첫 KO → Fizzby 옆, M1_3 끝 다음 목표 글, EdgeHint 보임(하얀 판처럼), 장인 Tiny 부탁. 문제: King 두 번째 KO(2/2), 강화 실패 2/2 표시 없음, 표시 엉뚱(King·Lost bag), 퀵슬롯, KO 화면 그림 없음.
 - 도구: M1_2에서 막히면 DebugCommand StoryDone M1_2 → scene.py OfferM1_3(진영이 빛으로 바뀜). KO 장면 = KO 글 뜨면 바로 shot. 맵 끝 = Config.Map.Bounds(-260/1840/-720/720, 다 물), 순간 이동 후 Humanoid:MoveTo.
 - **다음 판:** A23-225 병합 뒤 강화 → King 다시 → Lv5 시험·M1_3 진짜 순서.
+
+## 10/17 저녁 — 8판 끝 (직업별 전사·궁수·마법사, src 9657762c → c16e09ab → 034174d8)
+- 보고서 `docs/review/playtest/2026-10-17_r8.md`, 사진·기록 `docs/art/verification_2026-10-17/playtest/r8/`.
+- 공통 문제: 두 번째 King 못 이김(마법사: 길 위 King Slime이 뛰어내려 KO, 언덕 King과 둘), Quick [1] 두 번 = 칸 비고 목표 'Drink' 남아 막힘, 마법사 Prince가 표시 자리 밖, 궁수 Prince F 28번, 긴 머리·치마와 칼·활 겹침.
+- 도구: `build/playtest_tools/flow.py <Halo|Horns> <Warrior|Archer|Mage> [단계]` 한 직업 점검표 자동(0 시작 … 9 다음 목표), `pose.py idle|walk|atk PRE`. KO 순간 길 찾기 ~2분 멈춤(도구). 멈춘 python은 Win32_Process에서 flow.py로 찾아 끄기.
+- **다음 판:** A23-227 뒤 두 번째 King 세 직업 + 퀵슬롯 두 번 누르기.
+- 10/17 밤 도구 고침(최종 검수 요청): flow.py King 싸움은 `OwnerUserId == 내 UserId`인 SlimeKing(재대결 King)만 노림(들판 King은 보호돼 안 맞음 — 8판 봇이 그걸 때렸음), 시작 때 `Character.Health` 스크립트 있는지 기록(8판 +2.3/초 = Roblox 기본 Health 1%). **9판 = 개발 1·2 고침 병합 뒤 최종 검수 신호.**

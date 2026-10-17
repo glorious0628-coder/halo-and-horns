@@ -560,6 +560,24 @@ local function npcEntry(st, myZone, pos)
 	return pack(part, "story:npc", label, zone, false)
 end
 
+-- game play r8: my own living King of that kind (a rematch King: model OwnerUserId = me) in workspace.Monsters, else nil
+function QuestTarget.MyKing(kind)
+	local folder = workspace:FindFirstChild("Monsters")
+	if not folder or not LocalPlayer then return nil end
+	for _, m in folder:GetChildren() do
+		local ok, root = pcall(function()
+			if not m:IsA("Model") or m:GetAttribute("OwnerUserId") ~= LocalPlayer.UserId then return nil end
+			local k = m:GetAttribute("MonsterKind") or m.Name
+			if k ~= kind then return nil end
+			local r = resolvePart(m)
+			if not r or r.Anchored then return nil end -- a dying King (MonsterService anchors its root) is no target
+			return r
+		end)
+		if ok and root then return root end
+	end
+	return nil
+end
+
 local function storyEntry(st, myZone, faction, pos)
 	-- 개발 2 dev2-offer-row: "Talk to <asker>" while the next main waits (Story.Offer, St = 1 is no step yet) = the way to her
 	if st.Offer == true then
@@ -583,7 +601,12 @@ local function storyEntry(st, myZone, faction, pos)
 	local obj = stepObj(st, faction)
 	-- A23-222 (dev2-first12 M1_2): in the King's own zone the mark over the King's hill / the rematch spot says the King,
 	-- not the zone I already stand in
-	if r and not travel and type(obj) == "table" and (obj.Name == "FirstKO" or obj.Kind == "SlimeKing") then r.Label = TXT.King or r.Label end
+	if r and not travel and type(obj) == "table" and (obj.Name == "FirstKO" or obj.Kind == "SlimeKing") then
+		r.Label = TXT.King or r.Label
+		-- game play r8: once MY King is out, the mark rides on its body ("Your King"), not the hill next to the field King
+		local mine = QuestTarget.MyKing(type(obj.Kind) == "string" and obj.Kind or "SlimeKing")
+		if mine then return pack(mine, r.Tag, TXT.YourKing or r.Label, zone, false) end
+	end
 	if not r or travel or not pos then return r end
 	-- a Near step (pond slimes, the fountain) already happens inside its radius
 	local radius = type(obj) == "table" and num(obj.Radius, nil) or nil

@@ -435,6 +435,23 @@ do
 	-- M1_1's scroll step (게임성 개발 2): Guide "Bag" has no place in the world (the row opens the bag)
 	check(g, "Guide Bag -> no world target", QT.Story("Bag", "Crossroads", vec(0, 3, 0), "Halo") == nil
 		and QT.ForEntry({ Story = { Id = "M1_1", St = 2, Guide = "Bag" } }, "SlimeMeadow", "Halo", vec(330, 3, 0)) == nil)
+	-- r7 play (최종 검수 10/17): M1_3's rows point at the meadow entrance and at the lost bag itself (the bag's spot is meadow
+	-- land, not the river by the bridge = Outskirts, whose trip pointed ~54 studs off)
+	local bag = Config.StoryQuests.Landmarks.LostBag
+	check(g, "the lost bag lies in the meadow (its own zone)", Config.ZoneAt(bag).Id == "SlimeMeadow", Config.ZoneAt(bag).Id)
+	t = QT.Story("Lv5Slimes", "HaloTown", vec(0, 3, -515), "Halo")
+	check(g, "M1_3 accepted in Halo town: the slimes row points somewhere (the way to the meadow)", t ~= nil, where(t))
+	for _, from in { { "HaloTown", vec(0, 3, -515) }, { "Crossroads", vec(0, 3, 0) }, { "SlimeMeadow", vec(400, 3, 100) } } do
+		local e1 = QT.ForEntry({ Story = { Id = "M1_3", St = 1, Guide = "Lv5Slimes" }, Text = "Beat slimes using only basic attacks",
+			Progress = 0, Target = 4, ShowProgress = true }, from[1], "Halo", from[2])
+		check(g, "M1_3 just accepted (" .. from[1] .. "): the slimes row has a marker", type(e1) == "table" and (e1.Part ~= nil or e1.Position ~= nil),
+			e1 and encode({ Tag = e1.Tag, Zone = e1.Zone, Travel = e1.Travel }) or "nil")
+	end
+	e = QT.ForEntry({ Story = { Id = "M1_3", St = 2, Guide = "LostBag" } }, "SlimeMeadow", "Halo", vec(250, 3, 0))
+	local bp = e and (e.Part or e.Position)
+	bp = typeof(bp) == "Vector3" and bp or (type(bp) == "table" and bp.Position or nil)
+	check(g, "M1_3 'Lost bag' from the slimes: over the bag itself (within 4 studs flat), no trip", type(e) == "table" and e.Travel ~= true
+		and bp ~= nil and math.abs(bp.X - bag.X) <= 4 and math.abs(bp.Z - bag.Z) <= 4, e and encode({ Tag = e.Tag, Zone = e.Zone, Travel = e.Travel }) or "nil")
 	ATTR.BlacksmithVisited, ATTR.Level = nil, nil
 	-- daily rows have no place; a story pond step labels in English
 	check(g, "daily row -> nil", QT.ForEntry({ Kind = "Daily", Progress = 0, Target = 3, CanClaim = true }, "Crossroads", "Halo",
@@ -506,6 +523,30 @@ do
 	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
 	check(g, "M1_2 rematch in the meadow -> the arrival spot, 'King Slime' (never off inside the meadow)", type(e) == "table"
 		and e.Travel == false and e.Label == "King Slime", e and encode({ Label = e.Label }) or "nil")
+	-- game play r8: the field King and my rematch King on one hill -> once MY King (OwnerUserId = me) is out, the mark rides
+	-- its body, 'Your King'; the field King alone never takes the mark; a dying King (anchored root) gives it back
+	PLAYER.UserId = 77
+	local mons = add(WORKSPACE, inst("Folder", "Monsters"))
+	local field = add(mons, inst("Model", "SlimeKing", { Attrs = { MonsterKind = "SlimeKing" } }))
+	add(field, inst("Part", "HumanoidRootPart", { Position = vec(402, 3, -120) }))
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "r8: only the field King out -> the spot, 'King Slime'", type(e) == "table" and e.Label == "King Slime"
+		and e.Part ~= field.Children[1], e and encode({ Label = e.Label }) or "nil")
+	local mine = add(mons, inst("Model", "SlimeKing", { Attrs = { MonsterKind = "SlimeKing", OwnerUserId = 77 } }))
+	local mineRoot = add(mine, inst("Part", "HumanoidRootPart", { Position = vec(390, 3, -110) }))
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "r8: my King out -> the mark on its body, 'Your King'", type(e) == "table" and e.Part == mineRoot
+		and e.Label == "Your King" and e.Travel == false, e and encode({ Label = e.Label }) or "nil")
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 1, Guide = "KingHill" } }, "SlimeMeadow", "Halo", vec(300, 3, 0))
+	check(g, "r8: the King's hill step with my King out -> my King too", type(e) == "table" and e.Part == mineRoot)
+	mineRoot.Anchored = true
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "SlimeMeadow", "Halo", vec(400, 3, -118))
+	check(g, "r8: my King dying (anchored) -> back to the spot", type(e) == "table" and e.Part ~= mineRoot and e.Label == "King Slime")
+	mineRoot.Anchored = false
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "Crossroads", "Halo", vec(0, 3, 0))
+	check(g, "r8: from the Crossroads with my King out -> still the trip", type(e) == "table" and e.Travel == true)
+	table.remove(WORKSPACE.Children, table.find(WORKSPACE.Children, mons))
+	PLAYER.UserId = nil
 	e = QT.ForEntry({ Story = { Id = "M1_2", St = 6, Guide = "MeadowArrival" } }, "Crossroads", "Halo", vec(0, 3, 0))
 	check(g, "M1_2 rematch from the Crossroads -> a trip to the meadow", type(e) == "table" and e.Travel == true
 		and e.Zone == "SlimeMeadow", e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")

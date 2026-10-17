@@ -1,5 +1,13 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/18 — 8판 묶음 끝 (최신)
+- **병합됨(main):** fix/quick-first-put(첫 넣기 다시 보내기 + 가방 Quick 같은 칸 다시 눌러도 안 빠짐) · dev1-craft-tool(제작 창 Tool 탭·강화·결과·축복 줄, A23-219) · dev1-r8-small 1b39f497(물약 0개 아이콘 또렷·숫자만 회색, 축복 판 첫 줄 Blessed Scroll) · dev1-your-king 0c192861(내 King 'Your King' 이름 + M1_2 표시가 내 King 몸에, A23-228).
+- **가지 dev1-staff-tilt 7411479b** (push, 병합 전): Config.WeaponGrips Staff/CrookStaff/FlaskStaff Turn·Rest Z -12(지팡이 끝 손 오른쪽 = 머리 밖). 근거 값(시험 Play, docs/art/verification_2026-10-18/r8_checks/): 머리 중심~지팡이 축 1단 +0.15, 2단 휘두름 -0.02(스침), 4단 코드 지팡이 끝 공 -0.30(박힘). test_tool_grip 방향 확인(손 오른쪽 쪽으로 12도). **Studio 확인 = 게임 플레이 9판 뒤 화면 차례**(`py build/dev1_tools/check1018.py D`: 2·3·4단 쉼/휘두름 거리 + 사진).
+- 결정: 피해 숫자 예측 안 함(A23-221 ③); 체형 직후 첫 휘두름 1.96은 재현 안 됨(버그 아님); 쉴 때 칼·활이 긴 머리·치마 뚫음은 디자인 재개 때 검집과 같이.
+- 시험 장소 주의: PhoneTest_1015는 옛 지도 → KingHop/Landmark:KingHill이 마을(-4,3,-424)로 감. 들판 (390,-110)에 직접 세워서 봄. MCP execute_luau의 require는 게임과 다른 모듈 사본(서버 PlayerService.GetData 안 됨) → 서버 값 바꾸기는 DebugCommand(Scene/Item/Gold/stats)로만, Config 바꿀 땐 worktree에서 임시로 고쳐 sync(커밋 X) 뒤 되돌림.
+- 도구(git 밖, build/dev1_tools): press1017b.py(퀵슬롯 값 가르기 6번), craft7.py(Tool 탭 이유 줄·성공·실패·축복), check1018.py(C 두 King, A/D 지팡이-머리 거리, B 체형 직후), avatar1017.py, lag1017.py.
+- **▶ 다음:** 지팡이 Studio 확인(화면 차례) → dev1.md 큐: #2 폰 실기 확인(화면) → 닫힌 문 판자 = 디자인 재개 때(idea_backlog), 맵 끝 = EdgeHint 끝남 → **#7 도감 빈 카드 획득처·진척** → #11 왕관 막대 내 기여 → #8 친구 위치.
+
 ## 10/17 오전 — 앱 재시작 여러 번 (최신; 긴 명령은 끊김 → 덩어리마다 바로 커밋·push)
 - **dev1-first12 da277a7f** (push) = 10/16 밤 10 내용 + b81ee81c SignFit 위 칩도 피함 / 7be8d91a 거위 칩·[Join]은 M1_1 줄 사라질 때까지(HUD.EventsWait) / a7155259 Guide 없는 Npc 단계(M1_3 To Tiny·Return bag) 표시·누르기 = 그 NPC, 'Next goal ·' 줄 목표 글 / 0283a181 거리 글 테두리 진하게·마을 사람 말풍선 AlwaysOnTop / da277a7f #1 KO 화면 몬스터 머리 그림(DeathScreen.KindOf, 서버 Kind 오면 그것)·일어나면 HP 물약 칸 한 번 반짝(QuickSlots.Glow). 모두 최종 검수에 보고함.
 - 스윕(../Game-dev1grip vs ../wt_d1base, build/sw/_summary.txt, 이어 돌리기 = scratchpad sweep_rest.sh 방식: 요약에 없는 시험만): 197/253까지 새 실패 = test_audio(고침)뿐.

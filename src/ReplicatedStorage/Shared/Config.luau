@@ -586,7 +586,9 @@ Config.Classes = {
 		Desc = "Quick shots hit two foes at once. Quick feet, too!",
 		PickLine = "Shoot two foes at once from far away", -- addendum A7-4
 		Weapon = "Bow",
-		HealthMult = 1.0, Damage = 0.55, SwingInterval = 0.5,
+		-- r8 play (최종 검수 10/17: a Prince took 28 presses vs the warrior's 10): 0.55 / 0.5 s -> 0.8 / 0.75 s (top hits a second
+		-- 1.07 = about the warrior's 1.0; about 1.2-1.3x the warrior's presses)
+		HealthMult = 1.0, Damage = 0.8, SwingInterval = 0.75,
 		Pattern = "Multi", -- the Targets nearest valid targets within Range
 		Range = 30, Targets = 2, Splash = 0,
 		AimCone = 90, -- A23-61: the front half (90 deg each side of where I face), nothing behind
@@ -2577,7 +2579,10 @@ Config.MonsterTypes = {
 	Slime = { Name = "Shard Slime", Short = "Slime", Zone = "SlimeMeadow", Count = 12, HP = 10, Damage = 2, XP = 5, Gold = 3, Speed = 10, Shape = "Slime", Scale = 1.0, Color = Color3.fromRGB(95, 205, 95) },
 	-- A23-84 (user 2026-10-08): the slime family - the green Shard Slime is the youngest, the Slime Prince (this id, the
 	-- old "King Slime": its quests, the first 70% scroll and the dailies stay) the eldest, the King Slime the dad
-	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235) },
+	-- r8 play (최종 검수 10/17): the Princes live around the meadow's entrance (M1_1's marker, MeadowArrival): spawn within 45,
+	-- home = that spot, never farther than 50 (MonsterService NEAR)
+	BigSlime = { Name = "Slime Prince", Short = "Slime Prince", Zone = "SlimeMeadow", Count = 4, HP = 40, Damage = 4, XP = 18, Gold = 10, Speed = 9, Shape = "Slime", Scale = 1.8, Color = Color3.fromRGB(70, 160, 235),
+		Near = { Spot = "MeadowArrival", Radius = 45, Leash = 50 } },
 	-- A23-87: 3 of the 10 woods goblin slots are Slingshot Goblins, 3 of the 8 ruins skeleton slots Skeleton Archers (the
 	-- zone totals stay); the meadow keeps its 12 green slimes (the first 10 minutes) and adds 2 hidden Flower Slimes
 	-- (Config.MonsterDensity.GlobalCap + 4 for them)
@@ -4936,7 +4941,9 @@ table.insert(Config.StoryQuests.Subs, "N_Basics")
 Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
 -- P1 ⑤ the Lv5 test's help: the neighbour's bag lies at the meadow entrance (Halo), Rose's snack parcel beside her (Horns); the
 -- neighbour is Folk1 of Halo town (now a quest NPC too: it keeps its TownFolk bubbles)
-Config.StoryQuests.Landmarks.LostBag = Vector3.new(188, 0, -12)
+-- r7 play (최종 검수 10/17): (188, -12) was beside the bridge over the river (x 150..210, no zone = Outskirts), so the
+-- client's guide pointed at a trip to the Outskirts ~54 studs off; now on the meadow shore by the road (SlimeMeadow)
+Config.StoryQuests.Landmarks.LostBag = Vector3.new(224, 0, -16)
 Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
 -- r5 play (최종 검수 10/16): the Lv5 test's slimes = the meadow entrance (just past the bridge from the Crossroads), so the
 -- row's marker leads there instead of to the meadow's travel pad by the Forge (Guide "SlimeMeadow" = a zone = its pad)
@@ -7327,9 +7334,13 @@ Config.WeaponGrips = {
 	-- hold-angles (10/16 grip_check #4, build/codex/grip_r1.md: the elbow bent, not the staff turned in the fist): with the
 	-- forearm forward the staff stands up from a small turn (tuned in the test Play: 7 degrees off upright, 0.7 studs from
 	-- the upper arm, the hand at the low chest, the elbow 80; was 81 here = the staff along a hanging forearm, on the arm)
-	Staff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
-	CrookStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
-	FlaskStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },
+	-- staff-head (최종 검수 r8 checks 10/18: head centre to the shaft 1단 +0.15 / 2단 -0.02 on the cast / the 4단 code
+	-- staff's tip ball -0.30 at rest = in the head): the shaft tilted 12 out, away from the head, at rest and in the attack
+	-- (Z about the grip attachment's Z = the forearm: negative = the tip to the hand's +X, the character's right; ~0.4
+	-- studs at the tip 1.9 studs over the fist)
+	Staff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },
+	CrookStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },
+	FlaskStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },
 	Hammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },
 	-- grip-4 (main photos 10/15: the baton held low by the hip): the hand at the chest, the tip up and forward 45 (HoldTest:
 	-- 44 standing, 46..51 walking)
@@ -10017,7 +10028,10 @@ Config.FirstKOKing = {
 	--   Stepping out of the circles wins without potions (the rematch lesson, A23-113).
 	--   (Seconds 18 / HitPct 0.09 needed 2 potions; 16.5 / 0.075 leaves 342 no-potion wins at 80% vs a 1.6 s King.)
 	-- PayAs = the kind whose XP / gold its kill pays (the Slime Prince's; the quest pays the real reward)
-	Retry = { Seconds = 17, HitPct = 0.075, MinHP = 40, PayAs = "BigSlime" },
+	-- r8 play (최종 검수 10/17): LeapCycle = s between the retry King's leaps (3: it stands 2 s of every 3, half the landings of
+	-- the 1.5 s cycle); HitPct 0.075 -> 0.13 per landing (+ the side's regen over one LeapCycle) keeps A23-110's potion lesson
+	-- (test_first_ko_king: no potion loses, one wins with >= 9% left, two with >= 20%)
+	Retry = { Seconds = 17, HitPct = 0.13, MinHP = 40, PayAs = "BigSlime", LeapCycle = 3 },
 }
 Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happened (set once, before the quest is told)
 
@@ -10025,7 +10039,7 @@ Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happe
 -- formula of Config.SwingHitsToKill: weapon x class x faction bonus x SwingImmediate, rounded, per SwingInterval; no
 -- crit), at least MinHP, at most Retry.MaxHP (2500 when unset: the King's HP before A23-113; never follows the field
 -- King's crowd HP, 검수 bosshp_verify 2026-10-11). Hit = the share of the player's MaxHealth one King hit takes: HitPct +
--- the faction's out-of-town regen over one King attack (Config.Monsters.AttackCooldown), so every faction needs the same
+-- the faction's out-of-town regen over one King landing (Retry.LeapCycle, else AttackCooldown), so every faction needs the same
 -- potions. Pure (FirstKOService and the offline test share it).
 function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local FK = Config.FirstKOKing
@@ -10039,7 +10053,7 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local dps = math.max(1, math.floor(per + 0.5)) / math.max(0.1, tonumber(c.SwingInterval) or 1)
 	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, tonumber(R.MaxHP) or 2500))
 	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
-	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
+	return { HP = hp, Hit = R.HitPct + regen * (tonumber(R.LeapCycle) or Config.Monsters.AttackCooldown) }
 end
 
 ----------------------------------------------------------------- gathering (게임성 개발 3, 2026-10-11)
@@ -11458,7 +11472,13 @@ Config.ClientText.CraftWindow = {
 	Checking = "Checking…",
 	None = "Nothing to make yet.",
 	-- the tamer (⑤, 개발 3 dev3-tamer: summons + research; only while Config.Features.Research is on)
-	Tabs = { Make = "Make", Research = "Research" },
+	Tabs = { Make = "Make", Research = "Research", Tool = "Tool" },
+	-- A23-219 the Tool tab (my role tool: CraftWindow.ToolView; the result lines are Config.Craft.Text ToolUp / ToolSame)
+	ToolName = "%s +%d",
+	ToolStep = "+%d → +%d · %s%%",
+	Upgrade = "Upgrade",
+	Bless = "Blessed Scroll %s%%", -- the Mixing Kit's chance per Enhance Scroll craft (Config.Craft.Tools.Bless)
+	BlessNext = "Blessed Scroll %s%% → %s%%",
 	PetSpeed = "Speed +%d–%d%%", -- a summon's random walk speed range (the hammer adds up to +2)
 	ResearchNeed = "%s research %s / %s",
 	Stage = "Stage %d",
@@ -11562,10 +11582,13 @@ Config.ClientText.PlayerListUI = {
 	Friend = "Add friend",
 	Block = "Block",
 }
+-- game play r8 (the field King and my rematch King on one hill, both "King Slime"): my own King's name tag
+Config.ClientText.MonsterLabels = { YourKing = "Your King" }
 Config.ClientText.QuestTarget = {
 	Blacksmith = "Forge",
 	Dummy = "Dummy", -- A23-221 ①: the first mission's practice dummy
 	King = "King Slime", -- A23-222: M1_2's King's hill / rematch mark in the meadow
+	YourKing = "Your King", -- game play r8: the mark on MY rematch King's body (model OwnerUserId = me)
 	Pond = "Slime Pond",
 	Fountain = "Fountain",
 	Goose = "Golden Goose Nest",

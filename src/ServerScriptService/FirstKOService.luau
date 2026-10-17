@@ -298,6 +298,7 @@ local function spawnKing(player, stage)
 	else
 		local R = type(FK.Retry) == "table" and FK.Retry or {}
 		opts.Practice = type(R.PayAs) == "string" and R.PayAs or true
+		opts.LeapCycle = num(R.LeapCycle, 0) > 0 and num(R.LeapCycle, 0) or nil -- r8: it leaps every LeapCycle s
 	end
 	ST.NextAt[player] = os.clock() + num(FK.SpawnGap, 4)
 	local ok, model, rec = pcall(S.MonsterService.SpawnPersonal, player, kingKind(), opts)

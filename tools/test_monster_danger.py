@@ -27,7 +27,7 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-09/offline_monster_danger_2026-10-09.json"
 
 STATIC = [
-    ("MonsterLabels colours each shown name tag", "LABELS", ["\t\tif name and r.Name then S.Danger(r) end\n",
+    ("MonsterLabels colours each shown name tag", "LABELS", ["\t\tif name and r.Name then\n\t\t\tS.Danger(r)\n",
      "\tlocal color = (monLv and myLv) and D.Colors[D.Tier(myLv, monLv)] or D.Colors.Even\n"]),
     ("a golden monster keeps its gold", "LABELS", ['\tif not model or model:GetAttribute("Golden") == true then return end\n']),
 ]
@@ -41,7 +41,7 @@ MUTATIONS = [
     ("CONFIG", "bosses as their zone", "((def.Boss == true) and Config.MonsterDangerLook.Fallback.Boss or 0)", "0"),
     ("LABELS", "golden tags recoloured", '\tif not model or model:GetAttribute("Golden") == true then return end\n',
      "\tif not model then return end\n"),
-    ("LABELS", "never coloured", "\t\tif name and r.Name then S.Danger(r) end\n", ""),
+    ("LABELS", "never coloured", "\t\t\tS.Danger(r)\n", ""),
 ]
 
 FIXTURE = r'''

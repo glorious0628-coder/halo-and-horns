@@ -233,6 +233,25 @@ runGroup("field king shield (A23-227)", function()
 	check(#w.Strikes == 1 and w.Strikes[1].T == p, "a personal King still lands on its Lv5 owner before M1_2 (the rematch itself)", tostring(#w.Strikes))
 end)
 
+-- r8 (최종 검수 10/17): a King with _leapCycle (SpawnPersonal opts.LeapCycle: the rematch King, 3 s) leaps that often
+runGroup("leap cycle", function()
+	local C = leapWorld().Config
+	local m = zoneCenter(C, "SlimeMeadow")
+	local w = leapWorld()
+	local p = w:Player(1, m + vec(5, 3, 0), { Level = 2, PlaytimeSeconds = 30 })
+	local king = w:Rec("SlimeKing", m, p)
+	king._strike = function() end
+	king._leapCycle = 3
+	local t0 = w.Clock
+	w:Try(king, p)
+	check(math.abs(king._nextAttackAt - (t0 + 3)) < 1e-6, "_leapCycle 3: the next leap 3 s after this one", tostring(king._nextAttackAt - t0))
+	local k2 = w:Rec("SlimeKing", m, p)
+	k2._strike = function() end
+	w:Try(k2, p)
+	check(math.abs(k2._nextAttackAt - (w.Clock + C.Monsters.AttackCooldown)) < 1e-6, "no _leapCycle: the BossLeap cycle (AttackCooldown 1.5)",
+		tostring(k2._nextAttackAt - w.Clock))
+end)
+
 runGroup("personal king", function()
 	local C = leapWorld().Config
 	local m = zoneCenter(C, "SlimeMeadow")

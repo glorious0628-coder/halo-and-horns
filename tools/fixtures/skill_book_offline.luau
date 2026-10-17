@@ -214,7 +214,7 @@ check(a.Icons[1] == "Weapon_Warrior_T1_Halo" and a.Icons[2] == "Weapon_Warrior_T
 a = SkillBook.Rows(ctx({ Class = "Mage", Tier = 1 }))[1]
 check(string.find(a.Numbers, "2 MP per hit", 1, true) and string.find(a.Numbers, "Blast 7", 1, true) ~= nil, "Mage: MP per hit + blast", a.Numbers)
 a = SkillBook.Rows(ctx({ Class = "Archer", Tier = 1 }))[1]
-check(string.find(a.Numbers, "Hits 2", 1, true) and string.find(a.Numbers, "0.5 s per hit", 1, true) ~= nil, "Archer: 2 targets, 0.5 s", a.Numbers)
+check(string.find(a.Numbers, "Hits 2", 1, true) and string.find(a.Numbers, "0.8 s per hit", 1, true) ~= nil, "Archer: 2 targets, 0.75 s (shown 0.8; r8 0.5 -> 0.75)", a.Numbers)
 a = SkillBook.Rows(ctx({ Class = "Archer", Faction = "Neutral", Tier = 2 }))[1]
 check(a.Icons[2] == "Weapon_Tamer_T2", "the tamer's attack icon is the tamer weapon", a.Icons[2])
 

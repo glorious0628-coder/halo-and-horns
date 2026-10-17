@@ -46,6 +46,7 @@ local V = {
 	Dim = 0.25, -- the backdrop's transparency (UiSandbox 10/12: 0.35 let an open window show through)
 	ZIndex = 60,
 	Hold = 1.6, -- s the result line stays
+	HoldBless = 2.8, -- s it stays with the Blessed Scroll line (A23-219: rare, worth a look)
 	ResultWait = 6, -- s to wait for CraftResult after Finish before closing quietly
 	WordTime = 0.7, -- s a grade word stays
 	JumpGap = 0.2, -- s: one strike per jump press (a held jump key repeats its request)
@@ -220,6 +221,10 @@ local function build()
 	local result = label(root, "Result", V.ResultSize, V.Colors.Perfect)
 	result.Position = UDim2.new(0.5, 0, 0.45, V.Target / 2 + 80)
 	UI.Result = result
+	-- A23-219: the Blessed Scroll line under it (CraftResult.Blessed; empty on every other craft)
+	local bless = label(root, "Bless", V.ResultSize - 4, V.Colors.Perfect)
+	bless.Position = UDim2.new(0.5, 0, 0.45, V.Target / 2 + 80 + V.ResultSize + 12)
+	UI.Bless = bless
 	-- [Skip]: done now at +0 (게임성 검수 10/12; an approved capsule, the coloured code button without it)
 	local skip
 	if type(ui.ArtTextButton) == "function" then
@@ -365,11 +370,18 @@ function CraftView.Step(t)
 	end
 	if UI.Word and os.clock() - UI.WordAt > V.WordTime and UI.Word.Text ~= "" then UI.Word.Text = "" end
 	if not S.Finished and t >= CraftMini.Ends(s.StartAt) then finish() end
-	if S.ResultAt and os.clock() - S.ResultAt >= V.Hold then
+	if S.ResultAt and os.clock() - S.ResultAt >= (S.Hold or V.Hold) then
 		CraftView.Close()
 	elseif S.Finished and not S.ResultAt and os.clock() - S.Finished >= V.ResultWait then
 		CraftView.Close() -- no answer: the server finishes it anyway (+0 at worst, kept in the bag)
 	end
+end
+
+-- (pure) the Blessed Scroll line: Config.Craft.Text.Blessed with its "%%" read as "%"
+function CraftView.BlessLine()
+	local K = type(Config.Craft) == "table" and Config.Craft.Text or nil
+	local s = type(K) == "table" and tx(K, "Blessed") or ""
+	return (string.gsub(s, "%%%%", "%%"))
 end
 
 -- s->c CraftResult (or the practice's own): the one result line, then the screen closes
@@ -392,7 +404,11 @@ function CraftView.OnResult(payload)
 		local ok, n = pcall(Config.WeaponName, math.floor(tonumber(payload.Tier)), class, faction)
 		name = ok and n or nil
 	elseif type(payload.Item) == "string" and Config.Loot.Items[payload.Item] then
-		name = tx(Config.Loot.Items[payload.Item], "Name")
+		-- game play r8 (A23-219): a blessed craft names the Blessed Scroll it gave (CraftResult.Item stays the recipe's)
+		local tools = type(Config.Craft) == "table" and Config.Craft.Tools or nil
+		local bless = payload.Blessed == true and type(tools) == "table" and tools.BlessItem or nil
+		local item = (type(bless) == "string" and Config.Loot.Items[bless]) and bless or payload.Item
+		name = tx(Config.Loot.Items[item], "Name")
 	elseif payload.Kind == "Potion" and type(payload.Potion) == "string" then -- AP1 / AP2 (Config.QuickSlots.Items)
 		local qs = type(Config.QuickSlots) == "table" and type(Config.QuickSlots.Items) == "table" and Config.QuickSlots.Items or {}
 		name = type(qs[payload.Potion]) == "table" and tx(qs[payload.Potion], "Name") or nil
@@ -405,6 +421,10 @@ function CraftView.OnResult(payload)
 	if UI.Result and not (pet and tonumber(pet.Spd)) then
 		UI.Result.Text = name and tx(TXT, "Result", plus, name) or tx(TXT, "ResultPlain", plus)
 	end
+	-- A23-219: a blessed Enhance Scroll craft (one scroll became the Blessed Scroll): its own gold line, held longer
+	local blessed = payload.Blessed == true
+	if UI.Bless then UI.Bless.Text = blessed and CraftView.BlessLine() or "" end
+	S.Hold = blessed and V.HoldBless or V.Hold
 	if UI.Ring then UI.Ring.Visible = false end
 	if UI.Skip then UI.Skip.Visible = false end
 	S.Finished = S.Finished or os.clock()
@@ -426,7 +446,7 @@ function CraftView.Begin(session, practice, onDone)
 	end
 	S.Session = { Id = session.Id, StartAt = startAt, Practice = practice == true,
 		OnDone = practice == true and type(onDone) == "function" and onDone or nil }
-	S.Grades, S.Sent, S.Finished, S.ResultAt = {}, {}, nil, nil
+	S.Grades, S.Sent, S.Finished, S.ResultAt, S.Hold = {}, {}, nil, nil, nil
 	if not build() then
 		S.Session = nil
 		return false

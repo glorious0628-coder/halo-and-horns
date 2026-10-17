@@ -145,7 +145,8 @@ check(W[1].Icon.Image == "rbxassetid://IconPotionMP" and W[1].Count.Text == "4" 
 	"slot 1 shows the MP icon, its count 4 and the key 1", show({ W[1].Icon.Image, W[1].Count.Text, W[1].Key.Text }))
 check(W[1].Cooldown.Visible == true and W[1].Cooldown.Size and math.abs(W[1].Cooldown.Size.YS - 5 / Config.Vitals.PotionCooldown) < 1e-6,
 	"its cooldown fills the part of the slot still waiting (from the bottom)", W[1].Cooldown.Size and W[1].Cooldown.Size.YS)
-check(W[2].Icon.ImageTransparency > 0 and W[2].Count.Text == "0", "no HP potions: the icon dims, count 0", W[2].Icon.ImageTransparency)
+check(W[2].Icon.ImageTransparency == 0 and W[2].Count.Text == "0" and W[2].Count.TextColor3 ~= nil and W[1].Count.TextColor3 ~= W[2].Count.TextColor3,
+	"game play r8: no HP potions - the icon stays clear, only the count 0 turns gray", W[2].Icon.ImageTransparency)
 check(W[3].Icon.Image == "" and W[3].Count.Text == "" and W[3].Cooldown.Visible == false and W[3].Key.Text == "3",
 	"an empty slot is blank (its key badge stays)", show({ W[3].Icon.Image, W[3].Count.Text }))
 check(W[1].Status.Visible == false, "no status word over the slots", "")

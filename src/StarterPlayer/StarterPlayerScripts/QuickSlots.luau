@@ -40,6 +40,10 @@ local T = {
 -- Local = this session's own slots (no server yet, or a change the server has not answered within LocalWait s)
 local S = { Local = nil, LocalAt = 0, LocalRemote = false, Started = false, Hooked = false }
 T.LocalWait = 3
+-- game play r8 (0 potions: the dimmed icon on the dark slot read as an empty slot): the icon stays clear, only the count
+-- turns gray (ZeroCount); CountColor = each count label's own colour, given back when it has potions again
+T.ZeroCount = Color3.fromRGB(150, 150, 160)
+S.CountColor = setmetatable({}, { __mode = "k" })
 T.Glow = { Color = Color3.fromRGB(255, 214, 72), Thick = 5, Time = 1.4, Pop = 1.15 } -- QuickSlots.Glow (after a KO)
 
 local function num(v, d)
@@ -167,9 +171,15 @@ function QuickSlots.Refresh()
 				if w.Icon then
 					local id = def and artId(def.Icon) or ""
 					if w.Icon.Image ~= id then w.Icon.Image = id end
-					w.Icon.ImageTransparency = (def and s.Count <= 0) and 0.55 or 0
+					if w.Icon.ImageTransparency ~= 0 then w.Icon.ImageTransparency = 0 end
 				end
-				if w.Count then w.Count.Text = def and tostring(s.Count) or T.Text.Empty end
+				if w.Count then
+					w.Count.Text = def and tostring(s.Count) or T.Text.Empty
+					if S.CountColor[w.Count] == nil then S.CountColor[w.Count] = w.Count.TextColor3 or false end
+					local own = S.CountColor[w.Count]
+					local want = (def and s.Count <= 0) and T.ZeroCount or (own or nil)
+					if want and w.Count.TextColor3 ~= want then w.Count.TextColor3 = want end
+				end
 				if w.Cooldown then
 					local frac = (def and s.Left > 0) and math.clamp(s.Left / s.Length, 0, 1) or 0
 					w.Cooldown.Visible = frac > 0

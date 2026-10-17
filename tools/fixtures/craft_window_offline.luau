@@ -707,7 +707,8 @@ find(root, "Tab_Make").OnClick()
 check(find(root, "Row_S1") ~= nil and find(root, "Fam_Slime") == nil, "back to Make")
 attrs.Class = "Warrior"
 fireAttr("Class")
-check(find(root, "Tabs").Visible == false and find(root, "Fam_Slime") == nil, "a blacksmith: no tabs (research is the tamer's)")
+check(find(root, "Tab_Research") == nil and find(root, "Tab_Tool") ~= nil and find(root, "Fam_Slime") == nil,
+	"a blacksmith: no research tab (the tamer's), the Tool tab (A23-219)")
 close()
 Config.Features.Research = false
 
@@ -797,6 +798,121 @@ do
 	close()
 	attrs.Level, attrs.WeaponOwnedMask = 1, nil
 	table.remove(mods.Net.Names)
+end
+
+------------------------------------------------------------------ A23-219 the Tool tab (개발 2 craft_tools_server_2026-10-17)
+do
+	local Tl = Config.Craft.Tools
+	local c1 = CraftWindow.ToolCost("Smith", 1)
+	check(c1 and c1.Lv == 1 and c1.P == 1 and c1.Gold == 40 and c1.Every.CopperOre == 2 and c1.Every.Jelly == 2 and next(c1.Extra) == nil,
+		"tool cost +0 -> +1: 40 gold, Copper Ore 2 + the band-1 role material (Jelly 2), no Extra")
+	local c4 = CraftWindow.ToolCost("Alch", 4)
+	check(c4 and c4.Every.Glowcap == Tl.Steps[4].Role and c4.Every.IronOre == 4, "tool cost +4: the band-2 material (Glowcap)")
+	local c7 = CraftWindow.ToolCost("Tame", 7)
+	check(c7 and c7.Every.Petal == 4 and c7.Extra.KingJelly == 1 and c7.Every.KingJelly == nil,
+		"tool cost +7: the band-3 material (Petal), King Jelly only as Extra")
+	check(CraftWindow.ToolCost("Smith", 11) == nil and CraftWindow.ToolCost("Nope", 1) == nil, "no cost past +10 / for no role")
+	check(CraftWindow.ToolView(ctxOf({ Faction = "Halo" })) == nil, "tool view: nothing for a non-artisan")
+	local v = CraftWindow.ToolView(ctxOf({}))
+	check(v and v.Name == "Craft Hammer" and v.Plus == 0 and v.Title == "Craft Hammer +0" and v.Icon == "IconHammer",
+		"a blacksmith: the Craft Hammer +0 (the approved hammer icon)", v and v.Title)
+	check(v and v.Lines[1].Text == "+0 → +1 · 100%" and v.Lines[1].Color == "Gold", "the next step and its chance", v and v.Lines[1].Text)
+	check(v and v.Lines[2].Text == "Lv 1" and v.Lines[2].Color == "Sub", "the craft level it needs")
+	check(v and #v.Mats == 2 and v.Mats[1].Id == "Jelly" and v.Mats[1].Text == "12 / 2" and v.Mats[2].Id == "CopperOre"
+		and v.Mats[2].Text == "4 / 2", "the materials in the loot order with have / need", v and v.Mats[1] and v.Mats[1].Text)
+	check(v and v.Gold.Text == "40" and v.Gold.Short == false and v.Status == nil and v.Action.Enabled == true
+		and v.Action.Text == "Upgrade", "enough of all: [Upgrade] on, no reason line")
+	v = CraftWindow.ToolView(ctxOf({ Info = { Role = "Alch", Tool = 5 } }))
+	check(v and v.Plus == 0, "another role's CraftInfo is not my tool")
+	v = CraftWindow.ToolView(ctxOf({ Info = { Role = "Smith", Lv = 1, Tool = 2 } }))
+	check(v and v.Reason == "NeedLevel" and v.Lines[2].Color == "Bad" and v.Status.Text == K.Text.NeedLevel and v.Action.Enabled == false,
+		"+2 -> +3 needs craft Lv 2: the level line red, the server's NeedLevel line, off", v and v.Reason)
+	v = CraftWindow.ToolView(ctxOf({ Info = { Role = "Smith", Lv = 2, Tool = 2 } }))
+	check(v and v.Reason == "NeedMats" and v.Mats[2].Short == true, "Copper Ore 4 / 6: NeedMats", v and v.Reason)
+	v = CraftWindow.ToolView(ctxOf({ Gold = 10 }))
+	check(v and v.Reason == "NeedGold" and v.Gold.Short == true, "gold short: NeedGold, the gold red")
+	v = CraftWindow.ToolView(ctxOf({ Busy = true, Auto = true, Far = true, Gold = 0 }))
+	check(v and v.Reason == "Busy", "the reasons in the server's order: Busy first", v and v.Reason)
+	v = CraftWindow.ToolView(ctxOf({ Auto = true, Far = true, Gold = 0 }))
+	check(v and v.Reason == "Auto", "then Auto", v and v.Reason)
+	v = CraftWindow.ToolView(ctxOf({ Far = true, Gold = 0 }))
+	check(v and v.Reason == "Far" and v.Status.Text == K.Text.Far, "then Far (the server's own line)", v and v.Reason)
+	v = CraftWindow.ToolView(ctxOf({ ToolWait = true }))
+	check(v and v.Reason == nil and v.Action.Enabled == false, "a try waiting: off without a reason line")
+	v = CraftWindow.ToolView(ctxOf({ Info = { Role = "Smith", Lv = 10, Tool = 6 } }))
+	local kj = nil
+	for _, m in v and v.Mats or {} do if m.Id == "KingJelly" then kj = m end end
+	check(kj and kj.Need == 1 and kj.Short == true and v.Reason == "NeedMats", "+6 -> +7: King Jelly must be held before the try")
+	v = CraftWindow.ToolView(ctxOf({ Info = { Role = "Smith", Lv = 30, Tool = 10 } }))
+	check(v and v.Plus == 10 and v.Action == nil and #v.Mats == 0 and v.Status and v.Status.Text == "Your Craft Hammer is at its best."
+		and v.Status.Color == "Gold", "+10: the ToolMax line in gold, no cost, no button", v and v.Status and v.Status.Text)
+	v = CraftWindow.ToolView(ctxOf({ Class = "Mage", Info = { Role = "Alch", Lv = 5, Tool = 3 } }))
+	local bless = nil
+	for _, ln in v and v.Lines or {} do if string.find(ln.Text, "Blessed", 1, true) then bless = ln.Text end end
+	check(v and v.Name == "Mixing Kit" and bless == "Blessed Scroll 1.5% → 2%", "the Mixing Kit: its Blessed Scroll chance now -> next", bless)
+	v = CraftWindow.ToolView(ctxOf({ Class = "Mage", Info = { Role = "Alch", Lv = 30, Tool = 10 } }))
+	bless = nil
+	for _, ln in v and v.Lines or {} do if string.find(ln.Text, "Blessed", 1, true) then bless = ln.Text end end
+	check(bless == "Blessed Scroll 5%", "+10 Mixing Kit: 5%", bless)
+	v = CraftWindow.ToolView(ctxOf({ Info = { Role = "Smith", Tool = 0 } }))
+	check(v and (function() for _, ln in v.Lines do if string.find(ln.Text, "Blessed", 1, true) then return false end end return true end)(),
+		"no Blessed line for the hammer")
+	v = CraftWindow.ToolView(ctxOf({ Result = { Role = "Smith", Ok = true, Tool = 1 } }))
+	check(v and v.Result and v.Result.Text == "Craft Hammer +1!" and v.Result.Color == "Gold", "a success: ToolUp in gold", v and v.Result and v.Result.Text)
+	v = CraftWindow.ToolView(ctxOf({ Result = { Role = "Smith", Ok = false, Tool = 0 } }))
+	check(v and v.Result and v.Result.Text == "Not this time. Your Craft Hammer stays +0." and v.Result.Color == "Sub",
+		"a fail: ToolSame, quiet colour")
+	v = CraftWindow.ToolView(ctxOf({ Result = { Role = "Alch", Ok = true, Tool = 1 } }))
+	check(v and v.Result == nil, "another role's result is not shown")
+	check(table.concat(CraftWindow.Tabs(ctxOf({})), ",") == "Make,Tool" and #CraftWindow.Tabs(ctxOf({ Faction = "Halo" })) == 0,
+		"tabs: an artisan Make + Tool, nobody else", table.concat(CraftWindow.Tabs(ctxOf({})), ","))
+
+	-- the window
+	attrs.Class, attrs.Faction, attrs.ClassChosen, attrs.BankGold, attrs.CarriedGold = "Warrior", "Neutral", true, 1200, 0
+	attrs.AutoCombatEnabled, attrs.AutoCombatUnlocked = false, false
+	inventory = { Items = { Jelly = 12, CopperOre = 4 } }
+	table.clear(benches)
+	anvil, rootPos, hasRoot = nil, vec(0, 0, 0), true
+	T.S.Await, T.S.Tab, T.S.ToolAt, T.S.ToolResult = nil, "Make", nil, nil
+	handlers.CraftInfo({ Role = "Smith", Lv = 1, XP = 0, Need = 100, Made = {}, Tool = 0 })
+	check(T.S.Info.Tool == 0, "CraftInfo.Tool kept")
+	open()
+	check(find(root, "Tab_Make") ~= nil and find(root, "Tab_Tool") ~= nil and find(root, "Tab_Research") == nil,
+		"a blacksmith's window: Make + Tool tabs")
+	find(root, "Tab_Tool").OnClick()
+	local col = find(root, "Tool")
+	check(col ~= nil and find(col, "Name").Text == "Craft Hammer +0" and find(root, "Row_S1") == nil, "the Tool tab: the hammer, no recipe list")
+	local up = find(root, "Upgrade")
+	check(up and up.Enabled == true and up.Text == "Upgrade", "[Upgrade] on", T.View().ToolView and T.View().ToolView.Reason)
+	fired = {}
+	up.OnClick()
+	check(#fired == 1 and fired[1][1] == "CraftTool" and fired[1][2] == nil, "[Upgrade] = CraftTool() once", fired[1] and fired[1][1])
+	up = find(root, "Upgrade")
+	check(up and up.Enabled == false, "off while the try waits")
+	up.OnClick()
+	check(#fired == 1, "a second press while it waits sends nothing")
+	handlers.CraftToolResult({ Role = "Smith", Tool = 1, Ok = true, Name = "Craft Hammer" })
+	col = find(root, "Tool")
+	check(find(col, "Result") and find(col, "Result").Text == "Craft Hammer +1!" and find(col, "Name").Text == "Craft Hammer +1"
+		and T.S.Info.Tool == 1, "the success shows at once (+1 in the title, ToolUp line)", find(col, "Result") and find(col, "Result").Text)
+	check(find(find(root, "BigHolder"), "UIScale") ~= nil, "a success pops the tool slot")
+	check(find(root, "Upgrade").Enabled == true, "[Upgrade] back on after the answer")
+	CLOCK += 1.2
+	find(root, "Upgrade").OnClick()
+	handlers.CraftToolResult({ Role = "Smith", Tool = 1, Ok = false, Name = "Craft Hammer" })
+	check(find(find(root, "Tool"), "Result").Text == "Not this time. Your Craft Hammer stays +1.", "a fail: the ToolSame line")
+	-- no answer in ToolWait: back on (the 0.25 s update)
+	CLOCK += 1.2
+	find(root, "Upgrade").OnClick()
+	check(find(root, "Upgrade").Enabled == false, "waiting again")
+	CLOCK += 3.1
+	update()
+	check(find(root, "Upgrade").Enabled == true, "no answer in 3 s: [Upgrade] back on")
+	close()
+	open({ Tab = "Tool" })
+	check(find(root, "Tool") ~= nil and find(find(root, "Tool"), "Result") == nil, "reopened on the Tool tab: the old result line is gone")
+	close()
+	T.S.Tab = "Make"
 end
 
 print(string.format("CRAFT_WINDOW_SUMMARY checks=%d failed=%d", checks, failed))
