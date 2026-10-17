@@ -10193,11 +10193,11 @@ Config.ChoiceCard.Kinds.ShardBloom = {
 -- artisan class -> role). A craft never fails and never loses materials (A23-56): the gold and materials go at the start,
 -- the result (+0 / +1 / +2 from the hammer) comes at the end, a leave / KO / time-out finishes it at +0, and the save's
 -- Craft.Pend finishes it at +0 on the next join if the server stops in between. A craft level per role (data.Craft.<role>
--- = { Lv, XP }), XP to the next = floor(XPBase x Lv ^ XPExp), at most MaxLv; the 2x XP pass does not touch it.
+-- = { Lv, XP }), XP to the next = floor(XPBase x Lv ^ XPExp), at most MaxLv; the 2x XP pass doubles it (A23-139).
 -- The hammer's numbers and rules live in Shared/CraftMini.luau (게임성 개발 4, the one place the screen and the server share:
 -- a fixed ring schedule, CraftStrike(id, i, ms) on a press, CraftFinish(id) scores with CraftMini.Accept). No Finish by
 -- StartAt + CraftMini.T.Timeout = +0. Recipes[id] = { Role, Kind "Weapon" | "Gear" | "Item", Tier?, Slot?, Item?, N?, Lv, Gold, Mats,
--- XP }; a recipe with a material id missing from Config.Loot.Items is off (new drops switch it on). Weapons go to the
+-- XP, Min (A23-217: target minutes, XP = Min x Craft.Week.XPPerMin) }; a recipe with a material id missing from Config.Loot.Items is off (new drops switch it on). Weapons go to the
 -- spare weapons (LootService.AddSpare, 게임성 개발 2) and stay off until that exists. Switched by
 -- Config.Features.Crafting (off; on with the artisan guild, 검수).
 Config.Features.Crafting = false
@@ -10220,55 +10220,55 @@ Config.Craft = {
 	-- blacksmith weapons (crafting_market §4 + the gathered ores; 게임성 검수 10/12: start values, tuned after play)
 	Recipes = {
 		-- 장인 ② (최종 검수 10/14): no W1 (tier 1 is the free class weapon); W2 = the first craft, from N0's harvest only
-		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Herb = 3, CopperOre = 2 }, XP = 20 },
+		W2 = { Role = "Smith", Kind = "Weapon", Tier = 2, Lv = 1, Gold = 40, Mats = { Herb = 3, CopperOre = 2 }, XP = 20, Min = 5 },
 		-- A23-215 (craft_curve_r1 §2-1, activity targets 12 / 30 / 75 / 180 / 450 / 1125 min): W3..W9 harder by other kinds of
 		-- effort (boss gems, the deep vein, the Challenge daily), not by more of the easy ones; no Captain's Badge (no waiting
 		-- six weeks); XP as before (the re-base waits for the weekly gift)
-		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 4, Jelly = 18, CopperOre = 8 }, XP = 60 },
-		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 30, BruteHorn = 14, IronOre = 16, OakLog = 8 }, XP = 150 },
-		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 80, KnightCrest = 40, IronOre = 30, OakLog = 18 }, XP = 400 },
-		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 70, Bone = 150, SilverOre = 40, ClatterGem = 1, DeepMoonShard = 12 }, XP = 900 },
-		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 140, Bone = 280, SilverOre = 80, ClatterGem = 3, DeepMoonShard = 48, TrialCore = 4 }, XP = 2000 },
-		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 300, Bone = 500, MoonCrystal = 160, ClatterGem = 8, KingJelly = 10, DeepMoonShard = 120, TrialCore = 10 }, XP = 4000 },
+		W3 = { Role = "Smith", Kind = "Weapon", Tier = 3, Lv = 5, Gold = 200, Mats = { SlimeCore = 4, Jelly = 18, CopperOre = 8 }, XP = 48, Min = 12 },
+		W4 = { Role = "Smith", Kind = "Weapon", Tier = 4, Lv = 10, Gold = 750, Mats = { GoblinTooth = 30, BruteHorn = 14, IronOre = 16, OakLog = 8 }, XP = 120, Min = 30 },
+		W5 = { Role = "Smith", Kind = "Weapon", Tier = 5, Lv = 15, Gold = 2500, Mats = { Bone = 80, KnightCrest = 40, IronOre = 30, OakLog = 18 }, XP = 300, Min = 75 },
+		W6 = { Role = "Smith", Kind = "Weapon", Tier = 6, Lv = 20, Gold = 7500, Mats = { KnightCrest = 70, Bone = 150, SilverOre = 40, ClatterGem = 1, DeepMoonShard = 12 }, XP = 720, Min = 180 },
+		W7 = { Role = "Smith", Kind = "Weapon", Tier = 7, Lv = 25, Gold = 22500, Mats = { KnightCrest = 140, Bone = 280, SilverOre = 80, ClatterGem = 3, DeepMoonShard = 48, TrialCore = 4 }, XP = 1800, Min = 450 },
+		W9 = { Role = "Smith", Kind = "Weapon", Tier = 9, Lv = 30, Gold = 60000, Mats = { KnightCrest = 300, Bone = 500, MoonCrystal = 160, ClatterGem = 8, KingJelly = 10, DeepMoonShard = 120, TrialCore = 10 }, XP = 4500, Min = 1125 },
 		-- alchemist tonics (④, crafting_market §4 + the gathered herbs; Kind Item = N bottles + the hammer's +N)
-		A1 = { Role = "Alch", Kind = "Item", Item = "MightTonic", N = 1, Lv = 1, Gold = 20, Mats = { Herb = 3, Jelly = 5 }, XP = 10 },
-		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 20 },
-		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 40 },
-		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 60 },
+		A1 = { Role = "Alch", Kind = "Item", Item = "MightTonic", N = 1, Lv = 1, Gold = 20, Mats = { Herb = 3, Jelly = 5 }, XP = 16, Min = 4 },
+		A2 = { Role = "Alch", Kind = "Item", Item = "GuardTonic", N = 1, Lv = 3, Gold = 30, Mats = { Herb = 3, SlimeCore = 2, CopperOre = 2 }, XP = 16, Min = 4 },
+		A3 = { Role = "Alch", Kind = "Item", Item = "LuckyTonic", N = 1, Lv = 8, Gold = 60, Mats = { Glowcap = 3, Petal = 5 }, XP = 20, Min = 5 },
+		A4 = { Role = "Alch", Kind = "Item", Item = "WisdomTonic", N = 1, Lv = 12, Gold = 100, Mats = { Glowcap = 4, GoblinTooth = 5, Bone = 3 }, XP = 24, Min = 6 },
 		-- 장인 ⑤ (A23-178, 최종 검수 10/14): the alchemist's first-minutes goods from the meadow's harvest and slimes. Kind
 		-- "Potion" = Potion "HP" / "MP" (the potion stock, Config.PotionStockKey; N + the hammer's +N, never past the cap)
 		-- 최종 검수 10/15: AP1 / T1 = herbs only (the alchemist's / tamer's N0 harvest, no hunting before the first craft)
-		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 8 },
-		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 8 },
-		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 10, CopperOre = 8, SlimeCore = 2 }, XP = 20 }, -- A23-215: 8-12 min
+		AP1 = { Role = "Alch", Kind = "Potion", Potion = "HP", N = 2, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 8, Min = 2 },
+		AP2 = { Role = "Alch", Kind = "Potion", Potion = "MP", N = 2, Lv = 2, Gold = 10, Mats = { Herb = 2, Petal = 2 }, XP = 10, Min = 2.5 },
+		AS1 = { Role = "Alch", Kind = "Item", Item = "Enh70", N = 1, Lv = 3, Gold = 60, Mats = { Herb = 10, CopperOre = 8, SlimeCore = 2 }, XP = 40, Min = 10 }, -- A23-215: 8-12 min
 		-- tamer (⑤, crafting_market §4; docs/design/tamer_server_2026-10-12.md). Kind Pet = a summon: Research = the
 		-- points of Family it needs (stage 2), Spd = the random walk bonus range (whole %) before the hammer's +N (at most
 		-- Config.SaveV4.PetRollSpd[2]); the new pet is Bound (never sold). T1 = Pet Treats (N + the hammer's +N; 게임성 검수
 		-- 10/12: the gathered herb, so the guild's gather -> craft loop feeds it, not hunting alone)
-		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 40 },
-		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 10 },
+		S1 = { Role = "Tame", Kind = "Pet", Species = "BabySlime", Family = "Slime", Research = 150, Spd = { 5, 8 }, Lv = 1, Gold = 100, Mats = { Jelly = 30, SlimeCore = 5 }, XP = 80, Min = 20 },
+		T1 = { Role = "Tame", Kind = "Item", Item = "PetTreat", N = 3, Lv = 1, Gold = 10, Mats = { Herb = 3 }, XP = 10, Min = 2.5 },
 		-- A23-194 (pets_roster.md): the tamer's other summons. No Spd: these species grow on their own Bonus line (no roll);
 		-- each waits for its species' model (Config.PetReady)
-		S2 = { Role = "Tame", Kind = "Pet", Species = "FlowerSlime", Family = "Slime", Research = 150, Lv = 3, Gold = 150, Mats = { Jelly = 30, Petal = 15, Herb = 5 }, XP = 60 },
-		S3 = { Role = "Tame", Kind = "Pet", Species = "SproutGoblin", Family = "Goblin", Research = 150, Lv = 6, Gold = 300, Mats = { GoblinTooth = 25, OakLog = 8, Herb = 5 }, XP = 100 },
-		S4 = { Role = "Tame", Kind = "Pet", Species = "AcornGoblin", Family = "Goblin", Research = 400, Lv = 10, Gold = 800, Mats = { GoblinTooth = 35, BruteHorn = 8, OakLog = 12 }, XP = 180 },
-		S5 = { Role = "Tame", Kind = "Pet", Species = "BonePup", Family = "Skeleton", Research = 150, Lv = 12, Gold = 1200, Mats = { Bone = 30, KnightCrest = 5 }, XP = 250 },
+		S2 = { Role = "Tame", Kind = "Pet", Species = "FlowerSlime", Family = "Slime", Research = 150, Lv = 3, Gold = 150, Mats = { Jelly = 30, Petal = 15, Herb = 5 }, XP = 80, Min = 20 },
+		S3 = { Role = "Tame", Kind = "Pet", Species = "SproutGoblin", Family = "Goblin", Research = 150, Lv = 6, Gold = 300, Mats = { GoblinTooth = 25, OakLog = 8, Herb = 5 }, XP = 80, Min = 20 },
+		S4 = { Role = "Tame", Kind = "Pet", Species = "AcornGoblin", Family = "Goblin", Research = 400, Lv = 10, Gold = 800, Mats = { GoblinTooth = 35, BruteHorn = 8, OakLog = 12 }, XP = 140, Min = 35 },
+		S5 = { Role = "Tame", Kind = "Pet", Species = "BonePup", Family = "Skeleton", Research = 150, Lv = 12, Gold = 1200, Mats = { Bone = 30, KnightCrest = 5 }, XP = 100, Min = 25 },
 		-- ⑥ gear (docs/design/gear_slots_2026-10-12.md §4; 게임성 검수 OK 10/12; Config.Gear has the numbers). Kind Gear pays
 		-- into data.Gear.Own["<Slot>:T:P"] (T = Tier, P = the hammer's +N). Smith: armor + ring (Lv 8 / 16 / 24: iron, silver,
 		-- moon crystal + the monster materials of the same zones); the tamer: pet armor + pet accessory (Lv 5 / 12 / 20:
 		-- jelly, petals, herbs -> goblin tooth -> bone, knight crest). Gold / XP sit between the weapon rows.
-		G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 8, Gold = 450, Mats = { IronOre = 6, OakLog = 4, GoblinTooth = 10 }, XP = 100 },
-		G2 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 2, Lv = 16, Gold = 3500, Mats = { MoonCrystal = 8, IronOre = 12, KnightCrest = 10, Bone = 20 }, XP = 500 },
-		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 16, KnightCrest = 30, Bone = 45, ClatterGem = 1, DeepMoonShard = 6 }, XP = 1400 }, -- A23-215: 75 min
-		R1 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 1, Lv = 8, Gold = 400, Mats = { CopperOre = 6, Glowcap = 4, GoblinTooth = 8 }, XP = 90 },
-		R2 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 2, Lv = 16, Gold = 3200, Mats = { SilverOre = 6, Glowcap = 8, BruteHorn = 10, Bone = 15 }, XP = 450 },
-		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 12, Glowcap = 12, KnightCrest = 24, ClatterGem = 1, DeepMoonShard = 6 }, XP = 1300 }, -- A23-215: 75 min
-		PA1 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 1, Lv = 5, Gold = 150, Mats = { Jelly = 20, Herb = 4, SlimeCore = 4 }, XP = 50 },
-		PA2 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 2, Lv = 12, Gold = 900, Mats = { GoblinTooth = 20, Herb = 10, BruteHorn = 6, OakLog = 6 }, XP = 160 },
-		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 30, KnightCrest = 15, Herb = 15, KingJelly = 2, DeepMoonShard = 6 }, XP = 700 }, -- A23-215: 60 min
-		PC1 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 1, Lv = 5, Gold = 120, Mats = { Petal = 10, Herb = 3, Jelly = 12 }, XP = 45 },
-		PC2 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 2, Lv = 12, Gold = 800, Mats = { GoblinTooth = 15, Petal = 15, Glowcap = 6 }, XP = 150 },
-		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 22, KnightCrest = 11, Glowcap = 9, KingJelly = 2, DeepMoonShard = 6 }, XP = 650 }, -- A23-215: 60 min
+		G1 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 1, Lv = 8, Gold = 450, Mats = { IronOre = 6, OakLog = 4, GoblinTooth = 10 }, XP = 48, Min = 12 },
+		G2 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 2, Lv = 16, Gold = 3500, Mats = { MoonCrystal = 8, IronOre = 12, KnightCrest = 10, Bone = 20 }, XP = 120, Min = 30 },
+		G3 = { Role = "Smith", Kind = "Gear", Slot = "Armor", Tier = 3, Lv = 24, Gold = 15000, Mats = { SilverOre = 16, KnightCrest = 30, Bone = 45, ClatterGem = 1, DeepMoonShard = 6 }, XP = 300, Min = 75 }, -- A23-215: 75 min
+		R1 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 1, Lv = 8, Gold = 400, Mats = { CopperOre = 6, Glowcap = 4, GoblinTooth = 8 }, XP = 48, Min = 12 },
+		R2 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 2, Lv = 16, Gold = 3200, Mats = { SilverOre = 6, Glowcap = 8, BruteHorn = 10, Bone = 15 }, XP = 120, Min = 30 },
+		R3 = { Role = "Smith", Kind = "Gear", Slot = "Ring", Tier = 3, Lv = 24, Gold = 14000, Mats = { SilverOre = 12, Glowcap = 12, KnightCrest = 24, ClatterGem = 1, DeepMoonShard = 6 }, XP = 300, Min = 75 }, -- A23-215: 75 min
+		PA1 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 1, Lv = 5, Gold = 150, Mats = { Jelly = 20, Herb = 4, SlimeCore = 4 }, XP = 40, Min = 10 },
+		PA2 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 2, Lv = 12, Gold = 900, Mats = { GoblinTooth = 20, Herb = 10, BruteHorn = 6, OakLog = 6 }, XP = 100, Min = 25 },
+		PA3 = { Role = "Tame", Kind = "Gear", Slot = "PetArmor", Tier = 3, Lv = 20, Gold = 6000, Mats = { Bone = 30, KnightCrest = 15, Herb = 15, KingJelly = 2, DeepMoonShard = 6 }, XP = 240, Min = 60 }, -- A23-215: 60 min
+		PC1 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 1, Lv = 5, Gold = 120, Mats = { Petal = 10, Herb = 3, Jelly = 12 }, XP = 40, Min = 10 },
+		PC2 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 2, Lv = 12, Gold = 800, Mats = { GoblinTooth = 15, Petal = 15, Glowcap = 6 }, XP = 100, Min = 25 },
+		PC3 = { Role = "Tame", Kind = "Gear", Slot = "PetAcc", Tier = 3, Lv = 20, Gold = 5500, Mats = { Bone = 22, KnightCrest = 11, Glowcap = 9, KingJelly = 2, DeepMoonShard = 6 }, XP = 240, Min = 60 }, -- A23-215: 60 min
 	},
 	Text = {
 		NotArtisan = "Only artisans can make this.",
@@ -10408,6 +10408,58 @@ Config.RateLimits.CraftStrike = 0.15
 Config.RateLimits.IntroSeen = 1
 
 -- XP from craft level `lv` to the next (Config.Craft.XPBase x lv ^ XPExp, floored; 0 at MaxLv: no next level)
+-- A23-217 장인 주간 선물 (게임성 개발 2, 2026-10-17; build/codex/artisan_weekly_r1.md, user "ㅇㅇ 좋아"). Every recipe has
+-- Min = its target activity minutes (A23-215) and XP = Min x XPPerMin (the costly ones never pay less a minute). A week
+-- (Config.WeekIndex: Monday 00:00 KST) counts the craft XP really gained (the 2x XP pass too, A23-139) from crafts with at
+-- least one real hammer press: the 'easy' recipes (Min <= EasyMin) share ONE bundle - its first EasyFull XP count fully,
+-- the next EasyHalf half, then none (600 at most, a role / recipe switch adds nothing); any other recipe counts up to
+-- max(RecipeCap, its XP) a week. The top tier reached -> Gifts[tier] (that one bundle, never 1 + 2 + 3), bound (A23-206),
+-- paid from the week's end + PayDelay (the faction contest's 00:10): online at once, else at the next join; what does not
+-- fit (potions at their cap, ItemCap) waits and is never lost. No daily login rule. Saved FLAT in data.Craft (an older
+-- server keeps flat numbers, V4.keepExtra): WkW = the week counted, WkE = the easy bundle's XP, Wk_<recipe> = another
+-- recipe's XP, GiftW / GiftT = the last gift's week / tier, Gift_<item> = what still waits. CraftInfo.Week shows it.
+Config.Craft.Week = {
+	XPPerMin = 4,
+	EasyMin = 6,
+	EasyFull = 400,
+	EasyHalf = 400,
+	RecipeCap = 1600,
+	Tiers = { 500, 1000, 1600 },
+	Gifts = { { HP = 5, MP = 5 }, { HP = 5, MP = 5, PetTreat = 3 }, { HP = 5, MP = 5, PetTreat = 3, Enh70 = 1 } },
+	GiftOrder = { "HP", "MP", "PetTreat", "Enh70" },
+	PayDelay = 600,
+	WaitMax = 999,
+	Text = { Gift = "Your weekly workshop gift is here!" },
+}
+
+-- is recipe r one of the week's 'easy' bundle (Min <= EasyMin)?
+function Config.CraftWeekEasy(r)
+	return type(r) == "table" and type(r.Min) == "number" and r.Min <= Config.Craft.Week.EasyMin
+end
+
+-- c = data.Craft: the counted XP of its week ledger, the gift tier reached (0..#Tiers), the next tier's XP (nil at the top)
+function Config.CraftWeekCounted(c)
+	local W = Config.Craft.Week
+	local src = type(c) == "table" and c or {}
+	local function n(v)
+		return (type(v) == "number" and v == v and v > 0 and v < math.huge) and math.floor(v) or 0
+	end
+	local e = n(src.WkE)
+	local total = math.min(e, W.EasyFull) + 0.5 * math.min(math.max(e - W.EasyFull, 0), W.EasyHalf)
+	for k, v in src do
+		if type(k) == "string" and string.sub(k, 1, 3) == "Wk_" then
+			local r = Config.Craft.Recipes[string.sub(k, 4)]
+			total += math.min(n(v), math.max(W.RecipeCap, type(r) == "table" and n(r.XP) or 0))
+		end
+	end
+	total = math.floor(total)
+	local tier = 0
+	for i, need in W.Tiers do
+		if total >= need then tier = i end
+	end
+	return total, tier, W.Tiers[tier + 1]
+end
+
 function Config.CraftXPToNext(lv)
 	local K = Config.Craft
 	local l = math.floor(tonumber(lv) or 1)
@@ -10798,7 +10850,37 @@ function Config.SanitizeCraft(t)
 		out.Pend = { Id = p.Id, Plus = V4.int(p.Plus, -1, 2) or -1, Gold = V4.int(p.Gold, 0, L.MaxCount) or 0,
 			Mats = V4.countMap(p.Mats, L.MaxCount), Bound = next(bound) ~= nil and bound or nil,
 			Bless = p.Bless == true or nil, -- A23-219: the Blessed Scroll rolled at the start
+			Hit = p.Hit == true or nil, -- A23-217: a real hammer press came (the craft counts for the weekly gift)
 			Opt = (function() local o = V4.int(p.Opt, 0, Config.Craft.Tools.Opt.Max); return (o and o > 0) and o or nil end)() } -- ②
+	end
+	-- A23-217 the week ledger + the waiting gift (flat, Config.Craft.Week): WkW / GiftW = a week, GiftT = a tier, WkE /
+	-- Wk_<recipe> = XP, Gift_<item> = a count still waiting; a ledger without its week is dropped
+	local WK = type(Config.Craft) == "table" and Config.Craft.Week or nil
+	if type(WK) == "table" then
+		local ledger = {}
+		for k, v in src do
+			if type(k) ~= "string" then continue end
+			local x, isLedger = nil, false
+			if k == "WkW" or k == "GiftW" then
+				x = V4.int(v, 0, 1e9)
+			elseif k == "GiftT" then
+				x = V4.int(v, 0, #WK.Tiers)
+			elseif k == "WkE" or string.sub(k, 1, 3) == "Wk_" then
+				x, isLedger = (k == "WkE" or V4.key(string.sub(k, 4))) and V4.int(v, 0, L.MaxCount) or nil, true
+			elseif string.sub(k, 1, 5) == "Gift_" then
+				local item = string.sub(k, 6)
+				if Config.Loot.Items[item] or Config.PotionStockKey(item) then x = V4.int(v, 0, WK.WaitMax) end
+			else
+				continue
+			end
+			known[k] = true -- never copied raw by keepExtra below
+			if x and x > 0 then
+				if isLedger then ledger[k] = x else out[k] = x end
+			end
+		end
+		if out.WkW then
+			for k, x in ledger do out[k] = x end
+		end
 	end
 	-- A23-219 tools: flat Tool<role> = 0..Tools.Max (a broken value = none = +0)
 	for _, role in L.CraftRoles do

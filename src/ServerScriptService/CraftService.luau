@@ -23,6 +23,12 @@
 --   * A23-213 (user 10/16, "그래야 제작하는 애들이 재료 모으는 재미가 생기지"): every craft (weapons too) may use bound
 --     materials, the bound ones first; the result is NOT bound (it trades and sells like any craft). The materials stay
 --     bound themselves: Pend.Bound notes how many were bound, and a refund (the recipe gone) gives that part back bound.
+--   * A23-217 the weekly workshop gift (Config.Craft.Week; build/codex/artisan_weekly_r1.md): a delivered craft with a real
+--     hammer press (Pend.Hit, set by the first strike; cleared for five equal offsets) adds the craft XP it paid to this
+--     week's flat ledger (WkW / WkE / Wk_<recipe>); the week's end (Monday 00:00 KST + PayDelay, or at once when a craft of
+--     the new week comes) turns it into Gift_<item> counts (Config.CraftWeekCounted -> the top tier's bundle), paid bound
+--     as far as it fits (LootService.GrantItem "Reward"); the rest waits. At PlayerReady (crafting switched off too) and
+--     every WeekTick s for the players online. CraftInfo.Week = { XP, Tier, Next, Tiers, EndsAt, LastW, LastT, Wait }.
 -- Notices are keys only (Config.Craft.Text, Net.NotifyKey). Nothing here is sold.
 --   CraftService.TryStart(player, id) / Strike(player, sid, i, ms) / Finish(player, sid) -> "ok" | reason (the remote
 --   handlers; public for the offline test) · RecipeOn(id) · Session(player) · Settle(player, data) (a waiting craft)
@@ -50,6 +56,7 @@ local ST = {
 	Prompts = {}, -- [ProximityPrompt] = the workbench's role (the "Craft" prompts this service made)
 	GearSum = 60, -- Gear.Own holds at most this many things in all (the save v4 agreement; per key: Config.SaveV4.OwnKeyMax)
 	Rng = Random.new(), -- a summon's random walk bonus (never Robux, A23-115)
+	WeekTick = 60, -- A23-217: s between two looks at the online players' week (the end of a week, a gift that waited)
 }
 
 local function num(v, default)
@@ -351,6 +358,118 @@ local function payOut(player, data, r, plus, blessed, o)
 	return have() - before >= n
 end
 
+------------------------------------------------------------------ A23-217 the weekly workshop gift
+local WEEK = {}
+
+function WEEK.Now()
+	return Config.WeekIndex(os.time())
+end
+
+local function clearLedger(c)
+	c.WkW, c.WkE = nil, nil
+	local drop = {}
+	for k in c do
+		if type(k) == "string" and string.sub(k, 1, 3) == "Wk_" then table.insert(drop, k) end
+	end
+	for _, k in drop do c[k] = nil end
+end
+
+-- a ledger of an earlier week, or a gift that still waits?
+function WEEK.Pending(c)
+	if type(c) ~= "table" then return false end
+	if math.floor(num(c.WkW)) > 0 and math.floor(num(c.WkW)) ~= WEEK.Now() then return true end
+	for _, item in K().Week.GiftOrder do
+		if math.floor(num(c["Gift_" .. item])) > 0 then return true end
+	end
+	return false
+end
+
+-- CraftInfo.Week: this week's counted XP / tier / next tier, the tiers, when the week ends (os.time), the last gift and
+-- what still waits
+function WEEK.Info(c)
+	local W = K().Week
+	local cur = WEEK.Now()
+	local xp, tier, nxt = 0, 0, W.Tiers[1]
+	if math.floor(num(c.WkW)) == cur then xp, tier, nxt = Config.CraftWeekCounted(c) end
+	local wait = {}
+	for _, item in W.GiftOrder do
+		local n = math.floor(num(c["Gift_" .. item]))
+		if n > 0 then wait[item] = n end
+	end
+	return { XP = xp, Tier = tier, Next = nxt, Tiers = table.clone(W.Tiers), EndsAt = Config.WeekStart(cur + 1),
+		LastW = c.GiftW, LastT = c.GiftT, Wait = next(wait) ~= nil and wait or nil }
+end
+
+-- pays what waits (Gift_<item>) as far as it fits - a potion up to its cap, an item up to ItemCap - bound (A23-206).
+-- Never asks LootService for more than fits (no 'full' notice every minute). true = something was paid
+function WEEK.Pay(player, data, c)
+	local paid = false
+	for _, item in K().Week.GiftOrder do
+		local key = "Gift_" .. item
+		local n = math.floor(num(c[key]))
+		if n > 0 then
+			local stock = Config.PotionStockKey(item)
+			local room
+			if stock then
+				room = math.floor(num(Config.Vitals.PotionInventoryCap)) - math.floor(num(data[stock]))
+			else
+				room = Config.Loot.ItemCap - math.floor(num(type(data.Items) == "table" and data.Items[item]))
+			end
+			local want = math.min(n, math.max(0, room), 99)
+			local given = 0
+			if want > 0 and S.LootService and type(S.LootService.GrantItem) == "function" then
+				local ok, g = pcall(S.LootService.GrantItem, player, item, want, "Reward")
+				if ok then given = math.clamp(math.floor(num(g)), 0, want) else Util.Warn(TAG, "week gift: " .. tostring(g)) end
+			end
+			if given > 0 then paid = true end
+			c[key] = n - given > 0 and n - given or nil
+		end
+	end
+	return paid
+end
+
+-- the week's end: a ledger of an earlier week becomes its gift (from that week's end + PayDelay, or at once with force),
+-- then whatever waits is paid. true = the save changed
+function WEEK.Roll(player, data, force)
+	local c = craftOf(data)
+	local W = K().Week
+	local changed = false
+	local wk = math.floor(num(c.WkW))
+	if wk > 0 and wk < WEEK.Now() and (force or os.time() >= Config.WeekStart(wk + 1) + num(W.PayDelay)) then
+		local xp, tier = Config.CraftWeekCounted(c)
+		clearLedger(c)
+		if tier > 0 then
+			for item, n in W.Gifts[tier] do
+				c["Gift_" .. item] = math.min(math.floor(num(W.WaitMax, 999)), math.floor(num(c["Gift_" .. item])) + n)
+			end
+			c.GiftW, c.GiftT = wk, tier
+		end
+		tele(player, "CraftWeek", xp, tier)
+		changed = true
+	end
+	if WEEK.Pay(player, data, c) then
+		changed = true
+		local ok, err = pcall(Net.NotifyKey, player, "Config.Craft.Week.Text.Gift", nil, "reward")
+		if not ok then Util.Warn(TAG, "week notice: " .. tostring(err)) end
+	end
+	return changed
+end
+
+-- a delivered craft: the craft XP it paid goes into this week's ledger (only with a real hammer press; an earlier
+-- week's ledger is settled first, a ledger from a later week - a clock jump - is dropped)
+function WEEK.Add(player, data, recipeId, r, xp, hit)
+	if num(xp) <= 0 or hit ~= true then return end
+	local c = craftOf(data)
+	local cur = WEEK.Now()
+	if math.floor(num(c.WkW)) ~= cur then
+		WEEK.Roll(player, data, true)
+		clearLedger(c)
+		c.WkW = cur
+	end
+	local key = Config.CraftWeekEasy(r) and "WkE" or ("Wk_" .. recipeId)
+	c[key] = math.min(Config.SaveV4.MaxCount, math.floor(num(c[key])) + math.floor(num(xp)))
+end
+
 local function sendInfo(player, data)
 	local role = roleOf(data)
 	local c = craftOf(data)
@@ -367,7 +486,7 @@ local function sendInfo(player, data)
 	end
 	table.sort(onIds)
 	fire(player, "CraftInfo", { Role = role, Lv = rr.Lv, XP = rr.XP, Need = Config.CraftXPToNext(rr.Lv), Made = table.clone(c.Made),
-		On = onIds, Rep = math.floor(num(c.Rep)), Rank = rank, NextRep = nextRep, Tool = toolOf(c, role) })
+		On = onIds, Rep = math.floor(num(c.Rep)), Rank = rank, NextRep = nextRep, Tool = toolOf(c, role), Week = WEEK.Info(c) })
 end
 
 -- craft XP for `role`; returns the level now and whether it rose
@@ -394,6 +513,7 @@ local function complete(player, data, recipeId, plus, grades, sid)
 	if type(c.Pend) == "table" and c.Pend.Id == recipeId then c.Pend.Plus = plus end
 	local blessed = type(c.Pend) == "table" and c.Pend.Id == recipeId and c.Pend.Bless == true -- A23-219 (rolled at the start)
 	local opt = type(c.Pend) == "table" and c.Pend.Id == recipeId and math.floor(num(c.Pend.Opt)) or 0 -- ② (rolled at the start)
+	local hit = type(c.Pend) == "table" and c.Pend.Id == recipeId and c.Pend.Hit == true -- A23-217 (a real press came)
 	local paid, pet = payOut(player, data, r, plus, blessed, opt)
 	if not paid then return false end
 	c.Pend = nil
@@ -408,6 +528,7 @@ local function complete(player, data, recipeId, plus, grades, sid)
 		xp = math.floor(num(r.XP) * (okPass and num(pass, 1) or 1))
 	end
 	local lv, up = addXP(c, r.Role, xp)
+	WEEK.Add(player, data, recipeId, r, xp, hit) -- A23-217
 	local rank0 = Config.ArtisanRank(c.Rep)
 	if fame > 0 then
 		c.Rep = math.min(Config.SaveV4.MaxCount, math.floor(num(c.Rep)) + fame)
@@ -606,6 +727,10 @@ function CraftService.Strike(player, sid, i, ms)
 	if sess.Strikes[i] then return "again" end
 	if type(ms) ~= "number" or ms ~= ms or math.abs(ms) > CraftMini.T.MaxMs then return "ms" end
 	sess.Strikes[i] = { Ms = ms, At = serverNow(), Ping = pingMs(player) }
+	-- A23-217: a real press = the craft counts for the weekly gift (in the save: a rejoin finishes it the same)
+	local data = getData(player)
+	local c = data and data.Craft
+	if type(c) == "table" and type(c.Pend) == "table" and c.Pend.Id == sess.Recipe then c.Pend.Hit = true end
 	return "ok"
 end
 
@@ -633,6 +758,10 @@ function CraftService.Finish(player, sid)
 		if same then
 			plus = 0
 			tele(player, "CraftBot", 1)
+			-- A23-217: five equal offsets are not a person: no weekly gift XP either
+			local data = getData(player)
+			local c = data and data.Craft
+			if type(c) == "table" and type(c.Pend) == "table" and c.Pend.Id == sess.Recipe then c.Pend.Hit = nil end
 		end
 	end
 	if mismatch > 0 then tele(player, "CraftMismatch", mismatch) end
@@ -912,8 +1041,11 @@ function CraftService.Start()
 		end
 	end)
 	S.PlayerService.PlayerReady:Connect(guard("ready", function(player, data)
-		-- switched off: nothing is read or written (a waiting craft waits for the switch)
-		if type(data) ~= "table" or not on() then return end
+		if type(data) ~= "table" then return end
+		-- A23-217: a past week's gift is settled and paid at the join, crafting switched off too (it was earned)
+		if type(data.Craft) == "table" and WEEK.Pending(data.Craft) then WEEK.Roll(player, data, false) end
+		-- switched off: nothing else is read or written (a waiting craft waits for the switch)
+		if not on() then return end
 		if type(data.Craft) == "table" and type(data.Craft.Pend) == "table" and CraftService.Settle(player, data) == "wait" then
 			notify(player, "Full")
 		end
@@ -930,6 +1062,21 @@ function CraftService.Start()
 			end))
 		end
 	end
+	-- A23-217: the week's end for the players online (Monday 00:10 KST) and the gifts that waited for room
+	task.spawn(function()
+		while true do
+			task.wait(ST.WeekTick)
+			for _, p in Players:GetPlayers() do
+				local okW, errW = pcall(function()
+					local d = S.PlayerService.IsReady(p) and getData(p)
+					if type(d) == "table" and type(d.Craft) == "table" and WEEK.Pending(d.Craft) and WEEK.Roll(p, d, false) and on() then
+						sendInfo(p, d)
+					end
+				end)
+				if not okW then Util.Warn(TAG, "week: " .. tostring(errW)) end
+			end
+		end
+	end)
 	S.PlayerService.PlayerLeaving:Connect(guard("leave", function(player)
 		closeAtZero(player, "Leave")
 		ST.Starts[player] = nil

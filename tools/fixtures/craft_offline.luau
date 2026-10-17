@@ -212,8 +212,9 @@ runGroup("config", function()
 	check(M.T.Strikes == 5 and M.T.Ring == 1.2 and M.T.Rest == 0.35 and M.T.Lead == 0.8 and M.T.Timeout == 20,
 		"the shared hammer (CraftMini.T): 5 rings of 1.2 s, 0.35 s rest, 0.8 s lead, 20 s time-up", show(M.T))
 	check(K.Range == 12 and K.StartsPerMinute == 6 and C.RateLimits.CraftStart == 3, "12 studs, 6 starts a minute, one start every 3 s", "")
-	local want = { W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 60 }, W4 = { 4, 10, 750, 150 }, W5 = { 5, 15, 2500, 400 },
-		W6 = { 6, 20, 7500, 900 }, W7 = { 7, 25, 22500, 2000 }, W9 = { 9, 30, 60000, 4000 } }
+	-- A23-217 (artisan_weekly_r1 §2): XP = the target minutes x 4 (W2 5 / W3 12 / W4 30 / W5 75 / W6 180 / W7 450 / W9 1,125)
+	local want = { W2 = { 2, 1, 40, 20 }, W3 = { 3, 5, 200, 48 }, W4 = { 4, 10, 750, 120 }, W5 = { 5, 15, 2500, 300 },
+		W6 = { 6, 20, 7500, 720 }, W7 = { 7, 25, 22500, 1800 }, W9 = { 9, 30, 60000, 4500 } }
 	local smithRows = 0
 	for _, r in K.Recipes do if r.Role == "Smith" and r.Kind == "Weapon" then smithRows += 1 end end
 	check(smithRows == 7 and K.Recipes.W1 == nil, "seven blacksmith weapon recipes (장인 ②: no W1, tier 1 is the free class weapon)", tostring(smithRows))
@@ -918,8 +919,8 @@ runGroup("tamer", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local S1, T1 = C.Craft.Recipes.S1, C.Craft.Recipes.T1
 	check(S1 and S1.Role == "Tame" and S1.Kind == "Pet" and S1.Species == "BabySlime" and S1.Family == "Slime" and S1.Research == C.Research.Stages[2]
-		and S1.Spd[1] == 5 and S1.Spd[2] == 8 and S1.Gold == 100 and S1.Mats.Jelly == 30 and S1.Mats.SlimeCore == 5 and S1.Lv == 1 and S1.XP == 40,
-		"S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4)", show(S1))
+		and S1.Spd[1] == 5 and S1.Spd[2] == 8 and S1.Gold == 100 and S1.Mats.Jelly == 30 and S1.Mats.SlimeCore == 5 and S1.Lv == 1 and S1.XP == 80,
+		"S1: research stage 2 (150) + Jelly 30, Slime Core 5, 100 gold -> a baby slime, walk +5..8% before the hammer (crafting_market §4); XP 80 (20 min, A23-217)", show(S1))
 	check(T1 and T1.Role == "Tame" and T1.Kind == "Item" and T1.Item == "PetTreat" and T1.N == 3 and T1.Mats.Jelly == nil and T1.Mats.Herb == 3
 		and T1.Mats.Petal == nil, "T1: Herb 3 (gathered only, 최종 검수 10/15) -> 3 Pet Treats (+ the hammer's +N)", show(T1))
 	local it = C.Loot.Items.PetTreat
@@ -965,9 +966,9 @@ runGroup("tamer", function()
 	local res = last(fired(w, "CraftResult", p))
 	check(s and s.P == p and s.Sp == "BabySlime" and s.Roll.Spd == 7 and #w.Sums == 1 and w.Sums[1] == "Slime",
 		"random 5 + the hammer's +2 = walk +7%; SummonPet(BabySlime, { Spd = 7 }), Sum + 1", s and show(s.Roll) or "")
-	check(res.Kind == "Pet" and res.Plus == 2 and res.XP == 40 and type(res.Pet) == "table" and res.Pet.Uid == "P11" and res.Pet.Spd == 7
-		and res.Pet.Species == "BabySlime" and d.Craft.Tame.Lv == 2 and d.Craft.Tame.XP == 0 and d.Craft.Pend == nil,
-		"CraftResult.Pet = { Uid, Species, Spd }; 40 tamer craft XP (Lv2)", show(res.Pet))
+	check(res.Kind == "Pet" and res.Plus == 2 and res.XP == 80 and type(res.Pet) == "table" and res.Pet.Uid == "P11" and res.Pet.Spd == 7
+		and res.Pet.Species == "BabySlime" and d.Craft.Tame.Lv == 2 and d.Craft.Tame.XP == 40 and d.Craft.Pend == nil,
+		"CraftResult.Pet = { Uid, Species, Spd }; 80 tamer craft XP (Lv2 with 40)", show(res.Pet))
 	w:Advance(61)
 	w.C.TryStart(p, "S1")
 	w.Script = { 0.99 }
@@ -1477,6 +1478,160 @@ runGroup("specials", function()
 	-- AS1 (a scroll) never gets a special roll; a weapon keeps its sizes
 	check(wr.Config.Craft.Tools.Opt.Special.Enh70 == nil and wr.Config.Craft.Tools.Opt.Special.HP == "HP", "no special scrolls", "")
 	wr.Script = {}
+end)
+
+------------------------------------------------------------------ A23-217 the weekly workshop gift (게임성 개발 2)
+runGroup("week", function()
+	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
+	local W, R = C.Craft.Week, C.Craft.Recipes
+	check(W.Tiers[1] == 500 and W.Tiers[2] == 1000 and W.Tiers[3] == 1600 and #W.Tiers == 3, "A23-217 tiers 500 / 1,000 / 1,600", show(W.Tiers))
+	check(W.Gifts[1].HP == 5 and W.Gifts[1].MP == 5 and W.Gifts[1].PetTreat == nil and W.Gifts[2].PetTreat == 3 and W.Gifts[2].Enh70 == nil
+		and W.Gifts[3].HP == 5 and W.Gifts[3].MP == 5 and W.Gifts[3].PetTreat == 3 and W.Gifts[3].Enh70 == 1,
+		"gifts: HP 5 + MP 5 / + Pet Treat 3 / + Enh70 1 (one bundle, the top tier)", show(W.Gifts))
+	local ok, easyIds = true, {}
+	for id, r in R do
+		if type(r.Min) ~= "number" or r.XP ~= math.floor(r.Min * W.XPPerMin + 0.5) then
+			ok = false
+			easyIds = { id }
+			break
+		end
+		if C.CraftWeekEasy(r) then table.insert(easyIds, id) end
+	end
+	table.sort(easyIds)
+	check(ok, "every recipe has Min (target minutes, A23-215) and XP = Min x 4 (artisan_weekly_r1 §2)", table.concat(easyIds, ","))
+	check(ok and table.concat(easyIds, ",") == "A1,A2,A3,A4,AP1,AP2,T1,W2", "the easy bundle (Min <= 6): W2, the tonics, the potions, the treats",
+		table.concat(easyIds, ","))
+	check(R.W3.XP == 48 and R.W9.XP == 4500 and R.G3.XP == 300 and R.AS1.XP == 40 and R.S1.XP == 80 and R.AP2.XP == 10 and R.A1.XP == 16,
+		"retuned XP: W3 48, W9 4,500, G3 300, AS1 40, S1 80, AP2 10, A1 16", "")
+	local function counted(t) return C.CraftWeekCounted(t) end
+	local x1, t1, n1 = counted({ WkW = 1, WkE = 600 })
+	local x2 = counted({ WkW = 1, WkE = 2000 })
+	local x3, t3 = counted({ WkW = 1, Wk_W3 = 1632 })
+	local x4, t4, n4 = counted({ WkW = 1, Wk_W9 = 4500 })
+	local x5, t5 = counted({ WkW = 1, WkE = 400, Wk_W3 = 624 })
+	check(x1 == 500 and t1 == 1 and n1 == 1000, "W2 x30 (600 easy XP): 400 + 200 / 2 = 500 = tier 1, next 1,000", show({ x1, t1, n1 }))
+	check(x2 == 600, "the easy bundle stops at 600 (W2 x100)", tostring(x2))
+	check(x3 == 1600 and t3 == 3, "W3 x34 (1,632): the recipe cap 1,600 = tier 3", show({ x3, t3 }))
+	check(x4 == 4500 and t4 == 3 and n4 == nil, "one W9 (4,500 > the cap): all of it counts, tier 3, no next", show({ x4, t4, n4 }))
+	check(x5 == 1024 and t5 == 2, "W2 x20 + W3 x13 = 400 + 624 = 1,024 = tier 2", show({ x5, t5 }))
+	check(counted({}) == 0 and counted(nil) == 0 and counted({ WkE = -5, Wk_W3 = 0 / 0 }) == 0, "an empty / broken ledger counts 0", "")
+
+	local function wk(w) return C.WeekIndex(w.Time) end
+	-- a craft with presses counts its craft XP; CraftInfo.Week shows it
+	local w = cWorld()
+	local p, d = smith(w, 1)
+	d.Items.Herb = 60
+	startAndHammer(w, p, HONEST, { Recipe = "W2" })
+	local info = last(fired(w, "CraftInfo", p))
+	check(d.Craft.WkW == wk(w) and d.Craft.WkE == 20 and info.Week and info.Week.XP == 20 and info.Week.Tier == 0 and info.Week.Next == 500
+		and info.Week.EndsAt == C.WeekStart(wk(w) + 1), "a hammered W2: 20 easy XP this week (CraftInfo.Week 20 / next 500, the week's end)", show(info.Week))
+	w:Advance(61)
+	d.Craft.Smith.Lv = 5 -- W3 = craft Lv5
+	startAndHammer(w, p, HONEST, { Recipe = "W3" })
+	check(d.Craft.Wk_W3 == 48 and d.Craft.WkE == 20, "W3 (12 min) goes to its own row (48)", show(d.Craft))
+	-- no press at all (the hammer screen never answered): the item and the craft XP, no weekly XP
+	local q, e = smith(w, 2)
+	e.Items.Herb = 60
+	startAndHammer(w, q, { false, false, false, false, false }, { Recipe = "W2" })
+	check(e.Craft.Smith.XP == 20 and e.Craft.WkW == nil and e.Craft.WkE == nil, "no press: craft XP paid, nothing for the week", show(e.Craft))
+	-- five equal offsets (a bot): no weekly XP either
+	local b, bd = smith(w, 3)
+	bd.Items.Herb = 60
+	startAndHammer(w, b, { 30, 30, 30, 30, 30 }, { Recipe = "W2" })
+	check(bd.Craft.WkE == nil, "five equal offsets: nothing for the week", show(bd.Craft))
+	-- the 2x XP pass: the XP really gained counts
+	local x, xd = smith(w, 4)
+	xd.Items.Herb = 60
+	w.PassXP2[x] = true
+	startAndHammer(w, x, HONEST, { Recipe = "W2" })
+	check(xd.Craft.WkE == 40, "with the 2x XP pass: 40 counted (the XP really gained)", tostring(xd.Craft.WkE))
+	-- a waiting craft with a press finishes at the join and counts; one without a press does not
+	local j, jd = smith(w, 5, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {},
+		Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { Herb = 3 }, Hit = true } } })
+	check(jd.Craft.Pend == nil and jd.Craft.WkE == 20, "a pressed waiting craft, finished at the join: 20 for the week", show(jd.Craft))
+	local k, kd = smith(w, 6, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {},
+		Pend = { Id = "W2", Plus = -1, Gold = 40, Mats = { Herb = 3 } } } })
+	check(kd.Craft.Pend == nil and kd.Craft.WkE == nil, "an unpressed waiting craft: nothing for the week", show(kd.Craft))
+	-- a Knight finishing an old artisan craft: no craft XP, so nothing for the week
+	local h, hd = smith(w, 7, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {},
+		Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = { Herb = 3 }, Hit = true } } }, "Warrior", "Halo")
+	check(hd.Craft.WkE == nil, "a Knight's waiting craft (no craft XP): nothing for the week", show(hd.Craft))
+
+	-- the week's end: from Monday 00:00 KST + PayDelay (00:10) the online artisan gets the top tier's bundle, bound
+	local g, gd = smith(w, 8)
+	local cur = wk(w)
+	gd.Craft.WkW, gd.Craft.Wk_W3 = cur, 1700
+	gd.HPPotionCount, gd.MPPotionCount = 0, 0
+	w:Advance(C.WeekStart(cur + 1) + 300 - w.Time) -- Monday 00:05
+	w:Tick(60)
+	check(gd.Craft.WkW == cur and (gd.Items.Enh70 or 0) == 0, "Monday 00:05 (before 00:10): not yet", show(gd.Craft))
+	local nf = #w.Notices
+	w:Advance(C.WeekStart(cur + 1) + 660 - w.Time) -- 00:11
+	w:Tick(60)
+	check(gd.Craft.WkW == nil and gd.Craft.Wk_W3 == nil and gd.HPPotionCount == 5 and gd.MPPotionCount == 5 and gd.Items.PetTreat == 3
+		and gd.Items.Enh70 == 1 and gd.ItemsBound.PetTreat == 3 and gd.ItemsBound.Enh70 == 1 and gd.Craft.GiftW == cur and gd.Craft.GiftT == 3
+		and gd.Craft.Gift_HP == nil and gd.Craft.Gift_Enh70 == nil,
+		"00:11: tier 3 = HP 5 + MP 5 + Pet Treat 3 + Enh70 1 (bound), the ledger cleared, GiftW / GiftT kept", show({ gd.Craft, gd.Items, gd.ItemsBound }))
+	check(keysFor(w, g, nf)[1] == "Config.Craft.Week.Text.Gift" and w.Notices[nf + 1].Kind == "reward", "one soft 'reward' notice (a key)", "")
+	local infoG = last(fired(w, "CraftInfo", g))
+	check(infoG and infoG.Week.LastW == cur and infoG.Week.LastT == 3 and infoG.Week.XP == 0 and infoG.Week.Wait == nil,
+		"CraftInfo.Week after it: last gift week / tier 3, this week 0, nothing waits", infoG and show(infoG.Week) or "")
+	w:Tick(60)
+	check(gd.Items.Enh70 == 1 and gd.HPPotionCount == 5, "never paid twice", "")
+	-- full potions: what fits now, the rest waits (never lost) and comes when there is room
+	local f, fd = smith(w, 9)
+	local cur2 = wk(w)
+	fd.Craft.WkW, fd.Craft.WkE = cur2, 600
+	fd.HPPotionCount, fd.MPPotionCount = 98, 99
+	w:Advance(C.WeekStart(cur2 + 1) + 700 - w.Time)
+	w:Tick(60)
+	check(fd.HPPotionCount == 99 and fd.MPPotionCount == 99 and fd.Craft.Gift_HP == 4 and fd.Craft.Gift_MP == 5 and fd.Craft.GiftT == 1,
+		"tier 1 with HP 98 / MP 99: 1 HP now, 4 HP + 5 MP wait", show(fd.Craft))
+	local infoF = last(fired(w, "CraftInfo", f))
+	check(infoF and infoF.Week.Wait and infoF.Week.Wait.HP == 4 and infoF.Week.Wait.MP == 5, "CraftInfo.Week.Wait shows what waits", infoF and show(infoF.Week) or "")
+	local nf2 = #w.Notices
+	w:Tick(60)
+	local spam = 0
+	for i = nf2 + 1, #w.Notices do if w.Notices[i].Player == f then spam += 1 end end
+	check(spam == 0 and fd.Craft.Gift_HP == 4, "still full a minute later: nothing asked, no 'full' notice every minute", tostring(spam))
+	fd.HPPotionCount, fd.MPPotionCount = 90, 90
+	w:Tick(60)
+	check(fd.HPPotionCount == 94 and fd.MPPotionCount == 95 and fd.Craft.Gift_HP == nil and fd.Craft.Gift_MP == nil, "room again: the rest is paid", show(fd.Craft))
+	-- below tier 1: nothing, the ledger just ends
+	local s, sd = smith(w, 10)
+	local cur3 = wk(w)
+	sd.Craft.WkW, sd.Craft.WkE = cur3, 499
+	w:Advance(C.WeekStart(cur3 + 1) + 700 - w.Time)
+	w:Tick(60)
+	check(sd.Craft.WkW == nil and sd.Craft.GiftT == nil and (sd.Items.Enh70 or 0) == 0, "499: no gift, the ledger ends", show(sd.Craft))
+	-- a craft of the new week before 00:10 settles the old week first (its gift), the new ledger has only the new craft
+	local m, md = smith(w, 11)
+	md.Items.Herb = 60
+	local cur4 = wk(w)
+	md.Craft.WkW, md.Craft.WkE = cur4, 1000
+	w:Advance(C.WeekStart(cur4 + 1) + 120 - w.Time) -- Monday 00:02
+	startAndHammer(w, m, HONEST, { Recipe = "W2" })
+	check(md.Craft.WkW == cur4 + 1 and md.Craft.WkE == 20 and md.Craft.GiftW == cur4 and md.Craft.GiftT == 1 and md.HPPotionCount == 5,
+		"a craft at 00:02: last week's 600 -> tier 1 paid, this week starts at 20", show(md.Craft))
+
+	-- offline: a ledger two weeks old is paid at the join (crafting switched off too: it was earned)
+	local off = cWorld({ Off = true })
+	local old = C.WeekIndex(off.Time) - 2
+	local o, od = smith(off, 12, { Craft = { Smith = { Lv = 1, XP = 0 }, Alch = { Lv = 1, XP = 0 }, Tame = { Lv = 1, XP = 0 }, Rep = 0, Made = {},
+		WkW = old, WkE = 400, Wk_W3 = 600 } })
+	check(od.Craft.WkW == nil and od.Craft.GiftW == old and od.Craft.GiftT == 2 and od.Items.PetTreat == 3 and (od.Items.Enh70 or 0) == 0,
+		"a join two weeks later, crafting off: tier 2 (1,000) paid at once", show(od.Craft))
+
+	-- the save repair (flat keys, an older server keeps them)
+	local sc = C.SanitizeCraft({ WkW = 2970, WkE = 300.7, Wk_W3 = 48, Wk_ = 5, Gift_HP = 5000, Gift_Enh70 = -1, GiftT = 9, GiftW = "x",
+		Pend = { Id = "W2", Plus = 1, Gold = 40, Mats = {}, Hit = true } })
+	check(sc.WkW == 2970 and sc.WkE == 300 and sc.Wk_W3 == 48 and sc.Wk_ == nil and sc.Gift_HP == W.WaitMax and sc.Gift_Enh70 == nil
+		and sc.GiftT == #W.Tiers and sc.GiftW == nil and sc.Pend.Hit == true,
+		"SanitizeCraft keeps the week keys (whole, capped), Pend.Hit; drops broken ones", show(sc))
+	local sg = C.SanitizeCraft({ Gift_Nope = 3, Gift_PetTreat = 3, Gift_HP = 2 })
+	check(sg.Gift_Nope == nil and sg.Gift_PetTreat == 3 and sg.Gift_HP == 2, "a waiting gift of an unknown item is dropped", show(sg))
+	local sn = C.SanitizeCraft({ WkE = 300, Wk_W3 = 48 })
+	check(sn.WkE == nil and sn.Wk_W3 == nil, "a ledger without its week is dropped", show(sn))
 end)
 
 finish()

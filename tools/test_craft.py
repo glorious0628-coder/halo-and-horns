@@ -38,6 +38,31 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # A23-217 the weekly workshop gift (게임성 개발 2)
+    ('week: tier 1 at 400', C, '\tTiers = { 500, 1000, 1600 },\n', '\tTiers = { 400, 1000, 1600 },\n'),
+    ('week: no Enh70 at the top', C, '{ HP = 5, MP = 5, PetTreat = 3, Enh70 = 1 } },', '{ HP = 5, MP = 5, PetTreat = 3 } },'),
+    ('week: the easy half counts fully', C, '+ 0.5 * math.min(math.max(e - W.EasyFull, 0), W.EasyHalf)', '+ 1 * math.min(math.max(e - W.EasyFull, 0), W.EasyHalf)'),
+    ('week: no easy cap', C, '+ 0.5 * math.min(math.max(e - W.EasyFull, 0), W.EasyHalf)', '+ 0.5 * math.max(e - W.EasyFull, 0)'),
+    ('week: no recipe cap', C, '\t\t\ttotal += math.min(n(v), math.max(W.RecipeCap, type(r) == "table" and n(r.XP) or 0))\n', '\t\t\ttotal += n(v)\n'),
+    ('week: a big recipe cut to 1,600', C, 'math.max(W.RecipeCap, type(r) == "table" and n(r.XP) or 0))\n', 'W.RecipeCap)\n'),
+    ('week: easy up to 10 min (AS1 easy)', C, 'r.Min <= Config.Craft.Week.EasyMin', 'r.Min <= 10'),
+    ('week: W3 keeps its old XP', C, 'XP = 48, Min = 12 }', 'XP = 60, Min = 12 }'),
+    ('week: the save repair drops Pend.Hit', C, '\t\t\tHit = p.Hit == true or nil,', '\t\t\tHit = nil,'),
+    ('week: a ledger without its week kept', C, '\t\tif out.WkW then\n\t\t\tfor k, x in ledger do out[k] = x end\n', '\t\tdo\n\t\t\tfor k, x in ledger do out[k] = x end\n'),
+    ('week: a waiting gift of any id kept', C, '\t\t\t\tif Config.Loot.Items[item] or Config.PotionStockKey(item) then x = V4.int(v, 0, WK.WaitMax) end\n', '\t\t\t\tx = V4.int(v, 0, WK.WaitMax)\n'),
+    ('week: no press needed', R, '\tif num(xp) <= 0 or hit ~= true then return end\n', '\tif num(xp) <= 0 then return end\n'),
+    ('week: a press never noted', R, '\tif type(c) == "table" and type(c.Pend) == "table" and c.Pend.Id == sess.Recipe then c.Pend.Hit = true end\n', ''),
+    ('week: a bot counts', R, '\t\t\tif type(c) == "table" and type(c.Pend) == "table" and c.Pend.Id == sess.Recipe then c.Pend.Hit = nil end\n', ''),
+    ('week: never added', R, '\tWEEK.Add(player, data, recipeId, r, xp, hit) -- A23-217\n', ''),
+    ('week: paid before 00:10', R, '(force or os.time() >= Config.WeekStart(wk + 1) + num(W.PayDelay))', '(true)'),
+    ('week: an old week dropped by a new craft', R, '\t\tWEEK.Roll(player, data, true)\n\t\tclearLedger(c)\n', '\t\tclearLedger(c)\n'),
+    ('week: the rest that did not fit is lost', R, '\t\t\tc[key] = n - given > 0 and n - given or nil\n', '\t\t\tc[key] = nil\n'),
+    ('week: asks past the cap (a full notice a minute)', R, '\t\t\tlocal want = math.min(n, math.max(0, room), 99)\n', '\t\t\tlocal want = math.min(n, 99)\n'),
+    ('week: not bound', R, 'S.LootService.GrantItem, player, item, want, "Reward")', 'S.LootService.GrantItem, player, item, want, "Craft")'),
+    ('week: CraftInfo without Week', R, ', Week = WEEK.Info(c) })', ' })'),
+    ('week: the join never settles', R, '\t\tif type(data.Craft) == "table" and WEEK.Pending(data.Craft) then WEEK.Roll(player, data, false) end\n', ''),
+    ('week: the online loop never settles', R, 'and WEEK.Pending(d.Craft) and WEEK.Roll(p, d, false) and on() then', 'and false then'),
+    ('week: paid twice (the ledger stays)', R, '\t\tlocal xp, tier = Config.CraftWeekCounted(c)\n\t\tclearLedger(c)\n', '\t\tlocal xp, tier = Config.CraftWeekCounted(c)\n'),
     # API review 10/17 (craftopts_review): the switch, room for both outcomes, the pet XP cap, another tier's power
     ('review: the switch ignored', R, '\tif type(O) ~= "table" or O.On ~= true then return 0 end\n', '\tif type(O) ~= "table" then return 0 end\n'),
     ('review: rolled before the room (the old order)', R, '\tif not room(player, data, r, 0) or (size > 0 and not room(player, data, r, size)) then\n', '\tif not room(player, data, r, rollOpt(c, role, r)) then\n'),
