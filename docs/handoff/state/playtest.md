@@ -54,3 +54,9 @@
 - **다음 판:** 다음 sync 신호 → King 첫 KO 뒤 Fizzby 옆·KO 화면 몬스터 그림, M1_3·Tiny, 대장간 잠금 글.
 - 다음 판에 같이 볼 것: f6507381 맵 끝 투명 벽 흐린 막(EdgeHint, 클라만) — 맵 끝까지 걸어가서 막이 보이나·이상한가.
 - 다음 판에 같이 볼 것: 66cdb70d 장인 쪽(첫 12분엔 안 보임) — 끝에 scene.py ArtisanSmith/ArtisanAlch로 짧게.
+
+## 10/17 오후 — 7판 끝 (뿔 · 전사 · 패스 끔, src b823a57c)
+- 보고서 `docs/review/playtest/2026-10-17_r7.md`, 사진 `docs/art/verification_2026-10-17/playtest/r7/`.
+- 확인됨: 뿔 첫 화면 카메라, King 첫 KO → Fizzby 옆, M1_3 끝 다음 목표 글, EdgeHint 보임(하얀 판처럼), 장인 Tiny 부탁. 문제: King 두 번째 KO(2/2), 강화 실패 2/2 표시 없음, 표시 엉뚱(King·Lost bag), 퀵슬롯, KO 화면 그림 없음.
+- 도구: M1_2에서 막히면 DebugCommand StoryDone M1_2 → scene.py OfferM1_3(진영이 빛으로 바뀜). KO 장면 = KO 글 뜨면 바로 shot. 맵 끝 = Config.Map.Bounds(-260/1840/-720/720, 다 물), 순간 이동 후 Humanoid:MoveTo.
+- **다음 판:** A23-225 병합 뒤 강화 → King 다시 → Lv5 시험·M1_3 진짜 순서.
