@@ -3156,17 +3156,17 @@ runGroup("p1 lv5 test", function()
 	local panels = panelsOf(w)
 	local SQ = w.Config.StoryQuests
 	local LM = SQ.Landmarks
-	local GLEAM, ROSE, OTTO, FOLK1, TINY = vec(-10, 0, -372), vec(-18, 0, 424), vec(40, 0, 50), vec(38, 0, -499), vec(24, 0, 12)
+	local GLEAM, ROSE, OTTO, FOLK1, TINY = vec(-10, 0, -372), vec(-18, 0, 424), vec(40, 0, 50), vec(12, 0, -378), vec(24, 0, 12) -- (#18: FOLK1 = the neighbour by the gate road)
 	w:Npc("Gleam", GLEAM)
 	w:Npc("Smokey", ROSE)
 	w:Npc("Otto", OTTO)
-	w:Npc("Folk1", FOLK1)
+	w:Npc("Neighbor", FOLK1)
 	w:Npc("Tiny", TINY)
 	local M = SQ.Defs.M1_3
 	check(M.Kind == "Main" and M.Offer.Npc.Halo == "Gleam" and M.Offer.Npc.Horns == "Smokey" and M.Offer.Npc.Neutral == "Otto"
 		and M.Requires.Level == 5 and M.Steps[1].Obj.Type == "BasicKill" and M.Steps[1].Obj.Kind == "Slime" and M.Steps[1].Obj.Count == 4
 		and M.Steps[2].Obj.Type == "Pickup" and M.Steps[2].Horns.Obj.Spot == "SnackParcel" and M.Steps[2].Neutral.Obj.Type == "Craft"
-		and M.Steps[3].Obj.Type == "Deliver" and M.Steps[3].Npc == "Folk1" and M.Steps[3].Horns.Npc == "Tiny"
+		and M.Steps[3].Obj.Type == "Deliver" and M.Steps[3].Npc == "Neighbor" and M.Steps[3].Horns.Npc == "Tiny"
 		and M.Steps[4].Obj.Type == "Learn" and w.Config.Skills.Learn.Gate.Q == "M1_3" and M.Reward.Gold == 1,
 		"Config: M1_3 = the teacher's Lv5 test (Slime 4 basic, the side's help, Learn), Q gated on it, Gold 1 kept", show(M.Steps[2]))
 	local function hero(id, faction, level, o)
@@ -3205,9 +3205,9 @@ runGroup("p1 lv5 test", function()
 	w:MoveTo(p, LM.LostBag + vec(2, 0, 0))
 	w:Act(p, "M1_3", "Pickup")
 	check(d.Story.Main.St == 3, "picked up: carry it to its owner", show(d.Story.Main))
-	check(w.Story.TalkToNpc(p, "Folk1") == nil and d.Story.Main.St == 3, "far from the neighbour: nothing", "")
+	check(w.Story.TalkToNpc(p, "Neighbor") == nil and d.Story.Main.St == 3, "far from the neighbour: nothing", "")
 	w:MoveTo(p, FOLK1 + vec(2, 0, 0))
-	check(w.Story.TalkToNpc(p, "Folk1") == "M1_3" and d.Story.Main.St == 4, "handed to the neighbour (Folk1): back to Sir Gleam", show(d.Story.Main))
+	check(w.Story.TalkToNpc(p, "Neighbor") == "M1_3" and d.Story.Main.St == 4, "handed to the neighbour (Neighbor, #18): back to Sir Gleam", show(d.Story.Main))
 	check(w.Story.LearnOpen(p, "Q") == true, "at the Learn step: Sir Gleam may teach Q now", "")
 	local bank = d.BankGold or 0
 	w.Story.Refresh(p)
@@ -3225,7 +3225,7 @@ runGroup("p1 lv5 test", function()
 	w:MoveTo(r, LM.SnackParcel + vec(1, 0, 1))
 	w:Act(r, "M1_3", "Pickup")
 	w:MoveTo(r, FOLK1 + vec(2, 0, 0))
-	check(w.Story.TalkToNpc(r, "Folk1") == nil and rd.Story.Main.St == 3, "the Halo neighbour takes no parcel", "")
+	check(w.Story.TalkToNpc(r, "Neighbor") == nil and rd.Story.Main.St == 3, "the Halo neighbour takes no parcel", "")
 	w:MoveTo(r, TINY + vec(2, 0, 0))
 	check(w.Story.TalkToNpc(r, "Tiny") == "M1_3" and rd.Story.Main.St == 4, "Tiny gets the snack prank: back to Rose", show(rd.Story.Main))
 	-- artisans: a craft of their own role counts, another role's does not
@@ -3333,7 +3333,7 @@ runGroup("p1 lamp and scenes", function()
 	local T3 = SQ.Defs.M1_3.Steps[3]
 	check(T3.SetFlag.Key == "Help" and T3.SetFlag.Value == "Bag" and T3.Horns.SetFlag.Value == "Prank" and T3.Neutral.SetFlag.Value == "Class",
 		"Config: the test's help step leaves Help = Bag / Prank / the craft", show(T3.SetFlag))
-	w:Npc("Folk1", vec(38, 0, -499))
+	w:Npc("Neighbor", vec(12, 0, -378))
 	local n, nd = w:Join(9955, { Faction = "Neutral", Class = "Archer", Level = 5, Pos = TINY + vec(2, 0, 0),
 		Data = { TutorialStep = 99, Story = { Main = { Id = "M1_3", St = 3, P = 0, T = {}, Claim = false }, Subs = {},
 			Done = { M1_1 = true }, Pick = {}, First = { Migrated = true }, Schema = 4 } } })

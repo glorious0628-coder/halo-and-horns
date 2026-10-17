@@ -3599,7 +3599,8 @@ Config.StoryQuests = {
 					Neutral = { Text = "Make something for Tiny %d/%d", ShortName = "Make it", Guide = "Blacksmith",
 						Obj = { Type = "Craft", Role = "Own", Count = 1 }, Find = "Tiny is waiting for this." } },
 				-- (no Scene here: the SetFlag Help scene is the reaction, once: the neighbour's wave / Tiny's laugh / the made thing used)
-				{ Text = "Give the bag back to its owner", ShortName = "Return bag", Npc = "Folk1", Obj = { Type = "Deliver" },
+				-- detail audit #18 (최종 검수 10/17): the bag's owner is the neighbour by the gate road (Npc "Neighbor"), not the juice man
+				{ Text = "Give the bag back to its owner", ShortName = "Return bag", Npc = "Neighbor", Obj = { Type = "Deliver" },
 					SetFlag = { Key = "Help", Value = "Bag" }, -- P1 ⑦: the neighbour's big wave (bible rule 3)
 					Find = "My bag! You found it!",
 					Lines = { Halo = { "Neighbor: Wait! I need a free hand to wave!" },
@@ -4953,12 +4954,12 @@ Config.StoryQuests.Landmarks.LampR = Vector3.new(-30, 0, 440)
 -- (Config.WeaponGrades: Easy = Common 1 star ... Challenge = Epic 4 stars); no words (A23-191)
 Config.StoryQuests.DifficultyGrade = { Easy = "Common", Normal = "Fine", Hard = "Rare", Challenge = "Epic" }
 Config.StoryQuests.Landmarks.LampN = Vector3.new(-20, 0, -20)
-for _, e in Config.TownNpcs.List do
-	if e.Id == "Folk1" then
-		e.Story = e.Story or "Folk1"
-		e.Label = e.Label or "Neighbor"
-	end
-end
+-- detail audit #18 (최종 검수 10/17, r7: a two-minute walk from the meadow to the juice man at the far end of town): the
+-- neighbour of the Lv5 test is a body of its own by the gate road, across from Sir Gleam (a temporary default body until its
+-- approved look); the juice man (Folk1) is only a townsperson again
+table.insert(Config.TownNpcs.List, { Id = "Neighbor", Name = "Npc_Neighbor", Story = "Neighbor", Label = "Neighbor",
+	At = Vector3.new(12, 0, -378), Look = Vector3.new(0, 0, -378),
+	Colors = { Head = Color3.fromRGB(225, 180, 140), Torso = Color3.fromRGB(120, 170, 120), Legs = Color3.fromRGB(95, 80, 65) } })
 -- P1 ⑤: the first skill waits for the Lv5 test (Q is taught only at M1_3's Learn step or after it; StoryQuestService.LearnOpen)
 Config.Skills.Learn.Gate = { Q = "M1_3" }
 Config.StoryQuests.Defs.H_Band = {
