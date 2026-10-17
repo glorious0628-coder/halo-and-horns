@@ -805,4 +805,29 @@ runGroup("save", function()
 	end
 end)
 
+------------------------------------------------------------------ r5 플레이: the pinned row on a Learn step
+-- 최종 검수 10/16 (game play r5): handing Tiny the parcel (M1_3 step 3) opens step 4 "Learn your first skill from Rose" and makes
+-- Q ready at the teacher at once; the pinned row must stay M1_3's (else the row leaves the list, the client never sees step 3
+-- end and Tiny's line never shows). A main on another step keeps A23-193's "Learn a skill: meet <teacher>" row first
+runGroup("pinned learn row", function()
+	local w = forgeWorld()
+	startStory(w)
+	local function at(id, st, done)
+		return { Tutorial = 99, Faction = "Horns", Level = 5, Data = { BlacksmithVisited = true, SkillSlots = 0,
+			Story = { Main = { Id = id, St = st, P = 0, T = {}, Claim = false }, Subs = {}, Done = done, Pick = {}, First = { Migrated = true }, Schema = 6 } } }
+	end
+	local p = w:Newbie(901, at("M1_3", 4, { M1_1 = true, M1_2 = true }))
+	p:SetAttribute("SkillLearnReady", 1)
+	local row = w:Rows(p)[1] or {}
+	local okM, mr = pcall(w.Story.MainRow, p, w.Data[p])
+	check(type(row.Story) == "table" and row.Story.Id == "M1_3" and row.Story.St == 4 and row.GoalKind == nil,
+		"M1_3 on its Learn step + Q ready: the pinned row stays M1_3 step 4",
+		show({ row.Text, row.GoalKind, okM, okM and mr and mr.Story and mr.Story.Id or tostring(mr), w.Data[p].Story.Main.Id, w.Data[p].Story.Main.St }))
+	local q = w:Newbie(902, at("M2_5", 2, { M1_1 = true, M1_2 = true, M1_3 = true, M1_4 = true, M2_1 = true, M2_2 = true, M2_3 = true, M2_4 = true }))
+	q:SetAttribute("SkillLearnReady", 1)
+	local qrow = w:Rows(q)[1] or {}
+	check(qrow.GoalKind == "SkillLearn" and qrow.NextGoal == true, "a main on another step: 'Learn a skill: meet <teacher>' stays first (A23-193)",
+		show({ qrow.Text, qrow.GoalKind }))
+end)
+
 finish()

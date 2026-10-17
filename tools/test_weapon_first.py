@@ -97,6 +97,9 @@ MUTATIONS = [
     ("Config: Otto no longer points to the meadow", C, "The Squishy Meadow is next.", "Now go free the supply road."),
     ("accept: the arrival clock never starts", Q, "\tFORGE.AcceptedAt[player] = os.clock()\n", ""),
     ("arrival: every tick", Q, "if from and not FORGE.Reached[player] and near then", "if from and near then"),
+    # r5 play (최종 검수 10/16): a story main on its own Learn step keeps the pinned row
+    ("r5: the Learn step loses the pinned row", Q, "if okMain and main and (not learnWaits or mainLearns) then", "if okMain and main and not learnWaits then"),
+    ("r5: every main beats the learn row", Q, "if okMain and main and (not learnWaits or mainLearns) then", "if okMain and main then"),
     ("arrival: from afar", Q, "if from and not FORGE.Reached[player] and near then", "if from and not FORGE.Reached[player] then"),
     ("arrival: a saved step counts too", Q, "local from = FORGE.AcceptedAt[player]\n", "local from = FORGE.AcceptedAt[player] or os.clock()\n"),
     ("arrival: not counted", Q, "\t\t\tM.ForgeReached:Fire(player, math.max(0, os.clock() - from))\n", ""),

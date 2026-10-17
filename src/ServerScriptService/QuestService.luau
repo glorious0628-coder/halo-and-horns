@@ -1092,7 +1092,16 @@ local function publish(player)
 		-- story main row (after the Forge visit; the main row comes back once it is learned)
 		local learnWaits = tutorial ~= nil and tutorial.GoalKind == "SkillLearn"
 		local okMain, main = pcall(story.MainRow, player, data)
-		if okMain and main and not learnWaits then tutorial = main end
+		-- r5 플레이 (최종 검수 10/16): ...unless the story step itself is that lesson (M1_3's "Learn your first skill from Rose"):
+		-- swapping it out made the M1_3 row leave the list in the same publish as Tiny's hand-over, so the client never saw
+		-- the Deliver step end (no Tiny line) and the row read the bare "Next goal" line
+		local mainLearns = false
+		if okMain and type(main) == "table" and type(main.Story) == "table" then
+			local def = Config.StoryQuests.Defs[main.Story.Id]
+			local stp = type(def) == "table" and type(def.Steps) == "table" and def.Steps[main.Story.St] or nil
+			mainLearns = type(stp) == "table" and type(stp.Obj) == "table" and stp.Obj.Type == "Learn"
+		end
+		if okMain and main and (not learnWaits or mainLearns) then tutorial = main end
 	end
 	if tutorial then table.insert(list, tutorial) end -- always first, never occupies/rerolls a daily slot
 	if story and type(story.SubRows) == "function" then
