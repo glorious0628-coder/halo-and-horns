@@ -32,7 +32,25 @@ MUTATIONS = [
 
 
 def static() -> tuple[int, list[str]]:
-    return 0, []
+    # r8 play (최종 검수 10/17: +2.3 HP/s at once = Roblox's default 1 %/s + ours): no engine "Health" regen script may run.
+    # StarterCharacterScripts holds the empty replacement; PlayerService removes any "Health" script a character gets
+    from dev2_offline import SSS, function_block, strip_comments
+    failures, count = [], 0
+
+    def check(ok: bool, message: str) -> None:
+        nonlocal count
+        count += 1
+        if not ok:
+            failures.append(message)
+
+    rep = (ROOT / "src/StarterPlayer/StarterCharacterScripts/Health.server.luau").read_text(encoding="utf-8-sig")
+    check(strip_comments(rep).strip() == "", "StarterCharacterScripts/Health is an empty Script (it replaces the engine's regen)")
+    added = strip_comments(function_block((SSS / "PlayerService.luau").read_text(encoding="utf-8-sig"), "local function onCharacterAdded("))
+    check('if child.Name == "Health" and child:IsA("Script") then child:Destroy() end' in added
+          and "for _, child in character:GetChildren() do dropRegen(child) end" in added
+          and "character.ChildAdded:Connect(dropRegen)" in added,
+          "PlayerService.onCharacterAdded removes a 'Health' script now and when one comes later")
+    return count, failures
 
 
 SUITE = Suite(

@@ -876,7 +876,8 @@ runGroup("displace", function()
 	end
 	local inside = cut("local function insideZone(", "-- A10-V3-2 (b): clamp a destination")
 	local body = cut("local DISPLACE = {", "------------------------------------------------------------------ event monsters")
-	check(#inside > 0 and #body > 0, "Displace found in MonsterService", show({ #inside, #body }))
+	local near = cut("local NEAR = {}", "local function pickSpawnPoint(") -- r8: the leash of a Near kind (NEAR.Leash)
+	check(#inside > 0 and #body > 0 and #near > 0, "Displace found in MonsterService", show({ #inside, #body, #near }))
 	local w = newWorld({})
 	local cfg = w.Config
 	local W = { Wall = false, WaterX = nil }
@@ -885,7 +886,7 @@ runGroup("displace", function()
 		Raycast = function() return W.Wall and { Position = vec(0, 0, 0) } or nil end }
 	local MS = {}
 	local chunk = "local Config, Util, MC, MonsterService, ZONE_MOVE_INSET, groundPoint, getShoveParams, warnThrottled = ...\n"
-		.. inside .. body .. "\nreturn MonsterService"
+		.. near .. inside .. body .. "\nreturn MonsterService"
 	execute("MonsterService.Displace", chunk, env, cfg, w.Util, cfg.Monsters, MS, 6,
 		function(x, z)
 			if W.WaterX and x > W.WaterX then return nil, false end

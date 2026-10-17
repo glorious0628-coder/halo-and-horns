@@ -41,7 +41,9 @@ local function spawnWorld(players)
 		readyPlayers = function() return w.Players end,
 		groundPoint = function(x, z) return vec(x, 0, z), false end,
 		warnThrottled = function(_, msg) table.insert(w.Warnings, msg) end }
-	w.M = execute("MonsterSpawn", SPAWN_EXTRACT, nativeEnv(), C, U, MS, H)
+	local env = nativeEnv()
+	env.typeof = typeofDouble -- (r8: NEAR.Spot checks a Vector3)
+	w.M = execute("MonsterSpawn", SPAWN_EXTRACT, env, C, U, MS, H)
 	return w
 end
 
@@ -223,11 +225,11 @@ runGroup("who goes first", function()
 	both("the hunter beats a Rookie with fewer slimes near (both orders)",
 		hunter("hunt", P[1], P[2], { Level = 3 }, 2), veteran("rook", Q[1], Q[2], { Rookie = true, Level = 1 }, 0),
 		"Slime", "hunt", RING_MIN, RING_MAX)
-	local name, d = nearOf({ hunter("hunt", P[1], P[2]) }, "BigSlime")
-	check(name == "hunt" and d >= REG_MIN - EPS and d <= REG_MAX + EPS, "a King Slime keeps the regular 18-28 ring", d)
-	both("a King Slime: a hunter with 2 near is not starved (threshold 2), the Rookie is",
+	local name, d = nearOf({ hunter("hunt", P[1], P[2]) }, "FlowerSlime") -- (r8: the Prince lives by its marker now: another meadow kind)
+	check(name == "hunt" and d >= REG_MIN - EPS and d <= REG_MAX + EPS, "another meadow kind keeps the regular 18-28 ring", d)
+	both("another meadow kind: a hunter with 2 near is not starved (threshold 2), the Rookie is",
 		hunter("hunt", P[1], P[2], {}, 2), veteran("rook", Q[1], Q[2], { Rookie = true }, 0),
-		"BigSlime", "rook", REG_MIN, REG_MAX)
+		"FlowerSlime", "rook", REG_MIN, REG_MAX)
 	both("no hunters: a Rookie first, even with more slimes near and a higher level",
 		veteran("rook", P[1], P[2], { Rookie = true, Level = 5 }, 1), veteran("vet", Q[1], Q[2], { Level = 1 }, 0),
 		"Slime", "rook", REG_MIN, REG_MAX)
@@ -238,6 +240,35 @@ runGroup("who goes first", function()
 	local dead = hunter("dead", P[1], P[2])
 	dead.Dead = true
 	both("a dead hunter pulls no slimes", dead, veteran("vet", Q[1], Q[2], {}, 0), "Slime", "vet", REG_MIN, REG_MAX)
+end)
+
+-- r8 play (최종 검수 10/17): the 4 Slime Princes had walked 250+ studs east of M1_1's marker (the meadow's entrance). A Near
+-- kind spawns within Near.Radius of its landmark, its home is that landmark and its leash is Near.Leash
+runGroup("princes by the marker", function()
+	local P = C.MonsterTypes.BigSlime
+	local spot = C.StoryQuests.Landmarks[P.Near.Spot]
+	check(P.Near.Spot == "MeadowArrival" and P.Near.Radius == 45 and P.Near.Leash == 50 and typeofDouble(spot) == "Vector3",
+		"Config: BigSlime.Near = MeadowArrival, 45, leash 50", show(P.Near))
+	local w = spawnWorld({})
+	local far, n = 0, 0
+	for _ = 1, 60 do
+		local pt = w.M.pickSpawnPoint(P, "BigSlime")
+		if pt then
+			n += 1
+			if flat(pt, spot) > P.Near.Radius + EPS or C.ZoneAt(pt).Id ~= "SlimeMeadow" then far += 1 end
+		end
+	end
+	check(n == 60 and far == 0, "60 Prince spawns: all within 45 of the meadow's entrance, in the meadow", show({ n, far }))
+	-- a kind without Near: anywhere in the zone as before
+	local spread = 0
+	for _ = 1, 60 do
+		local pt = w.M.pickSpawnPoint(SLIME, TUT.Monster)
+		if pt and flat(pt, spot) > 120 then spread += 1 end
+	end
+	check(spread > 0, "a green slime (no Near) still spawns all over the meadow", tostring(spread))
+	check(w.M.NEAR.Leash({ Def = P }) == 50 and w.M.NEAR.Leash({ Def = SLIME }) == C.Monsters.LeashRadius,
+		"leash: a Prince 50 from its marker, others Monsters.LeashRadius", "")
+	check(w.M.NEAR.Spot(SLIME) == nil and w.M.NEAR.Spot(P) == spot, "NEAR.Spot", "")
 end)
 
 finish()

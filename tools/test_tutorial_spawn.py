@@ -57,14 +57,20 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
             + function_block(mon, "local function playersPerZone(")
             + between(mon, "local function wantedTargets(",
                       "------------------------------------------------------------------ public queries")
+            # r8 (최종 검수 10/17): a Near kind (the Slime Prince) lives around its story marker
+            + "local NEAR = {}\n" + function_block(mon, "function NEAR.Spot(") + function_block(mon, "function NEAR.Leash(")
             + function_block(mon, "local function pickSpawnPoint(")
             + "return { tutorialHunter = tutorialHunter, playersPerZone = playersPerZone, wantedTargets = wantedTargets, "
               "targetCount = targetCount, cappedTargets = cappedTargets, pickSpawnPoint = pickSpawnPoint, "
-              "TUT_SPAWN = TUT_SPAWN, GLOBAL_CAP = GLOBAL_CAP }\n"),
+              "TUT_SPAWN = TUT_SPAWN, GLOBAL_CAP = GLOBAL_CAP, NEAR = NEAR }\n"),
     }
 
 
 MUTATIONS = [
+    # r8 (최종 검수 10/17): the Princes by M1_1's marker
+    ("r8: no Near spawn", M, "\tlocal near = NEAR.Spot(def)\n\tif near then\n", "\tlocal near = nil\n\tif near then\n"),
+    ("r8: Near radius ignored", M, "\t\tlocal r = math.max(5, tonumber(def.Near.Radius) or 40)\n", "\t\tlocal r = 200\n"),
+    ("r8: no Near leash", M, "\tlocal leash = type(n) == \"table\" and tonumber(n.Leash) or nil\n", "\tlocal leash = nil\n"),
     # who goes first
     ("the hunter is not first", M, "if best == nil or (cand.Tut ~= best.Tut and cand.Tut)", "if best == nil or false"),
     ("the hunter keeps the regular threshold", M,
@@ -131,6 +137,11 @@ def static() -> tuple[int, list[str]]:
           and "Config.MonsterTargets(" in function_block(mon, "local function wantedTargets("),
           "Config.MonsterTargets is read only through wantedTargets (no target path skips the bonus)")
     check("local SPREAD_COUNT_RADIUS = 30\n" in mon, "starved = monsters within 30 studs (A7-1)")
+    # r8 (최종 검수 10/17): a Near kind's home is its marker and every leash check reads NEAR.Leash
+    check("Home = (owner == nil and NEAR.Spot(def)) or point," in function_block(mon, "local function spawnMonster("),
+          "spawnMonster: a field Near kind's home = its marker")
+    check(code.count("NEAR.Leash(") == 4 and code.count("MC.LeashRadius") == 1,
+          "the three leash checks (wander, chase, return) read NEAR.Leash (MC.LeashRadius only as its fallback)")
     config = read(SHARED / "Config.luau")
     check("ReevalInterval = 5 }" in config, "the targets are re-read every 5 s (a new slime within seconds of arrival)")
     return count, failures

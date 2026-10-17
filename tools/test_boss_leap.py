@@ -54,6 +54,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("r8: the leap cycle ignored", M, "math.max(LEAP.Cycle(L), LEAP.Num(rec._leapCycle, 0))", "LEAP.Cycle(L)"),
     # A23-227 the field King's shield
     ("A23-227: no shield", M, "\t\t\tif not done then return false end\n", ""),
     ("A23-227: shield at any level", M, "\t\t\tand lv < (tonumber(F.FieldSafeBelow) or 0) then\n", "\t\t\tthen\n"),
@@ -108,7 +109,7 @@ MUTATIONS = [
     ("DropTime not the warning", M, "\tmodel:SetAttribute(\"DropTime\", warn)\n", "\tmodel:SetAttribute(\"DropTime\", 2)\n"),
     ("the body stays behind", M, "\t\tmodel:PivotTo(CFrame.lookAt(p, p + flat.Unit))\n", ""),
     ("a slam moves too", M, "\tif not slam then\n\t\t-- the body stands", "\tif true then\n\t\t-- the body stands"),
-    ("no cooldown after a leap", M, "\trec._nextAttackAt = now + (slam and MC.AttackCooldown or LEAP.Cycle(L))\n", ""),
+    ("no cooldown after a leap", M, "\trec._nextAttackAt = now + (slam and MC.AttackCooldown or math.max(LEAP.Cycle(L), LEAP.Num(rec._leapCycle, 0)))\n", ""),
     ("cycle shorter than the warning", M, "return math.max(LEAP.Num(L.Warn, 1) + 0.1, LEAP.Num(L.Cycle, MC.AttackCooldown))",
      "return LEAP.Num(L.Cycle, MC.AttackCooldown)"),
     ("mult ignores the cycle", M, "\treturn LEAP.Cycle(L) / math.max(0.1, MC.AttackCooldown)\n", "\treturn 1\n"),
