@@ -468,3 +468,12 @@
 - 메인 Studio 창이 닫혀 있음(사용자 쪽에서 닫힌 듯) → 게임 플레이 7판 끝나면 메인 반영 1 열기+sync+전체 대조 → 그다음 개발 1 PhoneTest(궁수 XP×2 값·빈 퀵슬롯·EdgeHint 사진 + 꾸민 아바타 공격 점검 build/dev1_tools/avatar1017.py, 'mine' = 사용자 아바타).
 - 사용자 "아바타를 좀 꾸몄는데 때리는 모션이 좀 이상해" — 직업·사진 물음.
 - 개발 2: 6판 ①② (두 번째 King 숫자·Prince/King 단계 표시) → 도구 강화 ①(dev2-craft-tools 40d9336f WIP), ②는 저장 판 올림 + 게시 때 '모든 서버 종료'.
+
+## 10/17 밤 (최종 검수) — 사용자 "잠깐 정리하자, 화요일 오전부터 작업하자" → 화요일(10/20) 오전까지 멈춤
+- **main = d54ee16c 근처**(뒤는 문서만). 메인 Studio = '헤일로 & 혼스' 2:57 창 하나, d54ee16c까지 sync(Save As·게시 없음). 라이브는 아직 10/16 15:10 게시판(첫 12분 새 흐름 전 판).
+- **오늘 병합(전부 시험 통과):** 첫 12분 묶음 d4c4b483 · 배지 5 d0a6559c · 장인 1·2부 66cdb70d · 손맛·소리·퀵슬롯·강화 표시·KO 화면·선물 창 여럿(9fc11a21·95557e02·8826d3d4·21e5260c·b543e7df·1b39f497·2902ff9d) · 첫 강화 꼭 성공 fee70fc8(A23-225) · Revive Shield 칩 삭제 4fc5875f(A23-226) · 쉼 회복 2e4e83e1(A23-224 최종: 초원 뿔·장인 5초 뒤 1%, 빛 그대로) · 들판 King 보호·재대결 언덕 3597f8ed(A23-227) · 장인 도구 강화 034174d8 · Your King 0c192861 · 지팡이 12도 4ce4a85f · r7·r8 서버 f891b60d(A23-228 궁수 0.8/0.75·재대결 King 3초·HitPct 0.13) · Studio 피해 기록 d58544c1 · 물약 3개 사기 4ec46c64 · NaN 막기 d54ee16c.
+- **게임 플레이 10판(docs/review/playtest/2026-10-17_r10.md): 두 번째 King 전사·마법사 둘 다 이김**(물약 1~2병, 25초). 8·9판 '못 이김'은 봇 flow.py가 서버에서 CFrame.lookAt(같은 점) = NaN → 몸 Y −1e6 탓(개발 2가 값으로 찾음). 클라 회전 코드는 원래 안전(개발 1, test_nan_guard 추가).
+- **병합 대기(화요일 먼저):** ① dev2-detail 1a5ac2ac(재대결 KO는 Fizzby 옆·이름표 0.8·위치 안전망·내 King 1.5칸 앞 착지·성문 Neighbor + 시험 RunService 4개 고침 — main의 barks·field_boss·finisher·skills_x 시험이 d58544c1부터 깨져 있음) — 개발 1 Neighbor 두 줄(StoryNpcs Who.Bag·Hop → "Neighbor")과 같이. 내 시험 통과(first_ko_king 341 등 11개). ② dev2-craft-optsb cef2e7f3(제작 옵션 A+B, **저장 판 6→7 = 게시 때 '모든 서버 종료'**, API 검토 HIGH 2개 고침 + CraftOpt.On 스위치) — 시험·재검 후. ③ dev1-codex-next 459a37ea(도감 [Go]) — 화면 눌러 보기 후.
+- **결정(오늘 SPEC):** A23-224~232 (쉼 회복·첫 강화·Revive Shield·King 언덕·궁수/재대결 수치·NPC 대화창 A23-229·세세한 게임성 A23-230·물속 무기 숨김 A23-231·칼은 손에 활만 등 A23-232). 세세한 점검 목록 docs/review/detail_audit_2026-10-17.md(맨 끝 거름 순서).
+- **화요일 할 일:** 세션 깨우기(모델·노력 다시: 주간 리셋 10/19 저녁 → 개발 1 Opus high로 되돌림) → ①②③ 병합 → 게임 플레이 11판(궁수 재대결·성문 이웃·물약 쿨다운 표시) → 게시 전 실제 흐름 점검 → 사용자 Save As + Alt+P(+ craft-opts 들어가면 '모든 서버 종료'). 사용자 몫: 배지 2개(ShardChoice·Rank2) `py -X utf8 C:/Users/glori/Documents/Roblox/Game/tools/badge_create.py ShardChoice Rank2`.
+- 세션 설정(10/17 밤, 주간 71%): 메인 반영 1 Sonnet low, 게임 플레이 Sonnet medium, 개발 1 Opus medium, 개발 2 Opus high. 회의실 https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (d1017_01~03 = 세세한 점검 요약).
