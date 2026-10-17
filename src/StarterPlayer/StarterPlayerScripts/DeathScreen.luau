@@ -60,6 +60,7 @@ local T = {
 	Pad = 6, -- UIListLayout gap between lines
 	GlowAfter = 0.6, -- s after the screen closes (up again): the potion quick slot shines (QuickSlots.Glow)
 	IconGap = 8, -- px between the monster's head and the cause words
+	IconScale = 1.3, -- the head's square side = this x the cause line's height (its own slot, game play r9)
 	Y = 0.42, -- box centre (screen height)
 	-- phone: every size >= its UIKit style floor at UIScale 0.75 (Title 22, Body 19, Number 16 du), so the label height
 	-- (size + 8) holds the drawn text
@@ -240,7 +241,9 @@ function DeathScreen.IconKey(kind, has)
 end
 
 -- 최종 검수 #1: the monster's head (IconMon<kind>, the art the codex / the quest rows use) just left of the KO's cause
--- words (no art = the words alone); its place follows the words' width
+-- words (no art = the words alone). game play r9 (the King's picture lay over 'Knocked': its place was worked out from the
+-- words' TextBounds before the text came): the head has its own slot - the cause line becomes a centred row [head][words]
+-- (UIListLayout), the words sized to their text, so they are pushed right of the picture whatever their width
 local function causeIcon(ui, causeLabel, data)
 	if type(data) ~= "table" or data.By ~= "Monster" or not causeLabel or not ui or type(ui.ArtImage) ~= "function" then return end
 	local kind = type(data.Kind) == "string" and data.Kind or DeathScreen.KindOf(data.Name)
@@ -250,17 +253,38 @@ local function causeIcon(ui, causeLabel, data)
 		return okId and type(id) == "string" and id ~= ""
 	end)
 	if not key then return end
-	local ok, img = pcall(ui.ArtImage, key, { Name = "CauseIcon", AnchorPoint = Vector2.new(1, 0.5),
-		Size = UDim2.fromScale(1.6, 1.6), SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = T.ZIndex + 2,
-		Parent = causeLabel })
-	if not (ok and img) then return end
-	local function place()
-		local w = causeLabel.AbsoluteSize.X
-		local tw = math.min(causeLabel.TextBounds.X, w)
-		img.Position = UDim2.new(0.5, -tw / 2 - T.IconGap, 0.5, 0)
+	local h = (tonumber(causeLabel.TextSize) or T.CauseSize) + 8 -- label(): the line is its text size + 8 high
+	local row = Instance.new("Frame")
+	row.Name = "CauseRow"
+	row.BackgroundTransparency = 1
+	row.Size = UDim2.new(1, 0, 0, h)
+	row.LayoutOrder = causeLabel.LayoutOrder
+	row.ZIndex = causeLabel.ZIndex
+	local list = Instance.new("UIListLayout")
+	list.FillDirection = Enum.FillDirection.Horizontal
+	list.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	list.VerticalAlignment = Enum.VerticalAlignment.Center
+	list.SortOrder = Enum.SortOrder.LayoutOrder
+	list.Padding = UDim.new(0, T.IconGap)
+	list.Parent = row
+	local side = math.floor(h * T.IconScale + 0.5)
+	local ok, img = pcall(ui.ArtImage, key, { Name = "CauseIcon", Size = UDim2.fromOffset(side, side), LayoutOrder = 1,
+		ZIndex = T.ZIndex + 2, Parent = row })
+	if not (ok and img) then
+		row:Destroy()
+		return
 	end
-	place()
-	causeLabel:GetPropertyChangedSignal("TextBounds"):Connect(place)
+	row.Parent = causeLabel.Parent
+	causeLabel.Parent = row
+	causeLabel.LayoutOrder = 2
+	causeLabel.Size = UDim2.new(0, 0, 1, 0)
+	causeLabel.AutomaticSize = Enum.AutomaticSize.X
+	causeLabel.TextWrapped = false
+	-- the row shows with its words (paint() turns the label on / off)
+	local function follow() row.Visible = causeLabel.Visible end
+	follow()
+	causeLabel:GetPropertyChangedSignal("Visible"):Connect(follow)
+	return row
 end
 
 local function kit()
