@@ -9500,7 +9500,9 @@ end
 -- hidden until next Halloween: no badge to make now; ReturnService still knows the key for a later season list).
 Config.Badges = {
 	Order = { "ChoseSide", "FirstSlime", "LostLunchbox", "Stronger", "FirstSkill", "ShardChoice", "Rank2" },
-	Ids = { ChoseSide = 0, FirstSlime = 0, LostLunchbox = 0, Stronger = 0, FirstSkill = 0, ShardChoice = 0, Rank2 = 0 },
+	-- 10/17 (최종 검수: made on create.roblox.com, enabled, checked on the public API): five ids; ShardChoice / Rank2 tomorrow
+	Ids = { ChoseSide = 3229869679939433, FirstSlime = 1242395415063351, LostLunchbox = 1549249493507326, Stronger = 3582734064293994,
+		FirstSkill = 1387192213788506, ShardChoice = 0, Rank2 = 0 },
 	RetrySeconds = 300, -- a failed AwardBadge is tried again after this long
 }
 -- #5 the notification opt-in moment (13+ only: Roblox decides in CanPromptOptInAsync on the client). Once a shown prompt,
