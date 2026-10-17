@@ -368,6 +368,9 @@ function Audio.Plan(kind, data, ctx)
 				if layer then add(out, layer, launch, { Auto = auto }) end
 			end
 		end
+		-- 손맛 G2 (docs/review/attack_feel_values_2026-10-17.md): my pressed swing's hits sound on its body's contact frame,
+		-- counted from the press (the server's Fx comes a round trip later)
+		if own and ctx.Pressed == true then contact = math.max(0, contact - num(ctx.PressAgo, 0)) end
 		planHits(out, data, math.clamp(contact, 0, 1), extra, ctx)
 	elseif kind == "Reward" then -- the server sends it to the killer only
 		local combo = math.max(1, math.floor(num(ctx.Combo, 1)))
@@ -1050,15 +1053,15 @@ function Audio.PressSwing(data)
 	return true
 end
 
--- (the server's Fx of a press: true once per press within T.PressPair s)
+-- (the server's Fx of a press: true once per press within T.PressPair s, and how long ago that press was - 손맛 G2)
 function Audio.TakePress()
 	local now = os.clock()
 	while S.Pressed[1] and now - S.Pressed[1] > T.PressPair do table.remove(S.Pressed, 1) end
 	if S.Pressed[1] then
-		table.remove(S.Pressed, 1)
-		return true
+		local at = table.remove(S.Pressed, 1)
+		return true, now - at
 	end
-	return false
+	return false, 0
 end
 
 function Audio.OnFx(kind, data)
@@ -1073,9 +1076,11 @@ function Audio.OnFx(kind, data)
 		end
 	end
 	local hum = LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-	local pressed = kind == "Swing" and own and type(data) == "table" and data.Manual == true and Audio.TakePress()
+	local pressed, pressAgo = false, 0
+	if kind == "Swing" and own and type(data) == "table" and data.Manual == true then pressed, pressAgo = Audio.TakePress() end
 	local plan = Audio.Plan(kind, data, {
 		Pressed = pressed, -- 손맛 G1
+		PressAgo = pressAgo, -- 손맛 G2
 		-- my first weapon (WeaponTier 0 -> 1+ just now, or still 0 when its Upgrade arrives): HUD plays PowerUp
 		FirstWeapon = os.clock() - S.FirstWeaponAt < T.FirstWeaponHold
 			or num(LocalPlayer and LocalPlayer:GetAttribute("WeaponTier"), 0) == 0,

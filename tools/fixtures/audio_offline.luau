@@ -323,7 +323,15 @@ do
 		and #p >= 1, encode(p))
 	p = swing({ UserId = 222, Pos = vec(20, 3, 0) })
 	check(g, "G1: another player's swing still sounds", p[1] and p[1].Event == "SwingWarrior", encode(p))
-	ctx.Pressed = nil
+	-- 손맛 G2: the hit of a press 0.1 s ago sounds 0.1 s sooner (never before now)
+	ctx.PressAgo = 0.1
+	p = swing({ Hits = { hit(10, 0) } })
+	local hs = find(p, "HitSoft")
+	check(g, "G2: a pressed swing's hit sounds on the body's contact (ContactDelay - PressAgo)", hs ~= nil and near(hs.At, 0.13), encode(p))
+	ctx.PressAgo = 0.5
+	hs = find(swing({ Hits = { hit(10, 0) } }), "HitSoft")
+	check(g, "G2: never before now", hs ~= nil and hs.At == 0, "")
+	ctx.Pressed, ctx.PressAgo = nil, nil
 end
 
 do

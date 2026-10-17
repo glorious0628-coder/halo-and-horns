@@ -199,6 +199,7 @@ local MOTION = {
 	SPARK_SIZE = 3.2, SPARK_TIME = 0.15, SPARK_MAX = 6, SPARK_CRIT_MULT = 1.4,
 	SPARK_TINT = Color3.fromRGB(255, 240, 190), -- fallback star: short rays / core of a normal hit (crits: COLOR_CRIT)
 	HITSTOP_RATE = 0.05, HITSTOP_TIME = 0.08, HITSTOP_CRIT = 0.12, -- Warrior contact frames only
+	RECOIL_RANGED = 1.3, -- 손맛 G3: my manual arrow / orb hits push the monster this much more
 	KICK = 0.16, KICK_CRIT = 0.1, KICK_TIME = 0.1, -- manual swings and crits only (auto farming never jitters)
 	-- swing art: slash arc (Warrior), arrow streak (Archer), magic burst at the target (Mage); timed to the clips below
 	SLASH_SIZE = 5.5, SLASH_TIME = 0.18, SLASH_DIST = 2.6, SLASH_ROT0 = -35, SLASH_ROT1 = 15,
@@ -4040,7 +4041,8 @@ local function showHits(hits, own, fromRelease, feel)
 	if #flashAt > 0 then
 		local ok, err = pcall(flashMonstersAt, flashAt)
 		if not ok then warnThrottled("hit flash failed: " .. tostring(err)) end
-		local okRecoil, errRecoil = pcall(recoilMonstersAt, flashAt, fromRelease == true and MOTION.RECOIL_RELEASE or 1)
+		local mult = fromRelease == true and MOTION.RECOIL_RELEASE or (type(feel) == "table" and feel.Recoil) or 1 -- G3
+		local okRecoil, errRecoil = pcall(recoilMonstersAt, flashAt, mult)
 		if not okRecoil then warnThrottled("hit recoil failed: " .. tostring(errRecoil)) end
 	end
 	if sparks > 0 and type(feel) == "table" then
@@ -4085,10 +4087,17 @@ Feel.Predict = { MaxAge = 1.5, Pending = {}, LastSwing = -math.huge, Gap = 0.02 
 function Feel.takePending(P, now)
 	while P.Pending[1] and now - P.Pending[1] > P.MaxAge do table.remove(P.Pending, 1) end
 	if P.Pending[1] then
-		table.remove(P.Pending, 1)
-		return true
+		return table.remove(P.Pending, 1) -- 손맛 G2: the press's time (truthy)
 	end
 	return false
+end
+
+-- 손맛 G2 (pure): a paired swing's times counted from the press `ago` s back - the launch (bow / staff) and the hit show
+-- that much sooner, never before now; a melee hit (no launch) the same; the projectile keeps its whole flight
+function Feel.shiftTimes(launch, showAt, ago, ranged)
+	ago = math.max(0, tonumber(ago) or 0)
+	local cut = ranged and math.min(ago, launch) or math.min(ago, showAt)
+	return math.max(0, launch - cut), math.max(0, showAt - cut)
 end
 
 -- Studio test aid (손맛 측정, attack_feel): which path started my swing and when ("P" = my press, "S" = the server's
@@ -4130,11 +4139,14 @@ handlers.Swing = function(data)
 	local ctx = Feel.attackContext(data)
 	if not ctx then return end
 	local own = isOwn(data)
+	local pressAgo = nil -- 손맛 G2: s since my press of this swing (a paired Fx), else nil
 	if own then
 		Fx.LastFightAt = os.clock() -- B15: Panels keeps story pages back while I fight (manual or auto)
 		local P = Feel.Predict
-		if data.Manual == true and Feel.takePending(P, os.clock()) then
-			-- my press already plays this swing (Fx.PredictSwing): no restart
+		local pressedAt = data.Manual == true and Feel.takePending(P, os.clock()) or nil
+		if pressedAt then
+			-- my press already plays this swing (Fx.PredictSwing): no restart; its hits count from the press (G2)
+			pressAgo = os.clock() - pressedAt
 			Feel.dbgSwing("pair")
 		else
 			-- 손맛 G1: Audio plays this swing's class sound (OnFx); the old sword file only without Audio
@@ -4161,13 +4173,21 @@ handlers.Swing = function(data)
 	-- my manual hits: hit-stop / camera kick; auto-combat hits stay quiet (A23-1: no shake, no hit-stop)
 	local style = asStr(data.Style, "")
 	local punch = style == "Punch" or style == "PetHeadbutt" -- A23-34 / A23-39 (the pet itself comes with PET-3)
-	local feel = data.Manual == true and { Stop = classId == "Warrior" or punch, Kick = true } or nil
+	-- 손맛 G3 (docs/review/attack_feel_values_2026-10-17.md): my manual arrow / orb hits push the monster harder
+	-- (MOTION.RECOIL_RANGED x its recoil; my own body has no hit-stop after a release - nothing in the hand to stop)
+	local ranged = (classId == "Mage" or classId == "Archer") and not punch
+	local feel = data.Manual == true and { Stop = classId == "Warrior" or punch, Kick = true,
+		Recoil = ranged and MOTION.RECOIL_RANGED or nil } or nil
 	local launch = math.clamp(asNum(data.LaunchDelay, classId == "Mage" and MOTION.CAST_DELAY or MOTION.SHOT_DELAY), 0, 1)
 	local flight = math.clamp(asNum(data.FlightTime, classId == "Mage" and 0.2 or 0.15), 0, 1)
 
 	-- A14-4: when the hits will show, so the monsters' HurtSeq pain reaction waits for it
 	local showAt = math.clamp(asNum(data.ContactDelay,
 		classId == "Warrior" and MOTION.SLASH_CONTACT or launch + flight), 0, 1)
+	-- 손맛 G2: my pressed swing (paired above) shows its hits on the body's own clock - from the press
+	if own and pressAgo then
+		launch, showAt = Feel.shiftTimes(launch, showAt, pressAgo, (classId == "Mage" or classId == "Archer") and not punch)
+	end
 	local okExpect, errExpect = pcall(Feel.expectHits, hits, showAt)
 	if not okExpect then warnThrottled("hit sync failed: " .. tostring(errExpect)) end
 
