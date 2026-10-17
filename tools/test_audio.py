@@ -141,8 +141,9 @@ MUTATIONS = [
     ("hits play at the swing start", "planHits(out, data, math.clamp(contact, 0, 1), extra, ctx)",
      "planHits(out, data, 0, extra, ctx)"),
     # sound_gaps 2026-10-07 (A1 / A2 / A12 / A7 / A11 / B13 / C2, sound_spec §4-2 3-6)
-    ("no second arrow", "if data.Style == nil and file == SWING.Archer and hitEvent(data.Hits, ctx).Targets >= num(double.From, 2) then",
-     "if false then"),
+    ("no second arrow", "and hitEvent(data.Hits, ctx).Targets >= num(double.From, 2) then", "and false then"),
+    ("G1: a pressed swing sounds twice", "if not (own and ctx.Pressed == true) then\n\t\t\t\tadd(out, event, at,",
+     "if true then\n\t\t\t\tadd(out, event, at,"),
     ("the mage faction file is ignored", "if own and idOf(own) then file = own end", ""),
     ("a faction file plays before it is uploaded", "if own and idOf(own) then file = own end", "if own then file = own end"),
     ("the mage file at the press, not on the launch",

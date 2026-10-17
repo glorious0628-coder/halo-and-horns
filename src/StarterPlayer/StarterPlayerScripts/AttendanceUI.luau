@@ -41,6 +41,9 @@ local L = {
 	ClaimWait = 3, -- s the button stays "pending" after a press without an answer (then it unlocks again)
 	FirstWait = 600, -- s of play before the board opens by itself for a player who never claimed (not the first minutes)
 	Poll = 2, -- s between the auto-open checks
+	-- game play r6 (it opened over the marker on entering the Crossroads, 3rd run): never by itself while one of the first
+	-- story quests up to this one is still on my rows (M1_1 .. M1_3)
+	StoryUntil = { "M1_1", "M1_2", "M1_3" },
 	AfterSpawn = 30, -- s after (re)spawning with no auto-open (게임 플레이 5판: it popped up the moment a KO got up in town)
 	Pop = { From = 1.8, Time = 0.35 }, -- the stamp's pop
 	Faded = 0.55, -- ImageTransparency of a stamped slot's icons
@@ -232,6 +235,19 @@ function AttendanceUI.Goal(days, faction)
 	return nil
 end
 
+-- game play r6: one of L.StoryUntil's story quests still on my rows (HUD.QuestEntries "story:<id>")
+function AttendanceUI.EarlyStory()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.QuestEntries) ~= "function" then return false end
+	local ok, rows = pcall(hud.QuestEntries)
+	local want = {}
+	for _, id in L.StoryUntil do want["story:" .. id] = true end
+	for _, e in ok and type(rows) == "table" and rows or {} do
+		if type(e) == "table" and want[e.Id] then return true end
+	end
+	return false
+end
+
 -- open by itself? ctx = { Ready, Step, Done, Days, Played (s), Day, OpenedDay, Busy, Town, Spawned (s since my body came) }:
 -- once a day, a claim open, the first mission done, a calm screen, in a town (게임 플레이 2판 10/16: it popped up in the
 -- middle of a hunt - out in the fields the [Menu] glow is the only sign), not in the first L.AfterSpawn s after a
@@ -240,6 +256,7 @@ function AttendanceUI.AutoOpen(ctx)
 	ctx = type(ctx) == "table" and ctx or {}
 	if ctx.Ready ~= true or ctx.Busy == true or ctx.Town ~= true then return false end
 	if (tonumber(ctx.Spawned) or math.huge) < L.AfterSpawn then return false end
+	if ctx.EarlyStory == true then return false end
 	if ctx.Day == nil or ctx.Day == ctx.OpenedDay then return false end
 	if type(ctx.Step) ~= "number" or ctx.Step ~= (tonumber(ctx.Done) or 99) then return false end
 	return int(ctx.Days) > 0 or (tonumber(ctx.Played) or 0) >= L.FirstWait
@@ -552,7 +569,7 @@ function AttendanceUI.Tick()
 	local steps = type(Config.Tutorial) == "table" and Config.Tutorial.Steps or {}
 	local ctx = { Ready = attr("AttendReady") == true, Step = attr("TutorialStep"), Done = steps.Done, Days = attr("AttendDays"),
 		Played = os.clock() - S.Joined, Day = Config.DayIndex(os.time()), OpenedDay = S.OpenedDay, Town = attr("ZoneTown") == true,
-		Spawned = os.clock() - (S.SpawnAt or -math.huge) }
+		Spawned = os.clock() - (S.SpawnAt or -math.huge), EarlyStory = AttendanceUI.EarlyStory() }
 	if not AttendanceUI.AutoOpen(ctx) then return false end
 	ctx.Busy = busy() -- (asked last: the checks above are cheap)
 	if not AttendanceUI.AutoOpen(ctx) then return false end

@@ -3860,6 +3860,14 @@ function Panels.Open(id, arg)
 	-- A23-221 ② (dev2-first12, M1_2's anvil step): OpenPanel "Enhance" { Item = the scroll, Tier = the weapon in hand } = the
 	-- bag's scroll step with that weapon picked (BagUI arg Use / Tier: the chance and [Enhance] at once; its result plays
 	-- on the weapon cell - the gold flash up, the grey shake down); no scroll = the bag's Gear tab
+	-- game play r6: a plain bag open during a quick slot step starts on Use (BagUI.OpenArg)
+	if id == "Bag" and arg == nil then
+		local bag = C and C.BagUI
+		if type(bag) == "table" and type(bag.OpenArg) == "function" then
+			local ok, a = pcall(bag.OpenArg)
+			if ok and type(a) == "table" then arg = a end
+		end
+	end
 	if id == "Enhance" then
 		local a = type(arg) == "table" and arg or {}
 		local item = type(a.Item) == "string" and Config.Loot.Items[a.Item] and a.Item or nil

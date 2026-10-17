@@ -4112,7 +4112,11 @@ function Fx.PredictSwing()
 	if now - P.LastSwing < asNum(prof.SwingInterval, 1) - P.Gap then return false end
 	local data = { UserId = me.UserId, Character = char, Class = classId, Faction = faction, Style = prof.Style,
 		Manual = true }
-	Fx.PlaySound("Swing")
+	-- 손맛 G1: MY class's swing sound now (Audio.PressSwing), the old sword file only without Audio
+	local audio = C and C.Audio
+	local okA, played = false, false
+	if type(audio) == "table" and type(audio.PressSwing) == "function" then okA, played = pcall(audio.PressSwing, data) end
+	if not (okA and played) then Fx.PlaySound("Swing") end
 	animateOwnAttack(data, "Swing")
 	table.insert(P.Pending, now)
 	if #P.Pending > 4 then table.remove(P.Pending, 1) end
@@ -4133,7 +4137,9 @@ handlers.Swing = function(data)
 			-- my press already plays this swing (Fx.PredictSwing): no restart
 			Feel.dbgSwing("pair")
 		else
-			Fx.PlaySound("Swing")
+			-- 손맛 G1: Audio plays this swing's class sound (OnFx); the old sword file only without Audio
+			local audio = C and C.Audio
+			if not (type(audio) == "table" and type(audio.OnFx) == "function") then Fx.PlaySound("Swing") end
 			animateOwnAttack(data, "Swing")
 			P.LastSwing = os.clock()
 			Feel.dbgSwing("S")
