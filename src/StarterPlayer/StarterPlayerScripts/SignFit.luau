@@ -17,10 +17,10 @@ local T = {
 	Every = 0.25, -- s between passes
 	Pad = 4, -- px: two boxes this close count as touching
 	Back = 8, -- px more room a hidden sign needs before it shows again
-	-- the fixed HUD kept clear: name -> "Self" (its own box) | "Children" (each shown child: the status chip row is a wide
-	-- frame, only its chips count)
-	Keep = { QuestTracker = "Self", WarMeter = "Self", StatusChips = "Children", GooseChip = "Self", PumpkinKingChip = "Self",
-		KaijuChip = "Self" },
+	-- the fixed HUD kept clear: name -> false (its own box) | true (each shown child: the status chip row is a wide frame,
+	-- only its chips count)
+	Keep = { QuestTracker = false, WarMeter = false, StatusChips = true, GooseChip = false, PumpkinKingChip = false,
+		KaijuChip = false },
 	-- billboards that are not map signs (name tags, the story marks and bubbles: never hidden)
 	Skip = { Nametag = true, StoryNpcMark = true, StoryFindBubble = true, BarkBubble = true, PetNameTag = true },
 }
@@ -91,7 +91,7 @@ local function keepBoxes()
 			g = pg:FindFirstChild(name, true)
 			S.Found[name] = g
 		end
-		if g and how == "Children" then
+		if g and how == true then
 			if boxOf(g) then
 				for _, ch in g:GetChildren() do
 					local b = boxOf(ch)
