@@ -90,3 +90,8 @@
   3. 성문 이웃 돌려주기(빛 M1_3 'Return bag' → 이웃 G → 대사·다음 목표 'Learn your first skill from Sir Gleam.').
   4. 대화 상자(Tiny·이웃 등)가 나오면 그것 — 뿔 Tiny G 대화 카드, 이웃 대사가 화면에 보이는지.
   5. 그 위에 새 sync 신호가 오면 처음부터 직업별 한 판(8판 점검표).
+
+## 10/17 밤 늦게 — 새 계정 '게임 플레이' 세션 엶 (대기)
+- 읽음: AGENTS → 04_playtest → 이 파일 '10/17 밤 멈춤' → r10 → review.md '10/17 밤'. 도구 `build/playtest_tools/` 그대로(flow.py·pose.py·pt.py·intro_watch.py), 공유 폴더 HEAD = origin/main(0 0), src 깨끗.
+- PlayTest Studio는 지금 안 열림(옛 pid 34592 없음). `build/PlayTest.rbxlx` = place/ 10/16 15:11 판과 같은 크기. 열 때 다시 복사 + list_roblox_studios로 새 id.
+- **11판 = 최종 검수 신호 뒤**(dev2-detail·dialog-box 병합 → sync): ① 빛 궁수 재대결 King(물약 3개, 50% 아래 마시기) ② 쿨다운 중 키 1 화면 사진 ③ 빛 M1_3 성문 이웃 Return bag ④ NPC 대화 상자 ⑤ 새 sync면 직업별 처음부터(전사·궁수·마법사 새 저장, 진영 섞어, 패스 끔), 직업마다 칸 먼저 보내고 마지막 '끝' + 직업별 TOP.
