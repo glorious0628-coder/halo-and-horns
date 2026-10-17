@@ -1530,6 +1530,8 @@ runGroup("quest M1_2", function()
 		for st = from + 1, to - 1 do
 			local obj = steps[st].Obj
 			check(obj.Type == "Event" and w.Config.StoryQuests.Events[obj.Name] == true, "setup: the rows between are Event rows", tostring(st))
+			-- (최종 검수 10/17: "Buy 3 potions" counts the held stock: the shop trip leaves 3 HP potions)
+			if type(obj.Stock) == "string" then w.Data[p][w.Config.PotionStockKey(obj.Stock)] = obj.Count end
 			w.Story.Event(p, obj.Name, {})
 			w:FKTick()
 			check(w:KingOf(p) == nil or w.Story.CurrentStep(p, FQ.Quest) == w.Config.FirstKO.RematchStep,

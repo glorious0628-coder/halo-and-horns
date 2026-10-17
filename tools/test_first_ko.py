@@ -37,7 +37,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
     out["DATA_SOURCE"] = sources["DATA_SOURCE"]  # ... and the real DataService builds its memory-mode record
     return out
 
-DEF_STEP2 = 'Obj = { Type = "Event", Name = "PotionBought", Past = true } },'
+DEF_STEP2 = 'Obj = { Type = "Event", Name = "PotionBought", Past = true, Stock = "HP", Count = 3 } },'
 DEF_STEP3 = 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },'
 DEF_STEP4 = 'Obj = { Type = "Event", Name = "PotionUsed", Past = true } },'
 DEF_STEP5 = 'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },'
@@ -63,7 +63,12 @@ MUTATIONS = [
      'Obj = { Type = "Event", Name = "FirstKO", Past = true } },'),
     ("M1_2 step 1 guides to the meadow (not the hill)", C, 'Guide = "KingHill", Obj = { Type = "Event", Name = "FirstKO" } },',
      'Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },'),
-    ("M1_2 step 2 never passes early", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionBought" } },'),
+    ("M1_2 step 2 never passes early", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionBought", Stock = "HP", Count = 3 } },'),
+    # 최종 검수 10/17: "Buy 3 potions" = 3 HP potions held
+    ("M1_2 step 2: one potion is enough", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionBought", Past = true, Stock = "HP", Count = 1 } },'),
+    ("M1_2 step 2: the happening, not the stock", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionBought", Past = true, Count = 3 } },'),
+    ("story: the stock rule ignored", "STORY_SOURCE", "\tif type(obj.Stock) == \"string\" then\n\t\tlocal key = Config.PotionStockKey(obj.Stock)\n", "\tif false then\n\t\tlocal key = Config.PotionStockKey(obj.Stock)\n"),
+    ("story: a stock step moves on any purchase", "STORY_SOURCE", "obj.Name == name and (obj.Stock == nil or eventPast(data, obj)) then", "obj.Name == name then"),
     ("M1_2 step 3 never passes early", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "QuickSlotSet", Held = "QuickSlots" } },'),
     ("M1_2 step 3 ignores a filled slot", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true } },'),
     ("M1_2 step 3 reads another field", C, DEF_STEP3, 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "Quick" } },'),
@@ -72,10 +77,10 @@ MUTATIONS = [
     ("M1_2 step 4 never passes early", C, DEF_STEP4, 'Obj = { Type = "Event", Name = "PotionUsed" } },'),
     ("M1_2 step 4 waits for the wrong happening", C, DEF_STEP4, 'Obj = { Type = "Event", Name = "QuickSlotSet", Past = true } },'),
     ("M1_2 step 2 waits for the wrong happening", C, DEF_STEP2, 'Obj = { Type = "Event", Name = "PotionUsed", Past = true } },'),
-    ("M1_2 guides step 2 to the old spot", C, '{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop",',
+    ("M1_2 guides step 2 to the old spot", C, '{ Text = "Buy 3 potions %d/%d", ShortName = "Buy potions", Guide = "PotionShop",',
      '{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "Crossroads",'),
-    ("M1_2 tops up the gold again (the old KO1 step 2)", C, '{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop",',
-     '{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,'),
+    ("M1_2 tops up the gold again (the old KO1 step 2)", C, '{ Text = "Buy 3 potions %d/%d", ShortName = "Buy potions", Guide = "PotionShop",',
+     '{ Text = "Buy 3 potions %d/%d", ShortName = "Buy potions", Guide = "PotionShop", TopUpGold = 50,'),
     ("M1_2 guides step 3 nowhere", C, 'ShortName = "Quick slot", Guide = "QuickSlot",', 'ShortName = "Quick slot",'),
     ("QuickSlotSet not a listed happening", C, "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }",
      "Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, PotionUsed = true }"),
@@ -175,9 +180,9 @@ MUTATIONS = [
     ("Event ignores readiness", ST, "\tif not S.PlayerService.IsReady(player) then return false end\n\tlocal data = getData(player)\n\tif not data then return false end\n\tstory(data).First[name] = true",
      "\tlocal data = getData(player)\n\tif not data then return false end\n\tstory(data).First[name] = true"),
     ("Event forgets what it saw", ST, "\tstory(data).First[name] = true\n\tlocal moved = false", "\tlocal moved = false"),
-    ("Event moves a step that waits for another name", ST, "if obj and obj.Type == \"Event\" and obj.Name == name then\n\t\t\tadvance(player, data, t.Id, tr)",
-     "if obj and obj.Type == \"Event\" then\n\t\t\tadvance(player, data, t.Id, tr)"),
-    ("Event never moves a step", ST, "if obj and obj.Type == \"Event\" and obj.Name == name then\n\t\t\tadvance(player, data, t.Id, tr)",
+    ("Event moves a step that waits for another name", ST, "if obj and obj.Type == \"Event\" and obj.Name == name and (obj.Stock == nil or eventPast(data, obj)) then\n\t\t\tadvance(player, data, t.Id, tr)",
+     "if obj and obj.Type == \"Event\" and (obj.Stock == nil or eventPast(data, obj)) then\n\t\t\tadvance(player, data, t.Id, tr)"),
+    ("Event never moves a step", ST, "if obj and obj.Type == \"Event\" and obj.Name == name and (obj.Stock == nil or eventPast(data, obj)) then\n\t\t\tadvance(player, data, t.Id, tr)",
      "if false then\n\t\t\tadvance(player, data, t.Id, tr)"),
     ("Event never refreshes the next step", ST, "\tif moved then\n\t\t-- the steps that pass at once", "\tif false then\n\t\t-- the steps that pass at once"),
     ("Event refreshes only once (one step per call)", ST, "\t\t\tif stepsSum(data) == before then break end\n", "\t\t\tbreak\n"),

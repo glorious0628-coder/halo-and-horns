@@ -4728,8 +4728,10 @@ Config.StoryQuests.Defs.M1_2 = {
 	Kind = "Main", Chapter = 1, Type = "Combat", Title = "The King's Hop", ShortName = "King's hop", Speaker = "Smith",
 	Steps = {
 		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "KingHill", Obj = { Type = "Event", Name = "FirstKO" } },
-		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop",
-			Obj = { Type = "Event", Name = "PotionBought", Past = true } },
+		-- 최종 검수 10/17 (user: "물약 산 다음에 킹슬라임 잡을 때는 물약을 먹으면서 해야지"): hold 3 HP potions (Stock / Count: the
+		-- held stock counts, potions bought before too) - one is drunk to learn, two go to the King
+		{ Text = "Buy 3 potions %d/%d", ShortName = "Buy potions", Guide = "PotionShop",
+			Obj = { Type = "Event", Name = "PotionBought", Past = true, Stock = "HP", Count = 3 } },
 		{ Text = "Put the potion in a quick slot", ShortName = "Quick slot", Guide = "QuickSlot",
 			Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },
 		{ Text = "Drink it from your quick slot", ShortName = "Drink potion", Guide = "QuickSlot",

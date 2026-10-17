@@ -694,6 +694,12 @@ end
 -- save whose letters mean it is done already (an old save's quick slots hold "HP,MP,": nothing is left to put in a slot)
 local function eventPast(data, obj)
 	if type(obj) ~= "table" or obj.Type ~= "Event" or obj.Past ~= true then return false end
+	-- 최종 검수 10/17: obj.Stock = a potion kind whose HELD stock must reach Count (M1_2 "Buy 3 potions"): the stock decides,
+	-- not the happening (a potion bought and drunk before is not one held now)
+	if type(obj.Stock) == "string" then
+		local key = Config.PotionStockKey(obj.Stock)
+		return key ~= nil and num(data[key]) >= math.max(1, num(obj.Count, 1))
+	end
 	if story(data).First[obj.Name] == true then return true end
 	local held = obj.Held
 	return type(held) == "string" and type(data[held]) == "string" and string.find(data[held], "%a") ~= nil
@@ -1381,6 +1387,15 @@ local function refresh(player)
 				done = stateTrue(player, obj.Key)
 			elseif obj.Type == "Event" then
 				done = eventPast(data, obj)
+				if not done and type(obj.Stock) == "string" then
+					-- the held stock is the row's progress (a drink or a sale moves it too)
+					local key = Config.PotionStockKey(obj.Stock)
+					local held = math.min(math.max(1, num(obj.Count, 1)), key and math.floor(num(data[key])) or 0)
+					if num(tr.P) ~= held then
+						tr.P = held
+						changed = true
+					end
+				end
 			elseif obj.Type == "Level" then
 				done = levelReached(data, obj)
 				if not done then changed = true end -- the row shows "(지금 LvN)"
@@ -1494,8 +1509,11 @@ function StoryQuestService.Event(player, name, info)
 		local def, tr = DEFS[t.Id], t.Track
 		local step = (not tr.Claim) and stepOf(player, def, tr.St) or nil
 		local obj = step and step.Obj
-		if obj and obj.Type == "Event" and obj.Name == name then
+		if obj and obj.Type == "Event" and obj.Name == name and (obj.Stock == nil or eventPast(data, obj)) then
 			advance(player, data, t.Id, tr)
+			moved = true
+		elseif obj and obj.Type == "Event" and obj.Name == name and obj.Stock ~= nil then
+			-- a Stock step not there yet: the refresh below moves its row's numbers (held / Count) and publishes them
 			moved = true
 		end
 	end
