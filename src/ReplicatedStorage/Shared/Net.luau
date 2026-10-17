@@ -68,8 +68,12 @@ Net.Names = {
 	"CraftFinish", -- (sessionId: number) the hammer is over (or Skip): the server grades the strikes (Shared/CraftMini)
 	-- server -> client (owner only):
 	"CraftSession", -- { Id, Recipe, Strikes, Ring, Rest, StartAt (server time) }
-	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp, Pet? = { Uid, Species, Spd } (a summon), Fame }
-	"CraftInfo", -- { Role, Lv, XP, Need, Made, On, Rep, Rank, NextRep } at join, after every craft and a class / faction change
+	"CraftResult", -- { Id, Recipe, Kind, Tier?, Slot?, Item?, Plus, Grades, XP, Lv, LvUp, Pet? = { Uid, Species, Spd } (a summon), Fame, Blessed? (A23-219) }
+	"CraftInfo", -- { Role, Lv, XP, Need, Made, On, Rep, Rank, NextRep, Tool } at join, after every craft and a class / faction change
+	-- 게임성 개발 2 (A23-219) craft tools: client -> server "CraftTool" () one upgrade try of my role's tool at my workbench;
+	-- server -> client (owner only) "CraftToolResult" { Role, Tool = the +N now, Ok = true | false (a fail keeps it), Name }
+	"CraftTool",
+	"CraftToolResult",
 	-- 게임성 개발 3 (2026-10-12) alchemy tonics (BuffService), client -> server:
 	"UseTonic", -- (itemId: a Config.Alchemy.Tonics item) drink one; the running ones are the attributes Buff_<itemId>
 	-- 게임성 개발 3 (2026-10-12) tamer research (TamerService), server -> client (owner only, the tamer):

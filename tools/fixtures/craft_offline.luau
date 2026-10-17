@@ -1155,4 +1155,121 @@ runGroup("fame", function()
 	check(dq.Craft.Rep == 2 and #n.Warnings == 0, "no RankingService.Credit: Rep only, no error", show(n.Warnings))
 end)
 
+
+------------------------------------------------------------------ A23-219 craft tools + the Blessed Scroll (게임성 개발 2)
+runGroup("tools", function()
+	local w = cWorld()
+	local C = w.Config
+	local T = C.Craft.Tools
+	check(T.Max == 10 and #T.Steps == 10 and T.Steps[1].P == 1 and T.Steps[3].P == 0.9 and T.Steps[10].P == 0.3
+		and T.Steps[10].Gold == 18000 and T.Steps[10].Lv == 20 and T.Steps[10].Extra.TrialCore == 1 and T.Steps[7].Extra.KingJelly == 1,
+		"Config.Craft.Tools: +1..+10, 100% -> 30%, +10 = 18,000 gold, Lv20, extras from +7 (craft_tools_r1 §1)", show(T.Steps[10]))
+	check(T.Names.Smith == "Craft Hammer" and T.Names.Alch == "Mixing Kit" and T.Names.Tame == "Care Kit" and T.Bless[0] == 0
+		and T.Bless[1] == 0.005 and T.Bless[10] == 0.05 and T.BlessRecipe == "AS1" and T.BlessItem == "Enh70B",
+		"names, Bless 0 -> 0.5% -> 5% (AS1 -> Enh70B)", show(T.Bless))
+	local B = C.Loot.Items.Enh70B
+	check(B and B.Kind == "Enhance" and B.Chance == 0.7 and B.Plus == 2 and B.Source == "Craft" and table.find(C.Loot.Order, "Enh70B") ~= nil,
+		"Enh70B: an Enhance scroll, 70%, +2 on a success, made only by crafting, listed", show(B))
+	-- the average total (no drop on a fail = 1 / P tries each): 18.15 tries, about 109,590 gold
+	local tries, gold = 0, 0
+	for _, st in T.Steps do
+		tries += 1 / st.P
+		gold += st.Gold / st.P
+	end
+	check(math.abs(tries - 18.15) < 0.01 and math.abs(gold - 109590) < 1, "+0 -> +10 on average: 18.15 tries, 109,590 gold", show({ tries, gold }))
+
+	-- a blacksmith with no tool saved: +0; one try at +0 -> +1 (100%): 40 gold, 2 copper + 2 jelly
+	local p, d = smith(w, 61)
+	check(w.C.ToolCost("Smith", 1).Every.Jelly == 2 and w.C.ToolCost("Smith", 1).Every.CopperOre == 2 and w.C.ToolCost("Smith", 7).Every.KnightCrest == 4
+		and w.C.ToolCost("Alch", 5).Every.Glowcap == 8 and w.C.ToolCost("Tame", 9).Every.Petal == 12
+		and w.C.ToolCost("Smith", 3).Every.Jelly == 6 and w.C.ToolCost("Smith", 6).Every.GoblinTooth == 12
+		and w.C.ToolCost("Smith", 4).Every.GoblinTooth == 4 and w.C.ToolCost("Smith", 7).Every.GoblinTooth == nil,
+		"ToolCost: the role's band material (Jelly / GoblinTooth / KnightCrest for the smith, ...)", "")
+	local gold0, jelly0, copper0 = d.BankGold, d.Items.Jelly, d.Items.CopperOre
+	check(w.C.UpgradeTool(p) == "ok" and d.Craft.ToolSmith == 1 and d.BankGold == gold0 - 40 and d.Items.Jelly == jelly0 - 2
+		and d.Items.CopperOre == copper0 - 2, "+0 -> +1: paid 40 gold, 2 jelly, 2 copper; saved flat (Craft.ToolSmith)", show({ d.Craft.ToolSmith, d.BankGold }))
+	check(d.Craft.Tool == nil, "no nested Tool table in the save (an older server would drop it)", show(d.Craft.Tool))
+	local res = last(fired(w, "CraftToolResult", p))
+	check(res and res.Role == "Smith" and res.Tool == 1 and res.Ok == true and res.Name == "Craft Hammer", "CraftToolResult { Smith, 1, Ok }", show(res))
+	check(last(fired(w, "CraftInfo", p)).Tool == 1, "CraftInfo carries the tool's +N", "")
+	-- the craft level gate (+3 needs Lv2)
+	d.Craft.ToolSmith = 2
+	local before = d.BankGold
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "level" and d.Craft.ToolSmith == 2 and d.BankGold == before, "+2 -> +3 at craft Lv1: level, nothing taken", "")
+	-- a fail keeps the tool and pays every-try costs only; the extra (KingJelly at +7) is held and only taken on a success
+	d.Craft.Smith = { Lv = 12, XP = 0 }
+	d.Craft.ToolSmith = 6
+	d.Items.KingJelly = 1
+	local silver, crest, g6 = d.Items.SilverOre, d.Items.KnightCrest, d.BankGold
+	w.Script = { 0.9 } -- (P = 0.5: 0.9 fails)
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "fail" and d.Craft.ToolSmith == 6 and d.BankGold == g6 - 2500 and d.Items.SilverOre == silver - 8
+		and d.Items.KnightCrest == crest - 4 and d.Items.KingJelly == 1, "+6 -> +7 failed: still +6 (never down), 2,500 gold + 8 silver + 4 crests paid, the King Jelly kept",
+		show({ d.Craft.ToolSmith, d.Items.KingJelly }))
+	check(last(fired(w, "CraftToolResult", p)).Ok == false, "the result says Ok = false", "")
+	w.Script = { 0.49 }
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "ok" and d.Craft.ToolSmith == 7 and (d.Items.KingJelly or 0) == 0, "the next try succeeds: +7, the King Jelly taken", show(d.Items.KingJelly))
+	-- the extra missing: no try at all
+	local g7 = d.BankGold
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "mats" and d.Craft.ToolSmith == 7 and d.BankGold == g7, "+7 -> +8 without the 2 Deep Moon Shards: mats, nothing taken", "")
+	-- +10 is the top
+	d.Craft.ToolSmith = 10
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "max", "+10: max", "")
+	-- far from the workbench / not an artisan / no gold
+	d.Craft.ToolSmith = 0
+	rootOf(p).Position = vec(200, 0, 0)
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "far" and d.Craft.ToolSmith == 0, "far from the bench: far", "")
+	rootOf(p).Position = vec(5, 0, 0)
+	d.BankGold, d.CarriedGold = 10, 0
+	w:Advance(2)
+	check(w.C.UpgradeTool(p) == "gold" and d.Items.Jelly == jelly0 - 2, "no gold: nothing taken", "")
+	local h = smith(w, 62, nil, "Warrior", "Halo")
+	check(w.C.UpgradeTool(h) == "role", "a Halo knight has no tool", "")
+	-- through the remote (no arguments)
+	d.BankGold = 100000
+	w.Gap = 2
+	w:Remote("CraftTool", p)
+	check(d.Craft.ToolSmith == 1, "the CraftTool remote tries once", d.Craft.ToolSmith)
+	w:Remote("CraftTool", p, "Alch")
+	check(d.Craft.ToolSmith == 1, "an argument = ignored", d.Craft.ToolSmith)
+
+	-- the Blessed Scroll: AS1 rolls once at its start with Bless[the Mixing Kit's +N]
+	local stock = { Herb = 60, CopperOre = 40, SlimeCore = 12 }
+	local a, ad = smith(w, 63, { Items = deepCopy(stock) }, "Mage")
+	ad.Craft.Alch = { Lv = 3, XP = 0 }
+	ad.Craft.ToolAlch = 10
+	w.Script = { 0.04 } -- (< 5%: blessed)
+	w:Advance(61)
+	startAndHammer(w, a, HONEST, { Recipe = "AS1" })
+	local r1 = last(fired(w, "CraftResult", a))
+	check(r1 and r1.Blessed == true and (ad.Items.Enh70B or 0) == 1 and (ad.Items.Enh70 or 0) == r1.Plus,
+		"+10 kit, a 4% roll: ONE Blessed Scroll + the hammer's +N plain ones (never all blessed)", show({ r1, ad.Items.Enh70, ad.Items.Enh70B }))
+	w.Script = { 0.06 } -- (>= 5%: plain)
+	w:Advance(61)
+	startAndHammer(w, a, HONEST, { Recipe = "AS1" })
+	local r2 = last(fired(w, "CraftResult", a))
+	check(r2 and r2.Blessed == nil and (ad.Items.Enh70B or 0) == 1, "a 6% roll: plain scrolls only", show(r2))
+	-- the roll is saved with the paid craft (a stop / rejoin pays the same)
+	w.Script = { 0.01 }
+	w:Advance(61)
+	check(w.C.TryStart(a, "AS1") == "ok" and ad.Craft.Pend.Bless == true, "the roll is in Craft.Pend (Bless)", show(ad.Craft.Pend))
+	local clean = C.SanitizeCraft(deepCopy(ad.Craft))
+	check(clean.Pend.Bless == true and clean.ToolAlch == 10, "the save repair keeps Pend.Bless and ToolAlch", show(clean))
+	-- a +0 kit never blesses (no roll drawn)
+	local z, zd = smith(w, 64, { Items = deepCopy(stock) }, "Mage")
+	zd.Craft.Alch = { Lv = 3, XP = 0 }
+	w.Script = { 0 }
+	startAndHammer(w, z, HONEST, { Recipe = "AS1" })
+	check(last(fired(w, "CraftResult", z)).Blessed == nil and (zd.Items.Enh70B or 0) == 0, "a +0 kit: Bless 0%, never blessed", "")
+	w.Script = {}
+	-- the repair: flat Tool<role> 0..10, anything else dropped
+	local fix = C.SanitizeCraft({ ToolSmith = 12, ToolAlch = -3, ToolTame = "x", Tool = { Smith = 5 } })
+	check(fix.ToolSmith == 10 and fix.ToolAlch == nil and fix.ToolTame == nil and fix.Tool == nil, "repair: 12 -> 10, -3 / 'x' / a table dropped", show(fix))
+end)
+
 finish()

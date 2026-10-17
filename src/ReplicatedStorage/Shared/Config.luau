@@ -6421,6 +6421,9 @@ Config.Loot = {
 		-- ⑤ tamers make it (recipe T1); anyone feeds it to a pet (FeedPet: pet XP + Config.Research.TreatXP)
 		PetTreat = { Kind = "Treat", Name = "Pet Treat", Sell = 10, Color = Color3.fromRGB(240, 170, 90), Icon = "IconPetTreat", Source = "Craft", Desc = "Feed it to your pet for pet XP." },
 		Enh70 = { Kind = "Enhance", Name = "Enhance Scroll 70%", Chance = 0.7, Plus = 1, Color = Color3.fromRGB(120, 200, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
+		-- A23-219: an alchemist's Blessed Scroll (Config.Craft.Tools.Bless): the same 70% and the same fail rule, +2 on a success
+		-- (+9 -> +10 at most). Made only by a craft (Source Craft); trades like any craft
+		Enh70B = { Kind = "Enhance", Name = "Blessed Scroll 70%", Chance = 0.7, Plus = 2, Color = Color3.fromRGB(255, 225, 120), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand", Source = "Craft" },
 		-- A23-14 gains 70% = +1 / 30% = +3 / 10% = +5 with the 50% fail-drop: expected change at +1..+9 is
 		-- +0.55 / +0.55 / +0.05 per use (at +0: +0.70 / +0.90 / +0.50), so the rarest scroll is never a loss on average
 		Enh30 = { Kind = "Enhance", Name = "Enhance Scroll 30%", Chance = 0.3, Plus = 3, Color = Color3.fromRGB(190, 130, 255), Icon = "IconScrollEnh", IconBand = "IconScrollEnhBand" },
@@ -6430,7 +6433,7 @@ Config.Loot = {
 		Move10 = { Kind = "Transfer", Name = "Transfer Scroll 10%", Chance = 0.1, Color = Color3.fromRGB(255, 210, 90), Icon = "IconScrollMove", IconBand = "IconScrollMoveBand" },
 	},
 	-- display order in the item list
-	Order = { "Enh70", "Enh30", "Enh10", "Move70", "Move30", "Move10",
+	Order = { "Enh70", "Enh70B", "Enh30", "Enh10", "Move70", "Move30", "Move10",
 		"Jelly", "Petal", "GoldenEgg", "GooseFeather", "SlimeCore", "SeaShell", "GoblinTooth", "BruteHorn", "CrystalShard", "Bone", "KnightCrest", "CaptainBadge", "KingJelly", "ClatterGem", "DeepMoonShard", "TrialCore", "Candy",
 		"Herb", "CopperOre", "OakLog", "Glowcap", "IronOre", "SilverOre", "MoonCrystal", "CrownDust",
 		"MightTonic", "GuardTonic", "LuckyTonic", "WisdomTonic", "PetTreat" },
@@ -10221,7 +10224,41 @@ Config.Craft = {
 		Prompt = "Craft", -- the workbench prompt (ActionKey)
 		Stations = { Smith = "Anvil", Alch = "Cauldron", Tame = "Research Table" }, -- the prompt's ObjectKey by role
 		Goal = "Make something new at the %s", -- 최종 검수 10/15: the next-goal craft row (CraftService.NextGoal; the station)
+		-- A23-219 tools (CraftService.UpgradeTool; %s = the tool's name, %d = its +N)
+		ToolUp = "%s +%d!",
+		ToolSame = "Not this time. Your %s stays +%d.",
+		ToolMax = "Your %s is at its best.",
+		Blessed = "A Blessed Scroll! (70%%: +2)",
 	},
+}
+-- A23-219 (user 10/16 "제작 하는 도구들을 강화할 때마다 제작 시 좋은 옵션이 붙게 하자!", 세부 = build/codex/craft_tools_r1.md
+-- §1, "클로드 추천대로"): one personal tool per artisan role, +0 from the start (the first craft needs nothing), +0..+10, not
+-- traded. Saved FLAT in data.Craft as Tool<role> (0..10): an older server keeps a flat number (V4.keepExtra), never a table.
+-- An upgrade try at the role's workbench (Range): craft Lv >= Lv, then Gold + Common + Role materials every try; Extra only
+-- when it succeeds (held before the try). P = the success chance, the same every try (no pity, no streak bonus, A23-203);
+-- a fail keeps the tool's +N (never down, never broken). No craft XP, no weekly XP. RoleMats = the role's material for
+-- the bands +1..+3 / +4..+6 / +7..+10.
+Config.Craft.Tools = {
+	Max = 10,
+	Names = { Smith = "Craft Hammer", Alch = "Mixing Kit", Tame = "Care Kit" },
+	RoleMats = { Smith = { "Jelly", "GoblinTooth", "KnightCrest" }, Alch = { "Herb", "Glowcap", "Bone" }, Tame = { "Herb", "OakLog", "Petal" } },
+	Steps = { -- [target +N]
+		{ Lv = 1, P = 1.00, Gold = 40, Common = { CopperOre = 2 }, Role = 2 },
+		{ Lv = 1, P = 1.00, Gold = 80, Common = { CopperOre = 4 }, Role = 4 },
+		{ Lv = 2, P = 0.90, Gold = 150, Common = { CopperOre = 6 }, Role = 6 },
+		{ Lv = 3, P = 0.80, Gold = 300, Common = { IronOre = 4 }, Role = 4 },
+		{ Lv = 5, P = 0.70, Gold = 600, Common = { IronOre = 8 }, Role = 8 },
+		{ Lv = 8, P = 0.60, Gold = 1200, Common = { IronOre = 12 }, Role = 12 },
+		{ Lv = 10, P = 0.50, Gold = 2500, Common = { SilverOre = 8 }, Role = 4, Extra = { KingJelly = 1 } },
+		{ Lv = 12, P = 0.40, Gold = 5000, Common = { SilverOre = 16 }, Role = 8, Extra = { DeepMoonShard = 2 } },
+		{ Lv = 15, P = 0.35, Gold = 10000, Common = { SilverOre = 24 }, Role = 12, Extra = { ClatterGem = 1, DeepMoonShard = 2 } },
+		{ Lv = 20, P = 0.30, Gold = 18000, Common = { MoonCrystal = 20 }, Role = 20, Extra = { ClatterGem = 2, DeepMoonShard = 4, TrialCore = 1 } },
+	},
+	-- the Blessed Scroll (A23-219 user's example): a craft of BlessRecipe rolls ONCE at its start with Bless[tool +N] (fixed in
+	-- Craft.Pend); a hit swaps one of its scrolls for the blessed one (the hammer's +N extras stay plain), never two
+	BlessRecipe = "AS1",
+	BlessItem = "Enh70B",
+	Bless = { [0] = 0, 0.005, 0.01, 0.015, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05 },
 }
 -- ⑦ artisan fame and rank (게임성 개발 3, docs/design/artisan_fame_2026-10-12.md; GDD: craft points join the weekly
 -- "Artisan Fame" board, A23-24 / A23-135). A finished craft by an artisan of the recipe's role now (the craft XP rule,
@@ -10269,6 +10306,7 @@ end
 
 Config.RateLimits.CraftStart = 3
 Config.RateLimits.CraftFinish = 0.5
+Config.RateLimits.CraftTool = 1 -- A23-219: one tool upgrade try a second
 -- 게시 준비 운영 ③ (10/15): every remote has a key here. A hammer press (rings 1.2 s apart: a lag burst still fits) and the
 -- opening's one-time 'seen' (QuestService)
 Config.RateLimits.CraftStrike = 0.15
@@ -10609,7 +10647,16 @@ function Config.SanitizeCraft(t)
 	if type(p) == "table" and V4.key(p.Id) then
 		local bound = V4.countMap(p.Bound, L.MaxCount)
 		out.Pend = { Id = p.Id, Plus = V4.int(p.Plus, -1, 2) or -1, Gold = V4.int(p.Gold, 0, L.MaxCount) or 0,
-			Mats = V4.countMap(p.Mats, L.MaxCount), Bound = next(bound) ~= nil and bound or nil }
+			Mats = V4.countMap(p.Mats, L.MaxCount), Bound = next(bound) ~= nil and bound or nil,
+			Bless = p.Bless == true or nil } -- A23-219: the Blessed Scroll rolled at the start
+	end
+	-- A23-219 tools: flat Tool<role> = 0..Tools.Max (a broken value = none = +0)
+	for _, role in L.CraftRoles do
+		local k = "Tool" .. role
+		known[k] = true
+		local max = type(Config.Craft) == "table" and type(Config.Craft.Tools) == "table" and Config.Craft.Tools.Max or 10
+		local v = V4.int(src[k], 0, max)
+		if v and v > 0 then out[k] = v end
 	end
 	return V4.keepExtra(src, out, known)
 end
