@@ -1,6 +1,14 @@
-# 게임성 개발 2 — 상태 (2026-10-16 밤 끝: 2장 끝 → 다음 = 장인 최소판)
+# 게임성 개발 2 — 상태 (2026-10-17 낮, 새 계정: 첫 12분 묶음 + 배지 + 장인 2부)
 
-## 다음 (10/16 밤, 사용자 컴퓨터 끔 — 새 대화는 여기부터)
+## 지금 (10/17 낮 — 새 대화는 여기부터; 세션이 자주 끊기니 덩어리마다 커밋·push)
+- 첫 12분 묶음 = 가지 사슬 dev2-first12 54a3be0d ← dev2-gold1000 e055c2a1(보고함: 시험 7개·251개 원래 실패 12만) ← **dev2-first12c 154cabd4**(push, ../wt_f12c; 옛 263df90a를 gold 위로 옮김 = force-with-lease, 보고 전 가지):
+  ③ StartClock 9·밤·안내자 2배 줄·Talk to Otto(+WasNear 정리)·XPMult, ed0066c7 연습 자리(PracticeH (-22,0,-384) 패드 25+, PracticeN Behind -4 Side 12 = (27.3,49.8) 35.7, PracticeR 그대로; weapon_first 패드 거리 검사), 1c7d2748 Tiny 대화(본편 단계가 Learn이면 고정 줄 = 본편 유지; weapon_first 'pinned learn row' + 변이 2), 154cabd4 M1_3 1단계 Guide Lv5Slimes (250,0,0).
+  **남은 것**: test_a23_14가 first12c에서 600초 넘김(멈춤) — gold e055c2a1에선 통과. ../wt_bis(QuestService만 e055c2a1판)로 원인 가르는 중. 고친 뒤 전체 sweep → 최종 검수에 묶음 보고(①~⑤ + Lv5 KO 숫자: 뿔은 RegenPerSec 0이라 사냥 내내 HP 안 참, 슬라임 2/1.5초, 결정은 최종 검수).
+  개발 1에 보냄(10/17): QuestTarget storyEntry가 Guide 없는 Npc 단계(Tiny·Folk1)에 npcEntry 쓰기, 'Next goal.' 쪼개짐, 첫 10분 낮 = 서버 Lighting 0.5초 쓰기와 싸움.
+- **dev2-badge-ids b488b666**(push, origin/main 위, ../wt_badge): 배지 5개 ID, ShardChoice·Rank2 = 0. test_return 247·121/121. 보고 전(묶음 보고 뒤 같이).
+- **dev2-vein 8f93235d**(push, dev2-curve 위, ../wt_vein, 작업 중): 장인 2부 — Pip이 부탁(최종 검수 결정), ResetOnKO = 지금 단계만(결정), test_deep_vein 106·변이 18/18(Pip 바꾸기 전 값). 남은 것: 전체 sweep, Pip 몸을 폐허 입구로 옮길지 질문, 보고.
+
+## 다음 (10/16 밤, 사용자 컴퓨터 끔 — 기록)
 1. **dev2-first12 54a3be0d** = 보고·main 위 시험 통과(최종 검수). 병합은 개발 1 화면 짝(허수아비를 튜토리얼 줄 GuideSpot/Practice로 그림)과 같이 → 할 일 없음, 짝 가지 오면 서버 신호 맞는지만 봄.
 2. **dev2-gold1000 c3c55300**(origin push, ① 위, ../wt_gold): 코드 끝(새 저장 BankGold 1000, WeaponShop.OpenAfterDrop + Config.WeaponForgeOpen + 속성 ForgeOpen, TopUpGold 삭제). **시험 남음**: choice_card·first_ko(top-up 묶음 → '더는 안 채움')·gamepass·loot(상점: 첫 드롭 플래그)·onboarding(BankGold 0 가정)·unarmed_start(상점 구매)·village_fund. 방법: 다른 기능 시험은 세계 Defaults.BankGold = 0 주석 달아 고정, 새 검사(드롭 전 거절·드롭 뒤 판매·밈 무기 항상·ForgeOpen 마스크·새 저장 1000+150) + 변이. 끝나면 최종 검수에 SHA.
 3. **dev2-first12c 263df90a**(origin push, 옛 ② 위): ③ = StartClock 9·밤 밝기·안내자 2배 줄·'He'→Slime Prince·Forge 도착 'Talk to Otto'(시험 아직: onboarding)·Reward XPMult. ② 끝나면 dev2-gold1000 위로 cherry-pick → 시험(day_cycle·gamepass 이미 맞춤) → 보고. ③ Lv5 시험 자리 = **(b) 초원 입구 유지**(최종 검수 답) — 바꿀 것 없음.
