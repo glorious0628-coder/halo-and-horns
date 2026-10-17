@@ -25,7 +25,7 @@ if not BINARY.exists():
 FIXTURE = r'''
 local function V(x, y, z) return setmetatable({ X = x, Y = y, Z = z }, { __type = "Vector3" }) end
 local function typeof(v) local mt = type(v) == "table" and getmetatable(v) return mt and mt.__type or type(v) end
-local T = { Near = 0.55, Far = 0.95 }
+local T = { Near = 0.62, Far = 0.97 }
 local EdgeHint = {}
 __FUNCS__
 local n, failed = 0, 0
@@ -40,7 +40,7 @@ check(EdgeHint.Plan(V(0, 3, 0), B, 12) == nil, "the middle of the map: nothing")
 check(EdgeHint.Plan(V(-240, 3, 0), B, 12) == nil, "20 studs from the edge: nothing")
 e = EdgeHint.Plan(V(1835, 3, 712), B, 12)
 check(e and e.Axis == "X" and e.At == 1840, "a corner: the closer edge (MaxX 5 studs, MaxZ 8)", e and (e.Axis .. e.At))
-check(math.abs(EdgeHint.Alpha(0, 12) - 0.55) < 1e-9 and math.abs(EdgeHint.Alpha(12, 12) - 0.95) < 1e-9
+check(math.abs(EdgeHint.Alpha(0, 12) - 0.62) < 1e-9 and math.abs(EdgeHint.Alpha(12, 12) - 0.97) < 1e-9
     and EdgeHint.Alpha(3, 12) < EdgeHint.Alpha(9, 12), "clearer the closer (Near touching, Far at Show)")
 check(EdgeHint.Plan(nil, B, 12) == nil and EdgeHint.Plan(V(0, 0, 0), nil, 12) == nil, "no position / no bounds: nil")
 print("EDGE_SUMMARY checks=" .. n .. " failed=" .. failed)
@@ -75,7 +75,9 @@ def run(src: dict) -> tuple[int, str]:
         ("ClientMain loads EdgeHint", '"EdgeHint"' in (re.search(r"local ORDER = \{([^}]*)\}", src["MAIN"]) or [""])[0]),
         ("the curtain is local, never collides / queried", "p.Parent = workspace.CurrentCamera" in eh
          and "p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false" in eh),
-        ("a soft round look, no rays", "Enum.Material.ForceField" in eh and "Beam" not in eh),
+        ("r7: a soft haze, no hard panel (invisible part, edge-faded picture on both faces), no rays",
+         "p.Transparency = 1" in eh and "Enum.Material.ForceField" not in eh and "gy.Rotation = 90" in eh
+         and "haze(p, Enum.NormalId.Back)" in eh and "Beam" not in eh),
     ]
     for name, ok in statics:
         out += ("\nSTATIC_OK " if ok else "\nSTATIC_FAIL ") + name
