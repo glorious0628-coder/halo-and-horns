@@ -65,14 +65,14 @@ def hud_checks(hud: str):
          and "task.delay" not in m_fn.group(1)),
         ("the F key / attack button (startHold) swing through L.SwingFaced",
          m_hold is not None and "L.SwingFaced()" in m_hold.group(1) and 'fire("Swing")' not in m_hold.group(1)),
-        ("a world click (PrimaryClick) swings through L.SwingFaced too",
-         "C.CameraFollow.PrimaryClick:Connect(function()\n\t\tif inputAllowed() then L.SwingFaced() end" in hud),
+        ("a world click (PrimaryClick) swings through L.SwingFaced too (A23-231: not while swimming)",
+         "C.CameraFollow.PrimaryClick:Connect(function()\n\t\tif inputAllowed() and not L.Swimming() then L.SwingFaced() end" in hud),
     ]
 
 
 HUD_MUTATIONS = [
-    ("a world click skips FaceTarget (fires Swing at once)", "if inputAllowed() then L.SwingFaced() end",
-     'if inputAllowed() then fire("Swing") end'),
+    ("a world click skips FaceTarget (fires Swing at once)", "if inputAllowed() and not L.Swimming() then L.SwingFaced() end",
+     'if inputAllowed() and not L.Swimming() then fire("Swing") end'),
     ("SwingFaced never turns first", 'local _, target = L.FaceTarget("Swing")\n', 'local target = nil\n'),
     ("SwingFaced waits for the turn again", '\tfire("Swing", target)\nend',
      '\ttask.delay(0.08, function() fire("Swing", target) end)\nend'),
