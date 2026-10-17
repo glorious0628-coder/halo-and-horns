@@ -637,6 +637,18 @@ local function complete(player, data, id)
 	end
 	-- A23-34: the blacksmith's free first weapon after the story lines (1-A #2: normally paid at the visit already)
 	giveWeapon(player, def)
+	-- 장인 2부 (최종 검수 10/16: "첫 수락만 Pip이고 다음 길은 바로 이어지니까"): a run with Run.Chain starts the group's next
+	-- route at once (its turn by Story.Runs, already counted above) - only the first run is accepted at the asker
+	if isRun(def) and def.Run.Chain == true then
+		for _, nid in SQ.Subs do
+			local nd = DEFS[nid]
+			if nid ~= id and isRun(nd) and nd.Run.Group == def.Run.Group and st.Subs[nid] == nil and runTurnOk(st, nd) then
+				st.Subs[nid] = { St = 1, P = 0, T = {}, Claim = false }
+				findScene(player, nid, st.Subs[nid])
+				break
+			end
+		end
+	end
 	dirty(player)
 	StoryQuestService.QuestDone:Fire(player, id)
 end

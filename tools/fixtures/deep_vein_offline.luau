@@ -162,18 +162,17 @@ runGroup("turns", function()
 	check(d.Story.Daily == nil or next(d.Story.Daily.Taken or {}) == nil, "a run never counts in the day's five", show(d.Story.Daily))
 	runRoute(w, p, d, "DV1")
 	check(w:Track(d, "DV1") == nil and d.Story.Done.DV1 == nil and d.Story.Runs.Vein == 1, "DV1 done: never marked Done, Runs.Vein = 1", show(d.Story.Runs))
+	-- 최종 검수 10/16: only the first run is accepted at Pip; the next route starts at once (Run.Chain)
+	check(w:Track(d, "DV2") ~= nil and w:Track(d, "DV2").St == 1, "right after: DV2 runs at once (no walk back to Pip)", show(d.Story.Subs))
 	w.Story.Refresh(p)
-	check(offers(p) == "Pip", "right after: Pip offers again (no wait)", offers(p))
+	check(offers(p) == "", "while a route runs Pip offers no other", offers(p))
 	w:Act(p, "DV1", "Accept")
-	check(w:Track(d, "DV1") == nil, "DV1 again is refused (DV2's turn)", show(d.Story.Subs))
-	w:Act(p, "DV2", "Accept")
-	check(w:Track(d, "DV2") ~= nil, "DV2 accepted", "")
+	check(w:Track(d, "DV1") == nil, "DV1 cannot be taken now (DV2's turn, running)", show(d.Story.Subs))
 	runRoute(w, p, d, "DV2")
-	w:Act(p, "DV3", "Accept")
+	check(w:Track(d, "DV3") ~= nil and w:Track(d, "DV2") == nil, "DV2 done: DV3 runs", show(d.Story.Subs))
 	runRoute(w, p, d, "DV3")
 	check(d.Story.Runs.Vein == 3, "three runs done", show(d.Story.Runs))
-	w:Act(p, "DV1", "Accept")
-	check(w:Track(d, "DV1") ~= nil, "after DV3 the turn is DV1 again", show(d.Story.Subs))
+	check(w:Track(d, "DV1") ~= nil and w:Track(d, "DV1").St == 1, "after DV3 the turn is DV1 again (running at once)", show(d.Story.Subs))
 	local shards = 0
 	for _, g in w.Granted do if g.Id == "DeepMoonShard" and g.P == p then shards += g.N end end
 	check(shards == 3 and (d.Items.DeepMoonShard or 0) == 3, "one shard per run (3)", show({ shards, d.Items.DeepMoonShard }))
@@ -287,11 +286,11 @@ runGroup("ko", function()
 	check(w:Track(dm, "DV1").St == 2, "down after the first mark: still mark 2 next", show(w:Track(dm, "DV1")))
 	-- a quest without ResetOnKO keeps its step
 	local q, e = joinVein(w, 3302, { Subs = { S0 = nil } })
-	e.Story.Subs.DV1 = { St = 3, P = 0, T = {}, Claim = false }
+	e.Story.Subs.DV1 = { St = 4, P = 2, T = {}, Claim = false }
 	w.Config.StoryQuests.Defs.DV1.ResetOnKO = nil
 	w.PS.CharacterDied:Fire(q, q.Character)
 	w:Flush()
-	check(e.Story.Subs.DV1.St == 3, "no ResetOnKO: going down keeps the step", show(e.Story.Subs.DV1))
+	check(e.Story.Subs.DV1.St == 4 and e.Story.Subs.DV1.P == 2, "no ResetOnKO: going down keeps the step and its count", show(e.Story.Subs.DV1))
 	w.Config.StoryQuests.Defs.DV1.ResetOnKO = true
 	-- leaving the guard step (another quest's track only) drops the guard: the run is given up via a rejoin at step 1
 	local r, f = joinVein(w, 3303)

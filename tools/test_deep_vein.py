@@ -29,7 +29,11 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 MUTATIONS = [
     # the pack
-    ("no ResetOnKO", DV, "Run = { Group = \"Vein\", Turn = turn, Of = 3 }, ResetOnKO = true,", "Run = { Group = \"Vein\", Turn = turn, Of = 3 },"),
+    ("no ResetOnKO", DV, "Run = { Group = \"Vein\", Turn = turn, Of = 3, Chain = true }, ResetOnKO = true,",
+     "Run = { Group = \"Vein\", Turn = turn, Of = 3, Chain = true },"),
+    ("no chain (back to Pip every run)", DV, "Turn = turn, Of = 3, Chain = true }", "Turn = turn, Of = 3 }"),
+    ("the chain starts any route", ST, "and st.Subs[nid] == nil and runTurnOk(st, nd) then", "and st.Subs[nid] == nil then"),
+    ("the chain never starts", ST, "\tif isRun(def) and def.Run.Chain == true then\n", "\tif false then\n"),
     ("the shard bound (Items)", DV, "Reward = { FreeItems = {", "Reward = { Items = {"),
     ("two guards", DV, "local GUARDS = 3", "local GUARDS = 2"),
     ("guards not personal", DV, "Kind = \"SkeletonKnight\", Personal = true, Count = GUARDS", "Kind = \"SkeletonKnight\", Count = GUARDS"),

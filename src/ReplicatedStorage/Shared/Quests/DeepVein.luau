@@ -3,7 +3,8 @@
 -- three trail marks deep in the ruins -> beat the vein's guards (personal Skeleton Knights, one at a time) -> work the vein
 -- (the Timing panel: 3 of 5) -> one Deep Moon Shard, sure, NOT bound (Reward.FreeItems: a tradeable material). Going down
 -- starts the CURRENT step over (ResetOnKO; 최종 검수 10/16: marks already passed stay, A23-203); nothing is lost. Three routes take turns (Run = { Group "Vein", Turn, Of 3 }):
--- A, B, C, A, ... - never counted in the day's RepeatDailyMax, no wait between runs. Only while the guild's crafting is on
+-- A, B, C, A, ... - never counted in the day's RepeatDailyMax, no wait between runs; only the FIRST run is accepted at Pip,
+-- the next route starts at once when one ends (Run.Chain, 최종 검수 10/16). Only while the guild's crafting is on
 -- (Requires.Feature "Crafting": the shard is a crafting material), from Lv25 (the ruins' level).
 -- The asker = Pip (최종 검수 10/16: the goblin carrier of the ruins' loading ramp in the quest bible, Neutral like the guild, no new
 -- character): his one body (Daily pack, Npcs) - no second Pip body.
@@ -24,7 +25,7 @@ local function route(turn, tag, title, short, marks, guard, vein)
 	table.insert(steps, { Text = "Work the deep vein", ShortName = "Deep vein", Guide = vein,
 		Obj = { Type = "Timing", Spot = vein }, On = "Self", Find = "There it is. Easy taps." })
 	return {
-		Kind = "Sub", Type = "Gather", Difficulty = "Challenge", Run = { Group = "Vein", Turn = turn, Of = 3 }, ResetOnKO = true,
+		Kind = "Sub", Type = "Gather", Difficulty = "Challenge", Run = { Group = "Vein", Turn = turn, Of = 3, Chain = true }, ResetOnKO = true,
 		Title = title, ShortName = short, Speaker = "Pip",
 		Offer = { Npc = "Pip",
 			Before = "The deep vein glows again. Skeletons guard it.",
