@@ -4871,6 +4871,15 @@ local function clearHolds()
 	pressScale(ui.attack, false)
 end
 
+-- A23-231 (user 10/17): while my character swims its weapon is hidden (WeaponPose.WaterHide) and an attack press does
+-- nothing (no words, no banner)
+function L.Swimming()
+	local wp = C and C.WeaponPose
+	if type(wp) ~= "table" or type(wp.Swimming) ~= "function" then return false end
+	local ok, v = pcall(wp.Swimming, LocalPlayer.Character)
+	return ok and v == true
+end
+
 -- One deliberate press sends one Swing; holding no longer attacks repeatedly.
 local function startHold(source)
 	if source == nil then return end
@@ -4880,7 +4889,7 @@ local function startHold(source)
 	holdToken += 1
 	local token = holdToken
 	pressScale(ui.attack, true)
-	L.SwingFaced()
+	if not L.Swimming() then L.SwingFaced() end
 end
 
 local function stopHold(source)
@@ -5171,7 +5180,40 @@ end
 -- turn to my target (L.FaceTarget) and swing at once with it: the server aims the same way itself (dev2 bd3d6bd: no
 -- target in the front half -> the nearest monster in Range, and it turns my root), so it never waits for my turn to
 -- replicate (0.27-0.43 s in Studio, measured 2026-10-07)
+-- 세세한 게임성 #1 (detail_audit_2026-10-17, laws 4 / 5: a kid taps fast; 'I pressed and nothing came' breaks the
+-- promise): a press within Window s of the swing being ready is kept once and swings the moment it is ready (still one
+-- press = one swing, A23-51); earlier presses go on as before. (pure) wait = Fx.SwingReadyIn() -> "fire" | "queue" | "skip"
+L.SwingBuffer = { Window = 0.25, Queued = false, Margin = 0.01 }
+function HUD.SwingPlan(wait, queued)
+	wait = tonumber(wait) or 0
+	if wait <= 0 or wait > L.SwingBuffer.Window then return "fire" end
+	return queued and "skip" or "queue"
+end
+
+-- true = swing now; a press just before ready is kept (HUD.SwingPlan "queue") and swings itself when ready
+function L.SwingGate()
+	local fx = C and C.Fx
+	local wait = 0
+	if type(fx) == "table" and type(fx.SwingReadyIn) == "function" then
+		local ok, w = pcall(fx.SwingReadyIn)
+		wait = ok and tonumber(w) or 0
+	end
+	local plan = HUD.SwingPlan(wait, L.SwingBuffer.Queued)
+	if plan == "skip" then return false end
+	if plan == "queue" then
+		L.SwingBuffer.Queued = true
+		task.delay(wait + L.SwingBuffer.Margin, function()
+			L.SwingBuffer.Queued = false
+			if not inputAllowed() then return end
+			L.SwingFaced()
+		end)
+		return false
+	end
+	return true
+end
+
 function L.SwingFaced()
+	if not L.SwingGate() then return end
 	local _, target = L.FaceTarget("Swing")
 	-- 손맛 ① (최종 검수 10/16): my body starts the swing now (Fx.PredictSwing; the server's Fx does not restart it)
 	local fx = C and C.Fx
@@ -6454,7 +6496,7 @@ function HUD.Start()
 	-- A23-51: a left press on the world attacks once (holding or dragging never repeats); the camera turns with the
 	-- right mouse drag only (Roblox's default camera).
 	C.CameraFollow.PrimaryClick:Connect(function()
-		if inputAllowed() then L.SwingFaced() end
+		if inputAllowed() and not L.Swimming() then L.SwingFaced() end
 	end)
 
 	task.spawn(function()

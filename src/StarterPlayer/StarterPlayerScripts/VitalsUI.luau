@@ -90,14 +90,16 @@ function WAY.Show()
 	if typeof(target) == "Instance" and target:IsA("BasePart") then pcall(hud.ShowGuide, target, WAY.Label) end
 end
 
+-- -> true when the drink went to the server, else false and why (potionState's label: a cooldown 'Ns', Full, Buy ...)
 local function requestPotion(kind)
 	local count, label, available = potionState(kind)
 	if not available then
 		if count <= 0 and label == "Buy" then WAY.Show() end -- no potions: show the way to the merchant
-		return
+		return false, label
 	end
 	-- Display checks only: the server alone consumes stock, heals, charges MP and applies the deadline.
 	Net.Get("UsePotion"):FireServer(kind)
+	return true, label
 end
 
 -- HP / MP bars (BarTrack art). Built at their v2 heights (the fill's rounded caps follow the build height); HUD places
@@ -163,12 +165,19 @@ function VitalsUI.BuildPotions(parent, touch)
 	-- slot 3 is HUD's (QuickSlot3). Until 개발 1's quick slots take items, slot 1 = HP potion, slot 2 = MP potion
 	local square = not touch
 	for i, kind in { "HP", "MP" } do
-		local button = UIKit.ArtButton(square and "MenuTile" or "BtnPotion", { Name = kind .. "Potion", Parent = row,
+		local button
+		button = UIKit.ArtButton(square and "MenuTile" or "BtnPotion", { Name = kind .. "Potion", Parent = row,
 			AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.fromOffset(72, 72),
 			ImageTransparency = square and 0.15 or nil }, function() -- 0.15 = HUD L.TileTint
 			-- A23-109: once 개발 1's quick slots registered (HUD.OnQuickSlot), slots 1 and 2 belong to them
 			local own = square and VitalsUI.QuickOwner()
-			if own then own(i) else requestPotion(kind) end
+			if own then
+				own(i)
+			elseif not requestPotion(kind) then
+				-- 게임 플레이 r11 ② (최종 검수 10/20): the phone's round potion button answers a refused drink (a cooldown, a
+				-- full bar, none left) like a quick slot (#8, A23-196): it shakes with the Deny sound, no words
+				pcall(UIKit.Refuse, button)
+			end
 		end,
 			{ CornerRadius = square and UDim.new(0, 8) or UDim.new(0.5, 0), BackgroundTransparency = square and 0.25 or nil })
 		if square then
@@ -376,10 +385,10 @@ function VitalsUI.ShowShopWay()
 end
 
 -- A23-109: a quick slot's potion (QuickSlots.Use) - the same request as the potion button (the server checks)
+-- -> sent (the drink went to the server), why not (potionState's label) - 세세한 게임성 #8: QuickSlots shakes the slot
 function VitalsUI.Request(kind)
 	if kind ~= "HP" and kind ~= "MP" then return false end
-	requestPotion(kind)
-	return true
+	return requestPotion(kind)
 end
 
 -- 최종 검수 10/15 (feedback_audit #4; server Fx "Drink" { Kind, From, To, Max } = a real drink only): the part of the bar

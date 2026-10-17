@@ -4107,6 +4107,17 @@ function Feel.dbgSwing(tag)
 	pcall(LocalPlayer.SetAttribute, LocalPlayer, "HHDbgSwing", string.format("%s %.4f", tag, os.clock()))
 end
 
+-- 세세한 게임성 #1 (detail_audit_2026-10-17: a press just before the swing was ready did nothing): seconds until my next
+-- press would swing (the same interval PredictSwing keeps); 0 = now
+function Fx.SwingReadyIn()
+	local me = LocalPlayer
+	local classId = me and me:GetAttribute("Class")
+	if type(classId) ~= "string" or not Config.Classes[classId] then return 0 end
+	local prof = Config.AttackProfile(classId, me:GetAttribute("WeaponTier"), me:GetAttribute("Faction"))
+	local P = Feel.Predict
+	return math.max(0, asNum(prof.SwingInterval, 1) - P.Gap - (os.clock() - P.LastSwing))
+end
+
 function Fx.PredictSwing()
 	local me = LocalPlayer
 	local char = me and me.Character
@@ -4441,7 +4452,9 @@ end
 
 function Feel.rewardNow(data)
 	bumpCombo()
-	Fx.PlaySound("Coin")
+	-- 세세한 게임성 #13 (detail_audit_2026-10-17: the coin on every kill, gold or not, dulled real gold): the coin only
+	-- with gold (Audio's kill pop plays for every kill)
+	if asNum(data.Gold, 0) > 0 then Fx.PlaySound("Coin") end
 	local xp = asNum(data.XP, 0)
 	-- A23-221 ⑦: the first XP of the first minutes' 2x makes the '2x XP · N min' chip shine once (HUD.PulseBoost)
 	local hud = C and C.HUD
@@ -4624,7 +4637,7 @@ handlers.Enhance = function(data)
 			Size = 0.8, SpeedMin = 8, SpeedMax = 20, LifeMin = 0.5, LifeMax = 1.1, LightEmission = 1,
 		})
 		ring(pos, 7, COLOR_GOLD, { Grow = 0.25, Fade = 0.45, Transparency = 0.3 })
-		Fx.PlaySound("Coin")
+		-- 세세한 #14: no coin on a success - the result's sound is Audio's ScrollSuccess / ScrollFail (as in the bag)
 	else
 		burst(pos + Vector3.new(0, 2, 0), Color3.fromRGB(150, 150, 160), 14, {
 			Size = 0.5, SpeedMin = 3, SpeedMax = 8, LifeMin = 0.4, LifeMax = 0.8,
@@ -4898,6 +4911,31 @@ function MOTION.EdgeCovered()
 	return false
 end
 
+-- 세세한 게임성 #6 (detail_audit_2026-10-17: HP went 112 -> 3 unnoticed; a danger signal is allowed): the moment my HP
+-- first goes under EDGE.LowHP (the edge throb above starts there), once per LowWarn.Gap s: one low heart sound
+-- (Config sound LowHeart, silent until its id exists) and the HP potion slot shines once (QuickSlots.Glow: nothing
+-- without a potion). No text. (pure) due when it just went low and the last warning is Gap s old
+MOTION.LowWarn = { Gap = 20, Was = false, At = -math.huge }
+function MOTION.LowWarnDue(wasLow, low, now, lastAt)
+	return low == true and wasLow ~= true and (tonumber(now) or 0) - (tonumber(lastAt) or -math.huge) >= MOTION.LowWarn.Gap
+end
+
+function MOTION.LowWarnStep()
+	local W, E = MOTION.LowWarn, MOTION.EDGE
+	local char = LocalPlayer and LocalPlayer.Character
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	local low = hum ~= nil and hum.Health > 0 and hum.Health < hum.MaxHealth * E.LowHP
+	local now = os.clock()
+	local due = MOTION.LowWarnDue(W.Was, low, now, W.At)
+	W.Was = low
+	if not due then return false end
+	W.At = now
+	Fx.PlaySound("LowHeart")
+	local qs = C and C.QuickSlots
+	if type(qs) == "table" and type(qs.Glow) == "function" then pcall(qs.Glow) end
+	return true
+end
+
 -- every frame: below EDGE.LowHP the edges throb slowly (shake off: a steady faint edge); a running hit flash wins
 function MOTION.EdgeStep()
 	if #flashFrames == 0 then return end
@@ -5021,6 +5059,8 @@ function Fx.Start()
 	RunService.RenderStepped:Connect(function(dt)
 		local okW, errW = pcall(WOBBLE.step, dt)
 		if not okW then warnThrottled("monster wobble failed: " .. tostring(errW)) end
+		local okL, errL = pcall(MOTION.LowWarnStep) -- 세세한 #6
+		if not okL then warnThrottled("low hp warn failed: " .. tostring(errL)) end
 		local okE, errE = pcall(MOTION.EdgeStep)
 		if not okE then warnThrottled("edge throb failed: " .. tostring(errE)) end
 	end)

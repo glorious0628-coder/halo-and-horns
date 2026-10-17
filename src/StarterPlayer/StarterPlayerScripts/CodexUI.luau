@@ -51,6 +51,7 @@ local L = {
 	View = { Top = 0.11, H = 0.56 }, -- the 3D window on the card face (share of its height)
 	Tilt = { Yaw = 28, Pitch = 14, Roll = 3, Ease = 10, Auto = 0.35, Sheen = 0.55 }, -- degrees, 1/s, turns/s, offset
 	Flip = 0.12, -- s each half of a flip
+	Arrive = 18, -- studs: [Go]'s lead ends by a monster of the card's kind (#7)
 	OpenGap = 1.2, -- s between two CodexOpen (Config.RateLimits.CodexOpen + a margin)
 	Fov = 30, Margin = 1.12,
 	Ambient = Color3.fromRGB(185, 185, 200), Light = Color3.fromRGB(255, 248, 235), LightDir = Vector3.new(-0.6, -1, -0.8),
@@ -173,6 +174,69 @@ function CodexUI.View(kind, card, faction, foil)
 	v.DropsText = #v.Drops > 0 and tx("Drops", table.concat(v.Drops, " · ")) or ""
 	v.FirstText = known and tx("First", CodexUI.Date(e and e.First)) or ""
 	return v
+end
+
+-- 최종 검수 10/18 #7 (the next card to collect: where it lives is written, the way there is not): the guide target of a
+-- kind's home -> part | nil. In its zone: the nearest living one of that kind I can see (not another player's own), a
+-- field boss's spawn, else the zone's middle (QuestTarget.Anchor); from another zone: the way there (QuestTarget.Travel)
+function CodexUI.WayTarget(kind, myZone, pos)
+	local def = type(Config.MonsterTypes) == "table" and Config.MonsterTypes[kind] or nil
+	local zoneId = type(def) == "table" and def.Zone or nil
+	local zone = type(zoneId) == "string" and type(Config.Zones) == "table" and Config.Zones[zoneId] or nil
+	local qt = C and C.QuestTarget
+	if type(zone) ~= "table" or type(qt) ~= "table" then return nil end
+	if myZone ~= zoneId then
+		if type(qt.Travel) ~= "function" then return nil end
+		local ok, part = pcall(qt.Travel, zoneId, myZone, pos)
+		return (ok and typeof(part) == "Instance") and part or nil
+	end
+	local folder = workspace:FindFirstChild("Monsters")
+	local best, bestD = nil, math.huge
+	for _, m in folder and folder:GetChildren() or {} do
+		local ok, root = pcall(function()
+			if not m:IsA("Model") or (m:GetAttribute("MonsterKind") or m.Name) ~= kind then return nil end
+			local owner = m:GetAttribute("OwnerUserId")
+			if type(owner) == "number" and LocalPlayer and owner ~= LocalPlayer.UserId then return nil end
+			local r = m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")
+			return (r and r:IsA("BasePart") and not r.Anchored) and r or nil
+		end)
+		if ok and root then
+			local d = typeof(pos) == "Vector3" and (root.Position - pos).Magnitude or 0
+			if d < bestD then best, bestD = root, d end
+		end
+	end
+	if best then return best end
+	if type(qt.Anchor) ~= "function" then return nil end
+	local boss = type(Config.FieldBosses) == "table" and Config.FieldBosses[kind] or nil
+	local spot = type(boss) == "table" and typeof(boss.Spawn) == "Vector3" and boss.Spawn or zone.Center
+	if typeof(spot) ~= "Vector3" then return nil end
+	local ok, a = pcall(qt.Anchor, "Codex_" .. kind, spot + Vector3.new(0, 3, 0))
+	return (ok and typeof(a) == "Instance") and a or nil
+end
+
+-- [Go]: the quest marker leads to the card's home (QuestMarker.Lead, CodexUI.WayTarget asked again twice a second: a trip
+-- first, then the nearest one of that kind) until I stand by one of them (L.Arrive studs) or the lead runs out; the
+-- window closes so the marker shows. True when a way was shown
+function CodexUI.Go(kind)
+	local marker = C and C.QuestMarker
+	if type(kind) ~= "string" or type(marker) ~= "table" or type(marker.Lead) ~= "function" then return false end
+	local function here()
+		local char = LocalPlayer and LocalPlayer.Character
+		local okP, pos = pcall(function() return char and char:GetPivot().Position end)
+		pos = okP and typeof(pos) == "Vector3" and pos or nil
+		local target = CodexUI.WayTarget(kind, LocalPlayer and LocalPlayer:GetAttribute("ZoneId"), pos)
+		-- arrived: one of that kind right by me (its card comes with the first one beaten)
+		local m = target and target.Parent
+		if pos and m and m:IsA("Model") and (m:GetAttribute("MonsterKind") or m.Name) == kind
+			and (target.Position - pos).Magnitude <= L.Arrive then return nil end
+		return target
+	end
+	if not here() then return false end
+	local ok, on = pcall(marker.Lead, here, "codex:" .. kind)
+	if not (ok and on) then return false end
+	local panels = C and C.Panels
+	if type(panels) == "table" and type(panels.Close) == "function" then pcall(panels.Close) end
+	return true
 end
 
 -- a page (pure): its zone name, kinds and how many of them I have
@@ -865,6 +929,9 @@ drawBig = function()
 	CARD.Flip(VIEW.Big, S.Back and v.Known, false)
 	local b = VIEW.Buttons or {}
 	if b.Flip then b.Flip.Visible = v.Known end
+	-- #7: a card not met = [Go] (the way to it) where [Flip] would be
+	if b.Go then b.Go.Visible = not v.Known end
+	if b.GoText then b.GoText.Text = tx("Go") end
 	if b.FlipText then b.FlipText.Text = S.Back and tx("Front") or tx("Flip") end
 	if b.Foil then b.Foil.Visible = v.HasFoil end
 	if b.FoilText then b.FoilText.Text = S.Foil and tx("ShowCard") or tx("ShowFoil") end
@@ -1027,6 +1094,9 @@ local function build(parent, k, arg)
 	rl.SortOrder = Enum.SortOrder.LayoutOrder
 	rl.Parent = row
 	local b = {}
+	b.Go, b.GoText = button(row, "Go", 0, function()
+		if S.Kind then CodexUI.Go(S.Kind) end
+	end)
 	b.Flip, b.FlipText = button(row, "Flip", 1, flipBig)
 	b.Tilt, b.TiltText = button(row, "AutoTilt", 2, function()
 		S.Auto = not S.Auto

@@ -7417,10 +7417,13 @@ Config.HoldMotion = { Blend = 0.16, In = 0.08, InBow = 0.06, Out = 0.18, WalkAt 
 -- down): Down = the tip's degrees under level (Turn X = 90 + Down), less for a long weapon so its tip stays Floor studs
 -- over the floor (WeaponPose.HipDown); Turn Z > 0 leans the tip out past the left leg (no clipping when the leg swings
 -- back). A stowed bow hides its code string (the two Beams stood 0.8 stud off the mesh on the back)
+-- A23-232 (user 10/17 "칼집 왜케 질질 끌려" -> "칼·몽둥이는 그냥 손에 들고, 활만 등에 메게 해. 검집은 디자인 때 다시
+-- 보자"): Sword / DarkSword left out of Kinds = always in the hand; the Hip row and its code stay for the scabbard design
+-- (Kinds Sword = "Hip", DarkSword = "Hip" brings it back)
 Config.WeaponStow = {
 	On = true,
 	HandSeconds = 5,
-	Kinds = { Bow = "Back", ShortBow = "Back", Sword = "Hip", DarkSword = "Hip" },
+	Kinds = { Bow = "Back", ShortBow = "Back" },
 	Back = { Part = "UpperTorso", Pos = { 0, 0, 1.3 }, Turn = { 0, 0, -35 } },
 	Hip = { Part = "LowerTorso", Pos = { -1.15, -0.2, -0.35 }, Turn = { 155, 0, 4 }, Down = 65, Floor = 0.4 },
 	Sound = "Equip",
@@ -11032,6 +11035,7 @@ Config.Codex.Screen = {
 		NotMet = "Not met yet",
 		Flip = "Flip",
 		Front = "Front",
+		Go = "Go", -- final review 10/18 #7: a card not met -> the quest marker leads to where it lives (CodexUI.Go)
 		Tilt = "Auto tilt",
 		ShowFoil = "Gold Foil",
 		ShowCard = "Card",
@@ -11514,6 +11518,9 @@ Config.ClientText.PlayerListUI = {
 }
 -- game play r8 (the field King and my rematch King on one hill, both "King Slime"): my own King's name tag
 Config.ClientText.MonsterLabels = { YourKing = "Your King" }
+-- A23-229 (dialog_box_plan_2026-10-18): the bottom dialogue box's own words (Next / Got it / Sure! / Not now are
+-- Config.StoryQuests.Text; I'm In! is the welcome's)
+Config.ClientText.DialogBox = { Bye = "Bye" }
 Config.ClientText.QuestTarget = {
 	Blacksmith = "Forge",
 	Dummy = "Dummy", -- A23-221 ①: the first mission's practice dummy
