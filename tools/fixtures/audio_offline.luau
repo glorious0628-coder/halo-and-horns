@@ -425,8 +425,11 @@ do
 		local c = find(Audio.Plan("Reward", { Gold = 3 }, ctx), "ComboCoin")
 		return c and c.Speed
 	end
-	local p = Audio.Plan("Reward", {}, ctx)
-	check(g, "a kill pops and rings the combo coin", find(p, "KillPop") ~= nil and find(p, "ComboCoin") ~= nil, events(p))
+	local p = Audio.Plan("Reward", { Gold = 3 }, ctx)
+	check(g, "a kill that pays gold pops and rings the combo coin", find(p, "KillPop") ~= nil and find(p, "ComboCoin") ~= nil, events(p))
+	-- 세세한 게임성 #13 (10/18): an XP-only kill is the pop alone (the coin is for real gold)
+	p = Audio.Plan("Reward", { XP = 5 }, ctx)
+	check(g, "an XP-only kill: the pop, no coin", find(p, "KillPop") ~= nil and find(p, "ComboCoin") == nil, events(p))
 	check(g, "kill 1 = 0.80", near(coin(1), 0.8), tostring(coin(1)))
 	check(g, "kill 3 = 0.8 x 2^(4/12)", near(coin(3), 0.8 * 2 ^ (4 / 12)), tostring(coin(3)))
 	check(g, "kill 8 = 1.60 (the top)", near(coin(8), 1.6), tostring(coin(8)))
