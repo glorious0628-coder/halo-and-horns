@@ -34,8 +34,8 @@ runGroup("config", function()
 	local n, sides = 0, 0
 	for _ in R0.Zones do n += 1 end
 	for _ in R0.Wait do sides += 1 end
-	check(type(R0) == "table" and R0.Zones.SlimeMeadow == true and n == 1 and R0.Wait.Horns == 5 and sides == 1 and R0.PerSec == 0.01
-		and R0.Stack == false, "RestRegen: the meadow only, the Horns only (5 s), 1%/s, never added (Stack false)", show(R0))
+	check(type(R0) == "table" and R0.Zones.SlimeMeadow == true and n == 1 and R0.Wait.Horns == 5 and R0.Wait.Neutral == 5 and sides == 2 and R0.PerSec == 0.01
+		and R0.Stack == false, "RestRegen: the meadow only, the Horns and the guild (5 s), 1%/s, never added (Stack false)", show(R0))
 	check(C0.Factions.Horns.RegenPerSec == 0 and C0.Factions.Halo.RegenPerSec == 0.02, "the sides' own regen unchanged (Horns 0, Halo 2%)", "")
 end)
 
@@ -108,11 +108,21 @@ runGroup("elsewhere", function()
 	w:Advance(30)
 	w:RegenTick()
 	check(near(kh.Health, 100), "an Active kaiju: no rest regen", kh.Health)
-	-- the guild: not listed = its own regen (0) in the meadow too
+	-- the guild (최종 검수 10/17): like the Horns - 4.9 s after a hit nothing, 5.1 s +1%
 	local n, nh = hurtPlayer(w, 305, "Neutral", 5, "SlimeMeadow", 100)
+	hit(w, n, 1) -- 99
+	w:Advance(4.9)
+	w:RegenTick()
+	local mid = nh.Health
+	w:Advance(0.2)
+	w:RegenTick()
+	check(near(mid, 99) and near(nh.Health, 101), "the guild: 4.9 s nothing, 5.1 s +1% (2)", show({ mid, nh.Health }))
+	-- no side yet ('None'): its own 1% only
+	local o, oh = hurtPlayer(w, 306, "None", 1, "SlimeMeadow", 100)
 	w:Advance(30)
 	w:RegenTick()
-	check(near(nh.Health, 100), "the guild in the meadow: its own (0), no rest (A23-224: 'the other sides as they are')", nh.Health)
+	check(near(oh.Health, 102), "no side yet: its own 1% (not listed)", oh.Health)
+	local _ = o
 	local _ = { p, q, n }
 end)
 

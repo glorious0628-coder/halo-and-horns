@@ -1,6 +1,6 @@
 """A23-224 rest regen, final (user 2026-10-17: "너무 빨리 차 … 빛 1초에 2%(그대로), 뿔 1초에 1%"), offline.
 
-Inside Config.Combat.RestRegen.Zones (SlimeMeadow), at any level, a side listed in Wait (the Horns only: 5 s) that took no
+Inside Config.Combat.RestRegen.Zones (SlimeMeadow), at any level, a side listed in Wait (the Horns and the guild: 5 s) that took no
 damage for that long gets PerSec (1%) of max HP a second from CombatService's regen loop (Stack false: the bigger of it and the
 side's own, never added; Halo keeps its own 2%). Any damage stops it and the wait starts again. A town keeps its TownRegenPerSec, an
 Active kaiju gets none. Runs the CURRENT Config and CombatService (the dev2_combat_world doubles; the regen loop stepped by
@@ -18,11 +18,12 @@ from test_unarmed_start import FILES, bindings
 C, CO = "CONFIG_SOURCE", "COMBAT_SOURCE"
 
 MUTATIONS = [
-    ("Horns waits 1 s", C, "Wait = { Horns = 5 }", "Wait = { Horns = 1 }"),
-    ("2% a second", C, "Wait = { Horns = 5 }, PerSec = 0.01,", "Wait = { Horns = 5 }, PerSec = 0.02,"),
-    ("Halo added and stacked (the dropped 4% plan)", C, "Wait = { Horns = 5 }, PerSec = 0.01, Stack = false }",
-     "Wait = { Halo = 1, Horns = 5 }, PerSec = 0.01, Stack = true }"),
-    ("a Default wait for every side", C, "Wait = { Horns = 5 }", "Wait = { Horns = 5, Default = 5 }"),
+    ("Horns waits 1 s", C, "Wait = { Horns = 5, Neutral = 5 }", "Wait = { Horns = 1, Neutral = 5 }"),
+    ("the guild left out", C, "Wait = { Horns = 5, Neutral = 5 }", "Wait = { Horns = 5 }"),
+    ("2% a second", C, "Neutral = 5 }, PerSec = 0.01,", "Neutral = 5 }, PerSec = 0.02,"),
+    ("Halo added and stacked (the dropped 4% plan)", C, "Wait = { Horns = 5, Neutral = 5 }, PerSec = 0.01, Stack = false }",
+     "Wait = { Halo = 1, Horns = 5, Neutral = 5 }, PerSec = 0.01, Stack = true }"),
+    ("a Default wait for every side", C, "Wait = { Horns = 5, Neutral = 5 }", "Wait = { Horns = 5, Neutral = 5, Default = 5 }"),
     ("every zone", CO, "R.Zones[zone] == true and wait", "wait"),
     ("no wait after a hit", CO, "and os.clock() - (lastDamagedAt[p] or -math.huge) >= wait then", "then"),
     ("an Active kaiju rests too", CO, "if type(R) == \"table\" and kstate(p) ~= \"Active\" and type(R.Zones) == \"table\" then",
