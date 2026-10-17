@@ -362,6 +362,22 @@ local function makeDistance(parent)
 	return UIKit.LightText(props)
 end
 
+-- A23-221 ⑥ (game play r1: the white '7m' melted into the white floor): the distance's navy rim (UIKit's StyleStroke)
+-- RimMul x thicker, never under RimMin px; UIKit re-sizes it on a scale change, so the bump follows (once per new value)
+local RIM = { Mul = 1.6, Min = 2.5 }
+local function boldRim(label)
+	local s = label and label:FindFirstChild("StyleStroke")
+	if not (s and s:IsA("UIStroke")) then return end
+	local last = nil
+	local function bump()
+		if s.Thickness == last then return end
+		last = math.max(s.Thickness * RIM.Mul, RIM.Min)
+		s.Thickness = last
+	end
+	bump()
+	s:GetPropertyChangedSignal("Thickness"):Connect(bump)
+end
+
 local function build()
 	UIKit = C and C.UIKit
 	assert(type(UIKit) == "table" and UIKit.Gui, "UIKit is not initialized")
@@ -411,6 +427,7 @@ local function build()
 	ui.icon = makeIcon(ui.iconBox)
 	ui.arrow = makeArrow(holder)
 	ui.text = makeDistance(holder)
+	pcall(boldRim, ui.text)
 	collectFades(holder)
 	-- A23-68 #2 focus icon (its own holder: never faded / tinted with the marker)
 	ui.focus = UIKit.Create("Frame", {
