@@ -441,6 +441,12 @@ do
 	check(g, "the lost bag lies in the meadow (its own zone)", Config.ZoneAt(bag).Id == "SlimeMeadow", Config.ZoneAt(bag).Id)
 	t = QT.Story("Lv5Slimes", "HaloTown", vec(0, 3, -515), "Halo")
 	check(g, "M1_3 accepted in Halo town: the slimes row points somewhere (the way to the meadow)", t ~= nil, where(t))
+	for _, from in { { "HaloTown", vec(0, 3, -515) }, { "Crossroads", vec(0, 3, 0) }, { "SlimeMeadow", vec(400, 3, 100) } } do
+		local e1 = QT.ForEntry({ Story = { Id = "M1_3", St = 1, Guide = "Lv5Slimes" }, Text = "Beat slimes using only basic attacks",
+			Progress = 0, Target = 4, ShowProgress = true }, from[1], "Halo", from[2])
+		check(g, "M1_3 just accepted (" .. from[1] .. "): the slimes row has a marker", type(e1) == "table" and (e1.Part ~= nil or e1.Position ~= nil),
+			e1 and encode({ Tag = e1.Tag, Zone = e1.Zone, Travel = e1.Travel }) or "nil")
+	end
 	e = QT.ForEntry({ Story = { Id = "M1_3", St = 2, Guide = "LostBag" } }, "SlimeMeadow", "Halo", vec(250, 3, 0))
 	local bp = e and (e.Part or e.Position)
 	bp = typeof(bp) == "Vector3" and bp or (type(bp) == "table" and bp.Position or nil)
