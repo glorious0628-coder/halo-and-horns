@@ -261,6 +261,7 @@ local function bareWorld(o)
 	combat.Start()
 	assert(#w.Spawned == n0 + 2, "CombatService.Start spawns the regen and the auto-combat loop")
 	local autoLoop = coroutine.create(w.Spawned[n0 + 2][1])
+	local regenLoop = coroutine.create(w.Spawned[n0 + 1][1]) -- A23-224: stepped by hand too (w:RegenTick)
 	w.Spawned = {}
 	loot.Start()
 	if pet then pet.Start() end
@@ -269,6 +270,13 @@ local function bareWorld(o)
 	if stat then stat.Start() end
 	w.Spawned = {}
 	assert(coroutine.resume(autoLoop)) -- runs to its first task.wait
+	assert(coroutine.resume(regenLoop))
+	-- one regen step (Config.Combat.RegenTick) for every ready player
+	function w:RegenTick()
+		local ok, err = coroutine.resume(regenLoop)
+		assert(ok, err)
+		self:Flush()
+	end
 	w.Combat, w.Loot, w.Story, w.Pet, w.Window, w.Skills, w.Stat = combat, loot, story, pet, window, skills, stat
 	-- one auto-combat step for every ready player
 	function w:AutoTick()
