@@ -164,8 +164,9 @@ runGroup("set: fill, move, swap, empty", function()
 	check(d.QuickSlots == "HP,,MP" and p:GetAttribute("QuickSlots") == "HP,,MP", "two full slots swap", tostring(d.QuickSlots))
 	local changed, writes = #w.ChangedLog, #w:AttrWrites(p)
 	w:Set(p, 1, "HP") -- already there
-	check(#w.ChangedLog == changed and #w:AttrWrites(p) == writes and d.QuickSlots == "HP,,MP",
-		"the same item on its own slot changes nothing")
+	check(#w.ChangedLog == changed and #w:AttrWrites(p) == writes + 1 and d.QuickSlots == "HP,,MP"
+		and p:GetAttribute("QuickSlots") == "HP,,MP",
+		"the same item on its own slot changes nothing - only the attribute is published again (game play r8: the screen re-syncs)")
 	w:Set(p, 3, "")
 	check(d.QuickSlots == "HP,," and p:GetAttribute("QuickSlots") == "HP,,", "\"\" empties a slot", tostring(d.QuickSlots))
 	changed = #w.ChangedLog
