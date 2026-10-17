@@ -458,3 +458,6 @@
 - **병합 d4c4b483** = 첫 12분 묶음: dev2-first12c 298e70d8(54a3be0d 허수아비 단계·M1_2 King's Hop ← e055c2a1 1000골드·대장간 첫 드롭 뒤 ← StartClock 9·밤 밝기·안내자 2배 줄 ← PracticeH (-22,0,-384) 패드 27칸·PracticeN 옮김 ← Tiny 대화(배우기 단계면 본편 줄 유지) ← M1_3 Lv5Slimes 표시 ← a23_14 멈춤(FORGE.Near)) + dev1-first12 3668669d(허수아비·모루 Enhance 창·M1_2 표시·선물 창 마을/일어난 뒤 30초·Lv5 Quest 글·SignFit 위 칩·카메라 등 뒤·보상 머리 위 들기·XP ×2·2배 칩 반짝·거위 칩 M1_1 뒤·거리 글 테두리·말풍선 맨 앞·KO 원인 그림·물약 칸 반짝). 시험: 컴파일 0, 26개 + a23_14 6469·onboarding 889, attendance_ui 'days collected'만(main에도 있음). Studio 눌러 보기 ①허수아비 F→Forge ②모루 G→강화 창 ③Tiny 대화·Learn 줄 ④M1_3 표시 = 개발 1 값 확인. 저장 형식 안 바뀜(개발 2).
 - **사용자에게 물음:** 뿔 RegenPerSec 0이라 초반 KO 쌓임 → (a) 진영 무관 5초 안 맞으면 천천히 참(초원·Lv10 미만) 추천 / (b) 뿔 첫 10분 소량. 답 오면 SPEC + 개발 2.
 - Pip 몸 = 숲 가장자리 그대로(광맥은 첫 수락만 Pip, DC3·Pip1 안 깨지게).
+- **병합 f6507381** = dev1-feel 8107b642(맵 끝 투명 벽 흐린 막 EdgeHint + 폰 확인 목록 docs/review/phone_check_list_2026-10-17.md). 닫힌 문 = idea_backlog(디자인 재개 때).
+- **dev2-vein 5901ce75(장인 1·2부) 병합 멈춤:** 시험 다 통과지만 API 반박 검토(build/api_agent/vein_review/result.md, $0.81)가 4개 지적 — 조건 재확인 없음·개인 기사 드롭 농사(KnightCrest·구덩이 ×1.25)·경비 자리가 왕관 구덩이 PvP 안·KO 시체 옆 기사 소환 → 개발 2가 재현·고침 중.
+- 게임 플레이 6판(d4c4b483, 빛 처음부터 → 뿔 전사) 진행 중. 개발 1 다음 = 계획 5 기본 공격 손맛 실측.
