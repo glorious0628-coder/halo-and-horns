@@ -66,3 +66,4 @@
 - 공통 문제: 두 번째 King 못 이김(마법사: 길 위 King Slime이 뛰어내려 KO, 언덕 King과 둘), Quick [1] 두 번 = 칸 비고 목표 'Drink' 남아 막힘, 마법사 Prince가 표시 자리 밖, 궁수 Prince F 28번, 긴 머리·치마와 칼·활 겹침.
 - 도구: `build/playtest_tools/flow.py <Halo|Horns> <Warrior|Archer|Mage> [단계]` 한 직업 점검표 자동(0 시작 … 9 다음 목표), `pose.py idle|walk|atk PRE`. KO 순간 길 찾기 ~2분 멈춤(도구). 멈춘 python은 Win32_Process에서 flow.py로 찾아 끄기.
 - **다음 판:** A23-227 뒤 두 번째 King 세 직업 + 퀵슬롯 두 번 누르기.
+- 10/17 밤 도구 고침(최종 검수 요청): flow.py King 싸움은 `OwnerUserId == 내 UserId`인 SlimeKing(재대결 King)만 노림(들판 King은 보호돼 안 맞음 — 8판 봇이 그걸 때렸음), 시작 때 `Character.Health` 스크립트 있는지 기록(8판 +2.3/초 = Roblox 기본 Health 1%). **9판 = 개발 1·2 고침 병합 뒤 최종 검수 신호.**
