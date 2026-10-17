@@ -8,6 +8,7 @@
 ```
 
 ## Studio — 내 창만
+- **사용자 10/17 밤: 메인 말고 시험 Studio는 쓰고 나면 닫는다.** 판마다 열기 → 판 → Play 멈춤 → PlayTest 창 닫기(저장 안 함) → "끝". 화면 신청 시간에 닫기까지 넣음.
 - **내 시험 Studio = `build/PlayTest.rbxlx`(창 이름 'PlayTest')만.** 처음엔 `place/GoodEvil.rbxlx`를 `build/PlayTest.rbxlx`로 복사(build/는 git 밖). 모든 MCP는 `STUDIO_NAME=PlayTest`. 메인 Studio(HH_MAIN_STUDIO)·PhoneTest_1015·HoldTest_1014·UiSandbox·WorldKit·FilmSet·다른 프로젝트(Parcel Panic) Studio는 절대 안 건드림. 여는 법·닫는 법은 개발 1의 PhoneTest 방식(state/dev1.md '시험 Studio') 참고 — 닫을 때는 **PlayTest 창의 프로세스만**(Stop-Process -Name 전체 금지).
 - 매 판 시작 전: `git fetch` → `git rev-list --left-right --count HEAD...origin/main` = `0 0` + `git status --short src/` 비어 있음 → Edit에서 `STUDIO_NAME=PlayTest py tools/sync_to_studio.py`. 안 맞으면 기다리거나 최종 검수에게 한 줄(공유 폴더에서 pull·reset·stash·checkout·commit 금지).
 - ServerStorage 속성 `StudioFreshSave = true`(매 Play 새 플레이어).
