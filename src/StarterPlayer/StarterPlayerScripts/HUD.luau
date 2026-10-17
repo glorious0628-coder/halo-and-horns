@@ -1469,11 +1469,13 @@ local function buildChips(root)
 	-- A23-75: the 2x pass chip right after the danger chips (UiSandbox 2026-10-08: after the shields it always folded into
 	-- '+N' in town, so a buyer never saw it). 최종 검수 10/14 (publish4 photos: the Outlaw chip hid in '+3' behind Safe
 	-- Zone · 2x XP · the sprout): the danger chips (Bully, Outlaw, Wanted, Combat) come FIRST, so they always show
-	L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost", "Private", "Rookie", "Protected", "Blessing",
+	-- 최종 검수 10/17 (user photo: "이거 안나오면 좋겠어. 너무 가운데가 길어져!"): no 'Revive Shield' chip (the revive
+	-- protection itself stays: the server's Protected attribute, the ForceField on my body)
+	L.ChipOrder = { "Bully", "Outlaw", "Wanted", "Combat", "Zone", "Luck", "Boost", "Private", "Rookie", "Blessing",
 		"Size", "Kaiju" }
 	-- the danger chips first (their short words on a too-long row, L.CheckChipFit); ChipBuffs = the buff chips
 	L.ChipDanger = { Bully = true, Outlaw = true, Wanted = true }
-	L.ChipBuffs = { "Boost", "Luck", "Blessing", "Rookie", "Private", "Protected", "Size" }
+	L.ChipBuffs = { "Boost", "Luck", "Blessing", "Rookie", "Private", "Size" }
 	for i, key in L.ChipOrder do
 		ui.chip[key] = makeChip(key, i, icons[key])
 	end
@@ -3423,7 +3425,6 @@ refreshChips = function()
 	if f == "Neutral" then graceLeft = 0 end -- Neutral never fights players (A6): no grace chip either
 	setChip(ui.chip.Rookie, rookieOn or graceLeft > 0, (not rookieOn and graceLeft > 0)
 		and L.Tx(TXT, "RookieGrace", graceLeft) or TXT.Rookie, Theme.XP, false, pal.Rookie, true)
-	setChip(ui.chip.Protected, attr("Protected", false) == true, TXT.Protected, Theme.XP)
 	setChip(ui.chip.Combat, num("InCombatUntil", 0) > now, TXT.InCombat, Theme.Revenge)
 	local size = num("SizeMult", 1)
 	setChip(ui.chip.Size, size > 1.001, L.Tx(TXT, "Size", size), Theme.Gold)
@@ -6373,7 +6374,7 @@ function HUD.Start()
 			pcall(notNowCheck)
 		end
 	end)
-	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "Protected", "InCombatUntil", "SizeMult", "BullyStacks",
+	UIKit.OnAttr({ "ZoneTown", "ZonePvP", "Rookie", "InCombatUntil", "SizeMult", "BullyStacks",
 		"KaijuState", "Faction", "Outlaw" }, refreshChips)
 	UIKit.OnAttr({ "WarPoints", "Faction" }, refreshWar)
 	UIKit.OnGameAttr({ "WarHaloScore", "WarHornsScore", "WarMode", "WarBlessing", "WarRoundEndsAt" }, refreshWar)

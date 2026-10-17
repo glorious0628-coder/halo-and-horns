@@ -11803,7 +11803,6 @@ Config.ClientText.HUD = {
 	PvPNeutral = "PvP Zone · Artisans safe",
 	Rookie = "Sprout Shield",
 	RookieGrace = "Sprout Shield ends · PvP in %ds", -- A23-18 graduation grace (GraduateGraceUntil)
-	Protected = "Revive Shield",
 	InCombat = "In Combat",
 	Size = "Size ×%.2f",
 	Bully = "Bully Lv %d",
