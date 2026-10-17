@@ -78,3 +78,15 @@
 ## 10/17 밤 — 10판 끝 (뿔 전사·마법사, 4ec46c64, 고친 봇)
 - 보고서 `docs/review/playtest/2026-10-17_r10.md`. **두 번째 King 둘 다 이김**(F 21·22, 약 25초, 물약 1·2병, 최저 HP 32%·35%). 물약 3개 줄 정상. 8·9판 '못 이김'은 봇 NaN 탓.
 - **다음 판:** 궁수 재대결 + 물약 쿨다운 화면 표시 사진.
+
+## 10/17 밤 멈춤 (사용자: "화요일 오전부터 작업하자" — 최종 검수가 다시 부름)
+- **10판 결과(4ec46c64, 뿔 전사·마법사, 고친 봇):** 두 번째 King **둘 다 이김** — 전사 F 21번·약 25초·물약 1병·최저 HP 59/182, 마법사 F 22번·약 25초·물약 2병·최저 39/112. 'Buy 3 potions' 줄 0/3→1/3→2/3→다음 목표 ✅. 첫 KO 순간 위치 땅 위(y 9.4/땅 8.9). 보고서 `docs/review/playtest/2026-10-17_r10.md` (push cb652d1). 8·9판 '못 이김'은 봇 NaN 탓(r9 보고서 맨 위에 정정).
+- **봇·도구 위치:** `build/playtest_tools/`(git 밖, 재부팅에도 남음) — `flow.py <Halo|Horns> <Warrior|Archer|Mage> [단계]`(0 시작·1 안내자·2 선생님→허수아비·3 대장간·4 Otto→Prince·5 King 첫 KO·6 물약→슬롯→마시기·7 강화·8 King 다시·9 쉼·10 M1_3→가방), `pose.py idle|walk|atk PRE`(공격 몸짓 사진 시트), `pt.py`(state/texts/btns/click/key/shot/nav/lua/console), `intro_watch.py`. 환경 변수: STUDIO_ID(list_roblox_studios로 매번), PT_ROUND(사진 폴더 r<N>), PT_DATE, `BUY5=1`(가게 [5개]). 열기: `cp place/GoodEvil.rbxlx build/PlayTest.rbxlx` → Start-Process Studio(옛 pid는 pid.txt) → `py tools/sync_to_studio.py`.
+- **NaN 고침:** 8·9판 봇이 서버에서 F마다 `CFrame.lookAt(내 위치, King 위치)`를 썼는데, King이 발밑에 내려앉으면 두 점이 같아 NaN → 몸이 Y −1,000,000 → 마을로 구하기/맵 아래 KO. 이제 몸 돌리기 세 곳(monster face·FACE_KING·face())은 평면 거리 0.5스터드 미만이면 건너뜀. fight()의 MoveTo는 거리 > near일 때만.
+- **도구 주의:** KO 순간 길 찾기가 약 2분 멈춤(게임 아님) → KO되면 `walk stop`으로 끊음. 멈춘 python은 `Get-CimInstance Win32_Process`에서 flow.py로 찾아 끄기. 빛 Gleam 동상 옆 nav 'Success'만 하고 안 움직이면 W 키로 빼기. 서버 콘솔 DataStore 줄은 PlayTest라 정상(Studio 저장 없음).
+- **다음 판 할 것(화요일 오전):**
+  1. 궁수(빛) 재대결 King — 물약 3개 사고 50%에서 마시기.
+  2. 물약 쿨다운 중 키 1을 눌렀을 때 화면에 '기다려' 같은 표시가 있나(사진).
+  3. 성문 이웃 돌려주기(빛 M1_3 'Return bag' → 이웃 G → 대사·다음 목표 'Learn your first skill from Sir Gleam.').
+  4. 대화 상자(Tiny·이웃 등)가 나오면 그것 — 뿔 Tiny G 대화 카드, 이웃 대사가 화면에 보이는지.
+  5. 그 위에 새 sync 신호가 오면 처음부터 직업별 한 판(8판 점검표).
