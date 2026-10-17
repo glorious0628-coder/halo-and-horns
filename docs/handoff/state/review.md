@@ -461,3 +461,6 @@
 - **병합 f6507381** = dev1-feel 8107b642(맵 끝 투명 벽 흐린 막 EdgeHint + 폰 확인 목록 docs/review/phone_check_list_2026-10-17.md). 닫힌 문 = idea_backlog(디자인 재개 때).
 - **dev2-vein 5901ce75(장인 1·2부) 병합 멈춤:** 시험 다 통과지만 API 반박 검토(build/api_agent/vein_review/result.md, $0.81)가 4개 지적 — 조건 재확인 없음·개인 기사 드롭 농사(KnightCrest·구덩이 ×1.25)·경비 자리가 왕관 구덩이 PvP 안·KO 시체 옆 기사 소환 → 개발 2가 재현·고침 중.
 - 게임 플레이 6판(d4c4b483, 빛 처음부터 → 뿔 전사) 진행 중. 개발 1 다음 = 계획 5 기본 공격 손맛 실측.
+- **병합 66cdb70d** = dev2-vein 55568fdf(장인 1·2부: 제작 곡선 + 깊은 광맥 길; API 지적 4개 고침 9cf0821d, 한 판 ≈4분 = 경비 5 × HP ×9, 드롭 0·XP/골드 65, 자리 전부 왕관 구덩이 밖, 레시피 DeepMoonShard ×3 = 단위 12분 유지). 저장: data.Story.Runs 새 칸 — 옛 서버도 안 지움, **'모든 서버 종료' 필요 없음**(개발 2). Live는 Features.Crafting = false.
+- A23-224 쉼 회복: 레벨 없이·뿔 5초/빛 1초·빛은 더하기 → 사용자 "너무 빨리 차, 1초에 2퍼 1초에 1퍼" → 빛/뿔 어느 쪽인지 되물음. 가지 dev2-rookie-regen e66f8b6b(지금 PerSec 0.02, test_rest_regen 26·변이 10/10) 값만 바꾸면 병합.
+- main 새 정적 실패: auto_translate·english 'no player words hard-coded' = SignFit.luau:22·23 "Children"/"Self"(d4c4b483) → 개발 1 작은 가지.
