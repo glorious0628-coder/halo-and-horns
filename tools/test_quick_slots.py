@@ -32,6 +32,8 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_quick_slots_2026-10-10.json"
 
 MUTATIONS = [
+    ("QS", "10/18 King warn: every poll of the fight", "if king == nil or king == warned then return false end", "if king == nil then return false end"),
+    ("QS", "10/18 King warn: at any HP", "return hp < maxHp * T.KingWarn.Share", "return true"),
     ("QS", "game play r8: the 0-potion icon dims again", "if w.Icon.ImageTransparency ~= 0 then w.Icon.ImageTransparency = 0 end",
      "w.Icon.ImageTransparency = (def and s.Count <= 0) and 0.55 or 0"),
     ("QS", "game play r8: the 0 count not gray", "local want = (def and s.Count <= 0) and T.ZeroCount or (own or nil)",

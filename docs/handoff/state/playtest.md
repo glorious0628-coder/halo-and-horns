@@ -67,3 +67,14 @@
 - 도구: `build/playtest_tools/flow.py <Halo|Horns> <Warrior|Archer|Mage> [단계]` 한 직업 점검표 자동(0 시작 … 9 다음 목표), `pose.py idle|walk|atk PRE`. KO 순간 길 찾기 ~2분 멈춤(도구). 멈춘 python은 Win32_Process에서 flow.py로 찾아 끄기.
 - **다음 판:** A23-227 뒤 두 번째 King 세 직업 + 퀵슬롯 두 번 누르기.
 - 10/17 밤 도구 고침(최종 검수 요청): flow.py King 싸움은 `OwnerUserId == 내 UserId`인 SlimeKing(재대결 King)만 노림(들판 King은 보호돼 안 맞음 — 8판 봇이 그걸 때렸음), 시작 때 `Character.Health` 스크립트 있는지 기록(8판 +2.3/초 = Roblox 기본 Health 1%). **9판 = 개발 1·2 고침 병합 뒤 최종 검수 신호.**
+
+## 10/17 밤 — 9판 끝 (직업별, 96729f22 → d58544c1)
+- 보고서 `docs/review/playtest/2026-10-17_r9.md`, 기록 `docs/art/verification_2026-10-17/playtest/r9/`.
+- 좋아짐: Quick[1], Prince 자리, Lost bag 표시, 쉼 회복(초원 1%), 맵 끝 안개, 지팡이, Health 스크립트 없음, 'Your King' 이름. 그대로: 두 번째 King 셋 다 짐(HitTrace = FirstKOService land/strike 1줄뿐), 물약 1개 사서 바로 마심, KO 그림이 글 가림.
+- 도구: flow.py 봇 = 내 King만·HP 50% 아래 물약·HitTrace 덤프, `BUY5=1`이면 물약 5개. nohup으로 띄우고 Monitor로 `<직업>_flow.txt` 따라감.
+- **다음 판:** 두 번째 King 고침 뒤 세 직업.
+- 10/17 밤: 봇 NaN 고침(flow.py 몸 돌리기 평면 0.5 미만 건너뜀). 8·9판 '두 번째 King 짐'은 봇 탓 가능 → 10판에서 다시.
+
+## 10/17 밤 — 10판 끝 (뿔 전사·마법사, 4ec46c64, 고친 봇)
+- 보고서 `docs/review/playtest/2026-10-17_r10.md`. **두 번째 King 둘 다 이김**(F 21·22, 약 25초, 물약 1·2병, 최저 HP 32%·35%). 물약 3개 줄 정상. 8·9판 '못 이김'은 봇 NaN 탓.
+- **다음 판:** 궁수 재대결 + 물약 쿨다운 화면 표시 사진.

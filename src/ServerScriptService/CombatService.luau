@@ -619,6 +619,55 @@ end
 
 -- attacker nil = monster (or any non-player source); crit (optional) = the hit was a critical hit (Pain "Big").
 -- Returns the HP actually removed (CR-M10: no overkill, 0 when nothing was applied).
+-- r9 play (최종 검수 10/17: a warrior went 182 -> 0 in ~6 s next to his rematch King): Studio only, every hit a player
+-- takes is kept (the last HitTrace.Max: { T, Amount (asked), Applied, Kind, By, HP after, Max HP, Where = its caller }) and the
+-- last HitTrace.Window s of them are printed at the KO ("[HitTrace] ..."). CombatService.HitTrace(player) returns the list
+local HitTrace = { Max = 40, Window = 15, Log = {} }
+function CombatService.HitTrace(player)
+	return HitTrace.Log[player] or {}
+end
+local function traceHit(victim, asked, applied, sourceKind, attacker, hum)
+	if not game:GetService("RunService"):IsStudio() then return end
+	local list = HitTrace.Log[victim] or {}
+	HitTrace.Log[victim] = list
+	-- the whole call chain on one line (the frame under DamagePlayer names the hit's path: a leap, a swing, the drop...)
+	local where = string.sub((string.gsub(debug.traceback("", 1) or "", "%s*\n%s*", " < ")), 1, 400)
+	table.insert(list, { T = os.clock(), Amount = asked, Applied = applied, Kind = tostring(sourceKind),
+		By = attacker and attacker.Name or "-", HP = hum.Health, Max = hum.MaxHealth, Where = where })
+	while #list > HitTrace.Max do table.remove(list, 1) end
+end
+-- r9 (최종 검수 10/17: a warrior died at 158/182 with no DamagePlayer): Studio only, every player's Humanoid every RegenTick (1 s)
+-- { T, HP, Max, Pos, Vel, State } (the last HitTrace.Samples), printed with the hits at a KO: a jump of HP without a hit,
+-- a MaxHealth change or a fall shows there
+HitTrace.Samples, HitTrace.SampleMax = {}, 20
+function HitTrace.SampleOne(p)
+	local hum, root = Util.GetHumanoid(p), Util.GetRoot(p)
+	if not hum then return end
+	local list = HitTrace.Samples[p] or {}
+	HitTrace.Samples[p] = list
+	local okS, st = pcall(function() return hum:GetState().Name end)
+	table.insert(list, { T = os.clock(), HP = hum.Health, Max = hum.MaxHealth, Pos = root and root.Position or nil,
+		Vel = root and root.AssemblyLinearVelocity or nil, State = okS and st or "?" })
+	while #list > HitTrace.SampleMax do table.remove(list, 1) end
+end
+local function printTrace(victim)
+	if not game:GetService("RunService"):IsStudio() then return end
+	local now = os.clock()
+	for _, s in HitTrace.Samples[victim] or {} do
+		if now - s.T <= 6 then
+			print(string.format("[HitTrace] %s %.2fs ago sample hp=%.0f/%.0f state=%s pos=%s vel=%s", victim.Name, now - s.T, s.HP, s.Max,
+				tostring(s.State), s.Pos and string.format("%.1f,%.1f,%.1f", s.Pos.X, s.Pos.Y, s.Pos.Z) or "nil",
+				s.Vel and string.format("%.0f,%.0f,%.0f", s.Vel.X, s.Vel.Y, s.Vel.Z) or "nil"))
+		end
+	end
+	for _, h in HitTrace.Log[victim] or {} do
+		if now - h.T <= HitTrace.Window then
+			print(string.format("[HitTrace] %s %.2fs ago kind=%s by=%s asked=%.1f applied=%.1f hp=%.0f/%.0f at %s", victim.Name, now - h.T,
+				h.Kind, h.By, h.Amount, h.Applied, h.HP, h.Max, h.Where))
+		end
+	end
+end
+
 function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 	if not isPlayer(victim) or victim.Parent == nil then
 		return 0
@@ -675,6 +724,8 @@ function CombatService.DamagePlayer(victim, amount, attacker, crit, sourceKind)
 	local before = hum.Health
 	hum:TakeDamage(amount) -- respects ForceField
 	local applied = math.max(0, before - hum.Health)
+	local okT, errT = pcall(traceHit, victim, amount, applied, sourceKind, attacker, hum) -- r9: Studio only
+	if not okT then loopWarn("HitTrace", errT) end
 	-- P1 (2026-10-05): only a PLAYER hit is the victim's activity; an AFK player hit by a slime stays idle
 	-- (regular luck, size scale and faction headcount use IdleSeconds)
 	-- BB10 D6: kind "Hit" = not the victim's own action (the fair-points idle check reads GetLastOwnActive)
@@ -1462,6 +1513,7 @@ local function sendKO(victim, killer, ctx, carriedBefore, died)
 	Net.Fx(victim, "KO", { By = by, Name = name, Faction = killerFaction, Lost = lost, Sack = ctx.HadSack == true,
 		RespawnIn = Config.Player.RespawnTime, Tip = tip, Kind = kind })
 	CombatService.KnockedOut:Fire(victim, by)
+	pcall(printTrace, victim) -- r9: Studio only
 end
 
 -- A23-110: the lossless first KO (FirstKOService.ClaimKO: the King Slime's one hit on the quest step, once per account,
@@ -1570,6 +1622,10 @@ local function onCharacterDied(player, _character)
 	local hum = Util.GetHumanoid(player)
 	local okState, hstate = pcall(function() return hum and hum:GetState() end)
 	local died = { Pos = root and root.Position or nil, Freefall = okState and hstate == Enum.HumanoidStateType.Freefall }
+	if game:GetService("RunService"):IsStudio() then -- r9: Studio only, the moment of the death
+		print(string.format("[HitTrace] %s died hp=%s/%s state=%s pos=%s", player.Name, tostring(hum and hum.Health), tostring(hum and hum.MaxHealth),
+			tostring(okState and hstate), tostring(died.Pos)))
+	end
 	-- deferred so the lethal hit's PlayerDamaged handlers (kaiju damage share, bait log) always run first,
 	-- whatever the Workspace.SignalBehavior is
 	task.defer(function()
@@ -1641,6 +1697,8 @@ local function onPlayerLeaving(player, _data)
 		lastDamagedAt[player] = nil
 		lastPvPAttacker[player] = nil
 		lastSource[player] = nil
+		HitTrace.Log[player] = nil -- r9 (Studio only)
+		HitTrace.Samples[player] = nil
 		lastPvPTime[player] = nil
 		painAt[player] = nil
 		guard.releaseAt[player] = nil
@@ -1821,6 +1879,7 @@ end
 
 ------------------------------------------------------------------ loops
 local function regenTick(p)
+	if game:GetService("RunService"):IsStudio() then pcall(HitTrace.SampleOne, p) end -- r9: Studio only, a sample every RegenTick
 	local hum = Util.GetHumanoid(p)
 	if not hum or hum.Health <= 0 or hum.Health >= hum.MaxHealth then
 		return

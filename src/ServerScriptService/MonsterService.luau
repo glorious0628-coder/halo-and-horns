@@ -1805,6 +1805,8 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 		end
 	end
 	record.HP -= amount
+	-- r9 play (최종 검수 10/17: the bot read Humanoid.Health, which never moves): Studio only, the real HP on the model
+	if RunService:IsStudio() and record.Model then pcall(record.Model.SetAttribute, record.Model, "DebugHP", math.max(0, math.floor(record.HP))) end
 	if record.HP > 0 then
 		updateBar(record)
 		local okHurt, errHurt = pcall(markHurt, record, amount, crit)

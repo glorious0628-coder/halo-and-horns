@@ -54,6 +54,17 @@ local function koWorld(o)
 		table.insert(w.Config.StoryQuests.Subs, "KOT")
 	end
 	w.Story.Start()
+	-- 최종 검수 10/17 (M1_2 "Buy 3 potions"): the step counts the HELD HP stock. ShopService's purchase raises the stock before it
+	-- reports "PotionBought"; in this world a reported purchase brings the stock to 3 (the whole shopping trip) unless the test
+	-- sets w.BuyOne (one potion, the counting checks)
+	local event = w.Story.Event
+	w.Story.Event = function(p, name, info)
+		local d = w.Data[p]
+		if name == "PotionBought" and type(d) == "table" then
+			d.HPPotionCount = w.BuyOne and ((d.HPPotionCount or 0) + 1) or math.max(d.HPPotionCount or 0, 3)
+		end
+		return event(p, name, info)
+	end
 	-- every GrantItem the story service asks for (the scroll of the quest's reward, the anvil's scroll); loot drops of the
 	-- kills go another way
 	w.Granted = {}
@@ -213,9 +224,9 @@ runGroup("config", function()
 	check(s[1].Text == "Defeat the King Slime" and s[1].Obj.Type == "Event" and s[1].Obj.Name == "FirstKO" and s[1].Obj.Past == nil
 		and s[1].Guide == "KingHill", "step 1: Defeat the King Slime = the FirstKO happening (never skipped by an old one), guides to the King's hill",
 		show(s[1]))
-	check(s[2].Text == "Buy a potion" and s[2].Obj.Type == "Event" and s[2].Obj.Name == "PotionBought" and s[2].Obj.Past == true
-		and s[2].TopUpGold == nil and s[2].Guide == "PotionShop",
-		"step 2: Buy a potion = PotionBought (passes when seen before), no gold top-up (the first 1000 gold pays it), guides to the seller",
+	check(s[2].Text == "Buy 3 potions %d/%d" and s[2].ShortName == "Buy potions" and s[2].Obj.Type == "Event" and s[2].Obj.Name == "PotionBought"
+		and s[2].Obj.Past == true and s[2].Obj.Stock == "HP" and s[2].Obj.Count == 3 and s[2].TopUpGold == nil and s[2].Guide == "PotionShop",
+		"step 2 (최종 검수 10/17): Buy 3 potions = 3 HP potions held (Stock / Count), no gold top-up (the first 1000 gold pays them), guides to the seller",
 		show(s[2]))
 	check(s[3].Text == "Put the potion in a quick slot" and s[3].Obj.Type == "Event" and s[3].Obj.Name == "QuickSlotSet" and s[3].Obj.Past == true
 		and s[3].Obj.Held == "QuickSlots" and s[3].TopUpGold == nil and s[3].Guide == "QuickSlot",
@@ -388,14 +399,22 @@ runGroup("flow", function()
 		check(#w.GoldGiven == gold0 and (d.CarriedGold or 0) == 0 and d.Story.First.TopM1_22 == nil,
 			faction .. ": no gold top-up at the shop row (A23-222: the first 1000 gold pays the potion)", show({ w.GoldGiven, d.CarriedGold }))
 		local row = rowOf(w, p, d, ID)
-		check(row.Text == "Buy a potion" and row.ShortName == "Buy a potion" and row.Story.Guide == "PotionShop" and row.Story.St == 2,
-			faction .. ": row 2 reads 'Buy a potion' and guides to the seller", show(row))
+		check(row.Text == "Buy 3 potions" and row.ShortName == "Buy potions" and row.Progress == 0 and row.Target == 3 and row.ShowProgress == true
+			and row.Story.Guide == "PotionShop" and row.Story.St == 2, faction .. ": row 2 reads 'Buy 3 potions' 0/3 and guides to the seller", show(row))
 		check(w.Story.Wants(p, "PotionBought") == true and w.Story.Wants(p, "FirstKO") == false and w.Story.Wants(p, "PotionUsed") == false
 			and w.Story.Wants(p, "QuickSlotSet") == false, faction .. ": step 2 waits for PotionBought only", "")
 		check(p:GetAttribute("PotionSip") == false, faction .. ": steps 1-2: the client may not use a full bar yet (PotionSip false)", tostring(p:GetAttribute("PotionSip")))
 		check(w.Story.Event(p, "FirstKO") == false and tr.St == 2, faction .. ": a second KO moves nothing", show(tr))
-		-- 2. the purchase
-		check(w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 }) == true and tr.St == 3, faction .. ": PotionBought moves step 2 to 3", show(tr))
+		-- 2. the purchase: one potion = 1/3 (the step stays), three held = the next row
+		w.BuyOne = true
+		w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 })
+		row = rowOf(w, p, d, ID)
+		check(tr.St == 2 and row.Progress == 1 and row.Target == 3, faction .. ": one potion bought: still row 2, 1/3", show({ tr, row.Progress }))
+		w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 })
+		check(tr.St == 2 and rowOf(w, p, d, ID).Progress == 2, faction .. ": two: 2/3", show(tr))
+		check(w.Story.Event(p, "PotionBought", { Kind = "HP", N = 1 }) == true and tr.St == 3 and d.HPPotionCount == 3,
+			faction .. ": the third potion moves step 2 to 3", show(tr))
+		w.BuyOne = nil
 		row = rowOf(w, p, d, ID)
 		check(row.Text == "Put the potion in a quick slot" and row.ShortName == "Quick slot" and row.Story.Guide == "QuickSlot" and row.Story.St == 3,
 			faction .. ": row 3 reads 'Put the potion in a quick slot' (guide: the bag's slots)", show(row))
