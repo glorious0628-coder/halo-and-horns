@@ -4790,9 +4790,14 @@ table.insert(Config.TownNpcs.List, { Id = "Rex", Name = "Npc_Rex", Story = "Rex"
 
 -- P1 ②: the practice dummies beside each teacher (H00a / R00a / N00a). A workspace instance tagged StoryLandmark with Spot =
 -- the key moves a spot to it (like every landmark); PracticeN follows the Crossroads anvil like Kit (AnvilSpots)
-Config.StoryQuests.Landmarks.PracticeH = Vector3.new(-18, 0, -366)
-Config.StoryQuests.Landmarks.PracticeR = Vector3.new(-26, 0, 418)
-Config.StoryQuests.AnvilSpots = { PracticeN = { Behind = -8, Side = -7 } }
+-- 최종 검수 10/16 🔴 (game dev 1's values): (-18, -366) stood 10.8 from Pad_Halo_SlimeMeadow (-24, -357), so a player at the
+-- dummy stepped on the pad and went to the meadow. Now >= 25 studs from every travel pad, off the town road (|x| <= 8),
+-- nothing within 4 studs (place/GoodEvil.rbxlx 10/16: nearest the knight statue (-13, -390) ~6, the lantern (-14.6, -385.3) 7.5)
+Config.StoryQuests.Landmarks.PracticeH = Vector3.new(-22, 0, -384)
+Config.StoryQuests.Landmarks.PracticeR = Vector3.new(-26, 0, 418) -- (no travel pad in the Horns town; nothing within 8)
+-- the artisans' dummy: Behind -8 / Side -7 put it 16.6 from the Woods pad (52, 24); Behind -4 / Side 12 = (27.3, 49.8),
+-- 35.7 from the nearest pad, beside the Guild Hall (edge ~4.7), Kit (Side 7) between it and the anvil
+Config.StoryQuests.AnvilSpots = { PracticeN = { Behind = -4, Side = 12 } }
 -- P1 ① Practice steps: a manual basic swing within Radius of the Spot (A23-221 ①: any direction - in a town no monster turns
 -- the body, so the old facing check (0.3) refused hits at the dummy's side)
 -- P1 ④ (agreed with game dev 1): shape matching (OpenPanel "Match" { Id, Target, Options }) and the workbench timing (OpenPanel

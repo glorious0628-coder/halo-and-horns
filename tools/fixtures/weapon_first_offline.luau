@@ -629,6 +629,13 @@ runGroup("p1 guide and teacher", function()
 		and row.Practice == true and #T.ShortNames.Practice <= 14,
 		"the row: 'Hit the practice dummy', GuideSpot = PracticeH, Practice = true", show({ row.Text, row.ShortName, row.GuideSpot, row.Practice }))
 	local dummy = SQ.Landmarks.PracticeH
+	-- 최종 검수 10/16 🔴: the dummy stood 10.8 from Pad_Halo_SlimeMeadow and a player at it was sent to the meadow. The Halo
+	-- plaza pads (place/GoodEvil.rbxlx 10/16: Pad_Halo_SlimeMeadow (-24, -357), Pad_Halo_GoblinWoods (24, -357), 10 x 10) and
+	-- the town road (|x| <= 8) stay away from it
+	local near = math.huge
+	for _, pad in { { -24, -357 }, { 24, -357 } } do near = math.min(near, math.sqrt((dummy.X - pad[1]) ^ 2 + (dummy.Z - pad[2]) ^ 2)) end
+	check(near >= 25 and math.abs(dummy.X) >= 14, "PracticeH is >= 25 studs from every Halo plaza pad and off the town road",
+		show({ dummy.X, dummy.Z, near }))
 	local swing = w.Registry.CombatService.BasicSwing
 	swing:Fire(p, vec(dummy.X - 15, 0, dummy.Z), vec(1, 0, 0))
 	w:Flush()
