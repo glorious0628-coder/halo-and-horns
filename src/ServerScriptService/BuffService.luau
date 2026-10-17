@@ -106,8 +106,11 @@ end
 
 function BuffService.Use(player, id)
 	if not on() then return "off" end
-	local tonic = type(id) == "string" and A().Tonics[id] or nil
+	-- A23-219 ② B: a special (Alchemy.Plus) runs as its Base (never two of one effect), Extra s longer
+	local base = Config.TonicBase(id)
+	local tonic = base and A().Tonics[base] or nil
 	if type(tonic) ~= "table" or not Config.Loot.Items[id] then return "tonic" end
+	local sp = base ~= id and type(A().Plus) == "table" and A().Plus[id] or nil
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players then return "state" end
 	local data = getData(player)
 	if not data or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return "state" end
@@ -116,8 +119,6 @@ function BuffService.Use(player, id)
 		notify(player, "NoTonic")
 		return "none"
 	end
-	-- A23-219 ② B: a special tonic runs as its Base (never two of one effect), Extra s longer
-	local base = type(tonic.Base) == "string" and A().Tonics[tonic.Base] and tonic.Base or id
 	local running = BuffService.Running(player)
 	local others = 0
 	for other in running do
@@ -132,7 +133,7 @@ function BuffService.Use(player, id)
 	for other in data.Buffs do
 		if not running[other] then data.Buffs[other] = nil end -- ended ones go
 	end
-	local ends = os.time() + math.floor(num(A().Duration, 180)) + math.max(0, math.floor(num(tonic.Extra, 0)))
+	local ends = os.time() + math.floor(num(A().Duration, 180)) + math.max(0, math.floor(num(type(sp) == "table" and sp.Extra, 0)))
 	data.Buffs[base] = ends
 	publish(player)
 	watch(player, base, ends)

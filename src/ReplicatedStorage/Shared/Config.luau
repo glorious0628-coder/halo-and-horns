@@ -10336,7 +10336,7 @@ Config.Craft.Tools = {
 		Size = { Weapon = 0.008, Armor = 0.004, Ring = 0.002, PetArmor = 0.04, PetAcc = 0.02 },
 		-- A23-219 ② B (최종 검수 10/17): a potion / tonic / treat craft rolls the same P[+N] once; a hit makes ONE of its results
 		-- the special (the rest plain), always the full size: a potion heals / restores Vitals.PotionPlusBonus more, a tonic runs
-		-- Alchemy.Tonics[special].Extra s longer, a treat gives Research.TreatPlusBonus more pet XP
+		-- Alchemy.Plus[special].Extra s longer, a treat gives Research.TreatPlusBonus more pet XP
 		Special = { HP = "HP", MP = "MP", MightTonic = "MightTonicPlus", GuardTonic = "GuardTonicPlus", LuckyTonic = "LuckyTonicPlus",
 			WisdomTonic = "WisdomTonicPlus", PetTreat = "PetTreatPlus" },
 	},
@@ -10451,11 +10451,15 @@ Config.Alchemy = {
 		GuardTonic = { Stat = "MonsterHurt", Mult = 0.90 },
 		LuckyTonic = { Stat = "MaterialDrop", Mult = 1.25 },
 		WisdomTonic = { Stat = "HuntXP", Mult = 1.10 },
-		-- A23-219 ② B: a special tonic = its Base's effect for Duration + Extra s (it runs as the Base: never two of one effect)
-		MightTonicPlus = { Stat = "MonsterDamage", Mult = 1.10, Base = "MightTonic", Extra = 30 },
-		GuardTonicPlus = { Stat = "MonsterHurt", Mult = 0.90, Base = "GuardTonic", Extra = 30 },
-		LuckyTonicPlus = { Stat = "MaterialDrop", Mult = 1.25, Base = "LuckyTonic", Extra = 30 },
-		WisdomTonicPlus = { Stat = "HuntXP", Mult = 1.10, Base = "WisdomTonic", Extra = 30 },
+	},
+	-- A23-219 ② B: a special tonic item = its Base's effect for Duration + Extra s. It runs AS the Base (data.Buffs[Base],
+	-- the attribute Buff_<Base>): never two of one effect, 'two at a time' counts the Base. Kept out of Tonics so every
+	-- list of running tonics (BuffBar, BagUI, the Buff_ attributes) has the four base ids only; Config.TonicBase(item).
+	Plus = {
+		MightTonicPlus = { Base = "MightTonic", Extra = 30 },
+		GuardTonicPlus = { Base = "GuardTonic", Extra = 30 },
+		LuckyTonicPlus = { Base = "LuckyTonic", Extra = 30 },
+		WisdomTonicPlus = { Base = "WisdomTonic", Extra = 30 },
 	},
 	Text = {
 		TwoMax = "Only two tonics at a time.",
@@ -10463,6 +10467,17 @@ Config.Alchemy = {
 	},
 }
 Config.RateLimits.UseTonic = 1
+
+-- the tonic a drinkable item runs as: a base tonic -> itself, a special (Alchemy.Plus) -> its Base, anything else -> nil
+function Config.TonicBase(item)
+	local a = Config.Alchemy
+	if type(a) ~= "table" or type(item) ~= "string" then return nil end
+	if type(a.Tonics) == "table" and type(a.Tonics[item]) == "table" then return item end
+	local sp = type(a.Plus) == "table" and a.Plus[item] or nil
+	local base = type(sp) == "table" and sp.Base or nil
+	if type(base) == "string" and type(a.Tonics) == "table" and type(a.Tonics[base]) == "table" then return base end
+	return nil
+end
 
 ----------------------------------------------------------------- tamer research (게임성 개발 3, 2026-10-12)
 -- TamerService; contract docs/design/tamer_server_2026-10-12.md (crafting_market §4, A23-115). The pet tamer

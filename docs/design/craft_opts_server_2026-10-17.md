@@ -32,7 +32,8 @@
 
 ## 덩어리 B — 물약·강장제·펫 간식 특제품 (최종 검수 10/17: 종류마다 id 하나·크기 고정 최대값, 도구 +N은 확률만)
 - 굴림: 물약(AP1·AP2)·강장제(A1~A4)·간식(T1) 제작도 시작 때 같은 P[도구 +N]로 한 번 → 맞으면 결과 중 **하나만** 특제(나머지 일반). Craft.Pend.Opt = 1, CraftResult.Opt = 1.
-- 강장제: `MightTonicPlus`·`GuardTonicPlus`·`LuckyTonicPlus`·`WisdomTonicPlus`(아이템, 이름 "Might Tonic+" …) = 같은 효과, **3분 30초**(Alchemy.Tonics[id].Extra = 30). 원래 강장제 이름(Base)으로 돌아서 같은 효과 두 개는 안 겹침, '두 개까지'도 Base로 셈. 저장 수리 BuffSeconds 210.
+- 강장제: `MightTonicPlus`·`GuardTonicPlus`·`LuckyTonicPlus`·`WisdomTonicPlus`(아이템, 이름 "Might Tonic+" …) = 같은 효과, **3분 30초**(`Config.Alchemy.Plus[id] = { Base, Extra = 30 }` — Alchemy.Tonics는 기본 4개만). 원래 강장제 이름(Base)으로 돌아서 같은 효과 두 개는 안 겹침, '두 개까지'도 Base로 셈. 저장 수리 BuffSeconds 210. 신호는 `Buff_<Base>` 4개뿐(특제 id의 Buff_ 속성 없음). 특제 → 기본 id = `Config.TonicBase(item)`(기본 → 자기, 특제 → Base, 그 밖 nil).
 - 간식: `PetTreatPlus`("Pet Treat+") — FeedPet 때 **있으면 먼저** 씀, 펫 XP 20 → 24(Research.TreatPlusBonus 0.2).
 - 물약: 특제 재고 칸 따로 `HPPotionPlusCount`·`MPPotionPlusCount`(저장·속성 미러, 추가 칸이라 판 안 올림, Config.PotionPlusKey(kind)). 같은 퀵슬롯·같은 쿨다운, **특제부터** 마심, 회복 +20%(Vitals.PotionPlusBonus). Fx Drink에 `Special = true`.
+- 개발 1 화면(가방 강장제): `BagUI.TonicState`에 넘기는 id를 `Config.TonicBase(cell.Id)`로(지금은 특제 칸이 기본이 돌 때 '도는 중'이 안 보이고, 기본 + 다른 하나가 돌면 '대기'로 막혀 보임 — 서버는 마실 수 있음). BuffBar는 그대로(Tonics 4개).
 - 개발 1 화면: 물약 칸 수 = 일반 + 특제(특제 있으면 표시), 강장제·간식 특제는 가방에 따로(Loot.Items 이름·아이콘 같음), CraftResult.Opt = 1이면 '특제!' 표시.

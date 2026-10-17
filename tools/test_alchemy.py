@@ -35,7 +35,10 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 MUTATIONS = [
     # A23-219 ② B special potions / tonics / treats (게임성 개발 2)
     ('B: a special runs as itself (two of one effect)', B, '\tdata.Buffs[base] = ends\n', '\tdata.Buffs[id] = ends\n'),
-    ('B: no Extra time', B, '+ math.max(0, math.floor(num(tonic.Extra, 0)))', '+ 0'),
+    ('B: no Extra time', B, '+ math.max(0, math.floor(num(type(sp) == "table" and sp.Extra, 0)))', '+ 0'),
+    ('B: a special not drinkable', C, '\tif type(base) == "string" and type(a.Tonics) == "table" and type(a.Tonics[base]) == "table" then return base end\n', ''),
+    ('B: a special back in Tonics (a Buff_ attribute the screen never reads)', C, '\t\tWisdomTonic = { Stat = "HuntXP", Mult = 1.10 },\n\t},\n',
+     '\t\tWisdomTonic = { Stat = "HuntXP", Mult = 1.10 },\n\t\tMightTonicPlus = { Stat = "MonsterDamage", Mult = 1.10 },\n\t},\n'),
     # --- the table
     ("config: on by default", C, "Config.Features.Tonics = false\n", "Config.Features.Tonics = true\n"),
     ("config: 4 minutes", C, "Config.Alchemy = {\n\tDuration = 180,", "Config.Alchemy = {\n\tDuration = 240,"),
@@ -48,7 +51,7 @@ MUTATIONS = [
     ("config: A1 at craft Lv2", C, "Item = \"MightTonic\", N = 1, Lv = 1, Gold = 20,", "Item = \"MightTonic\", N = 1, Lv = 2, Gold = 20,"),
     ("config: tonics out of the bag order", C, "\t\t\"MightTonic\", \"GuardTonic\", \"LuckyTonic\", \"WisdomTonic\", \"PetTreat\",\n", "\t\t\"PetTreat\",\n"),
     # --- drinking
-    ("use: the switch not checked", B, "\tif not on() then return \"off\" end\n\tlocal tonic", "\tlocal tonic"),
+    ("use: the switch not checked", B, "\tif not on() then return \"off\" end\n\t-- A23-219", "\t-- A23-219"),
     ("use: any item drinks", B, "\tif type(tonic) ~= \"table\" or not Config.Loot.Items[id] then return \"tonic\" end\n", "\tif type(tonic) ~= \"table\" then tonic = { Stat = \"x\", Mult = 1 } end\n"),
     ("use: not-ready players drink", B, "\tif not data or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return \"state\" end\n", "\tif not data or not Util.IsAlive(player) then return \"state\" end\n"),
     ("use: KO'd players drink", B, "\tif not data or not S.PlayerService.IsReady(player) or not Util.IsAlive(player) then return \"state\" end\n", "\tif not data or not S.PlayerService.IsReady(player) then return \"state\" end\n"),
