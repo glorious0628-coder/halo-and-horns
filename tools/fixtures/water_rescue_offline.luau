@@ -460,6 +460,41 @@ runGroup("A10 first", function()
 		"below Y -20 the A10 rescue runs (home spawn) and the water tick is not reached", show(s.Root.Position))
 end)
 
+-- 최종 검수 10/17 (r9: a root at Y -1e6 in one step was a broken CFrame, not a fall): an absurd position (NaN / inf / below
+-- -1e4) goes back to the last good spot; a real fall below -20 on the King's rematch row gets up where a KO there would
+-- (FirstKOService.GetUp: by Fizzby), else the home spawn as before
+runGroup("absurd positions and the rematch row", function()
+	local w = zoneWorld()
+	fakeProbes(w, allLand)
+	local s = swimmer(w, 1, vec(400, 3, -100))
+	tick(w, TICK)
+	check(#s.Char.Pivots == 0, "(setup: a good sample on dry land)", "")
+	s.Root.Position = vec(400, -1000012, -100)
+	tick(w, TICK)
+	check(#s.Char.Pivots == 1 and near(s.Root.Position.Y, 3) and near(s.Root.Position.X, 400), "Y -1e6 in one step: back to the last good spot",
+		show(s.Root.Position))
+	s.Root.Position = vec(0 / 0, 3, -100)
+	tick(w, TICK)
+	check(#s.Char.Pivots == 2 and near(s.Root.Position.X, 400), "a NaN X: back to the last good spot", show(s.Root.Position))
+	check(w.Z.Absurd(vec(1, 2, 3)) == false and w.Z.Absurd(vec(1, -20000, 3)) == true and w.Z.Absurd(vec(math.huge, 0, 0)) == true
+		and w.Z.Absurd(vec(0, -25, 0)) == false, "ZoneService.Absurd: NaN / inf / below -1e4 only (Y -25 is a real fall)", "")
+	-- a real fall on the rematch row: FirstKOService.GetUp's spot
+	local cf = ctor("CFrame").new(vec(6, 4, -30))
+	w.Reg.FirstKOService = { GetUp = function(p) return p == s.P and { Delay = 3, CFrame = cf } or nil end }
+	s.Root.Position = vec(400, -25, -100)
+	tick(w, TICK)
+	check(#s.Char.Pivots == 3 and s.Char.Pivots[3] == cf, "a fall below -20 on the rematch row: up at FirstKOService.GetUp's spot", show(s.Root.Position))
+	-- no get-up held: the home spawn as before
+	w.Reg.FirstKOService = { GetUp = function() return nil end }
+	s.Root.Position = vec(400, -25, -100)
+	tick(w, TICK)
+	check(#s.Char.Pivots == 4 and near(s.Root.Position.Y, 4) and near(s.Root.Position.Z, -500, 200), "no get-up held: the home spawn (A10)", show(s.Root.Position))
+	-- an absurd position with no good spot of this body: the rescue below
+	local q = swimmer(w, 2, vec(400, -1000012, -100))
+	tick(w, TICK)
+	check(#q.Char.Pivots == 1 and not w.Z.Absurd(q.Root.Position), "an absurd spot and no good sample yet: the home spawn", show(q.Root.Position))
+end)
+
 runGroup("a probe error is contained", function()
 	local w = zoneWorld()
 	fakeProbes(w, canal)

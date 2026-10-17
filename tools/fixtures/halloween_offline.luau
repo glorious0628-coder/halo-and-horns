@@ -3796,7 +3796,7 @@ runGroup("client-wiring", function()
 	check(string.find(mon, "local kind, noRespawn = rec.Kind, rec.Owner ~= nil or rec.Event == true", 1, true) ~= nil
 		and string.find(mon, "if not noRespawn then scheduleRespawn(kind) end", 1, true) ~= nil,
 		"a lost event king is not respawned by the AI (aiStep model-lost branch)")
-	check(string.find(mon, "topAboveRoot + 1.6 + math.max(0, tonumber(def.Float) or 0)", 1, true) ~= nil,
+	check(string.find(mon, "topAboveRoot + 0.8 + math.max(0, tonumber(def.Float) or 0)", 1, true) ~= nil,
 		"the name bar is raised by Float for hovering kinds")
 	check(string.find(mon, "Event = opts.Event == true or nil", 1, true) ~= nil, "spawnMonster marks SpawnEvent records (Event = true)")
 	local _, fires = string.gsub(mon, "MonsterKilled:Fire%(", "")

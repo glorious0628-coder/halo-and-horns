@@ -10013,6 +10013,9 @@ Config.FirstKOKing = {
 	-- studs away from the King, studs above the ground, s the spot is kept, the share of MaxHealth the player gets up with
 	-- A23-222: the first KO gets up at Spot (beside Fizzby in the Crossroads: the potion is the next row), facing Face
 	GetUp = { Back = 6, Lift = 4, Keep = 20, HealthFrac = 0.4, Spot = Vector3.new(6, 0, -30), Face = Vector3.new(12, 0, -34) },
+	-- detail audit #10 (최종 검수 10/17): a KO on the rematch row (M1_2 still open) gets up at GetUp.Spot too (by Fizzby: more
+	-- potions, the way back short), full HP, after the usual RespawnTime - never the long walk from the home town
+	RetryGetUp = true,
 	SpawnGap = 4,
 	Tick = 0.5,
 	-- the retry King: HP = Seconds of the player's own basic attacks (the best weapon the save may use, with its +N), each

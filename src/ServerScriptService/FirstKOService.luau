@@ -453,6 +453,12 @@ function FirstKOService.GetUp(player)
 		local data = getData(player)
 		if data and data.FirstKODone ~= true and not atStake(player) then return { Delay = respawnIn() } end
 	end
+	-- detail audit #10: on the rematch row a KO (any cause) gets up by Fizzby (GetUp.Spot), full HP (nothing held: no
+	-- HealthFrac), after the normal RespawnTime; never while something is at stake (a sack, a bounty, a PvP fight)
+	if FK.RetryGetUp == true and FirstKOService.StageOf(player) == "Retry" and not atStake(player) then
+		local okC, cf = pcall(getUpCFrame, nil)
+		if okC and typeof(cf) == "CFrame" then return { Delay = num(Config.Player.RespawnTime, 3), CFrame = cf } end
+	end
 	return nil
 end
 

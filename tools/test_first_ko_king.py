@@ -108,6 +108,11 @@ TELL = "\t\tST.NextAt[player] = now + num(FK.SpawnGap, 4)\n\t\treport(player, fa
 HOOKS = "Distance = num(FK.SpawnDistance, 6), Strike = strike, OnKilled = onKilled, Near = true,"
 
 MUTATIONS = [
+    # detail audit #10 (최종 검수 10/17): a rematch-row KO gets up by Fizzby
+    ("#10: the home town again", C, "\tRetryGetUp = true,", "\tRetryGetUp = false,"),
+    ("#10: any row gets up by Fizzby", F, "\tif FK.RetryGetUp == true and FirstKOService.StageOf(player) == \"Retry\" and not atStake(player) then",
+     "\tif FK.RetryGetUp == true and not atStake(player) then"),
+    ("#10: up at once", F, "return { Delay = num(Config.Player.RespawnTime, 3), CFrame = cf }", "return { Delay = 0.5, CFrame = cf }"),
     ("r7: the first KO has no Kind", CO, "First = true, Kind = def and src.Kind or nil }", "First = true }"),
     # --- FirstKOService: the stage comes from the quest's CurrentStep (never a step number of our own)
     ("any quest step is the KO step", F, "\tif step == Q.Step then return (fresh and not off) and \"First\" or \"Tell\" end",

@@ -1114,6 +1114,24 @@ runGroup("player service", function()
 	w:Advance(0.6)
 	check(#loads == 2 and loads[2].P == q and near(loads[2].At - t1, 3.1, 1e-6), "up after RespawnTime (3 s)", loads[2] and tostring(loads[2].At - t1))
 	check(api.SpawnSpot(q) == zoneCF, "spawnSpot = the zone spawn")
+	-- detail audit #10 (최종 검수 10/17): a KO on the rematch row gets up by Fizzby (GetUp.Spot), after RespawnTime, full HP
+	local r = w:Hunter(103, "Halo", { Step = RETRY, Done = true })
+	local hr = bind(r)
+	w.Combat.DamagePlayer(r, 1000, nil, false, "SlimeKing")
+	local t2 = w.Clock
+	hr.OnDied()
+	w:Die(r)
+	w:Advance(3.1)
+	local g = api.GetUp(r)
+	check(#loads == 3 and loads[3].P == r and near(loads[3].At - t2, 3.1, 1e-6) and g and g.Delay == C0.Player.RespawnTime,
+		"a rematch-row KO: up after RespawnTime", loads[3] and tostring(loads[3].At - t2))
+	local rs = api.SpawnSpot(r)
+	check(rs ~= zoneCF and rs.Ctor == "lookAt", "... at the get-up spot by Fizzby (not the home town)", show(rs and rs.Ctor))
+	local h0 = w:Hum(r).Health
+	w.PS.CharacterSpawned:Fire(r, r.Character, w:Hum(r), false)
+	check(w:Hum(r).Health == h0, "... full HP (no HealthFrac: nothing held)", tostring(w:Hum(r).Health))
+	local off = w:Hunter(104, "Halo", { Step = STEP + 1, Done = true })
+	check(api.GetUp(off) == nil, "another row (the shop): the normal respawn", "")
 	-- no FirstKOService in the registry (or it throws): the normal respawn
 	w.Registry.FirstKOService = nil
 	check(api.GetUp(p) == nil and api.SpawnSpot(p) == zoneCF, "no service: nothing held")
