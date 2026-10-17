@@ -58,6 +58,8 @@ local T = {
 	Bad = Color3.fromRGB(255, 120, 110),
 	Good = Color3.fromRGB(255, 228, 100), -- the 'This run' title (UIKit gold text)
 	Pad = 6, -- UIListLayout gap between lines
+	GlowAfter = 0.6, -- s after the screen closes (up again): the potion quick slot shines (QuickSlots.Glow)
+	IconGap = 8, -- px between the monster's head and the cause words
 	Y = 0.42, -- box centre (screen height)
 	-- phone: every size >= its UIKit style floor at UIScale 0.75 (Title 22, Body 19, Number 16 du), so the label height
 	-- (size + 8) holds the drawn text
@@ -204,10 +206,44 @@ end
 
 function DeathScreen.Hide()
 	S.Token += 1
+	local was = S.Gui ~= nil
 	if S.Gui then
 		pcall(function() S.Gui:Destroy() end)
 	end
 	S.Gui, S.Labels, S.Data, S.Box, S.Look = nil, nil, nil, nil, nil
+	-- 최종 검수 #1 (game play r5: KO'd at Lv5, no idea why or what helps): up again = the potion quick slot shines once
+	-- (only when I carry a potion; QuickSlots.Glow)
+	local qs = C and C.QuickSlots
+	if was and type(qs) == "table" and type(qs.Glow) == "function" then task.delay(T.GlowAfter, function() pcall(qs.Glow) end) end
+end
+
+-- 최종 검수 #1 (pure): the monster kind of a KO's Name (Config.MonsterTypes[kind].Name), an icon kind first; nil = none
+function DeathScreen.KindOf(name)
+	if type(name) ~= "string" or name == "" then return nil end
+	local found = nil
+	for kind, def in type(Config.MonsterTypes) == "table" and Config.MonsterTypes or {} do
+		if type(def) == "table" and def.Name == name and (found == nil or kind < found) then found = kind end
+	end
+	return found
+end
+
+-- 최종 검수 #1: the monster's head (IconMon<kind>, the art the codex / the quest rows use) just left of the KO's cause
+-- words (no art = the words alone); its place follows the words' width
+local function causeIcon(ui, causeLabel, data)
+	if type(data) ~= "table" or data.By ~= "Monster" or not causeLabel or not ui or type(ui.ArtImage) ~= "function" then return end
+	local kind = type(data.Kind) == "string" and data.Kind or DeathScreen.KindOf(data.Name)
+	if not kind then return end
+	local ok, img = pcall(ui.ArtImage, "IconMon" .. kind, { Name = "CauseIcon", AnchorPoint = Vector2.new(1, 0.5),
+		Size = UDim2.fromScale(1.6, 1.6), SizeConstraint = Enum.SizeConstraint.RelativeYY, ZIndex = T.ZIndex + 2,
+		Parent = causeLabel })
+	if not (ok and img) then return end
+	local function place()
+		local w = causeLabel.AbsoluteSize.X
+		local tw = math.min(causeLabel.TextBounds.X, w)
+		img.Position = UDim2.new(0.5, -tw / 2 - T.IconGap, 0.5, 0)
+	end
+	place()
+	causeLabel:GetPropertyChangedSignal("TextBounds"):Connect(place)
 end
 
 local function kit()
@@ -302,6 +338,7 @@ function DeathScreen.Show(data)
 		if okB and btn then S.Skip = btn end
 	end
 	for i = 1, look.MaxGot do S.Labels["Got" .. i] = label(ui, box, "Got" .. i, look.GotSize, "Body", 4 + i) end
+	pcall(causeIcon, ui, S.Labels.Cause, data)
 	S.Box, S.Look = box, look
 	DeathScreen.Flush() -- A23-167 ③: the last change before the KO counts
 	S.Faction = G.Base and G.Base.Faction or nil
