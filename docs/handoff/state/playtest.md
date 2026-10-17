@@ -45,3 +45,10 @@
 - 고쳐짐: 칼 허리 아래 45°(뿔·빛), 등 활 시위 없음. 새로/그대로: KO 3번(강화·Lv5 슬라임·HP 7 걷기), M1_3 길 표시 틀림/없음(To Tiny 410스터드 0), Tiny 대화 없음(진영 안 바꿔도), 뿔 첫 화면 카메라 Magpie 안 봄.
 - 도구: PlayTest 창 id 21d331aa(매번 list로), atkshot/walkshot OUT = PT_ROUND. 뿔 마을 → 대장간 길 찾기는 (0,3,380)→(0,3,280)→(10,3,200)→(30,3,120)→(36,3,70) 중간 지점으로.
 - **다음 판:** 다음 sync 신호 → 뿔 전사로 처음부터(첫 무기 몽둥이 허리 각도) / first12 병합 뒤 강화·KO·물약 흐름.
+
+## 10/17 — 6판 끝 (빛 · 궁수 · 패스 끔, src d4c4b483 첫 12분 새 흐름)
+- 보고서 `docs/review/playtest/2026-10-17_r6.md`, 사진 `docs/art/verification_2026-10-17/playtest/r6/`.
+- 좋아짐: 첫 화면 카메라, 아침 시작(밤 13분), 허수아비 한 대, 첫 무기 몸짓, 모루 강화 창, 1000골드, 뿔 몽둥이 허리 45°. 문제: King 2번째도 KO(빛 마을에서 일어남), 퀵슬롯 넣는 길, 강화 실패 표시 없음, 표시 엉뚱, Daily Gifts 창.
+- **도구가 옮겨짐:** scratchpad가 지워져서 `build/playtest_tools/`(git 밖, 재부팅에도 남음)에 다시 만듦 — pt.py(PT_DATE·PT_ROUND·STUDIO_ID), pose.py(idle/walk/atk PRE → 시트), intro_watch.py, face.lua(NAME). 열기: place/ → build/PlayTest.rbxlx 복사 → Start-Process(pid는 build/playtest_tools/pid.txt).
+- 도구 주의: 길 찾기는 KO 뒤에도 다음 지점으로 걸어감 → KO 장면 볼 땐 KO 뒤 nav 멈추기. 빛 Gleam 동상 옆에서 nav가 'Success'만 하고 안 움직임 → W로 빼기.
+- **다음 판:** 다음 sync 신호 → King 첫 KO 뒤 Fizzby 옆·KO 화면 몬스터 그림, M1_3·Tiny, 대장간 잠금 글.
