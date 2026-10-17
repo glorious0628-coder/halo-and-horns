@@ -74,7 +74,7 @@ runGroup("config", function()
 	local D = C.Data.Defaults
 	check(type(D.Rank) == "table" and D.Rank.WeekId == 0 and D.Rank.PvP == 0 and D.Rank.Artisan == 0
 		and type(D.Rank.Victims) == "table" and type(D.Rank.HandScroll) == "table" and D.DebugTainted == false
-		and D.Outlaw.WeekId == 0 and D.RankReward.Board == "" and D.Version == 6, "save defaults: Rank / RankReward / Outlaw / DebugTainted (additive; Version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9))")
+		and D.Outlaw.WeekId == 0 and D.RankReward.Board == "" and D.Version == 7, "save defaults: Rank / RankReward / Outlaw / DebugTainted (additive; Version 7 = A23-219 ②'s crafted options (6 = A23-186's joke weapons, 5 = A23-153's codex, 4 = C1's tier 9))")
 end)
 
 ------------------------------------------------------------------ 2. Config.SanitizeRank (DataService.fillDefaults)

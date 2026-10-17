@@ -244,7 +244,7 @@ runGroup("config", function()
 	-- the save fields (additive, Version 3)
 	local D = C0.Data.Defaults
 	check(type(D.Looks) == "table" and type(D.Looks.Owned) == "table" and D.Looks.On == "" and type(D.PassSeen) == "table"
-		and C0.Data.Version == 6, "save: Looks { Owned, On } + PassSeen (additive; Version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9))")
+		and C0.Data.Version == 7, "save: Looks { Owned, On } + PassSeen (additive; Version 7 = A23-219 ②'s crafted options (6 = A23-186's joke weapons, 5 = A23-153's codex, 4 = C1's tier 9))")
 	local looks, seen = C0.SanitizeLooks({ Owned = { HaloSprout = 1790000000, Nope = 5, HornsSprout = "x", HaloStarlight = -1,
 		HaloPlatinum = 0 / 0 }, On = "Nope" }, { XP2 = true, VIP = "yes", HaloIce = false, Junk = true })
 	check(looks.Owned.HaloSprout == 1790000000 and looks.Owned.Nope == nil and looks.Owned.HornsSprout == nil

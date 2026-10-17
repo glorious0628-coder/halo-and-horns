@@ -169,7 +169,7 @@ end
 runGroup("config", function()
 	local C = execute("Config", CONFIG_SOURCE, nativeEnv())
 	local X = C.Codex
-	check(C.Data.Version == 6 and C.Data.Defaults.Version == 6, "save version 5 (A23-153), Data and Defaults equal",
+	check(C.Data.Version == 7 and C.Data.Defaults.Version == 7, "save version 5 (A23-153), Data and Defaults equal",
 		show({ C.Data.Version, C.Data.Defaults.Version }))
 	check(type(C.Data.Defaults.Codex) == "table" and next(C.Data.Defaults.Codex) == nil, "save default Codex = {}", show(C.Data.Defaults.Codex))
 	check(X.Enabled == true and sameTable(X.Steps, { 1, 100, 1000 }) and sameTable(X.BossSteps, { 1, 10, 30 }),
@@ -676,7 +676,7 @@ runGroup("save v5 step", function()
 		WeaponOwnedMask = 7, BankGold = 500, KillLog = { Total = 1300, M = 1300, A = 0, Golden = 7,
 			ByKind = { Slime = 150, Goblin = 3, SlimeKing = 1000, PumpkinSlime = 9, FlowerSlime = 0 }, ByTier = {} } }
 	local d = load(v4)
-	check(d.Version == 6, "a v4 record runs the v5 step", d.Version)
+	check(d.Version == 7, "a v4 record runs the v5 step", d.Version)
 	check(sameTable(d.Codex.Slime, { Kills = 150, Golden = 0, Stage = 2, First = 0 })
 		and sameTable(d.Codex.Goblin, { Kills = 3, Golden = 0, Stage = 1, First = 0 })
 		and sameTable(d.Codex.SlimeKing, { Kills = 1000, Golden = 0, Stage = 3, First = 0 }),
@@ -684,7 +684,7 @@ runGroup("save v5 step", function()
 	check(d.Codex.PumpkinSlime == nil and d.Codex.FlowerSlime == nil and count(d.Codex) == 3, "no Halloween kind, no 0-kill card", show(d.Codex))
 	check(d.BankGold == 500 and d.Level == 20 and d.KillLog.ByKind.Slime == 150, "nothing else moves (no reward)", show({ d.BankGold, d.Level }))
 	local again = load(d)
-	check(sameTable(again.Codex, d.Codex) and again.Version == 6, "loading the v5 record again changes nothing", show(again.Codex))
+	check(sameTable(again.Codex, d.Codex) and again.Version == 7, "loading the v5 record again changes nothing", show(again.Codex))
 	-- a v5 record never runs the step again (its codex is its own; the kill record is not read)
 	local v5 = deepCopy(d)
 	v5.KillLog.ByKind.Goblin = 500
@@ -692,13 +692,13 @@ runGroup("save v5 step", function()
 	-- older records: every step, no kill record -> no cards
 	local v1 = { Version = 1, Level = 6, SwordTier = 3, Faction = "Halo", TutorialStep = 99 }
 	local d1 = load(v1)
-	check(d1.Version == 6 and next(d1.Codex) == nil and d1.WeaponTier == 3, "a v1 record runs every step up to 6 (no cards)", show(d1.Codex))
+	check(d1.Version == 7 and next(d1.Codex) == nil and d1.WeaponTier == 3, "a v1 record runs every step up to 7 (no cards)", show(d1.Codex))
 	local v3 = { Version = 3, Level = 12, TutorialStep = 99, WeaponTier = 2, WeaponOwnedMask = 3, KillLog = { ByKind = { Skeleton = 2 } } }
 	check(load(v3).Codex.Skeleton.Kills == 2, "a v3 record with a kill record gets its cards too", "")
 	-- broken kill records
 	for _, bad in { "oops", { ByKind = "x" }, { ByKind = { Slime = NAN, Goblin = -5, Skeleton = INF, BigSlime = "9", SkeletonKnight = 2.9 } } } do
 		local r = load({ Version = 4, TutorialStep = 99, KillLog = bad })
-		local ok = r.Version == 6 and r.Codex.Slime == nil and r.Codex.Goblin == nil and r.Codex.Skeleton == nil and r.Codex.BigSlime == nil
+		local ok = r.Version == 7 and r.Codex.Slime == nil and r.Codex.Goblin == nil and r.Codex.Skeleton == nil and r.Codex.BigSlime == nil
 		if type(bad) == "table" and type(bad.ByKind) == "table" then ok = ok and r.Codex.SkeletonKnight.Kills == 2 end
 		check(ok, "a broken kill record makes no card from bad numbers", show(r.Codex))
 	end
@@ -711,7 +711,7 @@ runGroup("save v5 step", function()
 	-- a fresh default record
 	local fresh = deepCopy(C.Data.Defaults)
 	DS.Fill(fresh, "P2")
-	check(fresh.Version == 6 and type(fresh.Codex) == "table" and next(fresh.Codex) == nil, "a brand-new record: Version 5, Codex {}", show(fresh.Codex))
+	check(fresh.Version == 7 and type(fresh.Codex) == "table" and next(fresh.Codex) == nil, "a brand-new record: Version 5, Codex {}", show(fresh.Codex))
 	-- a Codex of the wrong type is reset by the default fill
 	local s = load({ Version = 5, TutorialStep = 99, Codex = "oops" })
 	check(type(s.Codex) == "table" and next(s.Codex) == nil, "Codex of the wrong type -> {}", show(s.Codex))

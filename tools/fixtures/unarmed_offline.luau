@@ -9,7 +9,7 @@ runGroup("config", function()
 	local C = C0
 	check(C.Data.Defaults.WeaponTier == 0 and C.Data.Defaults.WeaponOwnedMask == 0,
 		"a new save starts bare-handed: WeaponTier 0, nothing owned", show({ C.Data.Defaults.WeaponTier, C.Data.Defaults.WeaponOwnedMask }))
-	check(C.Data.Version == 6, "save Version 6 = A23-186's joke weapons (tiers 10 / 11; 5 = the codex, 4 = C1's tier 9) (A23-34 and A23-69's Stats are additive)", C.Data.Version)
+	check(C.Data.Version == 7, "save Version 7 = A23-219 ②'s crafted options (6 = A23-186's joke weapons, tiers 10 / 11; 5 = the codex, 4 = C1's tier 9) (A23-34 and A23-69's Stats are additive)", C.Data.Version)
 	check(U.Damage == 4 and U.Range == 7 and U.Interval == 0.8 and U.AimCone == 90, "Combat.Unarmed = 4 / 7 / 0.8 s / 90 deg (A23-61 front half)", show(U))
 	check(U.Range > C.Monsters.AttackRange, "the punch reaches a slime that attacks me (Range 7 > monster reach 5.5)",
 		C.Monsters.AttackRange)

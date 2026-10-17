@@ -115,8 +115,8 @@ runGroup("config", function()
 		check((def.Owner == "Kid") == (k.Evil.Label == "Finder's fee!") and (def.Owner ~= "Kid") == (k.Evil.Label == "Keep it as a trophy"),
 			"card " .. def.Card .. ": a child's thing asks a fee, anything else is kept as a trophy", k.Evil.Label)
 	end
-	check(C.Data.Defaults.LostFound.Day == 0 and C.Data.Defaults.LostFound.N == 0 and C.Data.Defaults.LostFound.K == 0 and C.Data.Version == 6,
-		"save default LostFound { Day 0, N 0, K 0 } (additive; the data version 6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9))", show(C.Data.Defaults.LostFound))
+	check(C.Data.Defaults.LostFound.Day == 0 and C.Data.Defaults.LostFound.N == 0 and C.Data.Defaults.LostFound.K == 0 and C.Data.Version == 7,
+		"save default LostFound { Day 0, N 0, K 0 } (additive; the data version 7 = A23-219 ②'s crafted options (6 = A23-186's joke weapons, 5 = A23-153's codex, 4 = C1's tier 9))", show(C.Data.Defaults.LostFound))
 	check(C.LostFound.Bench.Zone == "Crossroads" and C.LostFound.Bench.Spot == "KidsBench" and C.LostFound.Bench.Range == 10
 		and C.StoryQuests.Landmarks.KidsBench.X == 18 and C.StoryQuests.Landmarks.KidsBench.Z == 18, "the bench: the Crossroads kids' bench, 10 studs", "")
 	local alive = true

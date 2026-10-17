@@ -106,10 +106,10 @@ runGroup("load", function()
 		for k, v in fields or {} do r[k] = v end
 		return r
 	end
-	check(C.Data.Version == 6 and C.Data.Defaults.Version == 6, "Config.Data.Version = Defaults.Version = 5 (A23-153; C1 made it 4)", show({ C.Data.Version, C.Data.Defaults.Version }))
+	check(C.Data.Version == 7 and C.Data.Defaults.Version == 7, "Config.Data.Version = Defaults.Version = 5 (A23-153; C1 made it 4)", show({ C.Data.Version, C.Data.Defaults.Version }))
 	local enh = { 1, 2, 3, 4, 5, 6, 7, 8 }
 	local v3 = load(row(3, { WeaponTier = 7, WeaponOwnedMask = 255, WeaponEnhance = deepCopy(enh), BankGold = 500, Items = { Jelly = 3 } }))
-	check(v3.Version == 6 and v3.WeaponTier == 7 and v3.WeaponOwnedMask == 255 and sameTable(v3.WeaponEnhance, enh) and v3.BankGold == 500
+	check(v3.Version == 7 and v3.WeaponTier == 7 and v3.WeaponOwnedMask == 255 and sameTable(v3.WeaponEnhance, enh) and v3.BankGold == 500
 		and v3.Items.Jelly == 3, "a v3 record loads as v4 with its weapons, mask, +N and the rest kept", show({ v3.Version, v3.WeaponTier, v3.WeaponOwnedMask }))
 	check(sameTable(v3.Spares, {}) and sameTable(v3.Market, C.Data.Defaults.Market), "the v3 record gains Spares {} and the default Market", show(v3.Market))
 	check(sameTable(load(v3), v3), "loading it again changes nothing (idempotent)", "")
@@ -120,7 +120,7 @@ runGroup("load", function()
 	local t9 = load(row(3, { WeaponTier = 9, WeaponOwnedMask = 7 }))
 	check(t9.WeaponTier == 3 and t9.WeaponOwnedMask == 7, "v3: tier 9 equipped is corrupted -> the best usable owned weapon", show({ t9.WeaponTier, t9.WeaponOwnedMask }))
 	local old = load(row(2, { WeaponTier = 9, WeaponOwnedMask = 256 + 2 }))
-	check(old.Version == 6 and old.WeaponTier == 1 and old.WeaponOwnedMask == 1, "v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)",
+	check(old.Version == 7 and old.WeaponTier == 1 and old.WeaponOwnedMask == 1, "v2: tier 9 / bit 9 -> its tier 1 (the old step stays pinned to 8)",
 		show({ old.WeaponTier, old.WeaponOwnedMask }))
 	-- v4: the 9-bit mask is valid, the 10th bit is corruption
 	local v4 = load(row(4, { WeaponTier = 9, WeaponOwnedMask = 511, WeaponEnhance = { 0, 0, 0, 0, 0, 0, 0, 0, 7 } }))
@@ -147,7 +147,7 @@ runGroup("load", function()
 	check(sameTable(wrong.Spares, {}) and sameTable(wrong.Market, C.Data.Defaults.Market), "a Spares / Market of the wrong type becomes its default", "")
 	w.AllowWarn = { "field Spares had type string", "field Market had type number" }
 	local fresh = load(deepCopy(C.Data.Defaults))
-	check(fresh.Version == 6 and sameTable(fresh.Spares, {}) and sameTable(fresh.Market, { Out = {}, In = {}, Done = {}, Day = 0, Lists = 0, Buys = 0 }),
+	check(fresh.Version == 7 and sameTable(fresh.Spares, {}) and sameTable(fresh.Market, { Out = {}, In = {}, Done = {}, Day = 0, Lists = 0, Buys = 0 }),
 		"a brand-new save is v4 with Spares {} and Market { Out, In, Done, Day, Lists, Buys }", show(fresh.Market))
 end)
 
@@ -164,9 +164,12 @@ runGroup("spares", function()
 	check(sameTable(S({ ["04:0"] = 15, ["4:0"] = 15 }), { ["4:0"] = 20 }), "a merged key is cut at 20", "")
 	check(sameTable(S({ ["9:2"] = 25 }), { ["9:2"] = 20 }), "a count above 20 is cut at 20", "")
 	check(sameTable(S({ ["32:0"] = 2, ["10:10"] = 1 }), { ["32:0"] = 2, ["10:10"] = 1 }), "a later tier (up to 32) and +10 are kept", "")
-	local junk = { ["33:0"] = 1, ["0:0"] = 1, ["1:11"] = 1, ["1.5:0"] = 1, ["a:0"] = 1, ["1:0:0"] = 1, ["-1:0"] = 1, ["1:"] = 1,
-		[":1"] = 1, ["1234567890123:0"] = 1, [5] = 1, [true] = 1 }
-	check(sameTable(S(junk), {}), "bad keys dropped (tier 0 / 33, plus 11, fractions, letters, extra parts, long, not strings)", show(S(junk)))
+	-- (A23-219 ② save v7: a third field is the crafted option 1..5 - "1:0:0" is the plain "1:0"; a broken one or a fourth part
+	-- is junk)
+	local junk = { ["33:0"] = 1, ["0:0"] = 1, ["1:11"] = 1, ["1.5:0"] = 1, ["a:0"] = 1, ["1:0:6"] = 1, ["1:0:1:1"] = 1, ["-1:0"] = 1,
+		["1:"] = 1, [":1"] = 1, ["1234567890123:0"] = 1, [5] = 1, [true] = 1 }
+	check(sameTable(S(junk), {}), "bad keys dropped (tier 0 / 33, plus 11, fractions, letters, a bad option / extra parts, long, not strings)", show(S(junk)))
+	check(sameTable(S({ ["1:0:0"] = 2, ["1:0:3"] = 1 }), { ["1:0"] = 2, ["1:0:3"] = 1 }), "'1:0:0' is the plain '1:0'; '1:0:3' keeps its option", "")
 	local vals = S({ ["1:0"] = NAN, ["2:0"] = INF, ["3:0"] = -INF, ["4:0"] = -1, ["5:0"] = 0, ["6:0"] = "3", ["7:0"] = 1.7, ["8:0"] = {} })
 	check(sameTable(vals, { ["7:0"] = 1 }), "NaN / inf / negative / 0 / text / table counts drop the key; 1.7 -> 1", show(vals))
 	local many = {}

@@ -100,8 +100,8 @@ MUTATIONS = [
     ("CombatPower not set on PlayerReady", "JUSTICE_SOURCE",
      "POWER.Conns[player] = list\n\tPOWER.Refresh(player)", "POWER.Conns[player] = list"),
     ("WeaponEnhance not watched", "JUSTICE_SOURCE",
-     '{ "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp", "GearAtk", "GearHp" }',
-     '{ "Level", "WeaponTier", "StatAtk", "StatHp", "GearAtk", "GearHp" }'),
+     '{ "Level", "WeaponTier", "WeaponEnhance", "StatAtk", "StatHp", "GearAtk", "GearHp", "WeaponOpt" }',
+     '{ "Level", "WeaponTier", "StatAtk", "StatHp", "GearAtk", "GearHp", "WeaponOpt" }'),
     # PvPService helpers
     # A23-69: the fallback is the one power formula (Config.CombatPowerOf, the attributes)
     ("PvP fallback is not the displayed number", "PVP_SOURCE",

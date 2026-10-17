@@ -38,7 +38,7 @@ runGroup("config", function()
 		show(S.Curve))
 	check(S.AutoPattern.Warrior == "HA" and S.AutoPattern.Mage == "HA" and S.AutoPattern.Archer == "AH",
 		"auto patterns: Warrior / Mage HA, Archer AH (the same for Halo and Horns)", show(S.AutoPattern))
-	check(C.Data.Version == 6 and C.Data.Defaults.Version == 6, "save Data v6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9) (검수 2026-10-07: Stats is an additive field)",
+	check(C.Data.Version == 7 and C.Data.Defaults.Version == 7, "save Data v7 (A23-219 ②) / v6 = A23-186's joke weapons (5 = A23-153's codex, 4 = C1's tier 9) (검수 2026-10-07: Stats is an additive field)",
 		show({ C.Data.Version, C.Data.Defaults.Version }))
 	check(sameTable(C.Data.Defaults.Stats, { Auto = true, Order = "" }), "a new save: Stats = { Auto = true, Order = '' }",
 		show(C.Data.Defaults.Stats))
@@ -266,20 +266,20 @@ runGroup("data", function()
 	local v3 = { Version = 3, Level = 12, XP = 5, Faction = "Halo", Class = "Mage", ClassChosen = true, TutorialStep = 99,
 		WeaponTier = 3, WeaponOwnedMask = 7, BankGold = 300 }
 	local d = load(v3)
-	check(d.Version == 6 and sameTable(d.Stats, { Auto = true, Order = "" }) and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
+	check(d.Version == 7 and sameTable(d.Stats, { Auto = true, Order = "" }) and d.Level == 12 and d.WeaponTier == 3 and d.BankGold == 300,
 		"a v3 save without Stats becomes v4 (C1) and gains { Auto ON, nothing picked }, nothing else changes", show({ d.Version, d.Stats }))
 	local again = load(d)
 	check(sameTable(again, d), "loading it again changes nothing (idempotent)", "")
 	local hand = load({ Version = 3, Level = 8, TutorialStep = 99, Stats = { Auto = false, Order = "AHXah" } })
-	check(sameTable(hand.Stats, { Auto = false, Order = "AHX" }) and hand.Version == 6, "a save's picks are repaired, not reset",
+	check(sameTable(hand.Stats, { Auto = false, Order = "AHX" }) and hand.Version == 7, "a save's picks are repaired, not reset",
 		show(hand.Stats))
 	local broken = load({ Version = 3, Level = 8, TutorialStep = 99, Stats = "oops" })
 	check(sameTable(broken.Stats, { Auto = true, Order = "" }), "a broken Stats becomes the default", show(broken.Stats))
 	local v1 = load({ Level = 5, SwordTier = 2, TutorialStep = 99 })
-	check(v1.Version == 6 and v1.WeaponTier == 2 and v1.SwordTier == nil and sameTable(v1.Stats, { Auto = true, Order = "" }),
+	check(v1.Version == 7 and v1.WeaponTier == 2 and v1.SwordTier == nil and sameTable(v1.Stats, { Auto = true, Order = "" }),
 		"a v1 save runs every step to v4 and gains the default Stats", show({ v1.Version, v1.WeaponTier }))
 	local fresh = load(deepCopy(C.Data.Defaults))
-	check(fresh.Version == 6 and sameTable(fresh.Stats, { Auto = true, Order = "" }), "a brand-new save is v4 with the default Stats", "")
+	check(fresh.Version == 7 and sameTable(fresh.Stats, { Auto = true, Order = "" }), "a brand-new save is v4 with the default Stats", "")
 end)
 
 finish()
