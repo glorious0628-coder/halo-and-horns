@@ -3206,6 +3206,15 @@ function STORY.StepView()
 	return v
 end
 
+-- A23-208: after the hook (#lines > the step's own), the next asker hops once when her "!" shows (window and box)
+function STORY.HookNext(def, step, f, arg, lines)
+	local npcs, nx = C and C.StoryNpcs, type(Config.QuestNext) == "function" and Config.QuestNext(def, f) or nil
+	if #lines > #STORY.Lines(step, f, arg.Var) and type(nx) == "table" and type(npcs) == "table"
+		and type(npcs.ExpectNext) == "function" then
+		pcall(npcs.ExpectNext, nx.Id)
+	end
+end
+
 -- an Offer's reward row: the server's own numbers when it sends them, else Config's at my level (§15 P1 ①)
 function STORY.OfferReward(def, arg)
 	return STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1))
@@ -3225,11 +3234,7 @@ function STORY.StoryDialog(box)
 		else
 			fire("StoryAction", arg.Id, "Choose", option)
 		end
-		local npcs, nx = C and C.StoryNpcs, type(Config.QuestNext) == "function" and Config.QuestNext(def, f) or nil
-		if #lines > #STORY.Lines(step, f, arg.Var) and type(nx) == "table" and type(npcs) == "table"
-			and type(npcs.ExpectNext) == "function" then
-			pcall(npcs.ExpectNext, nx.Id)
-		end
+		STORY.HookNext(def, step, f, arg, lines) -- A23-208
 		Panels.Close()
 	end
 	local final, hint = {}, nil
@@ -3342,12 +3347,7 @@ BUILDERS.Story = function(parent)
 		else
 			fire("StoryAction", arg.Id, "Choose", option)
 		end
-		-- A23-208: after the hook (#lines > the step's own), the next asker hops once when her "!" shows
-		local npcs, nx = C and C.StoryNpcs, type(Config.QuestNext) == "function" and Config.QuestNext(def, f) or nil
-		if #lines > #STORY.Lines(step, f, arg.Var) and type(nx) == "table" and type(npcs) == "table"
-			and type(npcs.ExpectNext) == "function" then
-			pcall(npcs.ExpectNext, nx.Id)
-		end
+		STORY.HookNext(def, step, f, arg, lines) -- A23-208
 		Panels.Close()
 	end
 	local last = function() return page >= #lines end

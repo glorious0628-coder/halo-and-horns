@@ -187,8 +187,8 @@ STATIC = [
         '\t\tlocal b = addText(parent, before, { Name = "OfferBefore", Size = 18, Color = theme.SubText })\n',
         "\t\tb.FontFace = Font.new(face.Family, face.Weight, Enum.FontStyle.Italic)\n"]),
     ("PANELS", "Story card: WithNext's lines; after a hook StoryNpcs.ExpectNext", [
-        "\tlocal lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f)",
-        "\t\t\tpcall(npcs.ExpectNext, nx.Id)\n"]),
+        "\t\tlines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f),", # A23-229: STORY.StepView (window + box)
+        "\t\tpcall(npcs.ExpectNext, nx.Id)\n", "function STORY.HookNext(def, step, f, arg, lines)\n"]), # (window + box call it)
     ("NPCS", "Refresh: ended non-card steps speak (one bubble after another, Talk.Seconds)", [
         "\t\tif type(entries) == \"table\" and #entries > 0 then pcall(StoryNpcs.WatchSteps, entries, me:GetAttribute(\"Faction\")) end\n",
         "\t\t\tif head and head:IsA(\"BasePart\") then pcall(StoryNpcs.Bubble, head, words, T.Story.Talk.Seconds) end\n",

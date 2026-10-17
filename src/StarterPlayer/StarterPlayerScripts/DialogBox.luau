@@ -8,8 +8,8 @@
 --   bottom right: [Next] while lines are left; on the last line the final buttons (Got it / the two choices / Sure! + Not
 --          now / I'm In!); bottom left: [Bye] = close without an answer
 -- A card with several speakers ("Bright: ..." then "Hallie: ...") switches the face and the name line by line (a known
--- speaker's name before ':' only; the words keep the rest). Enter = [Next] / the one final button. Walking more than
--- L.Far studs from the speaker's body (when it has one) is [Bye].
+-- speaker's name before ':' only; the words keep the rest). Presses / taps only (BB1: no fixed key outside Keybinds; G
+-- would talk to the NPC again). Walking more than L.Far studs from the speaker's body (when it has one) is [Bye].
 -- Panels keeps every rule around it (the busy queue, the HUD row pulse, currentId, the remotes); it builds the spec and
 -- calls DialogBox.Show; Panels.Close calls DialogBox.Hide. Approved parts only (DialogBox plate, PortraitFrame, the
 -- Panels buttons), UIKit fallbacks; the words are the existing Config texts + Config.ClientText.DialogBox.Bye.
@@ -21,7 +21,6 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 
 local Shared = ReplicatedStorage:WaitForChild("Shared")
 local Config = require(Shared:WaitForChild("Config"))
@@ -228,18 +227,6 @@ function DialogBox.Press(which)
 	return true
 end
 
--- Enter: [Next] while lines are left, else the one final button (two = a choice: never by a key)
-local function onKey(input, processed)
-	if processed or not S.Spec then return end
-	if input.KeyCode ~= Enum.KeyCode.Return and input.KeyCode ~= Enum.KeyCode.KeypadEnter then return end
-	local v = DialogBox.Plan(S.Spec, S.Page)
-	if v.Next then
-		DialogBox.Press("Next")
-	elseif #S.Final == 1 then
-		DialogBox.Press(1)
-	end
-end
-
 function DialogBox.Hide()
 	if S.Conn then pcall(function() S.Conn:Disconnect() end) end
 	S.Conn = nil
@@ -422,12 +409,7 @@ function DialogBox.Init(registry)
 	C = registry
 end
 
-function DialogBox.Start()
-	UserInputService.InputBegan:Connect(function(input, processed)
-		local ok, err = pcall(onKey, input, processed)
-		if not ok then Util.Warn(TAG, "key: " .. tostring(err)) end
-	end)
-end
+function DialogBox.Start() end
 
 -- offline tests
 DialogBox._T = { L = L, S = S }

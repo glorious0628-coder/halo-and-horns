@@ -224,9 +224,6 @@ okBtn = root:FindFirstChild("Bar"):FindFirstChild("Buttons"):FindFirstChild("Sto
 typing[line].done = true
 okBtn.Activated:Fire()
 check(okPress == 1, "[Got it] on the last line runs its press once")
--- Enter = the one final button on the last line
-UIS.InputBegan:Fire({ KeyCode = "KeyCode.Return" }, false)
-check(okPress == 2, "Enter on the last line = the one final button")
 bye.Activated:Fire()
 check(byes == 1 and not Box.IsOpen() and GUI:FindFirstChild("DialogBox") == nil, "[Bye]: the box goes, OnBye runs")
 -- a choice: two buttons, Enter never picks
@@ -239,8 +236,6 @@ local good = root:FindFirstChild("Bar"):FindFirstChild("Buttons"):FindFirstChild
 check(good and good.Side == "Good" and good.Visible, "a choice: the kind / sneaky art buttons")
 line = root:FindFirstChild("Right"):FindFirstChild("Line")
 typing[line].done = true
-UIS.InputBegan:Fire({ KeyCode = "KeyCode.Return" }, false)
-check(#picks == 0, "Enter never picks a side")
 good.Activated:Fire()
 check(picks[1] == "Good", "a press picks")
 -- an Offer: the reward row on the last line; Welcome: SetFinal
@@ -276,7 +271,6 @@ MUTATIONS = [
     ("BOX", "the final button before the last line", "if not (f and v.Final and b and b.Visible)", "if not (f and b)"),
     ("BOX", "Bye keeps the box", "\t\tlocal fn = spec.OnBye\n\t\tDialogBox.Hide()\n", "\t\tlocal fn = spec.OnBye\n"),
     ("BOX", "a refresh rewinds", "if S.Spec and S.View and S.Spec.Key ~= nil and S.Spec.Key == spec.Key then", "if false then"),
-    ("BOX", "Enter picks a side", "\telseif #S.Final == 1 then\n", "\telseif #S.Final >= 1 then\n"),
     ("BOX", "the hint always on", "\tif view.Hint then view.Hint.Visible = v.Last end\n", ""),
     ("PANELS", "the modal window again", "\tif STORY.Dialog[currentId] and STORY.Box() then\n\t\troot.Visible = false", "\tif false then\n\t\troot.Visible = false"),
 ]
