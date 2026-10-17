@@ -1,6 +1,7 @@
 # 게임성 개발 2 — 상태 (2026-10-17 낮, 새 계정: 첫 12분 묶음 + 배지 + 장인 2부)
 
 ## 지금 (10/17 낮 — 새 대화는 여기부터; 세션이 자주 끊기니 덩어리마다 커밋·push)
+- **10/17 오전 끝**: 첫 12분 묶음 **dev2-first12c 298e70d8 보고함**(a23_14 멈춤 = FORGE.Near가 모루 없이도 Util.GetRoot 호출 → 고침, 6469/6469). Lv5 KO 숫자 안(a)/(b)·Pip 몸 자리 질문 = 최종 검수 답 기다림. 배지 b488b666 = main 병합됨(d0a6559c). 다음 = dev2-vein 전체 sweep 결과 보고 → ⓑ 도구 → ⓒ 주간 선물 → ⑤ 주간 진영 승부(저장 형식 먼저 최종 검수).
 - 첫 12분 묶음 = 가지 사슬 dev2-first12 54a3be0d ← dev2-gold1000 e055c2a1(보고함: 시험 7개·251개 원래 실패 12만) ← **dev2-first12c 154cabd4**(push, ../wt_f12c; 옛 263df90a를 gold 위로 옮김 = force-with-lease, 보고 전 가지):
   ③ StartClock 9·밤·안내자 2배 줄·Talk to Otto(+WasNear 정리)·XPMult, ed0066c7 연습 자리(PracticeH (-22,0,-384) 패드 25+, PracticeN Behind -4 Side 12 = (27.3,49.8) 35.7, PracticeR 그대로; weapon_first 패드 거리 검사), 1c7d2748 Tiny 대화(본편 단계가 Learn이면 고정 줄 = 본편 유지; weapon_first 'pinned learn row' + 변이 2), 154cabd4 M1_3 1단계 Guide Lv5Slimes (250,0,0).
   **남은 것**: test_a23_14가 first12c에서 600초 넘김(멈춤) — gold e055c2a1에선 통과. ../wt_bis(QuestService만 e055c2a1판)로 원인 가르는 중. 고친 뒤 전체 sweep → 최종 검수에 묶음 보고(①~⑤ + Lv5 KO 숫자: 뿔은 RegenPerSec 0이라 사냥 내내 HP 안 참, 슬라임 2/1.5초, 결정은 최종 검수).
