@@ -1,5 +1,13 @@
 # 게임 플레이 — 상태
 
+## 10/17 밤 늦게 멈춤 (사용자 "정리해줘 내일 하자" — 최종 검수가 다시 부름)
+- **지금:** PlayTest Studio 닫힘(저장 안 함), 봇 안 돎. 공유 폴더 = origin/main.
+- **11판 결과(src 5b90afa9, 빛 궁수, 보고서 `docs/review/playtest/2026-10-17_r11.md`):**
+  - 앞부분: 두 번째 King 짐(물약 3병, King 54 남김) — 봇이 쿨다운 사진 찍느라 쉰 탓(정정됨). 쿨다운 중 키 1 = 슬롯 어두운 막만, 다시 눌러도 반응 없음(개발 1로 넘어감).
+  - **① 다시(사진 없이·F 연타)는 멈춤 지시 전에 이미 끝남:** 판 A 이김 27.8초·실제 2병·최저 52/156, 판 B(1병만) 이김 32.2초·최저 25/156. 둘 다 재대결 Lv4·HP 156·Attack 17(전사·마법사는 Lv5). 기록 `docs/art/verification_2026-10-17/playtest/r11b/`.
+- **내일 할 것(최종 검수 신호 뒤):** ① 궁수 두 번째 King은 위 다시 판으로 끝 — 최종 검수가 원하면 한 번 더(뒤로 빠지며 쏘기). ③ 빛 M1_3 성문 이웃 돌려주기(dev2-detail 병합 뒤) ④ NPC 대화 상자(dialog-box 병합 뒤) ⑤ 새 sync면 직업별 전체 판(전사·궁수·마법사 새 저장, 진영 섞어, 패스 끔, 직업마다 칸 먼저 → '끝' + TOP). 판마다: 화면 신청 → PlayTest 열기 → 판 → Play 멈춤 → 창 닫기 → '끝'.
+- 도구: `build/playtest_tools/flow.py` + 환경 변수 FAST=1(재대결 F 연타)·NOSHOT=1·MAXDRINK=N, STUDIO_ID는 list_roblox_studios로 매번.
+
 ## 10/16 오후 (최종 검수가 엶)
 - 사용자 "게임 플레이하는 세션도 하나 만들자!" → 역할 파일 `docs/handoff/role_prompts/04_playtest.md`.
 - **다음(1판):** `build/PlayTest.rbxlx` 복사·열기(🟠 절차) → main sync → 빛 첫 10분 PC 처음부터 → 보고 `docs/review/playtest/2026-10-16_r1.md`.
