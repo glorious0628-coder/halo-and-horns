@@ -33,12 +33,20 @@ NEEDLES = [
     ("FX", "the class's real swing (the profile's style, bare hands = the punch)", [
         "local prof = Config.AttackProfile(classId, me:GetAttribute(\"WeaponTier\"), faction)", "Style = prof.Style,"]),
     ("FX", "the pair: each own Manual Fx takes the oldest waiting press (a queue, not a time window)", [
-        "if data.Manual == true and Feel.takePending(P, os.clock()) then",
+        "local pressedAt = data.Manual == true and Feel.takePending(P, os.clock()) or nil",
         "-- my press already plays this swing (Fx.PredictSwing): no restart",
         "\ttable.insert(P.Pending, now)\n"]),
     ("FX", "a refused press is dropped after MaxAge (never swallows a later swing)", [
         "while P.Pending[1] and now - P.Pending[1] > P.MaxAge do table.remove(P.Pending, 1) end"]),
-    ("FX", "an unpaired own Fx swings as before", ["\t\t\tFx.PlaySound(\"Swing\")\n\t\t\tanimateOwnAttack(data, \"Swing\")\n\t\t\tP.LastSwing = os.clock()\n"]),
+    ("FX", "an unpaired own Fx swings as before", ["\t\t\tanimateOwnAttack(data, \"Swing\")\n\t\t\tP.LastSwing = os.clock()\n"]),
+    # 손맛 G2 / G3 (10/17)
+    ("FX", "G2: a paired swing's hits count from the press (launch / show shifted, never before now)", [
+        "pressAgo = os.clock() - pressedAt",
+        "\tif own and pressAgo then\n",
+        "launch, showAt = Feel.shiftTimes(launch, showAt, pressAgo, (classId == \"Mage\" or classId == \"Archer\") and not punch)"]),
+    ("FX", "G3: my manual arrow / orb hits push the monster harder (RECOIL_RANGED)", [
+        "Recoil = ranged and MOTION.RECOIL_RANGED or nil } or nil",
+        "local mult = fromRelease == true and MOTION.RECOIL_RELEASE or (type(feel) == \"table\" and feel.Recoil) or 1 -- G3"]),
 ]
 
 
@@ -58,6 +66,21 @@ def run(files: dict[str, str]) -> tuple[int, int, list[str]]:
     body = m[1] if m else ""
     check("A23-196: the early swing shows no hit (no flash / number / hit sound / ring / hits)", body != "" and not re.search(
         r"showHits|flash|Number|spawnNumber|ring\(|Hit|burst|Shake", body), "")
+    g = re.search(r"\nfunction Feel\.shiftTimes\(launch, showAt, ago, ranged\)\n(.*?)\nend\n", files["FX"], re.S)
+    if g:
+        env = {}
+        src = g[1].replace("math.max", "max").replace("math.min", "min").replace("tonumber(ago) or 0", "(ago or 0)")
+        py = ("def f(launch, showAt, ago, ranged):\n"
+              "    ago = max(0, (ago or 0))\n"
+              "    cut = min(ago, launch) if ranged else min(ago, showAt)\n"
+              "    return max(0, launch - cut), max(0, showAt - cut)\n")
+        exec(py, env)
+        ok = (env["f"](0.22, 0.37, 0.1, True) == (0.22 - 0.1, 0.37 - 0.1) and env["f"](0.22, 0.37, 0.5, True)[0] == 0
+              and abs(env["f"](0.22, 0.37, 0.5, True)[1] - 0.15) < 1e-9 and env["f"](0, 0.23, 0.3, False) == (0, 0))
+        check("G2: shiftTimes - the projectile keeps its flight, nothing before now", ok and "math.min(ago, launch)" in g[1]
+              and "math.max(0, showAt - cut)" in g[1], src[:80])
+    else:
+        check("G2: shiftTimes exists", False)
     check("no second reservation on the client (the server's 0.20 s one stays the only one)",
           not re.search(r"Queue|Reserve|Buffer|task\.delay", body), "")
     return checks, failed, lines
@@ -69,7 +92,11 @@ MUTATIONS = [
     ("FX", "an early swing inside the cooldown", "if now - P.LastSwing < asNum(prof.SwingInterval, 1) - P.Gap then return false end", ""),
     ("FX", "the server's Fx restarts the swing", "-- my press already plays this swing (Fx.PredictSwing): no restart",
      "animateOwnAttack(data, \"Swing\") -- my press already plays this swing"),
-    ("FX", "an auto swing pairs with a press", "if data.Manual == true and Feel.takePending(P, os.clock()) then", "if Feel.takePending(P, os.clock()) then"),
+    ("FX", "an auto swing pairs with a press", "local pressedAt = data.Manual == true and Feel.takePending(P, os.clock()) or nil",
+     "local pressedAt = Feel.takePending(P, os.clock()) or nil"),
+    ("FX", "G2: hits wait for the server's clock again", "\tif own and pressAgo then\n", "\tif false then\n"),
+    ("FX", "G2: the projectile's flight cut too", "local cut = ranged and math.min(ago, launch) or math.min(ago, showAt)",
+     "local cut = math.min(ago, showAt)"),
     ("FX", "old presses never expire", "while P.Pending[1] and now - P.Pending[1] > P.MaxAge do", "while false and P.Pending[1] and now - P.Pending[1] > P.MaxAge do"),
     ("FX", "a hit flash before the server", "\tP.LastSwing = now\n\tFeel.dbgSwing(\"P\")", "\tP.LastSwing = now\n\tflashMonstersAt({})\n\tFeel.dbgSwing(\"P\")"),
     ("FX", "a client-side reservation", "\tP.LastSwing = now\n\tFeel.dbgSwing(\"P\")", "\tP.LastSwing = now\n\ttask.delay(0.2, Fx.PredictSwing)\n\tFeel.dbgSwing(\"P\")"),
