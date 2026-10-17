@@ -477,3 +477,4 @@
 - **결정(오늘 SPEC):** A23-224~232 (쉼 회복·첫 강화·Revive Shield·King 언덕·궁수/재대결 수치·NPC 대화창 A23-229·세세한 게임성 A23-230·물속 무기 숨김 A23-231·칼은 손에 활만 등 A23-232). 세세한 점검 목록 docs/review/detail_audit_2026-10-17.md(맨 끝 거름 순서).
 - **화요일 할 일:** 세션 깨우기(모델·노력 다시: 주간 리셋 10/19 저녁 → 개발 1 Opus high로 되돌림) → ①②③ 병합 → 게임 플레이 11판(궁수 재대결·성문 이웃·물약 쿨다운 표시) → 게시 전 실제 흐름 점검 → 사용자 Save As + Alt+P(+ craft-opts 들어가면 '모든 서버 종료'). 사용자 몫: 배지 2개(ShardChoice·Rank2) `py -X utf8 C:/Users/glori/Documents/Roblox/Game/tools/badge_create.py ShardChoice Rank2`.
 - 세션 설정(10/17 밤, 주간 71%): 메인 반영 1 Sonnet low, 게임 플레이 Sonnet medium, 개발 1 Opus medium, 개발 2 Opus high. 회의실 https://claude.ai/artifact/Nmsz2E84XSGtwXVQa9yWvi (d1017_01~03 = 세세한 점검 요약).
+- (덧붙임) 병합 대기 ④ dev1-dialog-box 59b8a80d = NPC 대화 상자 ①(A23-229; 이야기 카드·부탁·Welcome을 화면 아래 상자로, 얼굴은 승인 초상/첫 글자, 3D 얼굴은 ②) — 화면 눌러 보기 뒤. ②의 craft-optsb 전체 시험에 buff_bar 1개 새 실패(특제 강장제 Base 이름 → Buff_<id> 신호 없음) = 화요일 개발 1·2가 정리.
