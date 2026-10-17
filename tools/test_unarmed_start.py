@@ -40,6 +40,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
         "local Config, Util, Net, S, M, BLACKSMITH, blacksmith = ...\n"
         + "".join(function_block(shop, f"local function {name}(") for name in
                   ("finite", "notifyBad", "onUpgradeWeapon", "onSellWeapon", "onBlacksmithPrompt"))
+        + function_block(shop, "function M.MirrorForgeOpen(")  # A23-222: the ForgeOpen attribute
         + "\nreturn { Upgrade = onUpgradeWeapon, Sell = onSellWeapon, Prompt = onBlacksmithPrompt }\n")
     data = sources["DATA_SOURCE"]
     out["DATA_EXTRACT"] = (
@@ -68,7 +69,8 @@ C, CO, L, ST, SH, D, J, V = ("CONFIG_SOURCE", "COMBAT_SOURCE", "LOOT_SOURCE", "S
                              "JUSTICE_SOURCE", "VISUALS_SOURCE")
 P = "PVP_SOURCE"
 REFRESH_LINE = "\tif type(story) == \"table\" and type(story.Refresh) == \"function\" then pcall(story.Refresh, player) end\n"
-OPEN_LINE = "\tNet.Get(\"OpenPanel\"):FireClient(player, \"WeaponShop\")\n"
+OPEN_LINE = ("\tpcall(M.MirrorForgeOpen, player) -- A23-222: the rows' locks as of now\n"
+             "\tNet.Get(\"OpenPanel\"):FireClient(player, \"WeaponShop\")\n")
 
 MUTATIONS = [
     # 최종 검수 10/16 🔴: the anvil opens Otto's story talk while he has one (his own prompt is hidden behind the anvil's)
@@ -84,6 +86,18 @@ MUTATIONS = [
     ("A23-186: no Meme on the Swing Fx", "COMBAT_SOURCE", "\t\t\tMeme = memeKey, -- A23-186", "\t\t\tMeme = nil, -- A23-186"),
     ("A23-186: no Pan push", "COMBAT_SOURCE", "(crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING) + memePush, player", "(crit and REACT.SHOVE_CRIT or REACT.SHOVE_SWING), player"),
     ("A23-186: the Chicken has another name for a Mage", "CONFIG_SOURCE", "\"Crownforged Staff\",\n\t\t\"Frying Pan\", \"Rubber Chicken\" },", "\"Crownforged Staff\",\n\t\t\"Frying Pan\", \"Rubber Staff\" },"),
+    # A23-222: 1000 starting gold + the Forge sells a tier after its first drop (ForgeOpen = the rows sold now)
+    ("A23-222: a new save starts with no gold", C, "\t\tBankGold = 1000,", "\t\tBankGold = 0,"),
+    ("A23-222: a new save starts with 500", C, "\t\tBankGold = 1000,", "\t\tBankGold = 500,"),
+    ("A23-222: the first-drop rule ignored", "SHOP_SOURCE",
+     "if not alreadyOwned and not Config.WeaponForgeOpen(data, selectedTier) then", "if false then"),
+    ("A23-222: Iron opens on the Prince's drop", C,
+     "OpenAfterDrop = { [2] = \"FirstWeapon\", [3] = \"FirstKingWeapon\" } }", "OpenAfterDrop = { [2] = \"FirstWeapon\", [3] = \"FirstWeapon\" } }"),
+    ("A23-222: the jokes held back too", C,
+     "\tif type(flag) ~= \"string\" then return true end\n", "\tif type(flag) ~= \"string\" then return tier ~= nil and tier < 10 end\n"),
+    ("A23-222: ForgeOpen never set at the anvil", "SHOP_SOURCE", "\tpcall(M.MirrorForgeOpen, player) -- A23-222: the rows' locks as of now\n", ""),
+    ("A23-222: ForgeOpen ignores the locks", "SHOP_SOURCE",
+     "if Config.WeaponSoldAtForge(tier) and Config.WeaponForgeOpen(data, tier) then", "if Config.WeaponSoldAtForge(tier) then"),
     # --- Config: save defaults, damage, power, best weapon, names, the punch profile
     ("new players start with tier 1 again", C, "\t\tWeaponTier = 0,\n", "\t\tWeaponTier = 1,\n"),
     ("new players own tier 1 again", C, "\t\tWeaponOwnedMask = 0, -- tier N", "\t\tWeaponOwnedMask = 1, -- tier N"),

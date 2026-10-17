@@ -20,6 +20,19 @@ local function finite(value)
 	return type(value) == "number" and value == value and value > -math.huge and value < math.huge
 end
 
+-- A23-222: player attribute ForgeOpen = the bit mask (tier N = bit N-1) of the Forge's tiers this player may buy now
+-- (Config.WeaponForgeOpen; game dev 1's Forge rows: a closed tier shows locked). Set when the player is ready and each time
+-- the Forge opens (a first drop between two visits shows at the next one)
+function M.MirrorForgeOpen(player)
+	local data = S.PlayerService.GetData(player)
+	if type(data) ~= "table" then return end
+	local mask = 0
+	for tier = 1, Config.MaxWeaponTier do
+		if Config.WeaponSoldAtForge(tier) and Config.WeaponForgeOpen(data, tier) then mask = bit32.bor(mask, bit32.lshift(1, tier - 1)) end
+	end
+	if player:GetAttribute("ForgeOpen") ~= mask then player:SetAttribute("ForgeOpen", mask) end
+end
+
 local function notifyBad(player, key, ...)
 	Net.Notify(player, string.format(Config.Text[key], ...), "bad")
 end
@@ -71,6 +84,11 @@ local function onUpgradeWeapon(player, selectedTier)
 	-- refused (equip / enhance / sell stay)
 	if not alreadyOwned and shop.Buy == false then
 		Net.Notify(player, Config.Text.WeaponDropOnly, "info")
+		return
+	end
+	-- A23-222: a tier is sold only after its first drop from a monster (Config.WeaponShop.OpenAfterDrop)
+	if not alreadyOwned and not Config.WeaponForgeOpen(data, selectedTier) then
+		Net.Notify(player, Config.Text.WeaponDropFirst, "info")
 		return
 	end
 
@@ -253,6 +271,7 @@ local function onBlacksmithPrompt(prompt, player)
 	-- an active M1_1 finishes right here (its story lines; A23-34's free first weapon is only its safety net now), then
 	-- the shop opens
 	if type(story) == "table" and type(story.Refresh) == "function" then pcall(story.Refresh, player) end
+	pcall(M.MirrorForgeOpen, player) -- A23-222: the rows' locks as of now
 	Net.Get("OpenPanel"):FireClient(player, "WeaponShop")
 end
 
@@ -372,6 +391,10 @@ function M.Init(registry)
 end
 
 function M.Start()
+	local ready = S.PlayerService and S.PlayerService.PlayerReady
+	if type(ready) == "table" and type(ready.Connect) == "function" then
+		ready:Connect(function(player) pcall(M.MirrorForgeOpen, player) end) -- A23-222
+	end
 	if not M.EnsureBlacksmithPrompt() then
 		-- Minimal/headless maps may intentionally omit this optional town prop.
 		print("[ShopService] no ArtisanGuild.Anvil; weapon shop stays closed")

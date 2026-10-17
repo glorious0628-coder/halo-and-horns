@@ -27,17 +27,21 @@ MUTATIONS = [
     ("the old name", C, 'BigSlime = { Name = "Slime Prince", Short = "Slime Prince",', 'BigSlime = { Name = "King Slime", Short = "King Slime",'),
     ("the old short name only", C, 'BigSlime = { Name = "Slime Prince", Short = "Slime Prince",', 'BigSlime = { Name = "Slime Prince", Short = "King Slime",'),
     ("S0 still says King Slime", C, 'Start = "A Slime Prince swallowed a shard!', 'Start = "A King Slime swallowed a shard!'),
-    ("Otto's old line", C, "The Slime Princes ate the most of it.", "The King Slimes ate the most of it."),
+    # 10/15 story fields: Otto's M1_1 ask is the Offer's Before line now (the old 'ate the most of it' line is gone)
+    ("Otto's ask names the King Slime", C, 'Halo = "Shard dust made him bounce! He swallowed the band!"',
+     'Halo = "Shard dust made the King Slime bounce! He swallowed the band!"'),
     ("H1's old step", C, '{ Text = "Slime Princes in the meadow %d/%d"', '{ Text = "King Slimes in the meadow %d/%d"'),
     ("Tiny's old line", C, '"Tiny: A Slime Prince swallowed a teddy bear!"', '"Tiny: A King Slime swallowed a teddy bear!"'),
     ("R5's old step", C, '{ Text = "Slime Prince %d/%d", Guide = "SlimePond"', '{ Text = "King Slime %d/%d", Guide = "SlimePond"'),
-    # 10/15: M1_2 is gone; M1_1's Prince step moved to the new boss
-    ("M1_1 moved to the new boss", C, 'Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 } },\n\t\t\t\t{ Text = "Use the Enhance Scroll',
-     'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Count = 1 } },\n\t\t\t\t{ Text = "Use the Enhance Scroll'),
+    # A23-222: M1_1 = the Prince only (one step; the King is M1_2's); M1_1's Prince step moved to the new boss
+    ("M1_1 moved to the new boss", C, 'Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 },\n\t\t\t\t\tOn = "Self", Find = "That\'s not a snack!"',
+     'Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Count = 1 },\n\t\t\t\t\tOn = "Self", Find = "That\'s not a snack!"'),
+    ("M1_2 hunts one more Prince", C, '{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "MeadowArrival",\n\t\t\tObj = { Type = "Kill", Kind = "SlimeKing"',
+     '{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "MeadowArrival",\n\t\t\tObj = { Type = "Kill", Kind = "BigSlime"'),
     ("the first scroll moved to the new boss", C, 'FirstScroll = { Monster = "BigSlime",', 'FirstScroll = { Monster = "SlimeKing",'),
     ("the rookie daily moved", C, '{ Id = "Kill", Weight = 3, Monster = "BigSlime", Strict = true, Targets = { 3 } },',
      '{ Id = "Kill", Weight = 3, Monster = "SlimeKing", Strict = true, Targets = { 3 } },'),
-    ("a mom in the family", C, "Otto: Big brothers always grab the biggest bite!", "Otto: Slime Prince's mom grabs the biggest bite!"),
+    ("a mom in the family", C, '{ Text = "Beat a Slime Prince %d/%d"', '{ Text = "Beat a Slime Prince and his mom %d/%d"'),
 ]
 
 

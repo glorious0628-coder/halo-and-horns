@@ -136,8 +136,8 @@ runGroup("the five names", function()
 		-- user 10/15: the guide says hello first (the catchphrase = page 1), then the mission
 		check(W[f].Lines[1] == v[3] and #W[f].Lines == 2, f .. ": the catchphrase is the welcome's page 1 (two pages only)", show(W[f].Lines))
 		-- A23-188 (user 2026-10-14): the first mission = the Forge visit (no "5 slimes")
-		check(W[f].Lines[2] == "First, go to Otto's Forge and get your weapon!",
-			f .. ": page 2 = the mission card (the Forge visit)", show(W[f].Lines[2]))
+		check(string.sub(W[f].Lines[2], 1, 46) == "First, go to Otto's Forge and get your weapon!" and string.find(W[f].Lines[2], "10 minutes", 1, true) ~= nil,
+			f .. ": page 2 = the mission card (the Forge visit) + the 10 minutes' 2x XP (A23-221 ⑦)", show(W[f].Lines[2]))
 		for _, line in W[f].Lines do
 			check(not string.find(line, "Noted", 1, true) and not string.find(line, "Captain", 1, true),
 				f .. ": no 'Noted' (Tiny's) or 'Captain'", line)

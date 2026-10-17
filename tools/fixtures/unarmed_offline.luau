@@ -118,6 +118,7 @@ runGroup("save", function()
 	local fresh = deepCopy(w.Config.Data.Defaults)
 	fill(fresh, "P1")
 	check(fresh.WeaponTier == 0 and fresh.WeaponOwnedMask == 0, "a brand-new record stays bare-handed", show({ fresh.WeaponTier, fresh.WeaponOwnedMask }))
+	check(fresh.BankGold == 1000 and fresh.CarriedGold == 0, "A23-222: a brand-new record has 1000 gold in the bank, none carried", show({ fresh.BankGold, fresh.CarriedGold }))
 	for _, case in {
 		{ row(3, { WeaponTier = 0, WeaponOwnedMask = 0 }), 0, 0, "v3 bare-handed save kept (no bit forced)" },
 		{ row(3, { WeaponTier = 0, WeaponOwnedMask = 2 }), 0, 2, "v3 stored tier 0 is valid: kept even with a weapon owned" },
@@ -357,7 +358,7 @@ runGroup("shop", function()
 	local w = bareWorld()
 	-- gameplay plan 2026-10-13 1-A #2 ships Config.WeaponShop.Buy = false; the buy rules below are for Buy back on
 	w.Config.WeaponShop.Buy = true
-	local p, d = w:Join(401, { Carried = 160, Bank = 0 })
+	local p, d = w:Join(401, { Carried = 160, Bank = 0, Data = { LootFlags = { FirstWeapon = true } } }) -- A23-222: the Prince dropped tier 2 once
 	local n0 = #w.Notices
 	w:Buy(p, 1)
 	check(d.WeaponOwnedMask == 0 and d.WeaponTier == 0 and indexOf(notices(w, p, n0), C0.Text.WeaponFromQuest) ~= nil,
@@ -411,8 +412,10 @@ runGroup("shop", function()
 		if w4.Fired[i].Remote == "OpenPanel" then opened = w4.Fired[i] end
 	end
 	check(opened ~= nil and opened.Payload == "WeaponShop", "the anvil opens the weapon shop")
-	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Main.Id == "M1_1" and g.Story.Main.St == 2,
-		"the M1_1 gift is in hand by the time the shop opens (M1_1 at step 2)", show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main }))
+	-- A23-222: M1_1 is one step now (the scroll moved to M1_2's anvil step): the visit closes it
+	check(g.WeaponTier == 1 and g.WeaponOwnedMask == 1 and g.Story.Done.M1_1 == true and g.Story.Main.Id ~= "M1_1",
+		"the M1_1 gift is in hand by the time the shop opens (M1_1 done: one step since A23-222)",
+		show({ g.WeaponTier, g.WeaponOwnedMask, g.Story.Main, g.Story.Done }))
 	-- 최종 검수 10/16 🔴: Otto's talk shares the anvil's key and only the anvil's prompt shows - while Otto has a story talk for
 	-- me (an offer / a step / a lesson: TalkToNpc answers), the anvil opens that talk instead of the shop
 	local realTalk, asked = w4.Story.TalkToNpc, {}
@@ -474,7 +477,7 @@ runGroup("forge sells 5", function()
 
 	-- buying all five things the Forge sells (Lv5: Iron's level)
 	local w = bareWorld()
-	local p, d = w:Join(451, { Carried = 2000, Bank = 0, Level = 5 })
+	local p, d = w:Join(451, { Carried = 2000, Bank = 0, Level = 5, Data = { LootFlags = { FirstWeapon = true, FirstKingWeapon = true } } }) -- A23-222: both dropped once
 	local n0 = #w.Notices
 	w:Buy(p, 1)
 	check(d.WeaponOwnedMask == 0 and indexOf(notices(w, p, n0), C0.Text.WeaponFromQuest) ~= nil, "T1 still comes from M1_1 only", "")
@@ -511,6 +514,32 @@ runGroup("forge sells 5", function()
 	wp:Buy(q2, 10)
 	check(e2.WeaponOwnedMask == 0 and e2.CarriedGold == 299, "299 gold: no Pan", show({ e2.WeaponOwnedMask, e2.CarriedGold }))
 
+	-- A23-222 (user 10/16): Wooden is sold only after the first Slime Prince drop, Iron only after the first King Slime drop
+	-- (LootFlags FirstWeapon / FirstKingWeapon); the jokes never wait. ForgeOpen = the mask of the rows sold now
+	local wd = bareWorld()
+	wd.Story.TalkToNpc = function() return nil end -- nothing waits at Otto: the anvil opens the shop
+	local u, k = wd:Join(455, { Carried = 2000, Bank = 0, Level = 5, Tier = 1, Mask = 1 })
+	local nd = #wd.Notices
+	wd:Buy(u, 2)
+	wd:Buy(u, 3)
+	local refused = 0
+	for _, t in notices(wd, u, nd) do if t == C0.Text.WeaponDropFirst then refused += 1 end end
+	check(k.WeaponOwnedMask == 1 and k.WeaponTier == 1 and k.CarriedGold == 2000 and refused == 2,
+		"A23-222: before the first drops Wooden and Iron are refused ('Find this one on a monster first!'), no gold",
+		show({ k.WeaponOwnedMask, k.CarriedGold, notices(wd, u, nd) }))
+	wd:Anvil(u)
+	check(u:GetAttribute("ForgeOpen") == 512 + 1024, "A23-222: ForgeOpen before the drops = the two jokes only", tostring(u:GetAttribute("ForgeOpen")))
+	k.LootFlags.FirstWeapon = true
+	wd:Anvil(u)
+	check(u:GetAttribute("ForgeOpen") == 2 + 512 + 1024, "A23-222: after the Prince's drop the next Forge visit opens Wooden", tostring(u:GetAttribute("ForgeOpen")))
+	wd:Buy(u, 2)
+	check(bit32.btest(k.WeaponOwnedMask, 2) and k.CarriedGold == 1850, "A23-222: Wooden bought after its drop (150)", show({ k.WeaponOwnedMask, k.CarriedGold }))
+	k.LootFlags.FirstKingWeapon = true
+	wd:Anvil(u)
+	check(u:GetAttribute("ForgeOpen") == 2 + 4 + 512 + 1024, "A23-222: after the King's drop Iron opens too", tostring(u:GetAttribute("ForgeOpen")))
+	wd:Buy(u, 3)
+	check(bit32.btest(k.WeaponOwnedMask, 4) and k.CarriedGold == 1050, "A23-222: Iron bought after its drop (800)", show({ k.WeaponOwnedMask, k.CarriedGold }))
+
 	-- the hit: the joke key rides on the Swing Fx; the Pan shoves 1.5 studs further
 	local function swingWith(tier)
 		local ws = bareWorld()
@@ -538,9 +567,14 @@ end)
 ------------------------------------------------------------------ 7. the M1_1 gift (both orders)
 -- A23-188: M1_1 ships "Beat a Slime Prince" as step 1 (no second Forge visit); these groups test the engine's gift at the
 -- end of a GiveWeapon quest's first step on this world's own Config with the old visit step (State BlacksmithVisited)
+-- A23-222: M1_1 ships ONE step (the scroll is M1_2's anvil step now); the old flow's step 2 (Otto's scroll from the bag, Event
+-- ScrollUsed Past + GiveItem) is put back here so the engine's step-1 gift is still the first of two steps
 local function visitStep(world)
-	world.Config.StoryQuests.Defs.M1_1.Steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
-	world.Config.StoryQuests.Defs.M1_1.Steps[2].GiveItem = { Item = "Enh70", N = 1 } -- and Otto's scroll at step 2 (the old flow)
+	local steps = world.Config.StoryQuests.Defs.M1_1.Steps
+	steps[1].Obj = { Type = "State", Key = "BlacksmithVisited" }
+	steps[2] = { Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
+		Obj = { Type = "Event", Name = "ScrollUsed", Past = true },
+		GiveItem = { Item = "Enh70", N = 1 } } -- and Otto's scroll at step 2 (the old flow)
 	return world
 end
 runGroup("gift", function()
@@ -552,7 +586,7 @@ runGroup("gift", function()
 		world.Net.Get("UseItem").OnServerEvent:Fire(pl, "Enh70", tier)
 		world:Flush()
 	end
-	local p, d = w:Join(501, { Level = 2, Carried = 150 })
+	local p, d = w:Join(501, { Level = 2, Carried = 150, Data = { LootFlags = { FirstWeapon = true } } }) -- A23-222: the Prince dropped tier 2 once
 	w.Story.Refresh(p)
 	check(d.Story.Main.Id == "M1_1" and d.WeaponTier == 0, "M1_1 active, still bare-handed")
 	local n0, fx0 = #w.Notices, #w.Fx
@@ -602,7 +636,7 @@ runGroup("gift", function()
 	-- (b) the wood weapon first, then the free tier 1 (in the bag, no power line)
 	local w2 = visitStep(bareWorld())
 	w2.Config.WeaponShop.Buy = true
-	local q, e = w2:Join(502, { Level = 2, Carried = 150 })
+	local q, e = w2:Join(502, { Level = 2, Carried = 150, Data = { LootFlags = { FirstWeapon = true } } }) -- A23-222: tier 2 dropped once
 	w2.Story.Refresh(q)
 	w2:Buy(q, 2)
 	check(e.WeaponOwnedMask == 2 and e.WeaponTier == 2 and e.BlacksmithVisited == true, "(b) bought T2 bare-handed first")

@@ -490,15 +490,15 @@ do
 	LANDMARKS = {}
 	check(g, "StorySpot: no tag -> the Config spot; unknown key -> nil", QT.StorySpot("HeroStatue") == spot
 		and QT.StorySpot("Nope") == nil and QT.StorySpot(nil) == nil, "")
-	-- A23-110 (dev3 KO1): "Buy a potion" (Guide PotionShop) and the quick slot steps (Guide QuickSlot)
-	e = QT.ForEntry({ Story = { Id = "KO1", St = 2, Guide = "PotionShop" } }, "SlimeMeadow", "Halo", vec(300, 3, 0))
+	-- A23-110 (dev3 KO1; the main M1_2 since A23-222): "Buy a potion" (Guide PotionShop) and the quick slot steps (Guide QuickSlot)
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 2, Guide = "PotionShop" } }, "SlimeMeadow", "Halo", vec(300, 3, 0))
 	check(g, "Buy a potion from the meadow -> a trip to the Crossroads", type(e) == "table" and e.Travel == true and e.Zone == "Crossroads",
 		e and encode({ Zone = e.Zone, Travel = e.Travel }) or "nil")
-	e = QT.ForEntry({ Story = { Id = "KO1", St = 2, Guide = "PotionShop" } }, "Crossroads", "Halo", vec(40, 3, 40))
+	e = QT.ForEntry({ Story = { Id = "M1_2", St = 2, Guide = "PotionShop" } }, "Crossroads", "Halo", vec(40, 3, 40))
 	check(g, "... in the Crossroads -> the potion seller, labelled Potion shop", type(e) == "table" and e.Travel == false
 		and e.Label == "Potion shop" and at(e.Part, -12, -20), e and encode({ Label = e.Label }) or "nil")
 	check(g, "the quick slot steps have no place in the world",
-		QT.ForEntry({ Story = { Id = "KO1", St = 3, Guide = "QuickSlot" } }, "Crossroads", "Halo", vec(0, 3, 0)) == nil, "")
+		QT.ForEntry({ Story = { Id = "M1_2", St = 3, Guide = "QuickSlot" } }, "Crossroads", "Halo", vec(0, 3, 0)) == nil, "")
 	e = QT.ForEntry({ Story = { Id = "X", St = 1, Guide = "HaloTown" } }, "HaloTown", "Halo", vec(0, 3, -470))
 	check(g, "a plain zone guide inside its zone -> still nothing", e == nil, e and encode({ Tag = e.Tag }) or "nil")
 	-- 빛 마을 점검 #1 / #22 / #25 / #30 (2026-10-10): a talk step through a story NPC in the world (dev3 TownNpcs)

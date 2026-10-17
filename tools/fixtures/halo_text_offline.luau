@@ -75,7 +75,8 @@ runGroup("two-page welcome", function()
 	for _, side in { "Halo", "Horns", "Neutral" } do
 		local w = TC.Welcome[side]
 		check(#w.Lines == 2, side .. ": two pages (the catchphrase, the mission card)", tostring(#w.Lines))
-		check(w.Lines[2] == "First, go to Otto's Forge and get your weapon!", side .. ": page 2 = the mission card (A23-188: the Forge visit)",
+		check(string.sub(w.Lines[2], 1, 46) == "First, go to Otto's Forge and get your weapon!" and string.find(w.Lines[2], "10 minutes", 1, true) ~= nil,
+			side .. ": page 2 = the mission card (A23-188: the Forge visit) + the first 10 minutes' 2x XP (A23-221 ⑦)",
 			w.Lines[2])
 		check(#w.Lines[1] > 0 and #w.Lines[1] <= 80 and not string.find(w.Lines[1], "\n", 1, true), side .. ": page 1 = one short catchphrase line", w.Lines[1])
 		for _, line in w.Lines do check(#line <= 100, side .. ": a page is at most 100 letters", tostring(#line)) end

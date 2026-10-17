@@ -188,6 +188,18 @@ local function migrate(st)
 		end
 		st.Schema = 5
 	end
+	-- A23-222 (Schema 6): the King's Hop is the main M1_2 now. A save past M1_1 (or past the old sub KO1) skips it; a save on
+	-- M1_1's old step 2 (the scroll) has beaten the Prince: M1_1 is done and M1_2 starts (the scroll is its anvil step). The
+	-- old sub KO1 and the lessons H_Basics / R_Basics (A23-221 ①: the first mission's practice step) leave
+	if num(st.Schema, 1) < 6 then
+		if st.Done.M1_1 or st.Done.KO1 then st.Done.M1_2 = true end
+		if st.Main.Id == "M1_1" and math.floor(num(st.Main.St, 1)) >= 2 then
+			st.Done.M1_1 = true
+			st.Main = { Id = "" }
+		end
+		st.Subs.KO1, st.Subs.H_Basics, st.Subs.R_Basics = nil, nil, nil
+		st.Schema = 6
+	end
 end
 
 -- drop unknown ids / bad numbers (fillDefaults only fills the top level)
@@ -476,13 +488,10 @@ local function eventAmount(player, obj, ev)
 		return 1
 	elseif ev.Kind == "SellMat" then -- 장인 ②: gathered materials sold at the Forge (SellItem)
 		return t == "SellMat" and math.max(0, math.floor(num(ev.N))) or 0
-	elseif ev.Kind == "Swing" then -- P1 ①-2 Practice: a manual basic swing at the dummy (within Radius, facing it)
+	elseif ev.Kind == "Swing" then -- P1 ①-2 Practice: a manual basic swing at the dummy (within Radius; A23-221 ①: any direction)
 		if t ~= "Practice" then return 0 end
 		local spot = landmark(obj.Spot)
 		if not spot or typeof(ev.Pos) ~= "Vector3" or Util.FlatDistance(ev.Pos, spot) > num(obj.Radius, 8) then return 0 end
-		local to = Vector3.new(spot.X - ev.Pos.X, 0, spot.Z - ev.Pos.Z)
-		local look = typeof(ev.Look) == "Vector3" and Vector3.new(ev.Look.X, 0, ev.Look.Z) or nil
-		if to.Magnitude > 1 and look and look.Magnitude > 0 and look.Unit:Dot(to.Unit) < num(SQ.PracticeFacing, 0.3) then return 0 end
 		return 1
 	end
 	return 0
@@ -639,19 +648,7 @@ local function eventPast(data, obj)
 	return type(held) == "string" and type(data[held]) == "string" and string.find(data[held], "%a") ~= nil
 end
 
--- A23-110 TopUpGold: a step that opens with the player short of this much gold (carried + bank) adds the missing part to the
--- carried gold, once per step ("Choice" source: never doubled by the 2x pass). Nothing for a step that already passes.
-local function topUpGold(player, data, id, track)
-	local step = stepOf(player, DEFS[id], track.St)
-	local want = step and math.floor(num(step.TopUpGold)) or 0
-	if want <= 0 or eventPast(data, step.Obj) then return end
-	local first = story(data).First
-	local key = "Top" .. id .. tostring(track.St)
-	if first[key] == true then return end
-	first[key] = true -- saved before the gold, so it can never be paid twice
-	local have = S.ProgressionService.GetTotalGold(player)
-	if have < want then S.ProgressionService.AddCarriedGold(player, want - have, "Choice") end
-end
+-- (A23-110 TopUpGold is gone, A23-222: a new save starts with 1000 gold; user "그러면 돈이 모자라면 채워줄 필요 없자넝")
 
 -- the player's stack of item `id` is at its cap (Config.Loot.ItemCap; potions Config.Vitals.PotionInventoryCap)
 local function stackFull(data, id)
@@ -757,7 +754,6 @@ local function advance(player, data, id, track)
 		if track.St == 1 then giveWeapon(player, def) end -- 1-A #2: M1_1's weapon comes with the visit (before Otto's scroll)
 		track.St += 1
 		-- A23-130: no step Start line (the row switches to the new step text)
-		topUpGold(player, data, id, track)
 		giveStepItem(player, data, id, track)
 		dirty(player)
 		openStep(player, id, track)
@@ -1195,6 +1191,14 @@ local function refresh(player)
 			findScene(player, id, st.Main) -- A23-208
 		end
 	end
+	-- A23-222: M1_2's rematch row waits for the personal King; with the King switched off it passes (the main never sticks)
+	if st.Main.Id ~= "" and kingOff() and not st.Main.Claim and DEFS[st.Main.Id] then
+		local step = stepOf(player, DEFS[st.Main.Id], st.Main.St)
+		if step and type(step.Obj) == "table" and step.Obj.Type == "Kill" and step.Obj.Personal == true then
+			advance(player, data, st.Main.Id, st.Main)
+			changed = true
+		end
+	end
 	for _, id in SQ.Subs do
 		local def = DEFS[id]
 		if def and type(def.Offer) == "table" and not st.Done[id] and not st.Subs[id] then
@@ -1295,8 +1299,10 @@ local function refresh(player)
 			if done then advance(player, data, t.Id, tr) end
 		end
 	end
-	-- P1 ①-2: PracticeTool = the quest whose Practice step is open ("" = none): the client puts the borrowed practice tool in hand
-	local practice = ""
+	-- P1 ①-2: PracticeTool = the quest whose Practice step is open ("" = none): the client puts the borrowed practice tool in hand.
+	-- A23-221 ①: the first mission's practice step = "Tutorial"
+	local tutSteps = type(Config.Tutorial) == "table" and Config.Tutorial.Steps or {}
+	local practice = (tutSteps.Practice ~= nil and num(data.TutorialStep, -1) == tutSteps.Practice) and "Tutorial" or ""
 	for _, t in tracks(data) do
 		local step = (not t.Track.Claim) and stepOf(player, DEFS[t.Id], t.Track.St) or nil
 		if step and type(step.Obj) == "table" and step.Obj.Type == "Practice" then
@@ -1394,7 +1400,7 @@ function StoryQuestService.RetryGifts(player)
 end
 
 -- Studio test aids (Main's DebugCommand "StorySub" / "StoryDone", built inside its IsStudio block only): start a Sub quest at a
--- step (what the step needs at its start is done as when it opens: TopUpGold; steps that pass at once pass), and mark one
+-- step (what the step needs at its start is done as when it opens: GiveItem; steps that pass at once pass), and mark one
 -- done. No reward, no notice, no QuestDone. Both return "ok" or a short reason.
 function StoryQuestService.DebugSub(player, id, step)
 	local def = DEFS[id]
@@ -1407,7 +1413,6 @@ function StoryQuestService.DebugSub(player, id, step)
 	st.Done[id] = nil
 	local track = { St = n, P = 0, T = {}, Claim = false }
 	st.Subs[id] = track
-	topUpGold(player, data, id, track)
 	giveStepItem(player, data, id, track)
 	dirty(player)
 	local ok, err = pcall(refresh, player)
@@ -2105,6 +2110,27 @@ local function onGooseFinished(result, counts, info)
 	end
 end
 
+-- A23-221 ② (M1_2's anvil step): OpenPanel "Enhance" { Item = the scroll (Enh70 first), Tier = the weapon in hand } - game dev 1's
+-- window with that weapon picked; the use itself is LootService's (its Event ScrollUsed moves the step). A bag with no Enhance
+-- scroll gets one Enh70 once (Story.First.AnvilScroll; the Prince's scroll sold or lost must never stick the main)
+local function anvilEnhance(player, data)
+	local items = type(data.Items) == "table" and data.Items or {}
+	local pick = nil
+	for _, id in { "Enh70", "Enh30", "Enh10" } do
+		if num(items[id]) > 0 then pick = id break end
+	end
+	local st = story(data)
+	if not pick and not st.First.AnvilScroll then
+		st.First.AnvilScroll = true
+		dirty(player)
+		if grantItem(player, "Enh70", 1) then pick = "Enh70" end
+	end
+	pcall(function()
+		Net.Get("OpenPanel"):FireClient(player, "Enhance", { Item = pick, Tier = math.floor(num(data.WeaponTier)) })
+	end)
+	return pick
+end
+
 -- zone_check_halo #22 / #25 / #30: a town NPC's "Talk" prompt (TownNpcs: attribute StoryNpcId) opens the dialogue of the player's
 -- quest whose CURRENT step is a Panel step talked through that NPC (the main quest first, then the subs, newest first), like
 -- a tap on its row (StoryAction "Open"). Returns the quest id it opened, or nil (nothing to say to this player right now).
@@ -2165,6 +2191,11 @@ function StoryQuestService.TalkToNpc(player, npcId)
 		end
 		if step and step.Panel == true and step.Npc == npcId and npcNear(player, npcId) then
 			openStep(player, id, tr, true)
+			return id
+		end
+		-- A23-221 ②: an Anvil step (M1_2's scroll): the talk at the anvil opens the Enhance window
+		if step and step.Anvil == true and step.Npc == npcId and npcNear(player, npcId) then
+			anvilEnhance(player, data)
 			return id
 		end
 		-- P1 ④: a Match / Timing step at this NPC opens its panel

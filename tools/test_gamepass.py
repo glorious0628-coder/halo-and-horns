@@ -96,7 +96,7 @@ EXPECTED = [
     ("StoryQuestService.luau", "AddBankGold", "Quest", True),
     ("StoryQuestService.luau", "AddXP", None, True),
     ("StoryQuestService.luau", "AddBankGold", "Choice", True),  # a pick's gold: shown as added, never 2x
-    ("StoryQuestService.luau", "AddCarriedGold", "Choice", False),  # A23-110 KO1: the missing part of 50 gold for two potions (a gift, no line, never 2x)
+    # (A23-222: the KO1 gold top-up "AddCarriedGold Choice" is gone, a new save starts with 1000 gold)
     ("WarService.luau", "AddBankGold", "War", True),
 ]
 # A23-75 review 2026-10-08: shown as added, but never 2x: made from gold that already holds the pass (the kaiju survive
@@ -223,6 +223,8 @@ def static() -> tuple[int, list[str]]:
 
 
 MUTATIONS = [
+    ("A23-221: no XPMult on the reward", "PROGRESSION_SOURCE", "\t\tXPMult = (num(xp) > 0 and boost > 1) and boost or nil })", "\t\tXPMult = nil })"),
+    ("A23-221: XPMult always", "PROGRESSION_SOURCE", "\t\tXPMult = (num(xp) > 0 and boost > 1) and boost or nil })", "\t\tXPMult = boost })"),
     # feedback_audit #2 (최종 검수 10/15): the LevelUp Fx says what changed
     ("LevelUp without the power", P, "\t\t\tPowerFrom = powerFrom,\n\t\t\tPowerTo = powerTo,\n", ""),
     ("LevelUp power at the new level twice", P, "local okA, a = pcall(Config.CombatPowerOf, player, nil, nil, startLevel)",

@@ -150,7 +150,7 @@ Config.Data = {
 		Version = 6,
 		Level = 1,
 		XP = 0,
-		BankGold = 0,
+		BankGold = 1000, -- A23-222 (user 10/16 "기본 1000 코인을 주자."): a new save starts with 1000 in the bank (never lost to PvP)
 		CarriedGold = 0,
 		-- A23-34: a new player starts bare-handed (tier 0, nothing owned); the M1_1 blacksmith gives tier 1. Records
 		-- saved before A23-34 keep their weapons (they always own tier 1). v1 name: SwordTier (migrated by DataService)
@@ -305,7 +305,21 @@ end
 -- A23-186 (user 10/14 "기본 무기는 팔자고 했는데? 5개 정도 팔자"): Otto sells again (Buy = true; Buy = false would refuse
 -- buying a weapon not owned yet, Text.WeaponDropOnly). The Forge rows = tiers 2..MaxSoldTier (tier 1 stays the free M1_1
 -- gift) + every Meme row (Config.WeaponSoldAtForge); MaxSoldTier also bounds enhance / sell rows (never 0)
-Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12 }
+Config.WeaponShop = { MaxSoldTier = 3, Buy = true, PromptName = "HHC_BlacksmithPrompt", Distance = 12,
+	-- A23-222 (user 10/16): the Forge sells a tier only after the player first got it from a monster (the saved first-drop
+	-- flag, LootService: tier 2 = the first Slime Prince, tier 3 = the first King Slime), so the 1000 starting gold never buys
+	-- the 'stronger!' moment of that drop ahead. A tier owned already, the joke weapons and tiers not listed are not held back
+	OpenAfterDrop = { [2] = "FirstWeapon", [3] = "FirstKingWeapon" } }
+-- A23-222: true when the Forge sells weapon `tier` to the save `data` (its first-drop flag is set, or it owns that tier)
+function Config.WeaponForgeOpen(data, tier)
+	local shop = Config.WeaponShop
+	local flag = type(shop) == "table" and type(shop.OpenAfterDrop) == "table" and shop.OpenAfterDrop[tier] or nil
+	if type(flag) ~= "string" then return true end
+	if type(data) ~= "table" then return false end
+	if type(data.LootFlags) == "table" and data.LootFlags[flag] == true then return true end
+	local mask = tonumber(data.WeaponOwnedMask) or 0
+	return type(tier) == "number" and tier >= 1 and bit32.btest(math.floor(mask), bit32.lshift(1, tier - 1))
+end
 
 Config.Weapons = {
 	{ Tier = 1, Damage = 8, Price = 0, MinLevel = 1, Color = Color3.fromRGB(120, 85, 50), Material = Enum.Material.Wood, Length = 3 },
@@ -1756,7 +1770,7 @@ Config.DayCycle = {
 	-- tools/test_day_cycle.py checks the pair)
 	Enabled = true,
 	Tick = 0.5,
-	StartClock = 15.3,
+	StartClock = 9, -- A23-221 ⑤ (최종 검수 10/16): a new server starts in the morning (15.3 put the night at ~4:45 of a first play)
 	MaxStepHours = 0.025,
 	Pace = {
 		{ From = 5, Seconds = 120 }, -- sunrise
@@ -1780,7 +1794,8 @@ Config.DayCycle = {
 			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(236, 196, 178), Night = 0.3 },
 		Dusk = { Brightness = 1.6, Ambient = Color3.fromRGB(88, 74, 82), OutdoorAmbient = Color3.fromRGB(116, 100, 108),
 			ExposureCompensation = -0.1, FogColor = Color3.fromRGB(232, 168, 140), Night = 0.3 },
-		Night = { Brightness = 1.4, Ambient = Color3.fromRGB(70, 78, 106), OutdoorAmbient = Color3.fromRGB(98, 110, 148),
+		-- A23-221 ⑤: brighter so monsters and paths stay readable at night (was 1.4 / (70, 78, 106) / (98, 110, 148))
+		Night = { Brightness = 1.8, Ambient = Color3.fromRGB(92, 100, 126), OutdoorAmbient = Color3.fromRGB(120, 130, 162),
 			ExposureCompensation = 0.35, FogColor = Color3.fromRGB(46, 60, 100), FogStart = 120, FogEnd = 800, Night = 1 },
 	},
 	Floor = { Brightness = 1.2, Ambient = Color3.fromRGB(60, 66, 80), OutdoorAmbient = Color3.fromRGB(88, 96, 108),
@@ -3114,7 +3129,12 @@ end
 -- the class basic weapon (QuestService.ForgeGift) -> step 1 (the trip to the meadow) -> step 2 -> claim -> step 99.
 -- A save that owns the first weapon already (from before A23-34) goes from [Accept] straight to step 1.
 Config.Tutorial = {
-	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99, Teacher = 4 },
+	Steps = { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99, Teacher = 4, Practice = 5 },
+	-- A23-221 ① (최종 검수 10/16, playtest r1: the teacher's lesson was a side offer nobody saw, its hit never counted): after
+	-- the teacher, step Practice = one swing at the side's practice dummy (the Landmarks key below; within Radius, ANY
+	-- direction: no facing check), then the Forge. The borrowed stick is in hand during it (PracticeTool = "Tutorial"); the
+	-- teacher takes it back (the step's Scene). No key for a side = no practice step (the artisans meet Otto at the Forge)
+	Practice = { Halo = "PracticeH", Horns = "PracticeR", Radius = 10 },
 	-- quest bible v3 H00 / R00 / N00 (P1 ②): the faction guide is a body in the world (Config.TownNpcs, Story = these ids); the
 	-- first mission is opened by talking to it (the row tap only guides there). Halo / Horns then meet their teacher (step
 	-- Teacher) before the Forge; the artisans' teacher is Otto at the Forge itself. A guide / teacher with no body in this
@@ -3132,6 +3152,9 @@ Config.Tutorial = {
 		Steps = {
 			Teacher = { Find = { Halo = "Oh! Hello! I can see you now.", Horns = "Ahem! Welcome, captain!" },
 				Scene = { Halo = "Wave", Horns = "Cheer" } },
+			-- A23-221 ①: the teacher's words as the dummy step starts / the bow as they take the stick back
+			Practice = { Find = { Halo = "Your turn. One hit, right here.", Horns = "Your turn, captain! One hit!" },
+				Scene = { Halo = "Bow", Horns = "Laugh" } },
 			Forge = { Find = { Halo = "Ah, there you are!", Horns = "Rose sent a captain, did she?",
 					Neutral = "There you are. This spot is yours." },
 				Lines = { Halo = { "Otto: Your first weapon. I saved this one for you." },
@@ -3157,6 +3180,7 @@ Config.Tutorial = {
 	ShortNames = { Welcome = "Meet %s", Travel = "To the meadow", Quest = "Supply road", Forge = "To the Forge",
 		IronLevel = "Reach Lv %d", SkillIron = "Reach Lv %d", IronGold = "Iron weapon", Zone = "Reach Lv %d",
 		Teacher = "Meet %s", -- P1 ②: the teacher step (%s = the teacher's name)
+		Practice = "Hit the dummy", -- A23-221 ①
 		SkillTest = "Lv5 test", -- P1 ⑤
 		IronDrop = "King Slime", -- A23-127 (plan 10/13): the iron weapon is the King Slime's drop (Tutorial.Text.NextIronDrop)
 		Skill = "Skill at Lv %d", SkillLearn = "Learn a skill", Rebirth = "Rebirth Lv %d", RebirthReady = "Rebirth ready",
@@ -3199,21 +3223,23 @@ Config.Tutorial = {
 			Name = "Hallie", Title = "Guide of Light",
 			Lines = { -- 사용자 10/15: page 1 = the guide's own hello (catchphrase), page 2 = the mission (the Forge); two pages only (A23-99)
 				"Hallie here! Now you know my name. Welcome to the Knights!",
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+				-- A23-221 ⑦ (user 10/16 "누구나 경험치 2배라는 걸 인지시키고 가는 게 중요할듯"): the first 10 minutes' 2x XP, in the
+				-- guide's own voice (Config.EarlyXP)
+				"First, go to Otto's Forge and get your weapon! New knights learn twice as fast for 10 minutes!", -- A23-188: the first mission = the Forge visit
 			},
 		},
 		Horns = {
 			Name = "Magpie", Title = "Horn Legion Guide",
 			Lines = {
 				"Finders keepers! HA! You're with us now. I'm Magpie.",
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+				"First, go to Otto's Forge and get your weapon! Psst... you learn twice as fast for 10 minutes!", -- A23-188 / A23-221 ⑦
 			},
 		},
 		Neutral = {
 			Name = "Kit", Title = "Guild Guide",
 			Lines = {
 				"Fix first. Talk later. I'm Kit. Welcome to the Guild!",
-				"First, go to Otto's Forge and get your weapon!", -- A23-188: the first mission = the Forge visit
+				"First, go to Otto's Forge and get your weapon! For 10 minutes, every lesson counts twice.", -- A23-188 / A23-221 ⑦
 			},
 		},
 	},
@@ -3226,6 +3252,8 @@ Config.Tutorial = {
 		-- A23-130 (user 2026-10-11): no line when the hunt starts or reaches 5/5 (QuestStart / QuestReady removed)
 		-- A23-74: the Forge step (3): its row, and Otto's line when he hands over the first weapon (then LootService's
 		-- "You got your first weapon" line with the power change)
+		Practice = "Hit the practice dummy", -- A23-221 ①: the row while the dummy waits
+		ForgeHere = "Talk to Otto", -- A23-221 ⑥: the Forge row once the player stands at the anvil (game dev 1: the marker over Otto)
 		Forge = "Go to Otto's Forge in the Crossroads", -- A23-88: walking; Otto hands over the first weapon (zone_check_halo #44: the Forge is outside the town)
 		ForgeGift = "Otto: Clang, clang… done. Here's your first weapon! The Squishy Meadow is next.",
 		-- A23-130 (user 2026-10-11): the claim line is the reward only, for a [Claim] and the F10-4 safety net alike
@@ -3314,7 +3342,7 @@ Config.StoryQuests = {
 	-- (StoryQuestService; e.g. the hero statue pair's centre, Spot = "HeroStatue"). Without one the spot below stays.
 	LandmarkTag = "StoryLandmark",
 	Badge = { Main = "Main", Sub = "Side" },
-	Main = { "M1_1", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
+	Main = { "M1_1", "M1_2", "M1_3", "M1_4", "M2_1", "M2_2", "M2_3", "M2_4", "M2_5", "M2_6", "M2_7",
 		"M3_1", "M3_2", "M3_3", "M3_4", "M3_6", "M3_7", "M3_8" }, -- A23-86: M3_5 (graduation) is a side line now
 	-- story_depth E0: an old save that reaches the story at Level >= Level skips the main chapters <= UpTo (once)
 	SkipChapters = { { Level = 10, UpTo = 2 }, { Level = 25, UpTo = 3, Subs = { "M3_5" } } }, -- A23-86: M3_5 is a sub now
@@ -3484,32 +3512,24 @@ Config.StoryQuests = {
 			Kind = "Main", Chapter = 1, Type = "Combat", Title = "Sparkly Jelly", ShortName = "Slime jelly", Speaker = "Smith", GiveWeapon = 1,
 			-- A23-208 / A23-210 story fields (r2 §2 H01 / R01 / N01, r4 §6): the steps say the player's own words on the spot
 			Offer = { Npc = "Otto", Before = {
-					Halo = "Shard dust made him bounce! He swallowed the band!",
-					Horns = "Shard dust, wild hops... and he swallowed his new 'hat'!",
-					Neutral = "Too much shard dust! He bounced and swallowed the band." },
+					Halo = "Shard dust made the Slime Prince bounce! He swallowed the band!", -- A23-221 ⑥: who 'he' is
+					Horns = "Shard dust, wild hops... and the Slime Prince swallowed his new 'hat'!",
+					Neutral = "Too much shard dust! The Slime Prince bounced and swallowed the band." },
 				Lines = {
 				Halo = { "Otto: Will you beat him and get the band back?" },
 				Horns = { "Otto: Will you beat him and grab the band?" },
 				Neutral = { "Otto: Will you beat him and bring the band out?" } } },
-			-- A23-188 (user 10/14): no second Forge trip. Step 1 = a Slime Prince in the meadow (the first one always drops the
-			-- T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll), step 2 = that scroll used from the bag
-			-- right there (a save on step 2 goes on as before; the old "show the jelly" step 1 is this hunt now)
+			-- A23-188 (user 10/14): no second Forge trip. A23-222 (user 10/16): M1_1 = the Slime Prince only (the first one always
+			-- drops the T2 weapon + the Enhance Scroll: Config.Loot.FirstWeaponDrop / FirstScroll); the scroll is used at Otto's
+			-- anvil in M1_2 (a save on the old step 2 goes on to M1_2, Story.Schema 6)
 			Steps = { { Text = "Beat a Slime Prince %d/%d", ShortName = "Slime Prince", Guide = "SlimeMeadow",
 					Obj = { Type = "Kill", Kind = "BigSlime", Zone = "SlimeMeadow", Count = 1 },
 					On = "Self", Find = "That's not a snack!", Scene = "Sparkle",
 					Horns = { Find = "A hat goes on your head!", Scene = "Laugh" },
-					Neutral = { Find = "Shiny things aren't all food!" } },
-				{ Text = "Use the Enhance Scroll on your weapon", ShortName = "Enhance", Guide = "Bag",
-					Obj = { Type = "Event", Name = "ScrollUsed", Past = true },
-					On = "Self", Find = "Two knots... two colors?", Scene = "Nod",
-					Lines = { Halo = { "Got the band! That knot is still holding." },
-						Horns = { "Got it! Wait. The band is on my head." },
-						Neutral = { "That knot looks bent. But it held on tight." } },
-					Horns = { Find = "Two knots? Fancy hat!", Scene = "Laugh" },
-					Neutral = { Find = "Two knots. Someone tried hard." } } },
-			Next = { Halo = { Id = "H_Band", Line = "Bright has a ribbon like this." },
-				Horns = { Id = "R_Band", Line = "Rose has to see this pose." },
-				Neutral = { Id = "M1_3", Line = "Otto has a test for me at level 5." } },
+					Neutral = { Find = "Shiny things aren't all food!" } } },
+			Next = { Halo = { Id = "M1_2", Line = "His big dad is up on the hill!" },
+				Horns = { Id = "M1_2", Line = "His big dad is up on the hill!" },
+				Neutral = { Id = "M1_2", Line = "His big dad is up on the hill!" } },
 			-- 최종 검수 10/15 (A23-191 / A23-208): no far-away card from Otto; the quest ends on the spot with the player's own
 			-- words (step 2's Lines: the two-colour band found)
 			-- 최종 검수 10/15 (user: a second Slime Prince right after the scroll felt like a repeat): M1_2 "one more Prince" is
@@ -3533,7 +3553,7 @@ Config.StoryQuests = {
 				Neutral = { "Otto: For my test, beat four slimes with basic attacks.", "Otto: Make Tiny's order, help her, then come back to me." } } },
 			Requires = { Level = 5 },
 			Steps = {
-				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "SlimeMeadow",
+				{ Text = "Beat slimes using only basic attacks %d/%d", ShortName = "Slimes x4", Guide = "Lv5Slimes",
 					Obj = { Type = "BasicKill", Kind = "Slime", Count = 4 },
 					On = "Self", Find = "Hey! That's someone's bag!",
 					Horns = { Find = "You can't eat a ribbon!" }, Neutral = { Find = "That's a tool basket, not lunch!" } },
@@ -4655,35 +4675,53 @@ for _, id in { "TS1", "SG1", "SZ1" } do table.insert(Config.StoryQuests.Subs, id
 -- (ShopService.BuyPotion), QuickSlotSet (QuickSlotService: an item put into a slot), PotionUsed (VitalsService, a drink from the
 -- quick slot or the bag). Past = a step whose happening was seen before it opened passes at once (a player who ran ahead is never
 -- stuck); Held = a saved text field of the player's data whose letters mean it is already done (an old save's quick slots hold
--- HP, MP: nothing to put). TopUpGold = the carried gold is topped up to this much when the step opens (once; two potions at 25
--- each); Personal = only the personal King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
+-- HP, MP: nothing to put). (TopUpGold is gone, A23-222: a new save starts with 1000 gold.) Personal = only the personal
+-- King counts. Guides: PotionShop = the seller, QuickSlot = the bag's quick slots.
 -- 장인 ② N0: the line when the crafted weapon goes into the hand at the quest's end
 Config.StoryQuests.Text.CraftEquipped = "%s equipped!"
 Config.StoryQuests.Events = { FirstKO = true, PotionBought = true, QuickSlotSet = true, PotionUsed = true }
 Config.StoryQuests.Events.SackMet = true -- A23-113: a PvP KO that took gold into a Grudge Sack (see Meetings above)
 -- gameplay plan 2026-10-13 1-A #2: an Enhance scroll used on a weapon, success or not (LootService useEnhance; M1_1 step 2)
 Config.StoryQuests.Events.ScrollUsed = true
-Config.StoryQuests.Defs.KO1 = {
-	Kind = "Sub", Title = "The King's Hop", ShortName = "King's hop",
-	Requires = { Done = { "M1_1" }, MaxLevel = 8, NoPotionYet = true, KingOn = true }, -- 10/15: M1_2 is gone
+-- A23-222 (user 10/16 "킹 슬라임한테 한 방에 죽고나서 물약 사기 퀘스트 나오고 물약 사면 킹 슬라임 잡을 수 있도록"): the King's
+-- Hop is the main M1_2 (between the Prince and the Lv5 test, on the goal row). The King's hill row guides to KingHill, where
+-- the personal King meets the player (FirstKOService); that KO gets up beside Fizzby in the Crossroads; buy -> quick slot ->
+-- drink -> the scroll at Otto's anvil (A23-221 ②: Anvil = his talk opens the Enhance window, a bag use first counts too,
+-- Past) -> the rematch at the meadow's arrival spot. No 'no potion yet' / 'Lv 8' gates: a step already done passes at once
+-- (Past / FirstKO 'Tell'). A save past M1_1 skips it (Story.Schema 6). The old sub KO1 is gone (a save on it: Schema 6)
+Config.StoryQuests.Defs.M1_2 = {
+	Kind = "Main", Chapter = 1, Type = "Combat", Title = "The King's Hop", ShortName = "King's hop", Speaker = "Smith",
 	Steps = {
-		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow", Obj = { Type = "Event", Name = "FirstKO" } },
-		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop", TopUpGold = 50,
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "KingHill", Obj = { Type = "Event", Name = "FirstKO" } },
+		{ Text = "Buy a potion", ShortName = "Buy a potion", Guide = "PotionShop",
 			Obj = { Type = "Event", Name = "PotionBought", Past = true } },
 		{ Text = "Put the potion in a quick slot", ShortName = "Quick slot", Guide = "QuickSlot",
 			Obj = { Type = "Event", Name = "QuickSlotSet", Past = true, Held = "QuickSlots" } },
 		{ Text = "Drink it from your quick slot", ShortName = "Drink potion", Guide = "QuickSlot",
 			Obj = { Type = "Event", Name = "PotionUsed", Past = true } },
-		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "SlimeMeadow",
+		-- A23-221 ②: the scroll from the Prince at Otto's anvil (his talk = the Enhance window, the weapon in hand picked)
+		{ Text = "Use the Enhance Scroll at Otto's anvil", ShortName = "Enhance", Guide = "Blacksmith", Npc = "Otto", Anvil = true,
+			Obj = { Type = "Event", Name = "ScrollUsed", Past = true },
+			On = "Self", Find = "Two knots... two colors?", Scene = "Nod",
+			Lines = { Halo = { "Got the band! That knot is still holding." },
+				Horns = { "Got it! Wait. The band is on my head." },
+				Neutral = { "That knot looks bent. But it held on tight." } },
+			Horns = { Find = "Two knots? Fancy hat!", Scene = "Laugh" },
+			Neutral = { Find = "Two knots. Someone tried hard." } },
+		{ Text = "Defeat the King Slime", ShortName = "Defeat King", Guide = "MeadowArrival",
 			Obj = { Type = "Kill", Kind = "SlimeKing", Zone = "SlimeMeadow", Personal = true, Count = 1 } },
 	},
+	Next = { Halo = { Id = "H_Band", Line = "Bright has a ribbon like this." },
+		Horns = { Id = "R_Band", Line = "Rose has to see this pose." },
+		Neutral = { Id = "M1_3", Line = "Otto has a test for me at level 5." } },
 	Reward = { Gold = 2, XP = 2, Item = "Enh70", N = 1 }, -- two minutes of hunting + one 70% scroll
 }
-table.insert(Config.StoryQuests.Subs, "KO1")
+-- the King's hill row: the personal King comes within FirstKOKing.Radius of here (beside the field King's shrine, apart from it)
+Config.StoryQuests.Landmarks.KingHill = Vector3.new(400, 0, -118)
 -- game dev 2 (the personal King) reads these: the quest, the step the King's first hop waits at, the step of the rematch.
 -- SipAttr = the player attribute (boolean) StoryQuestService keeps true while a quest step waits for a potion drink: game dev 1's
 -- VitalsUI then lets a full HP / MP bar be used (the server counts a practice sip and keeps the potion)
-Config.FirstKO = { Quest = "KO1", Step = 1, RematchStep = 5, SipAttr = "PotionSip" }
+Config.FirstKO = { Quest = "M1_2", Step = 1, RematchStep = 6, SipAttr = "PotionSip" }
 
 -- The town people's bodies (zone_check_halo #22 / #24 / #25 / #26 / #27 / #30 / #34, 검수 2026-10-10; TownNpcs.luau, built by
 -- MapBuilder.Build): temporary default Roblox-style NPCs from a HumanoidDescription (colours only, long sleeves; the final looks
@@ -4752,11 +4790,16 @@ table.insert(Config.TownNpcs.List, { Id = "Rex", Name = "Npc_Rex", Story = "Rex"
 
 -- P1 ②: the practice dummies beside each teacher (H00a / R00a / N00a). A workspace instance tagged StoryLandmark with Spot =
 -- the key moves a spot to it (like every landmark); PracticeN follows the Crossroads anvil like Kit (AnvilSpots)
-Config.StoryQuests.Landmarks.PracticeH = Vector3.new(-18, 0, -366)
-Config.StoryQuests.Landmarks.PracticeR = Vector3.new(-26, 0, 418)
-Config.StoryQuests.AnvilSpots = { PracticeN = { Behind = -8, Side = -7 } }
--- P1 ① Practice steps: a manual basic swing within Radius of the Spot that faces it (dot of the look and the way to the spot)
-Config.StoryQuests.PracticeFacing = 0.3
+-- 최종 검수 10/16 🔴 (game dev 1's values): (-18, -366) stood 10.8 from Pad_Halo_SlimeMeadow (-24, -357), so a player at the
+-- dummy stepped on the pad and went to the meadow. Now >= 25 studs from every travel pad, off the town road (|x| <= 8),
+-- nothing within 4 studs (place/GoodEvil.rbxlx 10/16: nearest the knight statue (-13, -390) ~6, the lantern (-14.6, -385.3) 7.5)
+Config.StoryQuests.Landmarks.PracticeH = Vector3.new(-22, 0, -384)
+Config.StoryQuests.Landmarks.PracticeR = Vector3.new(-26, 0, 418) -- (no travel pad in the Horns town; nothing within 8)
+-- the artisans' dummy: Behind -8 / Side -7 put it 16.6 from the Woods pad (52, 24); Behind -4 / Side 12 = (27.3, 49.8),
+-- 35.7 from the nearest pad, beside the Guild Hall (edge ~4.7), Kit (Side 7) between it and the anvil
+Config.StoryQuests.AnvilSpots = { PracticeN = { Behind = -4, Side = 12 } }
+-- P1 ① Practice steps: a manual basic swing within Radius of the Spot (A23-221 ①: any direction - in a town no monster turns
+-- the body, so the old facing check (0.3) refused hits at the dummy's side)
 -- P1 ④ (agreed with game dev 1): shape matching (OpenPanel "Match" { Id, Target, Options }) and the workbench timing (OpenPanel
 -- "Timing" { Id }: five taps on CraftView's practice ring, StoryAction(Id, "Timing", "Good/Tries")). Shape = one of the six the
 -- client draws without art (Ring, Disc, Square, Diamond, Cross, Bars); a set's three never share a shape or a colour
@@ -4835,31 +4878,8 @@ Config.QuestShapes = {
 -- (Requires.TeacherMet). Accept = the teacher shows one basic attack (Fx StoryScene Key "Demo"), the player hits the dummy once
 -- with a basic attack (a borrowed practice tool while bare-handed: attribute PracticeTool), then hands the tool back. Optional:
 -- declining blocks nothing (the Forge, the story and Lv5 go on); no reward of its own (a record only)
-Config.StoryQuests.Defs.H_Basics = {
-	Kind = "Sub", Title = "Sir Gleam's Lesson", ShortName = "First lesson", Speaker = "Gleam", Factions = { Halo = true },
-	Requires = { TeacherMet = true },
-	Offer = { Npc = "Gleam", AcceptScene = "Demo", Before = "There's room for two beside my shield.",
-		Lines = { All = { "Sir Gleam: Watch one swing, then try one hit beside me?" } } },
-	Steps = {
-		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeH",
-			Obj = { Type = "Practice", Spot = "PracticeH", Radius = 10, Count = 1 }, Find = "Your turn. I'm right here." },
-		{ Text = "Give the practice tool back to Sir Gleam", ShortName = "Return tool", Npc = "Gleam", Guide = "PracticeH",
-			Obj = { Type = "Deliver" }, Lines = { All = { "Sir Gleam: Good hit! You fit right beside me." } }, Scene = "Bow" },
-	},
-}
-Config.StoryQuests.Defs.R_Basics = {
-	Kind = "Sub", Title = "Rose's Lesson", ShortName = "First lesson", Speaker = "Smokey", Factions = { Horns = true },
-	Requires = { TeacherMet = true },
-	Offer = { Npc = "Smokey", AcceptScene = "Demo", Before = "My best pose needs another captain.",
-		Lines = { All = { "Rose: Watch my hit, then try one beside me?" } } },
-	Steps = {
-		{ Text = "Hit the practice dummy", ShortName = "Hit the dummy", Guide = "PracticeR",
-			Obj = { Type = "Practice", Spot = "PracticeR", Radius = 10, Count = 1 }, Find = "Your turn, captain!" },
-		{ Text = "Give the practice tool back to Rose", ShortName = "Return tool", Npc = "Smokey", Guide = "PracticeR",
-			Obj = { Type = "Deliver" }, Find = "That hat likes your pose.", Lines = { All = { "Rose: Ha! The hat wants to be captain too." } },
-			Scene = "Laugh" },
-	},
-}
+-- A23-221 ① (최종 검수 10/16): Sir Gleam's / Rose's lessons (H_Basics / R_Basics) are the first mission's Practice step now
+-- (Config.Tutorial.Practice: one hit at the dummy, no facing check, no 'give the tool back' step). A save on them drops them
 Config.StoryQuests.Defs.N_Basics = {
 	Kind = "Sub", Title = "Otto's Lesson", ShortName = "First lesson", Speaker = "Smith", Factions = { Neutral = true },
 	Requires = { TeacherMet = true },
@@ -4872,7 +4892,7 @@ Config.StoryQuests.Defs.N_Basics = {
 			Lines = { All = { "Otto: Ha! It nodded. I think it likes your work." } }, Scene = "Nod" },
 	},
 }
-for _, id in { "H_Basics", "R_Basics", "N_Basics" } do table.insert(Config.StoryQuests.Subs, id) end
+table.insert(Config.StoryQuests.Subs, "N_Basics")
 
 -- quest bible v3 H02 / R02 (P1 ③): the band from the Slime Prince, at Lv3. Halo: Bright holds it beside her ribbon - show it or
 -- hide it for now (her wrist hides / she peeks on tiptoe). Horns: Rose asks for the biggest victory pose at the pose spot - a
@@ -4883,6 +4903,9 @@ Config.StoryQuests.Landmarks.PoseSpot = Vector3.new(-24, 0, 414)
 -- neighbour is Folk1 of Halo town (now a quest NPC too: it keeps its TownFolk bubbles)
 Config.StoryQuests.Landmarks.LostBag = Vector3.new(188, 0, -12)
 Config.StoryQuests.Landmarks.SnackParcel = Vector3.new(-12, 0, 418)
+-- r5 play (최종 검수 10/16): the Lv5 test's slimes = the meadow entrance (just past the bridge from the Crossroads), so the
+-- row's marker leads there instead of to the meadow's travel pad by the Forge (Guide "SlimeMeadow" = a zone = its pad)
+Config.StoryQuests.Landmarks.Lv5Slimes = Vector3.new(250, 0, 0)
 -- P1 ⑦ the lamps of the first chapter's ending (a placed StoryLandmark model with the same Spot moves them)
 Config.StoryQuests.Landmarks.LampH = Vector3.new(30, 0, -440)
 Config.StoryQuests.Landmarks.LampR = Vector3.new(-30, 0, 440)
@@ -4900,7 +4923,7 @@ end
 Config.Skills.Learn.Gate = { Q = "M1_3" }
 Config.StoryQuests.Defs.H_Band = {
 	Kind = "Sub", Title = "Two-Color Band", ShortName = "The band", Speaker = "Bright", Factions = { Halo = true },
-	Requires = { Done = { "M1_1" }, Level = 3 },
+	Requires = { Done = { "M1_2" }, Level = 3 }, -- A23-222: the band is found at the anvil in M1_2
 	Offer = { Npc = "Bright", Before = "Oh! I know that funny little knot.",
 		Lines = { All = { "Bright: Will you hold the band beside my ribbon?" } } },
 	Next = { Id = "M1_3", Line = "Bright: Sir Gleam has a test for you at level 5." },
@@ -4916,7 +4939,7 @@ Config.StoryQuests.Defs.H_Band = {
 }
 Config.StoryQuests.Defs.R_Band = {
 	Kind = "Sub", Title = "Victory Pose", ShortName = "Victory pose", Speaker = "Smokey", Factions = { Horns = true },
-	Requires = { Done = { "M1_1" }, Level = 3 },
+	Requires = { Done = { "M1_2" }, Level = 3 }, -- A23-222: the band is found at the anvil in M1_2
 	Offer = { Npc = "Smokey", Before = "That band is stuck on your head!",
 		Lines = { All = { "Rose: Will you show me your biggest victory pose?" } } },
 	Next = { Id = "M1_3", Line = "Rose: Come see me at level 5. I have a test for you." },
@@ -8341,6 +8364,7 @@ Config.Text = {
 	WeaponShopFar = "Too far from the Forge.",
 	WeaponNotSold = "The Forge doesn't sell this weapon.",
 	WeaponDropOnly = "New weapons drop from monsters!", -- 1-A #2: Config.WeaponShop.Buy == false (a weapon not owned)
+	WeaponDropFirst = "Find this one on a monster first!", -- A23-222: Config.WeaponShop.OpenAfterDrop (not dropped for me yet)
 	WeaponSellFar = "Too far from the Forge.",
 	WeaponSold = "Sold %s! Gold +%s", -- (weaponName, gold)
 	BlacksmithPromptAction = "See weapons",
@@ -9108,13 +9132,13 @@ Config.Analytics.Funnels = {
 	Social = { Once = true, Steps = { "InviteSeen", "InvitePrompt", "InviteSent", "InviteeJoined", "PlayedTogether10m" } },
 	KingDiary = { Once = true, Steps = { "Page1", "Page3", "Page6", "Page9" } },
 	PassShop = { Steps = { "ShopOpen", "PassView", "PurchasePrompt", "Bought" } },
-	-- A23-113 #2: the first KO of the King's Hop (KO1), once per account; the steps are the quest's own five, in order:
-	-- the King's hit, a potion bought, put in a quick slot, drunk, the King beaten (a step an early action already passed
-	-- still logs, in order, when the quest passes it)
-	FirstKO = { Once = true, Steps = { "KO", "PotionBought", "SlotSet", "PotionUsed", "KingWon" } },
+	-- A23-113 #2: the first KO of the King's Hop (M1_2 since A23-222), once per account; the steps are the quest's own six, in
+	-- order: the King's hit, a potion bought, put in a quick slot, drunk, the scroll at the anvil, the King beaten (a step an
+	-- early action already passed still logs, in order, when the quest passes it)
+	FirstKO = { Once = true, Steps = { "KO", "PotionBought", "SlotSet", "PotionUsed", "Enhanced", "KingWon" } },
 }
 -- A23-113 #2: story quests whose steps are a funnel's steps (quest id -> funnel name; step i done = Steps[i]; StoryQuestService.StepDone)
-Config.Analytics.QuestFunnels = { KO1 = "FirstKO" }
+Config.Analytics.QuestFunnels = { M1_2 = "FirstKO" }
 -- quest P1 ⑨ (bible §13 / §15 ⑨): the first 30 minutes measured. QuestAccept (value = minutes of play, fields = quest id, faction)
 -- when one of these is accepted, QuestDecline (1, quest id), QuestMiniMiss (1, "Match" | "Timing", quest id) and once per account
 -- MinutesToFirstSkill (minutes of play, faction) when the Lv5 test's Learn step passes
@@ -9905,7 +9929,9 @@ Config.FirstKOKing = {
 	Enabled = true,
 	Kind = "SlimeKing",
 	OneHitBelow = 10, -- Lv 10+ is never one-shot (A7-2: the early levels end at 10; KO1 opens up to Lv 8)
-	Zone = "SlimeMeadow", Radius = 90, -- Landmark = "KingHill": a Landmarks key (nil = anywhere in Zone)
+	-- A23-222: the first King comes within Radius of Landmark (the hill row's spot), the rematch King within RetryRadius of
+	-- RetryLandmark (the meadow's arrival spot); a Landmarks key, nil = anywhere in Zone
+	Zone = "SlimeMeadow", Radius = 30, Landmark = "KingHill", RetryRadius = 40, RetryLandmark = "MeadowArrival",
 	-- studs: no personal King while the field King stands this close (bodies apart). Small on purpose: the field King
 	-- stays 300 s of every 480 s on its hill and never targets Lv < 5 / < 600 s players (A23-27), so a wide gap would
 	-- leave a new player at the hill marker without a King for minutes
@@ -9923,7 +9949,8 @@ Config.FirstKOKing = {
 	RespawnIn = 3, -- s before the get-up (the KO screen's 3-2-1)
 	ClaimGrace = 1,
 	-- studs away from the King, studs above the ground, s the spot is kept, the share of MaxHealth the player gets up with
-	GetUp = { Back = 6, Lift = 4, Keep = 20, HealthFrac = 0.4 },
+	-- A23-222: the first KO gets up at Spot (beside Fizzby in the Crossroads: the potion is the next row), facing Face
+	GetUp = { Back = 6, Lift = 4, Keep = 20, HealthFrac = 0.4, Spot = Vector3.new(6, 0, -30), Face = Vector3.new(12, 0, -34) },
 	SpawnGap = 4,
 	Tick = 0.5,
 	-- the retry King: HP = Seconds of the player's own basic attacks (the best weapon the save may use, with its +N), each

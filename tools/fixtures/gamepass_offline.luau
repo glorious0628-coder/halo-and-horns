@@ -418,6 +418,7 @@ runGroup("boost", function()
 	local fx = w.Fx[#w.Fx]
 	check(#w.Fx > fx0 and fx.Kind == "Reward" and fx.Data.Gold == 20 and fx.Data.XP == 60, "a kill with both passes: +20 gold, +60 XP shown",
 		show(fx and fx.Data))
+	check(fx.Data.XPMult == 2, "A23-221 ⑦: the 2x XP pass's kill carries XPMult 2", show(fx.Data))
 	w.Reg.MonsterService.MonsterKilled:Fire(q, { Gold = 10, XP = 30, Kind = "Slime", Position = vec(1, 2, 3) })
 	fx = w.Fx[#w.Fx]
 	check(fx.Data.Gold == 10 and fx.Data.XP == 30, "without: +10 / +30", show(fx.Data))
@@ -1176,6 +1177,11 @@ runGroup("A23-167 first minutes 2x XP", function()
 	local fx = w.Fx[#w.Fx]
 	check(fx and fx.Kind == "Reward" and fx.Data.XP == 8 and fx.Data.Gold == 10, "a kill in the first minutes: +8 XP shown, +10 gold",
 		show(fx and fx.Data))
+	check(fx and fx.Data.XPMult == 2, "A23-221 ⑦: the Reward Fx says this XP was doubled (XPMult 2: game dev 1's '×2')", show(fx and fx.Data))
+	local late = w:Join(605, { Level = 1, Data = { PlaytimeSeconds = 700, XP = 0 } })
+	w.Reg.MonsterService.MonsterKilled:Fire(late, { Gold = 10, XP = 4, Kind = "Slime", Position = vec(1, 2, 3) })
+	fx = w.Fx[#w.Fx]
+	check(fx and fx.Kind == "Reward" and fx.Data.XP == 4 and fx.Data.XPMult == nil, "after the first minutes, no pass: no XPMult", show(fx and fx.Data))
 	-- the one-level cap of a kill (A23-27) holds
 	local lv1 = w:Join(604, { Level = 1, Data = { PlaytimeSeconds = 0, XP = 0 } })
 	w.Reg.MonsterService.MonsterKilled:Fire(lv1, { Gold = 0, XP = 100000, Kind = "PumpkinKing", Position = vec(0, 0, 0) })

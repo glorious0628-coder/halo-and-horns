@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 
-from dev2_offline import ROOT, SHARED, SSS, Suite, read, run
+from dev2_offline import ROOT, bank_from_zero, SHARED, SSS, Suite, read, run
 
 FILES = {
     "CONFIG_SOURCE": SHARED / "Config.luau",
@@ -25,7 +25,9 @@ C, D, K = "CONFIG_SOURCE", "DEEDS_SOURCE", "CARD_SOURCE"
 
 
 def bindings(sources: dict[str, str]) -> dict[str, str]:
-    return dict(sources)
+    out = dict(sources)
+    out["CONFIG_SOURCE"] = bank_from_zero(out["CONFIG_SOURCE"])  # A23-222: these gold sums count from an empty purse
+    return out
 
 
 MUTATIONS = [

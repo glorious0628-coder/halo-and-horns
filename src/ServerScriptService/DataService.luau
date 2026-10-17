@@ -261,7 +261,8 @@ local function fillDefaults(d, playerName)
 	-- accepted, on the way to the teacher (then the Forge); kept too
 	local steps = Config.Tutorial and Config.Tutorial.Steps or { Kill = 0, Guide = 1, Quest = 2, Forge = 3, Done = 99 }
 	if d.TutorialStep ~= steps.Kill and d.TutorialStep ~= steps.Guide and d.TutorialStep ~= steps.Quest
-		and d.TutorialStep ~= steps.Done and d.TutorialStep ~= steps.Forge and (steps.Teacher == nil or d.TutorialStep ~= steps.Teacher) then
+		and d.TutorialStep ~= steps.Done and d.TutorialStep ~= steps.Forge and (steps.Teacher == nil or d.TutorialStep ~= steps.Teacher)
+		and (steps.Practice == nil or d.TutorialStep ~= steps.Practice) then -- A23-221 ①: Practice (5) = at the teacher's dummy, kept
 		d.TutorialStep = TUTORIAL_DONE
 	end
 	local kills = d.TutorialKills

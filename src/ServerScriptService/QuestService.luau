@@ -34,11 +34,11 @@ local STEP_FORGE = TUT_CFG.Steps.Forge -- 3 (A23-74): to the Crossroads Forge fo
 local TUT_DONE = TUT_CFG.Steps.Done -- 99
 -- A23-74: the Forge step's settings (Config.Tutorial.Forge) and its session state (Late[Player] = the late gift for an
 -- old save was tried this session)
-local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {}, AcceptedAt = {}, Reached = {} }
+local FORGE = { Cfg = TUT_CFG.Forge or {}, Zone = "Crossroads", Late = {}, AcceptedAt = {}, Reached = {}, WasNear = {} }
 -- quest bible v3 H00 / R00 / N00 (P1 ②, docs/design/quest_p1_server_contract_2026-10-15.md): the first mission is talked through
 -- the faction guide's body (Config.Tutorial.Guides) and, for Halo / Horns, the teacher's (Config.Skills.Learn.Teachers) at the
 -- step Teacher (4) before the Forge. No body in this world = the old way (the row tap / no teacher step)
-local TEACH = { Step = TUT_CFG.Steps.Teacher }
+local TEACH = { Step = TUT_CFG.Steps.Teacher, Practice = TUT_CFG.Steps.Practice }
 local TUT_TARGET = TUT_CFG.QuestKills
 local TUT_GOLD = TUT_CFG.QuestRewardGold
 local TUT_XP = TUT_CFG.QuestRewardXP or 0
@@ -626,6 +626,42 @@ function TEACH.After(player)
 	finishFirst(player)
 end
 
+-- A23-221 ①: the side's practice dummy (Config.Tutorial.Practice[faction] = a Landmarks key; a StoryLandmark-tagged spot
+-- first, like every landmark), nil = no practice step for this side
+function TEACH.PracticeSpot(player)
+	local P = TUT_CFG.Practice
+	local key = type(P) == "table" and P[getFaction(player)] or nil
+	if type(key) ~= "string" or TEACH.Practice == nil then return nil end
+	local SQ = Config.StoryQuests or {}
+	local spot = type(Util.TaggedSpot) == "function" and Util.TaggedSpot(SQ.LandmarkTag or "StoryLandmark", key) or nil
+	if spot == nil and type(SQ.Landmarks) == "table" then spot = SQ.Landmarks[key] end
+	return typeof(spot) == "Vector3" and spot or nil, key
+end
+
+-- A23-221 ①: the teacher met: one hit at the dummy (step Practice) when this side has one, else on to the Forge
+function TEACH.ToPractice(player)
+	if TEACH.PracticeSpot(player) then
+		setStep(player, TEACH.Practice)
+		local sq = S.StoryQuestService
+		if type(sq) == "table" and type(sq.Refresh) == "function" then pcall(sq.Refresh, player) end -- the stick in hand now
+		return
+	end
+	TEACH.After(player)
+end
+
+-- A23-221 ①: a manual basic swing (CombatService.BasicSwing) within Practice.Radius of the dummy at the Practice step, in
+-- any direction: the teacher takes the stick back (the step's Scene) and the Forge is next
+function TEACH.OnSwing(player, pos)
+	if typeof(player) ~= "Instance" or not player:IsA("Player") or getStep(player) ~= TEACH.Practice or typeof(pos) ~= "Vector3" then
+		return
+	end
+	local spot = TEACH.PracticeSpot(player)
+	if not spot or Util.FlatDistance(pos, spot) > num(TUT_CFG.Practice.Radius, 10) then return end
+	TEACH.After(player)
+	local sq = S.StoryQuestService
+	if type(sq) == "table" and type(sq.Refresh) == "function" then pcall(sq.Refresh, player) end -- the stick goes back
+end
+
 local function canWelcome(player)
 	if typeof(player) ~= "Instance" or not player:IsA("Player") or player.Parent ~= Players
 		or not Util.IsAlive(player) then return false end
@@ -675,8 +711,9 @@ end
 -- the player stands within Forge.Near studs of the anvil (no trip needed)
 function FORGE.Near(player)
 	local anvil = FORGE.Anvil()
+	if anvil == nil then return false end -- (no anvil: no body asked for; the Forge row's 'Talk to Otto' check runs every publish)
 	local root = Util.GetRoot(player)
-	return anvil ~= nil and root ~= nil and Util.FlatDistance(root.Position, anvil.Position) <= num(FORGE.Cfg.Near, 24)
+	return root ~= nil and Util.FlatDistance(root.Position, anvil.Position) <= num(FORGE.Cfg.Near, 24)
 end
 
 -- the blacksmith's gift without the Forge visit (no anvil in the world, or an old save past the Forge step):
@@ -773,8 +810,14 @@ local function tryTutorial(player)
 		end
 		-- A23-88: the first time the walker stands at the anvil (a metric: seconds since [I'm In!]; only for a walk begun
 		-- this session)
+		-- A23-221 ⑥: the row follows arriving at / leaving the anvil ("Talk to Otto")
+		local near = FORGE.Near(player)
+		if FORGE.WasNear[player] ~= near then
+			FORGE.WasNear[player] = near
+			dirty[player] = true
+		end
 		local from = FORGE.AcceptedAt[player]
-		if from and not FORGE.Reached[player] and FORGE.Near(player) then
+		if from and not FORGE.Reached[player] and near then
 			FORGE.Reached[player] = true
 			M.ForgeReached:Fire(player, math.max(0, os.clock() - from))
 		end
@@ -783,6 +826,10 @@ local function tryTutorial(player)
 	if step == TEACH.Step then
 		-- P1 ②: the teacher's body is gone from this world: never stuck at the step
 		if not TEACH.Teacher(player) then TEACH.After(player) end
+		return
+	end
+	if TEACH.Practice ~= nil and step == TEACH.Practice then
+		if not TEACH.PracticeSpot(player) then TEACH.After(player) end -- A23-221 ①: no dummy for this side: never stuck
 		return
 	end
 	if step ~= STEP_WELCOME or welcomeShown[player] then return end
@@ -806,7 +853,7 @@ function M.TalkNpc(player, npcId)
 			local ok, err = pcall(sq.Mark, player, "TeacherMet")
 			if not ok then Util.Warn(TAG, "Mark TeacherMet: " .. tostring(err)) end
 		end
-		TEACH.After(player)
+		TEACH.ToPractice(player)
 		return "Teacher"
 	end
 	return nil
@@ -974,6 +1021,13 @@ local function tutorialEntry(player, data)
 		entry.Text = string.format(TUT_MESSAGES.Teacher or "Meet %s at the town gate", name)
 		entry.ShortName = type(TUT_SHORT.Teacher) == "string" and string.format(TUT_SHORT.Teacher, name) or nil
 		entry.GuideNpc = teacher
+	elseif TEACH.Practice ~= nil and step == TEACH.Practice then
+		-- A23-221 ①: one hit at the dummy (GuideSpot = its Landmarks key: game dev 1's marker and the dummy itself)
+		local _, key = TEACH.PracticeSpot(player)
+		entry.Text = TUT_MESSAGES.Practice or "Hit the practice dummy"
+		entry.ShortName = TUT_SHORT.Practice
+		entry.GuideSpot = key
+		entry.Practice = true
 	elseif step == STEP_GUIDE then
 		entry.Text = TUT_MESSAGES.Travel or "Go to the Squishy Meadow · Menu > Travel > Squishy Meadow"
 		entry.ShortName = TUT_SHORT.Travel
@@ -987,6 +1041,12 @@ local function tutorialEntry(player, data)
 		-- A23-74: a tap sends RequestTutorial (the forge trip again); the client's beam goes to the anvil
 		entry.Text = TUT_MESSAGES.Forge or "Get your first weapon · Crossroads Forge"
 		entry.ShortName = TUT_SHORT.Forge
+		-- A23-221 ⑥: arrived (within Forge.Near of the anvil): "Talk to Otto", the guide on Otto (GuideNpc)
+		if FORGE.Near(player) then
+			entry.Text = TUT_MESSAGES.ForgeHere or "Talk to Otto"
+			entry.ShortName = TUT_MESSAGES.ForgeHere or "Talk to Otto"
+			entry.GuideNpc = "Otto"
+		end
 	elseif step == TUT_DONE and data.ClassChosen == true and getFaction(player) ~= "None" then
 		if data.BlacksmithVisited ~= true then
 			entry.Text = (hasFirstWeapon(data) and TUT_MESSAGES.VisitBlacksmithArmed or TUT_MESSAGES.VisitBlacksmith)
@@ -1033,7 +1093,16 @@ local function publish(player)
 		-- story main row (after the Forge visit; the main row comes back once it is learned)
 		local learnWaits = tutorial ~= nil and tutorial.GoalKind == "SkillLearn"
 		local okMain, main = pcall(story.MainRow, player, data)
-		if okMain and main and not learnWaits then tutorial = main end
+		-- r5 플레이 (최종 검수 10/16): ...unless the story step itself is that lesson (M1_3's "Learn your first skill from Rose"):
+		-- swapping it out made the M1_3 row leave the list in the same publish as Tiny's hand-over, so the client never saw
+		-- the Deliver step end (no Tiny line) and the row read the bare "Next goal" line
+		local mainLearns = false
+		if okMain and type(main) == "table" and type(main.Story) == "table" then
+			local def = Config.StoryQuests.Defs[main.Story.Id]
+			local stp = type(def) == "table" and type(def.Steps) == "table" and def.Steps[main.Story.St] or nil
+			mainLearns = type(stp) == "table" and type(stp.Obj) == "table" and stp.Obj.Type == "Learn"
+		end
+		if okMain and main and (not learnWaits or mainLearns) then tutorial = main end
 	end
 	if tutorial then table.insert(list, tutorial) end -- always first, never occupies/rerolls a daily slot
 	if story and type(story.SubRows) == "function" then
@@ -1419,7 +1488,7 @@ local function onPlayerLeaving(player)
 	welcomeShown[player] = nil
 	TUT_READY_AT[player] = nil
 	FORGE.Late[player] = nil
-	FORGE.AcceptedAt[player], FORGE.Reached[player] = nil, nil
+	FORGE.AcceptedAt[player], FORGE.Reached[player], FORGE.WasNear[player] = nil, nil, nil
 end
 
 local function onCharacterSpawned(player)
@@ -1611,6 +1680,14 @@ function M.Init(registry)
 	connectSignal("ProgressionService", "LevelReset", onRebirthed) -- CR-M6
 	connectSignal("ProgressionService", "LeveledUp", onLeveledUp) -- CR-M6
 	connectSignal("CombatService", "Released", onReleased)
+	-- A23-221 ①: the practice dummy's hit (looked up softly: a world without the signal has no practice step to count)
+	local combat = S.CombatService
+	if type(combat) == "table" and type(combat.BasicSwing) == "table" and type(combat.BasicSwing.Connect) == "function" then
+		combat.BasicSwing:Connect(function(player, pos)
+			local ok, err = pcall(TEACH.OnSwing, player, pos)
+			if not ok then Util.Warn(TAG, "practice swing: " .. tostring(err)) end
+		end)
+	end
 	connectSignal("GooseService", "GooseFinished", onGooseFinished)
 	-- A23-113 #8: a good / naughty deed (a choice card, the King's finisher card, a job board Kind / Sneaky job) fills the daily
 	-- 'Choice'. Soft: a world without the ledger simply never has the choice daily.

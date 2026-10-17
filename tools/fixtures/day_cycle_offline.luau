@@ -338,10 +338,11 @@ runGroup("time flows smoothly (Config Tick, one whole day)", function()
 	w:Boot({ "DayCycleService" })
 	local n = w.Cfg.Sky.Neutral
 	local L = w.Lighting
-	check(near(L.ClockTime, 15.3, 1e-6) and near(L.Brightness, n.Brightness) and sameColor(L.OutdoorAmbient, n.OutdoorAmbient)
+	check(near(L.ClockTime, w.Cfg.DayCycle.StartClock, 1e-6) and near(L.Brightness, n.Brightness) and sameColor(L.OutdoorAmbient, n.OutdoorAmbient)
 		and sameColor(L.Ambient, n.Ambient) and near(L.ExposureCompensation, n.ExposureCompensation)
 		and sameColor(L.FogColor, n.FogColor) and near(L.FogEnd, n.FogEnd),
-		"a new server starts at the approved afternoon (StartClock 15.3 = Neutral)", L.ClockTime .. " " .. tostring(L.Brightness))
+		"a new server starts at StartClock (A23-221 ⑤: 9, the morning) in the approved day look (Neutral)", L.ClockTime .. " " .. tostring(L.Brightness))
+	check(w.Cfg.DayCycle.StartClock == 9, "A23-221 ⑤: StartClock is 9 (a first play starts in the morning: night about 15 min later)", w.Cfg.DayCycle.StartClock)
 	check(w:Attr("DayPhase") == "Day" and w:Attr("NightLevel") == 0 and w:Attr("Weather") == "Clear",
 		"GameState DayPhase / NightLevel / Weather at Start", show({ w:Attr("DayPhase"), w:Attr("NightLevel"), w:Attr("Weather") }))
 	local maxStep = w.Cfg.DayCycle.MaxStepHours
@@ -378,7 +379,7 @@ runGroup("time flows smoothly (Config Tick, one whole day)", function()
 	end
 	check(back == 0, "the clock always moves forward, every tick", back .. " ticks did not move forward")
 	check(bigStep == 0, "no tick moves the clock more than MaxStepHours (no visible jump)", bigStep)
-	check(near(total, 24, 1e-6) and near(L.ClockTime, 15.3, 1e-6), "one day of ticks (1440 s) = exactly 24 h, back at 15.3",
+	check(near(total, 24, 1e-6) and near(L.ClockTime, w.Cfg.DayCycle.StartClock, 1e-6), "one day of ticks (1440 s) = exactly 24 h, back at StartClock",
 		total .. " / " .. L.ClockTime)
 	check(worst.B <= 0.03 and worst.E <= 0.03 and worst.C <= 3.5 / 255 and worst.FE <= 12,
 		"the light changes in small steps (Brightness / exposure <= 0.03, colour <= 3.5/255, FogEnd <= 12 per tick)", show(worst))
@@ -438,8 +439,13 @@ runGroup("nights stay bright enough (floors)", function()
 			c .. " B" .. raw.Brightness .. " O" .. cstr(raw.OutdoorAmbient) .. " A" .. cstr(raw.Ambient))
 	end
 	local rainNight = D.ValuesAt(0, { Rain = 1 })
-	check(near(rainNight.Brightness, 1.2), "rain at night is held at the floor (1.4 x 0.8 = 1.12 -> 1.2)", rainNight.Brightness)
+	local rainWant = math.max(w.Cfg.DayCycle.Floor.Brightness, w.Cfg.DayCycle.Looks.Night.Brightness * 0.8) -- A23-221 ⑤: night 1.8 x 0.8 = 1.44
+	check(near(rainNight.Brightness, rainWant), "rain at night: the night look x the rain, never below the floor", rainNight.Brightness)
 	local f = w.Cfg.DayCycle.Floor
+	local dark = dayWorld({ Edit = function(cfg) quietWeather(cfg); cfg.DayCycle.Looks.Night.Brightness = 0.9 end })
+	local DD = dark:Load("DayCycleService", DAYCYCLE_SOURCE)
+	check(near(DD.ValuesAt(0, { Rain = 1 }).Brightness, f.Brightness), "a darker night look is held at the floor (0.9 x 0.8 -> Floor)",
+		DD.ValuesAt(0, { Rain = 1 }).Brightness)
 	for _, c in { 0, 6, 12, 17.5, 20 } do
 		local v = D.ValuesAt(c, { Rain = 1, Snow = 1 })
 		check(v.OutdoorAmbient.R >= f.OutdoorAmbient.R - 1e-9 and v.OutdoorAmbient.G >= f.OutdoorAmbient.G - 1e-9
@@ -636,12 +642,14 @@ runGroup("a crown-war sky covers the look, the clock keeps turning (real WarServ
 	local changedAtStart = 0
 	for i = startLog + 1, #w.LightLog do
 		local e = w.LightLog[i]
-		if e.Key == "ClockTime" or e.Key == "Brightness" or e.Key == "OutdoorAmbient" or e.Key == "FogEnd" then
+		if e.Key == "Brightness" or e.Key == "OutdoorAmbient" or e.Key == "FogEnd" then
 			changedAtStart += 1
 		end
 	end
-	check(D.Owns() and changedAtStart == 0 and near(L.ClockTime, 15.3),
-		"the cycle takes over at the same light (StartClock 15.3 = Neutral): nothing re-sent, no jump", changedAtStart)
+	-- A23-221 ⑤: StartClock 9 (morning) differs from WarService's boot afternoon (15.3): the clock moves once at the server's
+	-- start (before anyone plays), the day look stays (both are Day = Neutral)
+	check(D.Owns() and changedAtStart == 0 and near(L.ClockTime, cfg.DayCycle.StartClock),
+		"the cycle takes over in the same day light (StartClock in the Neutral day): no look re-sent", changedAtStart)
 	local styleWrites = 0
 	for _, e in w.LightLog do
 		if e.Key == "LightingStyle" then styleWrites += 1 end
@@ -955,35 +963,35 @@ runGroup("the DayCycle switch freezes the day at StartClock", function()
 	local w = dayWorld({ Edit = quietWeather })
 	local D = w:Load("DayCycleService", DAYCYCLE_SOURCE)
 	w:Boot({ "DayCycleService" })
-	D.DebugSetClock(21)
+	D.DebugSetClock(20)
 	local L = w.Lighting
 	w.Switch.DayCycle = false
 	local nTw = #w.Tweens
 	w:Tick(1)
 	local ct = clockTweensSince(w, nTw)
-	check(#ct == 1 and near(ct[1].Goal.Value % 24, 15.3) and math.abs(ct[1].Goal.Value - 21) <= 12,
-		"off: the clock eases to StartClock 15.3 the short way (never a whole-day spin)", ct[1] and ct[1].Goal.Value)
+	check(#ct == 1 and near(ct[1].Goal.Value % 24, w.Cfg.DayCycle.StartClock) and math.abs(ct[1].Goal.Value - 20) <= 11,
+		"off: the clock eases to StartClock the short way (never a whole-day spin)", ct[1] and ct[1].Goal.Value)
 	check(#lightTweens(w, nTw) == 1, "and the look with it", #lightTweens(w, nTw))
-	-- during the clock ease the clock shown is Lighting's (still about 21 here: the double applies tweens when told), not
+	-- during the clock ease the clock shown is Lighting's (still about 20 here: the double applies tweens when told), not
 	-- the frozen StartClock the cycle aims at
 	check(D.State().ClockEasing and followsClock(w, D) and w:Attr("DayPhase") == "Night" and w:Attr("NightLevel") == 1,
 		"during the switch-off clock ease DayPhase / NightLevel follow the clock shown (Lighting.ClockTime), not StartClock",
 		published(w, D))
 	w:FinishTweens()
 	for _ = 1, 10 do w:Tick(1) end
-	check(near(L.ClockTime, 15.3) and D.State().Frozen, "and stays there", L.ClockTime)
+	check(near(L.ClockTime, w.Cfg.DayCycle.StartClock) and D.State().Frozen, "and stays there", L.ClockTime)
 	check(followsClock(w, D) and w:Attr("DayPhase") == "Day" and w:Attr("NightLevel") == 0,
-		"after the ease: DayPhase / NightLevel of StartClock 15.3 (Day / 0)", published(w, D))
+		"after the ease: DayPhase / NightLevel of StartClock (Day / 0)", published(w, D))
 	w.Switch.DayCycle = nil
 	w:Tick(1)
-	local d = clockDelta(15.3, L.ClockTime)
-	check(d >= 0 and d <= w.Cfg.DayCycle.MaxStepHours, "back on: it goes on from 15.3 (no jump)", L.ClockTime)
+	local d = clockDelta(w.Cfg.DayCycle.StartClock, L.ClockTime)
+	check(d >= 0 and d <= w.Cfg.DayCycle.MaxStepHours, "back on: it goes on from StartClock (no jump)", L.ClockTime)
 
 	-- off under a war sky: the clock still eases to StartClock, the war look stays; the hand-back is StartClock's look
 	local x = dayWorld({ FakeWar = true, Edit = quietWeather })
 	local XD = x:Load("DayCycleService", DAYCYCLE_SOURCE)
 	x:Boot({ "DayCycleService" })
-	XD.DebugSetClock(21)
+	XD.DebugSetClock(20)
 	x.Blessing = "Horns"
 	x:Tick(1)
 	x.Switch.DayCycle = false
@@ -991,18 +999,18 @@ runGroup("the DayCycle switch freezes the day at StartClock", function()
 	local logFrom = #x.LightLog
 	x:Tick(1)
 	local xct = clockTweensSince(x, nTw)
-	check(XD.State().WarSky == "Eclipse" and #xct == 1 and near(xct[1].Goal.Value % 24, 15.3) and #lightTweens(x, nTw) == 0,
+	check(XD.State().WarSky == "Eclipse" and #xct == 1 and near(xct[1].Goal.Value % 24, x.Cfg.DayCycle.StartClock) and #lightTweens(x, nTw) == 0,
 		"off under a war sky: the clock eases to StartClock all the same, the war look stays (no look ease)",
 		show({ #xct, #lightTweens(x, nTw) }))
 	x:FinishTweens()
 	for _ = 1, 10 do x:Tick(1) end
-	check(near(x.Lighting.ClockTime, 15.3) and lookWritesSince(x, logFrom) == 0, "and stays at StartClock under the war look",
+	check(near(x.Lighting.ClockTime, x.Cfg.DayCycle.StartClock) and lookWritesSince(x, logFrom) == 0, "and stays at StartClock under the war look",
 		show({ x.Lighting.ClockTime, lookWritesSince(x, logFrom) }))
 	x.Blessing = "None"
 	nTw = #x.Tweens
 	x:Tick(1)
 	local back = lightTweens(x, nTw)
-	check(#back == 1 and lookMatches(back[1].Goal, XD.ValuesAt(15.3, nil)) and #clockTweensSince(x, nTw) == 0,
+	check(#back == 1 and lookMatches(back[1].Goal, XD.ValuesAt(x.Cfg.DayCycle.StartClock, nil)) and #clockTweensSince(x, nTw) == 0,
 		"after the war the look eases to StartClock's look", #back)
 end)
 
