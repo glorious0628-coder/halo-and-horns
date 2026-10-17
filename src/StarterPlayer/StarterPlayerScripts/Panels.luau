@@ -1391,6 +1391,8 @@ end
 
 -- Existing panel, portrait and buttons only. Pages never advance the quest; only the final intent can.
 BUILDERS.Welcome = function(parent)
+	local box = parent == nil and Panels.StoryBox and Panels.StoryBox() or nil
+	if box then return WELCOME.Dialog(box) end
 	local def = WELCOME.Definition()
 	if type(def) ~= "table" or type(def.Lines) ~= "table" or #def.Lines == 0 then
 		addText(parent, T.WelcomeUnavailable, { Align = Enum.TextXAlignment.Center })
@@ -3157,20 +3159,164 @@ function STORY.Points(f)
 	return tonumber(attr(f == "Halo" and "Honor" or "Infamy", nil))
 end
 
-BUILDERS.Story = function(parent)
+---------------------------------------------------------------------------------------------------- A23-229 dialogue box
+-- (user 10/18, plan docs/design/dialog_box_plan_2026-10-18.md): Story / Offer / Welcome draw in DialogBox (the bottom
+-- box: the face left, the line right, [Next] / the final buttons, [Bye]) instead of this modal window, while DialogBox is
+-- there; every rule around them stays here (currentId, the busy queue, the HUD pulse, the remotes)
+STORY.Dialog = { Story = true, Offer = true, Welcome = true }
+STORY.Near = 20 -- studs: the box follows the speaker's body (walk away = Bye) only when the talk starts this close
+
+function STORY.Box()
+	local box = C and C.DialogBox
+	if type(box) == "table" and type(box.Show) == "function" and type(box.Hide) == "function" then return box end
+	return nil
+end
+
+-- what DialogBox needs from this window kit (the same buttons, choice art and reward row as the cards)
+function Panels.DialogKit()
+	return { Button = makeButton, ChoiceButton = STORY.ChoiceButton, RewardRow = STORY.RewardRow, Palette = PALETTE,
+		SetEnabled = setEnabled }
+end
+
+-- the speaker's body part when I stand by it (walk away from it = Bye), else nil
+function STORY.BodyOf(id)
+	local npcs = C and C.StoryNpcs
+	if type(id) ~= "string" or type(npcs) ~= "table" or type(npcs.Body) ~= "function" then return nil end
+	local ok, m = pcall(npcs.Body, id)
+	local part = ok and typeof(m) == "Instance" and (m.PrimaryPart or m:FindFirstChild("HumanoidRootPart")) or nil
+	local char = player.Character
+	local root = char and char:FindFirstChild("HumanoidRootPart")
+	if not (part and part:IsA("BasePart") and root) then return nil end
+	return (part.Position - root.Position).Magnitude <= STORY.Near and part or nil
+end
+
+-- (A23-229: shared by the window and the box) what the open story card says: { def, arg, step, f, obj, lines (+ the hook
+-- to the next quest, A23-208), voice (no speaker = my faction's guide), hint (a choice: what a pick does) }; nil = none
+function STORY.StepView()
 	local def, arg = STORY.Def()
 	local step = def and def.Steps[arg.St]
-	if not step or not step.Panel then
-		addText(parent, "", {})
-		return nil
-	end
+	if not step or not step.Panel then return nil end
 	local f = myFaction()
 	local over = step[f]
 	local obj = (type(over) == "table" and over.Obj) or step.Obj
-	local lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f) -- A23-208: + the hook to the next quest
+	local v = { def = def, arg = arg, step = step, f = f, obj = obj,
+		lines = STORY.WithNext(STORY.Lines(step, f, arg.Var), def, arg.St, f),
+		voice = def.Speaker or (f == "Neutral" and "Guild" or f) }
+	if obj.Type == "Choice" then v.hint = STORY.Hint(obj, f, STORY.Points(f)) end
+	return v
+end
+
+-- an Offer's reward row: the server's own numbers when it sends them, else Config's at my level (§15 P1 ①)
+function STORY.OfferReward(def, arg)
+	return STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1))
+end
+
+-- the story card in the box: the same lines, answers and sends as BUILDERS.Story's window
+function STORY.StoryDialog(box)
+	local sv = STORY.StepView()
+	if not sv then return nil end
+	local def, arg, step, f, obj, lines = sv.def, sv.arg, sv.step, sv.f, sv.obj, sv.lines
+	local TXT = Config.StoryQuests.Text
+	local voice = sv.voice
+	local function send(option)
+		STORY.ForceUntil = os.clock() + STORY.ForceSeconds
+		if obj.Type == "Talk" then
+			fire("StoryAction", arg.Id, "Talk")
+		else
+			fire("StoryAction", arg.Id, "Choose", option)
+		end
+		local npcs, nx = C and C.StoryNpcs, type(Config.QuestNext) == "function" and Config.QuestNext(def, f) or nil
+		if #lines > #STORY.Lines(step, f, arg.Var) and type(nx) == "table" and type(npcs) == "table"
+			and type(npcs.ExpectNext) == "function" then
+			pcall(npcs.ExpectNext, nx.Id)
+		end
+		Panels.Close()
+	end
+	local final, hint = {}, nil
+	if obj.Type == "Choice" then
+		local isNeutral = f ~= "Halo" and f ~= "Horns"
+		final[1] = { Text = isNeutral and (obj.Neutral and obj.Neutral.A) or obj.Good.Label, Style = "Good", Name = "StoryChoiceGood",
+			OnPress = function() send(isNeutral and "A" or "Good") end }
+		final[2] = { Text = isNeutral and (obj.Neutral and obj.Neutral.B) or obj.Evil.Label, Style = "Evil", Name = "StoryChoiceEvil",
+			OnPress = function() send(isNeutral and "B" or "Evil") end }
+		hint = sv.hint
+	else
+		final[1] = { Text = TXT.Ok, Style = "Free", Name = "StoryOk", OnPress = function() send(nil) end }
+	end
+	local box_ = box
+	box_.Show({ Key = "Story|" .. tostring(arg.Id) .. "|" .. tostring(arg.St), Voice = voice, Name = nil, Lines = lines,
+		Hint = hint, Final = final, OnBye = function() Panels.Close() end,
+		Body = STORY.BodyOf(step.Npc or def.Speaker) })
+	return nil
+end
+
+-- the request in the box: her lines, the reward row, [Sure!] / [Not now] (Bye = no answer: she asks again next time)
+function STORY.OfferDialog(box)
+	local def, arg = STORY.OfferDef()
+	if not def then return nil end
+	local f = myFaction()
+	local v = STORY.OfferView(def, arg.Npc, f)
+	local TXT = Config.StoryQuests.Text
+	local function answer(what)
+		STORY.ForceUntil = os.clock() + STORY.ForceSeconds
+		fire("StoryAction", arg.Id, what)
+		Panels.Close()
+	end
+	local voice = (C and C.DialogBox and type(C.DialogBox.VoiceOf) == "function" and C.DialogBox.VoiceOf(v.Npc)) or v.Npc
+	box.Show({ Key = "Offer|" .. tostring(arg.Id), Voice = voice, Name = v.Name, Lines = v.Lines,
+		Before = STORY.Before(def, f, attr("StoryFlags", "")),
+		Reward = { List = STORY.OfferReward(def, arg), Look = STORY.DifficultyLook(def.Difficulty) },
+		Final = { { Text = TXT.OfferAccept, Style = "Free", Name = "OfferAccept", OnPress = function() answer("Accept") end },
+			{ Text = TXT.OfferDecline, Style = "Button", Name = "OfferDecline", OnPress = function() answer("Decline") end } },
+		OnBye = function() Panels.Close() end, Body = STORY.BodyOf(v.Npc) })
+	return nil
+end
+
+-- A23-229: the guide's welcome in the dialogue box - every line pages with [Next], [I'm In!] is there from the first
+-- line (no forced reading, as before), [Bye] closes without accepting; the update keeps 'Joining…' / the retry / the
+-- dead state on the button
+function WELCOME.Dialog(box)
+	local def = WELCOME.Definition()
+	if type(def) ~= "table" or type(def.Lines) ~= "table" or #def.Lines == 0 then return nil end
+	local faction, pending, sentAt = myFaction(), false, 0
+	local story = type(Config.Tutorial) == "table" and Config.Tutorial.Story or nil
+	local before = type(story) == "table" and type(story.Before) == "table" and story.Before[faction] or nil
+	local voice = faction == "Neutral" and "Guild" or faction
+	local guides = type(Config.Tutorial) == "table" and type(Config.Tutorial.Guides) == "table" and Config.Tutorial.Guides or {}
+	box.Show({ Key = "Welcome|" .. faction, Voice = voice, Name = def.Name, Lines = def.Lines, Before = before,
+		FinalAlways = true,
+		Final = { { Text = T.WelcomeAccept, Style = "Free", Name = "WelcomeNext", OnPress = function()
+			if pending or currentId ~= "Welcome" or faction ~= myFaction() then return end
+			if WELCOME.Ready() then
+				pending, sentAt = true, os.clock()
+				fire("AcceptTutorial") -- exact zero arguments; the server owns the saved step
+				box.SetFinal(1, { Text = T.WelcomePending, Enabled = false })
+			end
+		end } },
+		OnBye = function() Panels.Close(true) end, Body = STORY.BodyOf(guides[faction]) })
+	return function()
+		if currentId ~= "Welcome" then return end
+		if num("TutorialStep") ~= 0 then Panels.Close(); return end
+		if pending and os.clock() - sentAt >= 5 then pending = false end
+		box.SetFinal(1, { Text = pending and T.WelcomePending or T.WelcomeAccept,
+			Enabled = not pending and faction == myFaction() and WELCOME.Ready() })
+	end
+end
+
+Panels.StoryBox = STORY.Box -- (BUILDERS.Welcome sits above STORY's local)
+
+BUILDERS.Story = function(parent)
+	local box = parent == nil and STORY.Box() or nil
+	if box then return STORY.StoryDialog(box) end
+	local sv = STORY.StepView()
+	if not sv then
+		addText(parent, "", {})
+		return nil
+	end
+	local def, arg, step, f, obj, lines = sv.def, sv.arg, sv.step, sv.f, sv.obj, sv.lines -- A23-208: + the hook to the next quest
 	local TXT = Config.StoryQuests.Text
 	local page = 1
-	local voice = def.Speaker or (f == "Neutral" and "Guild" or f) -- no speaker = my faction's guide
+	local voice = sv.voice -- no speaker = my faction's guide
 	local talk, align = STORY.Talk(parent, voice)
 	local line = addText(talk, "", { Name = "StoryLine", Size = 22, Align = align })
 	local typing = {}
@@ -3180,7 +3326,7 @@ BUILDERS.Story = function(parent)
 	-- what a pick does, shown with the choice buttons on the last page (user 2026-10-05: the flow must explain itself)
 	local hint = nil
 	if obj.Type == "Choice" then
-		local words = STORY.Hint(obj, f, STORY.Points(f))
+		local words = sv.hint
 		if type(words) == "string" and words ~= "" then
 			hint = addText(parent, words, { Name = "StoryChoiceHint", Size = 16, Color = theme.Gold, Align = Enum.TextXAlignment.Center })
 		end
@@ -3514,6 +3660,8 @@ function STORY.OfferTitle()
 end
 
 BUILDERS.Offer = function(parent)
+	local box = parent == nil and STORY.Box() or nil
+	if box then return STORY.OfferDialog(box) end
 	local def, arg = STORY.OfferDef()
 	if not def then
 		addText(parent, "", {})
@@ -3535,8 +3683,7 @@ BUILDERS.Offer = function(parent)
 	TYPE.Tap(typing, line)
 	local pageLabel = addText(talk, "", { Name = "OfferPage", Size = 15, Color = theme.SubText, Align = align })
 	-- §15 P1 ①: what helping pays - the server's own numbers when it sends them, else Config's at my level
-	STORY.RewardRow(parent, STORY.PayloadReward(arg.Reward) or STORY.RewardPreview(def.Reward, attr("Level", 1)),
-		STORY.DifficultyLook(def.Difficulty)) -- A23-207: harder = its colour and stars
+	STORY.RewardRow(parent, STORY.OfferReward(def, arg), STORY.DifficultyLook(def.Difficulty)) -- A23-207: harder = its colour and stars
 	local actions = addRow(parent, 64, 10)
 	local last = function() return page >= #v.Lines end
 	local update
@@ -3711,6 +3858,23 @@ end
 
 local function render(keep)
 	if not currentId or not ensureRoot() then return end
+	-- A23-229: Story / Offer / Welcome draw in the bottom dialogue box (no modal window, no dark cover)
+	if STORY.Dialog[currentId] and STORY.Box() then
+		root.Visible = false
+		REG.CleanupBuilt()
+		clearContent()
+		currentUpdate = nil
+		local ok, result = pcall(BUILDERS[currentId], nil)
+		if not ok then
+			Util.Warn(TAG, "failed to build the dialogue " .. tostring(currentId) .. ": " .. tostring(result))
+			return
+		end
+		if type(result) == "function" then
+			currentUpdate = result
+			pcall(result)
+		end
+		return
+	end
 	local fixed = REG.Opts[currentId] ~= nil and REG.Opts[currentId].FixedBody == true
 	local keptY = (keep == true and content and not fixed) and content.CanvasPosition.Y or 0
 	if currentId == "Nickname" then
@@ -3940,6 +4104,7 @@ end
 function Panels.Close(manual)
 	-- A picker's automatic close must not discard an earlier server welcome waiting on replicated attributes.
 	if currentId == "Welcome" or manual == true or not pickerOpen() then WELCOME.PendingOpen = false end
+	if STORY.Dialog[currentId] and STORY.Box() then pcall(STORY.Box().Hide) end -- A23-229
 	currentId = nil
 	currentUpdate = nil
 	WSHOP.Session = nil

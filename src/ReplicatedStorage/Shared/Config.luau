@@ -11514,6 +11514,9 @@ Config.ClientText.PlayerListUI = {
 }
 -- game play r8 (the field King and my rematch King on one hill, both "King Slime"): my own King's name tag
 Config.ClientText.MonsterLabels = { YourKing = "Your King" }
+-- A23-229 (dialog_box_plan_2026-10-18): the bottom dialogue box's own words (Next / Got it / Sure! / Not now are
+-- Config.StoryQuests.Text; I'm In! is the welcome's)
+Config.ClientText.DialogBox = { Bye = "Bye" }
 Config.ClientText.QuestTarget = {
 	Blacksmith = "Forge",
 	Dummy = "Dummy", -- A23-221 ①: the first mission's practice dummy
