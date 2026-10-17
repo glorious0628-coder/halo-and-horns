@@ -273,8 +273,8 @@ runGroup("weapon first", function()
 	local st = d.Story
 	check(st.Main.Id == "M1_1" and st.Main.St == 1 and not st.Done.M1_1, "M1_1 starts at once: 'Beat a Slime Prince'", show(st.Main))
 	local M11 = w.Config.StoryQuests.Defs.M1_1
-	check(M11.Steps[1].Obj.Type == "Kill" and M11.Steps[1].Obj.Kind == "BigSlime" and M11.Steps[1].Guide == "SlimeMeadow",
-		"step 1 sends the player to the meadow (no 'show the jelly' trip)", show(M11.Steps[1]))
+	check(M11.Steps[1].Obj.Type == "Kill" and M11.Steps[1].Obj.Kind == "BigSlime" and M11.Steps[1].Guide == "MeadowArrival",
+		"step 1 sends the player to the meadow (its arrival spot, r6: not the travel pad by the Forge; no show-the-jelly trip)", show(M11.Steps[1]))
 	local LT = w.Config.Loot
 	local function scrolls() return (type(d.Items) == "table" and d.Items.Enh70) or 0 end
 	w:Walk(p, "SlimeMeadow")
