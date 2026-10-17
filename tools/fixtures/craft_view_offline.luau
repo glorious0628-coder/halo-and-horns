@@ -342,6 +342,9 @@ NOW = 12000
 sessionR.OnClientEvent:Fire({ Id = 14, StartAt = NOW + 0.8 })
 resultR.OnClientEvent:Fire({ Id = 14, Plus = 1, Kind = "Item", Item = "Enh70", Grades = {}, Blessed = true })
 local blessLine = find(find(gui, "CraftRing"), "Bless")
+local firstLine = find(find(gui, "CraftRing"), "Result")
+check(firstLine and firstLine.Text == "+1 Blessed Scroll 70%", "game play r8: a blessed craft's first line names the Blessed Scroll",
+	firstLine and firstLine.Text)
 check(blessLine and blessLine.Text == "A Blessed Scroll! (70%: +2)", "a blessed craft: the Blessed Scroll line (%% read as %)",
 	blessLine and blessLine.Text)
 CLOCK += 2

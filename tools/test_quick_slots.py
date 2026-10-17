@@ -32,6 +32,10 @@ if not BINARY.exists():
 OUT = ROOT / "docs/art/verification_2026-10-10/offline_quick_slots_2026-10-10.json"
 
 MUTATIONS = [
+    ("QS", "game play r8: the 0-potion icon dims again", "if w.Icon.ImageTransparency ~= 0 then w.Icon.ImageTransparency = 0 end",
+     "w.Icon.ImageTransparency = (def and s.Count <= 0) and 0.55 or 0"),
+    ("QS", "game play r8: the 0 count not gray", "local want = (def and s.Count <= 0) and T.ZeroCount or (own or nil)",
+     "local want = own or nil"),
     ("CONFIG", "a new player starts with potions in the slots", '	Default = { "", "", "" },', '	Default = { "HP", "MP", "" },'),
     ("QS", "unknown items kept", "out[i] = (type(v) == \"string\" and T.Items[v] ~= nil) and v or \"\"", "out[i] = v or \"\""),
     ("QS", "an empty slot still uses (an HP potion)", "\tlocal def = slot.Def\n\tif type(def) ~= \"table\" then\n",
