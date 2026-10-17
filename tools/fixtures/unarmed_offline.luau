@@ -259,10 +259,10 @@ runGroup("hits", function()
 	local bare = C0.AttackProfile("Archer", 0, "Halo")
 	local withShape = w.Combat.ComputePvPHit(a, v, bare)
 	local classHit = w.Combat.ComputePvPHit(a, v)
-	check(math.abs(withShape / classHit - 1 / (0.55 * 0.85)) < 1e-9,
-		"PvP punch: no class multiplier (0.55) and no ranged factor (0.85)", show({ withShape, classHit }))
-	check(math.abs(w.Combat.ComputeMonsterHit(a, false, bare) - 4) < 1e-9 and math.abs(w.Combat.ComputeMonsterHit(a, false) - 4 * 0.55) < 1e-9,
-		"monster hit: punch 4, skill base (class row) 4 x 0.55", show({ w.Combat.ComputeMonsterHit(a, false, bare), w.Combat.ComputeMonsterHit(a, false) }))
+	check(math.abs(withShape / classHit - 1 / (0.8 * 0.85)) < 1e-9,
+		"PvP punch: no class multiplier (0.8) and no ranged factor (0.85)", show({ withShape, classHit }))
+	check(math.abs(w.Combat.ComputeMonsterHit(a, false, bare) - 4) < 1e-9 and math.abs(w.Combat.ComputeMonsterHit(a, false) - 4 * 0.8) < 1e-9,
+		"monster hit: punch 4, skill base (class row) 4 x 0.8", show({ w.Combat.ComputeMonsterHit(a, false, bare), w.Combat.ComputeMonsterHit(a, false) }))
 	-- a missing WeaponTier attribute reads as bare hands (never a free tier 1)
 	a:SetAttribute("WeaponTier", nil)
 	check(math.abs(w.Combat.ComputeMonsterHit(a, false, bare) - 4) < 1e-9, "no WeaponTier attribute = bare hands (4)",
@@ -312,7 +312,7 @@ runGroup("hits", function()
 	q:SetAttribute("Mana", 100)
 	w2.Combat.Release(q, false)
 	w2:Flush()
-	check(w2:Dealt(target) == w2.Util.RoundDamage(4 * 0.55 * 6), "bare Archer Q at 20 studs: RoundDamage(4 x 0.55 x 6)", w2:Dealt(target))
+	check(w2:Dealt(target) == w2.Util.RoundDamage(4 * 0.8 * 6), "bare Archer Q at 20 studs: RoundDamage(4 x 0.8 x 6)", w2:Dealt(target))
 	local w3 = bareWorld()
 	local wq = w3:Join(204, { Class = "Warrior" })
 	local s = w3:Monster("Slime", 3)
@@ -324,7 +324,8 @@ end)
 ------------------------------------------------------------------ 5. auto combat bare-handed
 runGroup("auto", function()
 	local w = bareWorld()
-	local p = w:Join(301, { Class = "Archer", Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true, Mana = 0 } })
+	-- (a Mage: its class interval 1.1 s is far from the punch's 0.8; r8 made the Archer's 0.75, too close to tell apart)
+	local p = w:Join(301, { Class = "Mage", Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true, Mana = 0 } })
 	local far = w:Monster("Slime", 20)
 	local fx0 = #w.Fx
 	w:AutoTick()
@@ -349,7 +350,7 @@ runGroup("auto", function()
 	local q = w2:Join(302, { Class = "Archer", Attrs = { AutoCombatUnlocked = true, AutoCombatEnabled = true, Mana = 100 } })
 	local big = w2:Monster("BigSlime", 20)
 	w2:AutoTick()
-	check(w2:Dealt(big) == w2.Util.RoundDamage(4 * 0.55 * 6), "auto skill Q fires at 20 studs bare-handed (class reach)", w2:Dealt(big))
+	check(w2:Dealt(big) == w2.Util.RoundDamage(4 * 0.8 * 6), "auto skill Q fires at 20 studs bare-handed (class reach)", w2:Dealt(big))
 	check(q ~= nil, "joined")
 end)
 

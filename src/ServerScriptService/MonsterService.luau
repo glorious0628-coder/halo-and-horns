@@ -2239,6 +2239,10 @@ function MonsterService.SpawnPersonal(player, monsterId, opts)
 		if not growMax or growMax ~= growMax then growMax = grow end
 		rec._leapGrow, rec._leapGrowMax = math.min(grow, 40), math.clamp(growMax, 0, 40)
 	end
+	-- r8 (최종 검수 10/17): opts.LeapCycle = s from one of its leaps to the next (the retry King: 3, standing between them),
+	-- instead of Config.BossLeap's cycle; each landing's hit stays the same
+	local cycle = tonumber(opts.LeapCycle)
+	if cycle and cycle == cycle and cycle > 0 then rec._leapCycle = math.clamp(cycle, 0.5, 10) end
 
 	task.delay(PERSONAL_LIFETIME, function()
 		if rec.Alive then despawn(rec, true, rec.Quiet == true) end -- A23-110: a quiet King goes home (no splat)
@@ -2710,7 +2714,7 @@ function LEAP.Start(rec, info, now, L)
 	local token = {}
 	local J = { Token = token, Spot = spot, Radius = LEAP.Radius(rec), Mult = LEAP.Mult(L), Slam = slam }
 	rec._windup, rec._leap = token, J
-	rec._nextAttackAt = now + (slam and MC.AttackCooldown or LEAP.Cycle(L))
+	rec._nextAttackAt = now + (slam and MC.AttackCooldown or math.max(LEAP.Cycle(L), LEAP.Num(rec._leapCycle, 0)))
 	model:SetAttribute("DropPos", spot)
 	model:SetAttribute("DropRadius", J.Radius)
 	model:SetAttribute("DropTime", warn)

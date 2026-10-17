@@ -491,6 +491,9 @@ runGroup("spawn", function()
 	wl:FKTick()
 	check(#wl.Spawns == 3 and wl.Spawns[3].P == rIn, "the rematch King: 39 studs from KingHill yes (RetryRadius 40); 41 studs or the meadow's arrival no",
 		show({ #wl.Spawns }))
+	-- r8 (최종 검수 10/17): the rematch King leaps every Retry.LeapCycle (3 s); the first King keeps the BossLeap cycle
+	check(wl.Spawns[3].Opts.LeapCycle == 3 and wl.Spawns[1].Opts.LeapCycle == nil, "the rematch King spawns with LeapCycle 3, the first one without",
+		show({ wl.Spawns[3].Opts.LeapCycle, wl.Spawns[1].Opts.LeapCycle }))
 	wl:Place(rOut, ARRIVAL + vec(0, 0, -40))
 	wl:FKTick()
 	check(#wl.Spawns == 4 and wl.Spawns[4].P == rOut, "... exactly 40 studs: yes", tostring(#wl.Spawns))
@@ -1158,6 +1161,9 @@ runGroup("retry numbers", function()
 	local w = fkWorld()
 	check(w.Util.RoundDamage(2.5) == roundDamage(2.5) and w.Util.RoundDamage(0.2) == roundDamage(0.2), "the model rounds like Util.RoundDamage")
 	local R = FK0.Retry
+	-- r8 (최종 검수 10/17): the retry King leaps every Retry.LeapCycle s (3), the slower case + 0.1
+	local ACD = tonumber(R.LeapCycle) or C0.Monsters.AttackCooldown
+	local SLOW = ACD + 0.1
 	-- one HP potion is the lesson (KO1 may leave only one): every class x faction x Lv 1-9 x tier 1-3 x +0 / +3 / +5
 	local fails = { A = {}, B = {}, C = {}, N = 0, Slow = 0 }
 	local minLeft1, minLeft2, minShort = math.huge, math.huge, math.huge
@@ -1176,16 +1182,16 @@ runGroup("retry numbers", function()
 						local hit = w.Util.RoundDamage(maxHP * r.Hit)
 						local tag = cls .. "/" .. fac .. "/Lv" .. lv .. "/T" .. tier .. "+" .. enh
 						-- A: no potion loses at 60-80% uptime against a King every 1.5 s, at 60-70% against one every 1.6 s
-						for _, case in { { 0.6, 1.5 }, { 0.7, 1.5 }, { 0.8, 1.5 }, { 0.6, 1.6 }, { 0.7, 1.6 } } do
+						for _, case in { { 0.6, ACD }, { 0.7, ACD }, { 0.8, ACD }, { 0.6, SLOW }, { 0.7, SLOW } } do
 							local u, acd = case[1], case[2]
 							local won, _, t = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 0, u, acd, 0.5)
 							if won then table.insert(fails.A, tag .. " u" .. u .. " acd" .. acd) else minShort = math.min(minShort, r.HP / (dps * u) - t) end
 						end
-						if fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 0, 0.8, 1.6, 0.5) then fails.Slow += 1 end
+						if fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 0, 0.8, SLOW, 0.5) then fails.Slow += 1 end
 						-- B: ONE potion wins at 80-110% uptime whenever drunk at 40-60% HP (King every 1.5 s), >= 5% HP left
 						for _, u in { 0.8, 0.9, 1.0, 1.1 } do
 							for _, drink in { 0.4, 0.5, 0.6 } do
-								local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 1, u, 1.5, drink)
+								local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 1, u, ACD, drink)
 								if not won or left < 0.05 then table.insert(fails.B, tag .. " u" .. u .. " d" .. drink .. " left" .. string.format("%.2f", left)) end
 								if won then minLeft1 = math.min(minLeft1, left) end
 							end
@@ -1193,7 +1199,7 @@ runGroup("retry numbers", function()
 						-- C: 2 potions win comfortably at 70-110% uptime (>= 15% HP left)
 						for _, u in { 0.7, 0.8, 0.9, 1.0, 1.1 } do
 							for _, drink in { 0.4, 0.5, 0.6 } do
-								local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 2, u, 1.5, drink)
+								local won, left = fight(maxHP, r.HP, hit, dps, f.RegenPerSec, 2, u, ACD, drink)
 								if not won or left < 0.15 then table.insert(fails.C, tag .. " u" .. u .. " d" .. drink .. " left" .. string.format("%.2f", left)) end
 								if won then minLeft2 = math.min(minLeft2, left) end
 							end
@@ -1203,9 +1209,9 @@ runGroup("retry numbers", function()
 			end
 		end
 	end
-	check(#fails.A == 0, "0 potions loses: 60-80% uptime (King every 1.5 s) and 60-70% (every 1.6 s), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
+	check(#fails.A == 0, "0 potions loses: 60-80% uptime (a leap every LeapCycle s) and 60-70% (LeapCycle + 0.1), every class / faction / Lv 1-9 / tier 1-3 / +0 +3 +5",
 		fails.A[1])
-	check(fails.Slow <= fails.N * 0.05, "0 potions at 80% uptime against a slower King (1.6 s): wins for <= 5% of the builds", tostring(fails.Slow))
+	check(fails.Slow <= fails.N * 0.05, "0 potions at 80% uptime against a slower King (LeapCycle + 0.1): wins for <= 5% of the builds", tostring(fails.Slow))
 	check(#fails.B == 0, "1 potion wins: 80-110% uptime, drunk at 40-60% HP, >= 5% HP left", fails.B[1])
 	check(#fails.C == 0, "2 potions win comfortably: 70-110% uptime, >= 15% HP left", fails.C[1])
 	finding(string.format("retry sweep: %d builds; no potion falls >= %.2f s short (%d no-potion wins at 80%% vs a 1.6 s King); 1 potion leaves >= %.0f%% HP; 2 potions >= %.0f%%",
@@ -1213,8 +1219,8 @@ runGroup("retry numbers", function()
 	-- the HP formula against a hand-made example: Lv 3 Halo Warrior, wooden weapon
 	local ex = C0.FirstKORetry(3, 1, "Warrior", "Halo", 0)
 	local per = w.Util.RoundDamage(8 * (1 + 0.02 * 2) * 1.0 * 1 * 0.5)
-	check(ex.HP == math.floor(R.Seconds * per / 1.0 + 0.5) and near(ex.Hit, R.HitPct + 0.02 * C0.Monsters.AttackCooldown),
-		"FirstKORetry(Lv3 Halo Warrior T1) = Seconds x 4 dmg/s, HitPct + regen x 1.5", show(ex))
+	check(ex.HP == math.floor(R.Seconds * per / 1.0 + 0.5) and near(ex.Hit, R.HitPct + 0.02 * R.LeapCycle) and R.LeapCycle == 3 and R.HitPct == 0.13,
+		"FirstKORetry(Lv3 Halo Warrior T1) = Seconds x 4 dmg/s, HitPct (0.13) + regen x LeapCycle (3 s; r8)", show(ex))
 	local bare = C0.FirstKORetry(1, 0, "Archer", "Horns", 0)
 	local punch = w.Util.RoundDamage(C0.Combat.Unarmed.Damage * 1.15 * 0.5)
 	check(bare.HP == math.max(R.MinHP, math.floor(R.Seconds * punch / C0.Combat.Unarmed.Interval + 0.5)) and near(bare.Hit, R.HitPct),

@@ -46,7 +46,7 @@ def static() -> tuple[int, list[str]]:
     rep = (ROOT / "src/StarterPlayer/StarterCharacterScripts/Health.server.luau").read_text(encoding="utf-8-sig")
     check(strip_comments(rep).strip() == "", "StarterCharacterScripts/Health is an empty Script (it replaces the engine's regen)")
     added = strip_comments(function_block((SSS / "PlayerService.luau").read_text(encoding="utf-8-sig"), "local function onCharacterAdded("))
-    check('if child.Name == "Health" and child:IsA("Script") then pcall(child.Destroy, child) end' in added
+    check('if child.Name == "Health" and child:IsA("Script") then child:Destroy() end' in added
           and "for _, child in character:GetChildren() do dropRegen(child) end" in added
           and "character.ChildAdded:Connect(dropRegen)" in added,
           "PlayerService.onCharacterAdded removes a 'Health' script now and when one comes later")

@@ -184,7 +184,7 @@ MUTATIONS = [
     ("size ignored", M, "local dist = studs / math.max(1, record._scale or 1)", "local dist = studs"),
     ("a boss moves", M, "\tif type(def) == \"table\" and def.Boss then return 0 end\n", ""),
     ("the leash ignored", M,
-     "\n\t\t\t\tand (typeof(record.Home) ~= \"Vector3\" or Util.FlatDistance(dest, record.Home) <= MC.LeashRadius)", ""),
+     "\n\t\t\t\tand (typeof(record.Home) ~= \"Vector3\" or Util.FlatDistance(dest, record.Home) <= NEAR.Leash(record))", ""),
     ("the zone edge ignored", M, "\t\t\tok = insideZone(zone, dest, ZONE_MOVE_INSET)\n", "\t\t\tok = true\n"),
     ("water ignored", M, "ok = (g ~= nil or noHit) and not workspace:Raycast", "ok = not workspace:Raycast"),
     ("walls ignored", M, " and not workspace:Raycast(pos, delta + dir * 0.5, getShoveParams())", ""),

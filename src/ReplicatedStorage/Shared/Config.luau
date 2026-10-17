@@ -582,7 +582,9 @@ Config.Classes = {
 		Desc = "Quick shots hit two foes at once. Quick feet, too!",
 		PickLine = "Shoot two foes at once from far away", -- addendum A7-4
 		Weapon = "Bow",
-		HealthMult = 1.0, Damage = 0.55, SwingInterval = 0.5,
+		-- r8 play (최종 검수 10/17: a Prince took 28 presses vs the warrior's 10): 0.55 / 0.5 s -> 0.8 / 0.75 s (top hits a second
+		-- 1.07 = about the warrior's 1.0; about 1.2-1.3x the warrior's presses)
+		HealthMult = 1.0, Damage = 0.8, SwingInterval = 0.75,
 		Pattern = "Multi", -- the Targets nearest valid targets within Range
 		Range = 30, Targets = 2, Splash = 0,
 		AimCone = 90, -- A23-61: the front half (90 deg each side of where I face), nothing behind
@@ -10018,7 +10020,10 @@ Config.FirstKOKing = {
 	--   Stepping out of the circles wins without potions (the rematch lesson, A23-113).
 	--   (Seconds 18 / HitPct 0.09 needed 2 potions; 16.5 / 0.075 leaves 342 no-potion wins at 80% vs a 1.6 s King.)
 	-- PayAs = the kind whose XP / gold its kill pays (the Slime Prince's; the quest pays the real reward)
-	Retry = { Seconds = 17, HitPct = 0.075, MinHP = 40, PayAs = "BigSlime" },
+	-- r8 play (최종 검수 10/17): LeapCycle = s between the retry King's leaps (3: it stands 2 s of every 3, half the landings of
+	-- the 1.5 s cycle); HitPct 0.075 -> 0.13 per landing (+ the side's regen over one LeapCycle) keeps A23-110's potion lesson
+	-- (test_first_ko_king: no potion loses, one wins with >= 9% left, two with >= 20%)
+	Retry = { Seconds = 17, HitPct = 0.13, MinHP = 40, PayAs = "BigSlime", LeapCycle = 3 },
 }
 Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happened (set once, before the quest is told)
 
@@ -10026,7 +10031,7 @@ Config.Data.Defaults.FirstKODone = false -- A23-110: the lossless first KO happe
 -- formula of Config.SwingHitsToKill: weapon x class x faction bonus x SwingImmediate, rounded, per SwingInterval; no
 -- crit), at least MinHP, at most Retry.MaxHP (2500 when unset: the King's HP before A23-113; never follows the field
 -- King's crowd HP, 검수 bosshp_verify 2026-10-11). Hit = the share of the player's MaxHealth one King hit takes: HitPct +
--- the faction's out-of-town regen over one King attack (Config.Monsters.AttackCooldown), so every faction needs the same
+-- the faction's out-of-town regen over one King landing (Retry.LeapCycle, else AttackCooldown), so every faction needs the same
 -- potions. Pure (FirstKOService and the offline test share it).
 function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local FK = Config.FirstKOKing
@@ -10040,7 +10045,7 @@ function Config.FirstKORetry(level, tier, classId, factionId, enhance)
 	local dps = math.max(1, math.floor(per + 0.5)) / math.max(0.1, tonumber(c.SwingInterval) or 1)
 	local hp = math.clamp(math.floor(R.Seconds * dps + 0.5), R.MinHP, math.max(R.MinHP, tonumber(R.MaxHP) or 2500))
 	local regen = type(f.RegenPerSec) == "number" and f.RegenPerSec or 0
-	return { HP = hp, Hit = R.HitPct + regen * Config.Monsters.AttackCooldown }
+	return { HP = hp, Hit = R.HitPct + regen * (tonumber(R.LeapCycle) or Config.Monsters.AttackCooldown) }
 end
 
 ----------------------------------------------------------------- gathering (게임성 개발 3, 2026-10-11)

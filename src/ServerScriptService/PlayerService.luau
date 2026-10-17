@@ -488,10 +488,14 @@ local function onCharacterAdded(player, character)
 	-- engine's default "Health" regen script never runs here (CombatService owns every regen). StarterCharacterScripts'
 	-- empty "Health" replaces it; any "Health" script in a character is removed anyway (now or when it comes later)
 	local function dropRegen(child)
-		if child.Name == "Health" and child:IsA("Script") then pcall(child.Destroy, child) end
+		pcall(function()
+			if child.Name == "Health" and child:IsA("Script") then child:Destroy() end
+		end)
 	end
-	for _, child in character:GetChildren() do dropRegen(child) end
-	character.ChildAdded:Connect(dropRegen)
+	pcall(function()
+		for _, child in character:GetChildren() do dropRegen(child) end
+		character.ChildAdded:Connect(dropRegen)
+	end)
 	-- A deferred engine callback must never turn an expired cosmetic request into a fresh spawn.
 	if character:GetAttribute("HHC_RestoreCancelled") then return end
 	if context and context.Native then
