@@ -95,3 +95,10 @@
 - 읽음: AGENTS → 04_playtest → 이 파일 '10/17 밤 멈춤' → r10 → review.md '10/17 밤'. 도구 `build/playtest_tools/` 그대로(flow.py·pose.py·pt.py·intro_watch.py), 공유 폴더 HEAD = origin/main(0 0), src 깨끗.
 - PlayTest Studio는 지금 안 열림(옛 pid 34592 없음). `build/PlayTest.rbxlx` = place/ 10/16 15:11 판과 같은 크기. 열 때 다시 복사 + list_roblox_studios로 새 id.
 - **11판 = 최종 검수 신호 뒤**(dev2-detail·dialog-box 병합 → sync): ① 빛 궁수 재대결 King(물약 3개, 50% 아래 마시기) ② 쿨다운 중 키 1 화면 사진 ③ 빛 M1_3 성문 이웃 Return bag ④ NPC 대화 상자 ⑤ 새 sync면 직업별 처음부터(전사·궁수·마법사 새 저장, 진영 섞어, 패스 끔), 직업마다 칸 먼저 보내고 마지막 '끝' + 직업별 TOP.
+
+## 10/17 밤 — 11판 앞부분 끝 (빛 궁수, src 5b90afa9)
+- 보고서 `docs/review/playtest/2026-10-17_r11.md`, 기록 `docs/art/verification_2026-10-17/playtest/r11/`(git 밖).
+- ① 궁수 두 번째 King **짐**: Lv4·HP 156, 물약 3병 다 마심, F 16번 40초, King 54 남김. 단 봇이 쿨다운 사진 찍느라 ~8~10초 공격 안 함 → 사진 없이 재판 필요.
+- ② 쿨다운 중 키 1: 슬롯에 어두운 막(투명 0.45)이 줄어듦, 다시 눌러도 글·흔들림 없음('Status=Wait' 글은 숨김).
+- 도구: flow.py에 쿨다운 사진 추가(`cd_dump.lua`, 물약 #1·#2 뒤) — 재판 땐 이 부분 끄기(CD 블록). 사진 3D가 하얗게(창이 뒤) — 다음엔 Play 뒤 창 앞으로인지 확인. 사용자 10/17 밤: **시험 Studio는 판마다 Play 멈춤 → 창 닫기 → '끝'**. PlayTest pid는 닫은 뒤에도 잠깐 목록에 남음(taskkill '없음') = 닫힌 것.
+- **다음:** 최종 검수 신호 → 궁수 재대결(사진 없이) / ③ 성문 이웃·④ 대화 상자·⑤ 직업별 전체 판(병합 뒤).
