@@ -494,8 +494,10 @@ def statics(src: dict) -> list[tuple[str, bool]]:
     ]
     try:
         motion = fx[fx.index("local MOTION = {"):fx.index("-- A14-4 combat feel: functions")]
-        # (the attack clips as on main 11213d87; the one new MOTION line is the bow's hold, 최종 검수 10/13)
-        motion = "\n".join(line for line in motion.split("\n") if not line.startswith("\tBOW_HOLD = "))
+        # (the attack clips as on main 11213d87; the new MOTION lines that are no clip: the bow's hold, 최종 검수 10/13, and
+        # 손맛 G3's RECOIL_RANGED push multiplier, c16e09ab 10/17 - the clips themselves are byte-identical)
+        motion = "\n".join(line for line in motion.split("\n")
+                           if not line.startswith("\tBOW_HOLD = ") and not line.startswith("\tRECOIL_RANGED = "))
         out.append(("the attack clips as before (Fx MOTION)", sha(motion) == CLIP_SHA["MOTION"]))
         out.append(("hold-angles: no staff tip aim (Feel.staffPose gone)", "function Feel.staffPose(" not in fx))
         for name in ("archerPose",):
@@ -515,10 +517,11 @@ MUTATIONS = [
     ("CONFIG", "the dark sword at 0.6", '\tDarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tDarkSword = { Point = 0.6, Rest = { 30, 0, 0 }, Hold = "SwordReady" },'),
     ("CONFIG", "the sword back on the old side hold", '\tSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tSword = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },'),
     ("CONFIG", "the rest blade tip up and back (the old 10/14 rest)", '\tDarkSword = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },', '\tDarkSword = { Point = 0.5, Rest = { 130, 0, 0 }, Hold = "SwordReady" },'),
-    ("CONFIG", "hold-angles: the staff turned upright in a hanging hand again", '\tStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Rest = { 81, 0, 0 }, Hold = "Staff" },'),
+    ("CONFIG", "hold-angles: the staff turned upright in a hanging hand again", '\tStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 81, 0, -12 }, Hold = "Staff" },'),
+    ("CONFIG", "staff-head (10/18): the staff upright again, its tip by the head", '\tStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },', '\tStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },'),
     ("CONFIG", "a weapon without a resting hold", '\tBaton = { Point = 0.3, Rest = { -38, 0, 0 }, Hold = "BatonReady" },', '\tBaton = { Point = 0.3 },'),
     ("CONFIG", "the rest mode ignored", '\tif mode == "Rest" and type(row.Rest) == "table" then turn = row.Rest end\n', ""),
-    ("CONFIG", "the staff at the old 43%", '\tStaff = { Point = 0.45, Rest = { 15, 0, 0 }, Hold = "Staff" },', '\tStaff = { Point = 0.43, Rest = { 15, 0, 0 }, Hold = "Staff" },'),
+    ("CONFIG", "the staff at the old 43%", '\tStaff = { Point = 0.45, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },', '\tStaff = { Point = 0.43, Turn = { 0, 0, -12 }, Rest = { 15, 0, -12 }, Hold = "Staff" },'),
     ("CONFIG", "the hammer held at its head", '\tHammer = { Point = 0.3, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },', '\tHammer = { Point = 0.7, Rest = { 90, 0, 0 }, Hold = "HammerCarry" },'),
     ("CONFIG", "the bow flat across the side again", 'Bow = { Point = 0.5, Rest = { 90, -90, 0 }, Hold = "Bow" },', 'Bow = { Point = 0.5, Rest = { 90, 0, 0 }, Hold = "Bow" },'),
     ("CONFIG", "the joke weapons take the sword's new hold", 'Meme = { Point = 0.5, Rest = { 225, 0, 0 }, Hold = "Side" },', 'Meme = { Point = 0.5, Rest = { 30, 0, 0 }, Hold = "SwordReady" },'),
