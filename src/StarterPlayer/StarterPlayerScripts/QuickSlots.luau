@@ -82,11 +82,21 @@ function QuickSlots.Slot(i)
 	return out
 end
 
--- use slot i (a press on it or its key): an empty slot does nothing; a potion goes through VitalsUI (the server checks)
-function QuickSlots.Use(i)
+-- use slot i (a press on it or its key): a potion goes through VitalsUI (the server checks); a PRESS (button = true) on
+-- an empty slot opens the bag on its Use tab with the first potion picked - its [1] [2] [3] put it in a slot (game play
+-- r6: nobody found how); its key does nothing
+function QuickSlots.Use(i, button)
 	local slot = QuickSlots.Slot(i)
 	local def = slot.Def
-	if type(def) ~= "table" then return false end
+	if type(def) ~= "table" then
+		local panels = button == true and C and C.Panels
+		if type(panels) == "table" and type(panels.Open) == "function" then
+			local order = type(Q.Order) == "table" and Q.Order or { "HP", "MP" }
+			pcall(panels.Open, "Bag", { Tab = "Use", Select = "P:" .. tostring(order[1] or "HP") })
+			return true
+		end
+		return false
+	end
 	if def.Use == "Potion" then
 		local vitals = C and C.VitalsUI
 		if type(vitals) == "table" and type(vitals.Request) == "function" then
@@ -256,7 +266,7 @@ local function hook()
 	if S.Hooked then return true end
 	local h = C and C.HUD
 	if type(h) ~= "table" or type(h.OnQuickSlot) ~= "function" then return false end
-	local ok = pcall(h.OnQuickSlot, function(i) QuickSlots.Use(i) end)
+	local ok = pcall(h.OnQuickSlot, function(i) QuickSlots.Use(i, true) end)
 	S.Hooked = ok
 	return ok
 end

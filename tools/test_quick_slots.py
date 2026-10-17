@@ -34,9 +34,10 @@ OUT = ROOT / "docs/art/verification_2026-10-10/offline_quick_slots_2026-10-10.js
 MUTATIONS = [
     ("CONFIG", "a new player starts with potions in the slots", '	Default = { "", "", "" },', '	Default = { "HP", "MP", "" },'),
     ("QS", "unknown items kept", "out[i] = (type(v) == \"string\" and T.Items[v] ~= nil) and v or \"\"", "out[i] = v or \"\""),
-    ("QS", "an empty slot still uses (an HP potion)", "\tlocal def = slot.Def\n\tif type(def) ~= \"table\" then return false end\n",
-     "\tlocal def = slot.Def or T.Items.HP\n\tif type(def) ~= \"table\" then return false end\n"),
-    ("QS", "the HUD presses never hooked", "\tlocal ok = pcall(h.OnQuickSlot, function(i) QuickSlots.Use(i) end)\n",
+    ("QS", "an empty slot still uses (an HP potion)", "\tlocal def = slot.Def\n\tif type(def) ~= \"table\" then\n",
+     "\tlocal def = slot.Def or T.Items.HP\n\tif type(def) ~= \"table\" then\n"),
+    ("QS", "an empty slot's press opens nothing", 'pcall(panels.Open, "Bag", { Tab = "Use", Select = "P:" .. tostring(order[1] or "HP") })', "local _ = 0"),
+    ("QS", "the HUD presses never hooked", "\tlocal ok = pcall(h.OnQuickSlot, function(i) QuickSlots.Use(i, true) end)\n",
      "\tlocal ok = true\n"),
     ("QS", "keys go to the wrong slot", 'Actions = { "PotionHP", "PotionMP", "QuickSlot3" },', 'Actions = { "PotionMP", "PotionHP", "QuickSlot3" },'),
     ("QS", "a game-taken key still uses", "if processed or UserInputService:GetFocusedTextBox() or type(keys) ~= \"table\" then return end",

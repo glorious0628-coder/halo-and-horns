@@ -293,6 +293,9 @@ check("5 s after a KO got up (a respawn): not yet", UI.AutoOpen(ctx) == false)
 ctx.Spawned = 40
 check("... 40 s after it: opens", UI.AutoOpen(ctx) == true)
 ctx.Spawned = nil
+ctx.EarlyStory = true
+check("game play r6: M1_3 or an earlier story quest still open: not by itself", UI.AutoOpen(ctx) == false)
+ctx.EarlyStory = nil
 ctx.OpenedDay = 50
 check("once a day", UI.AutoOpen(ctx) == false)
 ctx.OpenedDay, ctx.Step = 49, 2

@@ -78,7 +78,7 @@ local f = assert(loadstring(QS_SOURCE, "=QuickSlots"))
 setfenv(f, env)
 local QS = f()
 
-local REQUESTS, HOOK = {}, nil
+local REQUESTS, HOOK, OPENED = {}, nil, nil
 local function widgets()
 	local out = {}
 	for i = 1, 3 do
@@ -92,6 +92,7 @@ local KEYS = { Began = signal(), ActionFor = function(input) return input.Action
 	Label = function(a) return ({ PotionHP = "1", PotionMP = "2", QuickSlot3 = "3" })[a] end }
 QS.Init({
 	VitalsUI = { Request = function(kind) table.insert(REQUESTS, kind) return true end },
+	Panels = { Open = function(id, arg) OPENED = { Id = id, Arg = arg } end },
 	HUD = { QuickSlots = function() return W end, OnQuickSlot = function(fn) HOOK = fn end },
 	Keybinds = KEYS,
 	UIKit = { ArtId = function(k) return "rbxassetid://" .. k end },
@@ -115,6 +116,10 @@ check(QS.Use(1) == true and REQUESTS[1] == "MP", "using slot 1 asks VitalsUI for
 check(QS.Use(3) == false and #REQUESTS == 1, "an empty slot does nothing", #REQUESTS)
 QS.Start()
 check(type(HOOK) == "function", "Start hooks the HUD's slot presses (HUD.OnQuickSlot)", "")
+if HOOK then HOOK(3) end
+check(OPENED and OPENED.Id == "Bag" and OPENED.Arg.Tab == "Use" and OPENED.Arg.Select == "P:HP" and #REQUESTS == 1,
+	"game play r6: a press on an empty slot opens the bag on Use with the HP potion picked (nothing drunk)", OPENED and OPENED.Id)
+OPENED = nil
 if HOOK then HOOK(2) end
 check(REQUESTS[2] == "HP", "a press on slot 2 uses its HP potion", REQUESTS[2])
 KEYS.Began:Fire({ Action = "PotionHP" }, false)

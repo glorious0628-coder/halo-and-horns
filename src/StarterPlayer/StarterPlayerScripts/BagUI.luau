@@ -1081,7 +1081,7 @@ end
 -- shake, the number trembling; Down = the same plus the number going red and sliding down to +N-1. The sounds are
 -- Audio's (ScrollSuccess / ScrollFail); the character's own gold burst is Fx's
 BagUI.RES = { Wait = 0.15, Gold = Color3.fromRGB(255, 205, 70), Grey = Color3.fromRGB(70, 74, 86), Red = Color3.fromRGB(235, 70, 60),
-	Flash = 0.35, Ring = 0.5, RingGrow = 1.9, Stars = 4, StarFly = 0.45, Pop = 1.6, Settle = 0.3, Shake = 5, ShakeTime = 0.3,
+	Flash = 0.35, Ring = 0.5, RingGrow = 1.9, Stars = 4, StarFly = 0.45, Pop = 1.6, Settle = 0.3, Shake = 9, ShakeTime = 0.4,
 	Smoke = 3, SmokeTime = 0.6, Slide = 0.35 }
 
 -- (pure) a scroll result's look: "Up" / "Keep" / "Down"; nil for a move (the transfer scroll) or a broken result
@@ -1156,7 +1156,13 @@ local function resNumber(box, kind, before, after)
 		end)
 		task.delay(R.ShakeTime + R.Slide + 0.5, done)
 	else
-		-- Keep: the number trembles, stays
+		-- Keep: the number trembles and turns red for a moment (game play r6: a failed scroll looked like nothing
+		-- happened), then back to its colour
+		local back = txt.TextColor3
+		txt.TextColor3 = R.Red
+		task.delay(R.ShakeTime + 0.15, function()
+			if txt.Parent then T:Create(txt, TweenInfo.new(0.25), { TextColor3 = back }):Play() end
+		end)
 		local t0 = os.clock()
 		local conn
 		conn = game:GetService("RunService").RenderStepped:Connect(function()
@@ -1166,7 +1172,7 @@ local function resNumber(box, kind, before, after)
 				txt.Position = UDim2.new()
 				return
 			end
-			txt.Position = UDim2.fromOffset(math.sin(t * 90) * 1.5, 0)
+			txt.Position = UDim2.fromOffset(math.sin(t * 90) * 4, 0)
 		end)
 		task.delay(R.ShakeTime + 0.3, done)
 	end
@@ -1708,6 +1714,22 @@ end
 
 function BagUI.IsReady()
 	return S.Ready
+end
+
+-- game play r6 (the potion steps opened the bag on Gear): while a story step waits for a quick slot (Guide "QuickSlot")
+-- a plain open of the bag starts on the Use tab with the first potion picked; nil = the bag's own default
+function BagUI.OpenArg()
+	local hud = C and C.HUD
+	if type(hud) ~= "table" or type(hud.QuestEntries) ~= "function" then return nil end
+	local ok, rows = pcall(hud.QuestEntries)
+	for _, e in ok and type(rows) == "table" and rows or {} do
+		if type(e) == "table" and type(e.Story) == "table" and e.Story.Guide == "QuickSlot" then
+			local qs = type(Config.QuickSlots) == "table" and Config.QuickSlots or {}
+			local order = type(qs.Order) == "table" and qs.Order or { "HP" }
+			return { Tab = "Use", Select = "P:" .. tostring(order[1] or "HP") }
+		end
+	end
+	return nil
 end
 
 -- opens the bag (on a tab: "Gear" | "Use" | "Scroll" | "Material")
