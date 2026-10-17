@@ -316,6 +316,14 @@ do
 	check(g, "another player's swing 60 studs away is silent", #p == 0, encode(p))
 	p = Audio.Plan("Swing", { UserId = 222, Class = "Warrior", Manual = true }, ctx)
 	check(g, "another player's swing without a place is silent", #p == 0, encode(p))
+	-- 손맛 G1 (10/17): my press played the swing already (ctx.Pressed): the server Fx keeps the hits only
+	ctx.Pressed = true
+	p = swing({ Class = "Archer", LaunchDelay = 0.22, Hits = { hit(80, 0), hit(40, 0) } })
+	check(g, "G1: a pressed swing's Fx plays no swing / second arrow, the hits stay", find(p, "SwingArrow") == nil
+		and #p >= 1, encode(p))
+	p = swing({ UserId = 222, Pos = vec(20, 3, 0) })
+	check(g, "G1: another player's swing still sounds", p[1] and p[1].Event == "SwingWarrior", encode(p))
+	ctx.Pressed = nil
 end
 
 do

@@ -181,6 +181,7 @@ for _, m in (Config.Combo and Config.Combo.Milestones) or {} do
 end
 
 ----------------------------------------------------------------- state
+T.PressPair = 1.2 -- s: a press and its server Fx pair within this (손맛 G1)
 local S = {
 	Folder = nil, Groups = {}, -- SoundGroups "Sfx" and "SfxCombat" (the combat one is ducked)
 	Pools = {}, -- [event] = { Sound, ... } (up to Max)
@@ -346,10 +347,14 @@ function Audio.Plan(kind, data, ctx)
 				at = math.clamp(num(data.LaunchDelay, T.LaunchDefault) - T.MagePeak, 0, 1) -- the file's peak on the launch
 			end
 			local event = SOUNDS[file] and file or "SwingWarrior"
-			add(out, event, at, { Auto = auto, Others = others, SpeedMul = speedMul, Volume = volume })
+			-- 손맛 G1 (10/17): my press already played this swing's sound (Audio.PressSwing) - its server Fx keeps the hits only
+			if not (own and ctx.Pressed == true) then
+				add(out, event, at, { Auto = auto, Others = others, SpeedMul = speedMul, Volume = volume })
+			end
 			-- sound_spec §4-2 5: a bow shot that hits 2+ targets lets a second arrow fly right after
 			local double = T.ArrowDouble
-			if data.Style == nil and file == SWING.Archer and hitEvent(data.Hits, ctx).Targets >= num(double.From, 2) then
+			if not (own and ctx.Pressed == true) and data.Style == nil and file == SWING.Archer
+				and hitEvent(data.Hits, ctx).Targets >= num(double.From, 2) then
 				add(out, event, at + num(double.After, 0.068), { Auto = auto, Others = others,
 					SpeedMul = speedMul * num(double.Speed, 1.1), Volume = volume * num(double.Volume, 0.85) })
 			end
@@ -1024,6 +1029,38 @@ local function bumpCombo()
 	end)
 end
 
+-- 손맛 G1 (최종 검수 10/17, docs/review/attack_feel_values_2026-10-17.md): my press plays MY class's swing sound at once
+-- (Fx.PredictSwing; it was the old sword file for every class, then the class file again when the server's Fx came) -
+-- the same timing as a server swing (the arrow's sound on its launch), from the press; its Fx then plays the hits only
+S.Pressed = {}
+function Audio.PressSwing(data)
+	if type(data) ~= "table" then return false end
+	local me = LocalPlayer and LocalPlayer.UserId
+	local d = table.clone(data)
+	d.UserId, d.Manual = me, true
+	local plan = Audio.Plan("Swing", d, { Me = me, Faction = LocalPlayer and LocalPlayer:GetAttribute("Faction"),
+		KindAt = kindAt, Near = nearMe, Combo = S.Combo })
+	for _, p in plan do
+		if string.sub(p.Event, 1, 5) == "Swing" then
+			if p.At > 0 then task.delay(p.At, Audio.Play, p.Event, p) else Audio.Play(p.Event, p) end
+		end
+	end
+	table.insert(S.Pressed, os.clock())
+	if #S.Pressed > 4 then table.remove(S.Pressed, 1) end
+	return true
+end
+
+-- (the server's Fx of a press: true once per press within T.PressPair s)
+function Audio.TakePress()
+	local now = os.clock()
+	while S.Pressed[1] and now - S.Pressed[1] > T.PressPair do table.remove(S.Pressed, 1) end
+	if S.Pressed[1] then
+		table.remove(S.Pressed, 1)
+		return true
+	end
+	return false
+end
+
 function Audio.OnFx(kind, data)
 	if kind == "Reward" then bumpCombo() end
 	local me = LocalPlayer and LocalPlayer.UserId
@@ -1036,7 +1073,9 @@ function Audio.OnFx(kind, data)
 		end
 	end
 	local hum = LocalPlayer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+	local pressed = kind == "Swing" and own and type(data) == "table" and data.Manual == true and Audio.TakePress()
 	local plan = Audio.Plan(kind, data, {
+		Pressed = pressed, -- 손맛 G1
 		-- my first weapon (WeaponTier 0 -> 1+ just now, or still 0 when its Upgrade arrives): HUD plays PowerUp
 		FirstWeapon = os.clock() - S.FirstWeaponAt < T.FirstWeaponHold
 			or num(LocalPlayer and LocalPlayer:GetAttribute("WeaponTier"), 0) == 0,
