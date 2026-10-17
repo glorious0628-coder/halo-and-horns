@@ -708,6 +708,74 @@ do
 	T.CARD.Destroy(card)
 end
 
+------------------------------------------------------------------ #7 [Go] (final review 10/18)
+do
+	vmt.__sub = function(a, b) return vec(a.X - b.X, a.Y - b.Y, a.Z - b.Z) end
+	vmt.__add = function(a, b) return vec(a.X + b.X, a.Y + b.Y, a.Z + b.Z) end
+	vmt.__index = function(v, k)
+		if k == "Magnitude" then return math.sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z) end
+		return rawget(vmt, k)
+	end
+	ISA.Part = { "BasePart" }
+	-- the doubles' types for this part: a vec = Vector3, an object = Instance
+	env.typeof = function(v)
+		if type(v) == "table" and rawget(v, "__type") then return rawget(v, "__type") end
+		if getmetatable(v) == vmt then return "Vector3" end
+		if getmetatable(v) == omt then return "Instance" end
+		return realTypeof(v)
+	end
+	local leads = {}
+	C.QuestTarget = {
+		Travel = function(zone) return newObj("Part", { Name = "Pad_" .. zone, Position = vec(1, 0, 1), Parent = workspaceObj }) end,
+		Anchor = function(key, pos) return newObj("Part", { Name = key, Position = pos, Parent = workspaceObj }) end,
+	}
+	C.QuestMarker = { Lead = function(fn, tag)
+		table.insert(leads, { Fn = fn, Tag = tag })
+		return fn ~= nil and fn() ~= nil
+	end }
+	local woods = Config.Zones.GoblinWoods
+	local t = CodexUI.WayTarget("Goblin", "Crossroads", vec(0, 0, 0))
+	check(t and t.Name == "Pad_GoblinWoods", "#7 [Go] from another zone: the trip there (QuestTarget.Travel)", t and t.Name)
+	t = CodexUI.WayTarget("Goblin", "GoblinWoods", woods.Center)
+	check(t and t.Name == "Codex_Goblin" and t.Position.Y == woods.Center.Y + 3, "#7 in its zone, none in sight: the zone's middle", t and t.Name)
+	local mons = newObj("Folder", { Name = "Monsters", Parent = workspaceObj })
+	local function mon(kind, x, owner)
+		local m = newObj("Model", { Name = kind, Parent = mons })
+		m:SetAttribute("MonsterKind", kind)
+		if owner then m:SetAttribute("OwnerUserId", owner) end
+		return newObj("Part", { Name = "HumanoidRootPart", Position = vec(x, 0, 0), Anchored = false, Parent = m })
+	end
+	mon("Goblin", 40)
+	local near = mon("Goblin", 25)
+	mon("Goblin", 5, 99) -- another player's own: never
+	mon("Slime", 2)
+	t = CodexUI.WayTarget("Goblin", "GoblinWoods", vec(0, 0, 0))
+	check(t == near, "#7 in its zone: the nearest one of that kind I can see (not another player's own, not another kind)",
+		t and t.Position.X)
+	-- the window: a card not met shows [Go] where [Flip] would be; [Go] leads the marker and closes the window
+	T.S.Cards.Goblin = nil -- (earlier parts of this run met it)
+	Panels.Open("Codex")
+	VIEW = T.VIEW
+	VIEW.Tabs[2].Activated:Fire()
+	check(T.S.Kind == "Goblin" and VIEW.Buttons.Go.Visible == true and VIEW.Buttons.Flip.Visible == false
+		and VIEW.Buttons.GoText.Text == "Go", "#7 a card not met: [Go], no [Flip]", tostring(T.S.Kind) .. " " .. tostring(VIEW.Buttons.Go.Visible) .. " " .. tostring(VIEW.Buttons.Flip.Visible) .. " " .. tostring(VIEW.Buttons.GoText.Text))
+	player:SetAttribute("ZoneId", "GoblinWoods")
+	local charRoot = vec(0, 0, 0)
+	player.Character = { GetPivot = function() return { Position = charRoot } end }
+	VIEW.Buttons.Go.Activated:Fire()
+	check(#leads == 1 and leads[1].Tag == "codex:Goblin" and Panels.CurrentId() == nil, "#7 [Go]: the marker leads (codex:Goblin), the window closes",
+		leads[1] and leads[1].Tag)
+	check(leads[1] and leads[1].Fn() == near, "#7 the lead points at the nearest goblin")
+	charRoot = vec(20, 0, 0)
+	check(leads[1] and leads[1].Fn() == nil, "#7 standing by one (5 studs): the lead ends")
+	Panels.Open("Codex")
+	VIEW = T.VIEW
+	VIEW.Tabs[1].Activated:Fire()
+	check(T.S.Kind == "Slime" and VIEW.Buttons.Go.Visible == false and VIEW.Buttons.Flip.Visible == true, "#7 a card I have: [Flip], no [Go]")
+	Panels.Close()
+	player.Character = nil
+end
+
 check(#warns == 0, "no warnings", table.concat(warns, " | "))
 
 print(string.format("CODEX_UI_SUMMARY checks=%d failed=%d", checks, failed))

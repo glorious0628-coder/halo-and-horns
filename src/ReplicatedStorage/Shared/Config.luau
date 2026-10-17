@@ -11016,6 +11016,7 @@ Config.Codex.Screen = {
 		NotMet = "Not met yet",
 		Flip = "Flip",
 		Front = "Front",
+		Go = "Go", -- final review 10/18 #7: a card not met -> the quest marker leads to where it lives (CodexUI.Go)
 		Tilt = "Auto tilt",
 		ShowFoil = "Gold Foil",
 		ShowCard = "Card",

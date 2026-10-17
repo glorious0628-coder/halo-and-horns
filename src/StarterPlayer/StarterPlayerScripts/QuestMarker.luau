@@ -57,6 +57,7 @@ local UIKit = nil -- C.UIKit (set in Start)
 ----------------------------------------------------------------- tuning (du = logical HUD units; px; studs)
 local IS_TOUCH = UserInputService.TouchEnabled
 local T = {
+	LeadSeconds = 180, -- #7: a QuestMarker.Lead lasts at most this long
 	TargetDt = 1 / 2, -- ask HUD for the target
 	StudsPerMeter = 3.5, -- A23-36: metres = studs / 3.5, rounded
 	PulseFrom = 1.7, PulseTime = 0.45, -- 빛 마을 점검 #20: a row tap pops the icon from this size back to 1 (s)
@@ -156,6 +157,7 @@ local TXT = {
 ----------------------------------------------------------------- state
 local S = {
 	built = false,
+	lead = nil, -- 최종 검수 10/18 #7: { Fn = () -> part | nil, Tag, Until } a short lead over the quest's place (QuestMarker.Lead)
 	shown = false, -- the marker is showing (on screen or at the edge)
 	target = nil, -- { Part, Position, Tag, Claim } from the last retarget
 	claim = nil, -- the colour last written (true = gold)
@@ -890,6 +892,17 @@ local function retarget()
 		S.target = t
 		return
 	end
+	-- #7 (the codex [Go]): a lead points the marker at its place while its Fn still answers, at most until Until
+	local lead = S.lead
+	if lead then
+		local ok, part = pcall(lead.Fn)
+		if os.clock() > lead.Until or not ok or typeof(part) ~= "Instance" or not part:IsA("BasePart") or not part.Parent then
+			S.lead = nil
+		else
+			S.target = { Part = part, Position = part.Position, Tag = lead.Tag, Claim = false }
+			return
+		end
+	end
 	-- A23-131 황금 알 줍기 (design "알을 들면 퀘스트 마름모가 집을 가리킨다"): while I carry golden eggs the marker points at
 	-- my home (EggFx.HomeTarget: the nest / the cart), whatever row is pinned
 	local egg = C and C.EggFx
@@ -1041,6 +1054,18 @@ end
 function QuestMarker.TargetTag()
 	local t = S.target
 	return type(t) == "table" and t.Tag or nil, S.shown == true
+end
+
+-- 최종 검수 10/18 #7: lead the marker to fn()'s part (re-asked twice a second: a trip's pad, then the place itself) over
+-- the pinned quest's place for at most `seconds`; fn returning nil (arrived / gone) ends it; Lead(nil) clears it
+function QuestMarker.Lead(fn, tag, seconds)
+	if type(fn) ~= "function" then
+		S.lead = nil
+	else
+		S.lead = { Fn = fn, Tag = type(tag) == "string" and tag or "lead", Until = os.clock() + math.max(1, tonumber(seconds) or T.LeadSeconds) }
+	end
+	pcall(retarget)
+	return S.lead ~= nil
 end
 
 -- A23-68 #2: point the small focus icon at a monster (Model or BasePart), nil = off. The same target again is a no-op

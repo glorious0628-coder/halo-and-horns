@@ -140,6 +140,14 @@ def run(src: dict) -> tuple[int, int, str]:
 
 
 MUTATIONS = [
+    # final review 10/18 #7: [Go] on a card not met
+    ("CODEX", "#7 another player's own monster is a way", "if type(owner) == \"number\" and LocalPlayer and owner ~= LocalPlayer.UserId then return nil end", ""),
+    ("CODEX", "#7 another kind is a way", "(m:GetAttribute(\"MonsterKind\") or m.Name) ~= kind then return nil end", "false then return nil end"),
+    ("CODEX", "#7 the farthest one", "if d < bestD then best, bestD = root, d end", "if best == nil then best, bestD = root, d end"),
+    ("CODEX", "#7 no trip from another zone", "local ok, part = pcall(qt.Travel, zoneId, myZone, pos)", "local ok, part = false, nil"),
+    ("CODEX", "#7 [Go] on cards I have", "if b.Go then b.Go.Visible = not v.Known end", "if b.Go then b.Go.Visible = true end"),
+    ("CODEX", "#7 the lead never ends by one", "Arrive = 18,", "Arrive = 0,"),
+    ("CODEX", "#7 the window stays over the marker", "if type(panels) == \"table\" and type(panels.Close) == \"function\" then pcall(panels.Close) end\n\treturn true", "return true"),
     # A23-195 (10/15): the card pictures
     ("CODEX", "pose pictures ignored (always the 3D model)", "\tc.PoseSet = CodexUI.Poses(kind)\n", "\tc.PoseSet = nil\n"),
     ("CODEX", "the tilt never changes the pose", "\tCARD.Aim(c)\n\tCARD.Pose(c)\n", "\tCARD.Aim(c)\n"),
