@@ -1830,6 +1830,19 @@ local function regenTick(p)
 		pct = Config.Combat.TownRegenPerSec
 	else
 		pct = perksOf(p).RegenPerSec or 0
+		-- A23-224 rest regen: in a rest zone, the side's wait after the last damage of any kind, then PerSec (Stack: on top of
+		-- the side's own regen, else the bigger one)
+		local R = Config.Combat.RestRegen
+		if type(R) == "table" and kstate(p) ~= "Active" and type(R.Zones) == "table" then
+			local okZ, zone = pcall(S.ZoneService.GetZoneId, p)
+			local f = faction(p)
+			local wait = type(R.Wait) == "table" and (tonumber(R.Wait[f]) or tonumber(R.Wait.Default)) or nil
+			local rest = tonumber(R.PerSec) or 0
+			if okZ and R.Zones[zone] == true and wait and rest > 0 and os.clock() - (lastDamagedAt[p] or -math.huge) >= wait then
+				local own = type(pct) == "number" and pct or 0
+				pct = R.Stack == true and own + rest or math.max(own, rest)
+			end
+		end
 	end
 	if type(pct) == "number" and pct > 0 then
 		CombatService.HealPlayer(p, hum.MaxHealth * pct * Config.Combat.RegenTick)
