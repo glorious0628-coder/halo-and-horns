@@ -1,5 +1,18 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/18 새 PC로 옮김 (최신; 최종 검수 "화면 판 ④는 오늘 안 함 — 다른 컴퓨터·다른 계정으로 옮겨서 이어 함")
+- **가지 전부 push됨 (병합 전):**
+  - dev1-water-hand **c02d2925** — A23-231 물속 무기 숨김(WeaponPose.Swimming/WaterHide, F·화면 클릭 무시) + A23-232 칼·몽둥이 손에(WeaponStow.Kinds = 활만). hold_pose2 65/0·변이 24/24, camera_input 43/43, tool_grip 369/0, HUD/WeaponPose 시험 66개 새 실패 0.
+  - dev1-neighbor **d0f5a1f6** — StoryNpcs Who.Bag·등불 손 흔들기 = "Neighbor". **dev2-detail과 같이 병합.**
+  - dev1-detail-1 **b8259b1b** — 세세한 #1·#8·#9·#6·#13·#14 + r11 ② 폰 둥근 물약 버튼 거절 흔들림. 물약 소리 = Deny '응-응' 그대로(최종 검수 10/18).
+  - dev1-dialog-box **59b8a80d** (대화 상자 ①) · dev1-codex-next **459a37ea** (도감 [Go]) — 그대로, 화면 확인 뒤 병합.
+  - **dev1-screen-1018 cabbc147** = 화면 판용 합친 판(main 589e4e34 + dialog-box + codex-next + detail-1 b8259b1b + water-hand c02d2925) + `tools/dev1_screen/`(옛 PC build/dev1_tools 25개 사본, README). **main에 병합 X** — 시험 Studio sync·도구 옮기기용.
+- **화면 판 ④ 할 내용 (새 PC, 최종 검수 '전달함, 시작' 뒤, 약 15분 닫기 포함):** PhoneTest_1015 열기 → dev1-screen-1018 worktree에서 `STUDIO_ID=… py tools/sync_to_studio.py` → `STUDIO_ID=… py tools/dev1_screen/check1020.py` (h1016.py의 GAME 경로를 새 PC에 맞춤; 사진·로그 docs/art/verification_2026-10-20/screen_1020/) → Play 멈춤 → **창 닫기** → "끝". 볼 값: A 대화 상자(얼굴·이름·줄·[Next]→[I'm In!]·스승 Ok·[Bye] 닫힘, TutorialStep 바뀜) / E 도감 [Go] 표시 안내 / S 빛·뿔 전사 7초 서 있기 → StowWeld 없음·RightGrip 켬 / W 물 블록(Play 동안만 Terrain FillBlock) → Swimming·무기 부품 전부 숨김·F 서버 Swing 수 0(땅에선 +1)·나오면 다시, 궁수 물속 6초 → 나와서 등·시위 숨김 / P 퀵슬롯 1 물약 마심 → 쿨다운 중 키 1 = RefuseBase·빨간 테두리·개수 그대로.
+- **이 PC에만 있던 것:** build/dev1_tools/*(→ dev1-screen-1018 tools/dev1_screen에 사본), 옛 worktree ../Game-dev1water(dev1-water-hand)·../Game-dev1nb(dev1-neighbor)·../Game-dev1detail(dev1-detail-1)·../Game-dev1grip(dev1-dialog-box)·../wt_dev1base1020(dev1-screen-1018) — 전부 push돼 있어 지워도 됨. 각 worktree build/luau_cli_0_741는 ../Game/build에서 복사한 것(git 밖), build/sw 스윕 로그도 git 밖.
+- **열린 시험 Studio 없음**(이번 세션에서 Studio 안 엶).
+- **▶ 남은 순서:** ④ 화면 판 → ⑤ 대화 상자 ② 3D 얼굴(ViewportFrame, dialog-box 위 가지; DialogBox.luau drawFace에 몸 있으면 StoryNpcs.Body 복사 → 없으면 초상 → 첫 글자) → ⑥ detail audit 순서(#21 → #24·#26 → #15 → #3·#2 → #16 → #17 → #25 → #29·#30 → #31·#32 → #27·#28, + #5·#19) → ⑦ 제작 옵션 화면(dev2-craft-optsb 위: Config.SpareParse/GearParse로 BagUI:205·MarketWindow:243·300·CraftWindow:405 'T:P:O', 옵션 표시, 특제 물약) + **개발 2 10/18 부탁(작은 것): BagUI.TonicState에 Config.TonicBase(cell.Id) 넘기기(BagUI 548·1526·1568 근처, 1571 pending Ends = ends[base]; dev2-craft-optsb 2e87bf70에 TonicBase)** + 공방 '주간 선물' 칸(dev2-craft-week CraftInfo.Week, 계약 docs/design/craft_week_server_2026-10-17.md). buff_bar 실패는 개발 2가 서버에서 정리함(화면 고칠 것 없음).
+- 서버 몫 알림: 자동 전투(CombatService autoReady)는 물속도 휘두름 = 개발 2.
+
 ## 10/20 — 다른 계정 새 세션 (최신)
 - **가지 dev1-water-hand c02d2925** (push, worktree ../Game-dev1water): ① A23-231 물속 무기 숨김 — WeaponPose.Swimming(Humanoid 상태 Swimming) + WaterHide(무기 부품·데칼 LocalTransparencyModifier 1, 빛·반짝이·활 시위 끔 = 켜져 있던 것만, 나오면 그대로 되돌림; 모든 캐릭터, 이 클라마다), 헤엄 중 PoseStep 자세 안 씀(팔 = 헤엄 몸짓), 물속에서 등에 넣은 활은 나와도 시위 숨김 유지, 숨겨진 무기는 넣기 소리·반짝 없음. HUD L.Swimming: F·공격 버튼(startHold)·화면 클릭(PrimaryClick) 물속이면 안 휘두름(글 X). ② A23-232 Config.WeaponStow.Kinds = 활만(Bow·ShortBow), 허리 코드·Hip 줄은 남김. 시험 hold_pose2 65/0·변이 24/24(물속·칼 손에 13개 새로), camera_input 43/43(화면 클릭 줄 맞춤), tool_grip 369/0. HUD/WeaponPose 읽는 시험 66개 스윕: 새 실패 0(auto_face·walk_forge_client·crown_points MISSED 2·attendance_ui는 main에도 같은 실패, map_v2는 sparse에 docs 없음). detail-1과 합친 판에서 camera_input·hold_pose2·auto_face·detail_batch1 통과. 병합 충돌 없음(main·detail-1·dialog-box·codex-next·dev2-detail·craft-optsb).
 - **가지 dev1-neighbor d0f5a1f6** (push, ../Game-dev1nb): StoryNpcs Who.Bag·등불 Common 손 흔들기 = "Neighbor" — **dev2-detail과 같이 병합**(이웃 몸은 개발 2 가지). StoryNpcs 시험 7개 통과.
