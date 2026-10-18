@@ -6,45 +6,8 @@
 - **새 판정 방법(최종 검수 10/14, 사용자가 Daisy_Pot 지적):** 모든 부품 2D는 **원래 통짜 4면을 같은 줄 맨 위**에 놓고 표로 ① 비율(높이/폭) ② 대칭·개수(기둥·창·꽃잎) ③ 잘라낸 자국(100% 확대, 가장자리) ④ 둥글지 않은데 4면 같음(앞 1장 복사는 돌려도 같은 둥근 부품만). 합칠 물건(난간 등)은 합친 판을 2D와 같은 각도로 겹쳐 봄. 'PBR 때 확인'으로 넘기지 말 것(점수 쓴 뒤). PBR 그릇류 비율은 2D와 같은 카메라 높이(윗면 타원 맞춤)로 렌더해 비교.
 - 판정 표는 최종 검수에게(최종 검수 = 게임성 중심).
 
-## (이전) 10/14 오후 기록
 
-## 10/14 오후 (맨 위 = 이것부터)
-- 최종 검수 지시(새 세션, Opus 5.5): 내 몫 = ① 이미지 생성 2 부품 2D 판정 ② 손보기 2 HD PBR 판정 ③ 이미지 생성 3 WorldKit 낮·밤 사진. Tripo = HD 한 번에(A23-174~177), 사람도 머리·몸·소품 부품. Bright 부품 = 사용자 OK(판정 불필요).
-- **판정 방법 바뀜(최종 검수 10/14, 사용자 Daisy_Pot 지적):** 모든 부품 2D = 원래 통짜 4면을 같은 줄 맨 위에 두고 표 ① 비율(높이/폭) ② 대칭·개수(기둥·창·꽃잎) ③ 잘라낸 자국(100%, 가장자리) ④ 둥글지 않은데 4면 같음. 합칠 물건은 합친 판을 2D와 같은 각도로 겹쳐 봄. 최종 검수 = 게임성 중심, 판정 표는 그대로 최종 검수에. 2D 추가 떨어짐(최종 검수): Daisy_Pot·Rose_Bowl·PotA_Bowl·Planter_A_Box·VegGarden_Bed.
-- **HD PBR 33 첫 판정(06b8e2e, `art/review/design/pbr_gate_hd_1014_dr/verdict_1014.md`):** 통과 29, 떨어짐 4 = Daisy_Pot(비침 틈+기둥 비대칭)·Rose_Bowl·PotA_Bowl·Fountain3_Top(공 1.4배; 2D 다시는 내가 이미지 생성 2에 보냄). 그릇류 비율은 2D와 같은 카메라 높이로 맞춰 잼: `scratchpad elev.py`(Blender workbench, e 0~35°) → 윗면 타원(물·흙) 비율이 맞는 e에서 전체 높이/폭 비교(-3~+7%). 최종 검수 두 번째 판정 대기.
-- **④ 최종 검수 두 번째 판정 = 내 표 그대로 확정**(통과 그릇 7·잎 6·꽃 7 + 줄기 끝 5 → 손보기 2 HD 큐). BushPot 노란 꽃 4개 = 뺌(최종 검수 결정, 이미지 생성 2에 전함).
-- **④ 꽃 5종 줄기 끝 지움(d56e7fd) = 통과**(100% 확인; PinkRose 아래 지운 자리 아주 옅은 1px 테두리 — 배경과 거의 같아 Tripo엔 상관없음). 대기: PotF_Vines·Tulip 2·나무 F 2 다시 그림(Codex 11:41~).
-- **④ 화분·꽃(이미지 생성 2, 939e5b3) 내 판정:** 통과 = 그릇·잎 대부분(Daisy Pot 8각·Leaves, Rose Bowl·Leaves, PotF Vase, PotA·PotC, 나무·은 양동이, BushPot Leaves(4면 다 다름, 맞음), NEW_FlowerBush Leaves), RedBud·RoseBud(꽃받침 둘레 고름). **떨어짐 = PotF_Vines(아치 ×4, F_Canopy와 같은 경우), TulipWhite·TulipBlue(잎 2장이 한 판 ×4 → 옆은 잎이 겹친 모습이어야)**. **고쳐서 통과 = WhiteDaisy·Lilac·RedDaisy·Blue5·PinkRose 앞면 아래 줄기 끝**(옆·뒤는 줄기가 곧장 뒤로 → 앞에선 안 보여야; PIL로 지우기). 시트 `art/review/design/parts2d_1014/b4_*.jpg`. BushPot 노란 꽃 빼기 = 찬성, 결정은 최종 검수.
-- **최종 검수 두 번째 판정: 14 통과, RoundTree_F_Trunk·F_Canopy 떨어짐**(둥글지 않은데 4면 같은 그림). 다시 그리기는 최종 검수가 이미지 생성 2에 보냄.
-- **판정 기준(최종 검수 10/14):** '앞 1장 → 3면 복사'는 돌려도 같은 둥근 부품(통·화분·분수·공 덮개)만. **둥글지 않은데(Y자 줄기·아치 덮개 등) 4면이 같으면 떨어짐** — 옆은 옆에서 본 모습(Y → I자), 뒤는 앞 좌우 뒤집기. 'PBR 때 확인'으로 넘기지 말 것(55점 쓴 뒤) → 2D에서 막음.
-- (내 첫 판정) **부품 2D ①②③ 16종 = 전부 통과**(시트 `art/review/design/parts2d_1014/`: 4면 시트 3장 + 100% 크롭). 흰 바위 a·b·c(4면 각각 그림, 방향 맞음, 폭 ±10%) · NEW_ArmoryBarrel(앞 1장 ×4) · 분수 Basin·MidTier·Top(×4, 가운데 끼움 자리 맞음) · TreePlanter(잔디에 줄기 구멍)·TreeFruit · RoundTree_E/F/G Trunk·Canopy(×4). 그림자·바닥·다른 부품 없음.
-  - 메모: F Trunk = Y자 ×4 → Tripo가 가지 4개로 만들 수 있음(아치 덮개 아래라 괜찮음, PBR 때 확인). 옛 무기고 세트의 나무 상자는 이번 묶음에 없음. 흰 바위 b 배경만 조금 어두움(Tripo엔 상관없음).
-- 다음: ④ 그릇·잎·공유 꽃 34장, ⑤ 103장(이미지 생성 2 진행 중) → 오면 같은 방법(`scratchpad parts_check.py` = 4면 bbox·해시·시트; 지금은 스크래치라 필요하면 다시 짧게).
-
-## (이전) 10/14 낮, 계정 옮김 전 정리
-
-10/14 다시 켬(A23-172). 위로 = 최종 검수, 옆 = Blender 손보기 2(Tripo 계정 2). 세션 id는 list_sessions로.
-
-## 내 일 (사용자 최종, 10/14 낮)
-- 3D = **전부 Tripo HD 한 번에**(A23-174/175: 멀티뷰 4면·텍스처·조명 제거·PBR, 폴리곤 20000/작은 부품 8000). **흰 모델 고르기·스마트 메시 없음.** 사람도 머리·몸·소품 부품을 각각 HD → Blender 합침; 머리는 후광 없이 그리고 게임 공용 후광(CharacterVisuals)을 붙임.
-- 내 몫 = ① **HD 결과 PBR 첫 판정**(손보기 2가 요청) → 통과/다시(크롭 자리·이유) → 손보기 2 + 최종 검수(두 번째 판정) ② **이미지 생성 2의 부품 2D 첫 판정**(모양·크기 비율이 승인 4면과 맞는지; 사람 부품은 머리에 후광 있으면 다시) → 최종 검수. 5개마다 최종 검수에 한 줄 요약. 렌더만, 화면 안 씀.
-- 판정 기준: 구멍·비침·모양 다름·**비율 다름 = 다시 생성**(한 축만 늘이기/줄이기 = '모양 늘이기 금지' A23-159 #5, 추천하지 말 것). 사람 = 복장(아이용, 노출 없음)·얼굴 무늬 없음(2D에 있는 볼 홍조·주름은 OK). 후광 각짐은 지적 안 함.
-
-## 도구
-- 시트: 손보기 2가 `pbr_gate.py`로 만들어 `art/review/design/pbr_gate_hd_1014/<이름>.jpg`(+ `r/` 렌더)에 둠. 비율 = 2D 배경 차 bbox vs 렌더 bbox(깊이/길이, 높이/길이). 색 = `color_compare.py <2D 앞> <렌더>`.
-- **비침:** `blender --background --factory-startup --python tools/design_review/seethru.py -- build/dr_seethru 512 <file.glb>:+x …` (Tripo HD GLB 앞 = **+x**) → `py tools/design_review/seethru_sheet.py build/dr_seethru <이름>` → `__seethru.jpg`를 `art/review/design/pbr_gate_hd_1014_dr/`에 복사·push. 14면 한쪽 면 렌더, 초록 = 비침; 몇 px 가장자리 잡음·후광 고리 안쪽은 무시(확대해서 자리 확인).
-
-## 판정 끝난 것 (10/14)
-- **난간 부품:** Baluster(스마트 메시판) 최종 통과 · CornerPost 03d13086 최종 통과(⑤ 금 밝게, 공 살짝 각짐 그대로) · EndPost cd8d14b9 최종 통과 · **RailSegment 0208d453 = 다시**(깊이 +39%) → 최종 검수가 다시 생성 1번 지시 · **BaseSegment 766224ad = 첫 통과지만 깊이 +36%·높이 +16%**(윗면 옅은 주름 2줄 그대로) → 결정 대기(Rail과 같은 길일 듯).
-- **통짜 사람 HD = 기록용, 안 씀:** BakerGranny e4e7b4f2 · BellElder 7344655d · Bright 8ad5a30e · FlowerFarmer 9fc91c29 · FlowerGirl bba1bc9f · Folk4 5bafaae3 · HerbHusband e0c1cd48 · HerbWife 19d2016d — 모두 2D와 맞고 노출 없음·몸 비침 0이었음.
-
-## 대기 중
-- Rail 다시 생성 결과(두 번째도 두꺼우면 최종 검수가 사용자에게 '민무늬 막대 한 축 조정 허용?' 물음), Base 결정.
-- 이미지 생성 2 부품 2D: ①(바위 3·통 1) = 최종 검수가 직접 통과, **②분수 부품부터 내가 먼저**; 사람 부품 2D 시범 = Bright.
-- 손보기 2 다음 HD 결과(단순 14 → 부품들).
-
-## (기록) Baluster 10/14 아침
-- 흰 모델 a7a73124 → 텍스처 29c5640c → PBR 8fc77956, 비침 0. 시트 `art/review/design/pbr_gate_1014_dr/`. ⑤: 금 밝게, 갓 둥근 원판, 목 조금 김. 07:09 계정 2 자산 093f98de = 사용자 직접 시험.
+> **10/18 정리(최종 검수):** 옛 절은 지움 — 전부 git 역사에 있음: `git show b558445b:docs/handoff/state/design_review.md`. 아래 = 지금 필요한 절 + 방법·도구 메모.
 
 ## 방법 메모 (10/14 배움)
 - **Chrome Tripo 돌리기:** 캔버스 left_click_drag는 안 돌아감(빠른 가짜 드래그). 오른쪽 위 **축 표시(Y·Z·X 공과 어두운 점)를 눌러 바로 보기**가 됨: 기본 보기에서 Y(≈972,88) = 위 → 그다음 아래쪽 Z = 앞 → 아래 어두운 점(-Y) = 아래 → 오른쪽 X = 옆 → 같은 자리 어두운 점(-Z) = 뒤. 누를 때마다 축 표시 자리가 바뀌니 zoom으로 축 표시를 먼저 보고 누름. 화면 크기 1280×575 기준. 카메라가 너무 가까우면 scroll down으로 멀리.
@@ -54,23 +17,6 @@
 - 자산 목록 API fetch는 Chrome 확장이 막음(쿠키) → 손보기 2에게 물음.
 
 (아래 = 10/13 기록)
-## (기록 10/13) 다시 시작하면 바로 할 일 (기다리는 것)
-1. **이미지 생성 3 ⑤ 묶음 1 마지막 2개** → 오면 최종 검수에 묶음 1 보고:
-   - 통과: Tulip 3곳, Lavender P083·P022, BenchA P056·065·068·105·P015(diag), BenchC P026(지형 다시 칠함)·P064·121, Sunflower P032·P077(180°, 색 맵 새 자산), 날개, **CastleRose v3**(fix_v2/castle_rose_close_v3.png, 판 6.65)
-   - 남음: P049(위에서 앉는 판 안 보임 = 아직 묻힘 의심, f97ace01) · P048(P049 옆 8칸으로 옮김) → 낮·밤 가까이
-   - 하늘색 표시 상자(P022 옆) = 건물 표시 파트, 게임 전 숨김
-2. **NEW_ 6종 → Blender 손보기 1 큐 맨 뒤(최종 3aa188d7, 810점 내 OK)**: GatherBush·ArmoryBarrels(오른면 천 봄)·CandleCrate(초 뭉침)·Easel·NoticeBoard·WaterBuckets(뒤 갈퀴 이빨) → **흰 모델은 내가 고름.** 나머지 2D 4면(WallLamp·WateringCan·Beehive·SteppingStones·간판)과 Blender 손보기 2 것은 디자인 검수 2.
-3. **PBR 관문 끝(10/13 오후)**: 묶음 2 = 35 통과(41358b5d, pbr_gate_1013b/), 묶음 3 = 39 통과(a0a3d315, pbr_gate_1013c/ + Daisy 다시 c2e4b5db + SignJuice 계정 2) — ⑤ 메모는 그 메시지에. **Blender 손보기 1 큐 비었음(잔액 1,705).** 앞으로 새 스마트 메시는 계정 2(Blender 손보기 2 → 디자인 검수 2 판정). 다음 PBR 결과도 같은 방법: `blender --background --factory-startup --python tools/design_review/pbr_gate.py -- <out> 700 2048 <glb…>`(3개로 나눠 동시에) → `pbr_gate_sheet.py <out>/r <sheet_dir> <이름>_TU=<2D 앞에서 _front_ns.png 뺀 것>`. 흰 모델: Blender 손보기가 FBX를 build/tripo_wm1/<이름>_wm_<id8>.fbx → clay_views.py → scratchpad wm_sheet.py(1줄 2D 4면 + 후보 줄마다 7면).
-4. 흰 모델 고르기 끝: 25종(wm_1013b/), 11종 + 간판 3(wm_1013c/), Daisy c2e4b5db. + PotionCrate·GuardPost: 엇갈려 두 계정 모두 PBR까지 감 → 나란히 보고(pbr_gate_1013d/) **GuardPost = 계정 2 판, PotionCrate = 계정 1 판**(cee655c6). 같은 이름 파일 충돌 → 안 쓰는 판 `_acc1_spare`/`_acc2_spare`로 Blender 두 세션이 정리 중. 이미지 생성 3에 넘기기 전 TU가 맞는 판인지 확인. 교훈: 두 계정이 같은 물건을 가질 땐 고른 뒤 "누가 누른다"를 한 메시지로 둘 다에게 보내기.
-4c. **묶음 d 최종 검수 '다시' 4(10/13 오후, docs/review/pbr_final_2026-10-13.md):** Beehive(상자 판 없음)·ArmoryBarrels(빈 X 격자)·Topiary_E(판 모서리 테 밖)·PotFlowers_D(꽃 민트) — 내가 바로 위·아래를 안 봐서 놓침. 다시 고름(9면, art/review/design/wm_1013d/, 8c61d691): Beehive **b27e41bd**, Topiary_E **ade62dd1** → 멀티뷰 4면·4K → PBR(70점). PotFlowers_D = 같은 흰 모델에 멀티뷰 다시. **ArmoryBarrels 4개 다 탈락 → 최종 검수 결정 (가): 이미지 생성 2가 2D 상자 판 PIL → 디자인 검수 2 → 계정 2 스마트 메시(내 일 아님).** PotionCrate 본 판(계정 2 vs 1) 최종 검수 확정 대기(5b6de888) — 지금 파일 = 계정 2 본 이름, 계정 1 = _acc1_spare. 이번엔 Tripo 화면 대신 받은 FBX 9면 점토로 봄 — 최종 검수에 알림, 답 따라 다음부터 Tripo 직접.
-4d. **Tripo 직접 확인(10/13 오후, 앱 브라우저 내 탭 'seed', 끝나면 닫음):** Beehive b27e41bd·Topiary_E ade62dd1 = 멀티뷰 텍스처 붙은 판 확인 OK. PotFlowers_D 87f66ae2 멀티뷰 다시도 꽃 민트(pbr_gate_1013e/) → **19fef167로 바꿈**(Tripo 확인, 멀티뷰 → PBR 진행). 방법: 내 탭에서 자산 API로 id8 → 전체 id → /ko/workspace/generate/<id> → JS PointerEvent 드래그(hhRot)로 돌리고 zoom 캡처(창이 숨어도 그려짐). 화면 쓰기 전 최종 검수에 한 줄 → '전달함, 시작' → 끝나면 탭 닫고 "끝".
-4e. **'다시' 3종 PBR 관문 통과(10/13 오후, pbr_gate_1013e/, 최종 검수에 fe61aa97·be8bb7e1):** Beehive b27e41bd·Topiary_E ade62dd1·PotFlowers_D 19fef167(멀티뷰). 멀티뷰 텍스처는 뒤·옆이 앞면 1장 때보다 2D에 확실히 가까움. Blender 손보기 1 큐 비었음(잔액 1,355).
-
-5. **이미지 생성 3 벤치 P048·P049**: 모래·높이 6.0 다시 채우기 OK(최종 검수) → fix_v5 줄무늬 막대 + 낮·밤 앞·뒤 판정 → 통과면 ⑤ 묶음 1(화분 7·벤치 10·장식) 최종 검수에.
-- 나눔: 간판 4·Beehive·WateringCan·SteppingStones = Blender 손보기 2(디자인 검수 2 판정).
-
-- **계정 1 점수가 다 떨어지면(사용자 10/13 오후, 최종 검수 전달):** Blender 손보기 1도 Chrome 계정 2로 옮김 → 그 흰 모델도 내가 고름(누가 만든 물건인지로 나눔: Blender 손보기 1 것 = 나, 2 것 = 디자인 검수 2). 볼 때 사용자 Chrome(Claude 확장)에서 **새 탭 하나만**, 다른 세션 탭 안 건드림, 점수 버튼 안 누름, Chrome 창 보이는 채로(옮기기 금지), 끝나면 내 탭만 닫기. 먼저 FBX 받아 clay_views로 보는 길이 되면 그게 우선(화면 안 씀).
-
 ## 판정 규칙
 - **⛔ 10/13 오후 사용자: Tripo 점수 쓰는 일 전부 멈춤 — 내 점수 승인(빛 마을 135/개 상시 OK)도 지금은 안 냄. 판정·보기만.** 다시 풀리면 최종 검수가 알려 줌.
 - **사용자 10/13 오후(화남) — 흰 모델 고르기 순서 고정:** ① 4개를 Tripo 화면(앱 브라우저 내 탭 / 계정 1 끝나면 Chrome)에서 하나씩 열어 위·아래 포함 돌려 보고 고름(화면 쓰기 전 최종 검수에 신청) ② 고른 것·이유·멀티뷰 4면·4K·조명 제거·걱정되는 면을 **Blender 손보기와 메시지로 의논 → '합의, 진행' 오간 뒤에만 텍스처** ③ 점토 렌더는 보조 ④ Tripo에서 안 되면 사진으로 대신하지 말고 바로 최종 검수에.
@@ -84,33 +30,6 @@
 - 고칠 때는 PIL(뒤집기·크기·색) 먼저.
 - 점수: 빛 마을 목록(`docs/review/noshadow_redo_2026-10-12.md` 빛 마을 줄 + `art/prompts/house_chunks_queue_2026-10-13.json`) 안 = 내가 OK(135/개), 밖 = 최종 검수. 사람(NPC·주민·MailBoy)은 맨 마지막.
 - 목록에서 뺀 것: NEW_Cauldron·NEW_Telescope(HaloChunk판만, 최종 검수 OK 10/13), NEW_WhiteRock a/b/c·BellFrame_Bell·WallLamp_Head(버림).
-
-## 끝난 것 (10/13까지)
-- **PBR 최종 통과 → 이미지 생성 3 놓음:** DoorSingle·DoorDouble·LampArm·CastleWingL/R·DomeRibbed·WindowBoxA·CastleRose·BenchA·BenchC·Lavender·Tulip·Sunflower(⑤에서 고칠 것 위 1번).
-- **흰 모델 20종 고름(10/13, 시트 `art/review/design/wm_1013/`):**
-  - Greenhouse d148d3bd, ShopSign e96efdb6
-  - Lantern_A 3b8c167c, Lantern_B 4b6f9db9, Lantern_C 096e84f2, Lantern_D 1eed23ce, Lantern_E c102246e
-  - IvyWall 18598e34, IvyBalcony 0352e909
-  - **FlowerBushPot 5a5af84d**: 4개 다 뒤가 빔 → ⑤ 덤불 속 초록 공 파트 또는 뒤를 벽 쪽
-  - DomePorchHalf e549329c, DomePavilion bc5097f2, DomeTowerSmall 6d925d8a, BreadDisplay e5467c5f
-  - RoundTree_E 077f2fae, RoundTree_F cc3f527f, RoundTree_G a9395b47
-  - Topiary_C 3e2847ad, Topiary_D 7c673fb4, Planter_E 1021df70
-- 그 전에 고른 흰 모델:
-  - 화분 5, DoorSingle, LampArm, WingL, DomeRibbed, DoorDouble, WindowBoxA, BenchA·C, CastleRose
-  - GateLeaf 2bc07ecc, DomeOnion 414b871a, ConeTree 2bbbd641, DomeOctagon f9e91fe2, DomeBall 66894770, FlowerCart af2e2b5f, BenchB b8de1d3c
-  - DomeOnionSlim 40dad418, BreadStand 00dac363, FruitStall 568b5b8e, DomeBrick 46f0bb09, JuiceParasol 6ec4d75d
-- 집 덩어리 그림 1~43 끝(이미지 생성 2). 34~43 판정 끝, 흰 모델 큐에 들어감.
-- 빛 성 C2 골격 v4 통과. 벽 재질 B(HH_HaloMarbleSmooth_Cream + 255,255,255) 적용 사진 통과. 밤 창 빛 = 장식/빛 단계. 마을 배치 때 정문이 낮에 해 받는지 확인.
-
-## 넣을 때 메모 (이미지 생성 3에 보낸 것)
-- 장식 파트:
-  - CastleRose = 뒤 진한 파랑 원판(34,90,180)
-  - LampArm·등불 = LampGlass/LampCore 파트
-- 재질·면:
-  - 화분 잎·창 화분 = DoubleSided
-  - 돔 SurfaceAppearance.Color 255,222,180, 쌍문 255,236,214
-  - Tripo 금은 2D보다 어둡고 레몬빛 → ⑤에서 맞춤
-- 그대로 둘 것: DomeBrick 바닥 뚫림(지붕 위라 안 보임), DoorSingle 뒤 고리
 
 ## 교훈
 - 같은 이름 파일을 두 세션이 디스크에서 덮어쓸 수 있음(10/13 PotionCrate) → 렌더 전 `md5sum <파일>`과 `git show origin/main:<파일> | md5sum` 비교, 판 비교 시트엔 어떤 파일(커밋/디스크)인지 적기.
