@@ -1,5 +1,9 @@
 # 게임 플레이 — 상태
 
+## 10/18 정리 (사용자 "우선 이거 정리하자" — 멈춤)
+- 11판 ③은 안 함. 봇 준비는 끝(flow.py: LOSE1 재대결 KO→Fizzby 거리, 11 가방→Neighbor 대화, 12 물속 무기·F, 13 서서 칼 손에; water_find.lua·weapon_state.lua) — 아직 실제 Play에선 안 돌려 봄. Studio 안 엶.
+- 다음 판 = 최종 검수 'sync 62b7b48e'(또는 뒤) 신호 → ③ 성문 이웃·물속 무기·칼 손에·재대결 KO, ④ 대화 상자(병합 뒤), ⑤ 직업별 전체 판.
+
 ## 10/18 — 다시 시작, 'sync 62b7b48e' 신호 기다림
 - main 62b7b48e = 성문 Neighbor(빛 M1_3 Return bag) + 재대결 KO Fizzby 옆 + 물속 무기 숨김(A23-231) + 칼 손에(A23-232).
 - **12판 계획(빛 전사, 새 저장, 패스 끔):** `FAST=1 NOSHOT=1 LOSE1=1 py -X utf8 flow.py Halo Warrior 0` — 0~7 그대로 → 8 재대결 한 번 일부러 짐(공격 안 함) → 깬 곳·Fizzby 거리 → 다시 가서 이김 → 10 M1_3 선생님·슬라임 → **11 가방 줍기 → Neighbor(12,0,-378) G → 대화 글·사진 → 다음 목표 'Learn a skill'** → **12 물: 가까운 깊은 물 찾기(water_find.lua) → 헤엄 중 무기 안 보임(weapon_state.lua: 부품 투명 1)·F 눌러 공격 안 나감 → 나오면 다시 보임** → **13 서서 7초 = 칼이 손에(RightGrip·StowWeld 없음)**. 그다음 `pose.py idle warrior` 사진.
