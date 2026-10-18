@@ -1,5 +1,11 @@
 # 게임성 개발 1 — 인계 상태
 
+## 10/18 정리 (최신; 사용자 "게임 두 개 만드는 게 어려울 것 같애. 우선 이거 정리하자." → 멈춤, 새 일 X)
+- **Studio:** PhoneTest 창 닫음, 열린 시험 Studio 없음(패슬 패닉 창은 안 건드림).
+- **화면 판 ④ 어디까지(1회, dev1-screen-1018 sync):** E 도감 [Go] ✅ · S 칼 손에(빛·뿔) ✅ · W 전사 물속 숨김·F 무시 ✅ · A 대화 상자 반만(상자 뜸·Bye 닫힘, Welcome 수락·스승은 못 봄) · WA 궁수 물속 ✗(PC 꺼져 끊김) · P 쿨다운 누름 ✗. 값·사진: docs/art/verification_2026-10-20/screen_1020/(log_run1_A_E_S_W.txt, 사진 12장; main ae62262). 관찰: 활이 등에 있을 때 시위 Beam이 켜져 보임(원인 못 봄).
+- **가지·해시:** 병합됨(main 62b7b48e) = dev1-water-hand c02d2925 · dev1-neighbor d0f5a1f6. 병합 전 = dev1-dialog-box 59b8a80d · dev1-codex-next 459a37ea · dev1-detail-1 b8259b1b. 시험용(병합 X) = dev1-screen-1018 cabbc147(합친 판 + tools/dev1_screen 도구 사본).
+- **남은 순서(다시 시작할 때):** ④ 남은 것(A 다시 = check1020 part_a G 다시 누르기 넣음, WA, P; `STUDIO_ID=… py build/dev1_tools/check1020.py A WA P`) → dialog-box·codex-next·detail-1 병합(최종 검수) → 활 시위 등에서 보이는 것 → ⑤ 대화 상자 ② 3D 얼굴 → ⑥ detail audit 순서 → ⑦ 제작 옵션 화면 + BagUI TonicBase(개발 2 부탁) + 공방 주간 선물 칸.
+
 ## 10/18 새 PC로 옮김 (최신; 최종 검수 "화면 판 ④는 오늘 안 함 — 다른 컴퓨터·다른 계정으로 옮겨서 이어 함")
 - **가지 전부 push됨 (병합 전):**
   - dev1-water-hand **c02d2925** — A23-231 물속 무기 숨김(WeaponPose.Swimming/WaterHide, F·화면 클릭 무시) + A23-232 칼·몽둥이 손에(WeaponStow.Kinds = 활만). hold_pose2 65/0·변이 24/24, camera_input 43/43, tool_grip 369/0, HUD/WeaponPose 시험 66개 새 실패 0.
