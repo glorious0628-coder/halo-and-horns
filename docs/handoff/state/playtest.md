@@ -1,5 +1,10 @@
 # 게임 플레이 — 상태
 
+## 10/18 — 다시 시작, 'sync 62b7b48e' 신호 기다림
+- main 62b7b48e = 성문 Neighbor(빛 M1_3 Return bag) + 재대결 KO Fizzby 옆 + 물속 무기 숨김(A23-231) + 칼 손에(A23-232).
+- **12판 계획(빛 전사, 새 저장, 패스 끔):** `FAST=1 NOSHOT=1 LOSE1=1 py -X utf8 flow.py Halo Warrior 0` — 0~7 그대로 → 8 재대결 한 번 일부러 짐(공격 안 함) → 깬 곳·Fizzby 거리 → 다시 가서 이김 → 10 M1_3 선생님·슬라임 → **11 가방 줍기 → Neighbor(12,0,-378) G → 대화 글·사진 → 다음 목표 'Learn a skill'** → **12 물: 가까운 깊은 물 찾기(water_find.lua) → 헤엄 중 무기 안 보임(weapon_state.lua: 부품 투명 1)·F 눌러 공격 안 나감 → 나오면 다시 보임** → **13 서서 7초 = 칼이 손에(RightGrip·StowWeld 없음)**. 그다음 `pose.py idle warrior` 사진.
+- 순서: 신호 → 화면 신청('전달함, 시작') → PlayTest 열기·sync → 판 → Play 멈춤 → 창 닫기 → '끝' + 보고서 r12.
+
 ## 10/17 밤 늦게 멈춤 (사용자 "정리해줘 내일 하자" — 최종 검수가 다시 부름)
 - **지금:** PlayTest Studio 닫힘(저장 안 함), 봇 안 돎. 공유 폴더 = origin/main.
 - **11판 결과(src 5b90afa9, 빛 궁수, 보고서 `docs/review/playtest/2026-10-17_r11.md`):**
