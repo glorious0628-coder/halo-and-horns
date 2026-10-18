@@ -11,6 +11,11 @@
    - a joint the animation never writes (the wrist) holds ONE turn after 60 frames (no build-up).
 3. Config.HoldPoses: every hold has Arm, Stand, Walk, Damp (shoulder Stand <= Walk <= Run <= Air in 0.8..0.99, Lower
    0.9..0.99; the bow Free 0.1..0.2); Config.HoldMotion In 0.08, InBow 0.06, Out 0.18..0.2, Blend 0.16.
+4. A23-232: Config.WeaponStow.Kinds = the bows only (the sword / club stays in the hand); the hip code still works when
+   a kind is put back to "Hip" (the scabbard design later).
+5. A23-231: WeaponPose.Swimming (the Humanoid's Swimming state), WaterHide (parts / decals see-through, lights / sparkles /
+   beams off - only the ones that were on - and the same ones back), a bow stowed in the water keeps its string hidden
+   after it, PoseStep writes nothing on a swimmer (the swim animation owns the arms).
 Static: toolnone stays down while attacking; the bow's left rest weld stays until Fx's left BowGrip is on (never back to
 the right grip); Stepped passes dt; Measure finds the hand whose weld is on.
 Report: docs/art/verification_2026-10-15/offline_hold_pose2_2026-10-15.json (do not commit)
@@ -43,7 +48,10 @@ WP_CUTS = ["function WeaponPose.MemeOf(tier)", "function WeaponPose.HoldOf(kind)
            "function WeaponPose.StowOf(kind)", "function WeaponPose.HipDown(want, height, reach, margin)",
            "function WeaponPose.HipDownOf(char, tool, handle, part, at, row)",
            "function WeaponPose.StowApply(char, tool, handle, where, stow)",
-           "function WeaponPose.StowStep(char, tool, kind, attacking, now)"]
+           "function WeaponPose.StowStep(char, tool, kind, attacking, now)",
+           # A23-231: the weapon hidden while swimming
+           "function WeaponPose.Swimming(char)", "function WeaponPose.WaterHide(tool, hide)"]
+HUD = ROOT / "src/StarterPlayer/StarterPlayerScripts/HUD.luau"
 
 EXTRA = r'''
 function CF:ToEulerAnglesXYZ()
@@ -56,7 +64,7 @@ function CF:FuzzyEq(b, eps)
     for i = 1, 9 do if math.abs(self.R[i] - b.R[i]) > (eps or 1e-5) then return false end end
     return true
 end
-local Enum = { HumanoidStateType = { Jumping = "Jumping", Freefall = "Freefall", Running = "Running" } }
+local Enum = { HumanoidStateType = { Jumping = "Jumping", Freefall = "Freefall", Running = "Running", Swimming = "Swimming" } }
 local Config = { Weapons = {} }
 local ATTACK = false
 local C = { Fx = { AttackPlaying = function() return ATTACK end } }
@@ -253,9 +261,17 @@ do
         local tool = char:FindFirstChild("WeaponModel")
         return char, tool, tool:FindFirstChild("Handle"), grip
     end
-    ok(WeaponPose.StowOf("Bow") == "Back" and WeaponPose.StowOf("ShortBow") == "Back" and WeaponPose.StowOf("Sword") == "Hip"
-        and WeaponPose.StowOf("DarkSword") == "Hip" and WeaponPose.StowOf("Staff") == nil and WeaponPose.StowOf("Hammer") == nil
-        and WeaponPose.StowOf("Meme") == nil and WeaponPose.StowOf("Baton") == nil, "StowOf: bows on the back, swords at the hip, the rest in the hand")
+    ok(WeaponPose.StowOf("Bow") == "Back" and WeaponPose.StowOf("ShortBow") == "Back" and WeaponPose.StowOf("Sword") == nil
+        and WeaponPose.StowOf("DarkSword") == nil and WeaponPose.StowOf("Staff") == nil and WeaponPose.StowOf("Hammer") == nil
+        and WeaponPose.StowOf("Meme") == nil and WeaponPose.StowOf("Baton") == nil,
+        "A23-232 StowOf: only the bows on the back; the sword / club and the rest in the hand")
+    do
+        local c2, t2, h2, g2 = setup("Sword")
+        ok(WeaponPose.StowStep(c2, t2, "Sword", false, 50) == false and h2:FindFirstChild(T.StowWeld) == nil and g2.Enabled
+            and WeaponPose.StowStep(c2, t2, "DarkSword", false, 60) == false and g2.Enabled,
+            "A23-232: a sword / club out of a fight stays on the right grip (no hip weld)")
+        S.Stow = {}
+    end
     local char, tool, handle, grip = setup("Bow")
     local str = child(tool, node("Part", "String", { Size = Vector3.new(0.05, 3, 0.05), CFrame = CFrame.new(0, 0, 0.8) }))
     local beams = { child(str, node("Beam", "BowTopString", { Enabled = true })), child(str, node("Beam", "BowBottomString", { Enabled = true })) }
@@ -275,6 +291,8 @@ do
         "stowing switched off while it is on the back: back to the hand")
     W.On = true
     S.Stow = {}
+    -- the hip code kept for the scabbard design (A23-232): a kind put back to "Hip" still hangs there
+    W.Kinds.Sword, W.Kinds.DarkSword = "Hip", "Hip"
     char, tool, handle, grip = setup("Sword")
     ok(WeaponPose.StowStep(char, tool, "Sword", false, 200) == true and grip.Enabled == false
         and handle:FindFirstChild(T.StowWeld).Part0 == char:FindFirstChild("LowerTorso"), "a sword hangs at the hip, the right grip off")
@@ -300,6 +318,7 @@ do
     dn = tipDown(handle:FindFirstChild(T.StowWeld).C0)
     local want = math.deg(math.asin((2.6 - 0.04 - W.Hip.Floor) / 6)) -- weld point y -0.04, floor y -2.6, the tip 6 out
     ok(math.abs(dn - want) < 0.5 and dn < 30, "a long blade (6 studs out): flatter so its tip stays Floor over the floor", dn .. " vs " .. want)
+    W.Kinds.Sword, W.Kinds.DarkSword = nil, nil
     S.Stow = {}
     char, tool, handle, grip = setup("Staff")
     ok(WeaponPose.StowStep(char, tool, "Staff", false, 300) == false and handle:FindFirstChild(T.StowWeld) == nil and grip.Enabled,
@@ -310,6 +329,70 @@ do
     ok(WeaponPose.StowStep(char, tool, "Bow", false, 400) == false and grip.Enabled, "WeaponStow.On = false: always in the hand")
     W.On = true
     S.Stow = {}
+end
+
+-- 2f. A23-231: swimming hides the weapon on this client; out of the water it is back where it was
+do
+    local function lamp(kind, on)
+        local n = node(kind, kind, { Enabled = on })
+        local isA = n.IsA
+        function n:IsA(k) return isA(self, k) or (k == "Light" and kind == "PointLight") end
+        return n
+    end
+    local m, grip, root, setState = rig("Sword")
+    local char = PLAYERS[1].Character
+    setState("Swimming")
+    ok(WeaponPose.Swimming(char) == true, "Swimming: the Humanoid's Swimming state")
+    setState("Running")
+    ok(WeaponPose.Swimming(char) == false and WeaponPose.Swimming(nil) == false, "Swimming: not when running / no character")
+    local tool = char:FindFirstChild("WeaponModel")
+    local handle = tool:FindFirstChild("Handle")
+    local blade = child(tool, node("Part", "Blade", { Size = Vector3.new(0.2, 3, 0.2), CFrame = CFrame.new() }))
+    local decal = child(blade, node("Decal", "Rune", {}))
+    local light = child(blade, lamp("PointLight", true))
+    local spark = child(blade, lamp("ParticleEmitter", false)) -- already off (a low tier): stays off after the water
+    local beam = child(blade, lamp("Beam", true))
+    S.Water = {}
+    ok(WeaponPose.WaterHide(tool, true) == true and handle.LocalTransparencyModifier == 1 and blade.LocalTransparencyModifier == 1
+        and decal.LocalTransparencyModifier == 1 and light.Enabled == false and beam.Enabled == false and spark.Enabled == false,
+        "WaterHide: parts / decals see-through, the light and the beam off")
+    ok(WeaponPose.WaterHide(tool, true) == true and light.Enabled == false, "WaterHide again (every RestEvery): still hidden")
+    ok(WeaponPose.WaterHide(tool, false) == false and handle.LocalTransparencyModifier == 0 and blade.LocalTransparencyModifier == 0
+        and decal.LocalTransparencyModifier == 0 and light.Enabled == true and beam.Enabled == true and spark.Enabled == false
+        and S.Water[tool] == nil, "out of the water: all of it back, the sparkle that was off stays off")
+    ok(WeaponPose.WaterHide(tool, false) == false and light.Enabled == true, "WaterHide(false) on a dry weapon: nothing changes")
+    -- the arms: nothing written on a swimmer (the swim animation's own arms)
+    setState("Swimming")
+    for _ = 1, 10 do
+        m.RightShoulder.Transform = CFrame.Angles(math.rad(40), 0, 0)
+        m.RightElbow.Transform = CFrame.Angles(math.rad(15), 0, 0)
+        WeaponPose.PoseStep(DT)
+    end
+    ok(math.abs(xOf(m.RightShoulder.Transform) - 40) < 1e-6 and math.abs(xOf(m.RightElbow.Transform) - 15) < 1e-6,
+        "PoseStep on a swimmer: the arms are the animation's (no hold pose)", xOf(m.RightShoulder.Transform))
+    setState("Running")
+    m.RightShoulder.Transform = CFrame.Angles(math.rad(40), 0, 0)
+    WeaponPose.PoseStep(DT)
+    ok(math.abs(xOf(m.RightShoulder.Transform) - 40) > 1e-3, "out of the water the hold pose is back", xOf(m.RightShoulder.Transform))
+    -- a bow in the hand goes in the water, stows there (HandSeconds pass): its string stays hidden on the back after
+    S.Stow, S.Water = {}, {}
+    local W = Config.WeaponStow
+    rig("Bow")
+    char = PLAYERS[1].Character
+    child(char, node("Part", "UpperTorso", { CFrame = CFrame.new(), Size = Vector3.new(2, 1.6, 1) }))
+    tool = char:FindFirstChild("WeaponModel")
+    handle = tool:FindFirstChild("Handle")
+    local str = child(tool, node("Part", "String", { Size = Vector3.new(0.05, 3, 0.05), CFrame = CFrame.new(0, 0, 0.8) }))
+    local beams = { child(str, lamp("Beam", true)), child(str, lamp("Beam", true)) }
+    function str:GetChildren() return self.Children end
+    ok(WeaponPose.StowStep(char, tool, "Bow", true, 700) == false and beams[1].Enabled, "the bow in the hand (an attack), string on")
+    WeaponPose.WaterHide(tool, true)
+    ok(beams[1].Enabled == false and beams[2].Enabled == false, "in the water: the string hidden with the bow")
+    ok(WeaponPose.StowStep(char, tool, "Bow", false, 700 + W.HandSeconds + 0.1) == true, "HandSeconds in the water: on the back")
+    WeaponPose.WaterHide(tool, false)
+    ok(beams[1].Enabled == false and beams[2].Enabled == false and handle.LocalTransparencyModifier == 0,
+        "out of the water on the back: the bow seen, its string still hidden (stow-fix)")
+    S.Stow, S.Water = {}, {}
 end
 
 -- 3. Config
@@ -347,6 +430,21 @@ MUTATIONS = [
     ("WP", "only Motor6Ds (an upgraded avatar's arms untouched)", "\tlocal parentName = T.Parents[joint]\n\tfor _, d in char:GetDescendants() do",
      "\tlocal parentName = T.Parents[joint]\n\tfor _, d in {} do"),
     ("WP", "a switched-off Motor6D used", "\tif m and m:IsA(\"Motor6D\") and m.Enabled then\n", "\tif m and m:IsA(\"Motor6D\") then\n"),
+    ("WP", "A23-231: Swimming never true", "\treturn hum ~= nil and hum:GetState() == Enum.HumanoidStateType.Swimming\n", "\treturn false\n"),
+    ("WP", "A23-231: the switched-off effects never back on", "\t\tif d.Parent and not d.Enabled then d.Enabled = true end\n", "\n"),
+    ("WP", "A23-231: an effect that was already off switched on after the water",
+     "\t\t\t\t\t\tif d.Enabled then\n\t\t\t\t\t\t\td.Enabled = false\n\t\t\t\t\t\t\toff[d] = true\n\t\t\t\t\t\tend\n",
+     "\t\t\t\t\t\td.Enabled = false\n\t\t\t\t\t\toff[d] = true\n"),
+    ("WP", "A23-231: the parts not seen again",
+     "\t\tif (d:IsA(\"BasePart\") or d:IsA(\"Decal\")) and d.LocalTransparencyModifier ~= 0 then d.LocalTransparencyModifier = 0 end\n", "\n"),
+    ("WP", "A23-231: a bow stowed in the water shows its string on the back after", "\t\t\tif wet then wet[b] = nil end\n", ""),
+    ("WP", "A23-231: the hold pose written on a swimmer", "\t\tif okW and swim then continue end\n", ""),
+    ("WP", "A23-231: RestStep never hides the weapon", "\t\t\tif swim then pcall(WeaponPose.WaterHide, tool, true) end\n", "\n"),
+    ("HUD", "A23-231: an attack press swings in the water", "\tif not L.Swimming() then L.SwingFaced() end\n", "\tL.SwingFaced()\n"),
+    ("HUD", "A23-231: a world click swings in the water", "if inputAllowed() and not L.Swimming() then L.SwingFaced() end",
+     "if inputAllowed() then L.SwingFaced() end"),
+    ("CONFIG", "A23-232: the sword / club back at the hip", 'Kinds = { Bow = "Back", ShortBow = "Back" },',
+     'Kinds = { Bow = "Back", ShortBow = "Back", Sword = "Hip", DarkSword = "Hip" },'),
     ("CONFIG", "the sword's shoulder barely damped", "Damp = { Stand = 0.85, Walk = 0.90, Run = 0.95, Air = 0.97, Lower = 0.95 } },\n\tStaff",
      "Damp = { Stand = 0.3, Walk = 0.3, Run = 0.3, Air = 0.3, Lower = 0.95 } },\n\tStaff"),
 ]
@@ -376,8 +474,16 @@ def block(text: str, start: str) -> str:
 
 
 def statics(src: dict) -> list[tuple[str, bool]]:
-    w = src["WP"]
+    w, h = src["WP"], src["HUD"]
     return [
+        ("A23-231: RestStep shows a dry weapon before MemeLook and hides a swimmer's after it",
+         "\t\t\tif not swim then pcall(WeaponPose.WaterHide, tool, false) end\n\t\t\tpcall(WeaponPose.MemeLook, tool, meme)\n"
+         "\t\t\tif swim then pcall(WeaponPose.WaterHide, tool, true) end\n" in w),
+        ("A23-231: no stow sound / glint for a weapon hidden in the water",
+         "if char == (Players.LocalPlayer and Players.LocalPlayer.Character) and not wet then" in w),
+        ("A23-231: the attack press and the world click do nothing while swimming",
+         "\tif not L.Swimming() then L.SwingFaced() end\n" in h
+         and "if inputAllowed() and not L.Swimming() then L.SwingFaced() end" in h and "function L.Swimming()" in h),
         ("toolnone stays down while a hold weapon is held (rest and attack)",
          "if math.abs(tr.WeightTarget - T.Low) > 1e-3 then tr:AdjustWeight(T.Low, T.Fade) end" in w and "rest and T.Low or 1" not in w),
         ("the bow keeps its left rest weld until Fx's left BowGrip is on", "\telseif mine and mine.Enabled and fxOn then\n\t\t-- hold-pose-2" in w
@@ -395,7 +501,7 @@ def run(src: dict) -> tuple[int, int, str]:
              c[c.find("Config.HoldMotion = {"):c.find("\n", c.find("Config.HoldMotion = {"))] + "\n",
              cut(c, "function Config.WeaponGripOf(kind)"), cut(c, "function Config.WeaponGrip(kind, len, mode, centre)"),
              "local PLAYERS = {}\nlocal Players = { GetPlayers = function() return PLAYERS end }\nlocal WeaponPose = {}\n",
-             t[0] if t else "local T = {}\n", "local S = { Rest = {}, Wrote = {}, Char = {}, Joint = {} }\n"]
+             t[0] if t else "local T = {}\n", "local S = { Rest = {}, Wrote = {}, Char = {}, Joint = {}, Water = {} }\n"]
     parts += [cut(w, s) for s in WP_CUTS]
     code = twm.MATH + "\n" + "\n".join(parts) + "\n" + TESTS
     with tempfile.TemporaryDirectory() as d:
@@ -412,7 +518,8 @@ def run(src: dict) -> tuple[int, int, str]:
 def main() -> int:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     src = {"WP": WP.read_text(encoding="utf-8-sig").replace("\r\n", "\n"),
-           "CONFIG": CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n")}
+           "CONFIG": CONFIG.read_text(encoding="utf-8-sig").replace("\r\n", "\n"),
+           "HUD": HUD.read_text(encoding="utf-8-sig").replace("\r\n", "\n")}
     found = all(cut(src["WP"], s) for s in WP_CUTS)
     checks, failed, out = run(src)
     print(out.strip())

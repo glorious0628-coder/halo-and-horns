@@ -24,7 +24,8 @@
 -- WeaponPose.ProbeStep(player, now), WeaponPose.Step(dt), WeaponPose.RestStep(now), WeaponPose.Want(kind, attacking),
 -- WeaponPose.HoldOf(kind), WeaponPose.PoseFor(kind, w, state) -> { [joint] = CFrame }, WeaponPose.PoseStep(dt),
 -- WeaponPose.Smooth(r), WeaponPose.Approach(x, want, dt, time), WeaponPose.MoveState(air, share),
--- WeaponPose.Compose(base, target, damp, s), WeaponPose.DampOf(pose, joint, state), WeaponPose.BaseOf(motor) -> CFrame.
+-- WeaponPose.Compose(base, target, damp, s), WeaponPose.DampOf(pose, joint, state), WeaponPose.BaseOf(motor) -> CFrame,
+-- WeaponPose.Swimming(char), WeaponPose.WaterHide(tool, hide) (A23-231: a swimmer's weapon hidden on every client).
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -45,6 +46,8 @@ local T = {
 	ProbeEvery = 2, -- s: Studio's GripProbe print (every frame measured, the worst printed)
 	RestBow = "RestBow", -- the local left-hand weld of a resting bow (A23-187)
 	StowWeld = "StowWeld", -- A23-223: the local torso weld of a stowed bow / sword
+	-- A23-231: what a weapon shows besides its parts / decals, switched off while its holder swims
+	WaterOff = { "Light", "ParticleEmitter", "Beam", "Trail", "Sparkles", "Fire", "Smoke" },
 	MemeLook = "MemeLook", MemeKind = "Meme", -- A23-186: the joke weapons' local look (a Model under the Tool); grip-3: their own row (the old sword hold)
 	Same = 1e-4, -- a motor still holding our last output (CFrame:FuzzyEq): the animation did not write it this frame
 	-- the Motor6Ds of Config.HoldPoses: joint name -> the R15 part it sits in
@@ -56,6 +59,7 @@ local T = {
 }
 local S = { Probe = nil, Started = false, Rest = setmetatable({}, { __mode = "k" }), RestAt = 0,
 	Stow = setmetatable({}, { __mode = "k" }), -- character -> { Last = the last attack seen, On = stowed now, Tool }
+	Water = setmetatable({}, { __mode = "k" }), -- A23-231: tool hidden in the water -> { [effect] = true } we switched off
 	Wrote = setmetatable({}, { __mode = "k" }), -- motor -> { Out = what we wrote, Base = the animation's value under it }
 	Char = setmetatable({}, { __mode = "k" }), -- character -> { R = the rest share 0..1, W = the walk blend 0..1 }
 	Joint = setmetatable({}, { __mode = "k" }) } -- character -> { [joint name] = the Motor6D / AnimationConstraint }
@@ -386,9 +390,14 @@ function WeaponPose.StowApply(char, tool, handle, where, stow)
 	local left = char:FindFirstChild("LeftHand")
 	local restBow = left and left:FindFirstChild(T.RestBow)
 	-- stow-fix: the bow's code string (two Beams on "String", off the mesh) shows only in the hand
+	-- A23-231: stowed / taken out in the water, the stow (not WaterHide) decides it when the weapon shows again
 	local str = tool:FindFirstChild("String")
+	local wet = S.Water[tool]
 	for _, b in str and str:GetChildren() or {} do
-		if b:IsA("Beam") and b.Enabled == stow then b.Enabled = not stow end
+		if b:IsA("Beam") then
+			if wet then wet[b] = nil end
+			if b.Enabled == stow then b.Enabled = not stow end
+		end
 	end
 	if stow then
 		if not (weld and weld:IsA("Weld")) then
@@ -414,7 +423,7 @@ function WeaponPose.StowApply(char, tool, handle, where, stow)
 		if weld and weld:IsA("JointInstance") then weld.Enabled = false end
 		if where == "Hip" and grip and grip:IsA("JointInstance") and grip.Part1 == handle and not grip.Enabled then grip.Enabled = true end
 	end
-	if char == (Players.LocalPlayer and Players.LocalPlayer.Character) then
+	if char == (Players.LocalPlayer and Players.LocalPlayer.Character) and not wet then
 		local audio = C and C.Audio
 		if type(audio) == "table" and type(audio.Play) == "function" and type(W.Sound) == "string" then pcall(audio.Play, W.Sound) end
 		local fx = C and C.Fx
@@ -447,6 +456,52 @@ function WeaponPose.StowStep(char, tool, kind, attacking, now)
 	return st.On
 end
 
+-- A23-231 (user 10/17 "물에 들어갈 때는 무기 없어지게" · "다시 물밖으로 나오면 있구"): is this character swimming
+-- now (its Humanoid's state - the engine sends every player's state to every client, the default swim sound reads it too)
+function WeaponPose.Swimming(char)
+	local hum = char and char:FindFirstChildOfClass("Humanoid")
+	return hum ~= nil and hum:GetState() == Enum.HumanoidStateType.Swimming
+end
+
+-- A23-231: everything this client shows of a weapon hidden (hide = true: its parts / decals see-through by
+-- LocalTransparencyModifier, its lights / sparkles / bow string off - only the ones that were on) or back (the same ones
+-- on again, the parts seen; MemeLook hides the server's parts of a joke weapon again right after). The weapon itself
+-- (the server's Tool, its tier, the bag) never changes. Returns true while hidden
+function WeaponPose.WaterHide(tool, hide)
+	local off = S.Water[tool]
+	if hide then
+		if not off then
+			off = {}
+			S.Water[tool] = off
+		end
+		for _, d in tool:GetDescendants() do
+			if d:IsA("BasePart") or d:IsA("Decal") then
+				if d.LocalTransparencyModifier ~= 1 then d.LocalTransparencyModifier = 1 end
+			else
+				for _, class in T.WaterOff do
+					if d:IsA(class) then
+						if d.Enabled then
+							d.Enabled = false
+							off[d] = true
+						end
+						break
+					end
+				end
+			end
+		end
+		return true
+	end
+	if not off then return false end
+	S.Water[tool] = nil
+	for d in off do
+		if d.Parent and not d.Enabled then d.Enabled = true end
+	end
+	for _, d in tool:GetDescendants() do
+		if (d:IsA("BasePart") or d:IsA("Decal")) and d.LocalTransparencyModifier ~= 0 then d.LocalTransparencyModifier = 0 end
+	end
+	return false
+end
+
 -- every RestEvery s: each character's held sword rests (toolnone ~0, Grip Rest) or holds (toolnone 1, plain Grip)
 function WeaponPose.RestStep(now)
 	if now - S.RestAt < T.RestEvery then return end
@@ -458,7 +513,12 @@ function WeaponPose.RestStep(now)
 			local kind = tool:GetAttribute("Kind")
 			-- A23-186: a joke weapon looks like itself here and is held like a sword
 			local meme = WeaponPose.MemeOf(tonumber(p:GetAttribute("WeaponTier")))
+			-- A23-231: swimming = the weapon hidden on this client (every character), out of the water = back at once
+			local okW, swim = pcall(WeaponPose.Swimming, char)
+			swim = okW and swim == true
+			if not swim then pcall(WeaponPose.WaterHide, tool, false) end
 			pcall(WeaponPose.MemeLook, tool, meme)
+			if swim then pcall(WeaponPose.WaterHide, tool, true) end
 			if meme then kind = T.MemeKind end
 			local attacking = fxAttacking(char)
 			local want = WeaponPose.Want(kind, attacking)
@@ -583,6 +643,9 @@ function WeaponPose.PoseStep(dt)
 		-- A23-223: an attack takes a stowed weapon to the hand this frame; while it is stowed the arms are the animation's
 		local okS, stowed = pcall(WeaponPose.StowStep, char, tool, kind, attacking, os.clock())
 		if okS and stowed then continue end
+		-- A23-231: a swimmer's weapon is hidden - the arms are the swim animation's
+		local okW, swim = pcall(WeaponPose.Swimming, char)
+		if okW and swim then continue end
 		st.R = WeaponPose.Approach(st.R, attacking and 0 or 1, dt, attacking and (hold == "Bow" and HM.InBow or HM.In) or HM.Out)
 		local share = WeaponPose.Smooth(st.R)
 		local hum = char:FindFirstChildOfClass("Humanoid")
