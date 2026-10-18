@@ -1,6 +1,7 @@
 # 게임성 개발 2 — 상태 (2026-10-18, 새 PC로 옮김: buff_bar + 장인 주간 선물)
 
 ## 지금 (새 대화는 여기부터; 세션이 자주 끊기니 덩어리마다 커밋·push)
+- **10/18 정리 (최신, 멈춤)**: 가지 모두 push됨 — dev2-craft-optsb 96b97378, dev2-craft-week 77030414, dev2-swim-auto 7d5de572(auto_combat 537 통과). 시험: optsb 끊긴 14개 중 9개 통과(first_ko_king·skills·spawn_clear·spawn_look·loot·sprout_oath·stats·sticker_text 통과, halloween = main 원래 실패), 남은 것 ranking·swing_hint·stat_service·town_quests·a23_14 + town_quests 변이 2 + craft-week 전체 sweep(사용자 "정리" 지시로 중단). 다음: 남은 시험 → 세 가지 한 번에 보고 → 주간 진영 승부는 최종 검수 답 뒤.
 - **10/18 이 PC 계속 (최신)**: 새 PC 옮기기 취소. dev2-detail = main 62b7b48e 병합됨. **dev2-swim-auto 7d5de572**(../wt_swim, main 355895c2 위): 자동 전투 헤엄 중 쉼(A23-231, autoReady에 Humanoid Swimming), auto_combat 537 통과·내 줄 빼면 잡힘. 남은 것: optsb 끊긴 시험 4개(ranking·swing_hint·stat_service·town_quests, 9개는 통과·halloween은 main 원래) 하나씩 → town_quests 변이 2 → craft-week 전체 sweep → a23_14 → 세 가지 한 번에 보고.
 - **10/18 새 PC로 옮김 (최신 — 이 PC에서 멈춤, 모든 가지 push됨, 커밋 안 된 코드 없음)**
   - 가지·해시(모두 origin에 있음):
