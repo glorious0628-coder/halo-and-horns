@@ -91,7 +91,7 @@ local function fixture(opts)
 	local services={Players=players,ReplicatedStorage={Shared={Config="Config",Util="Util",Net="Net"}},
 		RunService={IsStudio=function() return true end}}
 	local env={game={GetService=function(_,name) return assert(services[name],name) end},workspace=world,
-		typeof=function(v) return type(v)=="table" and v.__kind or type(v) end, Vector3={new=vec},os=clock,
+		typeof=function(v) return type(v)=="table" and v.__kind or type(v) end, Vector3={new=vec},os=clock,Enum=enum,
 		require=function(name) return ({Config=config,Util=util,Net=net})[name] end,print=function() end,
 		task={spawn=function(fn) table.insert(f.Tasks,fn) end, wait=function(t) coroutine.yield(t) end,
 			delay=function(_,fn) table.insert(f.Delays,fn) end,defer=function(fn) fn() end}}
