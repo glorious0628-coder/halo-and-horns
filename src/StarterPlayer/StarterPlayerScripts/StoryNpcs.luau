@@ -220,7 +220,7 @@ T.World = {
 	Band = { Name = "HH_Band", Color = Color3.fromRGB(255, 120, 150) },
 	MyLight = { Name = "HH_MyLight", Size = 0.5, Offset = Vector3.new(1.6, 2.2, 0) },
 	-- who reacts in each scene (the anchored town bodies hop; Value = the pick), the lamp NPC by side
-	Who = { Bag = "Folk1", Prank = "Tiny", Class = "Tiny", Smith = "Tiny", Alch = "Tiny", Tame = "Tiny", Crown = "Smokey",
+	Who = { Bag = "Neighbor", Prank = "Tiny", Class = "Tiny", Smith = "Tiny", Alch = "Tiny", Tame = "Tiny", Crown = "Smokey",
 		Band = "Bright" },
 	LampNpc = { Halo = "Bright", Horns = "Smokey", Neutral = "Tiny" },
 	LampSpot = { Halo = "LampH", Horns = "LampR", Neutral = "LampN" },
@@ -730,7 +730,7 @@ function StoryNpcs.Scene(data)
 				if glass then burst(glass.Position, value == "Mine" and T.World.Lamp.Mine or T.World.Lamp.Common, 22) end
 			end
 		end
-		if value == "Common" then StoryNpcs.Hop("Folk1", 1) end -- the neighbours wave
+		if value == "Common" then StoryNpcs.Hop("Neighbor", 1) end -- the neighbours wave (detail audit #18: the gate-road neighbour)
 		StoryNpcs.Hop(T.World.LampNpc[f or ""] or "Bright", 1)
 		return true
 	elseif key == "Find" and data.Id == "Tutorial" then -- the first mission (Config.Tutorial.Story, St = the step name)
