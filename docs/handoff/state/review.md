@@ -487,3 +487,12 @@
 - **회의실:** 옛 둘(Nmsz2E84…·4hhw…) 다 404 → 새로 만듦 https://claude.ai/artifact/4GUZmB518bKXyu6paDcNAq (원본 build/review_kit_1015/council_1017.html, db·user·comments·assets, 첫 글 d1017_01). 지켜보기 연결됨.
 - 가지 끝(origin) 확인: dev1-dialog-box 59b8a80d · dev1-codex-next 459a37ea · dev1-detail-1 c37d9fb7 · dev2-detail 1a5ac2ac · dev2-craft-optsb cef2e7f3. main = 20ba142b.
 - 다음 = new_account 파일 §3 순서(개발 1 ①②③ → dev2-detail과 같이 병합 → sync → 화면 판 → 게임 플레이 11판 → buff_bar → craft-optsb).
+
+## 10/18 정리 (최종 검수) — 사용자 "게임 두 개는 어려워, Halo & Horns 당분간 멈춤, Parcel Panic 집중"
+- 아침: PC 두 번 꺼짐. 그 전에 **병합 62b7b48e** = dev2-detail 1a5ac2ac(재대결 KO Fizzby 옆·이름표 0.8·위치 안전망·성문 Neighbor 몸·RunService 시험 4개) + dev1-neighbor d0f5a1f6 + dev1-water-hand c02d2925(A23-231 물속 무기 숨김·A23-232 칼 손에). 시험 11개 통과. **메인 Studio에는 아직 sync 안 됨**(메인 마지막 sync d54ee16c, Save As·게시 없음, place/ dce0db87 = 10/16 15:10 판 그대로).
+- 병합 대기 가지(전부 origin): dev1-dialog-box 59b8a80d(대화 상자 ①) · dev1-codex-next 459a37ea(도감 Go) · dev1-detail-1 b8259b1b(세세한 #1·#8·#9·#6·#13·#14 + 물약 거절 흔들림) · dev2-craft-optsb 96b97378(제작 옵션, **저장 판 7 = 게시 때 '모든 서버 종료'**, buff_bar 정리) · dev2-craft-week 77030414(장인 주간 선물) · dev2-swim-auto 7d5de572(자동 전투 물속 쉼). 화면 판 ④ 1회(ae62262, docs/art/verification_2026-10-20/screen_1020/): E 도감 Go·S 칼 손에·W 전사 물속 통과, A 대화 상자 반만, 남은 것 A 다시·궁수 물속·P 쿨다운 누름, **활이 등에 있을 때 시위가 켜져 보임(새 발견, 개발 1)**. 끊긴 시험 목록 = state/dev2.md.
+- 게임 플레이 r11(589e4e34): 궁수 두 번째 King 두 판 다 이김(물약 2병 최저 33%, 1병 16%) — 앞 '짐'은 봇 사진 탓(정정). 궁수만 재대결 때 Lv4(전사·마법사 Lv5) = 원인 미확인. 쿨다운 중 키 1 반응 없음 → detail-1 #8에 이미 있음.
+- 규칙 새로: Studio는 메인까지 전부 짧게 열고 닫기(AGENTS 6, 01_mainapply) · 모델 Opus가 끝(Fable X) · 영상 참고 docs/design/ref/video_grind_and_roblox_hits_2026-10-18.md(결정 3개 미답: 오늘 결산 한 장 / 첫 선택 선악 점수+후광·뿔 연출 / 베타 서브 줄이기).
+- 회의실 https://claude.ai/artifact/4GUZmB518bKXyu6paDcNAq: '전부 떠들어 보기' = API Opus(d1017_04)·GPT(d1018_04, build/codex/all_game_r1.md) 올림, Claude 답은 만드는 중(앱 꺼짐 두 번으로 늦음). GPT 사용량 돌아옴(10/18).
+- 세션 4개 멈춤·상태 push(dev1 8da3b4f8·dev2 9dc05dd2·playtest 238a8aad·mainapply ef5e507b). worktree 116개(Game-dev1*·wt_*) = 전부 origin에 있고 바뀐 파일은 시험 보고서만 → `tools/remove_worktrees.sh`로 지움(내 삭제 권한이 막혀 사용자가 실행). build/dev1_tools(check1020 최신)·build/review_kit_1015·build/playtest_tools는 Game/build에 남음.
+- **다시 시작할 때:** 메인 열기+sync 62b7b48e(+그 뒤 병합) → 개발 1 화면 판 남은 것 → dialog-box·codex-next·detail-1 병합 → 게임 플레이 11판 ③④⑤ → craft-optsb·week·swim-auto 시험·병합 → 게시 전 실제 흐름 점검 → 사용자 Save As + Alt+P + '모든 서버 종료'. 사용자 몫: 배지 2개 `py -X utf8 C:/Users/glori/Documents/Roblox/Game/tools/badge_create.py ShardChoice Rank2`.
