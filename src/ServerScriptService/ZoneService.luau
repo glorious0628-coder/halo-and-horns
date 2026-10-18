@@ -35,6 +35,9 @@ local GATE_NOTIFY_INTERVAL = 3 -- NeedLevel / enemy-town toast at most once per 
 local WARN_INTERVAL = 10
 local MAX_DEST_LENGTH = 64
 local RESCUE_Y = -20 -- addendum A10: below this (anywhere) -> home spawn
+-- 최종 검수 10/17 (r9: a root at Y -1e6 in one step = a NaN / broken CFrame, never a real fall): a position with NaN / inf
+-- or below this goes back to the last good spot instead
+local ABSURD_Y = -1e4
 local ENEMY_TOWN_FALLBACK = "You can't enter the other side's town!" -- used only if Config.Text.EnemyTown is missing
 local KAIJU_TOWN_FALLBACK = "A Kaiju can't enter towns!" -- used only if Config.Text.KaijuNoTown is missing
 
@@ -248,6 +251,15 @@ local function validateRescue(player, root)
 		return false
 	end
 	return true
+end
+
+-- 최종 검수 10/17: a position no real move can reach - NaN / inf in any axis or Y below ABSURD_Y
+function ZoneService.Absurd(pos)
+	if typeof(pos) ~= "Vector3" then return true end
+	for _, v in { pos.X, pos.Y, pos.Z } do
+		if v ~= v or v == math.huge or v == -math.huge then return true end
+	end
+	return pos.Y < ABSURD_Y
 end
 
 -- pivots the character to a zone spawn; false when there is no character / root
@@ -604,8 +616,33 @@ local function updateZone(player)
 	if not Util.IsAlive(player) then return end
 	local root = Util.GetRoot(player)
 	if not root then return end
-	if root.Position.Y < RESCUE_Y then
-		if not validateRescue(player, root) then return end -- CR-H2 (pulled back only with AntiCheat.Enforce)
+	if ZoneService.Absurd(root.Position) then
+		-- 최종 검수 10/17: never a real fall: back to the last good spot of this character (else the home spawn below)
+		local g = move.lastGood[player]
+		local character = Util.GetCharacter(player)
+		if g and character and g.Char == character and not ZoneService.Absurd(g.Pos) and g.Pos.Y >= RESCUE_Y then
+			local back = g.Pos
+			markTeleported(player)
+			character:PivotTo(CFrame.new(back))
+			root.AssemblyLinearVelocity = Vector3.zero
+			-- the spot stays the last good one (markTeleported cleared the track): a second broken step goes back here too
+			move.lastGood[player] = { Pos = back, T = os.clock(), Char = character, VY = 0 }
+			return
+		end
+	end
+	if root.Position.Y < RESCUE_Y or ZoneService.Absurd(root.Position) then
+		if not ZoneService.Absurd(root.Position) and not validateRescue(player, root) then return end -- CR-H2 (pulled back only with AntiCheat.Enforce)
+		-- 최종 검수 10/17 (detail audit #10): on the King's rematch row a fall gets up where a KO there would (FirstKOService.GetUp:
+		-- by Fizzby), never the long walk from the home town
+		local fk = S.FirstKOService
+		local okU, up = pcall(function() return type(fk) == "table" and type(fk.GetUp) == "function" and fk.GetUp(player) or nil end)
+		local character = Util.GetCharacter(player)
+		if okU and type(up) == "table" and typeof(up.CFrame) == "CFrame" and character then
+			markTeleported(player)
+			character:PivotTo(up.CFrame)
+			root.AssemblyLinearVelocity = Vector3.zero
+			return
+		end
 		-- A10 rescue (an Active kaiju goes to Crossroads directly: it may not stand in its home town)
 		local home = (kaijuState(player) == "Active") and DEFAULT_ZONE or Config.HomeZoneId(getFaction(player))
 		teleport(player, home)

@@ -33,6 +33,12 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # 최종 검수 10/17: absurd positions / a fall on the rematch row
+    ("absurd: no pull-back", Z, "\tif ZoneService.Absurd(root.Position) then\n", "\tif false then\n"),
+    ("absurd: only below -1e7", Z, "local ABSURD_Y = -1e4", "local ABSURD_Y = -1e7"),
+    ("absurd: NaN is fine", Z, "\t\tif v ~= v or v == math.huge or v == -math.huge then return true end\n", ""),
+    ("absurd: the spot forgotten after a pull-back", Z, "\t\t\tmove.lastGood[player] = { Pos = back, T = os.clock(), Char = character, VY = 0 }\n", ""),
+    ("rematch fall: the home spawn", Z, "if okU and type(up) == \"table\" and typeof(up.CFrame) == \"CFrame\" and character then", "if false then"),
     # A23-182: the menu's teleport is the Fast Travel subscription's
     ('travel without the subscription', Z,
      '\tif not (type(mon) == "table" and type(mon.HasSub) == "function" and mon.HasSub(player, "FastTravel") == true) then return end\n', ''),

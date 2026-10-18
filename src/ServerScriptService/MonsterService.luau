@@ -1326,7 +1326,9 @@ local function buildRig(kind, def, golden, groundPos, faceTo)
 
 	local label = golden and ("Golden " .. def.Name) or def.Name
 	-- def.Float: the client hovers the visual this many studs up (Fx WOBBLE), so the name bar goes up with it
-	local fill = makeBar(root, label, golden, topAboveRoot + 1.6 + math.max(0, tonumber(def.Float) or 0))
+	-- detail audit #4 (최종 검수 10/17: the 'Slime Prince' tag floated far above its body and over the next slime's): 0.8
+	-- above the body top (was 1.6)
+	local fill = makeBar(root, label, golden, topAboveRoot + 0.8 + math.max(0, tonumber(def.Float) or 0))
 
 	model:SetAttribute("MonsterKind", kind)
 	model:SetAttribute("Golden", golden)
@@ -1806,7 +1808,7 @@ function MonsterService.DamageMonster(record, amount, player, crit, castId, manu
 	end
 	record.HP -= amount
 	-- r9 play (최종 검수 10/17: the bot read Humanoid.Health, which never moves): Studio only, the real HP on the model
-	if RunService:IsStudio() and record.Model then pcall(record.Model.SetAttribute, record.Model, "DebugHP", math.max(0, math.floor(record.HP))) end
+	if RunService and RunService:IsStudio() and record.Model then pcall(record.Model.SetAttribute, record.Model, "DebugHP", math.max(0, math.floor(record.HP))) end -- (RunService: nil in a cut-out test chunk)
 	if record.HP > 0 then
 		updateBar(record)
 		local okHurt, errHurt = pcall(markHurt, record, amount, crit)
@@ -2704,8 +2706,15 @@ function LEAP.Start(rec, info, now, L)
 	local from = root.Position - Vector3.new(0, rec._rootOffset or 3, 0)
 	local spot = from
 	if not slam then
-		local g, noHit = groundPoint(info.Pos.X, info.Pos.Z, L.MaxY)
-		if noHit then g = Vector3.new(info.Pos.X, from.Y, info.Pos.Z) end -- bare test place: flat ground
+		-- 최종 검수 10/17 (r9): a personal King lands 1.5 studs in front of its owner (toward where it leaps from), not exactly on
+		-- the feet (a body standing exactly on the player made every "face it" math divide by zero); the circle still holds them
+		local aim = info.Pos
+		if rec.Owner ~= nil then
+			local back = Vector3.new(from.X - aim.X, 0, from.Z - aim.Z)
+			if back.Magnitude > 0.01 then aim = aim + back.Unit * math.min(1.5, back.Magnitude) end
+		end
+		local g, noHit = groundPoint(aim.X, aim.Z, L.MaxY)
+		if noHit then g = Vector3.new(aim.X, from.Y, aim.Z) end -- bare test place: flat ground
 		if not g or (rec.Owner == nil and Config.ZoneAt(g).Id ~= rec.ZoneId) then
 			rec._nextAttackAt = now + math.max(0.1, LEAP.Num(B.RetryDelay, 0.5))
 			return false

@@ -250,6 +250,22 @@ runGroup("leap cycle", function()
 	w:Try(k2, p)
 	check(math.abs(k2._nextAttackAt - (w.Clock + C.Monsters.AttackCooldown)) < 1e-6, "no _leapCycle: the BossLeap cycle (AttackCooldown 1.5)",
 		tostring(k2._nextAttackAt - w.Clock))
+	-- 최종 검수 10/17 (r9): a personal King lands 1.5 studs in front of its owner (toward where it leapt from), never exactly on
+	-- the feet; a field King still lands on the spot
+	local w3 = leapWorld()
+	local o = w3:Player(3, m + vec(10, 3, 0), { Level = 2, PlaytimeSeconds = 30 })
+	local mine = w3:Rec("SlimeKing", m, o)
+	mine._strike = function() end
+	w3:Try(mine, o)
+	local drop = mine.Model.Attrs.DropPos
+	check(drop and math.abs(drop.X - (m.X + 8.5)) < 1e-6 and math.abs(drop.Z - m.Z) < 1e-6,
+		"a personal King's landing: 1.5 studs short of the owner (toward the King)", show(drop))
+	local w4 = leapWorld()
+	local f = w4:Player(4, m + vec(10, 3, 0))
+	local field = w4:Rec("SlimeKing", m)
+	w4:Try(field, f)
+	local fd = field.Model.Attrs.DropPos
+	check(fd and math.abs(fd.X - (m.X + 10)) < 1e-6, "a field King still lands on the player's spot", show(fd))
 end)
 
 runGroup("personal king", function()

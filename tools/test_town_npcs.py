@@ -29,6 +29,9 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    # detail audit #18 (최종 검수 10/17): the Neighbor by the gate road
+    ("#18: no Neighbor body", C, 'table.insert(Config.TownNpcs.List, { Id = "Neighbor", Name = "Npc_Neighbor",', 'local _ = ({ Id = "Neighbor", Name = "Npc_Neighbor",'),
+    ("#18: the Neighbor at the juice shop", C, "At = Vector3.new(12, 0, -378), Look = Vector3.new(0, 0, -378),", "At = Vector3.new(38, 0, -499), Look = Vector3.new(0, 0, -378),"),
     # --- Config
     ("Config: Bright is not a story NPC", C, 'Id = "Bright", Name = "Npc_Bright", Story = "Bright",', 'Id = "Bright", Name = "Npc_Bright",'),
     ("Config: Bright has another NpcId", C, 'Name = "Npc_Bright", Story = "Bright",', 'Name = "Npc_Bright", Story = "Brite",'),

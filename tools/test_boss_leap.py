@@ -54,6 +54,7 @@ def bindings(sources: dict[str, str]) -> dict[str, str]:
 
 
 MUTATIONS = [
+    ("r9: a personal King lands on the feet", M, "\t\tif rec.Owner ~= nil then\n\t\t\tlocal back = Vector3.new(from.X - aim.X, 0, from.Z - aim.Z)", "\t\tif false then\n\t\t\tlocal back = Vector3.new(from.X - aim.X, 0, from.Z - aim.Z)"),
     ("r8: the leap cycle ignored", M, "math.max(LEAP.Cycle(L), LEAP.Num(rec._leapCycle, 0))", "LEAP.Cycle(L)"),
     # A23-227 the field King's shield
     ("A23-227: no shield", M, "\t\t\tif not done then return false end\n", ""),
@@ -102,7 +103,7 @@ MUTATIONS = [
     ("leaps out of its zone", M, "if not g or (rec.Owner == nil and Config.ZoneAt(g).Id ~= rec.ZoneId) then",
      "if not g then"),
     ("no retry delay", M, "\t\t\trec._nextAttackAt = now + math.max(0.1, LEAP.Num(B.RetryDelay, 0.5))\n", ""),
-    ("bare place ignored", M, "\t\tif noHit then g = Vector3.new(info.Pos.X, from.Y, info.Pos.Z) end -- bare test place: flat ground\n", ""),
+    ("bare place ignored", M, "\t\tif noHit then g = Vector3.new(aim.X, from.Y, aim.Z) end -- bare test place: flat ground\n", ""),
     ("no DropAt", M, "\tmodel:SetAttribute(\"DropAt\", Util.Now())", "\tlocal _ = Util.Now()"),
     ("no DropPos", M, "\tmodel:SetAttribute(\"DropPos\", spot)\n", ""),
     ("no DropRadius", M, "\tmodel:SetAttribute(\"DropRadius\", J.Radius)\n", ""),

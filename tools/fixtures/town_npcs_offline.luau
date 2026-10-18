@@ -79,7 +79,7 @@ end
 
 -- gameplay plan 2026-10-13 1-A #9: Tiny (the Crossroads) and Rose (Horns Den) have temporary bodies too; the groups below count
 -- the Halo town's people, so a world leaves them out unless o.Others (their own group checks them)
-local OTHERS = { Tiny = true, Rose = true, Hallie = true, Magpie = true, Kit = true, Rex = true } -- (quest P1 ②: the guides + Rex)
+local OTHERS = { Tiny = true, Rose = true, Hallie = true, Magpie = true, Kit = true, Rex = true, Neighbor = true } -- (quest P1 ②: the guides + Rex; #18 the Neighbor)
 
 -- one world per scenario
 local function townWorld(o)
@@ -224,8 +224,8 @@ runGroup("config", function()
 		end
 	end
 	-- A23-193: Otto teaches the artisans their skills, so he is a Story NPC too (Story "Otto")
-	-- quest P1 ⑤: Folk1 (the neighbour of the Lv5 test) is a story NPC too
-	check(kinds.Story == 4 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam + Otto + Folk1, 4 townsfolk, 1 potion seller, Otto at the anvil", show(kinds))
+	-- detail audit #18 (최종 검수 10/17): the Lv5 test's neighbour is a body of its own by the gate road (Neighbor); Folk1 is a townsperson
+	check(kinds.Story == 3 and kinds.Folk == 4 and kinds.Merchant == 1 and kinds.Anvil == 1, "Bright + Sir Gleam + Otto (the Neighbor is one of the added bodies), 4 townsfolk, 1 potion seller, Otto at the anvil", show(kinds))
 	-- the shop people stand in front of their shop (A23-112 halo_layout_plan: each shop has its own yaw; tools/test_town_npcs.py
 	-- checks the 2..8 studs in front of the face against the plan), on the shop street terrace (Y 9; Folk4 stands on the fountain plaza, Y 20)
 	local spot = {}
@@ -285,7 +285,12 @@ runGroup("Tiny and Rose (temporary bodies)", function()
 	check(named.Tiny and named.Smokey, "both are named by quest steps", show(named))
 	local t = townWorld({ Others = true })
 	local n = t.Ensure()
-	check(n == 14 and #t.Created == 13, "with Tiny, Rose, the 3 guides and Rex: 14 entries queued, 13 bodies (the seller off)", show({ n, #t.Created }))
+	check(n == 15 and #t.Created == 14, "with Tiny, Rose, the 3 guides, Rex and the Neighbor: 15 entries queued, 14 bodies (the seller off)", show({ n, #t.Created }))
+	-- detail audit #18 (최종 검수 10/17): the Lv5 test's neighbour by the gate road, across from Sir Gleam (a temporary body)
+	local nb = spot.Neighbor
+	check(nb and nb.Story == "Neighbor" and nb.Label == "Neighbor" and nb.Name == "Npc_Neighbor" and inside(C0.Zones.HaloTown, nb.At)
+		and math.abs(nb.At.Z - spot.Gleam.At.Z) <= 10 and type(nb.Colors) == "table" and nb.Folk == nil and spot.Folk1.Story == nil,
+		"the Neighbor: a body by the gate road (beside Sir Gleam), story id Neighbor; the juice man no story NPC", show(nb and nb.At))
 	for _, case in { { "Npc_Tiny", "Tiny", "Tiny", 24, 12 }, { "Npc_Rose", "Smokey", "Rose", -18, 424 } } do
 		local m = t.Npc(case[1])
 		local prompt = m and t.PromptOf(m, "TalkPrompt")
@@ -360,10 +365,9 @@ runGroup("build", function()
 	-- the townsfolk: tagged, no prompt, on the plaza
 	for i = 1, 4 do
 		local f = t.Npc("Npc_Folk" .. i)
-		if i == 1 then -- quest P1 ⑤: the neighbour is talked to (the Lv5 test's bag) and keeps its TownFolk bubbles
-			check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk1" and t.Tagged(f, "StoryNpc")
-				and f:GetAttribute("NpcId") == "Folk1" and t.PromptOf(f, "TalkPrompt") ~= nil,
-				"Folk1: a townsperson (TownFolk) and a story NPC with a Talk prompt", show(t.Tags[f]))
+		if i == 1 then -- detail audit #18: the juice man is only a townsperson again; the bag's owner is the Neighbor by the gate
+			check(f ~= nil and t.Tagged(f, "TownFolk") and not t.Tagged(f, "StoryNpc") and t.PromptOf(f, "TalkPrompt") == nil,
+				"Folk1: a townsperson again (no story, no prompt)", show(t.Tags[f]))
 		else
 			check(f ~= nil and t.Tagged(f, "TownFolk") and f:GetAttribute("FolkId") == "Folk" .. i and not t.Tagged(f, "StoryNpc") and t.PromptOf(f, "TalkPrompt") == nil,
 				"Folk" .. i .. ": a townsperson, tagged TownFolk, no prompt", show(t.Tags[f]))
