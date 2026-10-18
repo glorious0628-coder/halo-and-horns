@@ -960,12 +960,22 @@ local function bullyNoAuto(player)
 		and ((tonumber(player:GetAttribute("BullyStacks")) or 0) >= 1 or player:GetAttribute("Outlaw") == true)
 end
 
+-- A23-231 (user 10/17 "물에 들어갈 때는 무기 없어지게"): while the Humanoid swims, auto attacks and auto skills rest - no word,
+-- they go on the moment the player is out (the weapon is hidden on every screen meanwhile, game dev 1's WeaponPose). The
+-- owner's Humanoid state reaches the server; no humanoid / an odd one = not swimming
+local function swimming(player)
+	local hum = Util.GetHumanoid(player)
+	local ok, state = pcall(function() return hum and hum:GetState() end)
+	return ok and state == Enum.HumanoidStateType.Swimming
+end
+
 local function autoReady(player)
 	return isPlayer(player) and player.Parent ~= nil and not bullyNoAuto(player)
 		and player:GetAttribute("AutoCombatUnlocked") == true and player:GetAttribute("AutoCombatEnabled") == true
 		and player:GetAttribute("ClassChosen") == true and kstate(player) == "None"
 		and player:GetAttribute("AutoResting") ~= true -- P2: away for 15 min
 		and S.PlayerService.IsReady(player) and Util.IsAlive(player)
+		and not swimming(player) -- A23-231
 end
 
 -- P2 idle rest: Zzz above the head while resting (plain text label, removed on wake)

@@ -62,6 +62,7 @@ local function fixture(opts)
 			if old~=value and self.AttrSignals[key] then self.AttrSignals[key]:Fire() end
 		end
 		function p.Hum:TakeDamage(amount) self.Health=math.max(0,self.Health-amount) end
+		function p.Hum:GetState() return self.State or "HumanoidStateType.Running" end -- A23-231: "HumanoidStateType.Swimming" in the water
 		table.insert(f.Players,p)
 		return p
 	end
@@ -225,6 +226,15 @@ do
 	local dealt,events=h:MonsterDamage(),#h.Events
 	h.Player.Attrs.AutoCombatEnabled=false;h:Run(6)
 	check(h:MonsterDamage()==dealt and #h.Events==events,"auto combat continued after OFF")
+	-- A23-231: swimming rests auto attacks and auto skills (no notice); out of the water they go on at once
+	local sw=fixture({Unlocked=true,Enabled=true});sw:AddMonster()
+	sw.Player.Hum.State="HumanoidStateType.Swimming";sw:Run(5)
+	check(sw:MonsterDamage()==0 and #sw.Events==0 and #sw.Fx==0 and sw.Player.Attrs.Mana==100,"auto combat swung or cast while swimming")
+	sw.Player.Hum.State=nil;sw:Run(1.2)
+	check(sw:MonsterDamage()>0 and sw:Swings(false)>=1 and sw:AutoSkills()>=1,"auto combat did not come back after the water")
+	local manual=fixture({Unlocked=true,Enabled=true});manual:AddMonster();manual.Player.Hum.State="HumanoidStateType.Swimming"
+	manual.Combat.Swing(manual.Player,true)
+	check(manual:Swings(true)>=1,"a manual swing was blocked by the server's swim rest (the client owns that rule)")
 	-- no monster in reach: no swing, no skill, no MP spent
 	local idle=fixture({Unlocked=true,Enabled=true});idle:AddMonster(vec(380,0,0));idle:Run(5)
 	check(#idle.Fx==0 and #idle.Events==0 and idle.Player.Attrs.Mana==100,"auto attacked/cast with no monster in reach")
