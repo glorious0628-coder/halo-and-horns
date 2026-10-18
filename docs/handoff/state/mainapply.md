@@ -118,3 +118,6 @@ skillbook/·skillbook_lv5/·skillbook_v2/·skillbook_v3/(스킬 창), ground_bri
 - 메인 Studio 창 없음(Studio 프로세스 0개 — PC 바뀜. 10/17 밤 열었던 pid 34772는 PC 이동으로 사라짐, 내가 닫은 것 아님).
 - 메인 Studio 마지막 sync = d54ee16c(코드 == 당시 origin/main), 그 뒤 main은 문서만. Save As·게시 없음. place/ = 10/16 15:10 dce0db87 그대로.
 - 다음: 최종 검수 "전달함, 시작" 뒤 `roblox-studio:` URI로 열기(placeId 81671223175574, universeId 8570876289) → 창 하나 확인 → sync → 한 줄 보고.
+
+## 10/18 정리 (메인 반영 1) — 위 '새 PC로 옮김' 절은 취소됨(이 PC에서 계속)
+- 메인 Studio 마지막 sync = d54ee16c. main 62b7b48e(dev2-detail + Neighbor + 물속 무기·칼 손에) sync 대기. Save As·게시 없음, place/ = dce0db87. 오늘 sync 안 함, Studio 안 열려 있음. 규칙: Studio는 짧게 열고 sync 뒤 닫기(저장 안 함).
